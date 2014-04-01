@@ -58,11 +58,13 @@ def row_sort(cell):
     """Translate column names for sorting."""
     return column_index_from_string(cell.column)
 
+
 def write_etree(doc, element):
     start_tag(doc, element.tag, element)
     for e in element.getchildren():
         write_etree(doc, e)
     end_tag(doc, element.tag)
+
 
 def write_worksheet(worksheet, shared_strings, style_table):
     """Write a worksheet to an xml file."""
@@ -78,7 +80,7 @@ def write_worksheet(worksheet, shared_strings, style_table):
     if vba_root is not None:
         el = vba_root.find('{%s}sheetPr' % SHEET_MAIN_NS)
         if el is not None:
-            codename =el.get('codeName', worksheet.title)
+            codename = el.get('codeName', worksheet.title)
             start_tag(doc, 'sheetPr', {"codeName": codename})
         else:
             start_tag(doc, 'sheetPr')
@@ -88,7 +90,7 @@ def write_worksheet(worksheet, shared_strings, style_table):
         {'summaryBelow': '%d' % (worksheet.show_summary_below),
          'summaryRight': '%d' % (worksheet.show_summary_right)})
     if worksheet.page_setup.fitToPage:
-        tag(doc, 'pageSetUpPr', {'fitToPage':'1'})
+        tag(doc, 'pageSetUpPr', {'fitToPage': '1'})
     end_tag(doc, 'sheetPr')
     tag(doc, 'dimension', {'ref': '%s' % worksheet.calculate_dimension()})
     write_worksheet_sheetviews(doc, worksheet)
@@ -103,7 +105,6 @@ def write_worksheet(worksheet, shared_strings, style_table):
     write_worksheet_datavalidations(doc, worksheet)
     write_worksheet_hyperlinks(doc, worksheet)
     write_worksheet_conditional_formatting(doc, worksheet)
-
 
     options = worksheet.page_setup.options
     if options:
@@ -126,7 +127,7 @@ def write_worksheet(worksheet, shared_strings, style_table):
         end_tag(doc, 'headerFooter')
 
     if worksheet._charts or worksheet._images:
-        tag(doc, 'drawing', {'r:id':'rId1'})
+        tag(doc, 'drawing', {'r:id': 'rId1'})
 
     # If vba is being preserved then add a legacyDrawing element so
     # that any controls can be drawn.
@@ -145,13 +146,14 @@ def write_worksheet(worksheet, shared_strings, style_table):
 
     # add a legacyDrawing so that excel can draw comments
     if worksheet._comment_count > 0:
-        tag(doc, 'legacyDrawing', {'r:id':'commentsvml'})
+        tag(doc, 'legacyDrawing', {'r:id': 'commentsvml'})
 
     end_tag(doc, 'worksheet')
     doc.endDocument()
     xml_string = xml_file.getvalue()
     xml_file.close()
     return xml_string
+
 
 def write_worksheet_sheetviews(doc, worksheet):
     start_tag(doc, 'sheetViews')
@@ -206,7 +208,7 @@ def write_worksheet_cols(doc, worksheet, style_table):
             if columndimension.auto_size:
                 col_def['bestFit'] = 'true'
             if column_string in worksheet._styles:
-                col_def['style'] = str(style_table[hash(worksheet.get_style(column_string))])
+                col_def['style'] = '%d' % worksheet._styles[column_string]
             if columndimension.width > 0:
                 col_def['width'] = str(columndimension.width)
             else:
@@ -265,7 +267,7 @@ def write_worksheet_data(doc, worksheet, string_table, style_table):
     """Write worksheet data to xml."""
     start_tag(doc, 'sheetData')
     max_column = worksheet.get_highest_column()
-    style_id_by_hash = style_table
+    shared_styles = worksheet.parent.shared_styles
     cells_by_row = {}
     for styleCoord in iterkeys(worksheet._styles):
         # Ensure a blank cell exists if it has a style
@@ -283,7 +285,7 @@ def write_worksheet_data(doc, worksheet, string_table, style_table):
             attrs['ht'] = str(row_dimension.height)
             attrs['customHeight'] = '1'
         if row_idx in worksheet._styles:
-            attrs['s'] = str(style_table[hash(worksheet.get_style(row_idx))])
+            attrs['s'] = '%d' % worksheet._styles[row_idx]
             attrs['customFormat'] = '1'
         start_tag(doc, 'row', attrs)
         row_cells = cells_by_row[row_idx]
@@ -295,8 +297,7 @@ def write_worksheet_data(doc, worksheet, string_table, style_table):
             if cell.data_type != cell.TYPE_FORMULA:
                 attributes['t'] = cell.data_type
             if coordinate in worksheet._styles:
-                attributes['s'] = '%d' % style_id_by_hash[
-                    hash(worksheet._styles[coordinate])]
+                attributes['s'] = '%d' % worksheet._styles[coordinate]
 
             if value in ('', None):
                 tag(doc, 'c', attributes)

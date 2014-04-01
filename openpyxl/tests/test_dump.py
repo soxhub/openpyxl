@@ -35,6 +35,8 @@ from openpyxl.cell import get_column_letter
 from openpyxl.reader.excel import load_workbook
 from openpyxl.compat import xrange
 from openpyxl.exceptions import WorkbookAlreadySaved
+from openpyxl.styles.fonts import Font
+from openpyxl.styles import Style
 
 
 def _get_test_filename():
@@ -72,7 +74,7 @@ def test_dump_string_table():
                      ]
 
 
-def test_dump_sheet():
+def test_dump_sheet_with_styles():
     test_filename = _get_test_filename()
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
@@ -154,3 +156,20 @@ def test_datetime(value):
     ws = wb.create_sheet()
     row = [value]
     ws.append(row)
+
+
+def test_dump_with_font():
+    test_filename = _get_test_filename()
+
+    wb = Workbook(optimized_write=True)
+    ws = wb.create_sheet()
+    ws.append([('hello', Style(font=Font(name='Courrier', size=36))), 3.14, None])
+    wb.save(test_filename)
+    os.remove(test_filename)
+
+
+def test_dump_bad_style():
+    wb = Workbook(optimized_write=True)
+    ws = wb.create_sheet()
+    with pytest.raises(TypeError):
+        ws.append([('hello', 'world'), 3.14, None])

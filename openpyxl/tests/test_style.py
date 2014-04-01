@@ -56,19 +56,20 @@ class TestCreateStyle(object):
         now = datetime.datetime.now()
         cls.workbook = Workbook(guess_types=True)
         cls.worksheet = cls.workbook.create_sheet()
-        cls.worksheet.cell(coordinate='A1').value = '12.34%'
-        cls.worksheet.cell(coordinate='B4').value = now
+        cls.worksheet.cell(coordinate='A1').value = '12.34%'  # 2
+        cls.worksheet.cell(coordinate='B4').value = now  # 3
         cls.worksheet.cell(coordinate='B5').value = now
-        cls.worksheet.cell(coordinate='C14').value = 'This is a test'
-        cls.worksheet.cell(coordinate='D9').value = '31.31415'
+        cls.worksheet.cell(coordinate='C14').value = 'This is a test'  # 1
+        cls.worksheet.cell(coordinate='D9').value = '31.31415'  # 3
         st = Style(number_format=NumberFormat(NumberFormat.FORMAT_NUMBER_00),
-                   protection=Protection(locked=Protection.PROTECTION_UNPROTECTED))
+                   protection=Protection(locked=Protection.PROTECTION_UNPROTECTED))  # 4
         cls.worksheet.cell(coordinate='D9').style = st
-        cls.worksheet.cell(coordinate='E1').style = Style(protection=Protection(hidden=Protection.PROTECTION_UNPROTECTED))
+        st2 = Style(protection=Protection(hidden=Protection.PROTECTION_UNPROTECTED))  # 5
+        cls.worksheet.cell(coordinate='E1').style = st2
         cls.writer = StyleWriter(cls.workbook)
 
     def test_create_style_table(self):
-        assert len(self.writer.style_table) == 4
+        assert len(self.writer.styles) == 5
 
     @pytest.mark.xfail
     def test_write_style_table(self):
@@ -82,23 +83,23 @@ class TestStyleWriter(object):
 
     def test_no_style(self):
         w = StyleWriter(self.workbook)
-        assert len(w.style_table) == 0
+        assert len(w.styles) == 1  # there is always the empty (defaul) style
 
     def test_nb_style(self):
         for i in range(1, 6):
             self.worksheet.cell(row=1, column=i).style = Style(font=Font(size=i))
         w = StyleWriter(self.workbook)
-        assert len(w.style_table) == 5
+        assert len(w.styles) == 6  # 5 + the default
 
         self.worksheet.cell('A10').style = Style(borders=Borders(top=Border(border_style=Border.BORDER_THIN)))
         w = StyleWriter(self.workbook)
-        assert len(w.style_table) == 6
+        assert len(w.styles) == 7
 
     def test_style_unicity(self):
         for i in range(1, 6):
             self.worksheet.cell(row=1, column=i).style = Style(font=Font(bold=True))
         w = StyleWriter(self.workbook)
-        assert len(w.style_table) == 1
+        assert len(w.styles) == 2
 
     def test_fonts(self):
         st = Style(font=Font(size=12, bold=True))
@@ -375,9 +376,10 @@ def test_read_style():
         handle.close()
     style_properties = read_style_table(content)
     style_table = style_properties['table']
+    style_list = style_properties['list']
     assert len(style_table) == 4
-    assert NumberFormat._BUILTIN_FORMATS[9] == style_table[1].number_format
-    assert 'yyyy-mm-dd' == style_table[2].number_format
+    assert NumberFormat._BUILTIN_FORMATS[9] == style_list[style_table[1]].number_format
+    assert 'yyyy-mm-dd' == style_list[style_table[2]].number_format
 
 
 def test_read_complex_style():
@@ -386,7 +388,7 @@ def test_read_complex_style():
     ws = wb.get_active_sheet()
     assert ws.column_dimensions['A'].width == 31.1640625
 
-    style = partial(ws.get_style, read_only=True)
+    style = partial(ws.get_style)
     assert style('I').fill.start_color.index == 'FF006600'
     assert style('I').font.color.index == 'FF3300FF'
     assert style('A2').font.name == 'Arial'
@@ -502,7 +504,7 @@ def test_change_existing_styles():
 
     assert ws.column_dimensions['A'].width == 20.0
 
-    style = partial(ws.get_style, read_only=True)
+    style = partial(ws.get_style)
 
     assert ws.get_style('I').fill.start_color.index == 'FF442200'
     assert ws.get_style('I').font.color.index == 'FF002244'

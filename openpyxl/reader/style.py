@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from openpyxl.styles.borders import Border
+from openpyxl.strings import IndexedList
 # Copyright (c) 2010-2014 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,7 +29,7 @@ from openpyxl.styles.borders import Border
 from openpyxl.xml.functions import fromstring, safe_iterator
 from openpyxl.exceptions import MissingNumberFormat
 from openpyxl.styles import (Style, NumberFormat, Font, Fill, Borders,
-                             Protection, Alignment)
+                             Protection, Alignment, Border)
 from openpyxl.styles.colors import COLOR_INDEX, Color
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from copy import deepcopy
@@ -39,7 +39,8 @@ class SharedStylesParser(object):
 
     def __init__(self, xml_source):
         self.root = fromstring(xml_source)
-        self.style_prop = {'table': {}}
+        self.style_prop = {'table': {},
+                           'list': IndexedList()}
         self.color_index = COLOR_INDEX
 
     def parse(self):
@@ -86,7 +87,7 @@ class SharedStylesParser(object):
                     dxf_item['font'] = self.parse_font(font_node)
                 fill_node = dxf.find('{%s}fill' % SHEET_MAIN_NS)
                 if fill_node is not None:
-                    dxf_item['fill'] =  self.parse_fill(fill_node)
+                    dxf_item['fill'] = self.parse_fill(fill_node)
                 border_node = dxf.find('{%s}border' % SHEET_MAIN_NS)
                 if border_node is not None:
                     dxf_item['border'] = self.parse_border(border_node)
@@ -208,6 +209,7 @@ class SharedStylesParser(object):
     def parse_cell_xfs(self):
         """Read styles from the shared style table"""
         cell_xfs = self.root.find('{%s}cellXfs' % SHEET_MAIN_NS)
+        styles_list = self.style_prop['list']
 
         if cell_xfs is None:  # can happen on bad OOXML writers (e.g. Gnumeric)
             return
@@ -262,7 +264,7 @@ class SharedStylesParser(object):
                     protection['hidden'] = bool(prot.get('hidden'))
                 _style['protection'] = Protection(**protection)
 
-            self.style_prop['table'][index] = Style(**_style)
+            self.style_prop['table'][index] = styles_list.add(Style(**_style))
 
 
 def read_style_table(xml_source):

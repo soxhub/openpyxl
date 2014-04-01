@@ -66,6 +66,7 @@ from openpyxl.reader.comments import read_comments, get_comments_file
 
 CENTRAL_DIRECTORY_SIGNATURE = '\x50\x4b\x05\x06'
 
+
 def repair_central_directory(zipFile, is_file_instance):
     ''' trims trailing data from the central directory
     code taken from http://stackoverflow.com/a/7457686/570216, courtesy of Uri Cohen
@@ -191,6 +192,7 @@ def _load_workbook(wb, archive, filename, use_iterators, keep_vba):
 
     style_properties = read_style_table(archive.read(ARC_STYLE))
     style_table = style_properties.pop('table')
+    wb.shared_styles = style_properties.pop('list')
     wb.style_properties = style_properties
 
     wb.properties.excel_base_date = read_excel_base_date(xml_source=archive.read(ARC_WORKBOOK))
