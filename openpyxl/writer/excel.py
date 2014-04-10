@@ -124,11 +124,9 @@ class ExcelWriter(object):
             archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % (i + 1),
                              write_worksheet(sheet, self.shared_strings,
                                              style_writer.styles))
-            if (
-                sheet._charts or sheet._images
+            if (sheet._charts or sheet._images
                 or sheet.relationships
-                or sheet._comment_count > 0
-                ):
+                or sheet._comment_count > 0):
                 archive.writestr(PACKAGE_WORKSHEETS +
                         '/_rels/sheet%d.xml.rels' % (i + 1),
                         write_worksheet_rels(sheet, drawing_id, comments_id))
