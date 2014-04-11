@@ -37,6 +37,7 @@ from openpyxl.compat import xrange
 from openpyxl.exceptions import WorkbookAlreadySaved
 from openpyxl.styles.fonts import Font
 from openpyxl.styles import Style
+from openpyxl.comments.comments import Comment
 
 
 def _get_test_filename():
@@ -163,13 +164,36 @@ def test_dump_with_font():
 
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
-    ws.append([('hello', Style(font=Font(name='Courrier', size=36))), 3.14, None])
+    user_style = Style(font=Font(name='Courrier', size=36))
+    complex_cell = {'value': 'hello',
+                    'style': user_style}
+    ws.append([complex_cell, 3.14, None])
     wb.save(test_filename)
-    os.remove(test_filename)
+
+    wb2 = load_workbook(test_filename)
+    ws2 = wb2[ws.title]
+    assert ws2['A1'].style == user_style
+
+
+def test_dump_with_comment():
+    test_filename = _get_test_filename()
+
+    wb = Workbook(optimized_write=True)
+    ws = wb.create_sheet()
+    user_comment = Comment(text='hello world',
+                           author='me')
+    complex_cell = {'value': 'hello',
+                    'comment': user_comment}
+    ws.append([complex_cell, 3.14, None])
+    wb.save(test_filename)
+
+    wb2 = load_workbook(test_filename)
+    ws2 = wb2[ws.title]
+    assert ws2['A1'].comment.text == 'hello world'
 
 
 def test_dump_bad_style():
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
     with pytest.raises(TypeError):
-        ws.append([('hello', 'world'), 3.14, None])
+        ws.append([{'value': 'hello', 'style': 'world'}, 3.14, None])

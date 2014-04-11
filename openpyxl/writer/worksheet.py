@@ -411,16 +411,16 @@ def write_worksheet_rels(worksheet, drawing_id, comments_id):
             attrs['TargetMode'] = rel.target_mode
         SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
     if worksheet._charts or worksheet._images:
-        attrs = {'Id' : 'rId1',
-                 'Type' : '%s/drawing' % REL_NS,
-                 'Target' : '../drawings/drawing%s.xml' % drawing_id }
+        attrs = {'Id': 'rId1',
+                 'Type': '%s/drawing' % REL_NS,
+                 'Target': '../drawings/drawing%s.xml' % drawing_id}
         SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
     if worksheet._comment_count > 0:
         # there's only one comments sheet per worksheet,
         # so there's no reason to call the Id rIdx
         attrs = {'Id': 'comments',
                  'Type': COMMENTS_NS,
-                 'Target' : '../comments%s.xml' % comments_id}
+                 'Target': '../comments%s.xml' % comments_id}
         SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
         attrs = {'Id': 'commentsvml',
                  'Type': VML_NS,

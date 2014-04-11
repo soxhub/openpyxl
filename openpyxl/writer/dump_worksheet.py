@@ -1,4 +1,7 @@
 from __future__ import absolute_import
+from openpyxl.comments.comments import Comment
+from openpyxl.writer.comments import CommentWriter
+from openpyxl.writer.worksheet import write_worksheet_rels
 # Copyright (c) 2010-2014 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,7 +45,7 @@ from openpyxl.date_time import (
     timedelta_to_days,
     time_to_days
 )
-from openpyxl.xml.constants import MAX_COLUMN, MAX_ROW
+from openpyxl.xml.constants import MAX_COLUMN, MAX_ROW, PACKAGE_XL
 from openpyxl.units import NUMERIC_TYPES
 from openpyxl.exceptions import WorkbookAlreadySaved
 from openpyxl.writer.excel import ExcelWriter
@@ -72,6 +75,15 @@ DESCRIPTORS_CACHE_SIZE = 50
 BOUNDING_BOX_PLACEHOLDER = 'A1:%s%d' % (get_column_letter(MAX_COLUMN), MAX_ROW)
 
 
+class CommentParentCell(object):
+    __slots__ = ('coordinate', 'row', 'column')
+
+    def __init__(self, coordinate, row, column):
+        self.coordinate = coordinate
+        self.row = row
+        self.column = column
+
+
 def create_temporary_file(suffix=''):
     fobj = NamedTemporaryFile(mode='w+', suffix=suffix,
                               prefix='openpyxl.', delete=False)
@@ -99,6 +111,7 @@ class DumpWorksheet(Worksheet):
 
         self._strings = self._parent.shared_strings
         self._styles = self.parent.shared_styles
+        self._comments = []
 
     def get_temporary_file(self, filename):
         if filename in self._descriptors_cache:
@@ -191,6 +204,8 @@ class DumpWorksheet(Worksheet):
     def _close_content(self):
         doc = self._get_content_generator()
         end_tag(doc, 'sheetData')
+        if self._comments:
+            tag(doc, 'legacyDrawing', {'r:id': 'commentsvml'})
         end_tag(doc, 'worksheet')
 
     def get_dimensions(self):
@@ -226,19 +241,34 @@ class DumpWorksheet(Worksheet):
         start_tag(doc, 'row', attrs)
 
         for col_idx, cell in enumerate(row):
+            style = None
+            comment = None
             if cell is None:
                 continue
-            style = None
-            if isinstance(cell, ITERABLES) and len(cell) == 2:
-                cell, style = cell
+            elif isinstance(cell, dict):
+                dct = cell
+                cell = dct.get('value')
                 if cell is None:
                     continue
-                if not isinstance(style, Style):
-                    raise TypeError('style component should be a Style object '
-                                    'not %s' % (style.__class__.__name__))
+                style = dct.get('style')
+                comment = dct.get('comment')
+                for ob, attr, cls in ((style, 'style', Style),
+                                      (comment, 'comment', Comment)):
+                    if ob is not None and not isinstance(ob, cls):
+                        raise TypeError('%s should be a %s not a %s' %
+                                        (attr,
+                                         cls.__class__.__name__,
+                                         ob.__class__.__name__))
 
-            coordinate = '%s%d' % (get_column_letter(col_idx + 1), row_idx)
+            column = get_column_letter(col_idx + 1)
+            coordinate = '%s%d' % (column, row_idx)
             attributes = {'r': coordinate}
+            if comment is not None:
+                comment._parent = CommentParentCell(coordinate,
+                                                    row_idx,
+                                                    column)
+                self._comments.append(comment)
+                self._comment_count += 1
 
             if isinstance(cell, bool):
                 dtype = 'boolean'
@@ -285,6 +315,11 @@ def save_dump(workbook, filename):
     return True
 
 
+class DumpCommentWriter(CommentWriter):
+    def sheet_comments(self, sheet):
+        return sheet._comments
+
+
 class ExcelDumpWriter(ExcelWriter):
     def __init__(self, workbook):
         self.workbook = workbook
@@ -296,6 +331,9 @@ class ExcelDumpWriter(ExcelWriter):
                 write_string_table(shared_strings))
 
     def _write_worksheets(self, archive, style_writer):
+        drawing_id = 1
+        comments_id = 1
+
         for i, sheet in enumerate(self.workbook.worksheets):
             sheet.write_header()
             sheet.close()
@@ -304,3 +342,16 @@ class ExcelDumpWriter(ExcelWriter):
                 del sheet._descriptors_cache[filename]
                 os.remove(filename)
             sheet._unset_temp_files()
+
+            # write comments
+            if sheet._comments:
+                archive.writestr(PACKAGE_WORKSHEETS +
+                        '/_rels/sheet%d.xml.rels' % (i + 1),
+                        write_worksheet_rels(sheet, drawing_id, comments_id))
+
+                cw = DumpCommentWriter(sheet)
+                archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
+                    cw.write_comments())
+                archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
+                    cw.write_comments_vml())
+                comments_id += 1
