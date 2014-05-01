@@ -97,9 +97,10 @@ class StyleWriter(object):
 
         # others
         table = {}
-        for idx, st in enumerate(self.styles, 1):
+        index = 1
+        for st in self.styles:
             if st.font != DEFAULTS.font and st.font not in table:
-                table[st.font] = idx
+                table[st.font] = index
                 font_node = SubElement(fonts, 'font')
                 SubElement(font_node, 'sz', {'val':str(st.font.size)})
                 self._unpack_color(font_node, st.font.color.index)
@@ -112,8 +113,9 @@ class StyleWriter(object):
                 ConditionalElement(font_node, "i", st.font.italic)
                 ConditionalElement(font_node, "u",  st.font.underline == 'single')
 
+                index += 1
 
-        fonts.attrib["count"] = str(idx)
+        fonts.attrib["count"] = str(index)
         return table
 
     def _write_fills(self):
@@ -124,16 +126,19 @@ class StyleWriter(object):
         SubElement(fill, 'patternFill', {'patternType':'gray125'})
 
         table = {}
-        for idx, st in enumerate(self.styles, 2):
+        index = 2
+        for st in self.styles:
             if st.fill != DEFAULTS.fill and st.fill not in table:
-                table[st.fill] = idx
+
+                table[st.fill] = index
                 node = SubElement(fills, 'fill')
                 if isinstance(st.fill, PatternFill):
                     self._write_pattern_fill(node, st.fill)
                 elif isinstance(st.fill, GradientFill):
                     self._write_gradient_fill(node, st.fill)
+                index += 1
 
-        fills.attrib["count"] = str(idx)
+        fills.attrib["count"] = str(index)
         return table
 
     def _write_pattern_fill(self, node, fill):
@@ -163,9 +168,10 @@ class StyleWriter(object):
 
         # others
         table = {}
-        for idx, st in enumerate(self.styles, 1):
+        index = 1
+        for st in self.styles:
             if st.borders != DEFAULTS.borders and st.borders not in table:
-                table[st.borders] = idx
+                table[st.borders] = index
                 border = SubElement(borders, 'border')
                 # caution: respect this order
                 for side in ('left', 'right', 'top', 'bottom', 'diagonal'):
@@ -176,7 +182,9 @@ class StyleWriter(object):
                         node = SubElement(border, side, {'style':obj.border_style})
                         self._unpack_color(node, obj.color.index)
 
-        borders.attrib["count"] = str(idx)
+                index += 1
+
+        borders.attrib["count"] = str(index)
         return table
 
     def _write_cell_style_xfs(self):
