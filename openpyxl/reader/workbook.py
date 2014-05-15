@@ -147,10 +147,6 @@ def read_named_ranges(xml_source, workbook):
     sheetnames = set(sheet.title for sheet in workbook.worksheets)
     root = fromstring(xml_source)
     for name_node in safe_iterator(root, '{%s}definedName' %SHEET_MAIN_NS):
-        named_range = None
-
-        if bool(name_node.get("hidden", False)):
-            continue
 
         range_name = name_node.get('name')
         if DISCARDED_RANGES.search(range_name) or BUGGY_NAMED_RANGES.search(range_name):
