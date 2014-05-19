@@ -80,8 +80,8 @@ class StyleWriter(object):
                 ConditionalElement(font_node, "b", st.font.bold)
                 ConditionalElement(font_node, "i", st.font.italic)
                 ConditionalElement(font_node, "u",  st.font.underline=='single')
-                ConditionalElement(font_node, "vertAlign", st.font.vertAlign)
-                ConditionalElement(font_node, "charset", st.font.charset)
+                ConditionalElement(font_node, "vertAlign", st.font.vertAlign, {'val':st.font.vertAlign})
+                ConditionalElement(font_node, "charset", st.font.charset, {'val':str(st.font.charset)})
 
                 index += 1
 
