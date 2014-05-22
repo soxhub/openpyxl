@@ -1,6 +1,7 @@
 2.1.0 (unreleased)
 ==================
 
+
 Major changes
 -------------
 "read_only" and "write_only" new flags for workbooks
@@ -9,7 +10,16 @@ Major changes
 Minor changes
 -------------
 Create all style tags in a single pass
-Preserve column widths
+
+
+2.0.3 (unreleased)
+==================
+
+
+Bug fixes
+---------
+#319 Cannot load Workbooks with vertAlign styling for fonts
+
 
 
 2.0.2 (2013-05-13)
