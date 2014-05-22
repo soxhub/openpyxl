@@ -54,17 +54,26 @@ class RowDimension(Dimension):
 
     def __init__(self,
                  index=0,
-                 height=None,
+                 ht=None,
+                 s=None,
                  hidden=False,
-                 outline_level=0,
+                 outlineLevel=0,
+                 outline_level=None,
                  collapsed=False,
                  style=None,
-                 visible=None):
-        self.height = height
-        self.style = style
+                 visible=None,
+                 height=None):
+        if height is not None:
+            ht = height
+        self.ht = ht
+        if style is not None:
+            s = style
+        self.s = s
         if visible is not None:
             hidden = not visible
-        super(RowDimension, self).__init__(index, hidden, outline_level,
+        if outline_level is not None:
+            outlineLevel = outlineLevel
+        super(RowDimension, self).__init__(index, hidden, outlineLevel,
                                            collapsed)
 
 
@@ -81,14 +90,15 @@ class ColumnDimension(Dimension):
     max = Integer()
     customWidth = Bool()
 
-    __fields__ = Dimension.__fields__ + ('width', 'bestFit')
+    __fields__ = Dimension.__fields__ + ('width', 'bestFit', 'customWidth')
 
     def __init__(self,
                  index='A',
                  width=None,
                  bestFit=False,
                  hidden=False,
-                 outline_level=0,
+                 outlineLevel=0,
+                 outline_level=None,
                  collapsed=False,
                  style=None,
                  min=1,
@@ -97,6 +107,9 @@ class ColumnDimension(Dimension):
                  visible=None,
                  auto_size=None):
         self.width = width
+        if width is not None:
+            customWidth = True
+        self.customWidth = customWidth
         self.style = style
         self.min = min
         self.max = max
@@ -104,8 +117,10 @@ class ColumnDimension(Dimension):
             hidden = not visible
         if auto_size is not None:
             bestFit = auto_size
-        self.bestFit = auto_size
-        super(ColumnDimension, self).__init__(index, hidden, outline_level,
+        self.bestFit = bestFit
+        if outline_level is not None:
+            outlineLevel = outline_level
+        super(ColumnDimension, self).__init__(index, hidden, outlineLevel,
                                               collapsed)
 
     def __iter__(self):

@@ -29,6 +29,9 @@ class DummyWB:
         if key == self.ws.title:
             return self.ws
 
+    def get_sheet_names(self):
+        return [self.ws.title]
+
 
 def test_split():
     assert [('My Sheet', '$D$8'), ] == split_named_range("'My Sheet'!$D$8")
@@ -65,6 +68,15 @@ def test_read_named_ranges(datadir):
         content = src.read()
         named_ranges = read_named_ranges(content, DummyWB(ws))
         assert ["My Sheeet!$D$8"] == [str(range) for range in named_ranges]
+
+def test_read_named_ranges_missing_sheet(datadir):
+    ws = DummyWS('NOT My Sheeet')
+    datadir.join("reader").chdir()
+
+    with open("workbook.xml") as src:
+        content = src.read()
+        named_ranges = read_named_ranges(content, DummyWB(ws))
+        assert list(named_ranges) == []
 
 
 ranges_counts = (

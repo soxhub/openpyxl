@@ -136,8 +136,8 @@ def detect_worksheets(archive):
     valid_sheets = dict((path, ct) for path, ct in content_types if ct == VALID_WORKSHEET)
     rels = dict(read_rels(archive))
     for rId, title in read_sheets(archive):
-        rels[rId]['title'] = title
-    for rel in rels.values():
+        rel = rels[rId]
+        rel['title'] = title
         if "/" + rel['path'] in valid_sheets:
             yield rel
 
@@ -146,6 +146,7 @@ def read_named_ranges(xml_source, workbook):
     """Read named ranges, excluding poorly defined ranges."""
     root = fromstring(xml_source)
     names_root = root.find('{%s}definedNames' %SHEET_MAIN_NS)
+    existing_sheets = workbook.get_sheet_names()
     if names_root is not None:
         for name_node in names_root:
             range_name = name_node.get('name')
@@ -160,16 +161,17 @@ def read_named_ranges(xml_source, workbook):
                 destinations = split_named_range(node_text)
 
                 new_destinations = []
-                for worksheet, cells_range in destinations:
+                for worksheet_name, cells_range in destinations:
                     # it can happen that a valid named range references
                     # a missing worksheet, when Excel didn't properly maintain
                     # the named range list
                     #
                     # we just ignore them here
-                    worksheet = workbook[worksheet]
-                    if worksheet:
+                    if worksheet_name in existing_sheets:
+                        worksheet = workbook[worksheet_name]
                         new_destinations.append((worksheet, cells_range))
-
+                if not new_destinations:
+                    continue
                 named_range = NamedRange(range_name, new_destinations)
             else:
                 named_range = NamedRangeContainingValue(range_name, node_text)
