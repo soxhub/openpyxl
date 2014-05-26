@@ -34,6 +34,12 @@ def write_cols():
 
 
 @pytest.fixture
+def write_sheet_format():
+    from .. worksheet import write_worksheet_format
+    return write_worksheet_format
+
+
+@pytest.fixture
 def ColumnDimension():
     from openpyxl.worksheet.dimensions import ColumnDimension
     return ColumnDimension

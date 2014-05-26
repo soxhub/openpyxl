@@ -99,7 +99,7 @@ def write_worksheet(worksheet, shared_strings, style_table):
     end_tag(doc, 'sheetPr')
     tag(doc, 'dimension', {'ref': '%s' % worksheet.calculate_dimension()})
     write_worksheet_sheetviews(doc, worksheet)
-    tag(doc, 'sheetFormatPr', {'defaultRowHeight': '15', 'baseColWidth':'10'})
+    write_worksheet_format(doc, worksheet)
     write_worksheet_cols(doc, worksheet, style_table)
     write_worksheet_data(doc, worksheet, shared_strings, style_table)
     if worksheet.protection.enabled:
@@ -190,6 +190,18 @@ def write_worksheet_sheetviews(doc, worksheet):
     tag(doc, 'selection', selectionAttrs)
     end_tag(doc, 'sheetView')
     end_tag(doc, 'sheetViews')
+
+
+def write_worksheet_format(doc, worksheet):
+    attrs = {'defaultRowHeight': '15',
+             'baseColWidth': '10'}
+    dimensions_outline = [dim.outline_level
+                          for _, dim in iteritems(worksheet.column_dimensions)]
+    if dimensions_outline:
+        outline_level = max(dimensions_outline)
+        if outline_level:
+            attrs['outlineLevelCol'] = outline_level
+    tag(doc, 'sheetFormatPr', attrs)
 
 
 def write_worksheet_cols(doc, worksheet, style_table=None):
