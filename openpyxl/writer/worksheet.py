@@ -100,7 +100,7 @@ def write_worksheet(worksheet, shared_strings, style_table):
     end_tag(doc, 'sheetPr')
     tag(doc, 'dimension', {'ref': '%s' % worksheet.calculate_dimension()})
     write_worksheet_sheetviews(doc, worksheet)
-    tag(doc, 'sheetFormatPr', {'defaultRowHeight': '15', 'baseColWidth':'10'})
+    write_worksheet_format(doc, worksheet)
     write_worksheet_cols(doc, worksheet, style_table)
     write_worksheet_data(doc, worksheet, shared_strings, style_table)
     if worksheet.protection.enabled:
@@ -193,6 +193,18 @@ def write_worksheet_sheetviews(doc, worksheet):
     end_tag(doc, 'sheetViews')
 
 
+def write_worksheet_format(doc, worksheet):
+    attrs = {'defaultRowHeight': '15',
+             'baseColWidth': '10'}
+    dimensions_outline = [dim.outline_level
+                          for _, dim in iteritems(worksheet.column_dimensions)]
+    if dimensions_outline:
+        outline_level = max(dimensions_outline)
+        if outline_level:
+            attrs['outlineLevelCol'] = str(outline_level)
+    tag(doc, 'sheetFormatPr', attrs)
+
+
 def write_worksheet_cols(doc, worksheet, style_table=None):
     """Write worksheet columns to xml.
 
@@ -213,7 +225,9 @@ def write_worksheet_cols(doc, worksheet, style_table=None):
     start_tag(doc, 'cols')
     for idx, col_def in sorted(cols):
         v = "%d" % idx
-        col_def.update({'min':v, 'max':v})
+        cmin = col_def.get('min') or v
+        cmax = col_def.get('max') or v
+        col_def.update({'min': cmin, 'max': cmax})
         tag(doc, 'col', col_def)
     end_tag(doc, 'cols')
 

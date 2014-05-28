@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 from openpyxl.comments.comments import Comment
 from openpyxl.writer.comments import CommentWriter
-from openpyxl.writer.worksheet import write_worksheet_rels
+from openpyxl.writer.worksheet import write_worksheet_rels, write_worksheet_cols, \
+    write_worksheet_format
 # Copyright (c) 2010-2014 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -183,7 +184,8 @@ class DumpWorksheet(Worksheet):
                 'sqref': 'A1'})
         end_tag(doc, 'sheetView')
         end_tag(doc, 'sheetViews')
-        tag(doc, 'sheetFormatPr', {'defaultRowHeight': '15'})
+        write_worksheet_format(doc, self)
+        write_worksheet_cols(doc, self)
         start_tag(doc, 'sheetData')
 
     def close(self):
