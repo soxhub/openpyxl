@@ -9,6 +9,15 @@ def test_invalid_dimension_ctor():
     with pytest.raises(TypeError):
         d = Dimension()
 
+class DummyWorkbook:
+    def get_sheet_names(self):
+        return []
+
+def test_dimension():
+    from .. dimensions import Dimension
+    with pytest.raises(TypeError):
+        d = Dimension()
+
 
 def test_dimension_interface():
     from .. dimensions import Dimension
@@ -40,3 +49,25 @@ def test_col_dimensions(key, value, expected):
     cd = ColumnDimension()
     setattr(cd, key, value)
     assert dict(cd) == expected
+
+def test_group_columns_simple():
+    from ..worksheet import Worksheet
+    from ..dimensions import ColumnDimension
+    ws = Worksheet(parent_workbook=DummyWorkbook())
+    dims = ws.column_dimensions
+    dims.group('A', 'C', 1)
+    assert len(dims) == 1
+    group = dims.values()[0]
+    assert group.outline_level == 1
+    assert group.min == 1
+    assert group.max == 3
+
+
+def test_group_columns_collapse():
+    from ..worksheet import Worksheet
+    from ..dimensions import ColumnDimension
+    ws = Worksheet(parent_workbook=DummyWorkbook())
+    dims = ws.column_dimensions
+    dims.group('A', 'C', 1, hidden=True)
+    group = dims.values()[0]
+    assert group.hidden

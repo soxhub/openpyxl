@@ -19,8 +19,9 @@ from openpyxl.tests.helper import compare_xml
 
 class DummyWorksheet:
 
-    _styles = {}
-    column_dimensions = {}
+    def __init__(self):
+        self._styles = {}
+        self.column_dimensions = {}
 
 
 @pytest.fixture
@@ -38,6 +39,12 @@ def doc(out):
 def write_cols():
     from .. worksheet import write_worksheet_cols
     return write_worksheet_cols
+
+
+@pytest.fixture
+def write_sheet_format():
+    from .. worksheet import write_worksheet_format
+    return write_worksheet_format
 
 
 @pytest.fixture
@@ -394,4 +401,36 @@ def test_write_sheetdata(out, doc):
     xml = out.getvalue()
     expected = """<sheetData><row r="1" spans="1:1"><c t="n" r="A1"><v>10</v></c></row></sheetData>"""
     diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_write_sheet_format(out, doc, write_sheet_format, ColumnDimension):
+    worksheet = DummyWorksheet()
+    write_sheet_format(doc, worksheet)
+    doc.endDocument()
+    xml = out.getvalue()
+    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10"/>"""
+    diff = compare_xml(expected, xml)
+    assert diff is None, diff
+
+
+def test_outline_format(out, doc, write_sheet_format, ColumnDimension):
+    worksheet = DummyWorksheet()
+    worksheet.column_dimensions['A'] = ColumnDimension(outline_level=1)
+    write_sheet_format(doc, worksheet)
+    doc.endDocument()
+    xml = out.getvalue()
+    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10" outlineLevelCol="1" />"""
+    diff = compare_xml(expected, xml)
+    assert diff is None, diff
+
+
+def test_outline_cols(out, doc, write_cols, ColumnDimension):
+    worksheet = DummyWorksheet()
+    worksheet.column_dimensions['A'] = ColumnDimension(outline_level=1)
+    write_cols(doc, worksheet)
+    doc.endDocument()
+    xml = out.getvalue()
+    expected = """<cols><col max="1" min="1" outlineLevel="1"/></cols>"""
+    diff = compare_xml(expected, xml)
     assert diff is None, diff
