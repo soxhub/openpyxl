@@ -1,7 +1,6 @@
 2.1.0 (unreleased)
 ==================
 
-
 Major changes
 -------------
 "read_only" and "write_only" new flags for workbooks
@@ -16,21 +15,44 @@ Performance improvement when appending rows
 Cleaner conversion of Python to Excel values
 
 
-2.0.3 (unreleased)
-==================
-
-
 Bug fixes
 ---------
 #153 Cannot read visibility of sheets and rows
 #181 No content type for worksheets
+
+
+2.0.4 (unreleased)
+==================
+
+Minor changes
+-------------
+Add a sample file illustrating colours
+
+
+Bug fixes
+---------
+
+#331 DARKYELLOW was incorrect
+Correctly handle extend attribute for fonts
+
+
+2.0.3 (2014-05-22)
+==================
+
+Minor changes
+-------------
+
+Updated docs
+
+
+Bug fixes
+---------
 #319 Cannot load Workbooks with vertAlign styling for fonts
 
 
-
-2.0.2 (2013-05-13)
-2.0.1 (2013-05-13) # brown bag
-2.0.0 (2013-05-13) # brown bag
+2.0.2 (2014-05-13)
+2.0.1 (2014-05-13) # brown bag
+2.0.0 (2014-05-13) # brown bag
 ==================
 
 
