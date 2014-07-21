@@ -159,6 +159,10 @@ def write_rows(xf, worksheet, string_table, style_table=None):
     for cell in itervalues(worksheet._cells):
         cells_by_row.setdefault(cell.row, []).append(cell)
 
+    for row_idx in worksheet.row_dimensions:
+        if row_idx not in cells_by_row:
+            cells_by_row[row_idx] = []
+
     with xf.element("sheetData"):
         for row_idx in sorted(cells_by_row):
             # row meta data

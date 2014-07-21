@@ -182,17 +182,20 @@ def test_write_height(out, doc, worksheet):
     ws = worksheet
     ws.cell('F1').value = 10
     ws.row_dimensions[ws.cell('F1').row].height = 30
+    ws.row_dimensions[ws.cell('F2').row].height = 30
+    ws._garbage_collect()
 
     write_worksheet_data(doc, ws, {})
     xml = out.getvalue()
     expected = """
      <sheetData>
-     <row customHeight="1" ht="30" r="1" spans="1:6">
-     <c r="F1" t="n">
-       <v>10</v>
-     </c>
-   </row>
-   </sheetData>
+       <row customHeight="1" ht="30" r="1" spans="1:6">
+         <c r="F1" t="n">
+           <v>10</v>
+         </c>
+       </row>
+       <row customHeight="1" ht="30" r="2" spans="1:6"></row>
+     </sheetData>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
