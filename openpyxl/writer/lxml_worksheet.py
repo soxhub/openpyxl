@@ -25,7 +25,7 @@ from openpyxl.xml.constants import (
 
 from openpyxl.formatting import ConditionalFormatting
 
-from .worksheet import row_sort
+from .worksheet import row_sort, get_rows_to_write
 
 
 def write_worksheet(worksheet, shared_strings):
@@ -149,15 +149,7 @@ def write_cols(xf, worksheet, style_table=None):
 def write_rows(xf, worksheet, string_table, style_table=None):
     """Write worksheet data to xml."""
 
-    # Ensure a blank cell exists if it has a style
-    for styleCoord in iterkeys(worksheet._styles):
-        if isinstance(styleCoord, str) and COORD_RE.search(styleCoord):
-            worksheet.cell(styleCoord)
-
-    # create rows of cells
-    cells_by_row = {}
-    for cell in itervalues(worksheet._cells):
-        cells_by_row.setdefault(cell.row, []).append(cell)
+    cells_by_row = get_rows_to_write(worksheet)
 
     with xf.element("sheetData"):
         for row_idx in sorted(cells_by_row):
