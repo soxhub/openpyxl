@@ -1,26 +1,5 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
 
 """Read an xlsx file into Python"""
 
@@ -49,17 +28,21 @@ from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_STYLE,
     ARC_THEME,
-    PACKAGE_XL,
+    SHARED_STRINGS,
+    EXTERNAL_LINK,
 )
 
 from openpyxl.workbook import Workbook, DocumentProperties
+from openpyxl.workbook.names.external import detect_external_links
 from openpyxl.reader.strings import read_string_table
 from openpyxl.reader.style import read_style_table
 from openpyxl.reader.workbook import (
+    read_content_types,
     read_named_ranges,
     read_properties_core,
     read_excel_base_date,
-    detect_worksheets
+    detect_worksheets,
+    read_rels,
 )
 from openpyxl.reader.worksheet import read_worksheet
 from openpyxl.reader.comments import read_comments, get_comments_file
@@ -89,11 +72,14 @@ def repair_central_directory(zipFile, is_file_instance):
     return f
 
 
-def load_workbook(filename, use_iterators=False, keep_vba=KEEP_VBA, guess_types=False, data_only=False):
+def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_VBA, guess_types=False, data_only=False):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
     :type filename: string or a file-like object open in binary mode c.f., :class:`zipfile.ZipFile`
+
+    :param read_only: optimised for reading, content cannot be edited
+    :type read_only: bool
 
     :param use_iterators: use lazy load for cells
     :type use_iterators: bool
@@ -117,6 +103,8 @@ def load_workbook(filename, use_iterators=False, keep_vba=KEEP_VBA, guess_types=
     """
 
     is_file_instance = isinstance(filename, file)
+
+    read_only = read_only or use_iterators
 
     if is_file_instance:
         # fileobject must have been opened with 'rb' flag
@@ -154,15 +142,13 @@ def load_workbook(filename, use_iterators=False, keep_vba=KEEP_VBA, guess_types=
     except (BadZipfile, RuntimeError, IOError, ValueError):
         e = exc_info()[1]
         raise InvalidFileException(unicode(e))
-    wb = Workbook(guess_types=guess_types, data_only=data_only)
+    wb = Workbook(guess_types=guess_types, data_only=data_only, read_only=read_only)
 
-    if use_iterators:
-        wb._set_optimized_read()
-        if guess_types:
-            warnings.warn('Data types are not guessed when using iterator reader')
+    if read_only and guess_types:
+        warnings.warn('Data types are not guessed when using iterator reader')
 
     try:
-        _load_workbook(wb, archive, filename, use_iterators, keep_vba)
+        _load_workbook(wb, archive, filename, read_only, keep_vba)
     except KeyError:
         e = exc_info()[1]
         raise InvalidFileException(unicode(e))
@@ -171,7 +157,7 @@ def load_workbook(filename, use_iterators=False, keep_vba=KEEP_VBA, guess_types=
     return wb
 
 
-def _load_workbook(wb, archive, filename, use_iterators, keep_vba):
+def _load_workbook(wb, archive, filename, read_only, keep_vba):
 
     valid_files = archive.namelist()
 
@@ -189,19 +175,26 @@ def _load_workbook(wb, archive, filename, use_iterators, keep_vba):
             filename.seek(pos)
         wb.vba_archive = ZipFile(BytesIO(s), 'r')
 
-    if use_iterators:
+    if read_only:
         wb._archive = ZipFile(filename)
 
     # get workbook-level information
     try:
         wb.properties = read_properties_core(archive.read(ARC_CORE))
-        wb.read_workbook_settings(archive.read(ARC_WORKBOOK))
     except KeyError:
         wb.properties = DocumentProperties()
+    wb._read_workbook_settings(archive.read(ARC_WORKBOOK))
 
-    try:
-        shared_strings = read_string_table(archive.read(ARC_SHARED_STRINGS))
-    except KeyError:
+    # what content types do we have?
+    cts = dict(read_content_types(archive))
+    rels = dict
+
+    strings_path = cts.get(SHARED_STRINGS)
+    if strings_path is not None:
+        if strings_path.startswith("/"):
+            strings_path = strings_path[1:]
+        shared_strings = read_string_table(archive.read(strings_path))
+    else:
         shared_strings = []
 
     try:
@@ -209,10 +202,10 @@ def _load_workbook(wb, archive, filename, use_iterators, keep_vba):
     except KeyError:
         assert wb.loaded_theme == None, "even though the theme information is missing there is a theme object ?"
 
-    style_properties = read_style_table(archive.read(ARC_STYLE))
-    style_table = style_properties.pop('table')
-    wb.shared_styles = style_properties.pop('list')
-    wb.style_properties = style_properties
+    style_table, color_index, cond_styles = read_style_table(archive.read(ARC_STYLE))
+    wb.shared_styles = style_table
+    wb.style_properties = {'dxf_list':cond_styles}
+    wb.cond_styles = cond_styles
 
     wb.properties.excel_base_date = read_excel_base_date(xml_source=archive.read(ARC_WORKBOOK))
 
@@ -224,22 +217,28 @@ def _load_workbook(wb, archive, filename, use_iterators, keep_vba):
         if not worksheet_path in valid_files:
             continue
 
-        if not use_iterators:
+        if not read_only:
             new_ws = read_worksheet(archive.read(worksheet_path), wb,
                                     sheet_name, shared_strings, style_table,
-                                    color_index=style_properties['color_index'],
+                                    color_index=color_index,
                                     keep_vba=keep_vba)
         else:
             new_ws = read_worksheet(None, wb, sheet_name, shared_strings,
                                     style_table,
-                                    color_index=style_properties['color_index'],
+                                    color_index=color_index,
                                     worksheet_path=worksheet_path)
-        wb.add_sheet(new_ws)
 
-        if not use_iterators:
+        new_ws.sheet_state = sheet.get('state') or 'visible'
+        wb._add_sheet(new_ws)
+
+        if not read_only:
         # load comments into the worksheet cells
             comments_file = get_comments_file(worksheet_path, archive, valid_files)
             if comments_file is not None:
                 read_comments(new_ws, archive.read(comments_file))
 
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
+
+    if EXTERNAL_LINK in cts:
+        rels = read_rels(archive)
+        wb._external_links = list(detect_external_links(rels, archive))

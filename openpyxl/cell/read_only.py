@@ -3,9 +3,10 @@ from __future__ import absolute_import
 
 
 from openpyxl.compat import unicode
+
+from openpyxl.cell import Cell
 from openpyxl.date_time import from_excel
-from openpyxl.styles import is_date_format
-from .cell import Cell, get_column_letter
+from openpyxl.styles import is_date_format, Style
 
 
 class ReadOnlyCell(object):
@@ -34,10 +35,6 @@ class ReadOnlyCell(object):
         return self.sheet.shared_strings
 
     @property
-    def style_table(self):
-        return self.sheet.style_table
-
-    @property
     def base_date(self):
         return self.sheet.base_date
 
@@ -55,8 +52,7 @@ class ReadOnlyCell(object):
     def number_format(self):
         if self.style_id is None:
             return
-        style = self.sheet.parent.shared_styles[self.style_table[self._style_id]]
-        return style.number_format.format_code
+        return self.style.number_format
 
     @property
     def style_id(self):
@@ -91,5 +87,12 @@ class ReadOnlyCell(object):
         elif self.data_type == Cell.TYPE_NUMERIC:
             value = float(value)
         self._value = value
+
+    @property
+    def style(self):
+        if self.style_id is None:
+            return Style()
+        return self.sheet.parent.shared_styles[self.style_id]
+
 
 EMPTY_CELL = ReadOnlyCell(None, None, None, None)

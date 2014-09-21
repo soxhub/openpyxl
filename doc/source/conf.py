@@ -12,7 +12,6 @@
 # serve to show the default.
 
 import sys, os
-import os.path
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -23,6 +22,15 @@ up = os.path.dirname
 sys.path.insert(0, os.path.abspath(os.path.join(up(up(os.getcwd())), '.')))
 
 import openpyxl
+
+
+from openpyxl.descriptors import Alias
+
+def AliasProxyGet(self, instance, cls):
+    return getattr(cls, self.alias)
+
+if os.environ.get("APIDOC") == "True":
+    Alias.__get__ = AliasProxyGet
 
 # -- General configuration -----------------------------------------------------
 
@@ -99,7 +107,12 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'nature'
+import os
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    html_theme = 'default'
+else:
+    html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -226,3 +239,17 @@ man_pages = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
+
+doctest_global_setup = """
+import os, shutil
+if not os.path.exists("tmp"):
+    os.mkdir("tmp")
+shutil.copy("logo.png", "tmp")
+os.chdir("tmp")
+"""
+doctest_global_cleanup = """
+import shutil
+import os
+os.chdir("..")
+shutil.rmtree("tmp")
+"""

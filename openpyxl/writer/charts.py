@@ -26,7 +26,7 @@ from __future__ import absolute_import
 from openpyxl.xml.functions import (
     Element,
     SubElement,
-    get_document_content
+    tostring,
     )
 from openpyxl.xml.constants import (
     CHART_NS,
@@ -63,7 +63,7 @@ class BaseChartWriter(object):
         self._write_print_settings()
         self._write_shapes()
 
-        return get_document_content(self.root)
+        return tostring(self.root)
 
     def _write_chart(self):
         ch = SubElement(self.root, '{%s}chart' % CHART_NS)
@@ -226,7 +226,10 @@ class BaseChartWriter(object):
         SubElement(data, '{%s}ptCount' % CHART_NS, {'val':str(len(values))})
         for j, val in enumerate(values):
             point = SubElement(data, '{%s}pt' % CHART_NS, {'idx':str(j)})
-            val = safe_string(val)
+            if val is not None:
+                val = safe_string(val)
+            else:
+                val = ''
             SubElement(point, '{%s}v' % CHART_NS).text = val
 
     def _write_error_bar(self, node, serie):
@@ -276,7 +279,7 @@ class BaseChartWriter(object):
             'Type' : '%s/chartUserShapes' % REL_NS,
             'Target' : '../drawings/drawing%s.xml' % drawing_id }
         SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
-        return get_document_content(root)
+        return tostring(root)
 
 
 class PieChartWriter(BaseChartWriter):

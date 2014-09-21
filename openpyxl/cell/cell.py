@@ -1,26 +1,5 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
 
 """Manage individual cells in a spreadsheet.
 
@@ -33,11 +12,10 @@ cells using Excel's 'A1' column/row nomenclature are also provided.
 __docformat__ = "restructuredtext en"
 
 # Python stdlib imports
-from numbers import Number
 import datetime
 import re
-import warnings
 
+from openpyxl.compat import NUMERIC_TYPES
 from openpyxl.compat import lru_cache, range
 from openpyxl.units import (
     DEFAULT_ROW_HEIGHT,
@@ -55,18 +33,38 @@ from openpyxl.exceptions import (
     IllegalCharacterError
 )
 from openpyxl.units import points_to_pixels
-from openpyxl.styles import NumberFormat, is_date_format
+from openpyxl.styles import is_date_format
+from openpyxl.styles import numbers
+#from openpyxl.styles import NumberFormat
 
 
 # package imports
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
-ABSOLUTE_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)(:[$]?([A-Z]+)[$]?(\d+))?$')
+ABSOLUTE_RE = re.compile(
+'''^[$]?
+(?P<min_col>[A-Z]+)
+[$]?
+(?P<min_row>\d+)
+(:[$]?
+(?P<max_col>[A-Z]+)
+[$]?
+(?P<max_row>\d+))?$''',
+re.VERBOSE)
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 
 TIME_TYPES = (datetime.datetime, datetime.date, datetime.time, datetime.timedelta)
-KNOWN_TYPES = TIME_TYPES + (Number, basestring, unicode, bytes, bool, type(None))
+STRING_TYPES = (basestring, unicode, bytes)
+KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
+
+
+def get_column_interval(start, end):
+    if isinstance(start, basestring):
+        start = column_index_from_string(start)
+    if isinstance(end, basestring):
+        end = column_index_from_string(end)
+    return [get_column_letter(x) for x in range(start, end + 1)]
 
 def coordinate_from_string(coord_string):
     """Convert a coordinate string like 'B12' to a tuple ('B', 12)"""
@@ -84,7 +82,7 @@ def coordinate_from_string(coord_string):
 
 def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
-    m = ABSOLUTE_RE.match(coord_string)
+    m = ABSOLUTE_RE.match(coord_string.upper())
     if m:
         parts = m.groups()
         if all(parts[-2:]):
@@ -151,13 +149,14 @@ class Cell(object):
     """
     __slots__ = ('column',
                  'row',
+                 'coordinate',
                  '_value',
                  'data_type',
                  'parent',
                  'xf_index',
                  '_hyperlink_rel',
-                 'merged',
-                 '_comment')
+                 '_comment',
+                 '_style',)
 
     ERROR_CODES = ('#NULL!',
                    '#DIV/0!',
@@ -180,21 +179,19 @@ class Cell(object):
                    TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
     def __init__(self, worksheet, column, row, value=None):
+        self._style = 0
         self.column = column.upper()
         self.row = row
+        self.coordinate = '%s%d' % (self.column, self.row)
         # _value is the stored value, while value is the displayed value
         self._value = None
         self._hyperlink_rel = None
         self.data_type = self.TYPE_NULL
         self.parent = worksheet
-        if value:
+        if value is not None:
             self.value = value
         self.xf_index = 0
-        self.merged = False
         self._comment = None
-
-    def bool(self, value):
-        return bool(value)
 
     @property
     def encoding(self):
@@ -237,73 +234,74 @@ class Cell(object):
         """Coerce values according to their explicit type"""
         if data_type not in self.VALID_TYPES:
             raise ValueError('Invalid data type: %s' % data_type)
-        if isinstance(value, (str, unicode, bytes)):
+        if isinstance(value, STRING_TYPES):
             value = self.check_string(value)
         self._value = value
         self.data_type = data_type
 
-    def data_type_for_value(self, value):
+    def bind_value(self, value):
         """Given a value, infer the correct data type"""
         if not isinstance(value, KNOWN_TYPES):
             raise ValueError("Cannot convert {0} to Excel".format(value))
-        data_type = self.TYPE_STRING
+
+        self.data_type = self.TYPE_STRING
         if value is None:
-            data_type = self.TYPE_NULL
+            value = ''
         elif isinstance(value, bool):
-            data_type = self.TYPE_BOOL
-        elif isinstance(value, Number):
-            data_type = self.TYPE_NUMERIC
+            self.data_type = self.TYPE_BOOL
+        elif isinstance(value, NUMERIC_TYPES):
+            self.data_type = self.TYPE_NUMERIC
+
         elif isinstance(value, TIME_TYPES):
-            data_type = self.TYPE_NUMERIC
+            self.data_type = self.TYPE_NUMERIC
+            value = self._cast_datetime(value)
+
         elif isinstance(value, basestring):
             if value.startswith("="):
-                data_type = self.TYPE_FORMULA
+                self.data_type = self.TYPE_FORMULA
             elif value in self.ERROR_CODES:
-                data_type = self.TYPE_ERROR
-        return data_type
-
-    def bind_value(self, value):
-        """Given a value, infer type and display options."""
-        self.data_type = self.data_type_for_value(value)
-        if value is None:
-            self.set_explicit_value('', self.TYPE_NULL)
-            return
-        elif self.guess_types and self.data_type == self.TYPE_STRING:
-            if not isinstance(value, unicode):
-                value = str(value)
-            # number detection
-            if self._cast_numeric(value):
-                return
-            # percentage detection
-            if self._cast_percentage(value):
-                return
-            # time detection
-            if self._cast_time(value):
-                return
-        if self.data_type == self.TYPE_NUMERIC:
-            if self._cast_datetime(value):
-                return
+                self.data_type = self.TYPE_ERROR
+            elif self.guess_types:
+                value = self.infer_value(value)
         self.set_explicit_value(value, self.data_type)
+
+
+    def infer_value(self, value):
+        """Given a string, infer type and formatting options."""
+        if not isinstance(value, unicode):
+            value = str(value)
+
+        # number detection
+        v = self._cast_numeric(value)
+        if v is None:
+            # percentage detection
+            v = self._cast_percentage(value)
+        if v is None:
+            # time detection
+            v = self._cast_time(value)
+        if v is not None:
+            self.data_type = self.TYPE_NUMERIC
+            return v
+
+        return value
+
 
     def _cast_numeric(self, value):
         """Explicity convert a string to a numeric value"""
         if NUMBER_REGEX.match(value):
             try:
-                value = int(value)
+                return int(value)
             except ValueError:
-                value = float(value)
-            self.set_explicit_value(value, self.TYPE_NUMERIC)
-            return True
+                return float(value)
 
     def _cast_percentage(self, value):
         """Explicitly convert a string to numeric value and format as a
         percentage"""
         match = PERCENT_REGEX.match(value)
         if match:
-            value = float(match.group('number')) / 100
-            self.set_explicit_value(value, self.TYPE_NUMERIC)
-            self.number_format = NumberFormat.FORMAT_PERCENTAGE
-            return True
+            self.number_format = numbers.FORMAT_PERCENTAGE
+            return float(match.group('number')) / 100
+
 
     def _cast_time(self, value):
         """Explicitly convert a string to a number and format as datetime or
@@ -313,31 +311,30 @@ class Cell(object):
             if match.group("microsecond") is not None:
                 value = value[:12]
                 pattern = "%M:%S.%f"
-                fmt = NumberFormat.FORMAT_DATE_TIME5
+                fmt = numbers.FORMAT_DATE_TIME5
             elif match.group('second') is None:
-                fmt = NumberFormat.FORMAT_DATE_TIME3
+                fmt = numbers.FORMAT_DATE_TIME3
                 pattern = "%H:%M"
             else:
                 pattern = "%H:%M:%S"
-                fmt = NumberFormat.FORMAT_DATE_TIME6
+                fmt = numbers.FORMAT_DATE_TIME6
             value = datetime.datetime.strptime(value, pattern)
-            value = time_to_days(value)
-            self.set_explicit_value(value, self.TYPE_NUMERIC)
             self.number_format = fmt
-            return True
+            return time_to_days(value)
+
 
     def _cast_datetime(self, value):
+        """Convert Python datetime to Excel and set formatting"""
         if isinstance(value, datetime.date):
             value = to_excel(value, self.base_date)
-            self.number_format = NumberFormat.FORMAT_DATE_YYYYMMDD2
+            self.number_format = numbers.FORMAT_DATE_YYYYMMDD2
         elif isinstance(value, datetime.time):
             value = time_to_days(value)
-            self.number_format = NumberFormat.FORMAT_DATE_TIME6
+            self.number_format = numbers.FORMAT_DATE_TIME6
         elif isinstance(value, datetime.timedelta):
             value = timedelta_to_days(value)
-            self.number_format = NumberFormat.FORMAT_DATE_TIMEDELTA
-        self.set_explicit_value(value, self.TYPE_NUMERIC)
-        return True
+            self.number_format = numbers.FORMAT_DATE_TIMEDELTA
+        return value
 
     @property
     def value(self):
@@ -372,7 +369,7 @@ class Cell(object):
         but you can modify it afterwards by setting the `value`
         property, and the hyperlink will remain.\n\n' ':rtype: string"""
         if self._hyperlink_rel is None:
-            self._hyperlink_rel = self.parent.create_relationship("hyperlink")
+            self._hyperlink_rel = self.parent._create_relationship("hyperlink")
         self._hyperlink_rel.target = val
         self._hyperlink_rel.target_mode = "External"
         if self._value is None:
@@ -386,18 +383,12 @@ class Cell(object):
 
     @property
     def number_format(self):
-        style = self.parent.get_style(self.coordinate)
-        return style.number_format.format_code
+        return self.style.number_format
 
     @number_format.setter
     def number_format(self, format_code):
         """Set a new formatting code for numeric values"""
-        self.style = self.style.copy(number_format=NumberFormat(format_code=format_code))
-
-    def _set_number_format(self, format_code):
-        """Set a new formatting code for numeric values"""
-        warnings.warn("cell._set_number_format(value) is deprecated use cell.number_format = value instead")
-        self.number_format = format_code
+        self.style = self.style.copy(number_format=format_code)
 
     def is_date(self):
         """Whether the value is formatted as a date
@@ -411,33 +402,32 @@ class Cell(object):
     @property
     def has_style(self):
         """Check if the parent worksheet has a style for this cell"""
-        return self.coordinate in self.parent._styles
+        return self._style != 0
 
     @property
     def style(self):
         """Returns the :class:`openpyxl.style.Style` object for this cell"""
-        return self.parent.get_style(self.coordinate)
+        return self.parent.parent.shared_styles[self._style]
 
     @style.setter
     def style(self, new_style):
-        return self.parent.set_style(self.coordinate, new_style)
-
-    def get_coordinate(self):
-        warnings.warn("cell.get_coordinate() is deprecated use cell.coordinate instead")
-        return self.coordinate
+        self._style = self.parent.parent.shared_styles.add(new_style)
 
     @property
-    def coordinate(self):
-        """Return the coordinate string for this cell (e.g. 'B12')
-
-        :rtype: string
-        """
-        return '{1}{0}'.format(self.row, self.column)
+    def font(self):
+        return self.style.font
 
     @property
-    def address(self):
-        warnings.warn("cell.address is deprecated, use cell.coordinate instead")
-        return self.coordinate
+    def fill(self):
+        return self.style.fill
+
+    @property
+    def border(self):
+        return self.style.border
+
+    @property
+    def alignment(self):
+        return self.style.alignment
 
     def offset(self, row=0, column=0):
         """Returns a cell location relative to this cell.
@@ -470,7 +460,7 @@ class Cell(object):
         for col_idx in range(left_columns):
             letter = get_column_letter(col_idx + 1)
             if letter in column_dimensions:
-                cdw = column_dimensions.get(letter).width
+                cdw = column_dimensions.get(letter).width or default_width
                 if cdw > 0:
                     left_anchor += points_to_pixels(cdw)
                     continue
@@ -482,7 +472,7 @@ class Cell(object):
         default_height = points_to_pixels(DEFAULT_ROW_HEIGHT)
         for row_idx in range(1, top_rows + 1):
             if row_idx in row_dimensions:
-                rdh = row_dimensions[row_idx].height
+                rdh = row_dimensions[row_idx].height or default_height
                 if rdh > 0:
                     top_anchor += points_to_pixels(rdh)
                     continue
@@ -500,7 +490,9 @@ class Cell(object):
 
     @comment.setter
     def comment(self, value):
-        if value is not None and value._parent is not None and value is not self.comment:
+        if (value is not None
+            and value._parent is not None
+            and value is not self.comment):
             raise AttributeError(
                 "Comment already assigned to %s in worksheet %s. Cannot assign a comment to more than one cell" %
                 (value._parent.coordinate, value._parent.parent.title)

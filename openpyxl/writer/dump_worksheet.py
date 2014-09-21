@@ -1,75 +1,37 @@
 from __future__ import absolute_import
-from openpyxl.comments.comments import Comment
-from openpyxl.writer.comments import CommentWriter
-from openpyxl.writer.worksheet import write_worksheet_rels
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
+
 
 """Write worksheets to xml representations in an optimized way"""
 
-import datetime
+from fileinput import FileInput
+from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
 
-from openpyxl.compat import OrderedDict, unicode
-
-from openpyxl.cell import  get_column_letter, Cell, TIME_TYPES
+from openpyxl.compat import OrderedDict
+from openpyxl.cell import get_column_letter, Cell
 from openpyxl.worksheet import Worksheet
+
 from openpyxl.xml.functions import (
     XMLGenerator,
     start_tag,
-    end_tag, tag
-)
-from openpyxl.date_time import (
-    to_excel,
-    timedelta_to_days,
-    time_to_days
+    end_tag,
+    tag,
+    tostring
 )
 from openpyxl.xml.constants import MAX_COLUMN, MAX_ROW, PACKAGE_XL
-from openpyxl.units import NUMERIC_TYPES
 from openpyxl.exceptions import WorkbookAlreadySaved
 from openpyxl.writer.excel import ExcelWriter
-from openpyxl.writer.strings import write_string_table
-from openpyxl.writer.styles import StyleWriter
-from openpyxl.styles import Style, NumberFormat, DEFAULTS
+from openpyxl.writer.comments import CommentWriter
+from .relations import write_rels
+from .worksheet import (
+    write_cell,
+    write_cols,
+    write_format
+)
+from openpyxl.xml.constants import PACKAGE_WORKSHEETS
 
-from openpyxl.xml.constants import (ARC_SHARED_STRINGS, PACKAGE_WORKSHEETS)
-
-ITERABLES = (list, tuple)
-
-
-DATETIME_STYLE = Style(number_format=NumberFormat(format_code=NumberFormat.FORMAT_DATE_YYYYMMDD2))
-STYLES = {'datetime': {'type': Cell.TYPE_NUMERIC,
-                       'style': DATETIME_STYLE},
-          'string': {'type': Cell.TYPE_STRING,
-                     'style': DEFAULTS},
-          'numeric': {'type': Cell.TYPE_NUMERIC,
-                      'style': DEFAULTS},
-          'formula': {'type': Cell.TYPE_FORMULA,
-                      'style': DEFAULTS},
-          'boolean': {'type': Cell.TYPE_BOOL,
-                    'style': DEFAULTS},
-        }
 
 DESCRIPTORS_CACHE_SIZE = 50
 BOUNDING_BOX_PLACEHOLDER = 'A1:%s%d' % (get_column_letter(MAX_COLUMN), MAX_ROW)
@@ -78,10 +40,10 @@ BOUNDING_BOX_PLACEHOLDER = 'A1:%s%d' % (get_column_letter(MAX_COLUMN), MAX_ROW)
 class CommentParentCell(object):
     __slots__ = ('coordinate', 'row', 'column')
 
-    def __init__(self, coordinate, row, column):
-        self.coordinate = coordinate
-        self.row = row
-        self.column = column
+    def __init__(self, cell):
+        self.coordinate = cell.coordinate
+        self.row = cell.row
+        self.column = cell.column
 
 
 def create_temporary_file(suffix=''):
@@ -89,6 +51,10 @@ def create_temporary_file(suffix=''):
                               prefix='openpyxl.', delete=False)
     filename = fobj.name
     return filename
+
+
+def WriteOnlyCell(ws=None, value=None):
+    return Cell(worksheet=ws, column='A', row=1, value=value)
 
 
 class DumpWorksheet(Worksheet):
@@ -101,6 +67,8 @@ class DumpWorksheet(Worksheet):
     def __init__(self, parent_workbook, title):
         Worksheet.__init__(self, parent_workbook, title)
 
+        self.__saved = False
+
         self._max_col = 0
         self._max_row = 0
         self._parent = parent_workbook
@@ -109,29 +77,26 @@ class DumpWorksheet(Worksheet):
         self._fileobj_content_name = create_temporary_file(suffix='.content')
         self._fileobj_name = create_temporary_file()
 
-        self._strings = self._parent.shared_strings
-        self._styles = self.parent.shared_styles
         self._comments = []
 
     def get_temporary_file(self, filename):
+        if self.__saved:
+            raise WorkbookAlreadySaved('this workbook has already been saved '
+                    'and cannot be modified or saved anymore.')
+
         if filename in self._descriptors_cache:
             fobj = self._descriptors_cache[filename]
             # re-insert the value so it does not get evicted
             # from cache soon
             del self._descriptors_cache[filename]
             self._descriptors_cache[filename] = fobj
-            return fobj
         else:
-            if filename is None:
-                raise WorkbookAlreadySaved('this workbook has already been saved '
-                        'and cannot be modified or saved anymore.')
-
-            fobj = open(filename, 'r+')
+            fobj = open(filename, 'rb+')
             self._descriptors_cache[filename] = fobj
             if len(self._descriptors_cache) > DESCRIPTORS_CACHE_SIZE:
                 filename, fileobj = self._descriptors_cache.popitem(last=False)
                 fileobj.close()
-            return fobj
+        return fobj
 
     @property
     def _descriptors_cache(self):
@@ -145,16 +110,17 @@ class DumpWorksheet(Worksheet):
     def filename(self):
         return self._fileobj_name
 
-    @property
-    def _temp_files(self):
-        return (self._fileobj_content_name,
-                self._fileobj_header_name,
-                self._fileobj_name)
-
-    def _unset_temp_files(self):
-        self._fileobj_header_name = None
-        self._fileobj_content_name = None
-        self._fileobj_name = None
+    def _cleanup(self):
+        """
+        Mark sheet as having been saved so no further changes are possible.
+        Remove file handlers from cache
+        """
+        for attr in ('_fileobj_content_name', '_fileobj_header_name', '_fileobj_name'):
+            obj = getattr(self, attr)
+            del self._descriptors_cache[obj]
+            os.remove(obj)
+            setattr(self, attr, None)
+        self.__saved = True
 
     def write_header(self):
 
@@ -177,29 +143,23 @@ class DumpWorksheet(Worksheet):
                 'sqref': 'A1'})
         end_tag(doc, 'sheetView')
         end_tag(doc, 'sheetViews')
-        tag(doc, 'sheetFormatPr', {'defaultRowHeight': '15'})
-        start_tag(doc, 'sheetData')
+        fmt = write_format(self)
+        fobj.write(tostring(fmt))
+        cols = write_cols(self)
+        if cols is not None:
+            fobj.write(tostring(cols))
+
+        return doc
 
     def close(self):
         self._close_content()
-        self._fileobj = self.get_temporary_file(filename=self._fileobj_name)
-        self._write_fileobj(self._fileobj_header_name)
-        self._write_fileobj(self._fileobj_content_name)
-        self._fileobj.close()
-
-    def _write_fileobj(self, fobj_name):
-        fobj = self.get_temporary_file(filename=fobj_name)
-        fobj.flush()
-        fobj.seek(0)
-
-        while True:
-            chunk = fobj.read(4096)
-            if not chunk:
-                break
-            self._fileobj.write(chunk)
-
-        fobj.close()
-        self._fileobj.flush()
+        files = [self._fileobj_header_name, self._fileobj_content_name]
+        for f in files:
+            self.get_temporary_file(f).close()
+        output = self.get_temporary_file(self.filename)
+        for line in FileInput(files, mode="rb"):
+            output.write(line)
+        output.close()
 
     def _close_content(self):
         doc = self._get_content_generator()
@@ -218,9 +178,7 @@ class DumpWorksheet(Worksheet):
         """ XXX: this is ugly, but it allows to resume writing the file
         even after the handle is closed"""
 
-        # when I'll recreate the XMLGenerator, it will start writing at the
-        # begining of the file, erasing previously entered rows, so we have
-        # to move to the end of the file before adding new tags
+        # restart XMLGenerator at the end of the file to prevent it being overwritten
         handle = self.get_temporary_file(filename=self._fileobj_content_name)
         handle.seek(0, 2)
 
@@ -231,7 +189,13 @@ class DumpWorksheet(Worksheet):
         :param row: iterable containing values to append
         :type row: iterable
         """
+        if (not isinstance(row, (list, tuple, range))
+            and not isgenerator(row)):
+            self._invalid_row(row)
+
         doc = self._get_content_generator()
+        cell = WriteOnlyCell(self) # singleton
+
         self._max_row += 1
         span = len(row)
         self._max_col = max(self._max_col, span)
@@ -240,114 +204,81 @@ class DumpWorksheet(Worksheet):
                  'spans': '1:%d' % span}
         start_tag(doc, 'row', attrs)
 
-        for col_idx, cell in enumerate(row):
-            style = None
-            comment = None
-            if cell is None:
+        for col_idx, value in enumerate(row, 1):
+            if value is None:
                 continue
-            elif isinstance(cell, dict):
-                dct = cell
-                cell = dct.get('value')
-                if cell is None:
-                    continue
-                style = dct.get('style')
-                comment = dct.get('comment')
-                for ob, attr, cls in ((style, 'style', Style),
-                                      (comment, 'comment', Comment)):
-                    if ob is not None and not isinstance(ob, cls):
-                        raise TypeError('%s should be a %s not a %s' %
-                                        (attr,
-                                         cls.__class__.__name__,
-                                         ob.__class__.__name__))
+            dirty_cell = False
+            column = get_column_letter(col_idx)
 
-            column = get_column_letter(col_idx + 1)
-            coordinate = '%s%d' % (column, row_idx)
-            attributes = {'r': coordinate}
-            if comment is not None:
-                comment._parent = CommentParentCell(coordinate,
-                                                    row_idx,
-                                                    column)
+            if isinstance(value, Cell):
+                cell = value
+                dirty_cell = True # cell may have other properties than a value
+            else:
+                cell.value = value
+
+            cell.coordinate = '%s%d' % (column, row_idx)
+            if cell.comment is not None:
+                comment = cell.comment
+                comment._parent = CommentParentCell(cell)
                 self._comments.append(comment)
-                self._comment_count += 1
 
-            if isinstance(cell, bool):
-                dtype = 'boolean'
-            elif isinstance(cell, NUMERIC_TYPES):
-                dtype = 'numeric'
-            elif isinstance(cell, TIME_TYPES):
-                dtype = 'datetime'
-                if isinstance(cell, datetime.date):
-                    cell = to_excel(cell)
-                elif isinstance(cell, datetime.time):
-                    cell = time_to_days(cell)
-                elif isinstance(cell, datetime.timedelta):
-                    cell = timedelta_to_days(cell)
-                if style is None:
-                    # allow user-defined style if needed
-                    style = STYLES[dtype]['style']
-            elif cell and cell[0] == '=':
-                dtype = 'formula'
-            else:
-                dtype = 'string'
-                cell = self._strings.add(unicode(cell))
-
-            if style is not None:
-                attributes['s'] = '%d' % self._styles.add(style)
-
-            if dtype != 'formula':
-                attributes['t'] = STYLES[dtype]['type']
-            start_tag(doc, 'c', attributes)
-
-            if dtype == 'formula':
-                tag(doc, 'f', body='%s' % cell[1:])
-                tag(doc, 'v')
-            elif dtype == 'boolean':
-                tag(doc, 'v', body='%d' % cell)
-            else:
-                tag(doc, 'v', body='%s' % cell)
-            end_tag(doc, 'c')
+            write_cell(doc, self, cell)
+            if dirty_cell:
+                cell = WriteOnlyCell(self)
         end_tag(doc, 'row')
 
 
+    def _invalid_row(self, iterable):
+        raise TypeError('Value must be a list, tuple, range or a generator Supplied value is {0}'.format(
+            type(iterable))
+                        )
+
+def removed_method(*args, **kw):
+    raise NotImplementedError
+
+setattr(DumpWorksheet, '__getitem__', removed_method)
+setattr(DumpWorksheet, '__setitem__', removed_method)
+setattr(DumpWorksheet, 'cell', removed_method)
+setattr(DumpWorksheet, 'range', removed_method)
+setattr(DumpWorksheet, 'merge_cells', removed_method)
+
+
 def save_dump(workbook, filename):
+    if workbook.worksheets == []:
+        workbook.create_sheet()
     writer = ExcelDumpWriter(workbook)
     writer.save(filename)
     return True
 
 
 class DumpCommentWriter(CommentWriter):
-    def sheet_comments(self, sheet):
-        return sheet._comments
+    def extract_comments(self):
+        for comment in self.sheet._comments:
+            if comment is not None:
+                self.authors.add(comment.author)
+                self.comments.append(comment)
 
 
 class ExcelDumpWriter(ExcelWriter):
-    def __init__(self, workbook):
-        self.workbook = workbook
-        self.style_writer = StyleWriter(workbook)
 
-    def _write_string_table(self, archive):
-        shared_strings = self.workbook.shared_strings
-        archive.writestr(ARC_SHARED_STRINGS,
-                write_string_table(shared_strings))
-
-    def _write_worksheets(self, archive, style_writer):
+    def _write_worksheets(self, archive):
         drawing_id = 1
         comments_id = 1
 
-        for i, sheet in enumerate(self.workbook.worksheets):
-            sheet.write_header()
+        for i, sheet in enumerate(self.workbook.worksheets, 1):
+            header_doc = sheet.write_header() # written after worksheet body to include dimensions
+
+            start_tag(header_doc, 'sheetData')
+
             sheet.close()
-            archive.write(sheet.filename, PACKAGE_WORKSHEETS + '/sheet%d.xml' % (i + 1))
-            for filename in sheet._temp_files:
-                del sheet._descriptors_cache[filename]
-                os.remove(filename)
-            sheet._unset_temp_files()
+            archive.write(sheet.filename, PACKAGE_WORKSHEETS + '/sheet%d.xml' % i)
+            sheet._cleanup()
 
             # write comments
             if sheet._comments:
-                archive.writestr(PACKAGE_WORKSHEETS +
-                        '/_rels/sheet%d.xml.rels' % (i + 1),
-                        write_worksheet_rels(sheet, drawing_id, comments_id))
+                rels = write_rels(sheet, drawing_id, comments_id)
+                archive.writestr( PACKAGE_WORKSHEETS +
+                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels) )
 
                 cw = DumpCommentWriter(sheet)
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,

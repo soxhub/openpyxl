@@ -25,22 +25,19 @@
 
 # Python stdlib imports
 from datetime import datetime
-from io import BytesIO, StringIO
-import os.path
-from operator import itemgetter
+from io import BytesIO
 from tempfile import NamedTemporaryFile
-import zipfile
 
 import pytest
 
 # compatibility imports
-from openpyxl.compat import unicode, tempfile
+from openpyxl.compat import unicode
 
 # package imports
 from openpyxl.collections import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.workbook import Workbook
-from openpyxl.styles import NumberFormat, Style
+from openpyxl.styles import numbers, Style
 from openpyxl.reader.worksheet import read_worksheet
 from openpyxl.reader.excel import load_workbook
 from openpyxl.exceptions import InvalidFileException
@@ -116,17 +113,26 @@ def test_read_empty_file(datadir):
         load_workbook('null_file.xlsx')
 
 
-def test_read_empty_archive(datadir):
-    datadir.join("reader").chdir()
-    with pytest.raises(InvalidFileException):
-        load_workbook('null_archive.xlsx')
-
-
-@pytest.mark.xfail
-def test_read_workbook_with_no_properties():
-    genuine_wb = os.path.join(DATADIR, 'genuine', \
-                'empty_with_no_properties.xlsx')
-    load_workbook(filename=genuine_wb)
+def test_read_workbook_with_no_core_properties(datadir):
+    from openpyxl.workbook import DocumentProperties
+    from openpyxl.reader.excel import _load_workbook
+    from zipfile import ZipFile
+    datadir.join('genuine').chdir()
+    archive = ZipFile('empty_with_no_properties.xlsx')
+    wb = Workbook()
+    default_props = DocumentProperties()
+    _load_workbook(wb, archive, None, False, False)
+    prop = wb.properties
+    assert prop.creator == default_props.creator
+    assert prop.last_modified_by == default_props.last_modified_by
+    assert prop.title == default_props.title
+    assert prop.subject == default_props.subject
+    assert prop.description == default_props.description
+    assert prop.category == default_props.category
+    assert prop.keywords == default_props.keywords
+    assert prop.company == default_props.company
+    assert prop.created.timetuple()[:9] == default_props.created.timetuple()[:9] # might break if tests run on the stoke of midnight
+    assert prop.modified == prop.created
 
 
 @pytest.fixture
@@ -139,23 +145,23 @@ class TestReadWorkbookWithStyles(object):
 
     def test_read_general_style(self, workbook_with_styles):
         ws = workbook_with_styles
-        assert ws.cell('A1').style.number_format.format_code == NumberFormat.FORMAT_GENERAL
+        assert ws.cell('A1').style.number_format == numbers.FORMAT_GENERAL
 
     def test_read_date_style(self, workbook_with_styles):
         ws = workbook_with_styles
-        assert ws.cell('A2').style.number_format.format_code == NumberFormat.FORMAT_DATE_XLSX14
+        assert ws.cell('A2').style.number_format == numbers.FORMAT_DATE_XLSX14
 
     def test_read_number_style(self, workbook_with_styles):
         ws = workbook_with_styles
-        assert ws.cell('A3').style.number_format.format_code == NumberFormat.FORMAT_NUMBER_00
+        assert ws.cell('A3').style.number_format == numbers.FORMAT_NUMBER_00
 
     def test_read_time_style(self, workbook_with_styles):
         ws = workbook_with_styles
-        assert ws.cell('A4').style.number_format.format_code == NumberFormat.FORMAT_DATE_TIME3
+        assert ws.cell('A4').style.number_format == numbers.FORMAT_DATE_TIME3
 
     def test_read_percentage_style(self, workbook_with_styles):
         ws = workbook_with_styles
-        assert ws.cell('A5').style.number_format.format_code == NumberFormat.FORMAT_PERCENTAGE_00
+        assert ws.cell('A5').style.number_format == numbers.FORMAT_PERCENTAGE_00
 
 
 @pytest.fixture
@@ -183,11 +189,11 @@ class TestReadBaseDateFormat(object):
 
     def test_read_date_style_mac(self, date_mac_1904):
         ws = date_mac_1904["Sheet1"]
-        assert ws.cell('A1').style.number_format.format_code == NumberFormat.FORMAT_DATE_XLSX14
+        assert ws.cell('A1').style.number_format == numbers.FORMAT_DATE_XLSX14
 
     def test_read_date_style_win(self, date_std_1900):
         ws = date_std_1900["Sheet1"]
-        assert ws.cell('A1').style.number_format.format_code == NumberFormat.FORMAT_DATE_XLSX14
+        assert ws.cell('A1').style.number_format == numbers.FORMAT_DATE_XLSX14
 
     def test_read_date_value(sel, date_std_1900, date_mac_1904):
         win = date_std_1900["Sheet1"]
@@ -306,93 +312,6 @@ def test_data_only(datadir):
     assert ws['A5'].data_type == 'n' and ws.cell('A5').value == 49380
 
 
-@pytest.mark.parametrize("excel_file, expected", [
-    ("bug137.xlsx", [
-        {'path': 'xl/worksheets/sheet1.xml', 'title': 'Sheet1'}
-        ]
-     ),
-    ("contains_chartsheets.xlsx", [
-        {'path': 'xl/worksheets/sheet1.xml', 'title': 'data'},
-        {'path': 'xl/worksheets/sheet2.xml', 'title': 'moredata'},
-        ]),
-    ("bug304.xlsx", [
-    {'path': 'xl/worksheets/sheet3.xml', 'title': 'Sheet1'},
-    {'path': 'xl/worksheets/sheet2.xml', 'title': 'Sheet2'},
-    {'path': 'xl/worksheets/sheet.xml', 'title': 'Sheet3'},
-    ])
-]
-                         )
-def test_detect_worksheets(datadir, excel_file, expected):
-    from openpyxl.reader.excel import detect_worksheets
-    datadir.join("reader").chdir()
-    archive = zipfile.ZipFile(excel_file)
-    assert list(detect_worksheets(archive)) == expected
-
-
-@pytest.mark.parametrize("excel_file, expected", [
-    ("bug137.xlsx", {
-        "rId1": {'path': 'xl/chartsheets/sheet1.xml'},
-        "rId2": {'path': 'xl/worksheets/sheet1.xml'},
-        "rId3": {'path': 'xl/theme/theme1.xml'},
-        "rId4": {'path': 'xl/styles.xml'},
-        "rId5": {'path': 'xl/sharedStrings.xml'}
-    }),
-    ("bug304.xlsx", {
-        'rId1': {'path': 'xl/worksheets/sheet3.xml'},
-        'rId2': {'path': 'xl/worksheets/sheet2.xml'},
-        'rId3': {'path': 'xl/worksheets/sheet.xml'},
-        'rId4': {'path': 'xl/theme/theme.xml'},
-        'rId5': {'path': 'xl/styles.xml'},
-        'rId6': {'path': '../customXml/item1.xml'},
-        'rId7': {'path': '../customXml/item2.xml'},
-        'rId8': {'path': '../customXml/item3.xml'}
-    }),
-]
-                         )
-def test_read_rels(datadir, excel_file, expected):
-    datadir.join("reader").chdir()
-    from openpyxl.reader.workbook import read_rels
-    archive = zipfile.ZipFile(excel_file)
-    assert dict(read_rels(archive)) == expected
-
-
-def test_read_content_types(datadir):
-    from openpyxl.reader.workbook import read_content_types
-    datadir.join("reader").chdir()
-    archive = zipfile.ZipFile("contains_chartsheets.xlsx")
-    assert list(read_content_types(archive)) == [
-    ('/xl/workbook.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml'),
-    ('/xl/worksheets/sheet1.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml'),
-    ('/xl/chartsheets/sheet1.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml'),
-    ('/xl/worksheets/sheet2.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml'),
-    ('/xl/theme/theme1.xml', 'application/vnd.openxmlformats-officedocument.theme+xml'),
-    ('/xl/styles.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml'),
-    ('/xl/sharedStrings.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml'),
-    ('/xl/drawings/drawing1.xml', 'application/vnd.openxmlformats-officedocument.drawing+xml'),
-    ('/xl/charts/chart1.xml', 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml'),
-    ('/xl/drawings/drawing2.xml', 'application/vnd.openxmlformats-officedocument.drawing+xml'),
-    ('/xl/charts/chart2.xml', 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml'),
-    ('/xl/calcChain.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml'),
-    ('/docProps/core.xml', 'application/vnd.openxmlformats-package.core-properties+xml'),
-    ('/docProps/app.xml', 'application/vnd.openxmlformats-officedocument.extended-properties+xml')
-    ]
-
-
-@pytest.mark.parametrize("excel_file, expected", [
-    ("bug137.xlsx",
-     {"rId1":"Chart1", "rId2":"Sheet1"}
-     ),
-    ("bug304.xlsx",
-     {'rId1': 'Sheet1', 'rId2': 'Sheet2', 'rId3': 'Sheet3'}
-     )
-])
-def test_read_sheets(datadir, excel_file, expected):
-    from openpyxl.reader.workbook import read_sheets
-    datadir.join("reader")
-    archive = zipfile.ZipFile(excel_file)
-    assert dict(read_sheets(archive)) == expected
-
-
 def test_guess_types(datadir):
     datadir.join("genuine").chdir()
     for guess, dtype in ((True, float), (False, unicode)):
@@ -419,7 +338,7 @@ def test_get_xml_iter():
 
     f = TemporaryFile(mode='rb+', prefix='openpyxl.', suffix='.unpack.temp')
     stream = FUT(f)
-    assert isinstance(stream, tempfile), type(stream)
+    assert stream == f
     f.close()
 
     from zipfile import ZipFile
@@ -428,7 +347,15 @@ def test_get_xml_iter():
     z.writestr("test", "whatever")
     stream = FUT(z.open("test"))
     assert hasattr(stream, "read")
-    z.close()
+    # z.close()
+    try:
+        z.close()
+    except IOError:
+        # you can't just close zipfiles in Windows
+        if z.fp is not None:
+            z.fp.close() # python 2.6
+        else:
+            z.close() # python 2.7
 
 
 def test_read_autofilter(datadir):

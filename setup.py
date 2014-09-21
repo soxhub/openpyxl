@@ -21,8 +21,11 @@ them here.
 
 import sys
 import os
+import warnings
 if sys.version_info < (2, 6):
     raise Exception("Python >= 2.6 is required.")
+elif sys.version_info[:2] == (3, 2):
+    warnings.warn("Python 3.2 is no longer officially supported")
 
 from setuptools import setup, Extension, find_packages
 import re
@@ -31,10 +34,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 try:
     with open(os.path.join(here, 'README.rst')) as f:
         README = f.read()
-    with open(os.path.join(here, 'CHANGES.rst')) as f:
-        CHANGES = f.read()
 except IOError:
-    README = CHANGES = ''
+    README = ''
 
 
 __author__ = 'See AUTHORS'
@@ -60,7 +61,7 @@ setup(name='openpyxl',
     # metadata
     version=get_version(),
     description="A Python library to read/write Excel 2007 xlsx/xlsm files",
-    long_description=README + '\n\n' + CHANGES,
+    long_description=README,
     author=__author__,
     author_email=__author_email__,
     url=__url__,
@@ -80,7 +81,6 @@ setup(name='openpyxl',
           'Programming Language :: Python',
           'Programming Language :: Python :: 2.6',
           'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.3',
           'Programming Language :: Python :: 3.4',
           ],

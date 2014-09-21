@@ -11,6 +11,7 @@ from openpyxl.collections import IndexedList
 def dummy_sheet():
     class DummyWorkbook(object):
         shared_styles = IndexedList()
+        shared_styles.add(None) # Workbooks always have a default style
 
     class DummySheet(object):
         base_date = 2415018.5
@@ -34,11 +35,6 @@ def test_empty_cell(dummy_sheet):
 def test_base_date(dummy_sheet):
     cell = ReadOnlyCell(dummy_sheet, None, None, 10, 'n')
     assert cell.base_date == 2415018.5
-
-
-def test_style_table(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, None, None, 10, 'n')
-    assert cell.style_table == {}
 
 
 def test_string_table(dummy_sheet):
@@ -83,10 +79,9 @@ def DummyCell(dummy_sheet):
         format_code = 'd-mmm-yy'
 
     class DummyStyle(object):
-        number_format = DummyNumberFormat()
+        number_format = 'd-mmm-yy'
 
-    idx = dummy_sheet.parent.shared_styles.add(DummyStyle())
-    dummy_sheet.style_table = {1: idx}
+    dummy_sheet.parent.shared_styles.add(DummyStyle())
     cell = ReadOnlyCell(dummy_sheet, None, None, "23596", 'n', '1')
     return cell
 

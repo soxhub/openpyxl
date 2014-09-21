@@ -7,7 +7,6 @@ http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
 """
 
 from openpyxl.compat import basestring, bytes
-from numbers import Number
 
 class Descriptor(object):
 
@@ -28,22 +27,26 @@ class Typed(Descriptor):
 
     def __set__(self, instance, value):
         if not isinstance(value, self.expected_type):
-            if not self.allow_none:
+            if (not self.allow_none
+                or (self.allow_none and value is not None)):
                 raise TypeError('expected ' + str(self.expected_type))
         super(Typed, self).__set__(instance, value)
+
+    def __repr__(self):
+        return "Value must be type '{0}'".format(self.expected_type.__name__)
 
 
 class Convertible(Typed):
     """Values must be convertible to a particular type"""
 
     def __set__(self, instance, value):
-        if (self.allow_none is True and value is not None
+        if ((self.allow_none and value is not None)
             or not self.allow_none):
             try:
                 value = self.expected_type(value)
             except:
                 raise TypeError('expected ' + str(self.expected_type))
-        super(Typed, self).__set__(instance, value)
+        super(Convertible, self).__set__(instance, value)
 
 
 class Max(Typed):
@@ -119,6 +122,12 @@ class Bool(Convertible):
 
     expected_type = bool
 
+    def __set__(self, instance, value):
+        if isinstance(value, str):
+            if value in ('false', 'f', '0'):
+                value = False
+        super(Bool, self).__set__(instance, value)
+
 
 class String(Typed):
 
@@ -142,10 +151,13 @@ class Sequence(Descriptor):
     """
 
     expected_type = type(None)
+    seq_types = (list, tuple)
 
     def __set__(self, instance, seq):
-        if not isinstance(seq, (list, tuple)):
+        if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
+        elif isinstance(seq, list):
+            seq = tuple(seq)
         for idx, value in enumerate(seq):
             if not isinstance(value, self.expected_type):
                 raise TypeError(

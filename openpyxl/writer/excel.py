@@ -45,7 +45,8 @@ from openpyxl.xml.constants import (
     PACKAGE_IMAGES,
     PACKAGE_XL
     )
-from openpyxl.writer.strings import create_string_table, write_string_table
+from openpyxl.xml.functions import tostring
+from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_content_types,
     write_root_rels,
@@ -58,7 +59,16 @@ from openpyxl.writer.theme import write_theme
 from openpyxl.writer.styles import StyleWriter
 from openpyxl.writer.drawings import DrawingWriter, ShapeWriter
 from openpyxl.writer.charts import ChartWriter
-from openpyxl.writer.worksheet import write_worksheet, write_worksheet_rels
+from .relations import write_rels
+from openpyxl.writer.worksheet import write_worksheet
+from openpyxl.workbook.names.external import (
+    write_external_link,
+    write_external_book_rel
+)
+
+from openpyxl import LXML
+if LXML is True:
+    from . lxml_worksheet import write_worksheet
 from openpyxl.writer.comments import CommentWriter
 
 
@@ -67,7 +77,7 @@ class ExcelWriter(object):
 
     def __init__(self, workbook):
         self.workbook = workbook
-        self.style_writer = StyleWriter(self.workbook)
+        self.style_writer = StyleWriter(workbook)
 
     def write_data(self, archive):
         """Write the various xml files into the zip archive."""
@@ -93,15 +103,13 @@ class ExcelWriter(object):
                         archive.writestr(name, vba_archive.read(name))
                         break
 
+        self._write_worksheets(archive)
         self._write_string_table(archive)
-        self._write_worksheets(archive, self.style_writer)
+        self._write_external_links(archive)
 
     def _write_string_table(self, archive):
-        for ws in self.workbook.worksheets:
-            ws.garbage_collect()
-        self.shared_strings = create_string_table(self.workbook)
         archive.writestr(ARC_SHARED_STRINGS,
-                write_string_table(self.shared_strings))
+                write_string_table(self.workbook.shared_strings))
 
     def _write_images(self, images, archive, image_id):
         for img in images:
@@ -111,7 +119,7 @@ class ExcelWriter(object):
             image_id += 1
         return image_id
 
-    def _write_worksheets(self, archive, style_writer):
+    def _write_worksheets(self, archive):
         drawing_id = 1
         chart_id = 1
         image_id = 1
@@ -120,14 +128,16 @@ class ExcelWriter(object):
 
         for i, sheet in enumerate(self.workbook.worksheets):
             archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % (i + 1),
-                             write_worksheet(sheet, self.shared_strings,
-                                             style_writer.styles))
+                             write_worksheet(sheet, self.workbook.shared_strings,
+                                             ))
             if (sheet._charts or sheet._images
                 or sheet.relationships
                 or sheet._comment_count > 0):
-                archive.writestr(PACKAGE_WORKSHEETS +
-                        '/_rels/sheet%d.xml.rels' % (i + 1),
-                        write_worksheet_rels(sheet, drawing_id, comments_id))
+                rels = write_rels(sheet, drawing_id, comments_id)
+                archive.writestr(
+                    PACKAGE_WORKSHEETS + '/_rels/sheet%d.xml.rels' % (i + 1),
+                    tostring(rels)
+                )
             if sheet._charts or sheet._images:
                 dw = DrawingWriter(sheet)
                 archive.writestr(PACKAGE_DRAWINGS + '/drawing%d.xml' % drawing_id,
@@ -161,6 +171,22 @@ class ExcelWriter(object):
                 archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
                     cw.write_comments_vml())
                 comments_id += 1
+
+    def _write_external_links(self, archive):
+        """Write links to external workbooks"""
+        wb = self.workbook
+        for idx, book in enumerate(wb._external_links, 1):
+            el = write_external_link(book.links)
+            rel = write_external_book_rel(book)
+            archive.writestr(
+                "{0}/externalLinks/externalLink{1}.xml".format(PACKAGE_XL, idx),
+                 tostring(el)
+            )
+            archive.writestr(
+                "{0}/externalLinks/_rels/externalLink{1}.xml.rels".format(PACKAGE_XL, idx),
+                tostring(rel)
+            )
+
 
     def save(self, filename):
         """Write data into the archive."""

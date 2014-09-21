@@ -1,6 +1,11 @@
 from openpyxl.styles.colors import Color
 import pytest
 
+@pytest.mark.parametrize("value", ['00FFFFFF', 'efefef'])
+def test_regex(value):
+    from ..colors import aRGB_REGEX
+    assert aRGB_REGEX.match(value) is not None
+
 
 class TestColor:
 
@@ -48,3 +53,15 @@ class TestColor:
         c = Color()
         with pytest.raises(TypeError):
             c.value = 4
+
+
+def test_color_descriptor():
+    from ..colors import ColorDescriptor
+
+    class DummyStyle(object):
+
+        value = ColorDescriptor('value')
+
+    style = DummyStyle()
+    style.value = "efefef"
+    assert dict(style.value) == {'rgb': '00efefef'}

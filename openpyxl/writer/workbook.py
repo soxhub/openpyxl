@@ -24,6 +24,8 @@ from __future__ import absolute_import
 
 """Write the workbook global settings to the archive."""
 
+from functools import partial
+
 # package imports
 
 from openpyxl import LXML
@@ -50,11 +52,13 @@ from openpyxl.xml.constants import (
     REL_NS,
     ARC_CUSTOM_UI,
     ARC_CONTENT_TYPES,
-    ARC_ROOT_RELS
+    ARC_ROOT_RELS,
+    EXTERNAL_LINK,
 )
-from openpyxl.xml.functions import get_document_content, fromstring
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.date_time import datetime_to_W3CDTF
-from openpyxl.namedrange import NamedRange, NamedRangeContainingValue
+from openpyxl.worksheet import Worksheet
+from openpyxl.workbook.names.named_range import NamedRange, NamedValue
 
 
 def write_properties_core(properties):
@@ -73,7 +77,7 @@ def write_properties_core(properties):
     SubElement(root, '{%s}subject' % DCORE_NS).text = properties.subject
     SubElement(root, '{%s}keywords' % COREPROPS_NS).text = properties.keywords
     SubElement(root, '{%s}category' % COREPROPS_NS).text = properties.category
-    return get_document_content(root)
+    return tostring(root)
 
 
 static_content_types_config = [
@@ -158,7 +162,13 @@ def write_content_types(workbook):
                  'ContentType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml'})
             comments_id += 1
 
-    return get_document_content(root)
+    for idx, _ in enumerate(workbook._external_links, 1):
+        el = Element('{%s}Override' % CONTYPES_NS,
+                     {'PartName':'/xl/externalLinks/externalLink{0}.xml'.format(idx),
+                      'ContentType': EXTERNAL_LINK})
+        root.append(el)
+
+    return tostring(root)
 
 
 def write_properties_app(workbook):
@@ -189,7 +199,7 @@ def write_properties_app(workbook):
             {'size': '%d' % worksheets_count, 'baseType': 'lpstr'})
     for ws in workbook.worksheets:
         SubElement(vector, '{%s}lpstr' % VTYPES_NS).text = '%s' % ws.title
-    return get_document_content(root)
+    return tostring(root)
 
 
 def write_root_rels(workbook):
@@ -214,7 +224,7 @@ def write_root_rels(workbook):
         if rId is not None:
             SubElement(root, relation_tag, {'Id': rId, 'Target': ARC_CUSTOM_UI,
                 'Type': '%s' % CUSTOMUI_NS})
-    return get_document_content(root)
+    return tostring(root)
 
 
 def write_workbook(workbook):
@@ -236,40 +246,33 @@ def write_workbook(workbook):
 
     # worksheets
     sheets = SubElement(root, '{%s}sheets' % SHEET_MAIN_NS)
-    for i, sheet in enumerate(workbook.worksheets):
+    for i, sheet in enumerate(workbook.worksheets, 1):
         sheet_node = SubElement(
             sheets, '{%s}sheet' % SHEET_MAIN_NS,
-            {'name': sheet.title, 'sheetId': '%d' % (i + 1),
-             '{%s}id' % REL_NS: 'rId%d' % (i + 1)})
-        if not sheet.sheet_state == sheet.SHEETSTATE_VISIBLE:
+            {'name': sheet.title, 'sheetId': '%d' % i,
+             '{%s}id' % REL_NS: 'rId%d' % i })
+        if not sheet.sheet_state == Worksheet.SHEETSTATE_VISIBLE:
+            if len(workbook.worksheets) == 1:
+                raise ValueError("The only worksheet of a workbook cannot be hidden")
             sheet_node.set('state', sheet.sheet_state)
+
+    # external references
+    if getattr(workbook, '_external_links', []):
+        external_references = SubElement(root, '{%s}externalReferences' % SHEET_MAIN_NS)
+        # need to match a counter with a workbook's relations
+        counter = len(workbook.worksheets) + 3 # strings, styles, theme
+        if workbook.vba_archive:
+            counter += 1
+        for idx, _ in enumerate(workbook._external_links, counter+1):
+            ext = Element("{%s}externalReference" % SHEET_MAIN_NS, {"{%s}id" % REL_NS:"rId%d" % idx})
+            external_references.append(ext)
 
     # Defined names
     defined_names = SubElement(root, '{%s}definedNames' % SHEET_MAIN_NS)
-
-    # Defined names -> named ranges
-    for named_range in workbook.get_named_ranges():
-        name = SubElement(defined_names, '{%s}definedName' % SHEET_MAIN_NS,
-                          {'name': named_range.name})
-        if named_range.scope:
-            name.set('localSheetId', '%s' % workbook.get_index(named_range.scope))
-
-        if isinstance(named_range, NamedRange):
-            # as there can be many cells in one range, generate the list of ranges
-            dest_cells = []
-            for worksheet, range_name in named_range.destinations:
-                dest_cells.append("'%s'!%s" % (worksheet.title.replace("'", "''"),
-                                               absolute_coordinate(range_name)))
-
-            # finally write the cells list
-            name.text = ','.join(dest_cells)
-        else:
-            assert isinstance(named_range, NamedRangeContainingValue)
-            name.text = named_range.value
+    _write_defined_names(workbook, defined_names)
 
     # Defined names -> autoFilter
     for i, sheet in enumerate(workbook.worksheets):
-        #continue
         auto_filter = sheet.auto_filter.ref
         if not auto_filter:
             continue
@@ -281,28 +284,61 @@ def write_workbook(workbook):
 
     SubElement(root, '{%s}calcPr' % SHEET_MAIN_NS,
                {'calcId': '124519', 'calcMode': 'auto', 'fullCalcOnLoad': '1'})
-    return get_document_content(root)
+    return tostring(root)
+
+
+def _write_defined_names(workbook, names):
+    """
+    Append definedName elements to the definedNames node.
+    """
+    for named_range in workbook.get_named_ranges():
+        attrs = dict(named_range)
+        if named_range.scope is not None:
+            attrs['localSheetId'] = '%d' % workbook.get_index(named_range.scope)
+
+        name = Element('{%s}definedName' % SHEET_MAIN_NS, attrs)
+        name.text = named_range.value
+        names.append(name)
+
+
+RelationElement = partial(Element, '{%s}Relationship' % PKG_REL_NS)
 
 
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     root = Element('{%s}Relationships' % PKG_REL_NS)
-    for i in range(1, len(workbook.worksheets) + 1):
-        SubElement(root, '{%s}Relationship' % PKG_REL_NS,
-                   {'Id': 'rId%d' % i, 'Target': 'worksheets/sheet%s.xml' % i,
-                    'Type': '%s/worksheet' % REL_NS})
-    rid = len(workbook.worksheets) + 1
-    SubElement(root, '{%s}Relationship' % PKG_REL_NS,
-               {'Id': 'rId%d' % rid, 'Target': 'sharedStrings.xml',
-                'Type': '%s/sharedStrings' % REL_NS})
-    SubElement(root, '{%s}Relationship' % PKG_REL_NS,
-               {'Id': 'rId%d' % (rid + 1), 'Target': 'styles.xml',
-                'Type': '%s/styles' % REL_NS})
-    SubElement(root, '{%s}Relationship' % PKG_REL_NS,
-               {'Id': 'rId%d' % (rid + 2), 'Target': 'theme/theme1.xml',
-                'Type': '%s/theme' % REL_NS})
+
+    for i, _ in enumerate(workbook.worksheets, 1):
+        attrs = {'Id': 'rId%d' % i, 'Target': 'worksheets/sheet%s.xml' % i,
+                 'Type': '%s/worksheet' % REL_NS}
+        root.append(RelationElement(attrs))
+
+    i += 1
+    attrs = {'Id': 'rId%d' % i, 'Target': 'sharedStrings.xml',
+             'Type': '%s/sharedStrings' % REL_NS}
+    root.append(RelationElement(attrs))
+
+    i += 1
+    attrs = {'Id': 'rId%d' % i, 'Target': 'styles.xml',
+             'Type': '%s/styles' % REL_NS}
+    root.append(RelationElement(attrs))
+
+    i += 1
+    attrs = {'Id': 'rId%d' % i, 'Target': 'theme/theme1.xml',
+             'Type': '%s/theme' % REL_NS}
+    root.append(RelationElement(attrs))
+
     if workbook.vba_archive:
-        SubElement(root, '{%s}Relationship' % PKG_REL_NS,
-                   {'Id': 'rId%d' % (rid + 3), 'Target': 'vbaProject.bin',
-                    'Type': 'http://schemas.microsoft.com/office/2006/relationships/vbaProject'})
-    return get_document_content(root)
+        i += 1
+        attrs = {'Id': 'rId%d' % i, 'Target': 'vbaProject.bin',
+                 'Type': 'http://schemas.microsoft.com/office/2006/relationships/vbaProject'}
+        root.append(RelationElement(attrs))
+
+    external_links = workbook._external_links
+    if external_links:
+        for idx, link in enumerate(external_links, 1):
+            attrs = {'Id':'rId%d' % (i + idx), 'Target':'externalLinks/externalLink%d.xml' % idx,
+                     'Type':'%s/externalLink' % REL_NS}
+            root.append(RelationElement(attrs))
+
+    return tostring(root)

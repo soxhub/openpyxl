@@ -22,7 +22,7 @@
 # @author: see AUTHORS file
 
 # Python stdlib imports
-from datetime import datetime, time, timedelta
+from datetime import datetime
 from tempfile import NamedTemporaryFile
 import os
 import os.path
@@ -58,11 +58,9 @@ def test_dump_sheet_title():
 
 
 def test_dump_string_table():
-    test_filename = _get_test_filename()
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
     letters = [get_column_letter(x + 1) for x in range(10)]
-    expected_rows = []
 
     for row in range(5):
         ws.append(['%s%d' % (letter, row + 1) for letter in letters])
@@ -145,29 +143,18 @@ def test_append_after_save():
         ws.append(['hello'])
 
 
-@pytest.mark.parametrize("value",
-                         [
-                             time(12, 15, 30),
-                             datetime.now(),
-                             timedelta(1),
-                         ]
-                         )
-def test_datetime(value):
-    wb = Workbook(optimized_write=True)
-    ws = wb.create_sheet()
-    row = [value]
-    ws.append(row)
-
-
 def test_dump_with_font():
+    from openpyxl.writer.dump_worksheet import WriteOnlyCell
     test_filename = _get_test_filename()
 
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
     user_style = Style(font=Font(name='Courrier', size=36))
-    complex_cell = {'value': 'hello',
-                    'style': user_style}
-    ws.append([complex_cell, 3.14, None])
+    cell = WriteOnlyCell(ws, value='hello')
+    cell.style = Style(font=Font(name='Courrier', size=36))
+
+    ws.append([cell, 3.14, None])
+    assert user_style in wb.shared_styles
     wb.save(test_filename)
 
     wb2 = load_workbook(test_filename)
@@ -176,24 +163,38 @@ def test_dump_with_font():
 
 
 def test_dump_with_comment():
+    from openpyxl.writer.dump_worksheet import WriteOnlyCell
     test_filename = _get_test_filename()
 
     wb = Workbook(optimized_write=True)
     ws = wb.create_sheet()
-    user_comment = Comment(text='hello world',
-                           author='me')
-    complex_cell = {'value': 'hello',
-                    'comment': user_comment}
-    ws.append([complex_cell, 3.14, None])
+    user_comment = Comment(text='hello world', author='me')
+    cell = WriteOnlyCell(ws, value="hello")
+    cell.comment = user_comment
+
+    ws.append([cell, 3.14, None])
+    assert user_comment in ws._comments
     wb.save(test_filename)
 
     wb2 = load_workbook(test_filename)
     ws2 = wb2[ws.title]
     assert ws2['A1'].comment.text == 'hello world'
 
-
-def test_dump_bad_style():
-    wb = Workbook(optimized_write=True)
+@pytest.mark.parametrize("method", [
+    '__getitem__', '__setitem__', 'cell', 'range', 'merge_cells']
+                         )
+def test_illegal_method(method):
+    wb = Workbook(write_only=True)
     ws = wb.create_sheet()
-    with pytest.raises(TypeError):
-        ws.append([{'value': 'hello', 'style': 'world'}, 3.14, None])
+    fn = getattr(ws, method)
+    with pytest.raises(NotImplementedError):
+        fn()
+
+def test_save_empty_workbook():
+    fn = _get_test_filename()
+
+    wb = Workbook(write_only=True)
+    wb.save(fn)
+
+    wb = load_workbook(fn)
+    assert len(wb.worksheets) == 1

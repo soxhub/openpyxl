@@ -1,50 +1,27 @@
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
 
 # Python stdlib imports
 from io import BytesIO
-import os.path
 
 # compatibility imports
 from openpyxl import Workbook
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.formatting.rules import ColorScaleRule, CellIsRule, FormulaRule
-from openpyxl.compat import iterkeys
 
 # package imports
 from openpyxl.reader.excel import load_workbook
 from openpyxl.reader.style import read_style_table
 from openpyxl.xml.constants import ARC_STYLE
-from openpyxl.xml.functions import XMLGenerator
-from openpyxl.writer.worksheet import write_worksheet_conditional_formatting
+from openpyxl.xml.functions import XMLGenerator, tostring
+from openpyxl.writer.worksheet import write_conditional_formatting
 from openpyxl.writer.styles import StyleWriter
-from openpyxl.styles import Color, PatternFill, Font, Border, Side, HashableObject
+from openpyxl.styles import Color, PatternFill, Font, Border, Side
 from openpyxl.styles import borders, fills, colors
 
 # test imports
 import pytest
 from zipfile import ZIP_DEFLATED, ZipFile
-from openpyxl.tests.helper import get_xml, compare_xml
+from openpyxl.tests.helper import compare_xml
 from openpyxl.collections import IndexedList
 
 
@@ -133,12 +110,10 @@ class TestConditionalFormatting(object):
         worksheet.conditional_formatting.add('C1:C10', {'type': 'expression', 'formula': ['ISBLANK(C1)'],
                                                         'stopIfTrue': '1', 'dxf': {}})
         worksheet.conditional_formatting.setDxfStyles(self.workbook)
-        temp_buffer = BytesIO()
-        doc = XMLGenerator(out=temp_buffer)
-        write_worksheet_conditional_formatting(doc, worksheet)
-        doc.endDocument()
-        xml = temp_buffer.getvalue()
-        temp_buffer.close()
+        cfs = write_conditional_formatting(worksheet)
+        xml = b""
+        for cf in cfs:
+            xml += tostring(cf)
 
         diff = compare_xml(xml, """
         <conditionalFormatting sqref="C1:C10">
@@ -176,12 +151,11 @@ class TestConditionalFormatting(object):
                                            [Color('FFFF7128'), Color('FFFFEF9C')]}}]}
         worksheet.conditional_formatting.update(rules)
 
-        temp_buffer = BytesIO()
-        doc = XMLGenerator(out=temp_buffer)
-        write_worksheet_conditional_formatting(doc, worksheet)
-        doc.endDocument()
-        xml = temp_buffer.getvalue()
-        temp_buffer.close()
+        cfs = write_conditional_formatting(worksheet)
+        xml = b""
+        for cf in cfs:
+            xml += tostring(cf)
+
         diff = compare_xml(xml, """
         <conditionalFormatting sqref="A1:A4">
           <cfRule type="colorScale" priority="1">
@@ -212,12 +186,11 @@ class TestConditionalFormatting(object):
         worksheet.conditional_formatting.setDxfStyles(self.workbook)
 
         # First, verify conditional formatting xml
-        temp_buffer = BytesIO()
-        doc = XMLGenerator(out=temp_buffer)
-        write_worksheet_conditional_formatting(doc, worksheet)
-        doc.endDocument()
-        xml = temp_buffer.getvalue()
-        temp_buffer.close()
+        cfs = write_conditional_formatting(worksheet)
+        xml = b""
+        for cf in cfs:
+            xml += tostring(cf)
+
         diff = compare_xml(xml, """
         <conditionalFormatting sqref="A1:A3">
           <cfRule dxfId="0" operator="equal" priority="1" type="cellIs">
@@ -230,7 +203,7 @@ class TestConditionalFormatting(object):
         # Second, verify conditional formatting dxf styles
         w = StyleWriter(self.workbook)
         w._write_dxfs()
-        xml = get_xml(w._root)
+        xml = tostring(w._root)
         diff = compare_xml(xml, """
         <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <dxfs count="1">
@@ -518,12 +491,11 @@ class TestFormulaRule(object):
         worksheet = WS()
         worksheet.conditional_formatting.add('C1:C10', FormulaRule(formula=['ISBLANK(C1)'], stopIfTrue=True))
         worksheet.conditional_formatting.setDxfStyles(self.workbook)
-        temp_buffer = BytesIO()
-        doc = XMLGenerator(out=temp_buffer)
-        write_worksheet_conditional_formatting(doc, worksheet)
-        doc.endDocument()
-        xml = temp_buffer.getvalue()
-        temp_buffer.close()
+
+        cfs = write_conditional_formatting(worksheet)
+        xml = b""
+        for cf in cfs:
+            xml += tostring(cf)
 
         diff = compare_xml(xml, """
         <conditionalFormatting sqref="C1:C10">
@@ -768,8 +740,8 @@ def test_parse_dxfs(datadir):
     # Verify that the dxf styles stay the same when they're written and read back in.
     w = StyleWriter(wb)
     w._write_dxfs()
-    write_xml = get_xml(w._root)
+    write_xml = tostring(w._root)
     read_style_prop = read_style_table(write_xml)
-    assert len(read_style_prop['dxf_list']) == len(wb.style_properties['dxf_list'])
-    for i, dxf in enumerate(read_style_prop['dxf_list']):
+    assert len(read_style_prop[2]) == len(wb.style_properties['dxf_list'])
+    for i, dxf in enumerate(read_style_prop[2]):
         assert repr(wb.style_properties['dxf_list'][i] == dxf)

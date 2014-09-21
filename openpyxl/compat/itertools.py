@@ -1,12 +1,9 @@
-try:
-    from itertools import ifilter
-except ImportError:
-    ifilter = filter
+from __future__ import absolute_import
 
 try:
-    from itertools import izip
+    from itertools import izip as zip
 except ImportError:
-    izip = zip
+    zip = zip
 
 try:
     range = xrange
@@ -27,4 +24,13 @@ def iterkeys(iterable):
             yield item
     else:
         for item in iterable.keys():
+            yield item
+
+
+def itervalues(iterable):
+    if hasattr(iterable, 'itervalues'):
+        for item in iterable.itervalues():
+            yield item
+    else:
+        for item in iterable.values():
             yield item

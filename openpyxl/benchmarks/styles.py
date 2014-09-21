@@ -12,12 +12,8 @@ rand = Random()
 
 def generate_all_styles():
     styles = []
-    alignments = [Alignment.HORIZONTAL_CENTER,
-                  Alignment.HORIZONTAL_CENTER_CONTINUOUS,
-                  Alignment.HORIZONTAL_GENERAL,
-                  Alignment.HORIZONTAL_JUSTIFY,
-                  Alignment.HORIZONTAL_LEFT,
-                  Alignment.HORIZONTAL_RIGHT]
+    alignments = ['center', 'centerContinuous', 'general', 'justify', 'left',
+                  'right']
 
     font_names = ['Calibri', 'Tahoma', 'Arial', 'Times New Roman']
     font_sizes = range(11, 36, 2)
@@ -62,7 +58,7 @@ def non_optimized_workbook(styles):
 def to_profile(wb, f, n):
     t = -time.time()
     wb.save(f)
-    print 'took %.4fs for %d styles' % (t + time.time(), n)
+    print('took %.4fs for %d styles' % (t + time.time(), n))
 
 for func in (optimized_workbook, non_optimized_workbook):
     print '%s: ' % func.__name__,

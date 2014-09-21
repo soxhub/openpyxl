@@ -1,26 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
+
 
 """Workbook is the top-level container for all document information."""
 
@@ -34,13 +14,18 @@ import threading
 from openpyxl.collections import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.writer.dump_worksheet import DumpWorksheet, save_dump
-from openpyxl.namedrange import NamedRange
+from . names.named_range import NamedRange
 from openpyxl.styles import Style
 from openpyxl.writer.excel import save_workbook
 from openpyxl.exceptions import ReadOnlyWorkbookException
 from openpyxl.date_time import CALENDAR_WINDOWS_1900
+from openpyxl.xml import LXML
 from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.compat import deprecated
+
+if LXML:
+    from openpyxl.writer.dump_lxml import LXMLWorksheet as DumpWorksheet
 
 
 class DocumentProperties(object):
@@ -49,8 +34,7 @@ class DocumentProperties(object):
     def __init__(self):
         self.creator = 'Unknown'
         self.last_modified_by = self.creator
-        self.created = datetime.datetime.now()
-        self.modified = datetime.datetime.now()
+        self.modified = self.created = datetime.datetime.now()
         self.title = 'Untitled'
         self.subject = ''
         self.description = ''
@@ -74,26 +58,31 @@ class DocumentSecurity(object):
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
-    def __init__(self, optimized_write=False, encoding='utf-8',
+    _optimized_worksheet_class = DumpWorksheet
+
+    def __init__(self,
+                 optimized_write=False,
+                 encoding='utf-8',
                  worksheet_class=Worksheet,
-                 optimized_worksheet_class=DumpWorksheet,
                  guess_types=False,
-                 data_only=False):
+                 data_only=False,
+                 read_only=False,
+                 write_only=False):
         self.worksheets = []
         self._active_sheet_index = 0
         self._named_ranges = []
+        self._external_links = []
         self.properties = DocumentProperties()
         self.style = Style()
         self.security = DocumentSecurity()
-        self.__optimized_write = optimized_write
-        self.__optimized_read = False
+        self.__write_only = write_only or optimized_write
+        self.__read_only = read_only
         self.__thread_local_data = threading.local()
         self.shared_strings = IndexedList()
         self.shared_styles = IndexedList()
         self.shared_styles.add(Style())
         self.loaded_theme = None
         self._worksheet_class = worksheet_class
-        self._optimized_worksheet_class = optimized_worksheet_class
         self.vba_archive = None
         self.style_properties = None
         self._guess_types = guess_types
@@ -103,10 +92,14 @@ class Workbook(object):
 
         self.encoding = encoding
 
-        if not optimized_write:
+        if not self.write_only:
             self.worksheets.append(self._worksheet_class(parent_workbook=self))
 
+    @deprecated('this method is private and should not be called directly')
     def read_workbook_settings(self, xml_source):
+        self._read_workbook_settings(xml_source)
+
+    def _read_workbook_settings(self, xml_source):
         root = fromstring(xml_source)
         view = root.find('*/' '{%s}workbookView' % SHEET_MAIN_NS)
         if view is None:
@@ -123,8 +116,13 @@ class Workbook(object):
     def excel_base_date(self):
         return self.properties.excel_base_date
 
-    def _set_optimized_read(self):
-        self.__optimized_read = True
+    @property
+    def read_only(self):
+        return self.__read_only
+
+    @property
+    def write_only(self):
+        return self.__write_only
 
     def get_active_sheet(self):
         """Returns the current active sheet."""
@@ -148,12 +146,13 @@ class Workbook(object):
 
         """
 
-        if self.__optimized_read:
+        if self.read_only:
             raise ReadOnlyWorkbookException('Cannot create new sheet in a read-only workbook')
 
-        if self.__optimized_write :
-            new_ws = self._optimized_worksheet_class(
-                parent_workbook=self, title=title)
+        if self.write_only :
+            new_ws = self._optimized_worksheet_class(parent_workbook=self,
+                                                      title=title)
+            self._worksheet_class = self._optimized_worksheet_class
         else:
             if title is not None:
                 new_ws = self._worksheet_class(
@@ -161,13 +160,19 @@ class Workbook(object):
             else:
                 new_ws = self._worksheet_class(parent_workbook=self)
 
-        self.add_sheet(worksheet=new_ws, index=index)
+        self._add_sheet(worksheet=new_ws, index=index)
         return new_ws
 
+    @deprecated("you probably want to use Workbook.create_sheet('sheet name') instead")
     def add_sheet(self, worksheet, index=None):
+        self._add_sheet(worksheet, index)
+
+    def _add_sheet(self, worksheet, index=None):
         """Add an existing worksheet (at an optional index)."""
         if not isinstance(worksheet, self._worksheet_class):
             raise TypeError("The parameter you have given is not of the type '%s'" % self._worksheet_class.__name__)
+        if worksheet.parent != self:
+            raise ValueError("You cannot add worksheets from another workbook.")
 
         if index is None:
             self.worksheets.append(worksheet)
@@ -187,25 +192,29 @@ class Workbook(object):
         :type name: string
 
         """
-        requested_sheet = None
-        for sheet in self.worksheets:
-            if sheet.title == name:
-                requested_sheet = sheet
-                break
-        return requested_sheet
+        try:
+            return self[name]
+        except KeyError:
+            return
 
     def __contains__(self, key):
-        return self.get_sheet_by_name(key) and True or False
+        return key in set(self.sheetnames)
 
     def get_index(self, worksheet):
         """Return the index of the worksheet."""
         return self.worksheets.index(worksheet)
 
     def __getitem__(self, key):
-        sheet = self.get_sheet_by_name(key)
-        if sheet is None:
-            raise KeyError("Worksheet {0} does not exist.".format(key))
-        return sheet
+        """Returns a worksheet by its name.
+
+        :param name: the name of the worksheet to look for
+        :type name: string
+
+        """
+        for sheet in self.worksheets:
+            if sheet.title == key:
+                return sheet
+        raise KeyError("Worksheet {0} does not exist.".format(key))
 
     def __delitem__(self, key):
         sheet = self[key]
@@ -215,6 +224,10 @@ class Workbook(object):
         return iter(self.worksheets)
 
     def get_sheet_names(self):
+        return self.sheetnames
+
+    @property
+    def sheetnames(self):
         """Returns the list of the names of worksheets in the workbook.
 
         Names are returned in the worksheets order.
@@ -257,11 +270,11 @@ class Workbook(object):
         Use this function instead of using an `ExcelWriter`.
 
         .. warning::
-            When creating your workbook using `optimized_write` set to True,
+            When creating your workbook using `write_only` set to True,
             you will only be able to call this function once. Subsequents attempts to
             modify or save the file will raise an :class:`openpyxl.shared.exc.WorkbookAlreadySaved` exception.
         """
-        if self.__optimized_write:
+        if self.write_only:
             save_dump(self, filename)
         else:
             save_workbook(self, filename)

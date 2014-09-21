@@ -23,7 +23,7 @@ from openpyxl.cell import (
     absolute_coordinate
     )
 from openpyxl.comments import Comment
-from openpyxl.styles import NumberFormat
+from openpyxl.styles import numbers
 
 import decimal
 
@@ -200,13 +200,15 @@ class TestCellValueTypes(object):
         self.cell.value = '3.14%'
         assert expected == safe_string(self.cell.internal_value)
 
-    def test_insert_datetime(self):
+    def test_insert_date(self):
         self.cell.value = date.today()
         assert Cell.TYPE_NUMERIC == self.cell.data_type
+        assert self.cell.number_format == "yyyy-mm-dd"
 
-    def test_insert_date(self):
+    def test_insert_datetime(self):
         self.cell.value = datetime.now()
         assert Cell.TYPE_NUMERIC == self.cell.data_type
+        assert self.cell.number_format == "yyyy-mm-dd"
 
     def test_internal_date(self):
         dt = datetime(2010, 7, 13, 6, 37, 41)
@@ -227,7 +229,7 @@ class TestCellValueTypes(object):
 
     def test_number_format_style(self):
         self.cell.value = '12.6%'
-        assert NumberFormat.FORMAT_PERCENTAGE == self.cell.style.number_format.format_code
+        assert numbers.FORMAT_PERCENTAGE == self.cell.style.number_format
 
 
 @pytest.mark.parametrize("value, datatype",
@@ -355,7 +357,7 @@ def test_is_not_date_color_format():
     cell = Cell(ws, 'A', 1)
 
     cell.value = -13.5
-    cell.style = cell.style.copy(number_format=NumberFormat('0.00_);[Red]\(0.00\)'))
+    cell.style = cell.style.copy(number_format='0.00_);[Red]\(0.00\)')
 
     assert cell.is_date() is False
 
@@ -417,3 +419,13 @@ class TestEncoding:
         ws = wb.active
         cell = ws['A1']
         cell.value = self.test_string
+
+
+def test_style():
+    from openpyxl.styles import Font, Style
+    wb = Workbook()
+    ws = wb.active
+    cell = ws['A1']
+    new_style = Style(font=Font(bold=True))
+    cell.style = new_style
+    assert new_style in wb.shared_styles

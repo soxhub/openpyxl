@@ -36,11 +36,7 @@ from xml.sax.saxutils import XMLGenerator
 
 XMLGenerator = partial(XMLGenerator, encoding="utf-8")
 
-from xml.sax.xmlreader import AttributesImpl
-
-
 # compatibility
-from openpyxl.compat import OrderedDict
 
 # package imports
 from openpyxl import LXML
@@ -112,10 +108,14 @@ register_namespace('vt', VTYPES_NS)
 register_namespace('xdr', SHEET_DRAWING_NS)
 register_namespace('cdr', CHART_DRAWING_NS)
 
+
+tostring = partial(tostring, encoding="utf-8")
+
+
 def get_document_content(xml_node):
     """Print nicely formatted xml to a string."""
     pretty_indent(xml_node)
-    return tostring(xml_node, encoding='utf-8')
+    return tostring(xml_node)
 
 
 def pretty_indent(elem, level=0):
