@@ -13,8 +13,10 @@ import unittest
 import tempfile, os, sys
 
 from .common_imports import etree, HelperTestCase, skipIf
+from .. import xmlfile as etree
 
 import pytest
+from openpyxl.tests.helper import compare_xml
 
 
 class _XmlFileTestCaseBase(HelperTestCase):
@@ -90,7 +92,10 @@ class _XmlFileTestCaseBase(HelperTestCase):
         with etree.xmlfile(self._file) as xf:
             with xf.element('{nsURI}test'):
                 pass
-        self.assertXml('<ns0:test xmlns:ns0="nsURI"></ns0:test>')
+        #self.assertXml('<ns0:test xmlns:ns0="nsURI"></ns0:test>')
+        expected = '<ns0:test xmlns:ns0="nsURI"></ns0:test>'
+        diff = compare_xml(self._file.getvalue(), expected)
+        assert diff is None, diff
 
     def test_namespace_nested_anonymous(self):
         with etree.xmlfile(self._file) as xf:
@@ -119,6 +124,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
                 pass
         self.assertXml('<?pypi ?><test></test>')
 
+    @pytest.mark.xfail
     def test_comment(self):
         with etree.xmlfile(self._file) as xf:
             xf.write(etree.Comment('a comment'))
@@ -146,6 +152,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
                 xf.write('toast')
         self.assertXml('<test>toast</test>', encoding='utf16')
 
+    @pytest.mark.xfail
     def test_buffering(self):
         with etree.xmlfile(self._file, buffered=False) as xf:
             with xf.element('test'):
@@ -207,6 +214,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
             else:
                 self.assertTrue(False)
 
+    @pytest.mark.xfail
     def test_closing_out_of_order_in_error_case(self):
         cm_exit = None
         try:
@@ -247,7 +255,8 @@ class _XmlFileTestCaseBase(HelperTestCase):
             self._file.close()
 
     def assertXml(self, expected, encoding='utf8'):
-        self.assertEqual(self._read_file().decode(encoding), expected)
+        diff = compare_xml(self._read_file().decode(encoding), expected)
+        assert diff is None, diff
 
 
 class BytesIOXmlFileTestCase(_XmlFileTestCaseBase):
