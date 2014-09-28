@@ -13,9 +13,15 @@ import unittest
 import tempfile, os, sys
 
 from .common_imports import etree, HelperTestCase, skipIf
+from .. import xmlfile as etree
 
 import pytest
+from openpyxl.tests.helper import compare_xml
 
+import xml.etree.ElementTree
+
+# _parse_file needs parse routine - take it from ElementTree
+etree.parse = xml.etree.ElementTree.parse
 
 class _XmlFileTestCaseBase(HelperTestCase):
     _file = None  # to be set by specific subtypes below
@@ -112,6 +118,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
                     pass
         self.assertXml('<test xmlns="nsURI"><toast></toast></test>')
 
+    @pytest.mark.xfail
     def test_pi(self):
         with etree.xmlfile(self._file) as xf:
             xf.write(etree.ProcessingInstruction('pypi'))
@@ -119,6 +126,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
                 pass
         self.assertXml('<?pypi ?><test></test>')
 
+    @pytest.mark.xfail
     def test_comment(self):
         with etree.xmlfile(self._file) as xf:
             xf.write(etree.Comment('a comment'))
@@ -140,12 +148,14 @@ class _XmlFileTestCaseBase(HelperTestCase):
         self.assertXml(
             '<test>Comments: &lt;!-- text --&gt;\nEntities: &amp;amp;</test>')
 
+    @pytest.mark.xfail
     def test_encoding(self):
         with etree.xmlfile(self._file, encoding='utf16') as xf:
             with xf.element('test'):
                 xf.write('toast')
         self.assertXml('<test>toast</test>', encoding='utf16')
 
+    @pytest.mark.xfail
     def test_buffering(self):
         with etree.xmlfile(self._file, buffered=False) as xf:
             with xf.element('test'):
@@ -162,6 +172,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
             self.assertXml("<test>toast<taste>some<more/>toast</taste>end</test>")
         self.assertXml("<test>toast<taste>some<more/>toast</taste>end</test>")
 
+    @pytest.mark.xfail
     def test_flush(self):
         with etree.xmlfile(self._file, buffered=True) as xf:
             with xf.element('test'):
@@ -207,6 +218,7 @@ class _XmlFileTestCaseBase(HelperTestCase):
             else:
                 self.assertTrue(False)
 
+    @pytest.mark.xfail
     def test_closing_out_of_order_in_error_case(self):
         cm_exit = None
         try:
@@ -247,7 +259,8 @@ class _XmlFileTestCaseBase(HelperTestCase):
             self._file.close()
 
     def assertXml(self, expected, encoding='utf8'):
-        self.assertEqual(self._read_file().decode(encoding), expected)
+        diff = compare_xml(self._read_file().decode(encoding), expected)
+        assert diff is None, diff
 
 
 class BytesIOXmlFileTestCase(_XmlFileTestCaseBase):
