@@ -23,8 +23,8 @@
 
 """Implements the lxml.etree.xmlfile API using the standard library xml.etree"""
 
-from xml.etree import ElementTree
-from xml.etree.ElementTree import Element
+#from openpyxl.xml.functions import Element, tostring
+from xml.etree.ElementTree import Element, tostring
 from contextlib import contextmanager  
 
 class LxmlSyntaxError(Exception):
@@ -80,18 +80,17 @@ class _FakeIncrementalFileWriter(object):
                 # element has children: add string to tail of last child
                 self._top_element[-1].tail += arg
                 
-        elif isinstance(arg, Element):
+        else:
             if self._top_element is not None:
                 self._top_element.append(arg)
             elif not self._have_root:
                 self._write_element(arg)
             else:
                 raise LxmlSyntaxError()
-        else:
-            raise LxmlSyntaxError()
         
     def _write_element(self, element):
-        self._file.write(ElementTree.tostring(element))
+        xml = tostring(element)
+        self._file.write(xml)
         
     def __enter__(self):
         pass
