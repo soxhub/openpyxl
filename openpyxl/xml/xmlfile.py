@@ -38,12 +38,13 @@ class _FakeIncrementalFileWriter(object):
         yield
 
         # __exit__ part
-        self._top_element = self._element_stack.pop()
+        el = self._element_stack.pop()
         if self._element_stack:
-            self._element_stack[-1].append(self._top_element)
-            self._top_element = self._element_stack[-1]
+            parent = self._element_stack[-1]
+            parent.append(self._top_element)
+            self._top_element = parent
         else:
-            self._write_element(self._top_element)
+            self._write_element(el)
             self._top_element = None
 
     def write(self, arg):
