@@ -50,7 +50,7 @@ from openpyxl.reader.comments import read_comments, get_comments_file
 
 
 CENTRAL_DIRECTORY_SIGNATURE = b'\x50\x4b\x05\x06'
-SUPPORTED_FORMATS = ('.xlsx', '.xlsm')
+SUPPORTED_FORMATS = ('.xlsx', '.xlsm', '.xltx', '.xltm')
 
 
 def repair_central_directory(zipFile, is_file_instance):
