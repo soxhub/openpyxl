@@ -232,7 +232,8 @@ def write_workbook(workbook):
     root = Element('{%s}workbook' % SHEET_MAIN_NS)
     SubElement(root, '{%s}fileVersion' % SHEET_MAIN_NS,
                {'appName': 'xl', 'lastEdited': '4', 'lowestEdited': '4', 'rupBuild': '4505'})
-    SubElement(root, '{%s}workbookPr' % SHEET_MAIN_NS)
+    SubElement(root, '{%s}workbookPr' % SHEET_MAIN_NS,
+               {'codeName': workbook.code_name})
 
     # book views
     book_views = SubElement(root, '{%s}bookViews' % SHEET_MAIN_NS)
