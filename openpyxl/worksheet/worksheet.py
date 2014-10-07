@@ -167,7 +167,6 @@ class Worksheet(object):
         self.paper_size = None
         self.formula_attributes = {}
         self.orientation = None
-        self.xml_source = None
         self.conditional_formatting = ConditionalFormatting()
         self.vba_code = {}
         self.vba_controls = None
@@ -418,10 +417,14 @@ class Worksheet(object):
             min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
         else:
             min_col, min_row, max_col, max_row = (1, 1, self.max_column, self.max_row)
+        if max_col is not None:
+            max_col += column_offset
+        if max_row is not None:
+            max_row += row_offset
         return self.get_squared_range(min_col + column_offset,
                                       min_row + row_offset,
-                                      max_col + column_offset,
-                                      max_row + row_offset)
+                                      max_col,
+                                      max_row)
 
 
     def get_squared_range(self, min_col, min_row, max_col, max_row):
