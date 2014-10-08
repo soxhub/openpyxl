@@ -2,8 +2,10 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2014 openpyxl
 
 from itertools import groupby, chain
+import warnings
 
-from openpyxl.compat import OrderedDict, safe_string
+from openpyxl.descriptors import Strict, Bool, NoneSet, Set, String
+from openpyxl.compat import OrderedDict, safe_string, deprecated
 from openpyxl.cell import coordinate_from_string
 from openpyxl.worksheet import cells_from_range
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -59,54 +61,94 @@ def expand_cell_ranges(range_string):
     return list(chain.from_iterable(cells))
 
 
-class DataValidation(object):
+class DataValidation(Strict):
 
+    showErrorMessage = Bool()
+    showDropDown = Bool(allow_none=True)
+    showInputMessage = Bool()
+    showErrorMessage = Bool()
+    allowBlank = Bool()
+    allow_blank = Bool()
 
-    error = None
-    errorTitle = None
-    prompt = None
-    promptTitle = None
+    errorTitle = String(allow_none = True)
+    error = String(allow_none = True)
+    promptTitle = String(allow_none = True)
+    prompt = String(allow_none = True)
+    sqref = String(allow_none = True)
+    formula1 = String(allow_none = True)
+    formula2 = String(allow_none = True)
+
+    type = NoneSet(values=("whole", "decimal", "list", "date", "time",
+                           "textLength", "custom"))
+    errorStyle = NoneSet(values=("stop", "warning", "information"))
+    imeMode = NoneSet(values=("noControl", "off", "on", "disabled",
+                              "hiragana", "fullKatakana", "halfKatakana", "fullAlpha","halfAlpha",
+                              "fullHangul", "halfHangul"))
+    operator = NoneSet(values=("between", "notBetween", "equal", "notEqual",
+                               "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"))
 
     def __init__(self,
-                 validation_type=None, # remove in future
-                 operator=None,
+                 type=None,
                  formula1=None,
                  formula2=None,
                  allow_blank=False,
                  showErrorMessage=True,
                  showInputMessage=True,
+                 showDropDown=None,
                  allowBlank=None,
-                 type=None,
-                 sqref=None):
+                 sqref=None,
+                 promptTitle=None,
+                 errorStyle=None,
+                 error=None,
+                 prompt=None,
+                 errorTitle=None,
+                 imeMode=None,
+                 operator=None,
+                 validation_type=None, # remove in future
+                 ):
 
-        self.type = validation_type
+        self.showDropDown = showDropDown
+        self.imeMode = imeMode
         self.operator = operator
-        if formula1 is not None:
-            self.formula1 = str(formula1)
-        if formula2 is not None:
-            self.formula2 = str(formula2)
+        self.formula1 = formula1
+        self.formula2 = formula2
         self.allowBlank = allow_blank
         if allowBlank is not None:
             self.allowBlank = allowBlank
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
-        if type is not None:
-            self.type = type
-        self.cells = []
+        if validation_type is not None:
+            warnings.warn("Use 'DataValidation(type={0})'".format(validation_type))
+            if type is not None:
+                self.type = validation_type
+        self.type = type
+        self.cells = set()
         self.ranges = []
         if sqref is not None:
             self.sqref = sqref
+        self.promptTitle = promptTitle
+        self.errorStyle = errorStyle
+        self.error = error
+        self.prompt = prompt
+        self.errorTitle = errorTitle
 
+    @deprecated("Use DataValidation.add()")
     def add_cell(self, cell):
         """Adds a openpyxl.cell to this validator"""
-        self.cells.append(cell.coordinate)
+        self.add(cell)
 
+    def add(self, cell):
+        """Adds a openpyxl.cell to this validator"""
+        self.cells.add(cell.coordinate)
+
+    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error")
     def set_error_message(self, error, error_title="Validation Error"):
         """Creates a custom error message, displayed when a user changes a cell
            to an invalid value"""
         self.errorTitle = error_title
         self.error = error
 
+    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt")
     def set_prompt_message(self, prompt, prompt_title="Validation Prompt"):
         """Creates a custom prompt message"""
         self.promptTitle = prompt_title
@@ -123,12 +165,14 @@ class DataValidation(object):
     def __iter__(self):
         for attr in ('type', 'allowBlank', 'operator', 'sqref',
                      'showInputMessage', 'showErrorMessage', 'errorTitle', 'error',
+                     'errorStyle',
                      'promptTitle', 'prompt'):
             value = getattr(self, attr)
             if value is not None:
                 yield attr, safe_string(value)
 
 
+@deprecated("Class descriptors check values")
 class ValidationType(object):
     NONE = "none"
     WHOLE = "whole"
@@ -140,6 +184,7 @@ class ValidationType(object):
     CUSTOM = "custom"
 
 
+@deprecated("Class descriptors check values")
 class ValidationOperator(object):
     BETWEEN = "between"
     NOT_BETWEEN = "notBetween"
@@ -151,6 +196,7 @@ class ValidationOperator(object):
     GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
 
 
+@deprecated("Class descriptors check values")
 class ValidationErrorStyle(object):
     STOP = "stop"
     WARNING = "warning"

@@ -1,3 +1,23 @@
+2.1.1 (2014-10-08)
+==================
+
+
+Minor changes
+-------------
+PR 20 Support different workbook code names
+Allow auto_axis keyword for ScatterCharts
+
+
+Bug fixes
+---------
+332 Fills lost in ConditionalFormatting
+360 Support value="none" in attributes
+363 Support undocumented value for textRotation
+364 Preserve integers in read-only mode
+366 Complete read support for DataValidation
+367 Iterate over unsized worksheets
+
+
 2.1.0 (2014-09-21)
 ==================
 

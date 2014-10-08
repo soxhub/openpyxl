@@ -29,7 +29,7 @@ def test_ctor(dummy_sheet):
 def test_empty_cell(dummy_sheet):
     from openpyxl.cell.read_only import EMPTY_CELL
     assert EMPTY_CELL.value is None
-    assert EMPTY_CELL.data_type == 's'
+    assert EMPTY_CELL.data_type == 'n'
 
 
 def test_base_date(dummy_sheet):
@@ -66,11 +66,18 @@ def test_inline_String(dummy_sheet):
     assert cell.value == "Hello World!"
 
 
-def test_numeric(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, None, None, "24555", 'n')
-    assert cell.value == 24555
-    cell = ReadOnlyCell(dummy_sheet, None, None, None, 'n')
-    assert cell.value is None
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("24555", 24555),
+                             ("1.5", 1.5),
+                             (None, None),
+                         ])
+def test_numeric(dummy_sheet, value, expected):
+    cell = ReadOnlyCell(dummy_sheet, None, None, value, 'n')
+    v = cell.value
+    assert v == expected
+    assert hasattr(v, 'is_integer') == hasattr(expected, 'is_integer'),\
+           "Expected {0}, {1}".format(type(expected), type(v))
 
 
 @pytest.fixture(scope="class")
