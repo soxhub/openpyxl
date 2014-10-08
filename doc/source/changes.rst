@@ -13,7 +13,7 @@ Minor changes
 Use a 2-way cache for column index lookups
 
 
-2.1.1 (unreleased)
+2.1.1 (2014-10-08)
 ==================
 
 
