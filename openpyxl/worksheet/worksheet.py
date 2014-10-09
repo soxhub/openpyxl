@@ -137,6 +137,7 @@ class Worksheet(object):
             self.title = 'Sheet%d' % (1 + len(self._parent.worksheets))
         else:
             self.title = title
+        self.tab_color = None
         self.row_dimensions = {}
         self.column_dimensions = DimensionHolder([])
         self.page_breaks = []
@@ -582,6 +583,22 @@ class Worksheet(object):
     def add_rel(self, obj):
         """Drawings and hyperlinks create relationships"""
         self._parent.relationships.append(obj)
+        
+    def add_tab_color(self, hex_color_code):
+        """ 
+        Add a color to the tab of the sheet 
+        hex_color_code is a string with the following acceptable formats:
+        #RRGGBB or RRGGBB
+        """
+        colorstring = hex_color_code.strip()
+        if len(colorstring) == 0:
+            raise ValueError, "Provided tab color #%s is not in #RRGGBB format" % colorstring
+        if colorstring[0] == '#': 
+            colorstring = colorstring[1:]
+        if len(colorstring) != 6:
+            raise ValueError, "Provided tab color #%s is not in #RRGGBB format" % colorstring
+        else:
+            self.tab_color = colorstring
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """

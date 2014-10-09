@@ -436,6 +436,14 @@ class TestWorksheet(object):
         ws = Worksheet(self.wb)
         ws._merged_cells = ["A1:D4"]
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
+        
+    def test_tab_color(self):
+        ws = Worksheet(self.wb)        
+        assert ws.tab_color == None
+        ws.add_tab_color("#1072BA")
+        assert ws.tab_color == "1072BA"
+        with pytest.raises(ValueError):
+            ws.add_tab_color("")
 
 
 class TestPositioning(object):

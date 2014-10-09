@@ -846,3 +846,28 @@ def test_write_comments(out, worksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+def test_write_with_tab_color(worksheet):
+    ws = worksheet
+    ws.add_tab_color("#F0F0F0")
+    xml = write_worksheet(ws, None)
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+      <sheetPr>
+        <outlinePr summaryRight="1" summaryBelow="1"/>
+        <tabColor rgb="F0F0F0"/>
+      </sheetPr>
+      <dimension ref="A1:A1"/>
+      <sheetViews>
+        <sheetView workbookViewId="0">
+          <selection sqref="A1" activeCell="A1"/>
+        </sheetView>
+      </sheetViews>
+      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetData/>
+      <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
+    </worksheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+    
