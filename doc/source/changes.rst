@@ -13,6 +13,15 @@ Minor changes
 Use a 2-way cache for column index lookups
 
 
+2.1.2 (unreleased)
+==================
+
+
+Bug fixes
+=========
+369 IndexError when reading definedNames
+
+
 2.1.1 (2014-10-08)
 ==================
 
