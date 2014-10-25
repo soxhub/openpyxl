@@ -50,7 +50,8 @@ mapping = {
     'xsd:boolean':'Bool',
     'xsd:unsignedInt':'Integer',
     'xsd:int':'Integer',
-    'xsd:double':'Float'
+    'xsd:double':'Float',
+    'xsd:string':'String',
 }
 
 def classify(tagname):
@@ -82,9 +83,15 @@ class %s(Strict):
             attr["use"] = "allow_none=True"
         else:
             attr["use"] = ""
+        if attr.get("type").startswith("ST_"):
+            s += "    " + simple(attr.get("type"))
         s += "    {name} = {type}({use})\n".format(**attr)
 
     s += "\n"
+
+    for el in node.iterfind("{%s}sequence/{%s}element" % (XSD, XSD)):
+        s += "    {name} = {type}()\n".format(name=el.get("name"), type=el.get("type")[3:])
+
     s += "    def __init__(self,\n    %s=None):\n" % ("=None,\n    ".join(attrs))
     for attr in attrs:
         s += "    {0} = {0}\n".format(attr)
@@ -93,3 +100,19 @@ class %s(Strict):
         s += "\n\n"
         s += classify(el.get('type'))
     return s
+
+
+def simple(tagname):
+
+    schema = parse(sheet_src)
+    for node in schema.iterfind("{%s}simpleType" % XSD):
+        if node.get("name") == tagname:
+            break
+    constraint = node.find("{%s}restriction" % XSD)
+    typ = constraint.get("base")
+    typ = "{0}()".format(mapping.get(typ, typ))
+    values = constraint.findall("{%s}enumeration" % XSD)
+    values = [v.get('value') for v in values]
+    if values:
+        typ = "Set(values=({0}))".format(values)
+    return "{0} = {1}\n".format(tagname[3:], typ)
