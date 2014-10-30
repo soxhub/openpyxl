@@ -13,6 +13,20 @@ Minor changes
 * Use a 2-way cache for column index lookups
 
 
+2.1.3 (unreleased)
+==================
+
+
+Minor changes
+-------------
+* `PR 31 <https://bitbucket.org/openpyxl/openpyxl/pull-request/31/>`_ Correct tutorial
+
+
+Bug fixes
+---------
+* `#379 <https://bitbucket.org/openpyxl/openpyxl/issue/379>`_ ws.append() doesn't set RowDimension Correctly
+
+
 2.1.2 (2014-10-23)
 ==================
 
@@ -25,8 +39,6 @@ Minor changes
 
 Bug fixes
 ---------
-
-
 * `#120 <https://bitbucket.org/openpyxl/openpyxl/issue/120>`_, `#168 <https://bitbucket.org/openpyxl/openpyxl/issue/168>`_ defined names with formulae raise exceptions, `#292 <https://bitbucket.org/openpyxl/openpyxl/issue/292>`_
 * `#328 <https://bitbucket.org/openpyxl/openpyxl/issue/328/>`_ ValueError when reading cells with hyperlinks
 * `#369 <https://bitbucket.org/openpyxl/openpyxl/issue/369>`_ IndexError when reading definedNames
