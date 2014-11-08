@@ -22,6 +22,7 @@ from openpyxl.compat import (
     NUMERIC_TYPES,
     lru_cache,
     range,
+    deprecated,
 )
 from openpyxl.units import (
     DEFAULT_ROW_HEIGHT,
@@ -169,14 +170,19 @@ class Cell(object):
         self._value = value
         self.data_type = data_type
 
+
+    @deprecated("Method is private")
     def bind_value(self, value):
+        self._bind_value(value)
+
+
+    def _bind_value(self, value):
         """Given a value, infer the correct data type"""
         if not isinstance(value, KNOWN_TYPES):
             raise ValueError("Cannot convert {0} to Excel".format(value))
 
         self.data_type = self.TYPE_NUMERIC
-        #if value is None:
-            #value = ''
+
         if isinstance(value, bool):
             self.data_type = self.TYPE_BOOL
         elif isinstance(value, NUMERIC_TYPES):
@@ -193,11 +199,16 @@ class Cell(object):
             elif value in self.ERROR_CODES:
                 self.data_type = self.TYPE_ERROR
             elif self.guess_types:
-                value = self.infer_value(value)
+                value = self._infer_value(value)
         self.set_explicit_value(value, self.data_type)
 
 
+    @deprecated("Method is private")
     def infer_value(self, value):
+        return self._infer_value(value)
+
+
+    def _infer_value(self, value):
         """Given a string, infer type and formatting options."""
         if not isinstance(value, unicode):
             value = str(value)
@@ -276,16 +287,14 @@ class Cell(object):
             ':rtype: depends on the value (string, float, int or '
             ':class:`datetime.datetime`)'"""
         value = self._value
-        if value is None:
-            return
-        if self.is_date:
+        if self.is_date and value is not None:
             value = from_excel(value, self.base_date)
         return value
 
     @value.setter
     def value(self, value):
         """Set the value and infer type and display options."""
-        self.bind_value(value)
+        self._bind_value(value)
 
     @property
     def internal_value(self):

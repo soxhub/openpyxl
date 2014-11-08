@@ -126,12 +126,25 @@ class TestCellValueTypes(object):
         ws = Worksheet(wb)
         cls.cell = Cell(ws, 'A', 1)
 
-    def test_1st(self):
-        assert self.cell.TYPE_NULL == self.cell.data_type
+    def test_ctor(self):
+        cell = self.cell
+        assert cell.data_type == 'n'
+        assert cell.column == 'A'
+        assert cell.row == 1
+        assert cell.coordinate == "A1"
+        assert cell.value is None
+        assert isinstance(cell.parent, Worksheet)
+        assert cell.xf_index == 0
+        assert cell.comment is None
 
-    def test_null(self):
+
+    @pytest.mark.parametrize("datatype", ['n', 'd', 's', 'b', 'f', 'e'])
+    def test_null(self, datatype):
+        self.cell.data_type = datatype
+        assert self.cell.data_type == datatype
         self.cell.value = None
-        assert self.cell.TYPE_NULL == self.cell.data_type
+        assert self.cell.data_type == 'n'
+
 
     @pytest.mark.parametrize("value, expected",
                              [
@@ -155,82 +168,73 @@ class TestCellValueTypes(object):
         self.cell.parent.parent._guess_types = True
         self.cell.value = value
         assert self.cell.internal_value == expected
-        assert self.cell.TYPE_NUMERIC == self.cell.data_type
+        assert self.cell.data_type == 'n'
 
-    def test_string(self):
+
+    @pytest.mark.parametrize("value", ['hello', ".", '0800'])
+    def test_string(self, value):
         self.cell.value = 'hello'
-        assert self.cell.TYPE_STRING == self.cell.data_type
+        assert self.cell.data_type == 's'
 
-    def test_single_dot(self):
-        self.cell.value = '.'
-        assert self.cell.TYPE_STRING == self.cell.data_type
 
-    def test_formula(self):
-        self.cell.value = '=42'
-        assert self.cell.TYPE_FORMULA == self.cell.data_type
-        self.cell.value = '=if(A1<4;-1;1)'
-        assert self.cell.TYPE_FORMULA == self.cell.data_type
+    @pytest.mark.parametrize("value", ['=42', '=if(A1<4;-1;1)'])
+    def test_formula(self, value):
+        self.cell.value = value
+        assert self.cell.data_type == 'f'
 
-    def test_boolean(self):
+
+    @pytest.mark.parametrize("value", [True, False])
+    def test_boolean(self, value):
         self.cell.value = True
-        assert self.cell.TYPE_BOOL == self.cell.data_type
-        self.cell.value = False
-        assert self.cell.TYPE_BOOL == self.cell.data_type
+        assert self.cell.data_type == 'b'
 
-    def test_leading_zero(self):
-        self.cell.value = '0800'
-        assert self.cell.TYPE_STRING == self.cell.data_type
 
     @pytest.mark.parametrize("error_string", Cell.ERROR_CODES)
     def test_error_codes(self, error_string):
         self.cell.value = error_string
-        assert self.cell.TYPE_ERROR == self.cell.data_type
+        assert self.cell.data_type == 'e'
 
-    def test_insert_float(self):
-        self.cell.value = 3.14
-        assert Cell.TYPE_NUMERIC == self.cell.data_type
 
     @pytest.mark.parametrize("infer, expected",
                              [
-                                 (False, '3.14%'),
                                  (True, safe_string(0.0314)),
+                                 (False, '3.14%'),
                              ]
                              )
     def test_insert_percentage(self, infer, expected):
         self.cell.parent.parent._guess_types= infer
         self.cell.value = '3.14%'
         assert expected == safe_string(self.cell.internal_value)
+        assert self.cell.style.number_format == numbers.FORMAT_PERCENTAGE
 
-    def test_insert_date(self):
-        self.cell.value = date.today()
-        assert Cell.TYPE_NUMERIC == self.cell.data_type
-        assert self.cell.number_format == "yyyy-mm-dd"
 
-    def test_insert_datetime(self):
-        self.cell.value = datetime.now()
-        assert Cell.TYPE_NUMERIC == self.cell.data_type
-        assert self.cell.number_format == "yyyy-mm-dd h:mm:ss"
+    @pytest.mark.parametrize("value, internal, number_format",
+                             [
+                                 (
+                                     datetime(2010, 7, 13, 6, 37, 41),
+                                     40372.27616898148,
+                                     "yyyy-mm-dd h:mm:ss"
+                                 ),
+                                 (
+                                     date(2010, 7, 13),
+                                     40372,
+                                     "yyyy-mm-dd"
+                                 ),
+                             ]
+                             )
+    def test_insert_date(self, value, internal, number_format):
+        self.cell.value = value
+        assert self.cell.data_type == 'n'
+        assert self.cell.internal_value == internal
+        assert self.cell.is_date
+        assert self.cell.number_format == number_format
 
-    def test_internal_date(self):
-        dt = datetime(2010, 7, 13, 6, 37, 41)
-        self.cell.value = dt
-        assert 40372.27616898148 == self.cell.internal_value
 
-    def test_datetime_interpretation(self):
-        dt = datetime(2010, 7, 13, 6, 37, 41)
-        self.cell.value = dt
-        assert self.cell.value == dt
-        assert self.cell.internal_value == 40372.27616898148
-
-    def test_date_interpretation(self):
-        dt = date(2010, 7, 13)
-        self.cell.value = dt
-        assert self.cell.value == datetime(2010, 7, 13, 0, 0)
-        assert self.cell.internal_value == 40372
-
-    def test_number_format_style(self):
-        self.cell.value = '12.6%'
-        assert numbers.FORMAT_PERCENTAGE == self.cell.style.number_format
+    def test_empty_cell_formatted_as_date(self):
+        self.cell.value = datetime.today()
+        self.cell.value = None
+        assert self.cell.is_date
+        assert self.cell.value is None
 
 
 @pytest.mark.parametrize("value, datatype",
@@ -244,7 +248,7 @@ def test_data_type_check(value, datatype):
     ws = build_dummy_worksheet()
     ws.parent._guess_types = True
     cell = Cell(ws, 'A', 1)
-    cell.bind_value(value)
+    cell.value = value
     assert cell.data_type == datatype
 
 
