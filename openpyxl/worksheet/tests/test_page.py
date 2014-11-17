@@ -30,17 +30,16 @@ def PageSetup():
     return PageSetup
 
 
-@pytest.mark.xfail
 def test_page_setup(PageSetup):
     p = PageSetup()
-    assert p.setup == {}
+    assert dict(p.setup) == {}
     p.scale = 1
-    assert p.setup['scale'] == 1
+    assert p.setup.scale == 1
 
 
 def test_page_options(PageSetup):
     p = PageSetup()
-    assert p.options == {}
+    assert dict(p.options) == {}
     p.horizontalCentered = True
     p.verticalCentered = True
-    assert p.options == {'verticalCentered': '1', 'horizontalCentered': '1'}
+    assert dict(p.options) == {'verticalCentered': '1', 'horizontalCentered': '1'}

@@ -86,21 +86,22 @@ def write_worksheet(worksheet, shared_strings):
             if hyper is not None:
                 xf.write(hyper)
 
+
             options = worksheet.page_setup.options
-            if options:
-                print_options = Element('printOptions', options)
-                xf.write(print_options)
-                del print_options
+            if len(dict(options)) > 0:
+                new_element = options.write_xml_element()
+                xf.write(new_element)
+                del new_element
 
             margins = Element('pageMargins', dict(worksheet.page_margins))
             xf.write(margins)
             del margins
 
             setup = worksheet.page_setup.setup
-            if setup:
-                page_setup = Element('pageSetup', setup)
-                xf.write(page_setup)
-                del page_setup
+            if len(dict(setup)) > 0:
+                new_element = setup.write_xml_element()
+                xf.write(new_element)
+                del new_element
 
             hf = write_header_footer(worksheet)
             if hf is not None:

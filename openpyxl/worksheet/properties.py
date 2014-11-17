@@ -128,6 +128,7 @@ def parse_sheetPr(node):
     tab_color = node.find('{%s}tabColor' % SHEET_MAIN_NS)
     if tab_color is not None:
         props.tabColor = Color(**dict(tab_color.attrib))
+
     return props
 
 

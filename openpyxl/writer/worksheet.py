@@ -299,14 +299,18 @@ def write_worksheet(worksheet, shared_strings):
         xml_file.write(tostring(hyper))
 
     options = worksheet.page_setup.options
-    if options:
-        tag(doc, 'printOptions', options)
+    if len(dict(options)) > 0:
+#         tag(doc, 'printOptions', options)        
+        new_element = options.write_xml_element()
+        xml_file.write(tostring(new_element))
 
     tag(doc, 'pageMargins', dict(worksheet.page_margins))
 
     setup = worksheet.page_setup.setup
-    if setup:
-        tag(doc, 'pageSetup', setup)
+    if len(dict(setup)) > 0:
+#         tag(doc, 'pageSetup', setup)
+        new_element = setup.write_xml_element()
+        xml_file.write(tostring(new_element))
 
     hf = write_header_footer(worksheet)
     if hf is not None:

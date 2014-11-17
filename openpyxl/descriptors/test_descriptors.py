@@ -405,3 +405,22 @@ class TestSequence:
             Sequence.value = value
 
 
+@pytest.fixture
+def MatchPattern():
+    from . import MatchPattern, Strict
+
+    class Dummy(Strict):
+
+        value = MatchPattern(pattern="[0-9]+(\.[0-9]+)?(mm|cm|in|pt|pc|pi)")
+
+    return Dummy()
+
+
+class TestMatchPattern:
+
+    def test_valid(self, MatchPattern):
+        MatchPattern.value = "24.73pc"
+
+    def test_invalid(self, MatchPattern):
+        with pytest.raises(ValueError):
+            MatchPattern.value = "24.0"
