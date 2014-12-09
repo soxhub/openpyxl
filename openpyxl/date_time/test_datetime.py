@@ -1,25 +1,4 @@
 # Copyright (c) 2010-2014 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
 
 # Python stdlib imports
 from datetime import datetime, date, timedelta, time
@@ -27,7 +6,7 @@ from datetime import datetime, date, timedelta, time
 import pytest
 
 # package imports
-from openpyxl.date_time import CALENDAR_MAC_1904
+from openpyxl.date_time import CALENDAR_MAC_1904, from_excel
 
 
 def test_datetime_to_W3CDTF():
@@ -82,6 +61,7 @@ def test_to_excel_mac(value, expected):
                              (40372.27616898148, datetime(2010, 7, 13, 6, 37, 41)),
                              (40196.5939815, datetime(2010, 1, 18, 14, 15, 20, 1600)),
                              (0.125, time(3, 0)),
+                             (None, None),
                          ])
 def test_from_excel(value, expected):
     from openpyxl.date_time import from_excel
@@ -100,7 +80,6 @@ def test_from_excel_mac(value, expected):
     from openpyxl.date_time import from_excel
     FUT = from_excel
     assert FUT(value, CALENDAR_MAC_1904) == expected
-
 
 
 def test_time_to_days():
@@ -124,3 +103,14 @@ def test_days_to_time():
     td = timedelta(0, 51320, 1600)
     FUT = days_to_time
     assert FUT(td) == time(14, 15, 20, 1600)
+
+
+def test_empty_date_cell():
+    from openpyxl.workbook import Workbook
+    wb = Workbook()
+    ws = wb.active
+    datetuple = (2011, 10, 31)
+    dt = datetime(datetuple[0], datetuple[1], datetuple[2])
+    ws.cell('A1').value = dt
+    ws.cell('A1').value = None
+    assert ws.cell('A1').value == None
