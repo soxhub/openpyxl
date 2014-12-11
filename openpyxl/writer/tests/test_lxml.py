@@ -336,3 +336,53 @@ def test_write_comments(worksheet, write_worksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+@pytest.mark.lxml_required
+def test_auto_filter_worksheet(worksheet, write_worksheet):
+    worksheet.auto_filter.ref = 'A1:F1'
+    xml = write_worksheet(worksheet, None)
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <sheetPr>
+        <outlinePr summaryBelow="1" summaryRight="1"/>
+      </sheetPr>
+      <dimension ref="A1:A1"/>
+      <sheetViews>
+        <sheetView workbookViewId="0">
+          <selection activeCell="A1" sqref="A1"/>
+        </sheetView>
+      </sheetViews>
+      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetData/>
+      <autoFilter ref="A1:F1"/>
+      <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+    </worksheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+@pytest.mark.lxml_required
+def test_frozen_panes_worksheet(worksheet, write_worksheet):
+    worksheet.freeze_panes = 'D4'
+    xml = write_worksheet(worksheet, None)
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <sheetPr>
+        <outlinePr summaryBelow="1" summaryRight="1"/>
+      </sheetPr>
+      <dimension ref="A1:A1"/>
+      <sheetViews>
+        <sheetView workbookViewId="0">
+          <pane xSplit="3" ySplit="3" topLeftCell="D4" activePane="bottomRight" state="frozen"/>
+          <selection pane="topRight"/>
+          <selection pane="bottomLeft"/>
+          <selection pane="bottomRight" activeCell="A1" sqref="A1"/>
+        </sheetView>
+      </sheetViews>
+      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetData/>
+      <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+    </worksheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

@@ -20,6 +20,7 @@ from . lxml_worksheet import (
     write_format,
     write_sheetviews,
     write_cols,
+    write_autofilter
 )
 
 from openpyxl.xml.constants import (
@@ -70,6 +71,9 @@ class LXMLWorksheet(DumpWorksheet):
                             xf.write(r)
                     except GeneratorExit:
                         pass
+                af = write_autofilter(self)
+                if af is not None:
+                    xf.write(af)
 
     def close(self):
         if self.__saved:
