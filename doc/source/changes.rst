@@ -29,6 +29,12 @@ Bug fixes
 * `#395 <https://bitbucket.org/openpyxl/openpyxl/issue/395>`_ temporary files not cleaned properly
 
 
+Minor changes
+-------------
+* Add relation namespace to root element for compatibility with iWork
+* Serialize comments relation in LXML-backend
+
+
 >>>>>>> theirs
 2.1.3 (2014-12-09)
 ==================
