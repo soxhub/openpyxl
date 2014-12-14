@@ -122,7 +122,8 @@ expected = [['This is cell A1 in Sheet 1', None, None, None, None, None, None],
             [None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None],
             [None, None, None, None, None, None, 'This is cell G5'], ]
-def test_read_fast_integrated_1(sample_workbook):
+
+def test_read_fast_integrated_text(sample_workbook):
     wb = sample_workbook
     ws = wb['Sheet1 - Text']
     for row, expected_row in zip(ws.iter_rows(), expected):
@@ -130,7 +131,13 @@ def test_read_fast_integrated_1(sample_workbook):
         assert row_values == expected_row
 
 
-def test_read_fast_integrated_2(sample_workbook):
+def test_read_single_cell_range(sample_workbook):
+    wb = sample_workbook
+    ws = wb['Sheet1 - Text']
+    assert 'This is cell A1 in Sheet 1' == list(ws.iter_rows('A1'))[0][0].value
+
+
+def test_read_fast_integrated_numbers(sample_workbook):
     wb = sample_workbook
     expected = [[x + 1] for x in range(30)]
     query_range = 'D1:D30'
@@ -140,7 +147,7 @@ def test_read_fast_integrated_2(sample_workbook):
         assert row_values == expected_row
 
 
-def test_read_fast_integrated_3(sample_workbook):
+def test_read_fast_integrated_numbers_2(sample_workbook):
     wb = sample_workbook
     query_range = 'K1:K30'
     expected = expected = [[(x + 1) / 100.0] for x in range(30)]
@@ -230,3 +237,26 @@ def test_read_hyperlinks_read_only(datadir, Workbook):
     ws = IterableWorksheet(Workbook(data_only=True, read_only=True), "Sheet",
                            "", filename, ['SOMETEXT'], [])
     assert ws['F2'].value is None
+
+
+def test_read_with_missing_cells(datadir):
+    datadir.join("reader").chdir()
+
+    class Workbook:
+        excel_base_date = None
+        _cell_styles = [None]
+
+        def get_sheet_names(self):
+            return []
+
+    filename = "bug393-worksheet.xml"
+
+    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
+    ws = IterableWorksheet(Workbook(), "Sheet", "", filename, [], [])
+    row = tuple(ws.get_squared_range(1, 2, None, 2))[0]
+    values = [c.value for c in row]
+    assert values == [None, None, 1, 2, 3]
+
+    row = tuple(ws.get_squared_range(1, 4, None, 4))[0]
+    values = [c.value for c in row]
+    assert values == [1, 2, None, None, 3]
