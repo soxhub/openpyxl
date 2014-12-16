@@ -18,7 +18,7 @@ Minor changes
 * `PR 40 <https://bitbucket.org/openpyxl/openpyxl/pull-request/40/>`_Support frozen panes and autofilter in write-only mode
 
 
-2.1.4 (2014-12-15)
+2.1.4 (2014-12-16)
 ==================
 
 
@@ -28,6 +28,8 @@ Bug fixes
 * `#393 <https://bitbucket.org/openpyxl/openpyxl/issue/393>`_ IterableWorksheet skips empty cells in rows
 * `#394 <https://bitbucket.org/openpyxl/openpyxl/issue/394>`_ Date format is applied to all columns (while only first column contains dates)
 * `#395 <https://bitbucket.org/openpyxl/openpyxl/issue/395>`_ temporary files not cleaned properly
+* `#396 <https://bitbucket.org/openpyxl/openpyxl/issue/396>`_ Cannot write "=" in Excel file
+* `#398 <https://bitbucket.org/openpyxl/openpyxl/issue/398>`_ Cannot write empty rows in write-only mode with LXML installed
 
 
 Minor changes
