@@ -19,6 +19,16 @@ Minor changes
 * Use ws.calculate_dimension(force=True) in read-only mode for unsized worksheets
 
 
+2.1.5 (unreleased)
+==================
+
+
+Bug fixes
+---------
+* `#403 <https://bitbucket.org/openpyxl/openpyxl/issue/403>`_ Cannot add comments in write-only mode
+* `#401 <https://bitbucket.org/openpyxl/openpyxl/issue/401>`_ Creating cells in an empty row raises an exception
+
+
 2.1.4 (2014-12-16)
 ==================
 

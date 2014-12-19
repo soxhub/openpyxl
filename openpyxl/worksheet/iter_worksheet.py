@@ -156,9 +156,9 @@ class IterableWorksheet(Worksheet):
                                    value, data_type, self.parent._cell_styles[style_id])
             col_counter = column + 1
         if max_col is not None:
-            while col_counter <= max_col:
+            for _ in range(col_counter, max_col+1):
                 yield EMPTY_CELL
-                col_counter += 1
+
 
     def _get_cell(self, coordinate):
         """Cells are returned by a generator which can be empty"""
