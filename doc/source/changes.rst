@@ -59,7 +59,7 @@ Bug fixes
 Minor changes
 -------------
 * `PR 30 <https://bitbucket.org/openpyxl/openpyxl/pull-request/30/>`_ Fix regex for positive exponentials
-* `PR 28 <https://bitbucket.org/openpyxl/openpyxl/pull-request/28/>`_ `#328 <https://bitbucket.org/openpyxl/openpyxl/issue/328/valueerror-when-using-rows-on-sheet-with>`_ ValueError when using .rows on sheet with hyperlinks
+* `PR 28 <https://bitbucket.org/openpyxl/openpyxl/pull-request/28/>`_ When reading a sheet with data_only, containing an hyperlink but no cache value, do not try to force it as a numerical value, just return None
 
 
 Bug fixes
@@ -171,11 +171,13 @@ Bug fixes
 
 
 2.0.2 (2014-05-13)
+==================
 
 2.0.1 (2014-05-13)  brown bag
+=============================
 
 2.0.0 (2014-05-13)  brown bag
-==================
+=============================
 
 
 Major changes

@@ -134,7 +134,7 @@ class Float(Convertible):
 
 
 class Bool(Convertible):
-
+    """ Boolean type - represents truth values `True` or `False` """
     expected_type = bool
 
     def __set__(self, instance, value):
@@ -225,7 +225,10 @@ class Alias(Descriptor):
         setattr(instance, self.alias, value)
 
     def __get__(self, instance, cls):
-        return getattr(instance, self.alias)
+        if instance:
+            return getattr(instance, self.alias)
+        else:
+            return getattr(cls, self.alias)
 
 
 class MetaStrict(type):
