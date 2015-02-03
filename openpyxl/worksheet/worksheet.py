@@ -267,12 +267,15 @@ class Worksheet(object):
         """ Print Titles are rows or columns that are repeated on each printed sheet.
         This adds n rows or columns at the top or left of the sheet
         """
+        
+        scope = self.parent._active_sheet_index
+        
         if rows_or_cols == 'cols':
             r = '$A:$%s' % get_column_letter(n)
         else:
             r = '$1:$%d' % n
 
-        self.parent.create_named_range('_xlnm.Print_Titles', self, r, self)
+        self.parent.create_named_range('_xlnm.Print_Titles', self, r, scope)
 
     def cell(self, coordinate=None, row=None, column=None):
         """Returns a cell object based on the given coordinates.
