@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
@@ -460,7 +460,7 @@ class Worksheet(object):
         :param range_string: `named range` name
         :type range_string: string
 
-        :rtype: tuples of tuples of :class:`openpyxl.cell.Cell
+        :rtype: tuples of tuples of :class:openpyxl.cell.Cell
         """
         named_range = self._parent.get_named_range(range_string)
         if named_range is None:
@@ -682,7 +682,15 @@ class Worksheet(object):
                 col = get_column_letter(col_idx)
                 if col not in self.column_dimensions:
                     self.column_dimensions[col] = ColumnDimension(worksheet=self, index=col)
-                cell = Cell(self, col, row_idx, content)
+                if isinstance(content, Cell):
+                    # compatible with write-only mode
+                    cell = content
+                    cell.parent = self
+                    cell.column = col
+                    cell.row = row_idx
+                    cell.coordinate = "%s%s" % (col, row_idx)
+                else:
+                    cell = Cell(self, col, row_idx, content)
                 self._cells['%s%d' % (col, row_idx)] = cell
 
         elif isinstance(iterable, dict):

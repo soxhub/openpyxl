@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ from openpyxl.collections import IndexedList
 from openpyxl.compat import iteritems
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import Element, SubElement, tostring
-from openpyxl.cell import column_index_from_string
+from openpyxl.cell import column_index_from_string, coordinate_from_string
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
@@ -95,27 +95,30 @@ class CommentWriter(object):
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
 
-        for i, comment in enumerate(self.comments):
-            self._write_comment_shape(root, comment, i)
+        for i, comment in enumerate(self.comments, 1026):
+            shape = self._write_comment_shape(comment, i)
+            root.append(shape)
 
         return tostring(root)
 
-    def _write_comment_shape(self, root, comment, idx):
+    def _write_comment_shape(self, comment, idx):
         # get zero-indexed coordinates of the comment
-        row = comment._parent.row - 1
-        column = column_index_from_string(comment._parent.column) - 1
+        col, row = coordinate_from_string(comment._parent.coordinate)
+        row -= 1
+        column = column_index_from_string(col) - 1
+
         style = ("position:absolute; margin-left:59.25pt;"
                  "margin-top:1.5pt;width:%(width)s;height:%(height)s;"
                  "z-index:1;visibility:hidden") % {'height': comment._height,
                                                    'width': comment._width}
         attrs = {
-            "id": "_x0000_s%s" % (idx + 1026),
+            "id": "_x0000_s%04d" % idx ,
             "type": "#_x0000_t202",
             "style": style,
             "fillcolor": "#ffffe1",
             "{%s}insetmode" % officens: "auto"
         }
-        shape = SubElement(root, "{%s}shape" % vmlns, attrs)
+        shape = Element("{%s}shape" % vmlns, attrs)
 
         SubElement(shape, "{%s}fill" % vmlns,
                    {"color2": "#ffffe1"})
@@ -131,5 +134,6 @@ class CommentWriter(object):
         SubElement(client_data, "{%s}MoveWithCells" % excelns)
         SubElement(client_data, "{%s}SizeWithCells" % excelns)
         SubElement(client_data, "{%s}AutoFill" % excelns).text = "False"
-        SubElement(client_data, "{%s}Row" % excelns).text = str(row)
-        SubElement(client_data, "{%s}Column" % excelns).text = str(column)
+        SubElement(client_data, "{%s}Row" % excelns).text = "%d" % row
+        SubElement(client_data, "{%s}Column" % excelns).text = "%d" % column
+        return shape

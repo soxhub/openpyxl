@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ from openpyxl.reader.excel import load_workbook
 
 
 # constants
-__version__ = '2.1.4'
+__version__ = '2.1.5'
 
 __author__ = 'Eric Gazoni'
 __license__ = 'MIT/Expat'

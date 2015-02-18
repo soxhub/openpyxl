@@ -1,3 +1,19 @@
+2.1.5 (2015-02-18)
+
+
+Bug fixes
+---------
+* `#403 <https://bitbucket.org/openpyxl/openpyxl/issue/403>`_ Cannot add comments in write-only mode
+* `#401 <https://bitbucket.org/openpyxl/openpyxl/issue/401>`_ Creating cells in an empty row raises an exception
+* `#408 <https://bitbucket.org/openpyxl/openpyxl/issue/408>`_ from_excel adjustment for Julian dates 1 < x < 60
+* `#409 <https://bitbucket.org/openpyxl/openpyxl/issue/409>`_ refersTo is an optional attribute
+
+
+Minor changes
+-------------
+* Allow cells to be appended to standard worksheets for code compatibility with write-only mode.
+
+
 2.1.4 (2014-12-16)
 ==================
 
@@ -44,7 +60,7 @@ Bug fixes
 Minor changes
 -------------
 * `PR 30 <https://bitbucket.org/openpyxl/openpyxl/pull-request/30/>`_ Fix regex for positive exponentials
-* `PR 28 <https://bitbucket.org/openpyxl/openpyxl/pull-request/28/>`_ `#328 <https://bitbucket.org/openpyxl/openpyxl/issue/328/valueerror-when-using-rows-on-sheet-with>`_ ValueError when using .rows on sheet with hyperlinks
+* `PR 28 <https://bitbucket.org/openpyxl/openpyxl/pull-request/28/>`_ When reading a sheet with data_only, containing an hyperlink but no cache value, do not try to force it as a numerical value, just return None
 
 
 Bug fixes
@@ -156,11 +172,13 @@ Bug fixes
 
 
 2.0.2 (2014-05-13)
+==================
 
 2.0.1 (2014-05-13)  brown bag
+=============================
 
 2.0.0 (2014-05-13)  brown bag
-==================
+=============================
 
 
 Major changes

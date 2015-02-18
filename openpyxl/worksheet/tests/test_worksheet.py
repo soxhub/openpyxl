@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 
 # test imports
 import pytest
@@ -297,6 +297,19 @@ class TestWorksheet(object):
         )
         for e, v in zip(expected, flatten(vals)):
             assert e == tuple(v)
+
+
+    def test_append_cell(self):
+        from openpyxl.cell import Cell
+
+        cell = Cell(None, 'A', 1, 25)
+
+        ws = Worksheet(self.wb)
+        ws.append([])
+
+        ws.append([cell])
+
+        assert ws['A2'].value == 25
 
 
     @pytest.mark.parametrize("row, column, coordinate",
