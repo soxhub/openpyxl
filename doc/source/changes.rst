@@ -7,8 +7,8 @@ Major changes
 * Shift to using (row, column) indexing for cells. Cells will at some point *lose* coordinates.
 
 
-2.2.0 (unreleased)
-==================
+2.2.0-b1 (2015-02-18)
+=====================
 
 
 Major changes
