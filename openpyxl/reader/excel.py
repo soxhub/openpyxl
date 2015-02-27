@@ -201,7 +201,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
 
     parsed_styles = read_style_table(archive)
     if parsed_styles is not None:
-        wb.conditional_formats = parsed_styles.cond_styles
+        wb.differential_styles = parsed_styles.cond_styles
         wb.cond_styles = parsed_styles.cond_styles
         wb._cell_styles = parsed_styles.cell_styles
         wb._colors = parsed_styles.color_index
