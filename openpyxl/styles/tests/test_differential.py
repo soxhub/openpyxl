@@ -45,7 +45,7 @@ def test_serialise(DifferentialStyle):
     <sz val="11"></sz>
     </font>
     <fill>
-    <patternFill patternType="none"></patternFill>
+    <patternFill />
     </fill>
     </dxf>
     """
