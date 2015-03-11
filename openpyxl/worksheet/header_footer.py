@@ -196,10 +196,17 @@ ITEM_REGEX = re.compile("""
 (&R(?P<right>.+?))?
 $""", re.VERBOSE)
 
+from warnings import warn
+
 def _split_string(text):
     """Split the combined (decoded) string into left, center and right parts"""
     m = ITEM_REGEX.match(text)
-    return m.groupdict()
+    try:
+        parts = m.groupdict()
+    except AttributeError:
+        warn("""Cannot parse header or footer so it will be ignored""")
+        parts = {'left':'', 'right':'', 'center':''}
+    return parts
 
 HEADER_REGEX = re.compile(r"(&[ABDEGHINOPSTUXYZ\+\-])") # split part into commands
 FONT_REGEX = re.compile('&"(?P<font>.+)"')
