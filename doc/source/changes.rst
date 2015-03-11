@@ -8,7 +8,7 @@ Major changes
 * New implementation of conditional formatting. Databars now partially preserved.
 
 
-2.2.0 (unreleased)
+2.2.0 (2015-03-11)
 ==================
 
 
