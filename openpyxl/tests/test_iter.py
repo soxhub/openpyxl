@@ -22,6 +22,7 @@ def DummyWorkbook():
             return []
     return Workbook()
 
+
 def test_open_many_sheets(datadir):
     datadir.join("reader").chdir()
     wb = load_workbook("bigfoot.xlsx", True) # if
@@ -332,3 +333,11 @@ def test_read_empty_row(datadir, DummyWorkbook):
     row = ws._get_row(element, max_col=10)
     row = tuple(row)
     assert len(row) == 10
+
+
+def test_read_empty_rows(datadir, DummyWorkbook):
+
+    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
+    rows = tuple(ws.rows)
+    assert len(rows) == 7
