@@ -22,6 +22,13 @@ def DummyWorkbook():
             return []
     return Workbook()
 
+
+@pytest.fixture
+def ReadOnlyWorksheet():
+    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+    return ReadOnlyWorksheet
+
+
 def test_open_many_sheets(datadir):
     datadir.join("reader").chdir()
     wb = load_workbook("bigfoot.xlsx", True) # if
@@ -50,17 +57,15 @@ def test_read_dimension(datadir, filename, expected):
                              ("sheet2_no_dimension.xml", (1, 1, None, None)),
                          ]
                          )
-def test_ctor(datadir, DummyWorkbook, filename, expected):
+def test_ctor(datadir, DummyWorkbook, ReadOnlyWorksheet, filename, expected):
     datadir.join("reader").chdir()
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
     with open(filename) as src:
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", src, [])
     assert (ws.min_row, ws.min_column, ws.max_row, ws.max_column) == expected
 
 
-def test_force_dimension(datadir, DummyWorkbook):
+def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [])
 
@@ -74,10 +79,9 @@ def test_force_dimension(datadir, DummyWorkbook):
                           "sheet2_no_dimension.xml"
                          ]
                          )
-def test_get_max_cell(datadir, DummyWorkbook, filename):
+def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
 
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
@@ -259,8 +263,7 @@ def test_read_style_iter(tmpdir):
     assert cell.font == ft
 
 
-def test_read_hyperlinks_read_only(datadir, Workbook):
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+def test_read_hyperlinks_read_only(datadir, Workbook, ReadOnlyWorksheet):
 
     datadir.join("reader").chdir()
     filename = 'bug328_hyperlinks.xml'
@@ -269,12 +272,11 @@ def test_read_hyperlinks_read_only(datadir, Workbook):
     assert ws['F2'].value is None
 
 
-def test_read_with_missing_cells(datadir, DummyWorkbook):
+def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
 
     filename = "bug393-worksheet.xml"
 
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
     rows = tuple(ws.rows)
 
@@ -287,7 +289,7 @@ def test_read_with_missing_cells(datadir, DummyWorkbook):
     assert values == [1, 2, None, None, 3]
 
 
-def test_read_row(datadir, DummyWorkbook):
+def test_read_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
 
     src = b"""
@@ -306,7 +308,6 @@ def test_read_row(datadir, DummyWorkbook):
     </sheetData>
     """
 
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "bug393-worksheet.xml", [])
 
     xml = fromstring(src)
@@ -319,10 +320,8 @@ def test_read_row(datadir, DummyWorkbook):
     assert values == [None, None, None, 1, None, None, None, None, None, None, 0.01]
 
 
-def test_read_empty_row(datadir, DummyWorkbook):
+def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
 
-
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
 
     src = """
@@ -332,3 +331,10 @@ def test_read_empty_row(datadir, DummyWorkbook):
     row = ws._get_row(element, max_col=10)
     row = tuple(row)
     assert len(row) == 10
+
+
+def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
+
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
+    rows = tuple(ws.rows)
+    assert len(rows) == 7
