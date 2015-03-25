@@ -65,7 +65,7 @@ class WorkSheetParser(object):
         self.guess_types = ws.parent._guess_types
         self.data_only = ws.parent.data_only
         self.styles = [dict(style) for style in self.ws.parent._cell_styles]
-	self.keep_vba = keep_vba
+        self.keep_vba = keep_vba
 
     def parse(self):
         dispatcher = {
@@ -299,8 +299,8 @@ class WorkSheetParser(object):
 
     def parse_legacy_drawing(self, element):
         if self.keep_vba:
-	    # Create an id that will not clash with any other ids that will
-	    # be generated.
+            # Create an id that will not clash with any other ids that will
+            # be generated.
             self.ws.vba_controls = 'vbaControlId'
 
 
