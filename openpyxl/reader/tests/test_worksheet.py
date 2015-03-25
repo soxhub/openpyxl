@@ -78,7 +78,7 @@ def Worksheet(Workbook):
             self._alignments = IndexedList()
             self._protections = IndexedList()
             self._cell_styles = IndexedList()
-	    self.vba_controls = None
+            self.vba_controls = None
             for i in range(29):
                 self._cell_styles.add((StyleId(i, i, i, i, i, i)))
             self._cell_styles.add(StyleId(fillId=4, borderId=6, alignmentId=1, protectionId=0))
@@ -110,7 +110,7 @@ def Worksheet(Workbook):
             self._cells = {}
             self._data_validations = []
             self.header_footer = HeaderFooter()
-	    self.vba_controls = None
+            self.vba_controls = None
 
         def _add_cell(self, cell):
             self._cells[cell.coordinate] = cell
