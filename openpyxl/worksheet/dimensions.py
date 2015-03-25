@@ -1,13 +1,15 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.cell import get_column_interval, column_index_from_string
 from openpyxl.descriptors import Integer, Float, Bool, Strict, String, Alias
-from openpyxl.compat import OrderedDict
+from openpyxl.styles.styleable import StyleableObject
+
+from openpyxl.utils.bound_dictionary import BoundDictionary
 
 
-class Dimension(Strict):
+class Dimension(Strict, StyleableObject):
     """Information about the display properties of a row or column."""
     __fields__ = ('index',
                  'hidden',
@@ -19,17 +21,25 @@ class Dimension(Strict):
     outlineLevel = Integer(allow_none=True)
     outline_level = Alias('outlineLevel')
     collapsed = Bool()
-    _style = None
+    _style_id = None
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
+        super(Dimension, self).__init__(sheet=worksheet)
         self.index = index
         self.hidden = hidden
         self.outlineLevel = outlineLevel
         self.collapsed = collapsed
-        self.worksheet = worksheet
-        if style is not None: # accept pointer when parsing
-            self._style = int(style)
+        if style is not None:
+            style_id = int(style)
+            style = self.parent.parent._cell_styles[style_id]
+            self._font_id = style.fontId
+            self._fill_id = style.fillId
+            self._border_id = style.borderId
+            self._alignment_id = style.alignmentId
+            self._protection_id = style.protectionId
+            self._number_format_id = style.numFmtId
+
 
     def __iter__(self):
         for key in self.__fields__[1:]:
@@ -40,16 +50,6 @@ class Dimension(Strict):
     @property
     def visible(self):
         return not self.hidden
-
-    @property
-    def style(self):
-        if self._style is not None:
-            return self.worksheet.parent.shared_styles[self._style]
-
-    @style.setter
-    def style(self, style):
-        if style is not None:
-            self._style = self.worksheet.parent.shared_styles.add(style)
 
 
 class RowDimension(Dimension):
@@ -79,6 +79,7 @@ class RowDimension(Dimension):
                  spans=None,
                  thickBot=None,
                  thickTop=None,
+                 **kw
                  ):
         if r is not None:
             index = r
@@ -95,25 +96,17 @@ class RowDimension(Dimension):
     @property
     def customFormat(self):
         """Always true if there is a style for the row"""
-        return self._style is not None
+        return self.has_style
 
     @property
     def customHeight(self):
         """Always true if there is a height for the row"""
         return self.ht is not None
 
-    @property
-    def s(self):
-        return self.style
-
-    @s.setter
-    def s(self, style):
-        self.style = style
-
     def __iter__(self):
         for key in self.__fields__[1:]:
             if key == 's':
-                value = getattr(self, '_style')
+                value = getattr(self, 'style_id')
             else:
                 value = getattr(self, key)
             if value:
@@ -171,7 +164,7 @@ class ColumnDimension(Dimension):
     def __iter__(self):
         for key in self.__fields__[1:]:
             if key == 'style':
-                value = getattr(self, '_style')
+                value = self.style_id
             else:
                 value = getattr(self, key)
             if value:
@@ -182,11 +175,12 @@ class ColumnDimension(Dimension):
         # return get_column_letter(self.index)
 
 
-class DimensionHolder(OrderedDict):
+class DimensionHolder(BoundDictionary):
     "hold (row|column)dimensions and allow operations over them"
-    def __init__(self, worksheet, direction, *args, **kwargs):
+    def __init__(self, worksheet, reference="index", default_factory=None, *args, **kwargs):
         self.worksheet = worksheet
-        self.direction = direction
+        self.reference = reference
+        self.default_factory = default_factory
         super(DimensionHolder, self).__init__(*args, **kwargs)
 
     def group(self, start, end=None, outline_level=1, hidden=False):

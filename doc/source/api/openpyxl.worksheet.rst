@@ -36,18 +36,18 @@ openpyxl.worksheet.header_footer module
     :undoc-members:
     :show-inheritance:
 
-openpyxl.worksheet.iter_worksheet module
-----------------------------------------
-
-.. automodule:: openpyxl.worksheet.iter_worksheet
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 openpyxl.worksheet.page module
 ------------------------------
 
 .. automodule:: openpyxl.worksheet.page
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+openpyxl.worksheet.properties module
+------------------------------------
+
+.. automodule:: openpyxl.worksheet.properties
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,10 +60,26 @@ openpyxl.worksheet.protection module
     :undoc-members:
     :show-inheritance:
 
+openpyxl.worksheet.read_only module
+-----------------------------------
+
+.. automodule:: openpyxl.worksheet.read_only
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 openpyxl.worksheet.relationship module
 --------------------------------------
 
 .. automodule:: openpyxl.worksheet.relationship
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+openpyxl.worksheet.views module
+-------------------------------
+
+.. automodule:: openpyxl.worksheet.views
     :members:
     :undoc-members:
     :show-inheritance:

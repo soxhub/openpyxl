@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2014 openpyxl
+# Copyright (c) 2010-2015 openpyxl
 
 """Read in global settings to be maintained by the workbook object."""
 
@@ -16,12 +16,11 @@ from openpyxl.xml.constants import (
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
-    WORKSHEET,
+    WORKSHEET_TYPE,
     EXTERNAL_LINK,
 )
 from openpyxl.workbook import DocumentProperties
-from openpyxl.date_time import (
-    W3CDTF_to_datetime,
+from openpyxl.utils.datetime  import (
     CALENDAR_WINDOWS_1900,
     CALENDAR_MAC_1904
     )
@@ -37,33 +36,12 @@ import datetime
 import re
 
 # constants
-VALID_WORKSHEET = WORKSHEET
+VALID_WORKSHEET = WORKSHEET_TYPE
 
 
-def read_properties_core(xml_source):
-    """Read assorted file properties."""
-    properties = DocumentProperties()
-    root = fromstring(xml_source)
-    properties.creator = root.findtext('{%s}creator' % DCORE_NS, '')
-    properties.last_modified_by = root.findtext('{%s}lastModifiedBy' % COREPROPS_NS, '')
-
-    created_node = root.find('{%s}created' % DCTERMS_NS)
-    if created_node is not None:
-        properties.created = W3CDTF_to_datetime(created_node.text)
-    else:
-        properties.created = datetime.datetime.now()
-
-    modified_node = root.find('{%s}modified' % DCTERMS_NS)
-    if modified_node is not None:
-        properties.modified = W3CDTF_to_datetime(modified_node.text)
-    else:
-        properties.modified = properties.created
-
-    return properties
-
-
-def read_excel_base_date(xml_source):
-    root = fromstring(text = xml_source)
+def read_excel_base_date(archive):
+    src = archive.read(ARC_WORKBOOK)
+    root = fromstring(src)
     wbPr = root.find('{%s}workbookPr' % SHEET_MAIN_NS)
     if wbPr is not None and wbPr.get('date1904') in ('1', 'true'):
         return CALENDAR_MAC_1904
@@ -119,9 +97,7 @@ def detect_worksheets(archive):
         rel = rels[sheet['id']]
         rel['title'] = sheet['name']
         rel['sheet_id'] = sheet['sheetId']
-        state = sheet.get('state')
-        if state is not None:
-            rel['state'] = state
+        rel['state'] = sheet.get('state', 'visible')
         if ("/" + rel['path'] in valid_sheets
             or "worksheets" in rel['path']): # fallback in case content type is missing
             yield rel
@@ -143,3 +119,11 @@ def read_workbook_code_name(xml_source):
         pr = {}
 
     return pr.get('codeName', 'ThisWorkbook')
+
+
+def read_workbook_settings(xml_source):
+    root = fromstring(xml_source)
+    view = root.find('*/' '{%s}workbookView' % SHEET_MAIN_NS)
+    if view is not None:
+        if 'activeTab' in view.attrib:
+            return int(view.attrib['activeTab'])
