@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from warnings import warn
+
 from openpyxl.utils.indexed_list import IndexedList
 from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
 from .proxy import StyleProxy
@@ -88,6 +90,7 @@ class StyleableObject(object):
             pivotButton=self.pivotButton,
             quotePrefix=self.quotePrefix
         )
+
         return self.parent.parent._cell_styles.add(style)
 
     @property
@@ -105,21 +108,22 @@ class StyleableObject(object):
     #legacy
     @property
     def style(self):
+        warn("Use formatting objects such as font directly")
         return Style(
-            font=self.font,
-            fill=self.fill,
-            border=self.border,
-            alignment=self.alignment,
+            font=self.font.copy(),
+            fill=self.fill.copy(),
+            border=self.border.copy(),
+            alignment=self.alignment.copy(),
             number_format=self.number_format,
-            protection=self.protection
+            protection=self.protection.copy()
         )
 
     #legacy
     @style.setter
     def style(self, value):
-        self.font = value.font._StyleProxy__target
-        self.fill = value.fill._StyleProxy__target
-        self.border = value.border._StyleProxy__target
-        self.protection = value.protection._StyleProxy__target
-        self.alignment = value.alignment._StyleProxy__target
+        self.font = value.font.copy()
+        self.fill = value.fill.copy()
+        self.border = value.border.copy()
+        self.protection = value.protection.copy()
+        self.alignment = value.alignment.copy()
         self.number_format = value.number_format
