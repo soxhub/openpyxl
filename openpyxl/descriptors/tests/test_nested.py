@@ -71,6 +71,17 @@ class TestValue:
         assert diff is None, diff
 
 
+    def test_nested_from_tree(self, NestedValue):
+        xml = """
+        <simple>
+          <size val="4"/>
+        </simple>
+        """
+        node = fromstring(xml)
+        obj = NestedValue.from_tree(node)
+        assert obj.size == 4
+
+
 @pytest.fixture
 def NestedText():
 
@@ -123,3 +134,14 @@ class TestText:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_nested_from_tree(self, NestedText):
+        xml = """
+        <simple>
+          <coord>4</coord>
+        </simple>
+        """
+        node = fromstring(xml)
+        obj = NestedText.from_tree(node)
+        assert obj.coord == 4
