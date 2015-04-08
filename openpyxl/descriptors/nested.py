@@ -6,7 +6,7 @@ Generic serialisable classes
 """
 from .base import Convertible
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element
+from openpyxl.xml.functions import Element, localname
 
 
 class Value(Convertible):
@@ -17,7 +17,11 @@ class Value(Convertible):
     nested = True
 
     def __set__(self, instance, value):
-        if hasattr(value, "findall"):
+        if hasattr(value, "tag"):
+            tag = localname(value)
+            if tag != self.name:
+                raise ValueError("Tag does not match attribute")
+
             value = self.from_tree(value)
         super(Value, self).__set__(instance, value)
 

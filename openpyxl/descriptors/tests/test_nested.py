@@ -46,6 +46,15 @@ class TestValue:
         simple = NestedValue(size=node)
         assert simple.size == 4
 
+    def test_tag_mismatch(self, NestedValue):
+
+        xml = """
+        <length val="4"></length>
+        """
+        node = fromstring(xml)
+        with pytest.raises(ValueError):
+            simple = NestedValue(size=node)
+
 
 @pytest.fixture
 def NestedText():
