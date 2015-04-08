@@ -44,7 +44,7 @@ class TestValue:
             """
         node = fromstring(xml)
         simple = NestedValue(size=node)
-        assert simple.size == "4"
+        assert simple.size == 4
 
 
 @pytest.fixture
@@ -84,4 +84,4 @@ class TestText:
         node = fromstring(xml)
 
         simple = NestedText(node)
-        assert simple.coord == "4"
+        assert simple.coord == 4

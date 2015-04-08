@@ -4,12 +4,12 @@ from __future__ import absolute_import
 """
 Generic serialisable classes
 """
-from .base import Typed, Descriptor
+from .base import Convertible
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
 
 
-class Value(Descriptor):
+class Value(Convertible):
     """
     Nested tag storing the value on the 'val' attribute
     """
