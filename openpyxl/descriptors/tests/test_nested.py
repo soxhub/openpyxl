@@ -145,3 +145,24 @@ class TestText:
         node = fromstring(xml)
         obj = NestedText.from_tree(node)
         assert obj.coord == 4
+
+
+def test_bool_value():
+    from ..nested import BoolValue
+
+    class Simple(Serialisable):
+
+        bold = BoolValue()
+
+        def __init__(self, bold):
+            self.bold = bold
+
+
+    xml = """
+    <font>
+       <bold val="true"/>
+    </font>
+    """
+    node = fromstring(xml)
+    simple = Simple.from_tree(node)
+    assert simple.bold is True
