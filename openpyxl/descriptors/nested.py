@@ -54,4 +54,7 @@ class Text(Value):
 
 
 class BoolValue(Value, Bool):
-    pass
+
+
+    def from_tree(self, node):
+        return node.get("val", True)
