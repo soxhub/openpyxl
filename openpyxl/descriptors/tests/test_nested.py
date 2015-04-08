@@ -14,6 +14,8 @@ def NestedValue():
 
     class Simple(Serialisable):
 
+        tagname = "simple"
+
         size = Value(expected_type=int)
 
         def __init__(self, size):
@@ -46,6 +48,7 @@ class TestValue:
         simple = NestedValue(size=node)
         assert simple.size == 4
 
+
     def test_tag_mismatch(self, NestedValue):
 
         xml = """
@@ -56,12 +59,26 @@ class TestValue:
             simple = NestedValue(size=node)
 
 
+    def test_nested_to_tree(self, NestedValue):
+        simple = NestedValue(4)
+        xml = tostring(simple.to_tree())
+        expected = """
+        <simple>
+          <size val="4"/>
+        </simple>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
 @pytest.fixture
 def NestedText():
 
     from ..nested import Text
 
     class Simple(Serialisable):
+
+        tagname = "simple"
 
         coord = Text(expected_type=int)
 
@@ -94,3 +111,15 @@ class TestText:
 
         simple = NestedText(node)
         assert simple.coord == 4
+
+
+    def test_nested_to_tree(self, NestedText):
+        simple = NestedText(4)
+        xml = tostring(simple.to_tree())
+        expected = """
+        <simple>
+          <coord>4</coord>
+        </simple>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

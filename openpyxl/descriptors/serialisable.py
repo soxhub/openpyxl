@@ -37,7 +37,10 @@ class Serialisable(_Serialiasable):
             if desc is None:
                 continue
             if tag in cls.__nested__:
-                attrib[tag] = cls._create_nested(el, tag)
+                if hasattr(desc, 'from_tree'):
+                    attrib[tag] = el
+                else:
+                    attrib[tag] = cls._create_nested(el, tag)
             else:
                 if hasattr(desc.expected_type, "from_tree"):
                     obj = desc.expected_type.from_tree(el)
@@ -69,8 +72,12 @@ class Serialisable(_Serialiasable):
 
         for child in self.__elements__:
             if child in self.__nested__:
+                desc = getattr(self.__class__, child)
                 value = getattr(self, child)
-                if isinstance(value, tuple):
+                if hasattr(desc, "to_tree"):
+                    obj = desc.to_tree(child, value)
+                    el.append(obj)
+                elif isinstance(value, tuple):
                     if hasattr(el, 'extend'):
                         el.extend(self._serialise_nested(value))
                     else: # py26 nolxml
