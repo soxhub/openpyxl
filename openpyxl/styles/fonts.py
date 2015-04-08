@@ -3,10 +3,11 @@ from __future__ import absolute_import
 
 
 from openpyxl.descriptors import Float, Integer, Set, Bool, String, Alias, MinMax, NoneSet
+from openpyxl.descriptors.nested import Value
 from .hashable import HashableObject
 from .colors import ColorDescriptor, BLACK
 
-from openpyxl.compat import safe_string
+from openpyxl.compat import safe_string, basestring
 from openpyxl.xml.functions import Element, SubElement
 
 
@@ -21,10 +22,10 @@ class Font(HashableObject):
     UNDERLINE_SINGLE_ACCOUNTING = 'singleAccounting'
 
 
-    name = String(nested=True)
-    charset = Integer(allow_none=True, nested=True)
+    name = Value(expected_type=basestring)
+    charset = Value(allow_none=True, expected_type=int)
     family = MinMax(min=0, max=14, nested=True)
-    sz = Float(nested=True)
+    sz = Value(expected_type=float)
     size = Alias("sz")
     b = Bool(nested=True)
     bold = Alias("b")
