@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 
 from openpyxl.descriptors import Float, Integer, Set, Bool, String, Alias, MinMax, NoneSet
-from openpyxl.descriptors.nested import Value
+from openpyxl.descriptors.nested import Value, BoolValue
 from .hashable import HashableObject
 from .colors import ColorDescriptor, BLACK
 
@@ -27,16 +27,16 @@ class Font(HashableObject):
     family = MinMax(min=0, max=14, nested=True)
     sz = Value(expected_type=float)
     size = Alias("sz")
-    b = Bool(nested=True)
+    b = BoolValue()
     bold = Alias("b")
-    i = Bool(nested=True)
+    i = BoolValue()
     italic = Alias("i")
-    strike = Bool(nested=True)
+    strike = BoolValue()
     strikethrough = Alias("strike")
-    outline = Bool(nested=True)
-    shadow = Bool(nested=True)
-    condense = Bool(nested=True)
-    extend = Bool(nested=True)
+    outline = BoolValue()
+    shadow = BoolValue()
+    condense = BoolValue()
+    extend = BoolValue()
     u = NoneSet(values=('single', 'double', 'singleAccounting',
                         'doubleAccounting'), nested=True
                 )
