@@ -166,3 +166,25 @@ def test_bool_value():
     node = fromstring(xml)
     simple = Simple.from_tree(node)
     assert simple.bold is True
+
+
+def test_noneset_value():
+    from ..nested import NoneSetValue
+
+
+    class Simple(Serialisable):
+
+        underline = NoneSetValue(values=('1', '2', '3'))
+
+        def __init__(self, underline):
+            self.underline = underline
+
+    xml = """
+    <font>
+       <underline val="1" />
+    </font>
+    """
+
+    node = fromstring(xml)
+    simple = Simple.from_tree(node)
+    assert simple.underline == '1'

@@ -74,7 +74,7 @@ class Serialisable(_Serialiasable):
             if child in self.__nested__:
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
-                if hasattr(desc, "to_tree"):
+                if hasattr(desc, "to_tree") and value:
                     obj = desc.to_tree(child, value)
                     el.append(obj)
                 elif isinstance(value, tuple):

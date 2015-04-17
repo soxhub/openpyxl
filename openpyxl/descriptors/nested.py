@@ -4,18 +4,20 @@ from __future__ import absolute_import
 """
 Generic serialisable classes
 """
-from .base import Convertible, Bool
+from .base import (
+    Convertible,
+    Bool,
+    Descriptor,
+    NoneSet,
+    )
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
 
 
-class Value(Convertible):
-    """
-    Nested tag storing the value on the 'val' attribute
-    """
-
+class Nested(Descriptor):
+    
     nested = True
-
+    
     def __set__(self, instance, value):
         if hasattr(value, "tag"):
             tag = localname(value)
@@ -23,7 +25,7 @@ class Value(Convertible):
                 raise ValueError("Tag does not match attribute")
 
             value = self.from_tree(value)
-        super(Value, self).__set__(instance, value)
+        super(Nested, self).__set__(instance, value)
 
 
     def from_tree(self, node):
@@ -33,7 +35,14 @@ class Value(Convertible):
     @staticmethod
     def to_tree(tagname=None, value=None):
         value = safe_string(value)
-        return Element(tagname, val=value)
+        return Element(tagname, val=value)    
+
+
+class Value(Nested, Convertible):
+    """
+    Nested tag storing the value on the 'val' attribute
+    """
+    pass
 
 
 class Text(Value):
@@ -58,3 +67,8 @@ class BoolValue(Value, Bool):
 
     def from_tree(self, node):
         return node.get("val", True)
+
+
+class NoneSetValue(Nested, NoneSet):
+    
+    pass
