@@ -9,15 +9,16 @@ from .base import (
     Bool,
     Descriptor,
     NoneSet,
+    MinMax,
     )
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
 
 
 class Nested(Descriptor):
-    
+
     nested = True
-    
+
     def __set__(self, instance, value):
         if hasattr(value, "tag"):
             tag = localname(value)
@@ -35,7 +36,7 @@ class Nested(Descriptor):
     @staticmethod
     def to_tree(tagname=None, value=None):
         value = safe_string(value)
-        return Element(tagname, val=value)    
+        return Element(tagname, val=value)
 
 
 class Value(Nested, Convertible):
@@ -70,5 +71,10 @@ class BoolValue(Value, Bool):
 
 
 class NoneSetValue(Nested, NoneSet):
-    
+
+    pass
+
+
+class MinMaxValue(Nested, MinMax):
+
     pass

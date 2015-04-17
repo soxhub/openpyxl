@@ -188,3 +188,25 @@ def test_noneset_value():
     node = fromstring(xml)
     simple = Simple.from_tree(node)
     assert simple.underline == '1'
+
+def test_min_max_value():
+    from ..nested import MinMaxValue
+
+
+    class Simple(Serialisable):
+
+        size = MinMaxValue(min=5, max=10)
+
+        def __init__(self, size):
+            self.size = size
+
+
+    xml = """
+    <font>
+         <size val="6"/>
+    </font>
+    """
+
+    node = fromstring(xml)
+    simple = Simple.from_tree(node)
+    assert simple.size == 6
