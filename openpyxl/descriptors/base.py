@@ -45,10 +45,11 @@ class Convertible(Typed):
     def __set__(self, instance, value):
         if ((self.allow_none and value is not None)
             or not self.allow_none):
-            try:
-                value = self.expected_type(value)
-            except:
-                raise TypeError('expected ' + str(self.expected_type))
+            if not isinstance(value, self.expected_type):
+                try:
+                    value = self.expected_type(value)
+                except:
+                    raise TypeError('expected ' + str(self.expected_type))
         super(Convertible, self).__set__(instance, value)
 
 
