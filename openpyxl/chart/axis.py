@@ -11,6 +11,15 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import ExtensionList, Percentage
+from openpyxl.descriptors.nested import (
+    NestedValue,
+    NestedSet,
+    NestedBool,
+    NestedNoneSet,
+    NestedFloat,
+    NestedInteger,
+    NestedMinMax,
+)
 
 from openpyxl.styles.differential import NumFmt
 
@@ -25,10 +34,10 @@ class Scaling(Serialisable):
 
     tagname = "scaling"
 
-    logBase = Float(allow_none=True, nested=True)
-    orientation = Set(values=(['maxMin', 'minMax']), nested=True)
-    max = Float(nested=True, allow_none=True)
-    min = Float(nested=True, allow_none=True)
+    logBase = NestedFloat(allow_none=True)
+    orientation = NestedSet(values=(['maxMin', 'minMax']))
+    max = NestedFloat(allow_none=True)
+    min = NestedFloat(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('logBase', 'orientation', 'max', 'min',)
@@ -48,22 +57,22 @@ class Scaling(Serialisable):
 
 class _BaseAxis(Serialisable):
 
-    axId = Integer(nested=True)
+    axId = NestedInteger(expected_type=int)
     scaling = Typed(expected_type=Scaling)
-    delete = Bool(nested=True, allow_none=True)
+    delete = NestedBool(allow_none=True)
     axPos = NoneSet(values=(['b', 'l', 'r', 't']))
     majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     title = Typed(expected_type=Title, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
-    majorTickMark = NoneSet(values=(['cross', 'in', 'out']), nested=True)
-    minorTickMark = NoneSet(values=(['cross', 'in', 'out']), nested=True)
-    tickLblPos = NoneSet(values=(['high', 'low', 'nextTo']), nested=True)
+    majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
+    minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
+    tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     txP = Typed(expected_type=TextBody, allow_none=True)
-    crossAx = Integer(nested=True) # references other axis
-    crosses = NoneSet(values=(['autoZero', 'max', 'min']), nested=True)
-    crossesAt = Float(nested=True, allow_none=True)
+    crossAx = NestedInteger(expected_type=int) # references other axis
+    crosses = NestedNoneSet(values=(['autoZero', 'max', 'min']))
+    crossesAt = NestedFloat(allow_none=True)
 
     # crosses & crossesAt are mutually exclusive
 
@@ -148,9 +157,9 @@ class ValAx(Serialisable):
 
     tagname = "valAx"
 
-    crossBetween = NoneSet(values=(['between', 'midCat']), nested=True)
-    majorUnit = Float(allow_none=True, nested=True)
-    minorUnit = Float(allow_none=True, nested=True)
+    crossBetween = NestedNoneSet(values=(['between', 'midCat']))
+    majorUnit = NestedFloat(allow_none=True)
+    minorUnit = NestedFloat(allow_none=True)
     dispUnits = Typed(expected_type=DispUnits, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -174,12 +183,12 @@ class CatAx(Serialisable):
 
     tagname = "catAx"
 
-    auto = Bool(nested=True, allow_none=True)
-    lblAlgn = NoneSet(values=(['ctr', 'l', 'r']), nested=True)
-    lblOffset = MinMax(min=0, max=1000, nested=True,)
-    tickLblSkip = Integer(allow_none=True, nested=True)
-    tickMarkSkip = Integer(allow_none=True, nested=True)
-    noMultiLvlLbl = Bool(nested=True, allow_none=True)
+    auto = NestedBool(allow_none=True)
+    lblAlgn = NestedNoneSet(values=(['ctr', 'l', 'r']))
+    lblOffset = NestedMinMax(min=0, max=1000)
+    tickLblSkip = NestedInteger(allow_none=True)
+    tickMarkSkip = NestedInteger(allow_none=True)
+    noMultiLvlLbl = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('auto', 'lblAlgn', 'lblOffset', 'tickLblSkip', 'tickMarkSkip', 'noMultiLvlLbl')
@@ -203,13 +212,13 @@ class CatAx(Serialisable):
 
 class DateAx(Serialisable):
 
-    auto = Bool(nested=True, allow_none=True)
+    auto = NestedBool(allow_none=True)
     lblOffset = Percentage(allow_none=True, nested=True)
-    baseTimeUnit = NoneSet(values=(['days', 'months', 'years']), nested=True)
-    majorUnit = Float(allow_none=True, nested=True)
-    majorTimeUnit = NoneSet(values=(['days', 'months', 'years']), nested=True)
-    minorUnit = Float(allow_none=True, nested=True)
-    minorTimeUnit = NoneSet(values=(['days', 'months', 'years']), nested=True)
+    baseTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))
+    majorUnit = NestedFloat(allow_none=True)
+    majorTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))
+    minorUnit = NestedFloat(allow_none=True)
+    minorTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('auto', 'lblOffset', 'baseTimeUnit', 'majorUnit', 'majorTimeUnit', 'minorUnit', 'minorTimeUnit', 'extLst')
@@ -235,8 +244,8 @@ class DateAx(Serialisable):
 
 class SerAx(Serialisable):
 
-    tickLblSkip = Integer(allow_none=True, nested=True)
-    tickMarkSkip = Integer(allow_none=True, nested=True)
+    tickLblSkip = NestedInteger(allow_none=True)
+    tickMarkSkip = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('tickLblSkip', 'tickMarkSkip', 'extLst')

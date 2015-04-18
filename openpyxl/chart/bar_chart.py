@@ -1,12 +1,16 @@
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    Set,
     Bool,
     Integer,
     Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import (
+    NestedSet,
+    NestedBool,
+    NestedInteger,
+)
 
 from .chartBase import GapAmount, Overlap
 from .shapes import Shape, ShapeProperties
@@ -16,9 +20,10 @@ from .label import DLbls
 
 class _BarChartBase(Serialisable):
 
-    barDir = Set(values=(['bar', 'col']), nested=True)
-    grouping = Set(values=(['percentStacked', 'clustered', 'standard', 'stacked']), nested=True)
-    varyColors = Bool(nested=True, allow_none=True)
+    barDir = NestedSet(values=(['bar', 'col']))
+    grouping = NestedSet(values=(['percentStacked', 'clustered', 'standard',
+                                  'stacked']))
+    varyColors = NestedBool(nested=True, allow_none=True)
     ser = Sequence(expected_type=BarSer, allow_none=True)
     dLbls = Typed(expected_type=DLbls, allow_none=True)
 
@@ -95,7 +100,7 @@ class BarChart3D(_BarChartBase):
     gapDepth = Typed(expected_type=GapAmount, allow_none=True)
     shape = Typed(expected_type=Shape, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
-    axId = Integer(nested=True)
+    axId = NestedInteger()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId', 'extLst')
@@ -114,4 +119,3 @@ class BarChart3D(_BarChartBase):
         self.serLines = serLines
         self.axId = axId
         self.extLst = extLst
-
