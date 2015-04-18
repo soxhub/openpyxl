@@ -236,3 +236,40 @@ def test_sequence():
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_custom_sequence():
+    from ..nested import SequenceValue
+
+
+    def to_tree(tagname, value):
+        from openpyxl.xml.functions import Element
+        for s in sequence:
+            container = Element("stop")
+            container.append(Element(tagname, val=s))
+            yield container
+
+
+    class Simple(Serialisable):
+
+        tagname = "fill"
+
+        stop = SequenceValue(expected_type=str)
+
+        def __init__(self, stop):
+            self.stop = stop
+
+
+    simple = Simple(['a', 'b', 'c'])
+    xml = tostring(simple.to_tree())
+
+    expected = """
+    <fill>
+        <stop val="a"/>
+        <stop val="b"/>
+        <stop val="c"/>
+    </fill>
+    """
+
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

@@ -86,6 +86,5 @@ class SequenceValue(Nested, Sequence):
 
     @staticmethod
     def to_tree(tagname, value):
-        from openpyxl.xml.functions import Element
         for s in value:
             yield Element(tagname, val=safe_string(s))
