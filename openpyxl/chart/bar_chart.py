@@ -19,7 +19,7 @@ class _BarChartBase(Serialisable):
     barDir = Set(values=(['bar', 'col']), nested=True)
     grouping = Set(values=(['percentStacked', 'clustered', 'standard', 'stacked']), nested=True)
     varyColors = Bool(nested=True, allow_none=True)
-    ser = Sequence(expected_type=BarSer, allow_none=True, nested=True)
+    ser = Sequence(expected_type=BarSer, allow_none=True)
     dLbls = Typed(expected_type=DLbls, allow_none=True)
 
     __elements__ = ('barDir', 'grouping', 'varyColors', 'ser', 'dLbls')
