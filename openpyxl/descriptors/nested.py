@@ -12,6 +12,9 @@ from .base import (
     MinMax,
     Sequence,
     Set,
+    Float,
+    Integer,
+    String,
     )
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
@@ -63,6 +66,21 @@ class NestedText(NestedValue):
         el = Element(tagname)
         el.text = safe_string(value)
         return el
+
+
+class NestedFloat(NestedValue, Float):
+
+    pass
+
+
+class NestedInteger(NestedValue, Integer):
+
+    pass
+
+
+class NestedString(NestedValue, String):
+
+    pass
 
 
 class NestedBool(NestedValue, Bool):

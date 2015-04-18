@@ -273,3 +273,57 @@ def test_custom_sequence():
 
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_nested_integer():
+    from ..nested import NestedInteger
+
+
+    class Simple(Serialisable):
+
+        tagname = "font"
+
+        size = NestedInteger()
+
+        def __init__(self, size):
+            self.size = size
+
+
+    simple = Simple('4')
+    assert simple.size == 4
+
+
+def test_nested_float():
+    from ..nested import NestedFloat
+
+
+    class Simple(Serialisable):
+
+        tagname = "font"
+
+        size = NestedFloat()
+
+        def __init__(self, size):
+            self.size = size
+
+
+    simple = Simple('4.5')
+    assert simple.size == 4.5
+
+
+def test_nested_string():
+    from ..nested import NestedString
+
+
+    class Simple(Serialisable):
+
+        tagname = "font"
+
+        name = NestedString()
+
+        def __init__(self, name):
+            self.name = name
+
+
+    simple = Simple('4')
+    assert simple.name == '4'
