@@ -103,7 +103,7 @@ class BarChart3D(_BarChartBase):
     axId = NestedInteger()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId', 'extLst')
+    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId', 'extLst')
 
     def __init__(self,
                  gapWidth=None,
