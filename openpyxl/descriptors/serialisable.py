@@ -39,8 +39,6 @@ class Serialisable(_Serialiasable):
             if tag in cls.__nested__:
                 if hasattr(desc, 'from_tree'):
                     attrib[tag] = el
-                else:
-                    attrib[tag] = cls._create_nested(el, tag)
             else:
                 if hasattr(desc.expected_type, "from_tree"):
                     obj = desc.expected_type.from_tree(el)
@@ -53,15 +51,6 @@ class Serialisable(_Serialiasable):
                 else:
                     attrib[tag] = obj
         return cls(**attrib)
-
-
-    @classmethod
-    def _create_nested(cls, el, tag):
-        """
-        Allow special handling of nested attributes in subclasses.
-        Default for child elements without a val attribute is True
-        """
-        return el.get("val", True)
 
 
     def to_tree(self, tagname=None):
@@ -81,12 +70,6 @@ class Serialisable(_Serialiasable):
                     else:
                         obj = desc.to_tree(child, value)
                     el.append(obj)
-                elif isinstance(value, tuple):
-                    if hasattr(el, 'extend'):
-                        el.extend(self._serialise_nested(value))
-                    else: # py26 nolxml
-                        for _ in self._serialise_nested(value):
-                            el.append(_)
                 elif value:
                     SubElement(el, child, val=safe_string(value))
 
@@ -101,14 +84,6 @@ class Serialisable(_Serialiasable):
                 elif obj is not None:
                     el.append(obj.to_tree(tagname=child))
         return el
-
-
-    def _serialise_nested(self, sequence):
-        """
-        Allow special handling of sequences which themselves are not directly serialisable
-        """
-        for obj in sequence:
-            yield obj.to_tree()
 
 
     def __iter__(self):
