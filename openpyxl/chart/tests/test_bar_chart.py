@@ -33,10 +33,36 @@ class TestBarChart:
 
     def test_from_tree(self, BarChart):
         xml = """
-        <root />
+            <c:barChart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                <c:barDir val="col"/>
+                <c:grouping val="clustered"/>
+                <c:varyColors val="0"/>
+                <c:ser>
+                    <c:idx val="0"/>
+                    <c:order val="0"/>
+                    <c:invertIfNegative val="0"/>
+                    <c:val>
+                        <c:numRef>
+                            <c:f>Blatt1!$A$1:$A$12</c:f>
+                          </c:numRef>
+                    </c:val>
+                </c:ser>
+                <c:dLbls>
+                    <c:showLegendKey val="0"/>
+                    <c:showVal val="0"/>
+                    <c:showCatName val="0"/>
+                    <c:showSerName val="0"/>
+                    <c:showPercent val="0"/>
+                    <c:showBubbleSize val="0"/>
+                </c:dLbls>
+                <c:gapWidth val="150"/>
+                <c:axId val="2098063848"/>
+                <c:axId val="2098059592"/>
+            </c:barChart>
         """
         node = fromstring(xml)
         bc = BarChart.from_tree(node)
+        assert bc.grouping == "clustered"
 
 
     def test_serialise(self, BarChart):

@@ -6,6 +6,7 @@ from openpyxl.descriptors import (
     Bool,
 )
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import NestedInteger
 
 from .shapes import ShapeProperties, Shape
 from .chartBase import AxDataSource, NumDataSource
@@ -71,8 +72,8 @@ class SerTx(Serialisable):
 
 class _SeriesBase(Serialisable):
 
-    idx = Integer(nested=True)
-    order = Integer(nested=True)
+    idx = NestedInteger()
+    order = NestedInteger()
     tx = Typed(expected_type=SerTx, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
 
@@ -126,6 +127,10 @@ class AreaSer(_SeriesBase):
 
 class BarSer(_SeriesBase):
 
+    idx = NestedInteger()
+    order = NestedInteger()
+    tx = Typed(expected_type=SerTx, allow_none=True)
+    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     invertIfNegative = Bool(nested=True, allow_none=True)
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
@@ -141,6 +146,10 @@ class BarSer(_SeriesBase):
                                 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape', 'extLst')
 
     def __init__(self,
+                 idx=None,
+                 order=None,
+                 tx=None,
+                 spPr=None,
                  invertIfNegative=None,
                  pictureOptions=None,
                  dPt=None,
@@ -152,6 +161,10 @@ class BarSer(_SeriesBase):
                  shape=None,
                  extLst=None,
                 ):
+        self.idx = idx
+        self.order = order
+        self.tx = tx
+        self.spPr = spPr
         self.invertIfNegative = invertIfNegative
         self.pictureOptions = pictureOptions
         self.dPt = dPt
@@ -161,7 +174,6 @@ class BarSer(_SeriesBase):
         self.cat = cat
         self.val = val
         self.shape = shape
-        self.extLst = extLst
 
 
 class BubbleSer(_SeriesBase):

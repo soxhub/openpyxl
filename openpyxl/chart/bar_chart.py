@@ -60,8 +60,8 @@ class AxId(Serialisable):
 
     val = Integer()
 
-    def __init__(self, value):
-        self.val = value
+    def __init__(self, val):
+        self.val = val
 
 
 class BarChart(_BarChartBase):
@@ -78,12 +78,22 @@ class BarChart(_BarChartBase):
     __nested__ = _BarChartBase.__nested__
 
     def __init__(self,
+                 barDir="col",
+                 grouping="clustered",
+                 varyColors=None,
+                 ser=[],
+                 dLbls=None,
                  gapWidth=None,
                  overlap=None,
                  serLines=None,
                  axId=None,
                  extLst=None,
                 ):
+        self.barDir = barDir
+        self.grouping = grouping
+        self.varyColors = varyColors
+        self.ser = ser
+        self.dLbls = dLbls
         self.gapWidth = gapWidth
         self.overlap = overlap
         self.serLines = serLines
