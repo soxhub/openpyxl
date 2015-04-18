@@ -11,6 +11,7 @@ from .base import (
     NoneSet,
     MinMax,
     Sequence,
+    Set,
     )
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
@@ -72,6 +73,11 @@ class NestedBool(NestedValue, Bool):
 
 
 class NestedNoneSet(Nested, NoneSet):
+
+    pass
+
+
+class NestedSet(Nested, Set):
 
     pass
 
