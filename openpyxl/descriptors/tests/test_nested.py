@@ -210,3 +210,29 @@ def test_min_max_value():
     node = fromstring(xml)
     simple = Simple.from_tree(node)
     assert simple.size == 6
+
+
+def test_sequence():
+    from ..nested import SequenceValue
+
+
+    class Simple(Serialisable):
+        tagname = "xf"
+
+        formula = SequenceValue(expected_type=str)
+
+        def __init__(self, formula):
+            self.formula = formula
+
+
+    simple = Simple(formula=['1', '2', '3'])
+    xml = tostring(simple.to_tree())
+    expected = """
+    <xf>
+       <formula val="1"/>
+       <formula val="2"/>
+       <formula val="3"/>
+    </xf>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

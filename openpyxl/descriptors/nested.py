@@ -10,6 +10,7 @@ from .base import (
     Descriptor,
     NoneSet,
     MinMax,
+    Sequence,
     )
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
@@ -78,3 +79,13 @@ class NoneSetValue(Nested, NoneSet):
 class MinMaxValue(Nested, MinMax):
 
     pass
+
+
+class SequenceValue(Nested, Sequence):
+
+
+    @staticmethod
+    def to_tree(tagname, value):
+        from openpyxl.xml.functions import Element
+        for s in value:
+            yield Element(tagname, val=safe_string(s))

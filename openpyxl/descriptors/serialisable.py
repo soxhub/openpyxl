@@ -75,7 +75,11 @@ class Serialisable(_Serialiasable):
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
                 if hasattr(desc, "to_tree") and value:
-                    obj = desc.to_tree(child, value)
+                    if isinstance(value, tuple):
+                        for obj in desc.to_tree(child, value):
+                            el.append(obj)
+                    else:
+                        obj = desc.to_tree(child, value)
                     el.append(obj)
                 elif isinstance(value, tuple):
                     if hasattr(el, 'extend'):
