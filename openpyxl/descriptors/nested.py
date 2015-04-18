@@ -40,14 +40,14 @@ class Nested(Descriptor):
         return Element(tagname, val=value)
 
 
-class Value(Nested, Convertible):
+class NestedValue(Nested, Convertible):
     """
     Nested tag storing the value on the 'val' attribute
     """
     pass
 
 
-class Text(Value):
+class NestedText(NestedValue):
     """
     Represents any nested tag with the value as the contents of the tag
     """
@@ -64,24 +64,24 @@ class Text(Value):
         return el
 
 
-class BoolValue(Value, Bool):
+class NestedBool(NestedValue, Bool):
 
 
     def from_tree(self, node):
         return node.get("val", True)
 
 
-class NoneSetValue(Nested, NoneSet):
+class NestedNoneSet(Nested, NoneSet):
 
     pass
 
 
-class MinMaxValue(Nested, MinMax):
+class NestedMinMax(Nested, MinMax):
 
     pass
 
 
-class SequenceValue(Nested, Sequence):
+class NestedSequence(Nested, Sequence):
 
 
     @staticmethod

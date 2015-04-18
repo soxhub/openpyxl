@@ -10,13 +10,13 @@ import pytest
 
 @pytest.fixture
 def NestedValue():
-    from ..nested import Value
+    from ..nested import NestedValue
 
     class Simple(Serialisable):
 
         tagname = "simple"
 
-        size = Value(expected_type=int)
+        size = NestedValue(expected_type=int)
 
         def __init__(self, size):
             self.size = size
@@ -85,13 +85,13 @@ class TestValue:
 @pytest.fixture
 def NestedText():
 
-    from ..nested import Text
+    from ..nested import NestedText
 
     class Simple(Serialisable):
 
         tagname = "simple"
 
-        coord = Text(expected_type=int)
+        coord = NestedText(expected_type=int)
 
         def __init__(self, coord):
             self.coord = coord
@@ -148,11 +148,11 @@ class TestText:
 
 
 def test_bool_value():
-    from ..nested import BoolValue
+    from ..nested import NestedBool
 
     class Simple(Serialisable):
 
-        bold = BoolValue()
+        bold = NestedBool()
 
         def __init__(self, bold):
             self.bold = bold
@@ -169,12 +169,12 @@ def test_bool_value():
 
 
 def test_noneset_value():
-    from ..nested import NoneSetValue
+    from ..nested import NestedNoneSet
 
 
     class Simple(Serialisable):
 
-        underline = NoneSetValue(values=('1', '2', '3'))
+        underline = NestedNoneSet(values=('1', '2', '3'))
 
         def __init__(self, underline):
             self.underline = underline
@@ -190,12 +190,12 @@ def test_noneset_value():
     assert simple.underline == '1'
 
 def test_min_max_value():
-    from ..nested import MinMaxValue
+    from ..nested import NestedMinMax
 
 
     class Simple(Serialisable):
 
-        size = MinMaxValue(min=5, max=10)
+        size = NestedMinMax(min=5, max=10)
 
         def __init__(self, size):
             self.size = size
@@ -213,13 +213,13 @@ def test_min_max_value():
 
 
 def test_sequence():
-    from ..nested import SequenceValue
+    from ..nested import NestedSequence
 
 
     class Simple(Serialisable):
         tagname = "xf"
 
-        formula = SequenceValue(expected_type=str)
+        formula = NestedSequence(expected_type=str)
 
         def __init__(self, formula):
             self.formula = formula
@@ -239,7 +239,7 @@ def test_sequence():
 
 
 def test_custom_sequence():
-    from ..nested import SequenceValue
+    from ..nested import NestedSequence
 
 
     def to_tree(tagname, value):
@@ -254,7 +254,7 @@ def test_custom_sequence():
 
         tagname = "fill"
 
-        stop = SequenceValue(expected_type=str)
+        stop = NestedSequence(expected_type=str)
 
         def __init__(self, stop):
             self.stop = stop

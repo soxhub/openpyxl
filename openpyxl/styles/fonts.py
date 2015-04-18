@@ -5,10 +5,10 @@ from __future__ import absolute_import
 from openpyxl.descriptors import Alias
 
 from openpyxl.descriptors.nested import (
-    Value,
-    BoolValue,
-    NoneSetValue,
-    MinMaxValue,
+    NestedValue,
+    NestedBool,
+    NestedNoneSet,
+    NestedMinMax,
 )
 from .hashable import HashableObject
 from .colors import ColorDescriptor, BLACK
@@ -28,27 +28,27 @@ class Font(HashableObject):
     UNDERLINE_SINGLE_ACCOUNTING = 'singleAccounting'
 
 
-    name = Value(expected_type=basestring)
-    charset = Value(allow_none=True, expected_type=int)
-    family = MinMaxValue(min=0, max=14)
-    sz = Value(expected_type=float)
+    name = NestedValue(expected_type=basestring)
+    charset = NestedValue(allow_none=True, expected_type=int)
+    family = NestedMinMax(min=0, max=14)
+    sz = NestedValue(expected_type=float)
     size = Alias("sz")
-    b = BoolValue()
+    b = NestedBool()
     bold = Alias("b")
-    i = BoolValue()
+    i = NestedBool()
     italic = Alias("i")
-    strike = BoolValue()
+    strike = NestedBool()
     strikethrough = Alias("strike")
-    outline = BoolValue()
-    shadow = BoolValue()
-    condense = BoolValue()
-    extend = BoolValue()
-    u = NoneSetValue(values=('single', 'double', 'singleAccounting',
+    outline = NestedBool()
+    shadow = NestedBool()
+    condense = NestedBool()
+    extend = NestedBool()
+    u = NestedNoneSet(values=('single', 'double', 'singleAccounting',
                              'doubleAccounting'))
     underline = Alias("u")
-    vertAlign = NoneSetValue(values=('superscript', 'subscript', 'baseline'))
+    vertAlign = NestedNoneSet(values=('superscript', 'subscript', 'baseline'))
     color = ColorDescriptor()
-    scheme = NoneSetValue(values=("major", "minor"))
+    scheme = NestedNoneSet(values=("major", "minor"))
 
     tagname = "font"
 
