@@ -9,29 +9,29 @@ from openpyxl.descriptors.nested import (
     NestedBool,
     NestedNoneSet,
     NestedMinMax,
+    NestedString,
+    NestedInteger,
+    NestedFloat,
 )
 from .hashable import HashableObject
 from .colors import ColorDescriptor, BLACK
 
-from openpyxl.compat import safe_string, basestring
+from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement
 
 
 class Font(HashableObject):
     """Font options used in styles."""
 
-    spec = """18.8.22, p.3930"""
-
     UNDERLINE_DOUBLE = 'double'
     UNDERLINE_DOUBLE_ACCOUNTING = 'doubleAccounting'
     UNDERLINE_SINGLE = 'single'
     UNDERLINE_SINGLE_ACCOUNTING = 'singleAccounting'
 
-
-    name = NestedValue(expected_type=basestring)
-    charset = NestedValue(allow_none=True, expected_type=int)
+    name = NestedString()
+    charset = NestedInteger(allow_none=True)
     family = NestedMinMax(min=0, max=14)
-    sz = NestedValue(expected_type=float)
+    sz = NestedFloat()
     size = Alias("sz")
     b = NestedBool()
     bold = Alias("b")
@@ -56,9 +56,7 @@ class Font(HashableObject):
                   'shadow', 'condense', 'color', 'extend', 'sz', 'u', 'vertAlign',
                   'scheme')
 
-    __fields__ = ('name', 'charset', 'family', 'b', 'i', 'strike', 'outline',
-                  'shadow', 'condense', 'extend', 'sz', 'u', 'vertAlign',
-                  'scheme', 'color')
+    __fields__ = __elements__
 
 
     def __init__(self, name='Calibri', sz=11, b=False, i=False, charset=None,
