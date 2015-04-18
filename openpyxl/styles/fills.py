@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.descriptors import Float, Set, Sequence, Alias, NoneSet
+from openpyxl.descriptors import Float, Set, Alias, NoneSet
+from openpyxl.descriptors.nested import SequenceValue
 from openpyxl.compat import safe_string
 
 from .colors import ColorDescriptor, Color
@@ -116,9 +117,17 @@ DEFAULT_EMPTY_FILL = PatternFill()
 DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
+def _serialise_stop(tagname, sequence):
+    for idx, color in enumerate(sequence):
+        stop = Element("stop", position=str(idx))
+        stop.append(color.to_tree())
+        yield stop
+
+
 class GradientFill(Fill):
 
     tagname = "gradientFill"
+
 
     __fields__ = ('type', 'degree', 'left', 'right', 'top', 'bottom', 'stop')
     type = Set(values=('linear', 'path'))
@@ -128,7 +137,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = Sequence(expected_type=Color, nested=True)
+    stop = SequenceValue(expected_type=Color, to_tree=_serialise_stop)
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,
@@ -157,17 +166,6 @@ class GradientFill(Fill):
         for color in safe_iterator(node, "{%s}color" % SHEET_MAIN_NS):
             colors.append(Color.from_tree(color))
         return cls(stop=colors, **node.attrib)
-
-
-    def _serialise_nested(self, sequence):
-        """
-        Colors need special handling
-        """
-        for idx, color in enumerate(sequence):
-            stop = Element("stop", position=str(idx))
-            stop.append(color.to_tree())
-            yield stop
-
 
     def to_tree(self, tagname=None):
         parent = Element("fill")
