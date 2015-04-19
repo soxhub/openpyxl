@@ -13,7 +13,7 @@ from openpyxl.descriptors.excel import ExtensionList, Percentage
 
 from .chartBase import GapAmount
 from .series import PieSer
-from .label import DLbls
+from .label import DataLabels
 from .bar_chart import ChartLines
 
 
@@ -21,7 +21,7 @@ class _PieChartBase(Serialisable):
 
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=PieSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
 
     __elements__ = ('varyColors', 'ser', 'dLbls')
 

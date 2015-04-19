@@ -11,7 +11,7 @@ from openpyxl.descriptors.excel import ExtensionList
 
 from .shapes import ShapeProperties
 from .chartBase import GapAmount, ChartLines, UpDownBars
-from .label import DLbls
+from .label import DataLabels
 from .series import LineSer
 
 
@@ -30,7 +30,7 @@ class _LineChartBase(Serialisable):
     grouping = Typed(expected_type=Grouping, )
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=LineSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
 
     __elements__ = ('grouping', 'varyColors', 'ser', 'dLbls', 'dropLines')

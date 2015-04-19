@@ -22,7 +22,7 @@ from .layout import Layout
 from .shapes import ShapeProperties
 from .legend import Legend
 from .marker import PictureOptions, Marker
-from .label import DLbl
+from .label import DataLabel
 
 
 class Title(Serialisable):
@@ -107,7 +107,7 @@ class PivotFmt(Serialisable):
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     txPr = Typed(expected_type=TextBody, allow_none=True)
     marker = Typed(expected_type=Marker, allow_none=True)
-    dLbl = Typed(expected_type=DLbl, allow_none=True)
+    dLbl = Typed(expected_type=DataLabel, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('idx', 'spPr', 'txPr', 'marker', 'dLbl', 'extLst')

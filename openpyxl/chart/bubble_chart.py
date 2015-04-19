@@ -11,7 +11,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 
 from .series import BubbleSer
-from .label import DLbls
+from .label import DataLabels
 
 
 class SizeRepresents(Serialisable):
@@ -38,7 +38,7 @@ class BubbleChart(Serialisable):
 
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=BubbleSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     bubble3D = Bool(nested=True, allow_none=True)
     bubbleScale = Typed(expected_type=BubbleScale, allow_none=True)
     showNegBubbles = Bool(nested=True, allow_none=True)

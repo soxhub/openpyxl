@@ -15,7 +15,7 @@ from openpyxl.descriptors.nested import (
 from .chartBase import GapAmount, Overlap
 from .shapes import Shape, ShapeProperties
 from .series import BarSer
-from .label import DLbls
+from .label import DataLabels
 
 
 class _BarChartBase(Serialisable):
@@ -25,7 +25,7 @@ class _BarChartBase(Serialisable):
                                   'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
     ser = Sequence(expected_type=BarSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
 
     __elements__ = ('barDir', 'grouping', 'varyColors', 'ser', 'dLbls')
 

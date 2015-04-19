@@ -32,7 +32,7 @@ class TestBarChart:
 
 
     def test_from_tree(self, BarChart):
-        xml = """
+        src = """
             <c:barChart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
                 <c:barDir val="col"/>
                 <c:grouping val="clustered"/>
@@ -60,11 +60,33 @@ class TestBarChart:
                 <c:axId val="2098059592"/>
             </c:barChart>
         """
-        node = fromstring(xml)
+        node = fromstring(src)
         bc = BarChart.from_tree(node)
         assert bc.grouping == "clustered"
         assert len(bc.ser) == 1
         assert bc.dLbls is not None
+
+        # check roundtripping
+        xml = tostring(bc.to_tree())
+        expected = """
+        <barChart>
+        <barDir val="col"></barDir>
+        <grouping val="clustered"></grouping>
+        <ser>
+          <val>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+            </numRef>
+          </val>
+        </ser>
+        <dLbls></dLbls>
+        <gapWidth val="150"></gapWidth>
+        <axId val="2098063848"></axId>
+        <axId val="2098059592"></axId>
+        </barChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
     def test_serialise(self, BarChart):

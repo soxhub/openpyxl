@@ -8,7 +8,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 
 from .series import RadarSer
-from .label import DLbls
+from .label import DataLabels
 
 
 class RadarStyle(Serialisable):
@@ -26,7 +26,7 @@ class RadarChart(Serialisable):
     radarStyle = Typed(expected_type=RadarStyle, )
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=RadarSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     axId = Integer(nested=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

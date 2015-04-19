@@ -27,7 +27,7 @@ class _AreaChartBase(Serialisable):
     grouping = Typed(expected_type=Grouping, allow_none=True)
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=AreaSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
 
     __elements__ = ('grouping', 'varyColors', 'ser', 'dLbls', 'dropLines')

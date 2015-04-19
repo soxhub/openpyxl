@@ -11,7 +11,7 @@ from openpyxl.descriptors.nested import NestedInteger
 from .shapes import ShapeProperties, Shape
 from .chartBase import AxDataSource, NumDataSource
 from .error_bar import ErrBars
-from .label import DLbls
+from .label import DataLabels
 from .marker import DPt, PictureOptions, Marker
 from .trendline import Trendline
 
@@ -95,7 +95,7 @@ class AreaSer(_SeriesBase):
 
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
@@ -134,7 +134,7 @@ class BarSer(_SeriesBase):
     invertIfNegative = Bool(nested=True, allow_none=True)
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
@@ -180,7 +180,7 @@ class BubbleSer(_SeriesBase):
 
     invertIfNegative = Bool(nested=True, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrBars, allow_none=True)
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
@@ -221,7 +221,7 @@ class PieSer(_SeriesBase):
 
     explosion = Integer(allow_none=True, nested=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -249,7 +249,7 @@ class RadarSer(_SeriesBase):
 
     marker = Typed(expected_type=Marker, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -276,7 +276,7 @@ class ScatterSer(Serialisable):
 
     marker = Typed(expected_type=Marker, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrBars, allow_none=True)
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
@@ -330,7 +330,7 @@ class LineSer(Serialisable):
 
     marker = Typed(expected_type=Marker, allow_none=True)
     dPt = Typed(expected_type=DPt, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)

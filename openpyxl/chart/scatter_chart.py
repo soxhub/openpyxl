@@ -8,7 +8,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 
 from .series import ScatterSer
-from .label import DLbls
+from .label import DataLabels
 
 
 class ScatterStyle(Serialisable):
@@ -26,7 +26,7 @@ class ScatterChart(Serialisable):
     scatterStyle = Typed(expected_type=ScatterStyle, )
     varyColors = Bool(nested=True, allow_none=True)
     ser = Typed(expected_type=ScatterSer, allow_none=True)
-    dLbls = Typed(expected_type=DLbls, allow_none=True)
+    dLbls = Typed(expected_type=DataLabels, allow_none=True)
     axId = Integer(nested=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
