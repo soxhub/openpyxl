@@ -2,6 +2,7 @@
 Collection of utility primitives for charts.
 """
 
+from openpyxl.compat import basestring
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Bool,
@@ -59,10 +60,12 @@ class NumData(Serialisable):
 
 class NumRef(Serialisable):
 
-    f = NestedString()
+    f = NestedText(expected_type=basestring)
     ref = Alias('f')
     numCache = Typed(expected_type=NumData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('f')
 
     def __init__(self,
                  f=None,
