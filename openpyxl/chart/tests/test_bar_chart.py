@@ -63,6 +63,8 @@ class TestBarChart:
         node = fromstring(xml)
         bc = BarChart.from_tree(node)
         assert bc.grouping == "clustered"
+        assert len(bc.ser) == 1
+        assert bc.dLbls is not None
 
 
     def test_serialise(self, BarChart):

@@ -142,8 +142,8 @@ class BarSer(_SeriesBase):
     shape = Typed(expected_type=Shape, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    _SeriesBase.__elements__ + ('invertIfNegative', 'pictureOptions', 'dPt',
-                                'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape', 'extLst')
+    __elements__ = _SeriesBase.__elements__ + ('invertIfNegative', 'pictureOptions', 'dPt',
+                                'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape')
 
     def __init__(self,
                  idx=None,

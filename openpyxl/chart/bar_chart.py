@@ -68,40 +68,37 @@ class BarChart(_BarChartBase):
 
     tagname = "barChart"
 
+    barDir = _BarChartBase.barDir
+    grouping = _BarChartBase.grouping
+    varyColors = _BarChartBase.varyColors
+    ser = _BarChartBase.ser
+    dLbls = _BarChartBase.dLbls
+
     gapWidth = Typed(expected_type=GapAmount, allow_none=True)
     overlap = Typed(expected_type=Overlap, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
     axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId', 'extLst')
-    __nested__ = _BarChartBase.__nested__
+    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
+
 
     def __init__(self,
-                 barDir="col",
-                 grouping="clustered",
-                 varyColors=None,
-                 ser=[],
-                 dLbls=None,
                  gapWidth=None,
                  overlap=None,
                  serLines=None,
                  axId=None,
                  extLst=None,
+                 **kw
                 ):
-        self.barDir = barDir
-        self.grouping = grouping
-        self.varyColors = varyColors
-        self.ser = ser
-        self.dLbls = dLbls
         self.gapWidth = gapWidth
         self.overlap = overlap
         self.serLines = serLines
         if axId is None:
             axId = (AxId(60871424), AxId(60873344))
         self.axId = axId
-        self.extLst = extLst
-        super(BarChart, self).__init__()
+        print(kw)
+        super(BarChart, self).__init__(**kw)
 
 
 class BarChart3D(_BarChartBase):
