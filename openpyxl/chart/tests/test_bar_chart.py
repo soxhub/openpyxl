@@ -33,32 +33,32 @@ class TestBarChart:
 
     def test_from_tree(self, BarChart):
         src = """
-            <c:barChart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
-                <c:barDir val="col"/>
-                <c:grouping val="clustered"/>
-                <c:varyColors val="0"/>
-                <c:ser>
-                    <c:idx val="0"/>
-                    <c:order val="0"/>
-                    <c:invertIfNegative val="0"/>
-                    <c:val>
-                        <c:numRef>
-                            <c:f>Blatt1!$A$1:$A$12</c:f>
-                          </c:numRef>
-                    </c:val>
-                </c:ser>
-                <c:dLbls>
-                    <c:showLegendKey val="0"/>
-                    <c:showVal val="0"/>
-                    <c:showCatName val="0"/>
-                    <c:showSerName val="0"/>
-                    <c:showPercent val="0"/>
-                    <c:showBubbleSize val="0"/>
-                </c:dLbls>
-                <c:gapWidth val="150"/>
-                <c:axId val="2098063848"/>
-                <c:axId val="2098059592"/>
-            </c:barChart>
+            <barChart>
+                <barDir val="col"/>
+                <grouping val="clustered"/>
+                <varyColors val="0"/>
+                <ser>
+                    <idx val="0"/>
+                    <order val="0"/>
+                    <invertIfNegative val="0"/>
+                    <val>
+                        <numRef>
+                            <f>Blatt1!$A$1:$A$12</f>
+                          </numRef>
+                    </val>
+                </ser>
+                <dLbls>
+                    <showLegendKey val="0"/>
+                    <showVal val="0"/>
+                    <showCatName val="0"/>
+                    <showSerName val="0"/>
+                    <showPercent val="0"/>
+                    <showBubbleSize val="0"/>
+                </dLbls>
+                <gapWidth val="150"/>
+                <axId val="2098063848"/>
+                <axId val="2098059592"/>
+            </barChart>
         """
         node = fromstring(src)
         bc = BarChart.from_tree(node)
