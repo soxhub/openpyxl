@@ -104,7 +104,7 @@ class Workbook(object):
         for sid in self._cell_styles:
             font = self._fonts[sid.fontId]
             fill = self._fills[sid.fillId]
-            border = self._borders[sid.fillId]
+            border = self._borders[sid.borderId]
             alignment = self._alignments[sid.alignmentId]
             protection = self._protections[sid.protectionId]
             nf_id = sid.number_format
