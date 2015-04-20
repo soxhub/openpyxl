@@ -89,6 +89,71 @@ class TestBarChart:
         assert diff is None, diff
 
 
-    def test_serialise(self, BarChart):
+@pytest.fixture
+def BarChart3D():
+    from ..bar_chart import BarChart3D
+    return BarChart3D
 
-        bc = BarChart()
+
+class TestBarChart3D:
+
+
+    def test_ctor(self, BarChart3D):
+        bc = BarChart3D()
+        xml = tostring(bc.to_tree())
+        expected = """
+        <bar3DChart>
+          <barDir val="col"/>
+          <grouping val="clustered"/>
+          <axId val="60871424"/>
+          <axId val="60873344"/>
+          <axId val="0"/>
+        </bar3DChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, BarChart3D):
+        src = """
+        <bar3DChart>
+        <barDir val="col"/>
+        <grouping val="clustered"/>
+        <varyColors val="0"/>
+        <ser>
+            <idx val="0"/>
+            <order val="0"/>
+            <invertIfNegative val="0"/>
+            <val>
+                <numRef>
+                    <f>Blatt1!$A$1:$A$12</f>
+                </numRef>
+            </val>
+        </ser>
+        <ser>
+            <idx val="1"/>
+            <order val="1"/>
+            <invertIfNegative val="0"/>
+            <val>
+                <numRef>
+                    <f>Blatt1!$B$1:$B$12</f>
+                </numRef>
+            </val>
+        </ser>
+        <dLbls>
+            <showLegendKey val="0"/>
+            <showVal val="0"/>
+            <showCatName val="0"/>
+            <showSerName val="0"/>
+            <showPercent val="0"/>
+            <showBubbleSize val="0"/>
+        </dLbls>
+        <gapWidth val="150"/>
+        <shape val="box"/>
+        <axId val="2065276984"/>
+        <axId val="2056619928"/>
+        <axId val="0"/>
+        </bar3DChart>
+        """
+        node = fromstring(src)
+        bc = BarChart3D.from_tree(node)

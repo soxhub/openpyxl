@@ -97,20 +97,27 @@ class BarChart(_BarChartBase):
         if axId is None:
             axId = (AxId(60871424), AxId(60873344))
         self.axId = axId
-        print(kw)
         super(BarChart, self).__init__(**kw)
 
 
 class BarChart3D(_BarChartBase):
 
+    tagname = "bar3DChart"
+
+    barDir = _BarChartBase.barDir
+    grouping = _BarChartBase.grouping
+    varyColors = _BarChartBase.varyColors
+    ser = _BarChartBase.ser
+    dLbls = _BarChartBase.dLbls
+
     gapWidth = Typed(expected_type=GapAmount, allow_none=True)
     gapDepth = Typed(expected_type=GapAmount, allow_none=True)
     shape = Typed(expected_type=Shape, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
-    axId = NestedInteger()
+    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId', 'extLst')
+    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId')
 
     def __init__(self,
                  gapWidth=None,
@@ -119,10 +126,13 @@ class BarChart3D(_BarChartBase):
                  serLines=None,
                  axId=None,
                  extLst=None,
+                 **kw
                 ):
         self.gapWidth = gapWidth
-        self.gapDepth = gapWidth
+        self.gapDepth = gapDepth
         self.shape = shape
         self.serLines = serLines
+        if axId is None:
+            axId = (AxId(60871424), AxId(60873344), AxId(0))
         self.axId = axId
-        self.extLst = extLst
+        super(BarChart3D, self).__init__(**kw)
