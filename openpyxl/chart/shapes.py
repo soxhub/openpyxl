@@ -291,7 +291,7 @@ class Shape3D(Serialisable):
 class ShapeProperties(Serialisable):
 
     """
-    Somewhat vaguely § 21.2.2.197 says this:
+    Somewhat vaguely 21.2.2.197 says this:
 
     This element specifies the formatting for the parent chart element. The
     custGeom, prstGeom, scene3d, and xfrm elements are not supported. The
