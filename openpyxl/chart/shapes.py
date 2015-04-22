@@ -290,7 +290,23 @@ class Shape3D(Serialisable):
 
 class ShapeProperties(Serialisable):
 
-    bwMode = Typed(expected_type=Set(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray', 'grayWhite', 'blackGray', 'blackWhite', 'black', 'white', 'hidden'])))
+    """
+    Somewhat vaguely § 21.2.2.197 says this:
+
+    This element specifies the formatting for the parent chart element. The
+    custGeom, prstGeom, scene3d, and xfrm elements are not supported. The
+    bwMode attribute is not supported.
+
+    This doesn't leave much. And the element is used in different places.
+    """
+
+
+    bwMode = Typed(expected_type=Set(values=(
+        ['clr', 'auto', 'gray', 'ltGray', 'invGray', 'grayWhite',
+         'blackGray', 'blackWhite', 'black', 'white', 'hidden'
+         ])
+                                     )
+                   )
     xfrm = Typed(expected_type=Transform2D, allow_none=True)
     ln = Typed(expected_type=LineProperties, allow_none=True)
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
@@ -310,4 +326,3 @@ class ShapeProperties(Serialisable):
         self.ln = ln
         self.scene3d = scene3d
         self.sp3d = sp3d
-        self.extLst = extLst

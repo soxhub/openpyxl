@@ -439,6 +439,13 @@ class TextBodyProperties(Serialisable):
 
 class TextBody(Serialisable):
 
+    """
+    From the specification: 21.2.2.216
+
+    This element specifies text formatting. The lstStyle element is not supported.
+    """
+
+
     bodyPr = Typed(expected_type=TextBodyProperties, )
     lstStyle = Typed(expected_type=TextListStyle, allow_none=True)
     p = Typed(expected_type=TextParagraph, )
