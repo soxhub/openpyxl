@@ -129,22 +129,22 @@ class TestValAx:
 
     def test_from_xml(self, ValAx):
         src = """
-            <valAx>
-                <axId val="2056619928"/>
-                <scaling>
-                    <orientation val="minMax"/>
-                </scaling>
-                <delete val="0"/>
-                <axPos val="l"/>
-                <majorGridlines/>
-                <numFmt formatCode="General" sourceLinked="1"/>
-                <majorTickMark val="out"/>
-                <minorTickMark val="none"/>
-                <tickLblPos val="nextTo"/>
-                <crossAx val="2065276984"/>
-                <crosses val="autoZero"/>
-                <crossBetween val="between"/>
-            </valAx>
+        <valAx>
+            <axId val="2056619928"/>
+            <scaling>
+                <orientation val="minMax"/>
+            </scaling>
+            <delete val="0"/>
+            <axPos val="l"/>
+            <majorGridlines/>
+            <numFmt formatCode="General" sourceLinked="1"/>
+            <majorTickMark val="out"/>
+            <minorTickMark val="none"/>
+            <tickLblPos val="nextTo"/>
+            <crossAx val="2065276984"/>
+            <crosses val="autoZero"/>
+            <crossBetween val="between"/>
+        </valAx>
         """
         node = fromstring(src)
         axis = ValAx.from_tree(node)
