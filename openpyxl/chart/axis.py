@@ -9,6 +9,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Set,
     String,
+    Alias,
 )
 
 from openpyxl.descriptors.excel import ExtensionList, Percentage
@@ -81,7 +82,9 @@ class _BaseAxis(Serialisable):
     minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    txP = Typed(expected_type=TextBody, allow_none=True)
+    shapeProperties = Alias('spPr')
+    txPr = Typed(expected_type=TextBody, allow_none=True)
+    textProperties = Alias('txPr')
     crossAx = NestedInteger(expected_type=int) # references other axis
     crosses = NestedNoneSet(values=(['autoZero', 'max', 'min']))
     crossesAt = NestedFloat(allow_none=True)
@@ -90,7 +93,7 @@ class _BaseAxis(Serialisable):
 
     __elements__ = ('axId', 'scaling', 'delete', 'axPos', 'majorGridlines',
                     'minorGridlines', 'numFmt', 'majorTickMark', 'minorTickMark',
-                    'tickLblPos', 'spPr', 'title', 'txP', 'crossAx', 'crosses', 'crossesAt')
+                    'tickLblPos', 'spPr', 'title', 'txPr', 'crossAx', 'crosses', 'crossesAt')
 
     def __init__(self,
                  axId=None,
@@ -105,7 +108,7 @@ class _BaseAxis(Serialisable):
                  minorTickMark=None,
                  tickLblPos=None,
                  spPr=None,
-                 txP= None,
+                 txPr= None,
                  crossAx=None,
                  crosses=None,
                  crossesAt=None,
@@ -123,7 +126,7 @@ class _BaseAxis(Serialisable):
         self.minorTickMark = minorTickMark
         self.tickLblPos = tickLblPos
         self.spPr = spPr
-        self.txP = txP
+        self.txPr = txPr
         self.crossAx = crossAx
         self.crosses = crosses
         self.crossesAt = None
@@ -180,7 +183,7 @@ class ValAx(_BaseAxis):
     minorTickMark = _BaseAxis.minorTickMark
     tickLblPos = _BaseAxis.tickLblPos
     spPr = _BaseAxis.spPr
-    txP = _BaseAxis.txP
+    txPr = _BaseAxis.txPr
     crossAx = _BaseAxis.crossAx
     crosses = _BaseAxis.crosses
     crossesAt = _BaseAxis.crossesAt
@@ -226,7 +229,7 @@ class CatAx(_BaseAxis):
     minorTickMark = _BaseAxis.minorTickMark
     tickLblPos = _BaseAxis.tickLblPos
     spPr = _BaseAxis.spPr
-    txP = _BaseAxis.txP
+    txPr = _BaseAxis.txPr
     crossAx = _BaseAxis.crossAx
     crosses = _BaseAxis.crosses
     crossesAt = _BaseAxis.crossesAt
@@ -277,7 +280,7 @@ class DateAx(_BaseAxis):
     minorTickMark = _BaseAxis.minorTickMark
     tickLblPos = _BaseAxis.tickLblPos
     spPr = _BaseAxis.spPr
-    txP = _BaseAxis.txP
+    txPr = _BaseAxis.txPr
     crossAx = _BaseAxis.crossAx
     crosses = _BaseAxis.crosses
     crossesAt = _BaseAxis.crossesAt
@@ -332,7 +335,7 @@ class SerAx(_BaseAxis):
     minorTickMark = _BaseAxis.minorTickMark
     tickLblPos = _BaseAxis.tickLblPos
     spPr = _BaseAxis.spPr
-    txP = _BaseAxis.txP
+    txPr = _BaseAxis.txPr
     crossAx = _BaseAxis.crossAx
     crosses = _BaseAxis.crosses
     crossesAt = _BaseAxis.crossesAt
