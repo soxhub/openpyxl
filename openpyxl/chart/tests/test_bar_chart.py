@@ -22,7 +22,7 @@ class TestBarChart:
         <barChart>
           <barDir val="col" />
           <grouping val="clustered" />
-
+          <gapWidth val="150" />
           <axId val="60871424" />
           <axId val="60873344" />
         </barChart>
@@ -80,7 +80,7 @@ class TestBarChart:
           </val>
         </ser>
         <dLbls></dLbls>
-        <gapWidth val="150"></gapWidth>
+        <gapWidth val="150" />
         <axId val="2098063848"></axId>
         <axId val="2098059592"></axId>
         </barChart>
@@ -105,6 +105,8 @@ class TestBarChart3D:
         <bar3DChart>
           <barDir val="col"/>
           <grouping val="clustered"/>
+          <gapWidth val="150" />
+          <gapDepth val="150" />
           <axId val="60871424"/>
           <axId val="60873344"/>
           <axId val="0"/>

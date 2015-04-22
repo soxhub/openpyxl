@@ -7,13 +7,15 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
+    NestedNoneSet,
     NestedSet,
     NestedBool,
     NestedInteger,
+    NestedMinMax,
+    NestedSequence,
 )
 
-from .chartBase import GapAmount, Overlap
-from .shapes import Shape, ShapeProperties
+from .shapes import ShapeProperties
 from .series import BarSer
 from .label import DataLabels
 
@@ -74,8 +76,8 @@ class BarChart(_BarChartBase):
     ser = _BarChartBase.ser
     dLbls = _BarChartBase.dLbls
 
-    gapWidth = Typed(expected_type=GapAmount, allow_none=True)
-    overlap = Typed(expected_type=Overlap, allow_none=True)
+    gapWidth = NestedMinMax(min=0, max=500, allow_none=True)
+    overlap = NestedMinMax(min=0, max=150, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
     axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -84,7 +86,7 @@ class BarChart(_BarChartBase):
 
 
     def __init__(self,
-                 gapWidth=None,
+                 gapWidth=150,
                  overlap=None,
                  serLines=None,
                  axId=None,
@@ -110,9 +112,9 @@ class BarChart3D(_BarChartBase):
     ser = _BarChartBase.ser
     dLbls = _BarChartBase.dLbls
 
-    gapWidth = Typed(expected_type=GapAmount, allow_none=True)
-    gapDepth = Typed(expected_type=GapAmount, allow_none=True)
-    shape = Typed(expected_type=Shape, allow_none=True)
+    gapWidth = NestedMinMax(min=0, max=150, allow_none=True)
+    gapDepth = NestedMinMax(min=0, max=150, allow_none=True)
+    shape = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
     serLines = Typed(expected_type=ChartLines, allow_none=True)
     axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -120,8 +122,8 @@ class BarChart3D(_BarChartBase):
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId')
 
     def __init__(self,
-                 gapWidth=None,
-                 gapDepth=None,
+                 gapWidth=150,
+                 gapDepth=150,
                  shape=None,
                  serLines=None,
                  axId=None,
