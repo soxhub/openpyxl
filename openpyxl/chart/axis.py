@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
     MinMax,
     NoneSet,
     Set,
+    String,
 )
 
 from openpyxl.descriptors.excel import ExtensionList, Percentage
@@ -20,8 +21,6 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedMinMax,
 )
-
-from openpyxl.styles.differential import NumFmt
 
 from .layout import Layout
 from .text import Tx, TextBody
@@ -55,12 +54,25 @@ class Scaling(Serialisable):
         self.min = min
 
 
+class NumFmt(Serialisable):
+
+    formatCode = String()
+    sourceLinked = Bool()
+
+    def __init__(self,
+                 formatCode=None,
+                 sourceLinked=False
+                ):
+        self.formatCode = formatCode
+        self.sourceLinked = sourceLinked
+
+
 class _BaseAxis(Serialisable):
 
     axId = NestedInteger(expected_type=int)
     scaling = Typed(expected_type=Scaling)
     delete = NestedBool(allow_none=True)
-    axPos = NoneSet(values=(['b', 'l', 'r', 't']))
+    axPos = NestedNoneSet(values=(['b', 'l', 'r', 't']))
     majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     title = Typed(expected_type=Title, allow_none=True)

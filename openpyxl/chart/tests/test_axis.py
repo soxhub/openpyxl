@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
 
 
@@ -75,6 +75,34 @@ class TestCatAx:
         assert diff is None, diff
 
 
+    def from_xml(self, CatAx):
+        src = """
+        <catAx>
+        <axId val="2065276984"/>
+        <scaling>
+          <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="b"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="2056619928"/>
+        <crosses val="autoZero"/>
+        <auto val="1"/>
+        <lblAlgn val="ctr"/>
+        <lblOffset val="100"/>
+        <noMultiLvlLbl val="0"/>
+        </catAx>
+        """
+        node = fromstring(src)
+        axis = CatAx.from_tree(node)
+        assert axis.scaling.orientation == "minMax"
+        assert axis.auto is True
+        assert axis.majorTickMark == "out"
+        assert axis.minorTickMark is None
+
+
 @pytest.fixture
 def ValAx():
     from ..axis import ValAx
@@ -97,3 +125,29 @@ class TestValAx:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_from_xml(self, ValAx):
+        src = """
+            <valAx>
+                <axId val="2056619928"/>
+                <scaling>
+                    <orientation val="minMax"/>
+                </scaling>
+                <delete val="0"/>
+                <axPos val="l"/>
+                <majorGridlines/>
+                <numFmt formatCode="General" sourceLinked="1"/>
+                <majorTickMark val="out"/>
+                <minorTickMark val="none"/>
+                <tickLblPos val="nextTo"/>
+                <crossAx val="2065276984"/>
+                <crosses val="autoZero"/>
+                <crossBetween val="between"/>
+            </valAx>
+        """
+        node = fromstring(src)
+        axis = ValAx.from_tree(node)
+        assert axis.delete is False
+        assert axis.crossAx == 2065276984
+        assert axis.crossBetween == "between"
