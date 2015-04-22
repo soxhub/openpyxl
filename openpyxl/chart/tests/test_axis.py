@@ -59,11 +59,16 @@ def CatAx():
 class TestCatAx:
 
     def test_ctor(self, CatAx):
-        axis = CatAx()
+        axis = CatAx(axId=10, crossAx=100)
         xml = tostring(axis.to_tree())
         expected = """
         <catAx>
-            <lblOffset val="100"></lblOffset>
+         <axId val="10"></axId>
+         <scaling>
+           <orientation val="minMax"></orientation>
+         </scaling>
+         <crossAx val="100"></crossAx>
+         <lblOffset val="100"></lblOffset>
         </catAx>
         """
         diff = compare_xml(xml, expected)
@@ -79,10 +84,15 @@ def ValAx():
 class TestValAx:
 
     def test_ctor(self, ValAx):
-        axis = ValAx()
+        axis = ValAx(axId=100, crossAx=10)
         xml = tostring(axis.to_tree())
         expected = """
         <valAx>
+          <axId val="100"></axId>
+          <scaling>
+            <orientation val="minMax"></orientation>
+          </scaling>
+          <crossAx val="10"></crossAx>
         </valAx>
         """
         diff = compare_xml(xml, expected)

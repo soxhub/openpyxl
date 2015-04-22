@@ -76,7 +76,7 @@ class _BaseAxis(Serialisable):
 
     # crosses & crossesAt are mutually exclusive
 
-    __elements__ = ('axId', 'scaling', 'delete', 'majorGridlines',
+    __elements__ = ('axId', 'scaling', 'delete', 'axPos', 'majorGridlines',
                     'minorGridlines', 'numFmt', 'majorTickMark', 'minorTickMark',
                     'tickLblPos', 'spPr', 'title', 'txP', 'crossAx', 'crosses', 'crossesAt')
 
@@ -143,19 +143,35 @@ class DispUnits(Serialisable):
     dispUnitsLbl = Typed(expected_type=DispUnitsLbl, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('dispUnitsLbl', 'extLst')
+    __elements__ = ('dispUnitsLbl')
 
     def __init__(self,
                  dispUnitsLbl=None,
                  extLst=None,
                 ):
         self.dispUnitsLbl = dispUnitsLbl
-        self.extLst = extLst
 
 
-class ValAx(Serialisable):
+class ValAx(_BaseAxis):
 
     tagname = "valAx"
+
+    axId = _BaseAxis.axId
+    scaling = _BaseAxis.scaling
+    delete = _BaseAxis.delete
+    axPos = _BaseAxis.axPos
+    majorGridlines = _BaseAxis.majorGridlines
+    minorGridlines = _BaseAxis.minorGridlines
+    title = _BaseAxis.title
+    numFmt = _BaseAxis.numFmt
+    majorTickMark = _BaseAxis.majorTickMark
+    minorTickMark = _BaseAxis.minorTickMark
+    tickLblPos = _BaseAxis.tickLblPos
+    spPr = _BaseAxis.spPr
+    txP = _BaseAxis.txP
+    crossAx = _BaseAxis.crossAx
+    crosses = _BaseAxis.crosses
+    crossesAt = _BaseAxis.crossesAt
 
     crossBetween = NestedNoneSet(values=(['between', 'midCat']))
     majorUnit = NestedFloat(allow_none=True)
@@ -163,7 +179,8 @@ class ValAx(Serialisable):
     dispUnits = Typed(expected_type=DispUnits, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('crossBetween', 'majorUnit', 'minorUnit', 'dispUnits',)
+    __elements__ = _BaseAxis.__elements__ + ('crossBetween', 'majorUnit',
+                                             'minorUnit', 'dispUnits',)
 
 
     def __init__(self,
@@ -172,16 +189,35 @@ class ValAx(Serialisable):
                  minorUnit=None,
                  dispUnits=None,
                  extLst=None,
+                 **kw
                 ):
         self.crossBetween = crossBetween
         self.majorUnit = majorUnit
         self.minorUnit = minorUnit
         self.dispUnits = dispUnits
+        super(ValAx, self).__init__(**kw)
 
 
-class CatAx(Serialisable):
+class CatAx(_BaseAxis):
 
     tagname = "catAx"
+
+    axId = _BaseAxis.axId
+    scaling = _BaseAxis.scaling
+    delete = _BaseAxis.delete
+    axPos = _BaseAxis.axPos
+    majorGridlines = _BaseAxis.majorGridlines
+    minorGridlines = _BaseAxis.minorGridlines
+    title = _BaseAxis.title
+    numFmt = _BaseAxis.numFmt
+    majorTickMark = _BaseAxis.majorTickMark
+    minorTickMark = _BaseAxis.minorTickMark
+    tickLblPos = _BaseAxis.tickLblPos
+    spPr = _BaseAxis.spPr
+    txP = _BaseAxis.txP
+    crossAx = _BaseAxis.crossAx
+    crosses = _BaseAxis.crosses
+    crossesAt = _BaseAxis.crossesAt
 
     auto = NestedBool(allow_none=True)
     lblAlgn = NestedNoneSet(values=(['ctr', 'l', 'r']))
@@ -191,7 +227,8 @@ class CatAx(Serialisable):
     noMultiLvlLbl = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('auto', 'lblAlgn', 'lblOffset', 'tickLblSkip', 'tickMarkSkip', 'noMultiLvlLbl')
+    __elements__ = _BaseAxis.__elements__ + ('auto', 'lblAlgn', 'lblOffset',
+                                             'tickLblSkip', 'tickMarkSkip', 'noMultiLvlLbl')
 
     def __init__(self,
                  auto=None,
@@ -201,6 +238,7 @@ class CatAx(Serialisable):
                  tickMarkSkip=None,
                  noMultiLvlLbl=None,
                  extLst=None,
+                 **kw
                 ):
         self.auto = auto
         self.lblAlgn = lblAlgn
@@ -208,9 +246,29 @@ class CatAx(Serialisable):
         self.tickLblSkip = tickLblSkip
         self.tickMarkSkip = tickMarkSkip
         self.noMultiLvlLbl = noMultiLvlLbl
+        super(CatAx, self).__init__(**kw)
 
 
-class DateAx(Serialisable):
+class DateAx(_BaseAxis):
+
+    tagname = "dateAx"
+
+    axId = _BaseAxis.axId
+    scaling = _BaseAxis.scaling
+    delete = _BaseAxis.delete
+    axPos = _BaseAxis.axPos
+    majorGridlines = _BaseAxis.majorGridlines
+    minorGridlines = _BaseAxis.minorGridlines
+    title = _BaseAxis.title
+    numFmt = _BaseAxis.numFmt
+    majorTickMark = _BaseAxis.majorTickMark
+    minorTickMark = _BaseAxis.minorTickMark
+    tickLblPos = _BaseAxis.tickLblPos
+    spPr = _BaseAxis.spPr
+    txP = _BaseAxis.txP
+    crossAx = _BaseAxis.crossAx
+    crosses = _BaseAxis.crosses
+    crossesAt = _BaseAxis.crossesAt
 
     auto = NestedBool(allow_none=True)
     lblOffset = Percentage(allow_none=True, nested=True)
@@ -221,7 +279,9 @@ class DateAx(Serialisable):
     minorTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('auto', 'lblOffset', 'baseTimeUnit', 'majorUnit', 'majorTimeUnit', 'minorUnit', 'minorTimeUnit', 'extLst')
+    __elements__ = _BaseAxis.__elements__ + ('auto', 'lblOffset',
+                                             'baseTimeUnit', 'majorUnit', 'majorTimeUnit', 'minorUnit',
+                                             'minorTimeUnit', 'extLst')
 
     def __init__(self,
                  auto=None,
@@ -232,6 +292,7 @@ class DateAx(Serialisable):
                  minorUnit=None,
                  minorTimeUnit=None,
                  extLst=None,
+                 **kw
                 ):
         self.auto = auto
         self.lblOffset = lblOffset
@@ -240,20 +301,42 @@ class DateAx(Serialisable):
         self.majorTimeUnit = majorTimeUnit
         self.minorUnit = minorUnit
         self.minorTimeUnit = minorTimeUnit
+        super(DateAx, self).__init__(**kw)
 
 
-class SerAx(Serialisable):
+class SerAx(_BaseAxis):
+
+    tagname = "serAx"
+
+    axId = _BaseAxis.axId
+    scaling = _BaseAxis.scaling
+    delete = _BaseAxis.delete
+    axPos = _BaseAxis.axPos
+    majorGridlines = _BaseAxis.majorGridlines
+    minorGridlines = _BaseAxis.minorGridlines
+    title = _BaseAxis.title
+    numFmt = _BaseAxis.numFmt
+    majorTickMark = _BaseAxis.majorTickMark
+    minorTickMark = _BaseAxis.minorTickMark
+    tickLblPos = _BaseAxis.tickLblPos
+    spPr = _BaseAxis.spPr
+    txP = _BaseAxis.txP
+    crossAx = _BaseAxis.crossAx
+    crosses = _BaseAxis.crosses
+    crossesAt = _BaseAxis.crossesAt
 
     tickLblSkip = NestedInteger(allow_none=True)
     tickMarkSkip = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('tickLblSkip', 'tickMarkSkip', 'extLst')
+    __elements__ = _BaseAxis.__elements__ + ('tickLblSkip', 'tickMarkSkip', 'extLst')
 
     def __init__(self,
                  tickLblSkip=None,
                  tickMarkSkip=None,
                  extLst=None,
+                 **kw
                 ):
         self.tickLblSkip = tickLblSkip
         self.tickMarkSkip = tickMarkSkip
+        super(SerAx, self).__init__(**kw)
