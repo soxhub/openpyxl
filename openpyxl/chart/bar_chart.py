@@ -1,9 +1,12 @@
+from __future__ import absolute_import
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
     Bool,
     Integer,
     Sequence,
+    Alias,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
@@ -28,6 +31,7 @@ class _BarChartBase(Serialisable):
     varyColors = NestedBool(nested=True, allow_none=True)
     ser = Sequence(expected_type=BarSer, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dataLabels = Alias("dLbls")
 
     __elements__ = ('barDir', 'grouping', 'varyColors', 'ser', 'dLbls')
 
