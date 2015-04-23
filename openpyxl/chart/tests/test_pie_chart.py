@@ -15,10 +15,12 @@ def PieChart():
 class TestPieChart:
 
     def test_ctor(self, PieChart):
-        pie_chart = PieChart()
-        xml = tostring(pie_chart.to_tree())
+        chart = PieChart()
+        xml = tostring(chart.to_tree())
         expected = """
-        <root />
+        <pieChart>
+           <varyColors val="1" />
+        </pieChart>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -26,9 +28,117 @@ class TestPieChart:
 
     def test_from_xml(self, PieChart):
         src = """
-        <root />
+        <pieChart>
+           <varyColors val="1" />
+           <explosion val="5"/>
+           <firstSliceAng val="60"/>
+        </pieChart>
         """
         node = fromstring(src)
-        pie_chart = PieChart.from_tree(node)
-        assert dict(pie_chart) == {}
+        chart = PieChart.from_tree(node)
+        assert dict(chart) == {}
+        assert chart.varyColors is True
+        assert chart.firstSliceAng == 60
 
+
+@pytest.fixture
+def PieChart3D():
+    from ..pie_chart import PieChart3D
+    return PieChart3D
+
+
+class TestPieChart3D:
+
+    def test_ctor(self, PieChart3D):
+        chart = PieChart3D()
+        xml = tostring(chart.to_tree())
+        expected = """
+        <pie3DChart>
+           <varyColors val="1" />
+        </pie3DChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+@pytest.fixture
+def DoughnutChart():
+    from ..pie_chart import DoughnutChart
+    return DoughnutChart
+
+
+class TestDoughnutChart:
+
+    def test_ctor(self, DoughnutChart):
+        chart = DoughnutChart()
+        xml = tostring(chart.to_tree())
+        expected = """
+        <doughnutChart>
+           <varyColors val="1" />
+           <holeSize val="10" />
+        </doughnutChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DoughnutChart):
+        src = """
+        <doughnutChart>
+          <firstSliceAng val="0"/>
+          <holeSize val="50"/>
+        </doughnutChart>
+        """
+        node = fromstring(src)
+        chart = DoughnutChart.from_tree(node)
+        assert dict(chart) == {}
+        assert chart.firstSliceAng == 0
+        assert chart.holeSize == 50
+
+
+@pytest.fixture
+def ProjectedPieChart():
+    from ..pie_chart import ProjectedPieChart
+    return ProjectedPieChart
+
+
+class TestProjectedPieChart:
+
+    def test_ctor(self, ProjectedPieChart):
+        chart = ProjectedPieChart()
+        xml = tostring(chart.to_tree())
+        expected = """
+        <ofPieChart>
+          <varyColors val="1" />
+          <ofPieType val="pie" />
+          <secondPieSize val="75"/>
+        </ofPieChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ProjectedPieChart):
+        src = """
+        <ofPieChart>
+        <ofPieType val="pie"/>
+        <varyColors val="1"/>
+         <dLbls>
+          <showLegendKey val="0"/>
+          <showVal val="0"/>
+          <showCatName val="0"/>
+          <showSerName val="0"/>
+          <showPercent val="0"/>
+          <showBubbleSize val="0"/>
+          <showLeaderLines val="1"/>
+        </dLbls>
+        <gapWidth val="150"/>
+        <secondPieSize val="75"/>
+        <serLines/>
+        </ofPieChart>
+        """
+        node = fromstring(src)
+        chart = ProjectedPieChart.from_tree(node)
+        assert dict(chart) == {}
+        assert chart.gapWidth == 150
+        assert chart.secondPieSize == 75
