@@ -6,34 +6,35 @@ from openpyxl.descriptors import (
     Set,
     Bool,
     Integer,
+    Sequence,
+    Alias,
 )
 
 from openpyxl.descriptors.excel import ExtensionList
-from .chartBase import ChartLines, GapAmount
-
-
-class Grouping(Serialisable):
-
-    val = Set(values=(['percentStacked', 'standard', 'stacked']))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
+from openpyxl.descriptors.nested import (
+    NestedMinMax,
+    NestedSet,
+    NestedBool,
+)
+from .axis import AxId
+from .chartBase import ChartLines
+from .label import DataLabels
+from .series import AreaSer
 
 
 class _AreaChartBase(Serialisable):
 
-    grouping = Typed(expected_type=Grouping, allow_none=True)
-    varyColors = Bool(nested=True, allow_none=True)
+    grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
+    varyColors = NestedBool(nested=True, allow_none=True)
     ser = Typed(expected_type=AreaSer, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dataLabels = Alias("dLbls")
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
 
     __elements__ = ('grouping', 'varyColors', 'ser', 'dLbls', 'dropLines')
 
     def __init__(self,
-                 grouping=None,
+                 grouping="standard",
                  varyColors=None,
                  ser=None,
                  dLbls=None,
@@ -50,20 +51,42 @@ class AreaChart(_AreaChartBase):
 
     tagname = "areaChart"
 
-    gapDepth = Typed(expected_type=GapAmount, allow_none=True, nested=True)
-    axId = Integer()
+    grouping = _AreaChartBase.grouping
+    varyColors = _AreaChartBase.varyColors
+    ser = _AreaChartBase.ser
+    dLbls = _AreaChartBase.dLbls
+    dropLines = _AreaChartBase.dropLines
+
+    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _AreaChartBase.__elements__ + ('gapDepth', 'axId', 'extLst')
+    __elements__ = _AreaChartBase.__elements__ + ('axId',)
 
     def __init__(self,
                  axId=None,
                  extLst=None,
+                 **kw
                 ):
+        if axId is None:
+            axId = (AxId(10), AxId(100))
         self.axId = axId
-        self.extLst = extLst
+        super(AreaChart, self).__init__(**kw)
 
 
 class AreaChart3D(AreaChart):
 
     tagname = "area3DChart"
+
+    grouping = _AreaChartBase.grouping
+    varyColors = _AreaChartBase.varyColors
+    ser = _AreaChartBase.ser
+    dLbls = _AreaChartBase.dLbls
+    dropLines = _AreaChartBase.dropLines
+
+    gapDepth = NestedMinMax(min=0, max=500, allow_none=True)
+
+    __elements__ = AreaChart.__elements__ + ('gapDepth', )
+
+    def __init__(self, gapDepth=None, **kw):
+        self.gapDepth = gapDepth
+        super(AreaChart3D, self).__init__(**kw)
