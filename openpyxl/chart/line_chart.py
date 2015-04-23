@@ -90,7 +90,7 @@ class LineChart3D(_LineChartBase):
     grouping = _LineChartBase.grouping
     varyColors = _LineChartBase.varyColors
     ser = _LineChartBase.ser
-    dLbls = _LineChartBase.ser
+    dLbls = _LineChartBase.dLbls
     dropLines =_LineChartBase.dropLines
 
     gapDepth = NestedMinMax(min=0, max=500, allow_none=True)
