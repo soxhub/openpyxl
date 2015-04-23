@@ -296,7 +296,7 @@ class DateAx(_BaseAxis):
 
     __elements__ = _BaseAxis.__elements__ + ('auto', 'lblOffset',
                                              'baseTimeUnit', 'majorUnit', 'majorTimeUnit', 'minorUnit',
-                                             'minorTimeUnit', 'extLst')
+                                             'minorTimeUnit')
 
     def __init__(self,
                  auto=None,
@@ -344,7 +344,7 @@ class SerAx(_BaseAxis):
     tickMarkSkip = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _BaseAxis.__elements__ + ('tickLblSkip', 'tickMarkSkip', 'extLst')
+    __elements__ = _BaseAxis.__elements__ + ('tickLblSkip', 'tickMarkSkip')
 
     def __init__(self,
                  tickLblSkip=None,

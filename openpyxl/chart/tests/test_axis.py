@@ -151,3 +151,84 @@ class TestValAx:
         assert axis.delete is False
         assert axis.crossAx == 2065276984
         assert axis.crossBetween == "between"
+
+
+@pytest.fixture
+def DateAx():
+    from ..axis import DateAx
+    return DateAx
+
+
+class TestDateAx:
+
+
+    def test_ctor(self, DateAx):
+        axis = DateAx(axId=500, crossAx=10)
+        xml = tostring(axis.to_tree())
+        expected = """
+        <dateAx>
+           <axId val="500"></axId>
+           <scaling>
+             <orientation val="minMax"></orientation>
+           </scaling>
+           <crossAx val="10"></crossAx>
+        </dateAx>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DateAx):
+        src = """
+        <dateAx>
+           <axId val="500"></axId>
+           <scaling>
+             <orientation val="minMax"></orientation>
+           </scaling>
+           <crossAx val="10"></crossAx>
+        </dateAx>
+        """
+        node = fromstring(src)
+        axis = DateAx.from_tree(node)
+        assert dict(axis) == {}
+        assert axis.axId == 500
+        assert axis.crossAx == 10
+
+
+@pytest.fixture
+def SerAx():
+    from ..axis import SerAx
+    return SerAx
+
+
+class TestSerAx:
+
+    def test_ctor(self, SerAx):
+        axis = SerAx(axId=1000, crossAx=10)
+        xml = tostring(axis.to_tree())
+        expected = """
+        <serAx>
+          <axId val="1000"></axId>
+          <scaling>
+            <orientation val="minMax"></orientation>
+          </scaling>
+          <crossAx val="10"></crossAx>
+        </serAx>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SerAx):
+        src = """
+        <serAx>
+          <axId val="1000"></axId>
+          <scaling>
+            <orientation val="minMax"></orientation>
+          </scaling>
+          <crossAx val="10"></crossAx>
+        </serAx>
+        """
+        node = fromstring(src)
+        axis = SerAx.from_tree(node)
+        assert dict(axis) == {}
