@@ -181,11 +181,21 @@ class TestDateAx:
     def test_from_xml(self, DateAx):
         src = """
         <dateAx>
-           <axId val="500"></axId>
-           <scaling>
-             <orientation val="minMax"></orientation>
-           </scaling>
-           <crossAx val="10"></crossAx>
+          <axId val="20"/>
+          <scaling>
+            <orientation val="minMax"/>
+          </scaling>
+          <delete val="0"/>
+          <axPos val="b"/>
+          <numFmt formatCode="d\-mmm" sourceLinked="1"/>
+          <majorTickMark val="out"/>
+          <minorTickMark val="none"/>
+          <tickLblPos val="nextTo"/>
+          <crossAx val="10"/>
+          <crosses val="autoZero"/>
+          <auto val="1"/>
+          <lblOffset val="100"/>
+          <baseTimeUnit val="months"/>
         </dateAx>
         """
         node = fromstring(src)
