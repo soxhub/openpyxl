@@ -1,62 +1,48 @@
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Bool,
     Typed,
     Float,
     Set,
+    Alias
 )
+
+from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import (
+    NestedNoneSet,
+    NestedSet,
+    NestedBool,
+    NestedFloat,
+)
+
 from .chartBase import *
 from .shapes import ShapeProperties
 
-from openpyxl.descriptors.excel import ExtensionList
 
+class ErrorBars(Serialisable):
 
-class ErrValType(Serialisable):
+    tagname = "errBars"
 
-    val = Typed(expected_type=Set(values=(['cust', 'fixedVal', 'percentage', 'stdDev', 'stdErr'])))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class ErrBarType(Serialisable):
-
-    val = Typed(expected_type=Set(values=(['both', 'minus', 'plus'])))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class ErrDir(Serialisable):
-
-    val = Typed(expected_type=Set(values=(['x', 'y'])))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class ErrBars(Serialisable):
-
-    errDir = Typed(expected_type=ErrDir, allow_none=True)
-    errBarType = Typed(expected_type=ErrBarType, )
-    errValType = Typed(expected_type=ErrValType, )
-    noEndCap = Bool(nested=True, allow_none=True)
+    errDir = NestedNoneSet(values=(['x', 'y']))
+    direction = Alias("errDir")
+    errBarType = NestedSet(values=(['both', 'minus', 'plus']))
+    style = Alias("errBarType")
+    errValType = NestedSet(values=(['cust', 'fixedVal', 'percentage', 'stdDev', 'stdErr']))
+    size = Alias("errValType")
+    noEndCap = NestedBool(nested=True, allow_none=True)
     plus = Typed(expected_type=NumDataSource, allow_none=True)
     minus = Typed(expected_type=NumDataSource, allow_none=True)
-    val = Float(allow_none=True)
+    val = NestedFloat(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('errDir','errBarType', 'errValType', 'noEndCap','minus', 'plus', 'val', 'spPr')
+
 
     def __init__(self,
                  errDir=None,
-                 errBarType=None,
-                 errValType=None,
+                 errBarType="both",
+                 errValType="fixedVal",
                  noEndCap=None,
                  plus=None,
                  minus=None,
@@ -72,4 +58,3 @@ class ErrBars(Serialisable):
         self.minus = minus
         self.val = val
         self.spPr = spPr
-        self.extLst = extLst
