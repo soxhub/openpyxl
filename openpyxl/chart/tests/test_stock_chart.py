@@ -12,7 +12,7 @@ def StockChart():
     return StockChart
 
 
-class TestLineChart:
+class TestStockChart:
 
     def test_ctor(self, StockChart):
         from openpyxl.chart.series import LineSer
