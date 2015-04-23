@@ -7,28 +7,44 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def LineChart():
-    from ..surface_chart import LineChart
-    return LineChart
+def SurfaceChart():
+    from ..surface_chart import SurfaceChart
+    return SurfaceChart
 
 
-class TestLineChart:
+class TestSurfaceChart:
 
-    def test_ctor(self, LineChart):
-        surface_chart = LineChart()
-        xml = tostring(surface_chart.to_tree())
+    def test_ctor(self, SurfaceChart):
+        chart = SurfaceChart()
+        xml = tostring(chart.to_tree())
         expected = """
-        <root />
+        <surfaceChart>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
+        </surfaceChart>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def test_from_xml(self, LineChart):
+    def test_from_xml(self, SurfaceChart):
         src = """
-        <root />
+        <surfaceChart>
+        <wireframe val="0"/>
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+        </ser>
+        <ser>
+          <idx val="1"/>
+          <order val="1"/>
+        </ser>
+        <bandFmts/>
+        <axId val="2086876920"/>
+        <axId val="2078923400"/>
+        <axId val="2079274408"/>
+        </surfaceChart>
         """
         node = fromstring(src)
-        surface_chart = LineChart.from_tree(node)
-        assert dict(surface_chart) == {}
-
+        chart = SurfaceChart.from_tree(node)
+        assert dict(chart) == {}
