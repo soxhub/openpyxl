@@ -201,7 +201,7 @@ class TestDateAx:
         node = fromstring(src)
         axis = DateAx.from_tree(node)
         assert dict(axis) == {}
-        assert axis.axId == 500
+        assert axis.axId == 20
         assert axis.crossAx == 10
 
 
