@@ -30,6 +30,15 @@ from .chartBase import ChartLines
 from ._chart import Title
 
 
+class AxId(Serialisable):
+
+    val = Integer()
+
+    def __init__(self, val):
+        self.val = val
+
+
+
 class Scaling(Serialisable):
 
     tagname = "scaling"

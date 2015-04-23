@@ -14,7 +14,7 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedSequence,
 )
-
+from .axis import AxId
 from .shapes import ShapeProperties
 from .series import BarSer
 from .label import DataLabels
@@ -56,14 +56,6 @@ class ChartLines(Serialisable):
                  spPr=None,
                 ):
         self.spPr = spPr
-
-
-class AxId(Serialisable):
-
-    val = Integer()
-
-    def __init__(self, val):
-        self.val = val
 
 
 class BarChart(_BarChartBase):
