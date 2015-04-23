@@ -18,6 +18,13 @@ from openpyxl.descriptors.excel import(
     TextPoint,
     ExtensionList,
 )
+from openpyxl.descriptors.nested import (
+    NestedBool,
+    NestedFloat,
+    NestedMinMax,
+    NestedNoneSet,
+)
+
 from .layout import Layout
 from .shapes import *
 from .text import *
@@ -48,9 +55,9 @@ class PictureOptions(Serialisable):
 
 class Marker(Serialisable):
 
-    symbol = NoneSet(values=(['circle', 'dash', 'diamond', 'dot', 'picture',
-                              'plus', 'square', 'star', 'triangle', 'x', 'auto']), nested=True)
-    size = MinMax(min=2, max=72, nested=True)
+    symbol = NestedNoneSet(values=(['circle', 'dash', 'diamond', 'dot', 'picture',
+                              'plus', 'square', 'star', 'triangle', 'x', 'auto']))
+    size = NestedMinMax(min=2, max=72, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
