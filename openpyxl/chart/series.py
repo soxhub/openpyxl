@@ -10,7 +10,7 @@ from openpyxl.descriptors.nested import NestedInteger
 
 from .shapes import ShapeProperties, Shape
 from .chartBase import AxDataSource, NumDataSource
-from .error_bar import ErrBars
+from .error_bar import ErrorBars
 from .label import DataLabels
 from .marker import DPt, PictureOptions, Marker
 from .trendline import Trendline
@@ -97,7 +97,7 @@ class AreaSer(_SeriesBase):
     dPt = Typed(expected_type=DPt, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrBars, allow_none=True)
+    errBars = Typed(expected_type=ErrorBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -136,7 +136,7 @@ class BarSer(_SeriesBase):
     dPt = Typed(expected_type=DPt, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrBars, allow_none=True)
+    errBars = Typed(expected_type=ErrorBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
     shape = Typed(expected_type=Shape, allow_none=True)
@@ -182,7 +182,7 @@ class BubbleSer(_SeriesBase):
     dPt = Typed(expected_type=DPt, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrBars, allow_none=True)
+    errBars = Typed(expected_type=ErrorBars, allow_none=True)
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
     yVal = Typed(expected_type=NumDataSource, allow_none=True)
     bubbleSize = Typed(expected_type=NumDataSource, allow_none=True)
@@ -278,7 +278,7 @@ class ScatterSer(Serialisable):
     dPt = Typed(expected_type=DPt, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrBars, allow_none=True)
+    errBars = Typed(expected_type=ErrorBars, allow_none=True)
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
     yVal = Typed(expected_type=NumDataSource, allow_none=True)
     smooth = Bool(nested=True, allow_none=True)
@@ -332,7 +332,7 @@ class LineSer(Serialisable):
     dPt = Typed(expected_type=DPt, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrBars, allow_none=True)
+    errBars = Typed(expected_type=ErrorBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
     smooth = Bool(allow_none=True, nested=True)
