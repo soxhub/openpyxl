@@ -4,13 +4,50 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
     Integer,
-    Set,)
+    Set,
+)
 from openpyxl.descriptors.excel import Percentage, HexBinary
 
 
 class PresetColor(Serialisable):
 
-    val = Set(values=(['aliceBlue', 'antiqueWhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedAlmond', 'blue', 'blueViolet', 'brown', 'burlyWood', 'cadetBlue', 'chartreuse', 'chocolate', 'coral', 'cornflowerBlue', 'cornsilk', 'crimson', 'cyan', 'darkBlue', 'darkCyan', 'darkGoldenrod', 'darkGray', 'darkGrey', 'darkGreen', 'darkKhaki', 'darkMagenta', 'darkOliveGreen', 'darkOrange', 'darkOrchid', 'darkRed', 'darkSalmon', 'darkSeaGreen', 'darkSlateBlue', 'darkSlateGray', 'darkSlateGrey', 'darkTurquoise', 'darkViolet', 'dkBlue', 'dkCyan', 'dkGoldenrod', 'dkGray', 'dkGrey', 'dkGreen', 'dkKhaki', 'dkMagenta', 'dkOliveGreen', 'dkOrange', 'dkOrchid', 'dkRed', 'dkSalmon', 'dkSeaGreen', 'dkSlateBlue', 'dkSlateGray', 'dkSlateGrey', 'dkTurquoise', 'dkViolet', 'deepPink', 'deepSkyBlue', 'dimGray', 'dimGrey', 'dodgerBlue', 'firebrick', 'floralWhite', 'forestGreen', 'fuchsia', 'gainsboro', 'ghostWhite', 'gold', 'goldenrod', 'gray', 'grey', 'green', 'greenYellow', 'honeydew', 'hotPink', 'indianRed', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderBlush', 'lawnGreen', 'lemonChiffon', 'lightBlue', 'lightCoral', 'lightCyan', 'lightGoldenrodYellow', 'lightGray', 'lightGrey', 'lightGreen', 'lightPink', 'lightSalmon', 'lightSeaGreen', 'lightSkyBlue', 'lightSlateGray', 'lightSlateGrey', 'lightSteelBlue', 'lightYellow', 'ltBlue', 'ltCoral', 'ltCyan', 'ltGoldenrodYellow', 'ltGray', 'ltGrey', 'ltGreen', 'ltPink', 'ltSalmon', 'ltSeaGreen', 'ltSkyBlue', 'ltSlateGray', 'ltSlateGrey', 'ltSteelBlue', 'ltYellow', 'lime', 'limeGreen', 'linen', 'magenta', 'maroon', 'medAquamarine', 'medBlue', 'medOrchid', 'medPurple', 'medSeaGreen', 'medSlateBlue', 'medSpringGreen', 'medTurquoise', 'medVioletRed', 'mediumAquamarine', 'mediumBlue', 'mediumOrchid', 'mediumPurple', 'mediumSeaGreen', 'mediumSlateBlue', 'mediumSpringGreen', 'mediumTurquoise', 'mediumVioletRed', 'midnightBlue', 'mintCream', 'mistyRose', 'moccasin', 'navajoWhite', 'navy', 'oldLace', 'olive', 'oliveDrab', 'orange', 'orangeRed', 'orchid', 'paleGoldenrod', 'paleGreen', 'paleTurquoise', 'paleVioletRed', 'papayaWhip', 'peachPuff', 'peru', 'pink', 'plum', 'powderBlue', 'purple', 'red', 'rosyBrown', 'royalBlue', 'saddleBrown', 'salmon', 'sandyBrown', 'seaGreen', 'seaShell', 'sienna', 'silver', 'skyBlue', 'slateBlue', 'slateGray', 'slateGrey', 'snow', 'springGreen', 'steelBlue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whiteSmoke', 'yellow', 'yellowGreen']))
+    val = Set(values=(['aliceBlue', 'antiqueWhite', 'aqua', 'aquamarine',
+                       'azure', 'beige', 'bisque', 'black', 'blanchedAlmond', 'blue',
+                       'blueViolet', 'brown', 'burlyWood', 'cadetBlue', 'chartreuse',
+                       'chocolate', 'coral', 'cornflowerBlue', 'cornsilk', 'crimson', 'cyan',
+                       'darkBlue', 'darkCyan', 'darkGoldenrod', 'darkGray', 'darkGrey',
+                       'darkGreen', 'darkKhaki', 'darkMagenta', 'darkOliveGreen', 'darkOrange',
+                       'darkOrchid', 'darkRed', 'darkSalmon', 'darkSeaGreen', 'darkSlateBlue',
+                       'darkSlateGray', 'darkSlateGrey', 'darkTurquoise', 'darkViolet',
+                       'dkBlue', 'dkCyan', 'dkGoldenrod', 'dkGray', 'dkGrey', 'dkGreen',
+                       'dkKhaki', 'dkMagenta', 'dkOliveGreen', 'dkOrange', 'dkOrchid', 'dkRed',
+                       'dkSalmon', 'dkSeaGreen', 'dkSlateBlue', 'dkSlateGray', 'dkSlateGrey',
+                       'dkTurquoise', 'dkViolet', 'deepPink', 'deepSkyBlue', 'dimGray',
+                       'dimGrey', 'dodgerBlue', 'firebrick', 'floralWhite', 'forestGreen',
+                       'fuchsia', 'gainsboro', 'ghostWhite', 'gold', 'goldenrod', 'gray',
+                       'grey', 'green', 'greenYellow', 'honeydew', 'hotPink', 'indianRed',
+                       'indigo', 'ivory', 'khaki', 'lavender', 'lavenderBlush', 'lawnGreen',
+                       'lemonChiffon', 'lightBlue', 'lightCoral', 'lightCyan',
+                       'lightGoldenrodYellow', 'lightGray', 'lightGrey', 'lightGreen',
+                       'lightPink', 'lightSalmon', 'lightSeaGreen', 'lightSkyBlue',
+                       'lightSlateGray', 'lightSlateGrey', 'lightSteelBlue', 'lightYellow',
+                       'ltBlue', 'ltCoral', 'ltCyan', 'ltGoldenrodYellow', 'ltGray', 'ltGrey',
+                       'ltGreen', 'ltPink', 'ltSalmon', 'ltSeaGreen', 'ltSkyBlue',
+                       'ltSlateGray', 'ltSlateGrey', 'ltSteelBlue', 'ltYellow', 'lime',
+                       'limeGreen', 'linen', 'magenta', 'maroon', 'medAquamarine', 'medBlue',
+                       'medOrchid', 'medPurple', 'medSeaGreen', 'medSlateBlue',
+                       'medSpringGreen', 'medTurquoise', 'medVioletRed', 'mediumAquamarine',
+                       'mediumBlue', 'mediumOrchid', 'mediumPurple', 'mediumSeaGreen',
+                       'mediumSlateBlue', 'mediumSpringGreen', 'mediumTurquoise',
+                       'mediumVioletRed', 'midnightBlue', 'mintCream', 'mistyRose', 'moccasin',
+                       'navajoWhite', 'navy', 'oldLace', 'olive', 'oliveDrab', 'orange',
+                       'orangeRed', 'orchid', 'paleGoldenrod', 'paleGreen', 'paleTurquoise',
+                       'paleVioletRed', 'papayaWhip', 'peachPuff', 'peru', 'pink', 'plum',
+                       'powderBlue', 'purple', 'red', 'rosyBrown', 'royalBlue', 'saddleBrown',
+                       'salmon', 'sandyBrown', 'seaGreen', 'seaShell', 'sienna', 'silver',
+                       'skyBlue', 'slateBlue', 'slateGray', 'slateGrey', 'snow', 'springGreen',
+                       'steelBlue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet',
+                       'wheat', 'white', 'whiteSmoke', 'yellow', 'yellowGreen']))
 
     def __init__(self,
                  val=None,
@@ -20,7 +57,9 @@ class PresetColor(Serialisable):
 
 class SchemeColor(Serialisable):
 
-    val = Set(values=(['bg1', 'tx1', 'bg2', 'tx2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink', 'phClr', 'dk1', 'lt1', 'dk2', 'lt2']))
+    val = Set(values=(['bg1', 'tx1', 'bg2', 'tx2', 'accent1', 'accent2',
+                       'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink', 'phClr',
+                       'dk1', 'lt1', 'dk2', 'lt2']))
 
     def __init__(self,
                  val=None,
@@ -30,7 +69,14 @@ class SchemeColor(Serialisable):
 
 class SystemColor(Serialisable):
 
-    val = Set(values=(['scrollBar', 'background', 'activeCaption', 'inactiveCaption', 'menu', 'window', 'windowFrame', 'menuText', 'windowText', 'captionText', 'activeBorder', 'inactiveBorder', 'appWorkspace', 'highlight', 'highlightText', 'btnFace', 'btnShadow', 'grayText', 'btnText', 'inactiveCaptionText', 'btnHighlight', '3dDkShadow', '3dLight', 'infoText', 'infoBk', 'hotLight', 'gradientActiveCaption', 'gradientInactiveCaption', 'menuHighlight', 'menuBar']))
+    val = Set(values=(['scrollBar', 'background', 'activeCaption',
+                       'inactiveCaption', 'menu', 'window', 'windowFrame', 'menuText',
+                       'windowText', 'captionText', 'activeBorder', 'inactiveBorder',
+                       'appWorkspace', 'highlight', 'highlightText', 'btnFace', 'btnShadow',
+                       'grayText', 'btnText', 'inactiveCaptionText', 'btnHighlight',
+                       '3dDkShadow', '3dLight', 'infoText', 'infoBk', 'hotLight',
+                       'gradientActiveCaption', 'gradientInactiveCaption', 'menuHighlight',
+                       'menuBar']))
     lastClr = Typed(expected_type=HexBinary, allow_none=True)
 
     def __init__(self,
@@ -108,4 +154,3 @@ class ColorChoice(Serialisable):
         self.sysClr = sysClr
         self.schemeClr = schemeClr
         self.prstClr = prstClr
-
