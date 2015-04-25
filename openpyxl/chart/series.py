@@ -14,7 +14,7 @@ from .shapes import ShapeProperties, Shape
 from .chartBase import AxDataSource, NumDataSource
 from .error_bar import ErrorBars
 from .label import DataLabels
-from .marker import DPt, PictureOptions, Marker
+from .marker import DataPoint, PictureOptions, Marker
 from .trendline import Trendline
 
 
