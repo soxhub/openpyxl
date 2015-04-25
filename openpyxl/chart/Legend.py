@@ -1,11 +1,14 @@
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    NoneSet,
     Integer,
-    Bool,
+    Alias,
 )
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import (
+    NestedBool,
+    NestedSet
+)
 
 from .layout import Layout
 from .shapes import ShapeProperties
@@ -17,7 +20,7 @@ class LegendEntry(Serialisable):
     idx = Integer()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('idx', 'extLst')
+    __elements__ = ('idx',)
 
     def __init__(self,
                  idx=None,
@@ -28,21 +31,25 @@ class LegendEntry(Serialisable):
 
 class Legend(Serialisable):
 
-    legendPos = NoneSet(values=(['b', 'tr', 'l', 'r', 't']), nested=True)
+    tagname = "legend"
+
+    legendPos = NestedSet(values=(['b', 'tr', 'l', 'r', 't']))
     legendEntry = Typed(expected_type=LegendEntry, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
-    overlay = Bool(nested=True, allow_none=True)
+    overlay = NestedBool(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias('spPr')
     txPr = Typed(expected_type=TextBody, allow_none=True)
+    textProperies = Alias('txPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('legendPos', 'legendEntry', 'layout', 'overlay', 'spPr', 'txPr', 'extLst')
+    __elements__ = ('legendPos', 'legendEntry', 'layout', 'overlay', 'spPr', 'txPr',)
 
     def __init__(self,
-                 legendPos=None,
+                 legendPos="r",
                  legendEntry=None,
                  layout=None,
-                 overlay=None,
+                 overlay=True,
                  spPr=None,
                  txPr=None,
                  extLst=None,
