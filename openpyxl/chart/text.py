@@ -1,7 +1,11 @@
+from __future__ import absolute_import
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
     Set,
+    NoneSet,
+    Sequence,
     String,
     Bool,
     MinMax,
@@ -10,16 +14,19 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import (
     HexBinary,
     TextPoint,
-    Coordinate
+    Coordinate,
+    ExtensionList
 )
+
+from openpyxl.descriptors.nested import NestedInteger
+
 from .shapes import (
     LineProperties,
     Color,
     Scene3D
 )
 
-class OfficeArtExtensionList:
-    pass
+from .drawing import OfficeArtExtensionList
 
 
 class EmbeddedWAVAudioFile(Serialisable):
@@ -365,26 +372,26 @@ class PresetTextShape(Serialisable):
 
 class TextBodyProperties(Serialisable):
 
-    rot = Typed(expected_type=Integer())
-    spcFirstLastPara = Typed(expected_type=Bool, allow_none=True)
-    vertOverflow = Typed(expected_type=Set(values=(['overflow', 'ellipsis', 'clip'])))
-    horzOverflow = Typed(expected_type=Set(values=(['overflow', 'clip'])))
-    vert = Typed(expected_type=Set(values=(['horz', 'vert', 'vert270',
-                                            'wordArtVert', 'eaVert', 'mongolianVert', 'wordArtVertRtl'])))
-    wrap = Typed(expected_type=Set(values=(['none', 'square'])))
-    lIns = Typed(expected_type=Coordinate, allow_none=True)
-    tIns = Typed(expected_type=Coordinate, allow_none=True)
-    rIns = Typed(expected_type=Coordinate, allow_none=True)
-    bIns = Typed(expected_type=Coordinate, allow_none=True)
-    numCol = Typed(expected_type=Integer())
-    spcCol = Typed(expected_type=Coordinate)
-    rtlCol = Typed(expected_type=Bool, allow_none=True)
-    fromWordArt = Typed(expected_type=Bool, allow_none=True)
-    anchor = Typed(expected_type=Set(values=(['t', 'ctr', 'b', 'just', 'dist'])))
-    anchorCtr = Typed(expected_type=Bool, allow_none=True)
-    forceAA = Typed(expected_type=Bool, allow_none=True)
-    upright = Typed(expected_type=Bool, allow_none=True)
-    compatLnSpc = Typed(expected_type=Bool, allow_none=True)
+    rot = Integer(allow_none=True)
+    spcFirstLastPara = Bool(allow_none=True)
+    vertOverflow = NoneSet(values=(['overflow', 'ellipsis', 'clip']))
+    horzOverflow = NoneSet(values=(['overflow', 'clip']))
+    vert = NoneSet(values=(['horz', 'vert', 'vert270', 'wordArtVert', 'eaVert',
+                        'mongolianVert', 'wordArtVertRtl']))
+    wrap = NoneSet(values=(['none', 'square']))
+    lIns = Coordinate(allow_none=True)
+    tIns = Coordinate(allow_none=True)
+    rIns = Coordinate(allow_none=True)
+    bIns = Coordinate(allow_none=True)
+    numCol = Integer(allow_none=True)
+    spcCol = Coordinate(allow_none=True)
+    rtlCol = Bool(allow_none=True)
+    fromWordArt = Bool(allow_none=True)
+    anchor = NoneSet(values=(['t', 'ctr', 'b', 'just', 'dist']))
+    anchorCtr = Bool(allow_none=True)
+    forceAA = Bool(allow_none=True)
+    upright = Bool(allow_none=True)
+    compatLnSpc = Bool(allow_none=True)
     prstTxWarp = Typed(expected_type=PresetTextShape, allow_none=True)
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
@@ -445,16 +452,20 @@ class TextBody(Serialisable):
     This element specifies text formatting. The lstStyle element is not supported.
     """
 
+    tagname = "txBody"
+
 
     bodyPr = Typed(expected_type=TextBodyProperties, )
     lstStyle = Typed(expected_type=TextListStyle, allow_none=True)
-    p = Typed(expected_type=TextParagraph, )
+    p = Sequence(expected_type=TextParagraph)
 
     def __init__(self,
                  bodyPr=None,
                  lstStyle=None,
-                 p=None,
+                 p=(),
                 ):
+        if bodyPr is None:
+            bodyPr = TextBodyProperties()
         self.bodyPr = bodyPr
         self.lstStyle = lstStyle
         self.p = p
@@ -473,8 +484,52 @@ class NumFmt(Serialisable):
         self.sourceLinked = sourceLinked
 
 
+class StrVal(Serialisable):
+
+    idx = Integer()
+    v = Typed(expected_type=String(), )
+
+    def __init__(self,
+                 idx=None,
+                 v=None,
+                ):
+        self.idx = idx
+        self.v = v
+
+
+class StrData(Serialisable):
+
+    ptCount = NestedInteger(allow_none=True)
+    pt = Typed(expected_type=StrVal, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    def __init__(self,
+                 ptCount=None,
+                 pt=None,
+                 extLst=None,
+                ):
+        self.ptCount = ptCount
+        self.pt = pt
+        self.extLst = extLst
+
+
+class StrRef(Serialisable):
+
+    f = Typed(expected_type=String, )
+    strCache = Typed(expected_type=StrData, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    def __init__(self,
+                 f=None,
+                 strCache=None,
+                 extLst=None,
+                ):
+        self.f = f
+        self.strCache = strCache
+        self.extLst = extLst
+
+
 class Tx(Serialisable):
 
-    pass
-
-
+    strRef = Typed(expected_type=StrRef, allow_none=True)
+    rich = Typed(expected_type=TextBody, allow_none=True)
