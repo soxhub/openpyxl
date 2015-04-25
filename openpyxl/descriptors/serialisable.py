@@ -91,3 +91,16 @@ class Serialisable(_Serialiasable):
             value = getattr(self, attr)
             if value is not None:
                 yield attr, safe_string(value)
+
+
+    def __eq__(self, other):
+        if not dict(self) == dict(other):
+            return False
+        for el in self.__elements__:
+            if getattr(self, el) != getattr(other, el):
+                return False
+        return True
+
+
+    def __ne__(self, other):
+        return not self == other
