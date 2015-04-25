@@ -96,7 +96,7 @@ class _SeriesBase(Serialisable):
 class AreaSer(_SeriesBase):
 
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -135,7 +135,7 @@ class BarSer(_SeriesBase):
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     invertIfNegative = Bool(nested=True, allow_none=True)
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -181,7 +181,7 @@ class BarSer(_SeriesBase):
 class BubbleSer(_SeriesBase):
 
     invertIfNegative = Bool(nested=True, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -222,7 +222,7 @@ class BubbleSer(_SeriesBase):
 class PieSer(_SeriesBase):
 
     explosion = Integer(allow_none=True, nested=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
@@ -250,7 +250,7 @@ class PieSer(_SeriesBase):
 class RadarSer(_SeriesBase):
 
     marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
     val = Typed(expected_type=NumDataSource, allow_none=True)
@@ -277,7 +277,7 @@ class RadarSer(_SeriesBase):
 class ScatterSer(Serialisable):
 
     marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -331,7 +331,7 @@ class SurfaceSer(Serialisable):
 class LineSer(Serialisable):
 
     marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DPt, allow_none=True)
+    dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
