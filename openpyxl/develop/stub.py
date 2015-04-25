@@ -36,7 +36,7 @@ class Test{clsname}:
         """
         node = fromstring(src)
         {module} = {clsname}.from_tree(node)
-        assert dict({module}) == {{}}
+        assert {module} == {clsname}()
 '''
 
 
