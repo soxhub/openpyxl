@@ -36,3 +36,40 @@ class TestMarker:
         node = fromstring(src)
         marker = Marker.from_tree(node)
         assert marker == Marker(symbol="square", size=5)
+
+
+@pytest.fixture
+def DataPoint():
+    from ..marker import DataPoint
+    return DataPoint
+
+
+class TestDataPoint:
+
+    def test_ctor(self, DataPoint):
+        dp = DataPoint(idx=9)
+        xml = tostring(dp.to_tree())
+        expected = """
+        <dPt>
+          <idx val="9"/>
+        </dPt>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DataPoint):
+        src = """
+        <dPt>
+          <idx val="9"/>
+          <marker>
+            <symbol val="triangle"/>
+            <size val="5"/>
+          </marker>
+          <bubble3D val="0"/>
+        </dPt>
+        """
+        node = fromstring(src)
+        dp = DataPoint.from_tree(node)
+        assert dp.idx == 9
+        assert dp.bubble3D is False

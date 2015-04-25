@@ -6,13 +6,6 @@ from openpyxl.xml.functions import Element
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    Float,
-    MinMax,
-    Bool,
-    Set,
-    NoneSet,
-    String,
-    Integer,
     Alias,
 )
 
@@ -22,7 +15,7 @@ from openpyxl.descriptors.excel import(
 
 from openpyxl.descriptors.nested import (
     NestedBool,
-    NestedFloat,
+    NestedInteger,
     NestedMinMax,
     NestedNoneSet,
 )
@@ -39,7 +32,6 @@ def _marker_symbol(tagname, value):
     Override serialisation because explicit none required
     """
     return Element(tagname, val=safe_string(value))
-
 
 
 class Marker(Serialisable):
@@ -69,14 +61,20 @@ class Marker(Serialisable):
 
 class DataPoint(Serialisable):
 
-    idx = Integer(nested=True)
-    invertIfNegative = Bool(allow_none=True, nested=True)
+    tagname = "dPt"
+
+    idx = NestedInteger()
+    invertIfNegative = NestedBool(allow_none=True)
     marker = Typed(expected_type=Marker, allow_none=True)
-    bubble3D = Bool(allow_none=True, nested=True)
-    explosion = Integer( allow_none=True)
+    bubble3D = NestedBool(allow_none=True)
+    explosion = Integer(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('idx', 'invertIfNegative', 'marker', 'bubble3D',
+                    'explosion', 'spPr', 'pictureOptions')
 
     def __init__(self,
                  idx=None,
