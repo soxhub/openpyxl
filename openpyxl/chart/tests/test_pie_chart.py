@@ -20,6 +20,7 @@ class TestPieChart:
         expected = """
         <pieChart>
            <varyColors val="1" />
+           <firstSliceAng val="0" />
         </pieChart>
         """
         diff = compare_xml(xml, expected)
@@ -75,6 +76,7 @@ class TestDoughnutChart:
         expected = """
         <doughnutChart>
            <varyColors val="1" />
+           <firstSliceAng val="0" />
            <holeSize val="10" />
         </doughnutChart>
         """

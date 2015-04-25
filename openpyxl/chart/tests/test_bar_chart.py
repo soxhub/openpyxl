@@ -72,14 +72,23 @@ class TestBarChart:
         <barChart>
         <barDir val="col"></barDir>
         <grouping val="clustered"></grouping>
+        <varyColors val="0" />
         <ser>
+          <idx val="0"/>
+          <order val="0"/>
           <val>
             <numRef>
               <f>Blatt1!$A$1:$A$12</f>
             </numRef>
           </val>
         </ser>
-        <dLbls></dLbls>
+        <dLbls>
+          <showLegendKey val="0"/>
+          <showVal val="0"/>
+          <showCatName val="0"/>
+          <showPercent val="0"/>
+          <showBubbleSize val="0"/>
+        </dLbls>
         <gapWidth val="150" />
         <axId val="2098063848"></axId>
         <axId val="2098059592"></axId>
