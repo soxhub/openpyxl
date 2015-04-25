@@ -20,6 +20,11 @@ from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement
 
 
+def _no_value(tagname, value):
+    if value:
+        return Element(tagname, val=safe_string(value))
+
+
 class Font(HashableObject):
     """Font options used in styles."""
 
@@ -33,16 +38,16 @@ class Font(HashableObject):
     family = NestedMinMax(min=0, max=14)
     sz = NestedFloat()
     size = Alias("sz")
-    b = NestedBool()
+    b = NestedBool(to_tree=_no_value)
     bold = Alias("b")
-    i = NestedBool()
+    i = NestedBool(to_tree=_no_value)
     italic = Alias("i")
-    strike = NestedBool()
+    strike = NestedBool(to_tree=_no_value)
     strikethrough = Alias("strike")
-    outline = NestedBool()
-    shadow = NestedBool()
-    condense = NestedBool()
-    extend = NestedBool()
+    outline = NestedBool(to_tree=_no_value)
+    shadow = NestedBool(to_tree=_no_value)
+    condense = NestedBool(to_tree=_no_value)
+    extend = NestedBool(to_tree=_no_value)
     u = NestedNoneSet(values=('single', 'double', 'singleAccounting',
                              'doubleAccounting'))
     underline = Alias("u")
