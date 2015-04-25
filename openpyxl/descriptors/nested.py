@@ -40,8 +40,9 @@ class Nested(Descriptor):
 
     @staticmethod
     def to_tree(tagname=None, value=None):
-        value = safe_string(value)
-        return Element(tagname, val=value)
+        if value:
+            value = safe_string(value)
+            return Element(tagname, val=value)
 
 
 class NestedValue(Nested, Convertible):

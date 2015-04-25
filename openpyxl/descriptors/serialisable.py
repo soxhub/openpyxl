@@ -63,13 +63,14 @@ class Serialisable(_Serialiasable):
             if child in self.__nested__:
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
-                if hasattr(desc, "to_tree") and value:
+                if hasattr(desc, "to_tree"):
                     if isinstance(value, tuple):
                         for obj in desc.to_tree(child, value):
                             el.append(obj)
                     else:
                         obj = desc.to_tree(child, value)
-                    el.append(obj)
+                    if obj is not None:
+                        el.append(obj)
                 elif value:
                     SubElement(el, child, val=safe_string(value))
 
