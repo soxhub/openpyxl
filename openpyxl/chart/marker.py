@@ -17,12 +17,9 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import(
-    Coordinate,
-    Percentage,
-    HexBinary,
-    TextPoint,
     ExtensionList,
 )
+
 from openpyxl.descriptors.nested import (
     NestedBool,
     NestedFloat,
@@ -31,31 +28,10 @@ from openpyxl.descriptors.nested import (
 )
 
 from .layout import Layout
+from .picture import PictureOptions
 from .shapes import *
 from .text import *
 from .error_bar import *
-
-
-class PictureOptions(Serialisable):
-
-    applyToFront = Bool(allow_none=True, nested=True)
-    applyToSides = Bool(allow_none=True, nested=True)
-    applyToEnd = Bool(allow_none=True, nested=True)
-    pictureFormat = NoneSet(values=(['stretch', 'stack', 'stackScale']), nested=True)
-    pictureStackUnit = Float(allow_none=True, nested=True)
-
-    def __init__(self,
-                 applyToFront=None,
-                 applyToSides=None,
-                 applyToEnd=None,
-                 pictureFormat=None,
-                 pictureStackUnit=None,
-                ):
-        self.applyToFront = applyToFront
-        self.applyToSides = applyToSides
-        self.applyToEnd = applyToEnd
-        self.pictureFormat = pictureFormat
-        self.pictureStackUnit = pictureStackUnit
 
 
 def _marker_symbol(tagname, value):
