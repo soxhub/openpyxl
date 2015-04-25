@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     NoneSet,
@@ -6,22 +8,29 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import (
+    NestedNoneSet,
+    NestedFloat
 
+)
 
 class ManualLayout(Serialisable):
 
-    layoutTarget = NoneSet(values=(['inner', 'outer']), nested=True)
-    xMode = NoneSet(values=(['edge', 'factor']), nested=True)
-    yMode = NoneSet(values=(['edge', 'factor']), nested=True)
-    wMode = NoneSet(values=(['edge', 'factor']), nested=True)
-    hMode = NoneSet(values=(['edge', 'factor']), nested=True)
-    x = Float(nested=True, allow_none=True)
-    y = Float(nested=True, allow_none=True)
-    w = Float(nested=True, allow_none=True)
-    h = Float(nested=True, allow_none=True)
+    tagname = "manualLayout"
+
+    layoutTarget = NestedNoneSet(values=(['inner', 'outer']))
+    xMode = NestedNoneSet(values=(['edge', 'factor']))
+    yMode = NestedNoneSet(values=(['edge', 'factor']))
+    wMode = NestedNoneSet(values=(['edge', 'factor']))
+    hMode = NestedNoneSet(values=(['edge', 'factor']))
+    x = NestedFloat(allow_none=True)
+    y = NestedFloat(allow_none=True)
+    w = NestedFloat(allow_none=True)
+    h = NestedFloat(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('layoutTarget', 'xMode', 'yMode', 'wMode', 'hMode', 'x', 'y', 'w', 'h', 'extLst')
+    __elements__ = ('layoutTarget', 'xMode', 'yMode', 'wMode', 'hMode', 'x',
+                    'y', 'w', 'h')
 
     def __init__(self,
                  layoutTarget=None,
@@ -53,11 +62,10 @@ class Layout(Serialisable):
     manualLayout = Typed(expected_type=ManualLayout, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('manualLayout', 'extLst')
+    __elements__ = ('manualLayout',)
 
     def __init__(self,
                  manualLayout=None,
                  extLst=None,
                 ):
         self.manualLayout = manualLayout
-        self.extLst = extLst
