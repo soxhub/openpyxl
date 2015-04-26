@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import Percentage, HexBinary
 
+from .drawing import OfficeArtExtensionList
 
 class PresetColor(Serialisable):
 
@@ -154,3 +155,52 @@ class ColorChoice(Serialisable):
         self.sysClr = sysClr
         self.schemeClr = schemeClr
         self.prstClr = prstClr
+
+_COLOR_SET = ('dk1', 'lt1', 'dk2', 'lt2', 'accent1', 'accent2', 'accent3',
+               'accent4', 'accent5', 'accent6', 'hlink', 'folHlink')
+
+
+class ColorMapping(Serialisable):
+
+    bg1 = Set(values=_COLOR_SET)
+    tx1 = Set(values=_COLOR_SET)
+    bg2 = Set(values=_COLOR_SET)
+    tx2 = Set(values=_COLOR_SET)
+    accent1 = Set(values=_COLOR_SET)
+    accent2 = Set(values=_COLOR_SET)
+    accent3 = Set(values=_COLOR_SET)
+    accent4 = Set(values=_COLOR_SET)
+    accent5 = Set(values=_COLOR_SET)
+    accent6 = Set(values=_COLOR_SET)
+    hlink = Set(values=_COLOR_SET)
+    folHlink = Set(values=_COLOR_SET)
+    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    def __init__(self,
+                 bg1=None,
+                 tx1=None,
+                 bg2=None,
+                 tx2=None,
+                 accent1=None,
+                 accent2=None,
+                 accent3=None,
+                 accent4=None,
+                 accent5=None,
+                 accent6=None,
+                 hlink=None,
+                 folHlink=None,
+                 extLst=None,
+                ):
+        self.bg1 = bg1
+        self.tx1 = tx1
+        self.bg2 = bg2
+        self.tx2 = tx2
+        self.accent1 = accent1
+        self.accent2 = accent2
+        self.accent3 = accent3
+        self.accent4 = accent4
+        self.accent5 = accent5
+        self.accent6 = accent6
+        self.hlink = hlink
+        self.folHlink = folHlink
+        self.extLst = extLst
