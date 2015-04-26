@@ -221,6 +221,8 @@ class ValAx(_BaseAxis):
         self.majorUnit = majorUnit
         self.minorUnit = minorUnit
         self.dispUnits = dispUnits
+        kw.setdefault('axId', 100)
+        kw.setdefault('crossAx', 10)
         super(ValAx, self).__init__(**kw)
 
 
@@ -272,6 +274,8 @@ class CatAx(_BaseAxis):
         self.tickLblSkip = tickLblSkip
         self.tickMarkSkip = tickMarkSkip
         self.noMultiLvlLbl = noMultiLvlLbl
+        kw.setdefault('axId', 10)
+        kw.setdefault('crossAx', 100)
         super(CatAx, self).__init__(**kw)
 
 
@@ -327,6 +331,7 @@ class DateAx(_BaseAxis):
         self.majorTimeUnit = majorTimeUnit
         self.minorUnit = minorUnit
         self.minorTimeUnit = minorTimeUnit
+        kw.setdefault('axId', 500)
         super(DateAx, self).__init__(**kw)
 
 
@@ -365,4 +370,6 @@ class SerAx(_BaseAxis):
                 ):
         self.tickLblSkip = tickLblSkip
         self.tickMarkSkip = tickMarkSkip
+        kw.setdefault('axId', 1000)
+        kw.setdefault('crossAx', 10)
         super(SerAx, self).__init__(**kw)
