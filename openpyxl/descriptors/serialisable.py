@@ -40,7 +40,9 @@ class Serialisable(_Serialiasable):
                 if hasattr(desc, 'from_tree'):
                     attrib[tag] = el
             else:
-                if hasattr(desc.expected_type, "from_tree"):
+                if isinstance(desc, property):
+                    continue
+                elif hasattr(desc.expected_type, "from_tree"):
                     obj = desc.expected_type.from_tree(el)
                 else:
                     obj = el.text
