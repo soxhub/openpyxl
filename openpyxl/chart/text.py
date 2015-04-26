@@ -454,8 +454,7 @@ class TextBody(Serialisable):
 
     tagname = "txBody"
 
-
-    bodyPr = Typed(expected_type=TextBodyProperties, )
+    bodyPr = Typed(expected_type=TextBodyProperties)
     lstStyle = Typed(expected_type=TextListStyle, allow_none=True)
     p = Sequence(expected_type=TextParagraph)
 
