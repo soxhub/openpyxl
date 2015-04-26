@@ -17,10 +17,14 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedSequence,
 )
-from .axis import AxId
+from .axis import CatAx, ValAx, SerAx, AxId
 from .shapes import ShapeProperties
 from .series import BarSer
 from .label import DataLabels
+
+
+def _do_nothing(self, node):
+    pass
 
 
 class _BarChartBase(Serialisable):
@@ -75,11 +79,12 @@ class BarChart(_BarChartBase):
     gapWidth = NestedMinMax(min=0, max=500, allow_none=True)
     overlap = NestedMinMax(min=0, max=150, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
 
+    __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
 
     def __init__(self,
                  gapWidth=150,
@@ -92,10 +97,17 @@ class BarChart(_BarChartBase):
         self.gapWidth = gapWidth
         self.overlap = overlap
         self.serLines = serLines
-        if axId is None:
-            axId = (AxId(60871424), AxId(60873344))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
         super(BarChart, self).__init__(**kw)
+
+
+    @property
+    def axId(self):
+        return (
+            AxId(self.x_axis.axId),
+            AxId(self.y_axis.axId)
+            )
 
 
 class BarChart3D(_BarChartBase):
@@ -112,8 +124,11 @@ class BarChart3D(_BarChartBase):
     gapDepth = NestedMinMax(min=0, max=150, allow_none=True)
     shape = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
     serLines = Typed(expected_type=ChartLines, allow_none=True)
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+    z_axis = Typed(expected_type=SerAx, allow_none=True)
 
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId')
 
@@ -130,7 +145,15 @@ class BarChart3D(_BarChartBase):
         self.gapDepth = gapDepth
         self.shape = shape
         self.serLines = serLines
-        if axId is None:
-            axId = (AxId(60871424), AxId(60873344), AxId(0))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+        self.z_axis = SerAx()
+
         super(BarChart3D, self).__init__(**kw)
+
+    @property
+    def axId(self):
+        ids = [AxId(self.x_axis.axId), AxId(self.y_axis.axId)]
+        if self.z_axis is not None:
+            ids.append(AxId(self.z_axis.axId))
+        return tuple(ids)
