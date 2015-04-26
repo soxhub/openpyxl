@@ -29,7 +29,7 @@ from .layout import Layout
 from .text import Tx, TextBody
 from .shapes import ShapeProperties
 from .chartBase import ChartLines
-from ._chart import Title
+from .title import Title
 
 
 class AxId(Serialisable):
