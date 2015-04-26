@@ -130,18 +130,6 @@ class UpDownBar(Serialisable):
         self.spPr = spPr
 
 
-class UpDownBar(Serialisable):
-
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-
-    __elements__ = ('spPr',)
-
-    def __init__(self,
-                 spPr=None,
-                ):
-        self.spPr = spPr
-
-
 class UpDownBars(Serialisable):
 
     gapWidth = Typed(expected_type=GapAmount, allow_none=True)
@@ -161,4 +149,3 @@ class UpDownBars(Serialisable):
         self.upBars = upBars
         self.downBars = downBars
         self.extLst = extLst
-
