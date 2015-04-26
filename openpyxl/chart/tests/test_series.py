@@ -32,3 +32,24 @@ class TestBarSer:
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+
+class TestSeries:
+
+    def test_ctor(self):
+        from openpyxl.chart.series import Series
+        series = Series(values="Sheet1!$A$1:$A$10")
+        xml = tostring(series.to_tree())
+        expected = """
+        <ser>
+          <idx val="0"></idx>
+          <order val="0"></order>
+          <val>
+            <numRef>
+              <f>Sheet1!$A$1:$A$10</f>
+            </numRef>
+          </val>
+        </ser>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

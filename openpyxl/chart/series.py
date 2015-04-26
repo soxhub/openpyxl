@@ -11,11 +11,21 @@ from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
 
 from .shapes import ShapeProperties, Shape
-from .chartBase import AxDataSource, NumDataSource
+from .chartBase import AxDataSource, NumDataSource, NumRef
 from .error_bar import ErrorBars
 from .label import DataLabels
 from .marker import DataPoint, PictureOptions, Marker
 from .trendline import Trendline
+
+
+def Series(name_ref=None, cat_ref=None, values=None, order=None):
+    """
+    High level function for creating series
+
+    See http://exceluser.com/excel_help/functions/function-series.htm for a description
+    """
+    series = BarSer(idx=0, order=0, val=NumDataSource(numRef=NumRef(f=values)))
+    return series
 
 
 class StrVal(Serialisable):
@@ -73,6 +83,8 @@ class SerTx(Serialisable):
 
 
 class _SeriesBase(Serialisable):
+
+    tagname = "ser"
 
     idx = NestedInteger()
     order = NestedInteger()
