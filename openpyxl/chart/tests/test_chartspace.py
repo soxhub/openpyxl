@@ -34,3 +34,30 @@ class TestChartContainer:
         node = fromstring(src)
         container = ChartContainer.from_tree(node)
         assert container == ChartContainer()
+
+
+@pytest.fixture
+def PlotArea():
+    from .._chart import PlotArea
+    return PlotArea
+
+
+class TestPlotArea:
+
+    def test_ctor(self, PlotArea):
+        chartspace = PlotArea()
+        xml = tostring(chartspace.to_tree())
+        expected = """
+        <plotArea />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PlotArea):
+        src = """
+        <plotArea />
+        """
+        node = fromstring(src)
+        chartspace = PlotArea.from_tree(node)
+        assert chartspace == PlotArea()

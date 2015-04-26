@@ -35,34 +35,21 @@ from .legend import Legend
 from .marker import PictureOptions, Marker
 from .label import DataLabel
 
+from .area_chart import AreaChart, AreaChart3D
+from .bar_chart import BarChart, BarChart3D
+from .bubble_chart import BubbleChart
+from .line_chart import LineChart, LineChart3D
+from .pie_chart import PieChart, PieChart3D, ProjectedPieChart, DoughnutChart
+from .radar_chart import RadarChart
+from .scatter_chart import ScatterChart
+from .stock_chart import StockChart
+from .surface_chart import SurfaceChart, SurfaceChart3D
+
+from .axis import ValAx, CatAx, SerAx, DateAx
+from .title import Title
+
 from openpyxl.worksheet.page import PageMargins, PageSetup
 from openpyxl.worksheet.header_footer import HeaderFooter
-
-
-class Title(Serialisable):
-
-    tx = Typed(expected_type=Tx, allow_none=True)
-    layout = Typed(expected_type=Layout, allow_none=True)
-    overlay = Bool(nested=True, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    txPr = Typed(expected_type=TextBody, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('tx', 'layout', 'overlay', 'spPr', 'txPr', 'extLst')
-
-    def __init__(self,
-                 tx=None,
-                 layout=None,
-                 overlay=None,
-                 spPr=None,
-                 txPr=None,
-                 extLst=None,
-                ):
-        self.tx = tx
-        self.layout = layout
-        self.overlay = overlay
-        self.spPr = spPr
-        self.txPr = txPr
 
 
 class Surface(Serialisable):
@@ -184,22 +171,92 @@ class DTable(Serialisable):
 
 class PlotArea(Serialisable):
 
+    tagname = "plotArea"
+
     layout = Typed(expected_type=Layout, allow_none=True)
     dTable = Typed(expected_type=DTable, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('layout', 'dTable', 'spPr')
+    # at least one chart
+    areaChart = Typed(expected_type=AreaChart, allow_none=True)
+    area3DChart = Typed(expected_type=AreaChart3D, allow_none=True)
+    lineChart = Typed(expected_type=LineChart, allow_none=True)
+    line3DChart = Typed(expected_type=LineChart3D, allow_none=True)
+    stockChart = Typed(expected_type=StockChart, allow_none=True)
+    radarChart = Typed(expected_type=RadarChart, allow_none=True)
+    scatterChart = Typed(expected_type=ScatterChart, allow_none=True)
+    pieChart = Typed(expected_type=PieChart, allow_none=True)
+    pie3DChart = Typed(expected_type=PieChart3D, allow_none=True)
+    doughnutChart = Typed(expected_type=DoughnutChart, allow_none=True)
+    barChart = Typed(expected_type=BarChart, allow_none=True)
+    bar3DChart = Typed(expected_type=BarChart3D, allow_none=True)
+    ofPieChart = Typed(expected_type=ProjectedPieChart, allow_none=True)
+    surfaceChart = Typed(expected_type=SurfaceChart, allow_none=True)
+    surface3DChart = Typed(expected_type=SurfaceChart3D, allow_none=True)
+    bubbleChart = Typed(expected_type=BubbleChart, allow_none=True)
+
+    # maybe axes
+    valAx = Typed(expected_type=ValAx, allow_none=True)
+    catAx = Typed(expected_type=CatAx, allow_none=True)
+    dateAx = Typed(expected_type=DateAx, allow_none=True)
+    serAx = Typed(expected_type=SerAx, allow_none=True)
+
+    __elements__ = ('layout', 'areaChart', 'area3DChart', 'lineChart',
+                    'line3DChart', 'stockChart', 'radarChart', 'scatterChart', 'pieChart',
+                    'pie3DChart', 'doughnutChart', 'barChart', 'bar3DChart', 'ofPieChart',
+                    'surfaceChart', 'surface3DChart', 'bubbleChart', 'valAx', 'catAx', 'dateAx', 'serAx',
+                    'dTable', 'spPr')
 
     def __init__(self,
                  layout=None,
                  dTable=None,
                  spPr=None,
+                 areaChart=None,
+                 area3DChart=None,
+                 lineChart=None,
+                 line3DChart=None,
+                 stockChart=None,
+                 radarChart=None,
+                 scatterChart=None,
+                 pieChart=None,
+                 pie3DChart=None,
+                 doughnutChart=None,
+                 barChart=None,
+                 bar3DChart=None,
+                 ofPieChart=None,
+                 surfaceChart=None,
+                 surface3DChart=None,
+                 bubbleChart=None,
+                 valAx=None,
+                 catAx=None,
+                 serAx=None,
+                 dateAx=None,
                  extLst=None,
                 ):
         self.layout = layout
         self.dTable = dTable
         self.spPr = spPr
+        self.areaChart = areaChart
+        self.area3DChart = area3DChart
+        self.lineChart = lineChart
+        self.line3DChart = line3DChart
+        self.stockChart = stockChart
+        self.radarChart = radarChart
+        self.scatterChart = scatterChart
+        self.pieChart = pieChart
+        self.pie3DChart = pie3DChart
+        self.doughnutChart = doughnutChart
+        self.barChart = barChart
+        self.bar3DChart = bar3DChart
+        self.ofPieChart = ofPieChart
+        self.surfaceChart = surfaceChart
+        self.surface3DChart = surface3DChart
+        self.bubbleChart = bubbleChart
+        self.valAx = valAx
+        self.catAx = catAx
+        self.dateAx = dateAx
+        self.serAx = serAx
 
 
 class ChartContainer(Serialisable):
