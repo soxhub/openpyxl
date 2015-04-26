@@ -14,6 +14,7 @@ from openpyxl.descriptors import (
     Integer,
     NoneSet,
     String,
+    Alias,
 )
 from openpyxl.descriptors.excel import (
     Percentage,
@@ -140,17 +141,21 @@ class PivotFmts(Serialisable):
         self.pivotFmt = pivotFmt
 
 
-class DTable(Serialisable):
+class DataTable(Serialisable):
 
-    showHorzBorder = Bool(nested=True, allow_none=True)
-    showVertBorder = Bool(nested=True, allow_none=True)
-    showOutline = Bool(nested=True, allow_none=True)
-    showKeys = Bool(nested=True, allow_none=True)
+    tagname = "dTable"
+
+    showHorzBorder = NestedBool(allow_none=True)
+    showVertBorder = NestedBool(allow_none=True)
+    showOutline = NestedBool(allow_none=True)
+    showKeys = NestedBool(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    ShapeProperties = Alias('spPr')
     txPr = Typed(expected_type=TextBody, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('showHorzBorder', 'showVertBorder', 'showOutline', 'showKeys', 'spPr', 'txPr', 'extLst')
+    __elements__ = ('showHorzBorder', 'showVertBorder', 'showOutline',
+                    'showKeys', 'spPr', 'txPr')
 
     def __init__(self,
                  showHorzBorder=None,
@@ -174,7 +179,7 @@ class PlotArea(Serialisable):
     tagname = "plotArea"
 
     layout = Typed(expected_type=Layout, allow_none=True)
-    dTable = Typed(expected_type=DTable, allow_none=True)
+    dTable = Typed(expected_type=DataTable, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

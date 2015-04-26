@@ -61,3 +61,30 @@ class TestPlotArea:
         node = fromstring(src)
         chartspace = PlotArea.from_tree(node)
         assert chartspace == PlotArea()
+
+
+@pytest.fixture
+def DataTable():
+    from .._chart import DataTable
+    return DataTable
+
+
+class TestDataTable:
+
+    def test_ctor(self, DataTable):
+        table = DataTable()
+        xml = tostring(table.to_tree())
+        expected = """
+        <dTable />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DataTable):
+        src = """
+        <dTable />
+        """
+        node = fromstring(src)
+        table = DataTable.from_tree(node)
+        assert table == DataTable()
