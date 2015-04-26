@@ -82,7 +82,7 @@ class Serialisable(_Serialiasable):
                 if isinstance(obj, tuple):
                     for idx, v in enumerate(obj):
                         if hasattr(v, 'to_tree'):
-                            el.append(v.to_tree(tagname=child), idx=idx)
+                            el.append(v.to_tree(tagname=child, idx=idx))
                         else:
                             SubElement(el, child).text = safe_string(v)
                 elif obj is not None:

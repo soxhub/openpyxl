@@ -89,6 +89,43 @@ class TestBarChart:
         assert diff is None, diff
 
 
+    def test_series(self, BarChart):
+        from ..series import Series
+        s1 = Series(values="Sheet1!A$1$:A$10")
+        s2 = Series(values="Sheet1!B$1$:B$10")
+        bc = BarChart(ser=[s1, s2])
+        xml = tostring(bc.to_tree())
+        expected = """
+        <barChart>
+          <barDir val="col"></barDir>
+          <grouping val="clustered"></grouping>
+          <ser>
+            <idx val="0"></idx>
+            <order val="0"></order>
+            <val>
+              <numRef>
+                <f>Sheet1!A$1$:A$10</f>
+              </numRef>
+            </val>
+          </ser>
+          <ser>
+            <idx val="1"></idx>
+            <order val="1"></order>
+            <val>
+              <numRef>
+                <f>Sheet1!B$1$:B$10</f>
+              </numRef>
+            </val>
+          </ser>
+          <gapWidth val="150"></gapWidth>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
+        </barChart>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
 @pytest.fixture
 def BarChart3D():
     from ..bar_chart import BarChart3D
