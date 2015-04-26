@@ -24,7 +24,7 @@ def Series(name_ref=None, cat_ref=None, values=None, order=None):
 
     See http://exceluser.com/excel_help/functions/function-series.htm for a description
     """
-    series = BarSer(idx=0, order=0, val=NumDataSource(numRef=NumRef(f=values)))
+    series = BarSer(idx=0, val=NumDataSource(numRef=NumRef(f=values)))
     return series
 
 
@@ -94,8 +94,8 @@ class _SeriesBase(Serialisable):
     __elements__ = ('idx', 'order', 'tx', 'spPr')
 
     def __init__(self,
-                 idx=None,
-                 order=None,
+                 idx=0,
+                 order=0,
                  tx=None,
                  spPr=None,
                 ):
@@ -141,10 +141,11 @@ class AreaSer(_SeriesBase):
 
 class BarSer(_SeriesBase):
 
-    idx = NestedInteger()
-    order = NestedInteger()
-    tx = Typed(expected_type=SerTx, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
+
     invertIfNegative = Bool(nested=True, allow_none=True)
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Typed(expected_type=DataPoint, allow_none=True)
@@ -160,10 +161,6 @@ class BarSer(_SeriesBase):
                                 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape')
 
     def __init__(self,
-                 idx=None,
-                 order=None,
-                 tx=None,
-                 spPr=None,
                  invertIfNegative=None,
                  pictureOptions=None,
                  dPt=None,
@@ -174,11 +171,8 @@ class BarSer(_SeriesBase):
                  val=None,
                  shape=None,
                  extLst=None,
+                 **kw
                 ):
-        self.idx = idx
-        self.order = order
-        self.tx = tx
-        self.spPr = spPr
         self.invertIfNegative = invertIfNegative
         self.pictureOptions = pictureOptions
         self.dPt = dPt
@@ -188,6 +182,7 @@ class BarSer(_SeriesBase):
         self.cat = cat
         self.val = val
         self.shape = shape
+        super(BarSer, self).__init__(**kw)
 
 
 class BubbleSer(_SeriesBase):
