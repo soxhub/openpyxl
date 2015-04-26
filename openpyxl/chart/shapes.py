@@ -502,3 +502,42 @@ class ShapeProperties(Serialisable):
         self.prstGeom = prstGeom
         self.scene3d = scene3d
         self.sp3d = sp3d
+
+
+class FontReference(Serialisable):
+
+    idx = NoneSet(values=(['major', 'minor']))
+
+    def __init__(self,
+                 idx=None,
+                ):
+        self.idx = idx
+
+
+class StyleMatrixReference(Serialisable):
+
+    idx = Integer()
+
+    def __init__(self,
+                 idx=None,
+                ):
+        self.idx = idx
+
+
+class ShapeStyle(Serialisable):
+
+    lnRef = Typed(expected_type=StyleMatrixReference, )
+    fillRef = Typed(expected_type=StyleMatrixReference, )
+    effectRef = Typed(expected_type=StyleMatrixReference, )
+    fontRef = Typed(expected_type=FontReference, )
+
+    def __init__(self,
+                 lnRef=None,
+                 fillRef=None,
+                 effectRef=None,
+                 fontRef=None,
+                ):
+        self.lnRef = lnRef
+        self.fillRef = fillRef
+        self.effectRef = effectRef
+        self.fontRef = fontRef
