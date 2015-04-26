@@ -185,6 +185,14 @@ class BarSer(_SeriesBase):
         super(BarSer, self).__init__(**kw)
 
 
+    def to_tree(self, tagname=None, idx=None):
+        if idx is not None:
+            if self.order == self.idx:
+                self.order = idx
+            self.idx = idx
+        return super(_SeriesBase, self).to_tree(tagname)
+
+
 class BubbleSer(_SeriesBase):
 
     invertIfNegative = Bool(nested=True, allow_none=True)

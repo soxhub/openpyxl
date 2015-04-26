@@ -34,10 +34,14 @@ class TestBarSer:
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
 
 
+@pytest.fixture
+def Series():
+    from openpyxl.chart.series import Series
+    return Series
+
 class TestSeries:
 
-    def test_ctor(self):
-        from openpyxl.chart.series import Series
+    def test_ctor(self, Series):
         series = Series(values="Sheet1!$A$1:$A$10")
         xml = tostring(series.to_tree())
         expected = """
@@ -51,5 +55,42 @@ class TestSeries:
           </val>
         </ser>
         """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_manual_idx(self, Series):
+        series = Series(values="Sheet1!$A$1:$A$10")
+        xml = tostring(series.to_tree(idx=5))
+        expected = """
+            <ser>
+              <idx val="5"></idx>
+              <order val="5"></order>
+              <val>
+                <numRef>
+                  <f>Sheet1!$A$1:$A$10</f>
+                </numRef>
+              </val>
+            </ser>
+            """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_manual_order(self, Series):
+        series = Series(values="Sheet1!$A$1:$A$10")
+        series.order = 2
+        xml = tostring(series.to_tree(idx=5))
+        expected = """
+            <ser>
+              <idx val="5"></idx>
+              <order val="2"></order>
+              <val>
+                <numRef>
+                  <f>Sheet1!$A$1:$A$10</f>
+                </numRef>
+              </val>
+            </ser>
+            """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
