@@ -55,9 +55,10 @@ class Serialisable(_Serialiasable):
         return cls(**attrib)
 
 
-    def to_tree(self, tagname=None):
+    def to_tree(self, tagname=None, idx=None):
         if tagname is None:
             tagname = self.tagname
+
         attrs = dict(self)
         el = Element(tagname, attrs)
 
@@ -79,9 +80,9 @@ class Serialisable(_Serialiasable):
             else:
                 obj = getattr(self, child)
                 if isinstance(obj, tuple):
-                    for v in obj:
+                    for idx, v in enumerate(obj):
                         if hasattr(v, 'to_tree'):
-                            el.append(v.to_tree(tagname=child))
+                            el.append(v.to_tree(tagname=child), idx=idx)
                         else:
                             SubElement(el, child).text = safe_string(v)
                 elif obj is not None:
