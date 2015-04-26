@@ -17,14 +17,13 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedSequence,
 )
+
+
 from .axis import CatAx, ValAx, SerAx, AxId
 from .shapes import ShapeProperties
 from .series import BarSer
+from .legend import Legend
 from .label import DataLabels
-
-
-def _do_nothing(self, node):
-    pass
 
 
 class _BarChartBase(Serialisable):
@@ -81,8 +80,10 @@ class BarChart(_BarChartBase):
     serLines = Typed(expected_type=ChartLines, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
+    # chart properties actually used by containing classes
     x_axis = Typed(expected_type=CatAx)
     y_axis = Typed(expected_type=ValAx)
+    legend = Typed(expected_type=Legend, allow_none=True)
 
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
 
@@ -99,6 +100,7 @@ class BarChart(_BarChartBase):
         self.serLines = serLines
         self.x_axis = CatAx()
         self.y_axis = ValAx()
+        self.legend = Legend()
         super(BarChart, self).__init__(**kw)
 
 
@@ -108,6 +110,13 @@ class BarChart(_BarChartBase):
             AxId(self.x_axis.axId),
             AxId(self.y_axis.axId)
             )
+
+    def write(self):
+        from ._chart import ChartSpace, ChartContainer, PlotArea
+        plot = PlotArea(barChart=self, catAx=self.x_axis, valAx=self.y_axis)
+        container = ChartContainer(plotArea=plot, legend=self.legend)
+        cs = ChartSpace(chart=container)
+        return cs.to_tree()
 
 
 class BarChart3D(_BarChartBase):

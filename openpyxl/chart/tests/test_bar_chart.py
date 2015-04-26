@@ -48,6 +48,47 @@ class TestBarChart:
         assert bc.grouping == "clustered"
 
 
+    def test_write(self, BarChart):
+        chart = BarChart()
+        xml = tostring(chart.write())
+        expected = """
+        <chartBase>
+          <chart>
+            <plotArea>
+              <barChart>
+                <barDir val="col"></barDir>
+                <grouping val="clustered"></grouping>
+                <gapWidth val="150"></gapWidth>
+                <axId val="10"></axId>
+                <axId val="100"></axId>
+              </barChart>
+              <valAx>
+                <axId val="100"></axId>
+                <scaling>
+                  <orientation val="minMax"></orientation>
+                </scaling>
+                <crossAx val="10"></crossAx>
+              </valAx>
+              <catAx>
+                <axId val="10"></axId>
+                <scaling>
+                  <orientation val="minMax"></orientation>
+                </scaling>
+                <crossAx val="100"></crossAx>
+                <lblOffset val="100"></lblOffset>
+              </catAx>
+           </plotArea>
+           <legend>
+             <legendPos val="r"></legendPos>
+             <overlay val="1"></overlay>
+           </legend>
+          </chart>
+        </chartBase>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
 @pytest.fixture
 def BarChart3D():
     from ..bar_chart import BarChart3D
