@@ -38,8 +38,8 @@ class Shape(Serialisable):
 
 class Point2D(Serialisable):
 
-    x = Typed(expected_type=Coordinate, )
-    y = Typed(expected_type=Coordinate, )
+    x = Coordinate()
+    y = Coordinate()
 
     def __init__(self,
                  x=None,
@@ -51,8 +51,8 @@ class Point2D(Serialisable):
 
 class PositiveSize2D(Serialisable):
 
-    cx = Typed(expected_type=Integer())
-    cy = Typed(expected_type=Integer())
+    cx = Integer()
+    cy = Integer()
 
     def __init__(self,
                  cx=None,
