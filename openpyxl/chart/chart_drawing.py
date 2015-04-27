@@ -33,7 +33,7 @@ class AnchorClientData(Serialisable):
         self.fPrintsWithSheet = fPrintsWithSheet
 
 
-class Marker(Serialisable):
+class Anchor(Serialisable):
 
     tagname = "marker"
 
@@ -43,10 +43,10 @@ class Marker(Serialisable):
     rowOff = Coordinate()
 
     def __init__(self,
-                 col=None,
-                 colOff=None,
-                 row=None,
-                 rowOff=None,
+                 col=0,
+                 colOff=0,
+                 row=0,
+                 rowOff=0,
                  ):
         self.col = col
         self.colOff = colOff
@@ -59,8 +59,8 @@ class TwoCellAnchor(Serialisable):
     tagname = "twoCellAnchor"
 
     editAs = NoneSet(values=(['twoCell', 'oneCell', 'absolute']))
-    frm = Typed(expected_type=Marker)
-    to = Typed(expected_type=Marker)
+    frm = Typed(expected_type=Anchor)
+    to = Typed(expected_type=Anchor)
 
     #one of
     sp = Typed(expected_type=Shape, allow_none=True)
@@ -72,7 +72,7 @@ class TwoCellAnchor(Serialisable):
 
     clientData = Typed(expected_type=AnchorClientData)
 
-    __elements__ = ('frm', 'to' 'contentPart', 'sp', 'grpSp', 'graphicFrame',
+    __elements__ = ('frm', 'to', 'contentPart', 'sp', 'grpSp', 'graphicFrame',
                     'cxnSp', 'pic', 'clientData')
 
     def __init__(self,
@@ -88,8 +88,14 @@ class TwoCellAnchor(Serialisable):
                  contentPart=None
                  ):
         self.editAs = editAs
+        if frm is None:
+            frm = Anchor()
         self.frm = frm
+        if to is None:
+            to = Anchor()
         self.to = to
+        if clientData is None:
+            clientData = AnchorClientData()
         self.clientData = clientData
         self.sp = sp
         self.grpSp = grpSp
