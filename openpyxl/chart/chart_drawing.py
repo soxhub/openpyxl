@@ -6,6 +6,7 @@ from openpyxl.descriptors import (
     Bool,
     NoneSet,
     Integer,
+    Sequence,
 )
 
 from openpyxl.descriptors.excel import Coordinate
@@ -17,6 +18,8 @@ from .graphic import (
     GraphicalObjectFrame,
     Connector,
     Picture,
+    PositiveSize2D,
+    Point2D,
     )
 
 
@@ -33,7 +36,7 @@ class AnchorClientData(Serialisable):
         self.fPrintsWithSheet = fPrintsWithSheet
 
 
-class Anchor(Serialisable):
+class AnchorMarker(Serialisable):
 
     tagname = "marker"
 
@@ -54,13 +57,7 @@ class Anchor(Serialisable):
         self.rowOff = rowOff
 
 
-class TwoCellAnchor(Serialisable):
-
-    tagname = "twoCellAnchor"
-
-    editAs = NoneSet(values=(['twoCell', 'oneCell', 'absolute']))
-    frm = Typed(expected_type=Anchor)
-    to = Typed(expected_type=Anchor)
+class _AnchorBase(Serialisable):
 
     #one of
     sp = Typed(expected_type=Shape, allow_none=True)
@@ -72,13 +69,10 @@ class TwoCellAnchor(Serialisable):
 
     clientData = Typed(expected_type=AnchorClientData)
 
-    __elements__ = ('frm', 'to', 'contentPart', 'sp', 'grpSp', 'graphicFrame',
-                    'cxnSp', 'pic', 'clientData')
+    __elements__ = ('sp', 'grpSp', 'graphicFrame',
+                    'cxnSp', 'pic', 'contentPart', 'clientData')
 
     def __init__(self,
-                 editAs=None,
-                 frm=None,
-                 to=None,
                  clientData=None,
                  sp=None,
                  grpSp=None,
@@ -87,13 +81,6 @@ class TwoCellAnchor(Serialisable):
                  pic=None,
                  contentPart=None
                  ):
-        self.editAs = editAs
-        if frm is None:
-            frm = Anchor()
-        self.frm = frm
-        if to is None:
-            to = Anchor()
-        self.to = to
         if clientData is None:
             clientData = AnchorClientData()
         self.clientData = clientData
@@ -103,3 +90,107 @@ class TwoCellAnchor(Serialisable):
         self.cxnSp = cxnSp
         self.pic = pic
         self.contentPart = contentPart
+
+
+class AbsoluteAnchor(_AnchorBase):
+
+    tagname = "absoluteAnchor"
+
+    pos = Typed(expected_type=Point2D)
+    ext = Typed(expected_type=PositiveSize2D)
+
+    sp = _AnchorBase.sp
+    grpSp = _AnchorBase.grpSp
+    graphicFrame = _AnchorBase.graphicFrame
+    cxnSp = _AnchorBase.cxnSp
+    pic = _AnchorBase.pic
+    contentPart = _AnchorBase.contentPart
+    clientData = _AnchorBase.clientData
+
+    __elements__ = ('pos', 'ext') + _AnchorBase.__elements__
+
+    def __init__(self,
+                 pos=None,
+                 ext=None,
+                 **kw
+                ):
+        if pos is None:
+            pos = Point2D(0, 0)
+        self.pos = pos
+        if ext is None:
+            ext = PositiveSize2D(0, 0)
+        self.ext = ext
+        super(AbsoluteAnchor, self).__init__(**kw)
+
+
+class OneCellAnchor(_AnchorBase):
+
+    tagname = "oneCellAnchor"
+
+    frm = Typed(expected_type=AnchorMarker)
+    ext = Typed(expected_type=PositiveSize2D)
+
+    sp = _AnchorBase.sp
+    grpSp = _AnchorBase.grpSp
+    graphicFrame = _AnchorBase.graphicFrame
+    cxnSp = _AnchorBase.cxnSp
+    pic = _AnchorBase.pic
+    contentPart = _AnchorBase.contentPart
+    clientData = _AnchorBase.clientData
+
+    __elements__ = ('frm', 'ext') + _AnchorBase.__elements__
+
+
+    def __init__(self,
+                 frm=None,
+                 ext=None,
+                 **kw
+                ):
+        if frm is None:
+            frm = AnchorMarker()
+        self.frm = frm
+        if ext is None:
+            ext = PositiveSize2D(0, 0)
+        self.ext = ext
+        super(OneCellAnchor, self).__init__(**kw)
+
+
+class TwoCellAnchor(_AnchorBase):
+
+    tagname = "twoCellAnchor"
+
+    editAs = NoneSet(values=(['twoCell', 'oneCell', 'absolute']))
+    frm = Typed(expected_type=AnchorMarker)
+    to = Typed(expected_type=AnchorMarker)
+
+    sp = _AnchorBase.sp
+    grpSp = _AnchorBase.grpSp
+    graphicFrame = _AnchorBase.graphicFrame
+    cxnSp = _AnchorBase.cxnSp
+    pic = _AnchorBase.pic
+    contentPart = _AnchorBase.contentPart
+    clientData = _AnchorBase.clientData
+
+    __elements__ = ('frm', 'to') + _AnchorBase.__elements__
+
+    def __init__(self,
+                 editAs=None,
+                 frm=None,
+                 to=None,
+                 **kw
+                 ):
+        self.editAs = editAs
+        if frm is None:
+            frm = AnchorMarker()
+        self.frm = frm
+        if to is None:
+            to = AnchorMarker()
+        self.to = to
+        super(TwoCellAnchor, self).__init__(**kw)
+
+
+class ChartDrawing(Serialisable):
+
+    twoCellAnchor = Sequence(expected_type=TwoCellAnchor, allow_none=True)
+    oneCellAnchor = Sequence(expected_type=OneCellAnchor, allow_none=True)
+    absoluteAnchor = Sequence(expected_type=AbsoluteAnchor, allow_none=True)
