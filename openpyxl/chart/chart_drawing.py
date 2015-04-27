@@ -189,8 +189,20 @@ class TwoCellAnchor(_AnchorBase):
         super(TwoCellAnchor, self).__init__(**kw)
 
 
-class ChartDrawing(Serialisable):
+class SpreadsheetDrawing(Serialisable):
+
+    tagname = "wsDr"
 
     twoCellAnchor = Sequence(expected_type=TwoCellAnchor, allow_none=True)
     oneCellAnchor = Sequence(expected_type=OneCellAnchor, allow_none=True)
     absoluteAnchor = Sequence(expected_type=AbsoluteAnchor, allow_none=True)
+
+    def __init__(self,
+                 twoCellAnchor=None,
+                 oneCellAnchor=None,
+                 absoluteAnchor=None,
+                 ):
+        self.twoCellAnchor = twoCellAnchor
+        self.oneCellAnchor = oneCellAnchor
+        self.absoluteAnchor = absoluteAnchor
+

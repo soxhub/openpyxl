@@ -108,3 +108,56 @@ class TestAbsoluteAnchor:
         node = fromstring(src)
         chart_drawing = AbsoluteAnchor.from_tree(node)
         assert chart_drawing == AbsoluteAnchor()
+
+
+@pytest.fixture
+def SpreadsheetDrawing():
+    from ..chart_drawing import SpreadsheetDrawing
+    return SpreadsheetDrawing
+
+
+class TestSpreadsheetDrawing:
+
+    def test_ctor(self, SpreadsheetDrawing):
+        from ..chart_drawing import (
+            OneCellAnchor,
+            TwoCellAnchor,
+            AbsoluteAnchor
+        )
+        a = [AbsoluteAnchor(), AbsoluteAnchor()]
+        o = [OneCellAnchor()]
+        t = [TwoCellAnchor(), TwoCellAnchor()]
+        chart_drawing = SpreadsheetDrawing(absoluteAnchor=a, oneCellAnchor=o,
+                                           twoCellAnchor=t)
+        xml = tostring(chart_drawing.to_tree())
+        expected = """
+        <wsDr>
+          <absoluteAnchor>
+            <pos x="0" y="0"></pos>
+            <ext cx="0" cy="0"></ext>
+            <clientData></clientData>
+          </absoluteAnchor>
+          <absoluteAnchor>
+            <pos x="0" y="0"></pos>
+            <ext cx="0" cy="0"></ext>
+            <clientData></clientData>
+          </absoluteAnchor>
+          <oneCellAnchor>
+            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
+            <ext cx="0" cy="0"></ext>
+            <clientData></clientData>
+          </oneCellAnchor>
+          <twoCellAnchor>
+            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
+            <to col="0" colOff="0" row="0" rowOff="0"></to>
+            <clientData></clientData>
+          </twoCellAnchor>
+          <twoCellAnchor>
+            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
+            <to col="0" colOff="0" row="0" rowOff="0"></to>
+            <clientData></clientData>
+          </twoCellAnchor>
+        </wsDr>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
