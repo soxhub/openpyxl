@@ -6,7 +6,8 @@ Excel specific descriptors
 """
 
 from openpyxl.compat import basestring
-from . import MatchPattern, MinMax, Integer
+from . import MatchPattern, MinMax, Integer, String, Typed
+from .serialisable import Serialisable
 
 
 class HexBinary(MatchPattern):
