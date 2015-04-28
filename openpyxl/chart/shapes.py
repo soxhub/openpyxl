@@ -64,11 +64,15 @@ class PositiveSize2D(Serialisable):
 
 class Transform2D(Serialisable):
 
-    rot = Typed(expected_type=Integer())
-    flipH = Typed(expected_type=Bool, allow_none=True)
-    flipV = Typed(expected_type=Bool, allow_none=True)
+    tagname = "xfrm"
+
+    rot = Integer(allow_none=True)
+    flipH = Bool(allow_none=True)
+    flipV = Bool(allow_none=True)
     off = Typed(expected_type=Point2D, allow_none=True)
     ext = Typed(expected_type=PositiveSize2D, allow_none=True)
+
+    __elements__ = ('off', 'ext')
 
     def __init__(self,
                  rot=None,
