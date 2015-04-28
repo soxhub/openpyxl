@@ -145,7 +145,7 @@ class NonVisualDrawingProps(Serialisable):
         self.extLst = extLst
 
 
-class GroupShapeNonVisual(Serialisable):
+class NonVisualGroupShape(Serialisable):
 
     cNvPr = Typed(expected_type=NonVisualDrawingProps, )
     cNvGrpSpPr = Typed(expected_type=NonVisualGroupDrawingShapeProps, )
@@ -160,7 +160,7 @@ class GroupShapeNonVisual(Serialisable):
 
 class GroupShape(Serialisable):
 
-    nvGrpSpPr = Typed(expected_type=GroupShapeNonVisual, )
+    nvGrpSpPr = Typed(expected_type=NonVisualGroupShape, )
     grpSpPr = Typed(expected_type=GroupShapeProperties, )
 
     def __init__(self,
@@ -171,7 +171,7 @@ class GroupShape(Serialisable):
         self.grpSpPr = grpSpPr
 
 
-class GraphicalObjectFrameLocking(Serialisable):
+class GraphicFrameLocking(Serialisable):
 
     noGrp = Bool(allow_none=True)
     noDrilldown = Bool(allow_none=True)
@@ -201,7 +201,7 @@ class GraphicalObjectFrameLocking(Serialisable):
 
 class NonVisualGraphicFrameProperties(Serialisable):
 
-    graphicFrameLocks = Typed(expected_type=GraphicalObjectFrameLocking, allow_none=True)
+    graphicFrameLocks = Typed(expected_type=GraphicFrameLocking, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
     def __init__(self,
@@ -212,42 +212,12 @@ class NonVisualGraphicFrameProperties(Serialisable):
         self.extLst = extLst
 
 
+class NonVisualGraphicFrame(Serialisable):
 
-class NonVisualDrawingProps(Serialisable):
+    tagname = "nvGraphicFramePr"
 
-    id = Integer()
-    name = String()
-    descr = String(allow_none=True)
-    hidden = Bool(allow_none=True)
-    title = String(allow_none=True)
-    hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
-    hlinkHover = Typed(expected_type=Hyperlink, allow_none=True)
-    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
-
-    def __init__(self,
-                 id=None,
-                 name=None,
-                 descr=None,
-                 hidden=None,
-                 title=None,
-                 hlinkClick=None,
-                 hlinkHover=None,
-                 extLst=None,
-                ):
-        self.id = id
-        self.name = name
-        self.descr = descr
-        self.hidden = hidden
-        self.title = title
-        self.hlinkClick = hlinkClick
-        self.hlinkHover = hlinkHover
-        self.extLst = extLst
-
-
-class GraphicalObjectFrameNonVisual(Serialisable):
-
-    cNvPr = Typed(expected_type=NonVisualDrawingProps, )
-    cNvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrameProperties, )
+    cNvPr = Typed(expected_type=NonVisualDrawingProps)
+    cNvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrameProperties)
 
     def __init__(self,
                  cNvPr=None,
@@ -257,7 +227,7 @@ class GraphicalObjectFrameNonVisual(Serialisable):
         self.cNvGraphicFramePr = cNvGraphicFramePr
 
 
-class GraphicalObjectData(Serialisable):
+class GraphicData(Serialisable):
 
     uri = String()
 
@@ -267,9 +237,9 @@ class GraphicalObjectData(Serialisable):
         self.uri = uri
 
 
-class GraphicalObject(Serialisable):
+class GraphicObject(Serialisable):
 
-    graphicData = Typed(expected_type=GraphicalObjectData, )
+    graphicData = Typed(expected_type=GraphicData, )
 
     def __init__(self,
                  graphicData=None,
@@ -277,13 +247,13 @@ class GraphicalObject(Serialisable):
         self.graphicData = graphicData
 
 
-class GraphicalObjectFrame(Serialisable):
+class GraphicFrame(Serialisable):
 
     tagname = "graphicFrame"
 
-    nvGraphicFramePr = Typed(expected_type=GraphicalObjectFrameNonVisual)
+    nvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrame)
     xfrm = Typed(expected_type=Transform2D)
-    graphic = Typed(expected_type=GraphicalObject)
+    graphic = Typed(expected_type=GraphicObject)
     macro = String()
     fPublished = Bool()
 
@@ -327,37 +297,6 @@ class NonVisualConnectorProperties(Serialisable):
         self.cxnSpLocks = cxnSpLocks
         self.stCxn = stCxn
         self.endCxn = endCxn
-        self.extLst = extLst
-
-
-class NonVisualDrawingProps(Serialisable):
-
-    id = Integer()
-    name = String()
-    descr = String(allow_none=True)
-    hidden = Bool(allow_none=True)
-    title = String(allow_none=True)
-    hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
-    hlinkHover = Typed(expected_type=Hyperlink, allow_none=True)
-    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
-
-    def __init__(self,
-                 id=None,
-                 name=None,
-                 descr=None,
-                 hidden=None,
-                 title=None,
-                 hlinkClick=None,
-                 hlinkHover=None,
-                 extLst=None,
-                ):
-        self.id = id
-        self.name = name
-        self.descr = descr
-        self.hidden = hidden
-        self.title = title
-        self.hlinkClick = hlinkClick
-        self.hlinkHover = hlinkHover
         self.extLst = extLst
 
 
@@ -454,37 +393,6 @@ class NonVisualPictureProperties(Serialisable):
                 ):
         self.preferRelativeResize = preferRelativeResize
         self.picLocks = picLocks
-        self.extLst = extLst
-
-
-class NonVisualDrawingProps(Serialisable):
-
-    id = Integer()
-    name = String()
-    descr = String(allow_none=True)
-    hidden = Bool(allow_none=True)
-    title = String(allow_none=True)
-    hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
-    hlinkHover = Typed(expected_type=Hyperlink, allow_none=True)
-    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
-
-    def __init__(self,
-                 id=None,
-                 name=None,
-                 descr=None,
-                 hidden=None,
-                 title=None,
-                 hlinkClick=None,
-                 hlinkHover=None,
-                 extLst=None,
-                ):
-        self.id = id
-        self.name = name
-        self.descr = descr
-        self.hidden = hidden
-        self.title = title
-        self.hlinkClick = hlinkClick
-        self.hlinkHover = hlinkHover
         self.extLst = extLst
 
 

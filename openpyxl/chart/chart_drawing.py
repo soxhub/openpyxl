@@ -15,7 +15,7 @@ from ._chart import RelId
 from .shapes import Shape
 from .graphic import (
     GroupShape,
-    GraphicalObjectFrame,
+    GraphicFrame,
     Connector,
     Picture,
     PositiveSize2D,
@@ -62,7 +62,7 @@ class _AnchorBase(Serialisable):
     #one of
     sp = Typed(expected_type=Shape, allow_none=True)
     grpSp = Typed(expected_type=GroupShape, allow_none=True)
-    graphicFrame = Typed(expected_type=GraphicalObjectFrame, allow_none=True)
+    graphicFrame = Typed(expected_type=GraphicFrame, allow_none=True)
     cxnSp = Typed(expected_type=Connector, allow_none=True)
     pic = Typed(expected_type=Picture, allow_none=True)
     contentPart = Typed(expected_type=RelId, allow_none=True)
