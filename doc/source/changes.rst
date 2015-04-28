@@ -1,3 +1,14 @@
+2.2.2 (2015-04-28)
+==================
+
+
+Bug fixes
+---------
+
+* `#447 <https://bitbucket.org/openpyxl/openpyxl/issue/447>`_ Uppercase datetime number formats not recognised.
+* `#453 <https://bitbucket.org/openpyxl/openpyxl/issue/453>`_ Borders broken in shared_styles.
+
+
 2.2.1 (2015-03-31)
 ==================
 
