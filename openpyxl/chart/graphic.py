@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from openpyxl.xml.constants import CHART_NS
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -116,6 +118,8 @@ class NonVisualGroupDrawingShapeProps(Serialisable):
 
 class NonVisualDrawingProps(Serialisable):
 
+    tagname = "cNvPr"
+
     id = Integer()
     name = String()
     descr = String(allow_none=True)
@@ -201,6 +205,8 @@ class GraphicFrameLocking(Serialisable):
 
 class NonVisualGraphicFrameProperties(Serialisable):
 
+    tagname = "cNvGraphicFramePr"
+
     graphicFrameLocks = Typed(expected_type=GraphicFrameLocking, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
@@ -219,31 +225,43 @@ class NonVisualGraphicFrame(Serialisable):
     cNvPr = Typed(expected_type=NonVisualDrawingProps)
     cNvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrameProperties)
 
+    __elements__ = ('cNvPr', 'cNvGraphicFramePr')
+
     def __init__(self,
                  cNvPr=None,
                  cNvGraphicFramePr=None,
                 ):
+        if cNvPr is None:
+            cNvPr = NonVisualDrawingProps(id=0, name="Chart 0")
         self.cNvPr = cNvPr
+        if cNvGraphicFramePr is None:
+            cNvGraphicFramePr = NonVisualGraphicFrameProperties()
         self.cNvGraphicFramePr = cNvGraphicFramePr
 
 
 class GraphicData(Serialisable):
 
+    tagname = "graphicData"
+
     uri = String()
 
     def __init__(self,
-                 uri=None,
+                 uri=CHART_NS,
                 ):
         self.uri = uri
 
 
 class GraphicObject(Serialisable):
 
-    graphicData = Typed(expected_type=GraphicData, )
+    tagname = "graphic"
+
+    graphicData = Typed(expected_type=GraphicData)
 
     def __init__(self,
                  graphicData=None,
                 ):
+        if graphicData is None:
+            graphicData = GraphicData()
         self.graphicData = graphicData
 
 
@@ -254,8 +272,29 @@ class GraphicFrame(Serialisable):
     nvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrame)
     xfrm = Typed(expected_type=Transform2D)
     graphic = Typed(expected_type=GraphicObject)
-    macro = String()
-    fPublished = Bool()
+    macro = String(allow_none=True)
+    fPublished = Bool(allow_none=True)
+
+    __elements__ = ('nvGraphicFramePr', 'xfrm', 'graphic', 'macro', 'fPublished')
+
+    def __init__(self,
+                 nvGraphicFramePr=None,
+                 xfrm=None,
+                 graphic=None,
+                 macro=None,
+                 fPublished=None,
+                 ):
+        if nvGraphicFramePr is None:
+            nvGraphicFramePr = NonVisualGraphicFrame()
+        self.nvGraphicFramePr = nvGraphicFramePr
+        if xfrm is None:
+            xfrm = Transform2D()
+        self.xfrm = xfrm
+        if graphic is None:
+            graphic = GraphicObject()
+        self.graphic = graphic
+        self.macro = macro
+        self.fPublished = fPublished
 
 
 class Connection(Serialisable):
