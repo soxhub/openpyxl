@@ -64,8 +64,7 @@ class PageSetup(Serialisable):
                  horizontalDpi=None,
                  verticalDpi=None,
                  copies=None,
-                 id=None,
-                 pageSetUpPr=None):
+                 id=None):
         self._parent = worksheet
         self.orientation = orientation
         self.paperSize = paperSize
@@ -86,7 +85,6 @@ class PageSetup(Serialisable):
         self.verticalDpi = verticalDpi
         self.copies = copies
         self.id = id
-#         self.pageSetUpPr = pageSetUpPr
 
     @deprecated("this property does not exists anymore")
     def setup(self):
