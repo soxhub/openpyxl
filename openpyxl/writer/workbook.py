@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 """Write the workbook global settings to the archive."""
 
-from functools import partial
-
 # package imports
 
 from openpyxl import LXML
@@ -38,6 +36,7 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.utils.datetime  import datetime_to_W3CDTF
 from openpyxl.worksheet import Worksheet
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.workbook.properties import write_properties
 
 
@@ -205,14 +204,20 @@ def write_properties_app(workbook):
 
 def write_root_rels(workbook):
     """Write the relationships xml."""
-    root = Element('{%s}Relationships' % PKG_REL_NS)
+    root = Element('Relationships', xmlns=PKG_REL_NS)
     relation_tag = '{%s}Relationship' % PKG_REL_NS
-    SubElement(root, relation_tag, {'Id': 'rId1', 'Target': ARC_WORKBOOK,
-                                    'Type': '%s/officeDocument' % REL_NS})
-    SubElement(root, relation_tag, {'Id': 'rId2', 'Target': ARC_CORE,
-                                    'Type': '%s/metadata/core-properties' % PKG_REL_NS})
-    SubElement(root, relation_tag, {'Id': 'rId3', 'Target': ARC_APP,
-                                    'Type': '%s/extended-properties' % REL_NS})
+
+    rel = Relationship(type="officeDocument", target=ARC_WORKBOOK, id="rId1")
+    root.append(rel.to_tree())
+
+    rel = Relationship("", target=ARC_CORE, id='rId2',)
+    rel.type = "%s/metadata/core-properties" % PKG_REL_NS
+    root.append(rel.to_tree())
+
+    rel = Relationship("extended-properties", target=ARC_APP, id='rId3')
+
+    root.append(rel.to_tree())
+
     if workbook.vba_archive is not None:
         # See if there was a customUI relation and reuse its id
         arc = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
@@ -223,8 +228,10 @@ def write_root_rels(workbook):
                         rId = rel.get('Id')
                         break
         if rId is not None:
-            SubElement(root, relation_tag, {'Id': rId, 'Target': ARC_CUSTOM_UI,
-                                            'Type': '%s' % CUSTOMUI_NS})
+            vba = Relationship("", target=ARC_CUSTOM_UI, id=rId)
+            vba.type = CUSTOMUI_NS
+            root.append(vba.to_tree())
+
     return tostring(root)
 
 
@@ -304,44 +311,37 @@ def _write_defined_names(workbook, names):
         names.append(name)
 
 
-RelationElement = partial(Element, '{%s}Relationship' % PKG_REL_NS)
-
-
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
-    root = Element('{%s}Relationships' % PKG_REL_NS)
+    root = Element('Relationships', xmlns=PKG_REL_NS)
 
     for i, _ in enumerate(workbook.worksheets, 1):
-        attrs = {'Id': 'rId%d' % i, 'Target': 'worksheets/sheet%s.xml' % i,
-                 'Type': '%s/worksheet' % REL_NS}
-        root.append(RelationElement(attrs))
+        rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % i, id='rId%d' % i)
+        root.append(rel.to_tree())
 
     i += 1
-    attrs = {'Id': 'rId%d' % i, 'Target': 'sharedStrings.xml',
-             'Type': '%s/sharedStrings' % REL_NS}
-    root.append(RelationElement(attrs))
+    strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % i)
+    root.append(strings.to_tree())
 
     i += 1
-    attrs = {'Id': 'rId%d' % i, 'Target': 'styles.xml',
-             'Type': '%s/styles' % REL_NS}
-    root.append(RelationElement(attrs))
+    styles =  Relationship(type='styles', target='styles.xml', id='rId%d' % i)
+    root.append(styles.to_tree())
 
     i += 1
-    attrs = {'Id': 'rId%d' % i, 'Target': 'theme/theme1.xml',
-             'Type': '%s/theme' % REL_NS}
-    root.append(RelationElement(attrs))
+    styles =  Relationship(type='theme', target='theme/theme1.xml', id='rId%d' % i)
+    root.append(styles.to_tree())
 
     if workbook.vba_archive:
         i += 1
-        attrs = {'Id': 'rId%d' % i, 'Target': 'vbaProject.bin',
-                 'Type': 'http://schemas.microsoft.com/office/2006/relationships/vbaProject'}
-        root.append(RelationElement(attrs))
+        vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % i)
+        root.append(vba.to_tree())
 
     external_links = workbook._external_links
     if external_links:
         for idx, link in enumerate(external_links, 1):
-            attrs = {'Id':'rId%d' % (i + idx), 'Target':'externalLinks/externalLink%d.xml' % idx,
-                     'Type':'%s/externalLink' % REL_NS}
-            root.append(RelationElement(attrs))
+            ext =  Relationship(type='externalLink',
+                                target='externalLinks/externalLink%d.xml' % idx,
+                                id='rId%d' % (i +idx))
+            root.append(ext.to_tree())
 
     return tostring(root)
