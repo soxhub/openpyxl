@@ -5,6 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl import Workbook
 
 @pytest.fixture
 def PageMargins():
@@ -41,6 +42,13 @@ def PageSetup():
     return PageSetup
 
 
+@pytest.fixture
+def DummyWorksheet():
+    from openpyxl import Workbook
+    wb = Workbook()
+    return wb.active
+
+
 class TestPageSetup:
 
     def test_ctor(self, PageSetup):
@@ -56,6 +64,14 @@ class TestPageSetup:
         p.id = 'a12'
         assert dict(p) == {'scale':'1', 'paperHeight': '24.73mm',
                            'orientation': 'default', 'id':'a12'}
+
+
+    def test_fitToPage(self, DummyWorksheet):
+        ws = DummyWorksheet
+        p = ws.page_setup
+        assert p.fitToPage is None
+        p.fitToPage = 1
+        assert p.fitToPage == True
 
 
     def test_write(self, PageSetup):

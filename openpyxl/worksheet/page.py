@@ -15,6 +15,7 @@ from openpyxl.descriptors.excel import UniversalMeasure
 from openpyxl.xml.functions import Element
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.compat import deprecated
+from .properties import PageSetupPr
 
 
 class PageSetup(Serialisable):
@@ -43,7 +44,9 @@ class PageSetup(Serialisable):
     copies = Integer(allow_none=True)
     id = String(allow_none=True)
 
-    def __init__(self, orientation=None,
+
+    def __init__(self, worksheet=None,
+                 orientation=None,
                  paperSize=None,
                  scale=None,
                  fitToHeight=None,
@@ -61,7 +64,9 @@ class PageSetup(Serialisable):
                  horizontalDpi=None,
                  verticalDpi=None,
                  copies=None,
-                 id=None):
+                 id=None,
+                 pageSetUpPr=None):
+        self._parent = worksheet
         self.orientation = orientation
         self.paperSize = paperSize
         self.scale = scale
@@ -81,6 +86,7 @@ class PageSetup(Serialisable):
         self.verticalDpi = verticalDpi
         self.copies = copies
         self.id = id
+#         self.pageSetUpPr = pageSetUpPr
 
     @deprecated("this property does not exists anymore")
     def setup(self):
@@ -98,9 +104,23 @@ class PageSetup(Serialisable):
     def verticalCentered(self):
         pass
 
-    @deprecated("this property has to be called via sheet_properties")
+
+    @property
     def fitToPage(self):
-        pass
+        if self._parent.sheet_properties.pageSetUpPr == None:
+            value = None
+        else:
+            value = self._parent.sheet_properties.pageSetUpPr.fitToPage
+
+        return value
+
+
+    @fitToPage.setter
+    def fitToPage(self, value):
+        if self._parent.sheet_properties.pageSetUpPr == None:
+            self._parent.sheet_properties.pageSetUpPr = PageSetupPr(fitToPage=value)
+        else:
+            self._parent.sheet_properties.pageSetUpPr.fitToPage = value
 
 
     @classmethod

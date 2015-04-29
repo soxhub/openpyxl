@@ -119,7 +119,7 @@ class Worksheet(object):
         self.relationships = []
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
-        self.page_setup = PageSetup()
+        self.page_setup = PageSetup(worksheet=self)
         self.print_options = PrintOptions()
         self.page_margins = PageMargins()
         self.header_footer = HeaderFooter()
