@@ -64,9 +64,10 @@ class NestedText(NestedValue):
 
     @staticmethod
     def to_tree(tagname=None, value=None):
-        el = Element(tagname)
-        el.text = safe_string(value)
-        return el
+        if value is not None:
+            el = Element(tagname)
+            el.text = safe_string(value)
+            return el
 
 
 class NestedFloat(NestedValue, Float):
