@@ -94,16 +94,3 @@ class TestSeries:
             """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
-
-def test_combined():
-    from ..series import AreaSer, BarSer, BubbleSer, LineSer, PieSer, RadarSer, ScatterSer, SurfaceSer
-    from ..series import _SeriesBase
-    assert set(AreaSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(BarSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(BubbleSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(LineSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(PieSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(RadarSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(ScatterSer.__elements__) - set(_SeriesBase.__elements__) == set()
-    assert set(SurfaceSer.__elements__) - set(_SeriesBase.__elements__) == set()
