@@ -41,6 +41,7 @@ def Series(name_ref=None, cat_ref=None, values=None, order=None):
     See http://exceluser.com/excel_help/functions/function-series.htm for a description
     """
     series = _SeriesBase()
+    series.__elements__ = attribute_mapping['bar']
     series.val = NumDataSource(numRef=NumRef(f=values))
     return series
 
