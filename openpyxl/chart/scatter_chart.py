@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .axis import AxId
-from .series import ScatterSer
+from .series import Series
 from .label import DataLabels
 
 
@@ -23,7 +23,7 @@ class ScatterChart(Serialisable):
 
     scatterStyle = NestedNoneSet(values=(['line', 'lineMarker', 'marker', 'smooth', 'smoothMarker']))
     varyColors = NestedBool(allow_none=True)
-    ser = Typed(expected_type=ScatterSer, allow_none=True)
+    ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     axId = Sequence(expected_type=AxId)

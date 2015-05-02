@@ -11,14 +11,14 @@ from openpyxl.descriptors.excel import ExtensionList
 from .axis import AxId
 from .chartBase import UpDownBars, ChartLines
 from .label import DataLabels
-from .series import LineSer
+from .series import Series
 
 
 class StockChart(Serialisable):
 
     tagname = "stockChart"
 
-    ser = Sequence(expected_type=LineSer) #min 3, max4
+    ser = Sequence(expected_type=Series) #min 3, max4
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
     hiLowLines = Typed(expected_type=ChartLines, allow_none=True)

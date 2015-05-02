@@ -42,13 +42,13 @@ attribute_mapping = {'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'd
                      }
 
 
-def Series(name_ref=None, cat_ref=None, values=None, order=None):
+def make_series(name_ref=None, cat_ref=None, values=None, order=None):
     """
     High level function for creating series
 
     See http://exceluser.com/excel_help/functions/function-series.htm for a description
     """
-    series = _SeriesBase()
+    series = Series()
     series.__elements__ = attribute_mapping['bar']
     series.val = NumDataSource(numRef=NumRef(f=values))
     return series
@@ -59,7 +59,7 @@ class SerTx(Serialisable):
     strRef = Typed(expected_type=StrRef)
 
 
-class _SeriesBase(Serialisable):
+class Series(Serialisable):
 
     tagname = "ser"
 
@@ -147,173 +147,4 @@ class _SeriesBase(Serialisable):
             if self.order == self.idx:
                 self.order = idx
             self.idx = idx
-        return super(_SeriesBase, self).to_tree(tagname)
-
-
-class AreaSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    pictureOptions = _SeriesBase.pictureOptions
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    trendline = _SeriesBase.trendline
-    errBars = _SeriesBase.errBars
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    extLst = _SeriesBase.extLst
-
-
-    def __init__(self, **kw):
-        self.__elements__ = attribute_mapping['area']
-        super(AreaSer, self).__init__(**kw)
-
-
-class BarSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    invertIfNegative = _SeriesBase.invertIfNegative
-    pictureOptions = _SeriesBase.pictureOptions
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    trendline = _SeriesBase.dLbls
-    errBars = _SeriesBase.errBars
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    shape = _SeriesBase.shape
-    extLst = _SeriesBase.extLst
-
-
-    def __init__(self, **kw):
-        self.__elements__ = attribute_mapping['bar']
-        super(BarSer, self).__init__(**kw)
-
-
-class BubbleSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    invertIfNegative = _SeriesBase.invertIfNegative
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    trendline = _SeriesBase.trendline
-    errBars = _SeriesBase.errBars
-    xVal = _SeriesBase.xVal
-    yVal = _SeriesBase.yVal
-    bubbleSize = _SeriesBase.bubbleSize
-    bubble3D = _SeriesBase.bubble3D
-    extLst = _SeriesBase.extLst
-
-    def __init__(self, **kw):
-        super(BubbleSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['bubble']
-
-
-
-class PieSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    explosion = _SeriesBase.explosion
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    extLst = _SeriesBase.extLst
-
-    def __init__(self, **kw):
-        super(PieSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['pie']
-
-
-class RadarSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    marker = _SeriesBase.marker
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    extLst = _SeriesBase.extLst
-
-    def __init__(self, **kw):
-        super(RadarSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['radar']
-
-
-class ScatterSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    marker = _SeriesBase.marker
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    trendline = _SeriesBase.trendline
-    errBars = _SeriesBase.errBars
-    xVal = _SeriesBase.xVal
-    yVal = _SeriesBase.yVal
-    smooth = _SeriesBase.smooth
-    extLst = _SeriesBase.extLst
-
-    def __init__(self, **kw ):
-        super(ScatterSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['scatter']
-
-
-class SurfaceSer(_SeriesBase):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    extLst = _SeriesBase.extLst
-
-    def __init__(self, **kw ):
-        super(SurfaceSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['surface']
-
-
-class LineSer(Serialisable):
-
-    idx = _SeriesBase.idx
-    order = _SeriesBase.order
-    tx = _SeriesBase.tx
-    spPr = _SeriesBase.spPr
-
-    marker = _SeriesBase.marker
-    dPt = _SeriesBase.dPt
-    dLbls = _SeriesBase.dLbls
-    trendline = _SeriesBase.trendline
-    errBars = _SeriesBase.errBars
-    cat = _SeriesBase.cat
-    val = _SeriesBase.val
-    smooth = _SeriesBase.smooth
-    extLst = _SeriesBase.extLst
-
-
-    def __init__(self, **kw):
-        super(LineSer, self).__init__(**kw)
-        self.__elements__ = attribute_mapping['line']
+        return super(Series, self).to_tree(tagname)

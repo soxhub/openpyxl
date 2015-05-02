@@ -16,7 +16,7 @@ from openpyxl.descriptors.nested import (
 from .axis import AxId
 from .chartBase import GapAmount, ChartLines, UpDownBars
 from .label import DataLabels
-from .series import LineSer
+from .series import Series
 
 
 class _LineChartBase(Serialisable):
@@ -24,7 +24,7 @@ class _LineChartBase(Serialisable):
 
     grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
     varyColors = NestedBool(allow_none=True)
-    ser = Sequence(expected_type=LineSer, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     dropLines = Typed(expected_type=ChartLines, allow_none=True)

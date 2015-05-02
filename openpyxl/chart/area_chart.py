@@ -19,14 +19,14 @@ from openpyxl.descriptors.nested import (
 from .axis import AxId
 from .chartBase import ChartLines
 from .label import DataLabels
-from .series import AreaSer
+from .series import Series, attribute_mapping
 
 
 class _AreaChartBase(Serialisable):
 
     grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
-    ser = Typed(expected_type=AreaSer, allow_none=True)
+    ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
@@ -45,6 +45,12 @@ class _AreaChartBase(Serialisable):
         self.ser = ser
         self.dLbls = dLbls
         self.dropLines = dropLines
+
+    def to_tree(self, tagname=None, idx=None):
+        if self.ser is not None:
+            for s in self.ser:
+                s.__elements__ = attribute_mapping['area']
+        return super(_AreaChartBase, self).to_tree(tagname, idx)
 
 
 class AreaChart(_AreaChartBase):

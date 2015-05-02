@@ -12,7 +12,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .axis import AxId
-from .series import RadarSer
+from .series import Series
 from .label import DataLabels
 
 
@@ -23,7 +23,7 @@ class RadarChart(Serialisable):
     radarStyle = NestedSet(values=(['standard', 'marker', 'filled']))
     style = Alias("radarStyle")
     varyColors = NestedBool(nested=True, allow_none=True)
-    ser = Typed(expected_type=RadarSer, allow_none=True)
+    ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     axId = Sequence(expected_type=AxId, allow_none=True)

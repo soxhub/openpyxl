@@ -9,7 +9,7 @@ from openpyxl.tests.helper import compare_xml
 class TestBarSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -23,7 +23,7 @@ class TestBarSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -37,7 +37,7 @@ class TestBarSer:
 class TestAreaSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -51,7 +51,7 @@ class TestAreaSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -65,7 +65,7 @@ class TestAreaSer:
 class TestBubbleSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -126,7 +126,7 @@ class TestBubbleSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.xVal.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -143,7 +143,7 @@ class TestBubbleSer:
 class TestPieSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -158,7 +158,7 @@ class TestPieSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -173,7 +173,7 @@ class TestPieSer:
 class TestRadarSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -190,7 +190,7 @@ class TestRadarSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -204,7 +204,7 @@ class TestRadarSer:
 class TestScatterSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -227,7 +227,7 @@ class TestScatterSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.xVal.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -242,7 +242,7 @@ class TestScatterSer:
 class TestSurfaceSer:
 
     def test_from_tree(self):
-        from ..series import _SeriesBase, attribute_mapping
+        from ..series import Series, attribute_mapping
 
         src = """
         <ser>
@@ -256,7 +256,7 @@ class TestSurfaceSer:
         </ser>
         """
         node = fromstring(src)
-        ser = _SeriesBase.from_tree(node)
+        ser = Series.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
@@ -268,14 +268,14 @@ class TestSurfaceSer:
 
 
 @pytest.fixture
-def Series():
-    from openpyxl.chart.series import Series
-    return Series
+def make_series():
+    from openpyxl.chart.series import make_series
+    return make_series
 
 class TestSeries:
 
-    def test_ctor(self, Series):
-        series = Series(values="Sheet1!$A$1:$A$10")
+    def test_ctor(self, make_series):
+        series = make_series(values="Sheet1!$A$1:$A$10")
         xml = tostring(series.to_tree())
         expected = """
         <ser>
@@ -292,8 +292,8 @@ class TestSeries:
         assert diff is None, diff
 
 
-    def test_manual_idx(self, Series):
-        series = Series(values="Sheet1!$A$1:$A$10")
+    def test_manual_idx(self, make_series):
+        series = make_series(values="Sheet1!$A$1:$A$10")
         xml = tostring(series.to_tree(idx=5))
         expected = """
         <ser>
@@ -310,8 +310,8 @@ class TestSeries:
         assert diff is None, diff
 
 
-    def test_manual_order(self, Series):
-        series = Series(values="Sheet1!$A$1:$A$10")
+    def test_manual_order(self, make_series):
+        series = make_series(values="Sheet1!$A$1:$A$10")
         series.order = 2
         xml = tostring(series.to_tree(idx=5))
         expected = """

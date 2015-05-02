@@ -21,7 +21,7 @@ from openpyxl.descriptors.nested import (
 
 from .axis import CatAx, ValAx, SerAx, AxId
 from .shapes import ShapeProperties
-from .series import BarSer
+from .series import Series
 from .legend import Legend
 from .label import DataLabels
 
@@ -32,7 +32,7 @@ class _BarChartBase(Serialisable):
     grouping = NestedSet(values=(['percentStacked', 'clustered', 'standard',
                                   'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
-    ser = Sequence(expected_type=BarSer, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
 

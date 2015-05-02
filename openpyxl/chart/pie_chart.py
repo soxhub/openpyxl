@@ -22,7 +22,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .chartBase import GapAmount
-from .series import PieSer
+from .series import Series
 from .label import DataLabels
 from .bar_chart import ChartLines
 
@@ -30,7 +30,7 @@ from .bar_chart import ChartLines
 class _PieChartBase(Serialisable):
 
     varyColors = NestedBool(allow_none=True)
-    ser = Sequence(expected_type=PieSer, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
 

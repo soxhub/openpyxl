@@ -15,9 +15,9 @@ def StockChart():
 class TestStockChart:
 
     def test_ctor(self, StockChart):
-        from openpyxl.chart.series import LineSer
+        from openpyxl.chart.series import Series
 
-        chart = StockChart(ser=[LineSer(), LineSer(), LineSer()])
+        chart = StockChart(ser=[Series(), Series(), Series()])
         xml = tostring(chart.to_tree())
         expected = """
         <stockChart>
