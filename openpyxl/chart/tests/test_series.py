@@ -143,32 +143,7 @@ class TestBubbleSer:
 class TestPieSer:
 
     def test_from_tree(self):
-        from ..series import PieSer
-
-        src = """
-        <ser>
-          <idx val="0"/>
-          <order val="0"/>
-          <marker>
-            <symbol val="none"/>
-          </marker>
-          <val>
-          </val>
-          <smooth val="0"/>
-        </ser>
-        """
-        node = fromstring(src)
-        ser = PieSer.from_tree(node)
-        assert ser.idx == 0
-        assert ser.order == 0
-        assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
-        assert ser.smooth is False
-
-
-class TestPieSer:
-
-    def test_from_tree(self):
-        from ..series import PieSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
@@ -183,16 +158,22 @@ class TestPieSer:
         </ser>
         """
         node = fromstring(src)
-        ser = PieSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+        ser.__elements__ = attribute_mapping['pie']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
+
 
 
 class TestRadarSer:
 
     def test_from_tree(self):
-        from ..series import RadarSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
@@ -209,16 +190,21 @@ class TestRadarSer:
         </ser>
         """
         node = fromstring(src)
-        ser = RadarSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+        ser.__elements__ = attribute_mapping['radar']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 class TestScatterSer:
 
     def test_from_tree(self):
-        from ..series import ScatterSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
@@ -241,26 +227,27 @@ class TestScatterSer:
         </ser>
         """
         node = fromstring(src)
-        ser = ScatterSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.xVal.numRef.ref == 'Blatt1!$A$1:$A$12'
         assert ser.yVal.numRef.ref == 'Blatt1!$B$1:$B$12'
 
+        ser.__elements__ = attribute_mapping['scatter']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 class TestSurfaceSer:
 
     def test_from_tree(self):
-        from ..series import SurfaceSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
           <idx val="0"/>
           <order val="0"/>
-          <marker>
-            <symbol val="none"/>
-          </marker>
           <val>
             <numRef>
               <f>Blatt1!$A$1:$A$12</f>
@@ -269,11 +256,15 @@ class TestSurfaceSer:
         </ser>
         """
         node = fromstring(src)
-        ser = SurfaceSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
 
+        ser.__elements__ = attribute_mapping['surface']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 @pytest.fixture

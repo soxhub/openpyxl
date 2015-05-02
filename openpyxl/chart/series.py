@@ -9,7 +9,10 @@ from openpyxl.descriptors import (
     Alias,
 )
 from openpyxl.descriptors.excel import ExtensionList
-from openpyxl.descriptors.nested import NestedInteger
+from openpyxl.descriptors.nested import (
+    NestedInteger,
+    NestedBool,
+)
 
 from .shapes import ShapeProperties, Shape
 from .chartBase import (
@@ -77,21 +80,21 @@ class _SeriesBase(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     #bar chart
-    invertIfNegative = Bool(nested=True, allow_none=True)
+    invertIfNegative = NestedBool(allow_none=True)
     shape = Typed(expected_type=Shape, allow_none=True)
 
     #bubble chart
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
     yVal = Typed(expected_type=NumDataSource, allow_none=True)
     bubbleSize = Typed(expected_type=NumDataSource, allow_none=True)
-    bubble3D = Bool(nested=True, allow_none=True)
+    bubble3D = NestedBool(allow_none=True)
 
     #line chart
     marker = Typed(expected_type=Marker, allow_none=True)
-    smooth = Bool(allow_none=True, nested=True)
+    smooth = NestedBool(allow_none=True)
 
     #pie chart
-    explosion = Integer(allow_none=True, nested=True)
+    explosion = NestedInteger(allow_none=True)
 
     __elements__ = ()
 
@@ -230,7 +233,6 @@ class PieSer(_SeriesBase):
     cat = _SeriesBase.cat
     val = _SeriesBase.val
     extLst = _SeriesBase.extLst
-
 
     def __init__(self, **kw):
         super(PieSer, self).__init__(**kw)
