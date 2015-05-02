@@ -6,6 +6,7 @@ from openpyxl.descriptors import (
     String,
     Integer,
     Bool,
+    Alias,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
@@ -16,6 +17,25 @@ from .error_bar import ErrorBars
 from .label import DataLabels
 from .marker import DataPoint, PictureOptions, Marker
 from .trendline import Trendline
+
+attribute_mapping = {'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'dPt', 'dLbls', 'errBars',
+ 'trendline', 'cat', 'val',),
+                     'bar':('idx', 'order','tx', 'spPr', 'invertIfNegative', 'pictureOptions', 'dPt',
+ 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape'),
+                     'bubble':('idx','order', 'tx', 'spPr', 'invertIfNegative', 'dPt', 'dLbls',
+ 'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize', 'bubble3D'),
+                     'line':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
+ 'errBars', 'cat', 'val', 'smooth'),
+                     'pie':('idx', 'order', 'tx', 'spPr', 'explosion', 'dPt', 'dLbls', 'cat', 'val'),
+                     'radar':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'cat', 'val'),
+                     'scatter':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
+ 'errBars', 'xVal', 'yVal', 'smooth'),
+                     'surface':('idx', 'order', 'tx', 'spPr', 'cat', 'val'),
+                     }
+
+
+('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
+ 'errBars', 'xVal', 'yVal', 'smooth')
 
 
 def Series(name_ref=None, cat_ref=None, values=None, order=None):
@@ -47,7 +67,7 @@ class StrData(Serialisable):
     pt = Typed(expected_type=StrVal, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('ptCount', 'pt', 'extLst')
+    __elements__ = ('ptCount', 'pt')
 
     def __init__(self,
                  ptCount=None,
@@ -56,7 +76,6 @@ class StrData(Serialisable):
                 ):
         self.ptCount = ptCount
         self.pt = pt
-        self.extLst = extLst
 
 
 class StrRef(Serialisable):
@@ -65,7 +84,7 @@ class StrRef(Serialisable):
     strCache = Typed(expected_type=StrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('f', 'strCache', 'extLst')
+    __elements__ = ('f', 'strCache')
 
     def __init__(self,
                  f=None,
@@ -74,7 +93,6 @@ class StrRef(Serialisable):
                 ):
         self.f = f
         self.strCache = strCache
-        self.extLst = extLst
 
 
 class SerTx(Serialisable):
@@ -90,6 +108,7 @@ class _SeriesBase(Serialisable):
     order = NestedInteger()
     tx = Typed(expected_type=SerTx, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    ShapeProperties = Alias('spPr')
 
     __elements__ = ('idx', 'order', 'tx', 'spPr')
 
@@ -117,7 +136,7 @@ class AreaSer(_SeriesBase):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _SeriesBase.__elements__ + ('pictureOptions', 'dPt',
-                                               'dLbls', 'errBars', 'trendline', 'cat', 'val', 'extLst')
+                                               'dLbls', 'errBars', 'trendline', 'cat', 'val')
 
     def __init__(self,
                  pictureOptions=None,
@@ -136,7 +155,6 @@ class AreaSer(_SeriesBase):
         self.errBars = errBars
         self.cat = cat
         self.val = val
-        self.extLst = extLst
 
 
 class BarSer(_SeriesBase):
@@ -208,7 +226,7 @@ class BubbleSer(_SeriesBase):
 
     __elements__ = _SeriesBase.__elements__ + ('invertIfNegative', 'dPt',
                                                'dLbls', 'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize',
-                                               'bubble3D', 'extLst')
+                                               'bubble3D',)
 
     def __init__(self,
                  invertIfNegative=None,
@@ -231,7 +249,6 @@ class BubbleSer(_SeriesBase):
         self.yVal = yVal
         self.bubbleSize = bubbleSize
         self.bubble3D = bubble3D
-        self.extLst = extLst
 
 
 class PieSer(_SeriesBase):
@@ -244,7 +261,7 @@ class PieSer(_SeriesBase):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _SeriesBase.__elements__ + ('explosion', 'dPt', 'dLbls',
-                                               'cat', 'val', 'extLst')
+                                               'cat', 'val',)
 
     def __init__(self,
                  explosion=None,
@@ -259,7 +276,6 @@ class PieSer(_SeriesBase):
         self.dLbls = dLbls
         self.cat = cat
         self.val = val
-        self.extLst = extLst
 
 
 class RadarSer(_SeriesBase):
@@ -271,7 +287,7 @@ class RadarSer(_SeriesBase):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'cat', 'val', 'extLst')
+    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'cat', 'val',)
 
     def __init__(self,
                  marker=None,
@@ -286,7 +302,6 @@ class RadarSer(_SeriesBase):
         self.dLbls = dLbls
         self.cat = cat
         self.val = val
-        self.extLst = extLst
 
 
 class ScatterSer(Serialisable):
@@ -301,7 +316,7 @@ class ScatterSer(Serialisable):
     smooth = Bool(nested=True, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'xVal', 'yVal', 'smooth', 'extLst')
+    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'xVal', 'yVal', 'smooth',)
 
     def __init__(self,
                  marker=None,
@@ -322,7 +337,6 @@ class ScatterSer(Serialisable):
         self.xVal = xVal
         self.yVal = yVal
         self.smooth = smooth
-        self.extLst = extLst
 
 
 class SurfaceSer(Serialisable):
@@ -331,7 +345,7 @@ class SurfaceSer(Serialisable):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('cat', 'val', 'extLst')
+    __elements__ = _SeriesBase.__elements__ + ('cat', 'val')
 
     def __init__(self,
                  cat=None,
@@ -340,7 +354,6 @@ class SurfaceSer(Serialisable):
                 ):
         self.cat = cat
         self.val = val
-        self.extLst = extLst
 
 
 class LineSer(Serialisable):
@@ -355,7 +368,7 @@ class LineSer(Serialisable):
     smooth = Bool(allow_none=True, nested=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'smooth', 'extLst')
+    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'smooth',)
 
     def __init__(self,
                  marker=None,
@@ -376,4 +389,3 @@ class LineSer(Serialisable):
         self.cat = cat
         self.val = val
         self.smooth = smooth
-        self.extLst = extLst

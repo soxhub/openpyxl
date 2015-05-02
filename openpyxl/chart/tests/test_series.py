@@ -94,3 +94,15 @@ class TestSeries:
             """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+def test_mapping():
+    from ..series import attribute_mapping, AreaSer, BarSer, BubbleSer, LineSer, PieSer, RadarSer, ScatterSer, SurfaceSer
+    assert attribute_mapping['area'] == AreaSer.__elements__
+    assert attribute_mapping['bar'] == BarSer.__elements__
+    assert attribute_mapping['bubble'] == BubbleSer.__elements__
+    assert attribute_mapping['line'] == LineSer.__elements__
+    assert attribute_mapping['pie'] == PieSer.__elements__
+    assert attribute_mapping['radar'] == RadarSer.__elements__
+    assert attribute_mapping['scatter'] == ScatterSer.__elements__
+    assert attribute_mapping['surface'] == SurfaceSer.__elements__
