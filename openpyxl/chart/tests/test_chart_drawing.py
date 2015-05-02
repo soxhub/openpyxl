@@ -18,10 +18,10 @@ class TestTwoCellAnchor:
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <twoCellAnchor>
-          <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-          <to col="0" colOff="0" row="0" rowOff="0"></to>
-          <clientData></clientData>
-         </twoCellAnchor>
+          <from col="0" colOff="0" row="0" rowOff="0" />
+          <to col="0" colOff="0" row="0" rowOff="0" />
+          <clientData />
+        </twoCellAnchor>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -30,8 +30,8 @@ class TestTwoCellAnchor:
     def test_from_xml(self, TwoCellAnchor):
         src = """
         <twoCellAnchor>
-          <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-          <to col="0" colOff="0" row="0" rowOff="0"></to>
+          <from col="0" colOff="0" row="0" rowOff="0" />
+          <to col="0" colOff="0" row="0" rowOff="0" />
           <clientData></clientData>
          </twoCellAnchor>
         """
@@ -53,8 +53,8 @@ class TestOneCellAnchor:
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <oneCellAnchor>
-          <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-          <ext cx="0" cy="0"></ext>
+          <from col="0" colOff="0" row="0" rowOff="0" />
+          <ext cx="0" cy="0" />
           <clientData></clientData>
         </oneCellAnchor>
         """
@@ -65,8 +65,8 @@ class TestOneCellAnchor:
     def test_from_xml(self, OneCellAnchor):
         src = """
         <oneCellAnchor>
-          <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-          <ext cx="0" cy="0"></ext>
+          <from col="0" colOff="0" row="0" rowOff="0" />
+          <ext cx="0" cy="0" />
           <clientData></clientData>
         </oneCellAnchor>
         """
@@ -88,8 +88,8 @@ class TestAbsoluteAnchor:
         xml = tostring(chart_drawing.to_tree())
         expected = """
          <absoluteAnchor>
-           <pos x="0" y="0"></pos>
-           <ext cx="0" cy="0"></ext>
+           <pos x="0" y="0" />
+           <ext cx="0" cy="0" />
            <clientData></clientData>
          </absoluteAnchor>
         """
@@ -100,8 +100,8 @@ class TestAbsoluteAnchor:
     def test_from_xml(self, AbsoluteAnchor):
         src = """
          <absoluteAnchor>
-           <pos x="0" y="0"></pos>
-           <ext cx="0" cy="0"></ext>
+           <pos x="0" y="0" />
+           <ext cx="0" cy="0" />
            <clientData></clientData>
          </absoluteAnchor>
          """
@@ -133,28 +133,28 @@ class TestSpreadsheetDrawing:
         expected = """
         <wsDr>
           <absoluteAnchor>
-            <pos x="0" y="0"></pos>
-            <ext cx="0" cy="0"></ext>
+            <pos x="0" y="0"  />
+            <ext cx="0" cy="0" />
             <clientData></clientData>
           </absoluteAnchor>
           <absoluteAnchor>
-            <pos x="0" y="0"></pos>
-            <ext cx="0" cy="0"></ext>
+            <pos x="0" y="0" />
+            <ext cx="0" cy="0" />
             <clientData></clientData>
           </absoluteAnchor>
           <oneCellAnchor>
-            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-            <ext cx="0" cy="0"></ext>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <ext cx="0" cy="0" />
             <clientData></clientData>
           </oneCellAnchor>
           <twoCellAnchor>
-            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-            <to col="0" colOff="0" row="0" rowOff="0"></to>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <to col="0" colOff="0" row="0" rowOff="0" />
             <clientData></clientData>
           </twoCellAnchor>
           <twoCellAnchor>
-            <frm col="0" colOff="0" row="0" rowOff="0"></frm>
-            <to col="0" colOff="0" row="0" rowOff="0"></to>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <to col="0" colOff="0" row="0" rowOff="0" />
             <clientData></clientData>
           </twoCellAnchor>
         </wsDr>

@@ -127,7 +127,7 @@ class OneCellAnchor(_AnchorBase):
 
     tagname = "oneCellAnchor"
 
-    frm = Typed(expected_type=AnchorMarker)
+    _from = Typed(expected_type=AnchorMarker)
     ext = Typed(expected_type=PositiveSize2D)
 
     sp = _AnchorBase.sp
@@ -138,17 +138,17 @@ class OneCellAnchor(_AnchorBase):
     contentPart = _AnchorBase.contentPart
     clientData = _AnchorBase.clientData
 
-    __elements__ = ('frm', 'ext') + _AnchorBase.__elements__
+    __elements__ = ('_from', 'ext') + _AnchorBase.__elements__
 
 
     def __init__(self,
-                 frm=None,
+                 _from=None,
                  ext=None,
                  **kw
                 ):
-        if frm is None:
-            frm = AnchorMarker()
-        self.frm = frm
+        if _from is None:
+            _from = AnchorMarker()
+        self._from = _from
         if ext is None:
             ext = PositiveSize2D(0, 0)
         self.ext = ext
@@ -160,7 +160,7 @@ class TwoCellAnchor(_AnchorBase):
     tagname = "twoCellAnchor"
 
     editAs = NoneSet(values=(['twoCell', 'oneCell', 'absolute']))
-    frm = Typed(expected_type=AnchorMarker)
+    _from = Typed(expected_type=AnchorMarker)
     to = Typed(expected_type=AnchorMarker)
 
     sp = _AnchorBase.sp
@@ -171,18 +171,18 @@ class TwoCellAnchor(_AnchorBase):
     contentPart = _AnchorBase.contentPart
     clientData = _AnchorBase.clientData
 
-    __elements__ = ('frm', 'to') + _AnchorBase.__elements__
+    __elements__ = ('_from', 'to') + _AnchorBase.__elements__
 
     def __init__(self,
                  editAs=None,
-                 frm=None,
+                 _from=None,
                  to=None,
                  **kw
                  ):
         self.editAs = editAs
-        if frm is None:
-            frm = AnchorMarker()
-        self.frm = frm
+        if _from is None:
+            _from = AnchorMarker()
+        self._from = _from
         if to is None:
             to = AnchorMarker()
         self.to = to
@@ -205,4 +205,3 @@ class SpreadsheetDrawing(Serialisable):
         self.twoCellAnchor = twoCellAnchor
         self.oneCellAnchor = oneCellAnchor
         self.absoluteAnchor = absoluteAnchor
-
