@@ -1,6 +1,9 @@
 from __future__ import absolute_import
 # copyright openpyxl 2010-2015
 
+from keyword import kwlist
+KEYWORDS = frozenset(kwlist)
+
 from . import _Serialiasable, Sequence
 
 from openpyxl.compat import safe_string
@@ -33,6 +36,8 @@ class Serialisable(_Serialiasable):
         attrib = dict(node.attrib)
         for el in node:
             tag = localname(el)
+            if tag in KEYWORDS:
+                tag = "_" + tag
             desc = getattr(cls, tag, None)
             if desc is None:
                 continue
@@ -60,6 +65,10 @@ class Serialisable(_Serialiasable):
             tagname = self.tagname
 
         attrs = dict(self)
+
+        # keywords have to be masked
+        if tagname.startswith("_"):
+            tagname = tagname[1:]
         el = Element(tagname, attrs)
 
         for child in self.__elements__:
