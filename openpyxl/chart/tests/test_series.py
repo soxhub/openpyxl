@@ -9,13 +9,12 @@ from openpyxl.tests.helper import compare_xml
 class TestBarSer:
 
     def test_from_tree(self):
-        from ..series import BarSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
           <idx val="0"/>
           <order val="0"/>
-          <invertIfNegative val="0"/>
           <val>
             <numRef>
                 <f>Blatt1!$A$1:$A$12</f>
@@ -24,16 +23,21 @@ class TestBarSer:
         </ser>
         """
         node = fromstring(src)
-        ser = BarSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+        ser.__elements__ = attribute_mapping['bar']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 class TestAreaSer:
 
     def test_from_tree(self):
-        from ..series import AreaSer
+        from ..series import _SeriesBase, attribute_mapping
 
         src = """
         <ser>
@@ -47,10 +51,229 @@ class TestAreaSer:
         </ser>
         """
         node = fromstring(src)
-        ser = AreaSer.from_tree(node)
+        ser = _SeriesBase.from_tree(node)
         assert ser.idx == 0
         assert ser.order == 0
         assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+        ser.__elements__ = attribute_mapping['area']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
+
+
+class TestBubbleSer:
+
+    def test_from_tree(self):
+        from ..series import _SeriesBase, attribute_mapping
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <xVal>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+             </numRef>
+          </xVal>
+          <yVal>
+            <numRef>
+              <f>Blatt1!$B$1:$B$12</f>
+            </numRef>
+          </yVal>
+          <bubbleSize>
+            <numLit>
+              <formatCode>General</formatCode>
+              <ptCount val="12"/>
+              <pt idx="0">
+                <v>1.1</v>
+              </pt>
+              <pt idx="1">
+                <v>1.1</v>
+              </pt>
+              <pt idx="2">
+                <v>1.1</v>
+              </pt>
+              <pt idx="3">
+                <v>1.1</v>
+              </pt>
+              <pt idx="4">
+                <v>1.1</v>
+              </pt>
+              <pt idx="5">
+                <v>1.1</v>
+              </pt>
+              <pt idx="6">
+                <v>1.1</v>
+              </pt>
+              <pt idx="7">
+                <v>1.1</v>
+              </pt>
+              <pt idx="8">
+                <v>1.1</v>
+              </pt>
+              <pt idx="9">
+                <v>1.1</v>
+              </pt>
+              <pt idx="10">
+                <v>1.1</v>
+              </pt>
+              <pt idx="11">
+                <v>1.1</v>
+              </pt>
+            </numLit>
+          </bubbleSize>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = _SeriesBase.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.xVal.numRef.ref == 'Blatt1!$A$1:$A$12'
+        assert ser.yVal.numRef.ref == 'Blatt1!$B$1:$B$12'
+        assert ser.bubbleSize.numLit.ptCount == 12
+        assert ser.bubbleSize.numLit.pt[0].v == 1.1
+
+        ser.__elements__ = attribute_mapping['bubble']
+        xml = tostring(ser.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
+
+
+class TestPieSer:
+
+    def test_from_tree(self):
+        from ..series import PieSer
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <marker>
+            <symbol val="none"/>
+          </marker>
+          <val>
+          </val>
+          <smooth val="0"/>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = PieSer.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+        assert ser.smooth is False
+
+
+class TestPieSer:
+
+    def test_from_tree(self):
+        from ..series import PieSer
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <explosion val="25"/>
+          <val>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+            </numRef>
+          </val>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = PieSer.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+
+class TestRadarSer:
+
+    def test_from_tree(self):
+        from ..series import RadarSer
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <marker>
+            <symbol val="none"/>
+          </marker>
+          <val>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+            </numRef>
+          </val>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = RadarSer.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
+
+class TestScatterSer:
+
+    def test_from_tree(self):
+        from ..series import ScatterSer
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <marker>
+            <symbol val="none"/>
+          </marker>
+          <xVal>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+            </numRef>
+          </xVal>
+          <yVal>
+            <numRef>
+              <f>Blatt1!$B$1:$B$12</f>
+            </numRef>
+          </yVal>
+          <smooth val="0"/>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = ScatterSer.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.xVal.numRef.ref == 'Blatt1!$A$1:$A$12'
+        assert ser.yVal.numRef.ref == 'Blatt1!$B$1:$B$12'
+
+
+
+class TestSurfaceSer:
+
+    def test_from_tree(self):
+        from ..series import SurfaceSer
+
+        src = """
+        <ser>
+          <idx val="0"/>
+          <order val="0"/>
+          <marker>
+            <symbol val="none"/>
+          </marker>
+          <val>
+            <numRef>
+              <f>Blatt1!$A$1:$A$12</f>
+            </numRef>
+          </val>
+        </ser>
+        """
+        node = fromstring(src)
+        ser = SurfaceSer.from_tree(node)
+        assert ser.idx == 0
+        assert ser.order == 0
+        assert ser.val.numRef.ref == 'Blatt1!$A$1:$A$12'
+
 
 
 @pytest.fixture
