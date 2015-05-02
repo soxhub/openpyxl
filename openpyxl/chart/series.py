@@ -34,17 +34,14 @@ attribute_mapping = {'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'd
                      }
 
 
-('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
- 'errBars', 'xVal', 'yVal', 'smooth')
-
-
 def Series(name_ref=None, cat_ref=None, values=None, order=None):
     """
     High level function for creating series
 
     See http://exceluser.com/excel_help/functions/function-series.htm for a description
     """
-    series = BarSer(idx=0, val=NumDataSource(numRef=NumRef(f=values)))
+    series = _SeriesBase()
+    series.val = NumDataSource(numRef=NumRef(f=values))
     return series
 
 
@@ -137,6 +134,11 @@ class _SeriesBase(Serialisable):
     #pie chart
     explosion = Integer(allow_none=True, nested=True)
 
+    __elements__ = ('bubble3D', 'bubbleSize', 'cat', 'dLbls', 'dPt', 'errBars',
+                 'explosion', 'idx', 'invertIfNegative', 'marker', 'order',
+                 'pictureOptions', 'shape', 'smooth', 'spPr', 'trendline', 'tx', 'val',
+                 'xVal', 'yVal')
+
 
     def __init__(self,
                  idx=0,
@@ -228,18 +230,21 @@ class BarSer(_SeriesBase):
     tx = _SeriesBase.tx
     spPr = _SeriesBase.spPr
 
-    invertIfNegative = Bool(nested=True, allow_none=True)
-    pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrorBars, allow_none=True)
-    cat = Typed(expected_type=AxDataSource, allow_none=True)
-    val = Typed(expected_type=NumDataSource, allow_none=True)
-    shape = Typed(expected_type=Shape, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    invertIfNegative = _SeriesBase.invertIfNegative
+    pictureOptions = _SeriesBase.pictureOptions
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    trendline = _SeriesBase.dLbls
+    errBars = _SeriesBase.errBars
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    shape = _SeriesBase.shape
+    extLst = _SeriesBase.extLst
 
-    __elements__ = attribute_mapping['bar']
+
+    def __init__(self, **kw):
+        self.__elements__ = attribute_mapping['bar']
+        super(BarSer, self).__init__(**kw)
 
 
 class BubbleSer(_SeriesBase):
