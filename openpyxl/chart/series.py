@@ -110,22 +110,7 @@ class _SeriesBase(Serialisable):
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     ShapeProperties = Alias('spPr')
 
-    __elements__ = ('idx', 'order', 'tx', 'spPr')
-
-    def __init__(self,
-                 idx=0,
-                 order=0,
-                 tx=None,
-                 spPr=None,
-                ):
-        self.idx = idx
-        self.order = order
-        self.tx = tx
-        self.spPr = spPr
-
-
-class AreaSer(_SeriesBase):
-
+    # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Typed(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
@@ -135,8 +120,87 @@ class AreaSer(_SeriesBase):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('pictureOptions', 'dPt',
-                                               'dLbls', 'errBars', 'trendline', 'cat', 'val')
+    #bar chart
+    invertIfNegative = Bool(nested=True, allow_none=True)
+    shape = Typed(expected_type=Shape, allow_none=True)
+
+    #bubble chart
+    xVal = Typed(expected_type=AxDataSource, allow_none=True)
+    yVal = Typed(expected_type=NumDataSource, allow_none=True)
+    bubbleSize = Typed(expected_type=NumDataSource, allow_none=True)
+    bubble3D = Bool(nested=True, allow_none=True)
+
+    #line chart
+    marker = Typed(expected_type=Marker, allow_none=True)
+    smooth = Bool(allow_none=True, nested=True)
+
+    #pie chart
+    explosion = Integer(allow_none=True, nested=True)
+
+
+    def __init__(self,
+                 idx=0,
+                 order=0,
+                 tx=None,
+                 spPr=None,
+                 pictureOptions=None,
+                 dPt=None,
+                 dLbls=None,
+                 trendline=None,
+                 errBars=None,
+                 cat=None,
+                 val=None,
+                 invertIfNegative=None,
+                 shape=None,
+                 xVal=None,
+                 yVal=None,
+                 bubbleSize=None,
+                 bubble3D=None,
+                 marker=None,
+                 smooth=None,
+                 explosion=None
+                ):
+        self.idx = idx
+        self.order = order
+        self.tx = tx
+        self.spPr = spPr
+        self.pictureOptions = pictureOptions
+        self.dPt = dPt
+        self.dLbls = dLbls
+        self.trendline = trendline
+        self.errBars = errBars
+        self.cat = cat
+        self.val = val
+        self.invertIfNegative = invertIfNegative
+        self.shape = shape
+        self.xVal = xVal
+        self.yVal = yVal
+        self.bubbleSize = bubbleSize
+        self.bubble3D = bubble3D
+        self.marker = marker
+        self.smooth = smooth
+        self.explosion = explosion
+
+    def to_tree(self, tagname=None, idx=None):
+        if idx is not None:
+            if self.order == self.idx:
+                self.order = idx
+            self.idx = idx
+        return super(_SeriesBase, self).to_tree(tagname)
+
+
+class AreaSer(_SeriesBase):
+
+    pictureOptions = _SeriesBase.pictureOptions
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    trendline = _SeriesBase.trendline
+    errBars = _SeriesBase.errBars
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    extLst = _SeriesBase.extLst
+
+    __elements__ = attribute_mapping['area']
 
     def __init__(self,
                  pictureOptions=None,
@@ -175,40 +239,7 @@ class BarSer(_SeriesBase):
     shape = Typed(expected_type=Shape, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('invertIfNegative', 'pictureOptions', 'dPt',
-                                'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape')
-
-    def __init__(self,
-                 invertIfNegative=None,
-                 pictureOptions=None,
-                 dPt=None,
-                 dLbls=None,
-                 trendline=None,
-                 errBars=None,
-                 cat=None,
-                 val=None,
-                 shape=None,
-                 extLst=None,
-                 **kw
-                ):
-        self.invertIfNegative = invertIfNegative
-        self.pictureOptions = pictureOptions
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.trendline = trendline
-        self.errBars = errBars
-        self.cat = cat
-        self.val = val
-        self.shape = shape
-        super(BarSer, self).__init__(**kw)
-
-
-    def to_tree(self, tagname=None, idx=None):
-        if idx is not None:
-            if self.order == self.idx:
-                self.order = idx
-            self.idx = idx
-        return super(_SeriesBase, self).to_tree(tagname)
+    __elements__ = attribute_mapping['bar']
 
 
 class BubbleSer(_SeriesBase):
@@ -224,9 +255,8 @@ class BubbleSer(_SeriesBase):
     bubble3D = Bool(nested=True, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('invertIfNegative', 'dPt',
-                                               'dLbls', 'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize',
-                                               'bubble3D',)
+    __elements__ = attribute_mapping['bubble']
+
 
     def __init__(self,
                  invertIfNegative=None,
@@ -260,8 +290,7 @@ class PieSer(_SeriesBase):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('explosion', 'dPt', 'dLbls',
-                                               'cat', 'val',)
+    __elements__ = attribute_mapping['pie']
 
     def __init__(self,
                  explosion=None,
@@ -287,7 +316,7 @@ class RadarSer(_SeriesBase):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'cat', 'val',)
+    __elements__ = attribute_mapping['pie']
 
     def __init__(self,
                  marker=None,
@@ -316,7 +345,7 @@ class ScatterSer(Serialisable):
     smooth = Bool(nested=True, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'xVal', 'yVal', 'smooth',)
+    __elements__ = attribute_mapping['scatter']
 
     def __init__(self,
                  marker=None,
@@ -345,7 +374,7 @@ class SurfaceSer(Serialisable):
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('cat', 'val')
+    __elements__ = attribute_mapping['surface']
 
     def __init__(self,
                  cat=None,
@@ -368,7 +397,7 @@ class LineSer(Serialisable):
     smooth = Bool(allow_none=True, nested=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = _SeriesBase.__elements__ + ('marker', 'dPt', 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'smooth',)
+    __elements__ = attribute_mapping['line']
 
     def __init__(self,
                  marker=None,
