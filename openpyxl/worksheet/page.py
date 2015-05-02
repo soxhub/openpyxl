@@ -121,6 +121,24 @@ class PageSetup(Serialisable):
             self._parent.sheet_properties.pageSetUpPr.fitToPage = value
 
 
+    @property
+    def autoPageBreaks(self):
+        if self._parent.sheet_properties.pageSetUpPr == None:
+            value = None
+        else:
+            value = self._parent.sheet_properties.pageSetUpPr.autoPageBreaks
+
+        return value
+
+
+    @autoPageBreaks.setter
+    def autoPageBreaks(self, value):
+        if self._parent.sheet_properties.pageSetUpPr == None:
+            self._parent.sheet_properties.pageSetUpPr = PageSetupPr(autoPageBreaks=value)
+        else:
+            self._parent.sheet_properties.pageSetUpPr.autoPageBreaks = value
+
+
     @classmethod
     def from_tree(cls, node):
         attrs = node.attrib

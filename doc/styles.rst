@@ -150,6 +150,11 @@ yourself. This is a restriction of the file format::
 
 Edit Page Setup
 -------------------
+This element include also the page setup additional properties fitToPage and autoPageBreaks.
+These 2 properties belong to Worksheet Additional Properties, as they concerns the page setup of the worksheet, 
+we found logical to treat them through this element.
+
+
 .. :: doctest
 
 >>> from openpyxl.workbook import Workbook
@@ -161,6 +166,8 @@ Edit Page Setup
 >>> ws.page_setup.paperSize = ws.PAPERSIZE_TABLOID
 >>> ws.page_setup.fitToHeight = 0
 >>> ws.page_setup.fitToWidth = 1
+>>> ws.page_setup.fitToPage = 1
+>>> ws.page_setup.autoPageBreaks = 0
 
 
 Edit Print Options
@@ -174,7 +181,6 @@ Edit Print Options
 >>>
 >>> ws.print_options.horizontalCentered = True
 >>> ws.print_options.verticalCentered = True
-
 
 
 Header / Footer
@@ -206,27 +212,27 @@ Worksheet Additional Properties
 
 These are advanced properties for particular behaviours, the most used ones
 are the "fitTopage" page setup property and the tabColor that define the
-background color of the worksheet tab.
+background color of the worksheet tab. 
+
+The first one can be modified directly through the worksheet page_setup element.
 
 Available properties for worksheet: "codeName",
 "enableFormatConditionsCalculation", "filterMode", "published",
 "syncHorizontal", "syncRef", "syncVertical", "transitionEvaluation",
-"transitionEntry", "tabColor". Available fields for page setup properties:
-"autoPageBreaks", "fitToPage". Available fields for outline properties:
+"transitionEntry", "tabColor". Available fields for outline properties:
 "applyStyles", "summaryBelow", "summaryRight", "showOutlineSymbols".
 
 see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.sheetproperties%28v=office.14%29.aspx_ for details.
 
 ..note::
         By default, outline properties are intitialized so you can directly modify each of their 4 attributes, while page setup properties don't.
-        If you want modify the latter, you should first initialize a PageSetupPr object with the required parameters.
-        Once done, they can be directly modified by the routine later if needed.
+        That's why these has been directly added to the page_setup element of the worksheet (see above).
 
 
 .. :: doctest
 
 >>> from openpyxl.workbook import Workbook
->>> from openpyxl.worksheet.properties import WorksheetProperties, PageSetupPr
+>>> from openpyxl.worksheet.properties import WorksheetProperties
 >>>
 >>> wb = Workbook()
 >>> ws = wb.active
@@ -234,7 +240,5 @@ see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.s
 >>> wsprops = ws.sheet_properties
 >>> wsprops.tabColor = "1072BA"
 >>> wsprops.filterMode = False
->>> wsprops.pageSetUpPr = PageSetupPr(fitToPage=True, autoPageBreaks=False)
 >>> wsprops.outlinePr.summaryBelow = False
 >>> wsprops.outlinePr.applyStyles = True
->>> wsprops.pageSetUpPr.autoPageBreaks = True

@@ -72,6 +72,14 @@ class TestPageSetup:
         assert p.fitToPage is None
         p.fitToPage = 1
         assert p.fitToPage == True
+        
+    
+    def test_autoPageBreaks(self, DummyWorksheet):
+        ws = DummyWorksheet
+        p = ws.page_setup
+        assert p.autoPageBreaks is None
+        p.autoPageBreaks = 1
+        assert p.autoPageBreaks == True
 
 
     def test_write(self, PageSetup):

@@ -693,12 +693,13 @@ def test_write_with_tab_color(worksheet, write_worksheet):
 def test_write_with_fit_to_page(worksheet, write_worksheet):
     ws = worksheet
     ws.page_setup.fitToPage = True
+    ws.page_setup.autoPageBreaks = False
     xml = write_worksheet(ws, None)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <sheetPr>
         <outlinePr summaryRight="1" summaryBelow="1"/>
-        <pageSetUpPr fitToPage="1"/>
+        <pageSetUpPr fitToPage="1" autoPageBreaks="0"/>
       </sheetPr>
       <dimension ref="A1:A1"/>
       <sheetViews>
