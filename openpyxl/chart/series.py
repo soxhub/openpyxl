@@ -12,7 +12,12 @@ from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
 
 from .shapes import ShapeProperties, Shape
-from .chartBase import AxDataSource, NumDataSource, NumRef
+from .chartBase import (
+    AxDataSource,
+    NumDataSource,
+    NumRef,
+    StrRef,
+)
 from .error_bar import ErrorBars
 from .label import DataLabels
 from .marker import DataPoint, PictureOptions, Marker
@@ -44,53 +49,6 @@ def Series(name_ref=None, cat_ref=None, values=None, order=None):
     series.__elements__ = attribute_mapping['bar']
     series.val = NumDataSource(numRef=NumRef(f=values))
     return series
-
-
-class StrVal(Serialisable):
-
-    idx = Integer()
-    v = Typed(expected_type=String(), )
-
-    def __init__(self,
-                 idx=None,
-                 v=None,
-                ):
-        self.idx = idx
-        self.v = v
-
-
-class StrData(Serialisable):
-
-    ptCount = Integer(allow_none=True, nested=True)
-    pt = Typed(expected_type=StrVal, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('ptCount', 'pt')
-
-    def __init__(self,
-                 ptCount=None,
-                 pt=None,
-                 extLst=None,
-                ):
-        self.ptCount = ptCount
-        self.pt = pt
-
-
-class StrRef(Serialisable):
-
-    f = Typed(expected_type=String, )
-    strCache = Typed(expected_type=StrData, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('f', 'strCache')
-
-    def __init__(self,
-                 f=None,
-                 strCache=None,
-                 extLst=None,
-                ):
-        self.f = f
-        self.strCache = strCache
 
 
 class SerTx(Serialisable):
@@ -237,177 +195,123 @@ class BarSer(_SeriesBase):
 
 class BubbleSer(_SeriesBase):
 
-    invertIfNegative = Bool(nested=True, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrorBars, allow_none=True)
-    xVal = Typed(expected_type=AxDataSource, allow_none=True)
-    yVal = Typed(expected_type=NumDataSource, allow_none=True)
-    bubbleSize = Typed(expected_type=NumDataSource, allow_none=True)
-    bubble3D = Bool(nested=True, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['bubble']
+    invertIfNegative = _SeriesBase.invertIfNegative
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    trendline = _SeriesBase.trendline
+    errBars = _SeriesBase.errBars
+    xVal = _SeriesBase.xVal
+    yVal = _SeriesBase.yVal
+    bubbleSize = _SeriesBase.bubbleSize
+    bubble3D = _SeriesBase.bubble3D
+    extLst = _SeriesBase.extLst
 
+    def __init__(self, **kw):
+        super(BubbleSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['bubble']
 
-    def __init__(self,
-                 invertIfNegative=None,
-                 dPt=None,
-                 dLbls=None,
-                 trendline=None,
-                 errBars=None,
-                 xVal=None,
-                 yVal=None,
-                 bubbleSize=None,
-                 bubble3D=None,
-                 extLst=None,
-                ):
-        self.invertIfNegative = invertIfNegative
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.trendline = trendline
-        self.errBars = errBars
-        self.xVal = xVal
-        self.yVal = yVal
-        self.bubbleSize = bubbleSize
-        self.bubble3D = bubble3D
 
 
 class PieSer(_SeriesBase):
 
-    explosion = Integer(allow_none=True, nested=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    cat = Typed(expected_type=AxDataSource, allow_none=True)
-    val = Typed(expected_type=NumDataSource, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['pie']
+    explosion = _SeriesBase.explosion
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    extLst = _SeriesBase.extLst
 
-    def __init__(self,
-                 explosion=None,
-                 dPt=None,
-                 dLbls=None,
-                 cat=None,
-                 val=None,
-                 extLst=None,
-                ):
-        self.explosion = explosion
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.cat = cat
-        self.val = val
+
+    def __init__(self, **kw):
+        super(PieSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['pie']
 
 
 class RadarSer(_SeriesBase):
 
-    marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    cat = Typed(expected_type=AxDataSource, allow_none=True)
-    val = Typed(expected_type=NumDataSource, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['pie']
+    marker = _SeriesBase.marker
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    extLst = _SeriesBase.extLst
 
-    def __init__(self,
-                 marker=None,
-                 dPt=None,
-                 dLbls=None,
-                 cat=None,
-                 val=None,
-                 extLst=None,
-                ):
-        self.marker = marker
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.cat = cat
-        self.val = val
+    def __init__(self, **kw):
+        super(RadarSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['radar']
 
 
-class ScatterSer(Serialisable):
+class ScatterSer(_SeriesBase):
 
-    marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrorBars, allow_none=True)
-    xVal = Typed(expected_type=AxDataSource, allow_none=True)
-    yVal = Typed(expected_type=NumDataSource, allow_none=True)
-    smooth = Bool(nested=True, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['scatter']
+    marker = _SeriesBase.marker
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    trendline = _SeriesBase.trendline
+    errBars = _SeriesBase.errBars
+    xVal = _SeriesBase.xVal
+    yVal = _SeriesBase.yVal
+    smooth = _SeriesBase.smooth
+    extLst = _SeriesBase.extLst
 
-    def __init__(self,
-                 marker=None,
-                 dPt=None,
-                 dLbls=None,
-                 trendline=None,
-                 errBars=None,
-                 xVal=None,
-                 yVal=None,
-                 smooth=None,
-                 extLst=None,
-                ):
-        self.marker = marker
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.trendline = trendline
-        self.errBars = errBars
-        self.xVal = xVal
-        self.yVal = yVal
-        self.smooth = smooth
+    def __init__(self, **kw ):
+        super(ScatterSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['scatter']
 
 
-class SurfaceSer(Serialisable):
+class SurfaceSer(_SeriesBase):
 
-    cat = Typed(expected_type=AxDataSource, allow_none=True)
-    val = Typed(expected_type=NumDataSource, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['surface']
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    extLst = _SeriesBase.extLst
 
-    def __init__(self,
-                 cat=None,
-                 val=None,
-                 extLst=None,
-                ):
-        self.cat = cat
-        self.val = val
+    def __init__(self, **kw ):
+        super(SurfaceSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['surface']
 
 
 class LineSer(Serialisable):
 
-    marker = Typed(expected_type=Marker, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
-    trendline = Typed(expected_type=Trendline, allow_none=True)
-    errBars = Typed(expected_type=ErrorBars, allow_none=True)
-    cat = Typed(expected_type=AxDataSource, allow_none=True)
-    val = Typed(expected_type=NumDataSource, allow_none=True)
-    smooth = Bool(allow_none=True, nested=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
 
-    __elements__ = attribute_mapping['line']
+    marker = _SeriesBase.marker
+    dPt = _SeriesBase.dPt
+    dLbls = _SeriesBase.dLbls
+    trendline = _SeriesBase.trendline
+    errBars = _SeriesBase.errBars
+    cat = _SeriesBase.cat
+    val = _SeriesBase.val
+    smooth = _SeriesBase.smooth
+    extLst = _SeriesBase.extLst
 
-    def __init__(self,
-                 marker=None,
-                 dPt=None,
-                 dLbls=None,
-                 trendline=None,
-                 errBars=None,
-                 cat=None,
-                 val=None,
-                 smooth=None,
-                 extLst=None,
-                ):
-        self.marker = marker
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.trendline = trendline
-        self.errBars = errBars
-        self.cat = cat
-        self.val = val
-        self.smooth = smooth
+
+    def __init__(self, **kw):
+        super(LineSer, self).__init__(**kw)
+        self.__elements__ = attribute_mapping['line']
