@@ -8,7 +8,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def NumRef():
-    from ..chartBase import NumRef
+    from ..data_source import NumRef
     return NumRef
 
 

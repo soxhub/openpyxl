@@ -15,7 +15,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .shapes import ShapeProperties, Shape
-from .chartBase import (
+from .data_source import (
     AxDataSource,
     NumDataSource,
     NumRef,

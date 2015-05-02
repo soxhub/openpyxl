@@ -14,7 +14,7 @@ from openpyxl.descriptors.nested import (
     NestedFloat,
 )
 
-from .chartBase import *
+from .data_source import NumDataSource
 from .shapes import ShapeProperties
 
 
