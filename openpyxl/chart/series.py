@@ -135,10 +135,7 @@ class _SeriesBase(Serialisable):
     #pie chart
     explosion = Integer(allow_none=True, nested=True)
 
-    __elements__ = ('bubble3D', 'bubbleSize', 'cat', 'dLbls', 'dPt', 'errBars',
-                 'explosion', 'idx', 'invertIfNegative', 'marker', 'order',
-                 'pictureOptions', 'shape', 'smooth', 'spPr', 'trendline', 'tx', 'val',
-                 'xVal', 'yVal')
+    __elements__ = ()
 
 
     def __init__(self,
@@ -194,6 +191,11 @@ class _SeriesBase(Serialisable):
 
 class AreaSer(_SeriesBase):
 
+    idx = _SeriesBase.idx
+    order = _SeriesBase.order
+    tx = _SeriesBase.tx
+    spPr = _SeriesBase.spPr
+
     pictureOptions = _SeriesBase.pictureOptions
     dPt = _SeriesBase.dPt
     dLbls = _SeriesBase.dLbls
@@ -203,25 +205,10 @@ class AreaSer(_SeriesBase):
     val = _SeriesBase.val
     extLst = _SeriesBase.extLst
 
-    __elements__ = attribute_mapping['area']
 
-    def __init__(self,
-                 pictureOptions=None,
-                 dPt=None,
-                 dLbls=None,
-                 trendline=None,
-                 errBars=None,
-                 cat=None,
-                 val=None,
-                 extLst=None,
-                ):
-        self.pictureOptions = pictureOptions
-        self.dPt = dPt
-        self.dLbls = dLbls
-        self.trendline = trendline
-        self.errBars = errBars
-        self.cat = cat
-        self.val = val
+    def __init__(self, **kw):
+        self.__elements__ = attribute_mapping['area']
+        super(AreaSer, self).__init__(**kw)
 
 
 class BarSer(_SeriesBase):
