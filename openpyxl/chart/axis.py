@@ -40,7 +40,6 @@ class AxId(Serialisable):
         self.val = val
 
 
-
 class Scaling(Serialisable):
 
     tagname = "scaling"
@@ -143,7 +142,9 @@ class _BaseAxis(Serialisable):
         self.crossesAt = None
 
 
-class DispUnitsLbl(Serialisable):
+class DisplayUnitsLabel(Serialisable):
+
+    tagname = "dispUnitsLbl"
 
     layout = Typed(expected_type=Layout, allow_none=True)
     tx = Typed(expected_type=Tx, allow_none=True)
@@ -164,9 +165,9 @@ class DispUnitsLbl(Serialisable):
         self.txPr = txPr
 
 
-class DispUnits(Serialisable):
+class DisplayUnits(Serialisable):
 
-    dispUnitsLbl = Typed(expected_type=DispUnitsLbl, allow_none=True)
+    dispUnitsLbl = Typed(expected_type=DisplayUnitsLabel, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('dispUnitsLbl')
@@ -202,7 +203,7 @@ class ValAx(_BaseAxis):
     crossBetween = NestedNoneSet(values=(['between', 'midCat']))
     majorUnit = NestedFloat(allow_none=True)
     minorUnit = NestedFloat(allow_none=True)
-    dispUnits = Typed(expected_type=DispUnits, allow_none=True)
+    dispUnits = Typed(expected_type=DisplayUnits, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _BaseAxis.__elements__ + ('crossBetween', 'majorUnit',

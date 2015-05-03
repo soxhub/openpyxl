@@ -242,3 +242,30 @@ class TestSerAx:
         node = fromstring(src)
         axis = SerAx.from_tree(node)
         assert dict(axis) == {}
+
+
+@pytest.fixture
+def DisplayUnitsLabel():
+    from ..axis import DisplayUnitsLabel
+    return DisplayUnitsLabel
+
+
+class TestDispUnitsLbl:
+
+    def test_ctor(self, DisplayUnitsLabel):
+        axis = DisplayUnitsLabel()
+        xml = tostring(axis.to_tree())
+        expected = """
+        <dispUnitsLbl />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DisplayUnitsLabel):
+        src = """
+        <dispUnitsLbl />
+        """
+        node = fromstring(src)
+        axis = DisplayUnitsLabel.from_tree(node)
+        assert axis == DisplayUnitsLabel()
