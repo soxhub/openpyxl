@@ -16,7 +16,7 @@ from openpyxl.descriptors.nested import (
 from ._chart import ChartBase
 from .updown_bars import UpDownBars
 from .descriptors import NestedGapAmount, NestedShapeProperties
-from .axis import AxId
+from .axis import CatAx, ValAx, SerAx
 from .label import DataLabels
 from .series import Series
 
@@ -62,8 +62,10 @@ class LineChart(_LineChartBase):
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
     marker = NestedBool(allow_none=True)
     smooth = NestedBool(allow_none=True)
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
 
     __elements__ = _LineChartBase.__elements__ + ('hiLowLines', 'upDownBars', 'marker', 'smooth', 'axId')
 
@@ -80,9 +82,9 @@ class LineChart(_LineChartBase):
         self.upDownBars = upDownBars
         self.marker = marker
         self.smooth = smooth
-        if axId is None:
-            axId = (AxId(10), AxId(100))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+
         super(LineChart, self).__init__(**kw)
 
 
@@ -101,8 +103,11 @@ class LineChart3D(_LineChartBase):
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
     marker = NestedBool(allow_none=True)
     smooth = NestedBool(allow_none=True)
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+    z_axis = Typed(expected_type=SerAx)
 
     __elements__ = _LineChartBase.__elements__ + ('gapDepth', 'hiLowLines',
                                                   'upDownBars', 'marker', 'smooth', 'axId')
@@ -121,7 +126,7 @@ class LineChart3D(_LineChartBase):
         self.upDownBars = upDownBars
         self.marker = marker
         self.smooth = smooth
-        if axId is None:
-            axId = (AxId(10), AxId(100))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+        self.z_axis = SerAx()
         super(LineChart3D, self).__init__(**kw)

@@ -58,6 +58,7 @@ class TestLineChart3D:
           <grouping val="standard"></grouping>
           <axId val="10"></axId>
           <axId val="100"></axId>
+          <axId val="1000"></axId>
         </line3DChart>
         """
         diff = compare_xml(xml, expected)
@@ -70,6 +71,7 @@ class TestLineChart3D:
           <grouping val="standard"></grouping>
           <axId val="10"></axId>
           <axId val="100"></axId>
+          <axId val="1000"></axId>
         </line3DChart>
         """
         node = fromstring(src)
