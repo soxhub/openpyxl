@@ -13,8 +13,9 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
 )
 
+from .chartBase import UpDownBars
+from .descriptors import NestedGapAmount, NestedShapeProperties
 from .axis import AxId
-from .chartBase import GapAmount, ChartLines, UpDownBars
 from .label import DataLabels
 from .series import Series
 
@@ -27,7 +28,7 @@ class _LineChartBase(Serialisable):
     ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
-    dropLines = Typed(expected_type=ChartLines, allow_none=True)
+    dropLines = NestedShapeProperties()
 
     __elements__ = ('grouping', 'varyColors', 'ser', 'dLbls', 'dropLines')
 
@@ -55,7 +56,7 @@ class LineChart(_LineChartBase):
     dLbls = _LineChartBase.dLbls
     dropLines =_LineChartBase.dropLines
 
-    hiLowLines = Typed(expected_type=ChartLines, allow_none=True)
+    hiLowLines = NestedShapeProperties()
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
     marker = NestedBool(allow_none=True)
     smooth = NestedBool(allow_none=True)
@@ -93,8 +94,8 @@ class LineChart3D(_LineChartBase):
     dLbls = _LineChartBase.dLbls
     dropLines =_LineChartBase.dropLines
 
-    gapDepth = NestedMinMax(min=0, max=500, allow_none=True)
-    hiLowLines = Typed(expected_type=ChartLines, allow_none=True)
+    gapDepth = NestedGapAmount()
+    hiLowLines = NestedShapeProperties()
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
     marker = NestedBool(allow_none=True)
     smooth = NestedBool(allow_none=True)

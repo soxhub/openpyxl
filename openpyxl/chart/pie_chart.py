@@ -21,10 +21,9 @@ from openpyxl.descriptors.nested import (
     NestedSet,
 )
 
-from .chartBase import GapAmount
+from .descriptors import NestedGapAmount, NestedShapeProperties
 from .series import Series
 from .label import DataLabels
-from .bar_chart import ChartLines
 
 
 class _PieChartBase(Serialisable):
@@ -135,12 +134,12 @@ class ProjectedPieChart(_PieChartBase):
     dLbls = _PieChartBase.dLbls
 
     ofPieType = NestedSet(values=(['pie', 'bar']))
-    gapWidth = NestedMinMax(min=0, max=500, allow_none=True)
+    gapWidth = NestedGapAmount()
     splitType = NestedNoneSet(values=(['auto', 'cust', 'percent', 'pos', 'val']))
     splitPos = NestedFloat(allow_none=True)
     custSplit = Typed(expected_type=CustSplit, allow_none=True)
     secondPieSize = NestedMinMax(min=5, max=200, allow_none=True)
-    serLines = Typed(expected_type=ChartLines, allow_none=True)
+    serLines = NestedShapeProperties()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _PieChartBase.__elements__ + ('ofPieType', 'gapWidth',

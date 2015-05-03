@@ -18,7 +18,11 @@ from openpyxl.descriptors.nested import (
     NestedSequence,
 )
 
-
+from .descriptors import (
+    NestedGapAmount,
+    NestedOverlap,
+    NestedShapeProperties
+)
 from .axis import CatAx, ValAx, SerAx, AxId
 from .shapes import ShapeProperties
 from .series import Series
@@ -52,19 +56,6 @@ class _BarChartBase(Serialisable):
         self.dLbls = dLbls
 
 
-class ChartLines(Serialisable):
-
-
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-
-    __elements__ = ('spPr',)
-
-    def __init__(self,
-                 spPr=None,
-                ):
-        self.spPr = spPr
-
-
 class BarChart(_BarChartBase):
 
     tagname = "barChart"
@@ -75,9 +66,9 @@ class BarChart(_BarChartBase):
     ser = _BarChartBase.ser
     dLbls = _BarChartBase.dLbls
 
-    gapWidth = NestedMinMax(min=0, max=500, allow_none=True)
-    overlap = NestedMinMax(min=0, max=150, allow_none=True)
-    serLines = Typed(expected_type=ChartLines, allow_none=True)
+    gapWidth = NestedGapAmount()
+    overlap = NestedOverlap()
+    serLines = NestedShapeProperties()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # chart properties actually used by containing classes
@@ -129,10 +120,10 @@ class BarChart3D(_BarChartBase):
     ser = _BarChartBase.ser
     dLbls = _BarChartBase.dLbls
 
-    gapWidth = NestedMinMax(min=0, max=150, allow_none=True)
-    gapDepth = NestedMinMax(min=0, max=150, allow_none=True)
+    gapWidth = NestedGapAmount()
+    gapDepth = NestedGapAmount()
     shape = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
-    serLines = Typed(expected_type=ChartLines, allow_none=True)
+    serLines = NestedShapeProperties()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     x_axis = Typed(expected_type=CatAx)

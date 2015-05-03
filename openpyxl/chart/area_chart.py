@@ -16,8 +16,9 @@ from openpyxl.descriptors.nested import (
     NestedSet,
     NestedBool,
 )
+
+from .descriptors import NestedShapeProperties
 from .axis import AxId
-from .chartBase import ChartLines
 from .label import DataLabels
 from .series import Series, attribute_mapping
 
@@ -29,7 +30,7 @@ class _AreaChartBase(Serialisable):
     ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
-    dropLines = Typed(expected_type=ChartLines, allow_none=True)
+    dropLines = NestedShapeProperties()
 
     __elements__ = ('grouping', 'varyColors', 'ser', 'dLbls', 'dropLines')
 

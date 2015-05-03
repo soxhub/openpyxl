@@ -2,83 +2,26 @@
 Collection of utility primitives for charts.
 """
 
-from openpyxl.compat import basestring
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import (
-    Bool,
-    Float,
-    Typed,
-    MinMax,
-    Alias,
-    String,
-    Integer,
-    Sequence,
-)
+
 from openpyxl.descriptors.excel import ExtensionList
-from openpyxl.descriptors.nested import (
-    NestedString,
-    NestedText,
-    NestedInteger,
-)
 
 from .shapes import ShapeProperties
-
-
-class GapAmount(Serialisable):
-
-    # needs to serialise to %
-    val = MinMax(min=0, max=500)
-
-    def __init__(self,
-                 val=150,
-                ):
-        self.val = val
-
-
-class Overlap(Serialisable):
-
-    # needs to serialise to %
-
-    val = MinMax(min=0, max=150)
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class ChartLines(Serialisable):
-
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-
-    __elements__ = ('spPr',)
-
-    def __init__(self,
-                 spPr=None,
-                ):
-        self.spPr = spPr
-
-
-class UpDownBar(Serialisable):
-
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-
-    __elements__ = ('spPr',)
-
-    def __init__(self,
-                 spPr=None,
-                ):
-        self.spPr = spPr
+from .descriptors import (
+    NestedGapAmount,
+    NestedOverlap,
+    NestedShapeProperties
+)
 
 
 class UpDownBars(Serialisable):
 
-    gapWidth = Typed(expected_type=GapAmount, allow_none=True)
-    upBars = Typed(expected_type=UpDownBar, allow_none=True)
-    downBars = Typed(expected_type=UpDownBar, allow_none=True)
+    gapWidth = NestedGapAmount()
+    upBars = NestedShapeProperties()
+    downBars = NestedShapeProperties()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('gapWidth', 'upBars', 'downBars', 'extLst')
+    __elements__ = ('gapWidth', 'upBars', 'downBars')
 
     def __init__(self,
                  gapWidth=None,

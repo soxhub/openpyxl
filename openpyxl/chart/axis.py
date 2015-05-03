@@ -25,6 +25,7 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
 )
 
+from .descriptors import NestedShapeProperties
 from .layout import Layout
 from .text import Tx, TextBody
 from .shapes import ShapeProperties
@@ -85,8 +86,8 @@ class _BaseAxis(Serialisable):
     scaling = Typed(expected_type=Scaling)
     delete = NestedBool(allow_none=True)
     axPos = NestedNoneSet(values=(['b', 'l', 'r', 't']))
-    majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
-    minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
+    majorGridlines = NestedShapeProperties()
+    minorGridlines = NestedShapeProperties()
     title = Typed(expected_type=Title, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
