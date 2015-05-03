@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
 )
 
-from .chartBase import UpDownBars
+from .updown_bars import UpDownBars
 from .descriptors import NestedGapAmount, NestedShapeProperties
 from .axis import AxId
 from .label import DataLabels

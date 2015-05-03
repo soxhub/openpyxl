@@ -10,7 +10,7 @@ from openpyxl.descriptors.excel import ExtensionList
 
 from .descriptors import NestedShapeProperties
 from .axis import AxId
-from .chartBase import UpDownBars
+from .updown_bars import UpDownBars
 from .label import DataLabels
 from .series import Series
 

@@ -3,7 +3,7 @@ Collection of utility primitives for charts.
 """
 
 from openpyxl.descriptors.serialisable import Serialisable
-
+from openpyxl.descriptors import Typed
 from openpyxl.descriptors.excel import ExtensionList
 
 from .shapes import ShapeProperties

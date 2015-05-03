@@ -29,7 +29,6 @@ from .descriptors import NestedShapeProperties
 from .layout import Layout
 from .text import Tx, TextBody
 from .shapes import ShapeProperties
-from .chartBase import ChartLines
 from .title import Title
 
 

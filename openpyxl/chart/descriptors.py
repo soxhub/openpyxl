@@ -6,6 +6,9 @@ from openpyxl.descriptors.nested import (
     NestedMinMax
     )
 
+from .shapes import ShapeProperties
+
+
 """
 Utility descriptors for the chart module.
 For convenience but also clarity.
