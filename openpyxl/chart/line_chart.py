@@ -23,7 +23,6 @@ from .series import Series
 
 class _LineChartBase(ChartBase):
 
-
     grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
     varyColors = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
@@ -115,7 +114,7 @@ class LineChart3D(_LineChartBase):
                  marker=None,
                  smooth=None,
                  axId=None,
-                 extLst=None,
+                 **kw
                 ):
         self.gapDepth = gapDepth
         self.hiLowLines = hiLowLines
@@ -125,4 +124,4 @@ class LineChart3D(_LineChartBase):
         if axId is None:
             axId = (AxId(10), AxId(100))
         self.axId = axId
-        super(LineChart, self).__init__(**kw)
+        super(LineChart3D, self).__init__(**kw)
