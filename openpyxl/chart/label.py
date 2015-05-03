@@ -6,6 +6,8 @@ from openpyxl.descriptors import (
     Bool,
     Set,
     Float,
+    Sequence,
+    Alias
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
@@ -32,14 +34,18 @@ class DataLabel(Serialisable):
 
 class DataLabels(Serialisable):
 
-    dLbl = Typed(expected_type=DataLabel, allow_none=True)
+    dLbl = Sequence(expected_type=DataLabel, allow_none=True)
+    dataLabel = Alias('dLbl')
     delete = NestedBool(allow_none=True) # ignore other properties if set
 
     numFmt = NestedString(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias('spPr')
     txPr = Typed(expected_type=TextBody, allow_none=True)
+    textProperties = Alias('txPr')
     dLblPos = NestedNoneSet(values=['bestFit', 'b', 'ctr', 'inBase', 'inEnd',
                                 'l', 'outEnd', 'r', 't'])
+    position = Alias('dLblPos')
     showLegendKey = NestedBool(allow_none=True)
     showVal = NestedBool(allow_none=True)
     showCatName = NestedBool(allow_none=True)
