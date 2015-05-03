@@ -269,3 +269,30 @@ class TestDispUnitsLbl:
         node = fromstring(src)
         axis = DisplayUnitsLabel.from_tree(node)
         assert axis == DisplayUnitsLabel()
+
+
+@pytest.fixture
+def DisplayUnits():
+    from ..axis import DisplayUnits
+    return DisplayUnits
+
+
+class TestDisplayUnits:
+
+    def test_ctor(self, DisplayUnits):
+        axis = DisplayUnits()
+        xml = tostring(axis.to_tree())
+        expected = """
+        <dispUnits />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DisplayUnits):
+        src = """
+        <dispUnits />
+        """
+        node = fromstring(src)
+        axis = DisplayUnits.from_tree(node)
+        assert axis == DisplayUnits()
