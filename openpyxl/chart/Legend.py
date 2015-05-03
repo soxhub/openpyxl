@@ -7,7 +7,8 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
     NestedBool,
-    NestedSet
+    NestedSet,
+    NestedInteger
 )
 
 from .layout import Layout
@@ -17,16 +18,24 @@ from .text import TextBody
 
 class LegendEntry(Serialisable):
 
-    idx = Integer()
+    tagname = "legendEntry"
+
+    idx = NestedInteger()
+    delete = NestedBool()
+    txPr = Typed(expected_type=TextBody, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('idx',)
 
     def __init__(self,
-                 idx=None,
+                 idx=0,
+                 delete=False,
+                 txPr=None,
                  extLst=None,
                 ):
         self.idx = idx
+        self.delete = delete
+        self.txPr = txPr
 
 
 class Legend(Serialisable):
