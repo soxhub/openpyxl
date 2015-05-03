@@ -14,29 +14,14 @@ from openpyxl.descriptors.nested import (
     NestedNoneSet,
     NestedBool,
     NestedString,
+    NestedInteger,
     )
 
 from .shapes import ShapeProperties
 from .text import TextBody
 
 
-class DataLabel(Serialisable):
-
-    idx = Integer()
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    def __init__(self,
-                 idx=None,
-                 extLst=None,
-                ):
-        self.idx = idx
-
-
-class DataLabels(Serialisable):
-
-    dLbl = Sequence(expected_type=DataLabel, allow_none=True)
-    dataLabel = Alias('dLbl')
-    delete = NestedBool(allow_none=True) # ignore other properties if set
+class _DataLabelBase(Serialisable):
 
     numFmt = NestedString(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
@@ -44,7 +29,7 @@ class DataLabels(Serialisable):
     txPr = Typed(expected_type=TextBody, allow_none=True)
     textProperties = Alias('txPr')
     dLblPos = NestedNoneSet(values=['bestFit', 'b', 'ctr', 'inBase', 'inEnd',
-                                'l', 'outEnd', 'r', 't'])
+                                    'l', 'outEnd', 'r', 't'])
     position = Alias('dLblPos')
     showLegendKey = NestedBool(allow_none=True)
     showVal = NestedBool(allow_none=True)
@@ -55,12 +40,11 @@ class DataLabels(Serialisable):
     separator = NestedString(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ("dLbl", "delete", "numFmt", "spPr", "txPr", "dLblPos",
+    __elements__ = ("delete", "numFmt", "spPr", "txPr", "dLblPos",
                     "showLegendKey", "showVal", "showCatName", "showPercent",
                     "showBubbleSize", "separator")
 
     def __init__(self,
-                 dLbl=None,
                  delete=None,
                  numFmt=None,
                  spPr=None,
@@ -74,11 +58,8 @@ class DataLabels(Serialisable):
                  showBubbleSize=None,
                  separator=None,
                  extLst=None,
-                ):
-        self.dLbl = dLbl
+                 ):
         self.delete = delete
-        if delete is not None:
-            return
         self.numFmt = numFmt
         self.spPr = spPr
         self.txPr = txPr
@@ -90,3 +71,55 @@ class DataLabels(Serialisable):
         self.showPercent = showPercent
         self.showBubbleSize = showBubbleSize
         self.separator = separator
+
+
+class DataLabel(_DataLabelBase):
+
+    tagname = "dLbl"
+
+    idx = NestedInteger()
+
+    numFmt = _DataLabelBase.numFmt
+    spPr = _DataLabelBase.spPr
+    txPr = _DataLabelBase.txPr
+    dLblPos = _DataLabelBase.dLblPos
+    showLegendKey = _DataLabelBase.showLegendKey
+    showVal = _DataLabelBase.showVal
+    showCatName = _DataLabelBase.showCatName
+    showSerName = _DataLabelBase.showSerName
+    showPercent = _DataLabelBase.showPercent
+    showBubbleSize = _DataLabelBase.showBubbleSize
+    separator = _DataLabelBase.separator
+    extLst = _DataLabelBase.extLst
+
+    __elements__ = ("idx",)  + _DataLabelBase.__elements__
+
+    def __init__(self, idx=0, **kw ):
+        self.idx = idx
+        super(DataLabel, self).__init__(**kw)
+
+
+class DataLabels(_DataLabelBase):
+
+    tagname = "dLbls"
+
+    dLbl = Sequence(expected_type=DataLabel, allow_none=True)
+
+    numFmt = _DataLabelBase.numFmt
+    spPr = _DataLabelBase.spPr
+    txPr = _DataLabelBase.txPr
+    dLblPos = _DataLabelBase.dLblPos
+    showLegendKey = _DataLabelBase.showLegendKey
+    showVal = _DataLabelBase.showVal
+    showCatName = _DataLabelBase.showCatName
+    showSerName = _DataLabelBase.showSerName
+    showPercent = _DataLabelBase.showPercent
+    showBubbleSize = _DataLabelBase.showBubbleSize
+    separator = _DataLabelBase.separator
+    extLst = _DataLabelBase.extLst
+
+    __elements__ = ("dLbl",) + _DataLabelBase.__elements__
+
+    def __init__(self, dLbl=(), **kw ):
+        self.dLbl = dLbl
+        super(DataLabels, self).__init__(**kw)

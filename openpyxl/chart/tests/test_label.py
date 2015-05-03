@@ -14,6 +14,15 @@ def DataLabels():
 
 class TestDataLabels:
 
+    def test_ctor(self, DataLabels):
+        labels = DataLabels()
+        xml = tostring(labels.to_tree())
+        expected = """
+        <dLbls />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
 
     def test_from_xml(self, DataLabels):
         src = """
@@ -35,3 +44,34 @@ class TestDataLabels:
         assert dl.showSerName is False
         assert dl.showPercent is False
         assert dl.showBubbleSize is False
+
+
+@pytest.fixture
+def DataLabel():
+    from ..label import DataLabel
+    return DataLabel
+
+
+class TestDataLabel:
+
+    def test_ctor(self, DataLabel):
+        label = DataLabel()
+        xml = tostring(label.to_tree())
+        expected = """
+        <dLbl>
+           <idx val="0"></idx>
+        </dLbl>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DataLabel):
+        src = """
+        <dLbl>
+           <idx val="6"></idx>
+        </dLbl>
+        """
+        node = fromstring(src)
+        label = DataLabel.from_tree(node)
+        assert label == DataLabel(idx=6)
