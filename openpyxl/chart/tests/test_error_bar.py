@@ -39,7 +39,4 @@ class TestErrorBar:
         """
         node = fromstring(src)
         bar = ErrorBars.from_tree(node)
-        assert dict(bar) == {}
-        assert bar.direction == "x"
-        assert bar.size == "fixedVal"
-        assert bar.style == "both"
+        assert bar == ErrorBars(noEndCap=True, errDir='x', val=10)
