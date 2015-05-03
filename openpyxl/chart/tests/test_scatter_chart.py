@@ -19,7 +19,7 @@ class TestLineChart:
         expected = """
         <scatterChart>
           <axId val="10"></axId>
-          <axId val="100"></axId>
+          <axId val="20"></axId>
         </scatterChart>
         """
         diff = compare_xml(xml, expected)
@@ -30,7 +30,7 @@ class TestLineChart:
         src = """
         <scatterChart>
           <axId val="10"></axId>
-          <axId val="100"></axId>
+          <axId val="20"></axId>
         </scatterChart>
         """
         node = fromstring(src)

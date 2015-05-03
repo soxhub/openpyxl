@@ -17,7 +17,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .axis import AxId
+from .axis import CatAx, ValAx, SerAx
 from .shapes import ShapeProperties
 from .series import Series
 
@@ -77,15 +77,18 @@ class SurfaceChart(_SurfaceChartBase):
     ser = _SurfaceChartBase.ser
     bandFmts = _SurfaceChartBase.bandFmts
 
-    axId = Sequence(expected_type=AxId) # 2 or 3
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+    z_axis = Typed(expected_type=SerAx, allow_none=True)
 
     __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
 
     def __init__(self, axId=None, extLst=None, **kw ):
-        if axId is None:
-            axId = [AxId(10), AxId(100)]
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+        self.z_axis = None
         super(SurfaceChart, self).__init__(**kw)
 
 
@@ -97,13 +100,16 @@ class SurfaceChart3D(_SurfaceChartBase):
     ser = _SurfaceChartBase.ser
     bandFmts = _SurfaceChartBase.bandFmts
 
-    axId = Sequence(expected_type=AxId) # must be 3 (cat, val, series)
     extLst = SurfaceChart.extLst
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+    z_axis = Typed(expected_type=SerAx)
 
     __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
 
     def __init__(self, axId=None, **kw):
-        if axId is None:
-            axId = [AxId(10), AxId(100), AxId(1000)]
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+        self.z_axis = SerAx()
         super(SurfaceChart3D, self).__init__(**kw)

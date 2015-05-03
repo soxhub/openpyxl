@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .axis import AxId
+from .axis import ValAx
 from .series import Series
 from .label import DataLabels
 
@@ -27,8 +27,10 @@ class ScatterChart(ChartBase):
     ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=ValAx)
+    y_axis = Typed(expected_type=ValAx)
 
     _series_type = "scatter"
 
@@ -46,6 +48,5 @@ class ScatterChart(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
-        if axId is None:
-            axId = [AxId(10), AxId(100)]
-        self.axId = axId
+        self.x_axis = ValAx(axId=10, crossAx=20)
+        self.y_axis = ValAx(axId=20, crossAx=10)
