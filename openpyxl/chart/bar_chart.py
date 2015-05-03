@@ -24,7 +24,7 @@ from .descriptors import (
     NestedShapeProperties
 )
 from ._chart import ChartBase
-from .axis import CatAx, ValAx, SerAx, AxId
+from .axis import CatAx, ValAx, SerAx
 from .shapes import ShapeProperties
 from .series import Series
 from .legend import Legend

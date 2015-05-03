@@ -1,11 +1,18 @@
 from __future__ import absolute_import
 
-from openpyxl.descriptors import Typed
+from openpyxl.descriptors import Typed, Integer
 from openpyxl.descriptors.serialisable import Serialisable
 
-from .axis import AxId
 from .legend import Legend
 from .series import attribute_mapping
+
+
+class AxId(Serialisable):
+
+    val = Integer()
+
+    def __init__(self, val):
+        self.val = val
 
 
 class ChartBase(Serialisable):

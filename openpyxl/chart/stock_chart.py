@@ -10,7 +10,7 @@ from openpyxl.descriptors.excel import ExtensionList
 
 from ._chart import ChartBase
 from .descriptors import NestedShapeProperties
-from .axis import AxId
+from .axis import CatAx, ValAx
 from .updown_bars import UpDownBars
 from .label import DataLabels
 from .series import Series
@@ -25,8 +25,10 @@ class StockChart(ChartBase):
     dropLines = NestedShapeProperties()
     hiLowLines = NestedShapeProperties()
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
-    axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
 
     _series_type = "line"
 
@@ -47,6 +49,5 @@ class StockChart(ChartBase):
         self.dropLines = dropLines
         self.hiLowLines = hiLowLines
         self.upDownBars = upDownBars
-        if axId is None:
-            axId = (AxId(10), AxId(100))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
