@@ -133,7 +133,6 @@ def BarChart3D():
 
 class TestBarChart3D:
 
-
     def test_ctor(self, BarChart3D):
         bc = BarChart3D()
         xml = tostring(bc.to_tree())
