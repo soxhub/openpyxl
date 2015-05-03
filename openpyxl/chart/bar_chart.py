@@ -98,14 +98,6 @@ class BarChart(_BarChartBase):
         super(BarChart, self).__init__(**kw)
 
 
-    @property
-    def axId(self):
-        return (
-            AxId(self.x_axis.axId),
-            AxId(self.y_axis.axId)
-            )
-
-
 class BarChart3D(_BarChartBase):
 
     tagname = "bar3DChart"
@@ -146,10 +138,3 @@ class BarChart3D(_BarChartBase):
         self.z_axis = SerAx()
 
         super(BarChart3D, self).__init__(**kw)
-
-    @property
-    def axId(self):
-        ids = [AxId(self.x_axis.axId), AxId(self.y_axis.axId)]
-        if self.z_axis is not None:
-            ids.append(AxId(self.z_axis.axId))
-        return tuple(ids)

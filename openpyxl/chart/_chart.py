@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 
+from .axis import AxId
 from .series import attribute_mapping
 
 class ChartBase(Serialisable):
@@ -25,3 +26,12 @@ class ChartBase(Serialisable):
         container = ChartContainer(plotArea=plot, legend=self.legend)
         cs = ChartSpace(chart=container)
         return cs.to_tree()
+
+
+    @property
+    def axId(self):
+        x = getattr(self, "x_axis", None)
+        y = getattr(self, "y_axis", None)
+        z = getattr(self, "z_axis", None)
+        ids = (AxId(axis.axId) for axis in (x, y, z) if axis)
+        return tuple(ids)

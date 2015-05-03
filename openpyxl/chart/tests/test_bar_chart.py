@@ -14,7 +14,6 @@ def BarChart():
 
 class TestBarChart:
 
-
     def test_ctor(self, BarChart):
         bc = BarChart()
         xml = tostring(bc.to_tree())
