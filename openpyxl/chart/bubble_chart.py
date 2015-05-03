@@ -17,11 +17,13 @@ from openpyxl.descriptors.nested import (
     NestedBool,
 )
 
+from ._chart import ChartBase
 from .axis import AxId
 from .series import Series
 from .label import DataLabels
 
-class BubbleChart(Serialisable):
+
+class BubbleChart(ChartBase):
 
     tagname = "bubbleChart"
 
@@ -35,6 +37,8 @@ class BubbleChart(Serialisable):
     sizeRepresents = NestedNoneSet(values=(['area', 'w']))
     axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    _series_type = "bubble"
 
     __elements__ = ('varyColors', 'ser', 'dLbls', 'bubble3D', 'bubbleScale',
                     'showNegBubbles', 'sizeRepresents', 'axId')

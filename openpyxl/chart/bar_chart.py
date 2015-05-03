@@ -23,6 +23,7 @@ from .descriptors import (
     NestedOverlap,
     NestedShapeProperties
 )
+from ._chart import ChartBase
 from .axis import CatAx, ValAx, SerAx, AxId
 from .shapes import ShapeProperties
 from .series import Series
@@ -30,7 +31,7 @@ from .legend import Legend
 from .label import DataLabels
 
 
-class _BarChartBase(Serialisable):
+class _BarChartBase(ChartBase):
 
     barDir = NestedSet(values=(['bar', 'col']))
     grouping = NestedSet(values=(['percentStacked', 'clustered', 'standard',
@@ -76,6 +77,8 @@ class BarChart(_BarChartBase):
     y_axis = Typed(expected_type=ValAx)
     legend = Typed(expected_type=Legend, allow_none=True)
 
+    _series_type = "bar"
+
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
 
     def __init__(self,
@@ -101,13 +104,6 @@ class BarChart(_BarChartBase):
             AxId(self.x_axis.axId),
             AxId(self.y_axis.axId)
             )
-
-    def write(self):
-        from .chartspace import ChartSpace, ChartContainer, PlotArea
-        plot = PlotArea(barChart=self, catAx=self.x_axis, valAx=self.y_axis)
-        container = ChartContainer(plotArea=plot, legend=self.legend)
-        cs = ChartSpace(chart=container)
-        return cs.to_tree()
 
 
 class BarChart3D(_BarChartBase):

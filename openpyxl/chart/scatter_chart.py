@@ -12,12 +12,13 @@ from openpyxl.descriptors.nested import (
     NestedBool,
 )
 
+from ._chart import ChartBase
 from .axis import AxId
 from .series import Series
 from .label import DataLabels
 
 
-class ScatterChart(Serialisable):
+class ScatterChart(ChartBase):
 
     tagname = "scatterChart"
 
@@ -28,6 +29,8 @@ class ScatterChart(Serialisable):
     dataLabels = Alias("dLbls")
     axId = Sequence(expected_type=AxId)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    _series_type = "scatter"
 
     __elements__ = ('scatterStyle', 'varyColors', 'ser', 'dLbls', 'axId',)
 

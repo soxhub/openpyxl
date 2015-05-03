@@ -50,7 +50,7 @@ class TestBarChart:
 
     def test_write(self, BarChart):
         chart = BarChart()
-        xml = tostring(chart.write())
+        xml = tostring(chart._write())
         expected = """
         <chartBase>
           <chart>

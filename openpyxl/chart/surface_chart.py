@@ -16,6 +16,7 @@ from openpyxl.descriptors.nested import (
     NestedBool,
 )
 
+from ._chart import ChartBase
 from .axis import AxId
 from .shapes import ShapeProperties
 from .series import Series
@@ -48,11 +49,13 @@ class BandFmts(Serialisable):
         self.bandFmt = bandFmt
 
 
-class _SurfaceChartBase(Serialisable):
+class _SurfaceChartBase(ChartBase):
 
     wireframe = NestedBool(allow_none=True)
     ser = Typed(expected_type=Series, allow_none=True)
     bandFmts = Typed(expected_type=BandFmts, allow_none=True)
+
+    _series_type = "surface"
 
     __elements__ = ('wireframe', 'ser', 'bandFmts')
 

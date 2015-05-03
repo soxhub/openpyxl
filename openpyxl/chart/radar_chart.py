@@ -11,12 +11,13 @@ from openpyxl.descriptors.nested import (
     NestedSet
 )
 
+from ._chart import ChartBase
 from .axis import AxId
 from .series import Series
 from .label import DataLabels
 
 
-class RadarChart(Serialisable):
+class RadarChart(ChartBase):
 
     tagname = "radarChart"
 
@@ -28,6 +29,8 @@ class RadarChart(Serialisable):
     dataLabels = Alias("dLbls")
     axId = Sequence(expected_type=AxId, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    _series_type = "radar"
 
     __elements__ = ('radarStyle', 'varyColors', 'ser', 'dLbls', 'axId')
 

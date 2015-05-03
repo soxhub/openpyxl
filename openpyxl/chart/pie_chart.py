@@ -21,17 +21,20 @@ from openpyxl.descriptors.nested import (
     NestedSet,
 )
 
+from ._chart import ChartBase
 from .descriptors import NestedGapAmount, NestedShapeProperties
 from .series import Series
 from .label import DataLabels
 
 
-class _PieChartBase(Serialisable):
+class _PieChartBase(ChartBase):
 
     varyColors = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
+
+    _series_type = "pie"
 
     __elements__ = ('varyColors', 'ser', 'dLbls')
 
