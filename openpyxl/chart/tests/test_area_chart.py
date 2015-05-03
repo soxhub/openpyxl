@@ -40,9 +40,7 @@ class TestAreaChart:
         """
         node = fromstring(src)
         chart = AreaChart.from_tree(node)
-        assert dict(chart) == {}
-        assert chart.grouping == "percentStacked"
-        assert chart.varyColors is True
+        assert chart == AreaChart(grouping="percentStacked", varyColors=True)
 
 
 @pytest.fixture
@@ -78,4 +76,4 @@ class TestAreaChart3D:
         """
         node = fromstring(src)
         chart = AreaChart3D.from_tree(node)
-        assert dict(chart) == {}
+        assert chart == AreaChart3D(gapDepth=150)
