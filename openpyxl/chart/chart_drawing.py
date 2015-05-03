@@ -11,7 +11,7 @@ from openpyxl.descriptors import (
 
 from openpyxl.descriptors.excel import Coordinate
 
-from ._chart import RelId
+from .chartspace import RelId
 from .shapes import Shape
 from .graphic import (
     GroupShape,

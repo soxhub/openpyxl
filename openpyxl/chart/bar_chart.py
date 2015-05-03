@@ -103,7 +103,7 @@ class BarChart(_BarChartBase):
             )
 
     def write(self):
-        from ._chart import ChartSpace, ChartContainer, PlotArea
+        from .chartspace import ChartSpace, ChartContainer, PlotArea
         plot = PlotArea(barChart=self, catAx=self.x_axis, valAx=self.y_axis)
         container = ChartContainer(plotArea=plot, legend=self.legend)
         cs = ChartSpace(chart=container)

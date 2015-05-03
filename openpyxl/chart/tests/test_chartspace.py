@@ -7,7 +7,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def ChartContainer():
-    from .._chart import ChartContainer
+    from ..chartspace import ChartContainer
     return ChartContainer
 
 
@@ -38,7 +38,7 @@ class TestChartContainer:
 
 @pytest.fixture
 def PlotArea():
-    from .._chart import PlotArea
+    from ..chartspace import PlotArea
     return PlotArea
 
 
@@ -65,7 +65,7 @@ class TestPlotArea:
 
 @pytest.fixture
 def DataTable():
-    from .._chart import DataTable
+    from ..chartspace import DataTable
     return DataTable
 
 
