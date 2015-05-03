@@ -18,8 +18,8 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .descriptors import NestedShapeProperties
-from .axis import AxId
+from .descriptors import NestedShapeProperties, NestedGapAmount
+from .axis import CatAx, ValAx, SerAx
 from .label import DataLabels
 from .series import Series
 
@@ -61,7 +61,10 @@ class AreaChart(_AreaChartBase):
     dLbls = _AreaChartBase.dLbls
     dropLines = _AreaChartBase.dropLines
 
-    axId = Sequence(expected_type=AxId)
+    # chart properties actually used by containing classes
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _AreaChartBase.__elements__ + ('axId',)
@@ -71,9 +74,8 @@ class AreaChart(_AreaChartBase):
                  extLst=None,
                  **kw
                 ):
-        if axId is None:
-            axId = (AxId(10), AxId(100))
-        self.axId = axId
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
         super(AreaChart, self).__init__(**kw)
 
 
@@ -87,10 +89,17 @@ class AreaChart3D(AreaChart):
     dLbls = _AreaChartBase.dLbls
     dropLines = _AreaChartBase.dropLines
 
-    gapDepth = NestedMinMax(min=0, max=500, allow_none=True)
+    gapDepth = NestedGapAmount()
+
+    x_axis = Typed(expected_type=CatAx)
+    y_axis = Typed(expected_type=ValAx)
+    z_axis = Typed(expected_type=SerAx, allow_none=True)
 
     __elements__ = AreaChart.__elements__ + ('gapDepth', )
 
     def __init__(self, gapDepth=None, **kw):
         self.gapDepth = gapDepth
         super(AreaChart3D, self).__init__(**kw)
+        self.x_axis = CatAx()
+        self.y_axis = ValAx()
+        self.z_axis = SerAx()

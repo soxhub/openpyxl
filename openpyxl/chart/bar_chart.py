@@ -75,7 +75,6 @@ class BarChart(_BarChartBase):
     # chart properties actually used by containing classes
     x_axis = Typed(expected_type=CatAx)
     y_axis = Typed(expected_type=ValAx)
-    legend = Typed(expected_type=Legend, allow_none=True)
 
     _series_type = "bar"
 
