@@ -125,7 +125,8 @@ class _BaseAxis(Serialisable):
                 ):
         self.axId = axId
         if scaling is None:
-            self.scaling = Scaling()
+            scaling = Scaling()
+        self.scaling = Scaling()
         self.delete = delete
         self.axPos = axPos
         self.majorGridlines = majorGridlines
@@ -304,7 +305,7 @@ class DateAx(_BaseAxis):
     crossesAt = _BaseAxis.crossesAt
 
     auto = NestedBool(allow_none=True)
-    lblOffset = Percentage(allow_none=True, nested=True)
+    lblOffset = NestedInteger(allow_none=True)
     baseTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))
     majorUnit = NestedFloat(allow_none=True)
     majorTimeUnit = NestedNoneSet(values=(['days', 'months', 'years']))

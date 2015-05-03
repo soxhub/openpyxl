@@ -179,6 +179,8 @@ class TestDateAx:
 
 
     def test_from_xml(self, DateAx):
+        from openpyxl.chart.axis import NumFmt
+
         src = """
         <dateAx>
           <axId val="20"/>
@@ -187,7 +189,7 @@ class TestDateAx:
           </scaling>
           <delete val="0"/>
           <axPos val="b"/>
-          <numFmt formatCode="d\-mmm" sourceLinked="1"/>
+          <numFmt formatCode="d-mmm" sourceLinked="1"/>
           <majorTickMark val="out"/>
           <minorTickMark val="none"/>
           <tickLblPos val="nextTo"/>
@@ -200,9 +202,10 @@ class TestDateAx:
         """
         node = fromstring(src)
         axis = DateAx.from_tree(node)
-        assert dict(axis) == {}
-        assert axis.axId == 20
-        assert axis.crossAx == 10
+        assert axis == DateAx(axId=20, crossAx=10, axPos="b",
+                              scaling="minMax", delete=False, numFmt=NumFmt("d-mmm", True),
+                              majorTickMark="out", crosses="autoZero", tickLblPos="nextTo",
+                              auto=True, lblOffset=100, baseTimeUnit="months")
 
 
 @pytest.fixture
@@ -241,7 +244,7 @@ class TestSerAx:
         """
         node = fromstring(src)
         axis = SerAx.from_tree(node)
-        assert dict(axis) == {}
+        assert axis == SerAx()
 
 
 @pytest.fixture
