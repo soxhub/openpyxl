@@ -30,7 +30,7 @@ class BandFmt(Serialisable):
     __elements__ = ('idx', 'spPr')
 
     def __init__(self,
-                 idx=None,
+                 idx=0,
                  spPr=None,
                 ):
         self.idx = idx
@@ -39,12 +39,12 @@ class BandFmt(Serialisable):
 
 class BandFmts(Serialisable):
 
-    bandFmt = Typed(expected_type=BandFmt, allow_none=True)
+    bandFmt = Sequence(expected_type=BandFmt, allow_none=True)
 
     __elements__ = ('bandFmt',)
 
     def __init__(self,
-                 bandFmt=None,
+                 bandFmt=(),
                 ):
         self.bandFmt = bandFmt
 
@@ -52,7 +52,7 @@ class BandFmts(Serialisable):
 class _SurfaceChartBase(ChartBase):
 
     wireframe = NestedBool(allow_none=True)
-    ser = Typed(expected_type=Series, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     bandFmts = Typed(expected_type=BandFmts, allow_none=True)
 
     _series_type = "surface"
@@ -61,7 +61,7 @@ class _SurfaceChartBase(ChartBase):
 
     def __init__(self,
                  wireframe=None,
-                 ser=None,
+                 ser=(),
                  bandFmts=None,
                 ):
         self.wireframe = wireframe
@@ -82,18 +82,14 @@ class SurfaceChart(_SurfaceChartBase):
 
     __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
 
-    def __init__(self,
-                 axId=None,
-                 extLst=None,
-                 **kw
-                ):
+    def __init__(self, axId=None, extLst=None, **kw ):
         if axId is None:
             axId = [AxId(10), AxId(100)]
         self.axId = axId
         super(SurfaceChart, self).__init__(**kw)
 
 
-class SurfaceChart3D(SurfaceChart):
+class SurfaceChart3D(_SurfaceChartBase):
 
     tagname = "surface3DChart"
 
@@ -101,11 +97,12 @@ class SurfaceChart3D(SurfaceChart):
     ser = _SurfaceChartBase.ser
     bandFmts = _SurfaceChartBase.bandFmts
 
+    axId = Sequence(expected_type=AxId) # must be 3 (cat, val, series)
     extLst = SurfaceChart.extLst
 
-    axId = Sequence(expected_type=AxId) # must be 3 (cat, val, series)
+    __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
 
-    def __init__(self, axId, **kw):
+    def __init__(self, axId=None, **kw):
         if axId is None:
             axId = [AxId(10), AxId(100), AxId(1000)]
         self.axId = axId
