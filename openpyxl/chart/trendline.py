@@ -2,18 +2,24 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
     String,
-    Integer,
-    Bool,
-    Set,
-    Float,
+    Alias
 )
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import (
+    NestedBool,
+    NestedInteger,
+    NestedFloat,
+    NestedSet
+)
 
 from .shapes import ShapeProperties
 from .text import TextBody, NumFmt, Tx
 from .layout import Layout
 
-class TrendlineLbl(Serialisable):
+
+class TrendlineLabel(Serialisable):
+
+    tagname = "trendlineLbl"
 
     layout = Typed(expected_type=Layout, allow_none=True)
     tx = Typed(expected_type=Tx, allow_none=True)
@@ -21,6 +27,8 @@ class TrendlineLbl(Serialisable):
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     txPr = Typed(expected_type=TextBody, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('layout', 'tx', 'numFmt', 'spPr', 'txPr')
 
     def __init__(self,
                  layout=None,
@@ -35,59 +43,33 @@ class TrendlineLbl(Serialisable):
         self.numFmt = numFmt
         self.spPr = spPr
         self.txPr = txPr
-        self.extLst = extLst
-
-
-
-class Period(Serialisable):
-
-    val = Integer()
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class Order(Serialisable):
-
-    val = Integer()
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class TrendlineType(Serialisable):
-
-    val = Set(values=(['exp', 'linear', 'log', 'movingAvg', 'poly', 'power']))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
 
 
 class Trendline(Serialisable):
 
+    tagname = "trendline"
+
     name = String(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    trendlineType = Typed(expected_type=TrendlineType, )
-    order = Typed(expected_type=Order, allow_none=True)
-    period = Typed(expected_type=Period, allow_none=True)
-    forward = Float(allow_none=True, nested=True)
-    backward = Float(allow_none=True, nested=True)
-    intercept = Float(allow_none=True, nested=True)
-    dispRSqr = Bool(allow_none=True, nested=True)
-    dispEq = Bool(nested=True)
-    trendlineLbl = Typed(expected_type=TrendlineLbl, allow_none=True)
+    shapeProperties = Alias('spPr')
+    trendlineType = NestedSet(values=(['exp', 'linear', 'log', 'movingAvg', 'poly', 'power']))
+    order = NestedInteger(allow_none=True)
+    period = NestedInteger(allow_none=True)
+    forward = NestedFloat(allow_none=True)
+    backward = NestedFloat(allow_none=True)
+    intercept = NestedFloat(allow_none=True)
+    dispRSqr = NestedBool(allow_none=True)
+    dispEq = NestedBool(allow_none=True)
+    trendlineLbl = Typed(expected_type=TrendlineLabel, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('name', 'spPr', 'trendlineType', 'order', 'period',
+                    'forward', 'backward', 'intercept', 'dispRSqr', 'dispEq', 'trendlineLbl')
 
     def __init__(self,
                  name=None,
                  spPr=None,
-                 trendlineType=None,
+                 trendlineType='linear',
                  order=None,
                  period=None,
                  forward=None,
@@ -109,5 +91,3 @@ class Trendline(Serialisable):
         self.dispRSqr = dispRSqr
         self.dispEq = dispEq
         self.trendlineLbl = trendlineLbl
-        self.extLst = extLst
-
