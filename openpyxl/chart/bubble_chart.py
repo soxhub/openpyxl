@@ -21,27 +21,6 @@ from .axis import AxId
 from .series import Series
 from .label import DataLabels
 
-
-class SizeRepresents(Serialisable):
-
-    val = Set(values=(['area', 'w']))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class BubbleScale(Serialisable):
-
-    val = MinMax(min=0, max=300)
-
-    def __init__(self,
-                 val=100,
-                ):
-        self.val = val
-
-
 class BubbleChart(Serialisable):
 
     tagname = "bubbleChart"
