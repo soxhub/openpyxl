@@ -21,9 +21,18 @@ class TestStockChart:
         xml = tostring(chart.to_tree())
         expected = """
         <stockChart>
-          <ser></ser>
-          <ser></ser>
-          <ser></ser>
+          <ser>
+            <idx val="0"></idx>
+            <order val="0"></order>
+          </ser>
+          <ser>
+            <idx val="1"></idx>
+            <order val="1"></order>
+          </ser>
+          <ser>
+            <idx val="2"></idx>
+            <order val="2"></order>
+          </ser>
           <axId val="10"></axId>
           <axId val="100"></axId>
         </stockChart>
@@ -33,17 +42,25 @@ class TestStockChart:
 
 
     def test_from_xml(self, StockChart):
+        from openpyxl.chart.series import Series
         src = """
         <stockChart>
-          <ser></ser>
-          <ser></ser>
-          <ser></ser>
-          <dLbls></dLbls>
-          <hiLowLines/>
-          <axId val="2109232808"/>
-          <axId val="2108950264"/>
+          <ser>
+            <idx val="0"></idx>
+            <order val="0"></order>
+          </ser>
+          <ser>
+            <idx val="1"></idx>
+            <order val="1"></order>
+          </ser>
+          <ser>
+            <idx val="2"></idx>
+            <order val="2"></order>
+          </ser>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
         </stockChart>
         """
         node = fromstring(src)
         chart = StockChart.from_tree(node)
-        assert dict(chart) == {}
+        assert chart == StockChart(ser=[Series(), Series(), Series()])
