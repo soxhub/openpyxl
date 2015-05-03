@@ -16,6 +16,8 @@ from .descriptors import (
 
 class UpDownBars(Serialisable):
 
+    tagname = "upbars"
+
     gapWidth = NestedGapAmount()
     upBars = NestedShapeProperties()
     downBars = NestedShapeProperties()
@@ -32,4 +34,3 @@ class UpDownBars(Serialisable):
         self.gapWidth = gapWidth
         self.upBars = upBars
         self.downBars = downBars
-        self.extLst = extLst
