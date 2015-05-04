@@ -45,8 +45,8 @@ class TestAreaChart:
 
 
     def test_write(self, AreaChart):
-        s1 = make_series("Sheet1!$A$1:$A$12")
-        s2 = make_series("Sheet1!$B$1:$B$12")
+        s1 = make_series(values="Sheet1!$A$1:$A$12")
+        s2 = make_series(values="Sheet1!$B$1:$B$12")
         chart = AreaChart(ser=[s1, s2])
         xml = tostring(chart._write())
         expected = """
@@ -60,7 +60,7 @@ class TestAreaChart:
                  <order val="0"></order>
                  <val>
                    <numRef>
-                     <f>None</f>
+                     <f>Sheet1!$A$1:$A$12</f>
                    </numRef>
                  </val>
                </ser>
@@ -69,7 +69,7 @@ class TestAreaChart:
                  <order val="1"></order>
                  <val>
                    <numRef>
-                     <f>None</f>
+                     <f>Sheet1!$B$1:$B$12</f>
                    </numRef>
                  </val>
                </ser>
