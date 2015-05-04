@@ -26,6 +26,7 @@ from openpyxl.descriptors.nested import (
     NestedNoneSet,
     NestedInteger,
     NestedString,
+    NestedMinMax,
 )
 
 from .colors import ColorMapping
@@ -80,15 +81,20 @@ class View3D(Serialisable):
 
     tagname = "view3D"
 
-    rotX = NestedInteger(allow_none=True)
-    hPercent = NestedInteger(allow_none=True)
-    rotY = NestedInteger(allow_none=True)
+    rotX = NestedMinMax(min=-90, max=90, allow_none=True)
+    x_rotation = Alias('rotX')
+    hPercent = NestedMinMax(min=5, max=500, allow_none=True)
+    height_percent = Alias('hPercent')
+    rotY = NestedInteger(min=-90, max=90, allow_none=True)
+    y_rotation = Alias('rotY')
     depthPercent = NestedInteger(allow_none=True)
     rAngAx = NestedBool(allow_none=True)
+    right_angle_axes = Alias('rAngAx')
     perspective = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('rotX', 'hPercent', 'rotY', 'depthPercent', 'rAngAx', 'perspective',)
+    __elements__ = ('rotX', 'hPercent', 'rotY', 'depthPercent', 'rAngAx',
+                    'perspective',)
 
     def __init__(self,
                  rotX=None,

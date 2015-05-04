@@ -146,4 +146,4 @@ class TestView3D:
         """
         node = fromstring(src)
         view = View3D.from_tree(node)
-        assert view == View3D(rotX=15, rotY=20, rAngAx=0, perspective=30)
+        assert view == View3D(rotX=15, rotY=20, rAngAx=False, perspective=30)
