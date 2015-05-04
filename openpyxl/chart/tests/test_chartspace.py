@@ -88,3 +88,30 @@ class TestDataTable:
         node = fromstring(src)
         table = DataTable.from_tree(node)
         assert table == DataTable()
+
+
+@pytest.fixture
+def Surface():
+    from ..chartspace import Surface
+    return Surface
+
+
+class TestSurface:
+
+    def test_ctor(self, Surface):
+        surface = Surface()
+        xml = tostring(surface.to_tree())
+        expected = """
+        <surface />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Surface):
+        src = """
+        <surface />
+        """
+        node = fromstring(src)
+        surface = Surface.from_tree(node)
+        assert surface == Surface()

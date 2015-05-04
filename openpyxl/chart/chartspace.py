@@ -55,12 +55,15 @@ from openpyxl.worksheet.header_footer import HeaderFooter
 
 class Surface(Serialisable):
 
-    thickness = Percentage(allow_none=True, nested=True)
+    tagname = "surface"
+
+    thickness = NestedInteger(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('thickness', 'spPr', 'pictureOptions', 'extLst')
+    __elements__ = ('thickness', 'spPr', 'pictureOptions',)
 
     def __init__(self,
                  thickness=None,
