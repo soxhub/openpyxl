@@ -216,8 +216,8 @@ def Protection():
 class TestProtection:
 
     def test_ctor(self, Protection):
-        chartspace = Protection()
-        xml = tostring(chartspace.to_tree())
+        prot = Protection()
+        xml = tostring(prot.to_tree())
         expected = """
         <protection />
         """
@@ -232,5 +232,38 @@ class TestProtection:
         </protection>
         """
         node = fromstring(src)
-        chartspace = Protection.from_tree(node)
-        assert chartspace == Protection(chartObject=True)
+        prot = Protection.from_tree(node)
+        assert prot == Protection(chartObject=True)
+
+
+@pytest.fixture
+def PivotSource():
+    from ..chartspace import PivotSource
+    return PivotSource
+
+
+class TestPivotSource:
+
+    def test_ctor(self, PivotSource):
+        src = PivotSource(name="pivot source", fmtId=1)
+        xml = tostring(src.to_tree())
+        expected = """
+        <pivotSource>
+          <name>pivot source</name>
+          <fmtId>1</fmtId>
+        </pivotSource>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotSource):
+        src = """
+        <pivotSource>
+          <name>pivot source</name>
+          <fmtId>1</fmtId>
+        </pivotSource>
+        """
+        node = fromstring(src)
+        src = PivotSource.from_tree(node)
+        assert src == PivotSource(name="pivot source", fmtId=1)

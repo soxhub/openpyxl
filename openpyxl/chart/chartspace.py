@@ -5,6 +5,8 @@ Enclosing chart object. The various chart types are actually child objects.
 Will probably need to call this indirectly
 """
 
+from openpyxl.compat import basestring
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Bool,
@@ -28,6 +30,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedString,
     NestedMinMax,
+    NestedText,
 )
 
 from .colors import ColorMapping
@@ -363,9 +366,13 @@ class Protection(Serialisable):
 
 class PivotSource(Serialisable):
 
-    name = String()
-    fmtId = Integer()
+    tagname = "pivotSource"
+
+    name = NestedText(expected_type=basestring)
+    fmtId = NestedText(expected_type=int)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('name', 'fmtId')
 
     def __init__(self,
                  name=None,
