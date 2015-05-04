@@ -51,3 +51,5 @@ class StockChart(ChartBase):
         self.upDownBars = upDownBars
         self.x_axis = CatAx()
         self.y_axis = ValAx()
+        super(StockChart, self).__init__()
+

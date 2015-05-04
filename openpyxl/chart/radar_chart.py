@@ -50,3 +50,5 @@ class RadarChart(ChartBase):
         self.dLbls = dLbls
         self.x_axis = CatAx()
         self.y_axis = ValAx()
+        super(RadarChart, self).__init__()
+

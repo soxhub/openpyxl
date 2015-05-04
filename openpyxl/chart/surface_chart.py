@@ -67,6 +67,7 @@ class _SurfaceChartBase(ChartBase):
         self.wireframe = wireframe
         self.ser = ser
         self.bandFmts = bandFmts
+        super(_SurfaceChartBase, self).__init__()
 
 
 class SurfaceChart(_SurfaceChartBase):

@@ -46,6 +46,8 @@ class _PieChartBase(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
+        super(_PieChartBase, self).__init__()
+
 
 
 class PieChart(_PieChartBase):

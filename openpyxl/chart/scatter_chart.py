@@ -50,3 +50,5 @@ class ScatterChart(ChartBase):
         self.dLbls = dLbls
         self.x_axis = ValAx(axId=10, crossAx=20)
         self.y_axis = ValAx(axId=20, crossAx=10)
+        super(ScatterChart, self).__init__()
+

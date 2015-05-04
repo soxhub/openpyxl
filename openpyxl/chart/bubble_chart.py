@@ -65,3 +65,4 @@ class BubbleChart(ChartBase):
         self.sizeRepresents = sizeRepresents
         self.x_axis = CatAx()
         self.y_axis = ValAx()
+        super(BubbleChart, self).__init__()

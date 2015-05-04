@@ -49,6 +49,7 @@ class _AreaChartBase(ChartBase):
         self.ser = ser
         self.dLbls = dLbls
         self.dropLines = dropLines
+        super(_AreaChartBase, self).__init__()
 
 
 class AreaChart(_AreaChartBase):

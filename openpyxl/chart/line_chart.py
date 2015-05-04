@@ -46,6 +46,7 @@ class _LineChartBase(ChartBase):
         self.ser = ser
         self.dLbls = dLbls
         self.dropLines = dropLines
+        super(_LineChartBase, self).__init__()
 
 
 class LineChart(_LineChartBase):
