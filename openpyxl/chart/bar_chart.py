@@ -55,6 +55,7 @@ class _BarChartBase(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
+        super(_BarChartBase, self).__init__()
 
 
 class BarChart(_BarChartBase):

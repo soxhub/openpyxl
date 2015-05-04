@@ -27,7 +27,7 @@ class ChartBase(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self, **kw):
+    def __init__(self):
         self._charts = [self]
 
 
@@ -56,7 +56,14 @@ class ChartBase(Serialisable):
 
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer, PlotArea
-        plot = PlotArea(barChart=self, catAx=self.x_axis, valAx=self.y_axis) # needs customising
+        plot = PlotArea()
+        for chart in self._charts:
+            setattr(plot, chart.tagname, chart)
+        for axis in ("x_axis", "y_axis", 'z_axis'):
+            axis = getattr(self, axis, None)
+            if axis is None:
+                continue
+            setattr(plot, axis.tagname, axis)
         container = ChartContainer(plotArea=plot, legend=self.legend)
         cs = ChartSpace(chart=container)
         return cs.to_tree()

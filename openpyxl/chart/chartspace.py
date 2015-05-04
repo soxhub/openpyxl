@@ -400,21 +400,22 @@ class RelId(Serialisable):
 
 class PrintSettings(Serialisable):
 
+    tagname = "printSettings"
+
     headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
     pageSetup = Typed(expected_type=PageSetup, allow_none=True)
-    legacyDrawingHF = Typed(expected_type=RelId, allow_none=True)
+
+    __elements__ = ("headerFooter", "pageMargins", "pageMargins")
 
     def __init__(self,
                  headerFooter=None,
                  pageMargins=None,
                  pageSetup=None,
-                 legacyDrawingHF=None,
                 ):
         self.headerFooter = headerFooter
         self.pageMargins = pageMargins
         self.pageSetup = pageSetup
-        self.legacyDrawingHF = legacyDrawingHF
 
 
 class ChartSpace(Serialisable):
