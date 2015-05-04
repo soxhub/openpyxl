@@ -26,19 +26,20 @@ from .label import DataLabels
 from .marker import DataPoint, PictureOptions, Marker
 from .trendline import Trendline
 
-attribute_mapping = {'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'dPt', 'dLbls', 'errBars',
+attribute_mapping = {
+    'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'dPt', 'dLbls', 'errBars',
  'trendline', 'cat', 'val',),
-                     'bar':('idx', 'order','tx', 'spPr', 'invertIfNegative', 'pictureOptions', 'dPt',
+    'bar':('idx', 'order','tx', 'spPr', 'invertIfNegative', 'pictureOptions', 'dPt',
  'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape'),
-                     'bubble':('idx','order', 'tx', 'spPr', 'invertIfNegative', 'dPt', 'dLbls',
+    'bubble':('idx','order', 'tx', 'spPr', 'invertIfNegative', 'dPt', 'dLbls',
  'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize', 'bubble3D'),
-                     'line':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
+    'line':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
  'errBars', 'cat', 'val', 'smooth'),
-                     'pie':('idx', 'order', 'tx', 'spPr', 'explosion', 'dPt', 'dLbls', 'cat', 'val'),
-                     'radar':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'cat', 'val'),
-                     'scatter':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
+    'pie':('idx', 'order', 'tx', 'spPr', 'explosion', 'dPt', 'dLbls', 'cat', 'val'),
+    'radar':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'cat', 'val'),
+    'scatter':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
  'errBars', 'xVal', 'yVal', 'smooth'),
-                     'surface':('idx', 'order', 'tx', 'spPr', 'cat', 'val'),
+    'surface':('idx', 'order', 'tx', 'spPr', 'cat', 'val'),
                      }
 
 
