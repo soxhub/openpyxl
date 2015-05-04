@@ -24,6 +24,7 @@ class ChartBase(Serialisable):
     legend = Typed(expected_type=Legend, allow_none=True)
 
     _series_type = ""
+    ser = ()
 
     __elements__ = ()
 
@@ -32,13 +33,14 @@ class ChartBase(Serialisable):
         self.legend = Legend()
 
 
-    def __add__(self, other):
+    def __iadd__(self, other):
         """
         Combine the chart with another one
         """
         if not isinstance(other, ChartBase):
             raise TypeError("Only other charts can be added")
         self._charts.append(other)
+        return self
 
 
     def append(self, series):
