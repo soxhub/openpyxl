@@ -158,8 +158,8 @@ def PivotFormat():
 class TestPivotFormat:
 
     def test_ctor(self, PivotFormat):
-        chartspace = PivotFormat()
-        xml = tostring(chartspace.to_tree())
+        fmt = PivotFormat()
+        xml = tostring(fmt.to_tree())
         expected = """
         <pivotFmt>
            <idx val="0" />
@@ -176,5 +176,32 @@ class TestPivotFormat:
         </pivotFmt>
         """
         node = fromstring(src)
-        chartspace = PivotFormat.from_tree(node)
-        assert chartspace == PivotFormat()
+        fmt = PivotFormat.from_tree(node)
+        assert fmt == PivotFormat()
+
+
+@pytest.fixture
+def PivotFormats():
+    from ..chartspace import PivotFormats
+    return PivotFormats
+
+
+class TestPivotFormats:
+
+    def test_ctor(self, PivotFormats):
+        fmt = PivotFormats()
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <pivotFmts />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotFormats):
+        src = """
+        <pivotFmts />
+        """
+        node = fromstring(src)
+        fmt = PivotFormats.from_tree(node)
+        assert fmt == PivotFormats()

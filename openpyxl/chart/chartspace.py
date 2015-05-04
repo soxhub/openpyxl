@@ -15,6 +15,7 @@ from openpyxl.descriptors import (
     NoneSet,
     String,
     Alias,
+    Sequence,
 )
 from openpyxl.descriptors.excel import (
     Percentage,
@@ -144,14 +145,16 @@ class PivotFormat(Serialisable):
         self.dLbl = dLbl
 
 
-class PivotFmts(Serialisable):
+class PivotFormats(Serialisable):
 
-    pivotFmt = Typed(expected_type=PivotFormat, allow_none=True)
+    tagname = "pivotFmts"
+
+    pivotFmt = Sequence(expected_type=PivotFormat, allow_none=True)
 
     __elements__ = ('pivotFmt',)
 
     def __init__(self,
-                 pivotFmt=None,
+                 pivotFmt=(),
                 ):
         self.pivotFmt = pivotFmt
 
@@ -285,7 +288,7 @@ class ChartContainer(Serialisable):
 
     title = Typed(expected_type=Title, allow_none=True)
     autoTitleDeleted = NestedBool(allow_none=True)
-    pivotFmts = Typed(expected_type=PivotFmts, allow_none=True)
+    pivotFmts = Typed(expected_type=PivotFormats, allow_none=True)
     view3D = Typed(expected_type=View3D, allow_none=True)
     floor = Typed(expected_type=Surface, allow_none=True)
     sideWall = Typed(expected_type=Surface, allow_none=True)
