@@ -337,11 +337,15 @@ class ChartContainer(Serialisable):
 
 class Protection(Serialisable):
 
-    chartObject = NestedBool(llow_none=True)
+    tagname = "protection"
+
+    chartObject = NestedBool(allow_none=True)
     data = NestedBool(allow_none=True)
     formatting = NestedBool(allow_none=True)
     selection = NestedBool(allow_none=True)
     userInterface = NestedBool(allow_none=True)
+
+    __elements__ = ("chartObject", "data", "formatting", "selection", "userInterface")
 
     def __init__(self,
                  chartObject=None,

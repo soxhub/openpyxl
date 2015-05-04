@@ -205,3 +205,32 @@ class TestPivotFormats:
         node = fromstring(src)
         fmt = PivotFormats.from_tree(node)
         assert fmt == PivotFormats()
+
+
+@pytest.fixture
+def Protection():
+    from ..chartspace import Protection
+    return Protection
+
+
+class TestProtection:
+
+    def test_ctor(self, Protection):
+        chartspace = Protection()
+        xml = tostring(chartspace.to_tree())
+        expected = """
+        <protection />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Protection):
+        src = """
+        <protection>
+          <chartObject val="1" />
+        </protection>
+        """
+        node = fromstring(src)
+        chartspace = Protection.from_tree(node)
+        assert chartspace == Protection(chartObject=True)
