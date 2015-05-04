@@ -55,7 +55,7 @@ from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
 from .filters import AutoFilter
 from .views import SheetView, Pane, Selection
-from .properties import WorksheetProperties, Outline, PageSetupPr
+from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
 from openpyxl.packaging.relationship import Relationship
@@ -135,7 +135,6 @@ class Worksheet(object):
         self.conditional_formatting = ConditionalFormatting()
         self.vba_controls = None
         self.sheet_properties = WorksheetProperties()
-        self.sheet_properties.outlinePr = Outline(summaryBelow=True, summaryRight=True)
 
 
     @property
@@ -602,7 +601,7 @@ class Worksheet(object):
 
     def _create_relationship(self, type, target, mode=None):
         """Add a relationship for this sheet."""
-        rel_id = "rId%d" %(len(self.relationships) + 1)
+        rel_id = "rId%d" % (len(self.relationships) + 1)
         rel = Relationship(type, target, mode, rel_id)
         self.relationships.append(rel)
         return rel

@@ -35,10 +35,10 @@ class Outline(Serialisable):
         self.showOutlineSymbols = showOutlineSymbols
 
 
-class PageSetupPr(Serialisable):
+class PageSetUpPr(Serialisable):
 
     tag = "{%s}pageSetUpPr" % SHEET_MAIN_NS
-    tagname = "pageSetupPr"
+    tagname = "pageSetUpPr"
 
     autoPageBreaks = Bool(allow_none=True)
     fitToPage = Bool(allow_none=True)
@@ -64,7 +64,7 @@ class WorksheetProperties(Serialisable):
     transitionEntry = Bool(allow_none=True)
     tabColor = ColorDescriptor(allow_none=True)
     outlinePr = Typed(expected_type=Outline, allow_none=True)
-    pageSetUpPr = Typed(expected_type=PageSetupPr, allow_none=True)
+    pageSetUpPr = Typed(expected_type=PageSetUpPr, allow_none=True)
 
 
     def __init__(self,
@@ -79,7 +79,7 @@ class WorksheetProperties(Serialisable):
                  transitionEntry=None,
                  tabColor=None,
                  outlinePr=None,
-                 pageSetUpPr=None,
+                 pageSetUpPr=None
                  ):
         """ Attributes """
         self.codeName = codeName
@@ -93,5 +93,12 @@ class WorksheetProperties(Serialisable):
         self.transitionEntry = transitionEntry
         """ Elements """
         self.tabColor = tabColor
-        self.outlinePr = outlinePr
-        self.pageSetUpPr = pageSetUpPr
+        if outlinePr is None:
+            self.outlinePr = Outline(summaryBelow=True, summaryRight=True)
+        else:
+            self.outlinePr = outlinePr
+
+        if pageSetUpPr is None:
+            self.pageSetUpPr = PageSetUpPr()
+        else:
+            self.pageSetUpPr = pageSetUpPr

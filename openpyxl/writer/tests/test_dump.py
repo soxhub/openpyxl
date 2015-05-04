@@ -58,6 +58,7 @@ def test_write_header(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">
@@ -185,6 +186,7 @@ def test_cell_comment(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">
@@ -224,6 +226,7 @@ def test_close(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">
@@ -248,6 +251,7 @@ def test_auto_filter(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">
@@ -273,6 +277,7 @@ def test_frozen_panes(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">
@@ -304,6 +309,7 @@ def test_write_empty_row(WriteOnlyWorksheet):
     <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
     </sheetPr>
     <sheetViews>
       <sheetView workbookViewId="0">

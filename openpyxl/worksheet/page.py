@@ -15,7 +15,7 @@ from openpyxl.descriptors.excel import UniversalMeasure
 from openpyxl.xml.functions import Element
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.compat import deprecated
-from .properties import PageSetupPr
+from .properties import PageSetUpPr
 
 
 class PageSetup(Serialisable):
@@ -105,38 +105,22 @@ class PageSetup(Serialisable):
 
     @property
     def fitToPage(self):
-        if self._parent.sheet_properties.pageSetUpPr == None:
-            value = None
-        else:
-            value = self._parent.sheet_properties.pageSetUpPr.fitToPage
-
-        return value
+        return self._parent.sheet_properties.pageSetUpPr.fitToPage
 
 
     @fitToPage.setter
     def fitToPage(self, value):
-        if self._parent.sheet_properties.pageSetUpPr == None:
-            self._parent.sheet_properties.pageSetUpPr = PageSetupPr(fitToPage=value)
-        else:
-            self._parent.sheet_properties.pageSetUpPr.fitToPage = value
+        self._parent.sheet_properties.pageSetUpPr.fitToPage = value
 
 
     @property
     def autoPageBreaks(self):
-        if self._parent.sheet_properties.pageSetUpPr == None:
-            value = None
-        else:
-            value = self._parent.sheet_properties.pageSetUpPr.autoPageBreaks
-
-        return value
+        return self._parent.sheet_properties.pageSetUpPr.autoPageBreaks
 
 
     @autoPageBreaks.setter
     def autoPageBreaks(self, value):
-        if self._parent.sheet_properties.pageSetUpPr == None:
-            self._parent.sheet_properties.pageSetUpPr = PageSetupPr(autoPageBreaks=value)
-        else:
-            self._parent.sheet_properties.pageSetUpPr.autoPageBreaks = value
+        self._parent.sheet_properties.pageSetUpPr.autoPageBreaks = value
 
 
     @classmethod
