@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
-from openpyxl.xml.constants import CHART_NS
+from openpyxl.xml.functions import NS_REGEX, Element
+from openpyxl.xml.constants import CHART_NS, REL_NS
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -237,6 +238,34 @@ class NonVisualGraphicFrame(Serialisable):
         if cNvGraphicFramePr is None:
             cNvGraphicFramePr = NonVisualGraphicFrameProperties()
         self.cNvGraphicFramePr = cNvGraphicFramePr
+
+
+class ChartRelation(Serialisable):
+
+    tagname = "chart"
+
+    id = String()
+
+    def __init__(self, id):
+        self.id = id
+
+    @classmethod
+    def from_tree(cls, node):
+        attrib = {}
+        for k, v in node.attrib.items():
+            match = NS_REGEX.match(k)
+            k = match.group('localname')
+            attrib[k] = v
+        return cls(**attrib)
+
+
+    def to_tree(self, tagname=None, idx=None):
+        if tagname is None:
+            tagname = self.tagname
+        return Element(
+            "{%s}%s" %(CHART_NS, tagname),
+            {'{%s}id' % REL_NS:self.id}
+        )
 
 
 class GraphicData(Serialisable):
