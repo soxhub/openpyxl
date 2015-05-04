@@ -29,6 +29,7 @@ class ChartBase(Serialisable):
 
     def __init__(self):
         self._charts = [self]
+        self.legend = Legend()
 
 
     def __add__(self, other):

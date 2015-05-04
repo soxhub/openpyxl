@@ -5,6 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from ..series import make_series
 
 
 @pytest.fixture
@@ -41,6 +42,66 @@ class TestAreaChart:
         node = fromstring(src)
         chart = AreaChart.from_tree(node)
         assert chart == AreaChart(grouping="percentStacked", varyColors=True)
+
+
+    def test_write(self, AreaChart):
+        s1 = make_series("Sheet1!$A$1:$A$12")
+        s2 = make_series("Sheet1!$B$1:$B$12")
+        chart = AreaChart(ser=[s1, s2])
+        xml = tostring(chart._write())
+        expected = """
+       <chartBase>
+         <chart>
+           <plotArea>
+             <areaChart>
+               <grouping val="standard"></grouping>
+               <ser>
+                 <idx val="0"></idx>
+                 <order val="0"></order>
+                 <val>
+                   <numRef>
+                     <f>None</f>
+                   </numRef>
+                 </val>
+               </ser>
+               <ser>
+                 <idx val="1"></idx>
+                 <order val="1"></order>
+                 <val>
+                   <numRef>
+                     <f>None</f>
+                   </numRef>
+                 </val>
+               </ser>
+               <axId val="10"></axId>
+               <axId val="100"></axId>
+             </areaChart>
+             <valAx>
+               <axId val="100"></axId>
+               <scaling>
+                 <orientation val="minMax"></orientation>
+               </scaling>
+               <crossAx val="10"></crossAx>
+             </valAx>
+             <catAx>
+               <axId val="10"></axId>
+               <scaling>
+                 <orientation val="minMax"></orientation>
+               </scaling>
+               <crossAx val="100"></crossAx>
+               <lblOffset val="100"></lblOffset>
+             </catAx>
+           </plotArea>
+           <legend>
+             <legendPos val="r"></legendPos>
+             <overlay val="1"></overlay>
+           </legend>
+           <dispBlanksAs val="zero"></dispBlanksAs>
+         </chart>
+       </chartBase>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
 @pytest.fixture

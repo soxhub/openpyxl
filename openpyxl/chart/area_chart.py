@@ -28,7 +28,7 @@ class _AreaChartBase(ChartBase):
 
     grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
-    ser = Typed(expected_type=Series, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     dropLines = NestedShapeProperties()
@@ -40,7 +40,7 @@ class _AreaChartBase(ChartBase):
     def __init__(self,
                  grouping="standard",
                  varyColors=None,
-                 ser=None,
+                 ser=(),
                  dLbls=None,
                  dropLines=None,
                 ):

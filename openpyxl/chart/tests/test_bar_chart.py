@@ -81,6 +81,7 @@ class TestBarChart:
              <legendPos val="r"></legendPos>
              <overlay val="1"></overlay>
            </legend>
+           <dispBlanksAs val="zero"></dispBlanksAs>
           </chart>
         </chartBase>
         """
