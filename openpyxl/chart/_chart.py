@@ -27,6 +27,25 @@ class ChartBase(Serialisable):
 
     __elements__ = ()
 
+    def __init__(self, **kw):
+        self._charts = [self]
+
+
+    def __add__(self, other):
+        """
+        Combine the chart with another one
+        """
+        if not isinstance(other, ChartBase):
+            raise TypeError("Only other charts can be added")
+        self._charts.append(other)
+
+
+    def append(self, series):
+        """
+        Add another series to the chart
+        """
+        self.ser = self.ser + (series, )
+
 
     def to_tree(self, tagname=None, idx=None):
         if self.ser is not None:
