@@ -385,12 +385,17 @@ class PivotSource(Serialisable):
 
 class ExternalData(Serialisable):
 
+    tagname = "externalData"
+
     autoUpdate = NestedBool(allow_none=True)
+    id = String() # Needs namespace
 
     def __init__(self,
                  autoUpdate=None,
+                 id=None
                 ):
         self.autoUpdate = autoUpdate
+        self.id = id
 
 
 class RelId(Serialisable):

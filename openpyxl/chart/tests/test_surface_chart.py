@@ -104,3 +104,61 @@ class TestSurfaceChart3D:
         chart = SurfaceChart3D.from_tree(node)
         assert len(chart.ser) == 2
         assert [a.val for a in chart.axId] == [10, 100, 1000]
+
+
+@pytest.fixture
+def BandFormat():
+    from ..surface_chart import BandFormat
+    return BandFormat
+
+
+class TestBandFormat:
+
+    def test_ctor(self, BandFormat):
+        fmt = BandFormat()
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <bandFmt>
+          <idx val="0" />
+        </bandFmt>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, BandFormat):
+        src = """
+        <bandFmt>
+          <idx val="4"></idx>
+        </bandFmt>
+        """
+        node = fromstring(src)
+        fmt = BandFormat.from_tree(node)
+        assert fmt == BandFormat(idx=4)
+
+
+@pytest.fixture
+def BandFormats():
+    from ..surface_chart import BandFormats
+    return BandFormats
+
+
+class TestBandFormats:
+
+    def test_ctor(self, BandFormats):
+        fmt = BandFormats()
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <bandFmts />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, BandFormats):
+        src = """
+        <bandFmts />
+        """
+        node = fromstring(src)
+        fmt = BandFormats.from_tree(node)
+        assert fmt == BandFormats()

@@ -22,7 +22,9 @@ from .shapes import ShapeProperties
 from .series import Series
 
 
-class BandFmt(Serialisable):
+class BandFormat(Serialisable):
+
+    tagname = "bandFmt"
 
     idx = NestedInteger()
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
@@ -37,9 +39,11 @@ class BandFmt(Serialisable):
         self.spPr = spPr
 
 
-class BandFmts(Serialisable):
+class BandFormats(Serialisable):
 
-    bandFmt = Sequence(expected_type=BandFmt, allow_none=True)
+    tagname = "bandFmts"
+
+    bandFmt = Sequence(expected_type=BandFormat, allow_none=True)
 
     __elements__ = ('bandFmt',)
 
@@ -53,7 +57,7 @@ class _SurfaceChartBase(ChartBase):
 
     wireframe = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    bandFmts = Typed(expected_type=BandFmts, allow_none=True)
+    bandFmts = Typed(expected_type=BandFormats, allow_none=True)
 
     _series_type = "surface"
 

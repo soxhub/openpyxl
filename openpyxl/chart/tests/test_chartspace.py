@@ -296,3 +296,30 @@ class TestPrintSettings:
         node = fromstring(src)
         chartspace = PrintSettings.from_tree(node)
         assert chartspace == PrintSettings()
+
+
+@pytest.fixture
+def ExternalData():
+    from ..chartspace import ExternalData
+    return ExternalData
+
+
+class TestExternalData:
+
+    def test_ctor(self, ExternalData):
+        data = ExternalData(id='rId1')
+        xml = tostring(data.to_tree())
+        expected = """
+        <externalData id="rId1"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ExternalData):
+        src = """
+        <externalData id="rId1"/>
+        """
+        node = fromstring(src)
+        data = ExternalData.from_tree(node)
+        assert data == ExternalData(id="rId1")
