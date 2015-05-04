@@ -113,19 +113,24 @@ class View3D(Serialisable):
         self.perspective = perspective
 
 
-class PivotFmt(Serialisable):
+class PivotFormat(Serialisable):
 
-    idx = Integer(nested=True)
+    tagname = "pivotFmt"
+
+    idx = NestedInteger(nested=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    ShapeProperties = Alias("spPr")
     txPr = Typed(expected_type=TextBody, allow_none=True)
+    TextBody = Alias("txPr")
     marker = Typed(expected_type=Marker, allow_none=True)
     dLbl = Typed(expected_type=DataLabel, allow_none=True)
+    DataLabel = Alias("dLbl")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('idx', 'spPr', 'txPr', 'marker', 'dLbl', 'extLst')
+    __elements__ = ('idx', 'spPr', 'txPr', 'marker', 'dLbl')
 
     def __init__(self,
-                 idx=None,
+                 idx=0,
                  spPr=None,
                  txPr=None,
                  marker=None,
@@ -141,7 +146,7 @@ class PivotFmt(Serialisable):
 
 class PivotFmts(Serialisable):
 
-    pivotFmt = Typed(expected_type=PivotFmt, allow_none=True)
+    pivotFmt = Typed(expected_type=PivotFormat, allow_none=True)
 
     __elements__ = ('pivotFmt',)
 

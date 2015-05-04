@@ -147,3 +147,34 @@ class TestView3D:
         node = fromstring(src)
         view = View3D.from_tree(node)
         assert view == View3D(rotX=15, rotY=20, rAngAx=False, perspective=30)
+
+
+@pytest.fixture
+def PivotFormat():
+    from ..chartspace import PivotFormat
+    return PivotFormat
+
+
+class TestPivotFormat:
+
+    def test_ctor(self, PivotFormat):
+        chartspace = PivotFormat()
+        xml = tostring(chartspace.to_tree())
+        expected = """
+        <pivotFmt>
+           <idx val="0" />
+        </pivotFmt>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotFormat):
+        src = """
+        <pivotFmt>
+           <idx val="0" />
+        </pivotFmt>
+        """
+        node = fromstring(src)
+        chartspace = PivotFormat.from_tree(node)
+        assert chartspace == PivotFormat()
