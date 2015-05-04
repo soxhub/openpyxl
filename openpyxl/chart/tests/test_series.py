@@ -276,6 +276,7 @@ class TestSeries:
 
     def test_ctor(self, make_series):
         series = make_series(values="Sheet1!$A$1:$A$10")
+        series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree())
         expected = """
         <ser>
@@ -294,6 +295,7 @@ class TestSeries:
 
     def test_manual_idx(self, make_series):
         series = make_series(values="Sheet1!$A$1:$A$10")
+        series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree(idx=5))
         expected = """
         <ser>
@@ -313,6 +315,7 @@ class TestSeries:
     def test_manual_order(self, make_series):
         series = make_series(values="Sheet1!$A$1:$A$10")
         series.order = 2
+        series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree(idx=5))
         expected = """
         <ser>
