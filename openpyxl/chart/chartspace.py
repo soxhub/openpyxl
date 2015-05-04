@@ -78,15 +78,17 @@ class Surface(Serialisable):
 
 class View3D(Serialisable):
 
-    rotX = Integer(allow_none=True, nested=True)
-    hPercent = Percentage(allow_none=True, nested=True)
-    rotY = Integer(allow_none=True, nested=True)
-    depthPercent = Percentage(allow_none=True, nested=True)
-    rAngAx = Bool(nested=True, allow_none=True)
-    perspective = Integer(nested=True, allow_none=True)
+    tagname = "view3D"
+
+    rotX = NestedInteger(allow_none=True)
+    hPercent = NestedInteger(allow_none=True)
+    rotY = NestedInteger(allow_none=True)
+    depthPercent = NestedInteger(allow_none=True)
+    rAngAx = NestedBool(allow_none=True)
+    perspective = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('rotX', 'hPercent', 'rotY', 'depthPercent', 'rAngAx', 'perspective', 'extLst')
+    __elements__ = ('rotX', 'hPercent', 'rotY', 'depthPercent', 'rAngAx', 'perspective',)
 
     def __init__(self,
                  rotX=None,
@@ -103,7 +105,6 @@ class View3D(Serialisable):
         self.depthPercent = depthPercent
         self.rAngAx = rAngAx
         self.perspective = perspective
-        self.extLst = extLst
 
 
 class PivotFmt(Serialisable):

@@ -115,3 +115,35 @@ class TestSurface:
         node = fromstring(src)
         surface = Surface.from_tree(node)
         assert surface == Surface()
+
+
+@pytest.fixture
+def View3D():
+    from ..chartspace import View3D
+    return View3D
+
+
+class TestView3D:
+
+    def test_ctor(self, View3D):
+        view = View3D()
+        xml = tostring(view.to_tree())
+        expected = """
+        <view3D />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, View3D):
+        src = """
+        <view3D>
+          <rotX val="15"/>
+          <rotY val="20"/>
+          <rAngAx val="0"/>
+          <perspective val="30"/>
+        </view3D>
+        """
+        node = fromstring(src)
+        view = View3D.from_tree(node)
+        assert view == View3D(rotX=15, rotY=20, rAngAx=0, perspective=30)
