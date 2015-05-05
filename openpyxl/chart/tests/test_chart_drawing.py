@@ -161,3 +161,37 @@ class TestSpreadsheetDrawing:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_write(self, SpreadsheetDrawing):
+
+        class Chart:
+
+            anchor = "E25"
+
+        drawing = SpreadsheetDrawing()
+        drawing.charts.append(Chart())
+        xml = tostring(drawing._write())
+        expected = """
+        <wsDr>
+        <oneCellAnchor>
+          <from col="0" colOff="0" row="24" rowOff="0"/>
+          <ext cx="0" cy="0"/>
+          <graphicFrame>
+            <nvGraphicFramePr>
+              <cNvPr id="0" name="Chart 0"/>
+              <cNvGraphicFramePr/>
+            </nvGraphicFramePr>
+            <xfrm/>
+            <graphic>
+              <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+              </graphicData>
+            </graphic>
+          </graphicFrame>
+          <clientData/>
+        </oneCellAnchor>
+        </wsDr>
+        """
+        diff = compare_xml (xml, expected)
+        assert diff is None, diff

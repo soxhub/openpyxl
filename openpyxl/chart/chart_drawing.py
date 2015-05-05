@@ -8,8 +8,8 @@ from openpyxl.descriptors import (
     Integer,
     Sequence,
 )
-
 from openpyxl.descriptors.excel import Coordinate
+from openpyxl.utils import coordinate_to_tuple
 
 from .chartspace import RelId
 from .shapes import Shape
@@ -20,6 +20,7 @@ from .graphic import (
     Picture,
     PositiveSize2D,
     Point2D,
+    ChartRelation,
     )
 
 
@@ -198,10 +199,32 @@ class SpreadsheetDrawing(Serialisable):
     absoluteAnchor = Sequence(expected_type=AbsoluteAnchor, allow_none=True)
 
     def __init__(self,
-                 twoCellAnchor=None,
-                 oneCellAnchor=None,
-                 absoluteAnchor=None,
+                 twoCellAnchor=(),
+                 oneCellAnchor=(),
+                 absoluteAnchor=(),
                  ):
         self.twoCellAnchor = twoCellAnchor
         self.oneCellAnchor = oneCellAnchor
         self.absoluteAnchor = absoluteAnchor
+        self.charts = []
+        self.rels = []
+
+
+    def _write(self):
+        """
+        create required structure and the serialise
+        """
+        anchors = []
+        for idx, c in enumerate(self.charts, 1):
+            chart_rel = ChartRelation("rId%s" % idx)
+            frame = GraphicFrame()
+            frame.graphic.graphicData.chart = chart_rel
+            row, col = coordinate_to_tuple(c.anchor)
+            anchor = OneCellAnchor()
+            anchor._from.row = row -1
+            anchor._from.to = col -1
+            anchor.graphicFrame = frame
+
+            anchors.append(anchor)
+        self.oneCellAnchor = anchors
+        return self.to_tree()

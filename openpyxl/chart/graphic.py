@@ -273,7 +273,8 @@ class GraphicData(Serialisable):
     tagname = "graphicData"
 
     uri = String()
-    chart = Typed(expected_type=object, allow_none=True)
+    chart = Typed(expected_type=ChartRelation, allow_none=True)
+
 
     def __init__(self,
                  uri=CHART_NS,
