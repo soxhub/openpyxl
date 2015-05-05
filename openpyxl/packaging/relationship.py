@@ -1,7 +1,13 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.descriptors import String, Set, NoneSet, Alias
+from openpyxl.descriptors import (
+    String,
+    Set,
+    NoneSet,
+    Alias,
+    Sequence
+)
 from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.xml.constants import REL_NS, PKG_REL_NS
@@ -30,3 +36,11 @@ class Relationship(Serialisable):
         self.target = target
         self.targetMode = targetMode
         self.id = id
+
+
+def to_tree(sequence):
+    root = Element("Relationships", xmlns=REL_NS)
+    for idx, rel in enumerate(sequence, 1):
+        rel.id = "rId{0}".format(idx)
+        root.append(rel.to_tree())
+    return root
