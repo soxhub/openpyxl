@@ -60,9 +60,12 @@ class Serialisable(_Serialiasable):
         return cls(**attrib)
 
 
-    def to_tree(self, tagname=None, idx=None):
+    def to_tree(self, tagname=None, idx=None, namespace=None):
         if tagname is None:
             tagname = self.tagname
+        namespace = getattr(self, "namespace", namespace)
+        if namespace is not None:
+            tagname = "{%s}%s" % (namespace, tagname)
 
         attrs = dict(self)
 
