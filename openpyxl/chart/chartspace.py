@@ -425,7 +425,7 @@ class PrintSettings(Serialisable):
 
 class ChartSpace(Serialisable):
 
-    tagname = "chartBase"
+    tagname = "chartSpace"
 
     date1904 = NestedBool(allow_none=True)
     lang = NestedString(allow_none=True)
