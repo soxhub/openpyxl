@@ -9,7 +9,10 @@ from openpyxl.descriptors import (
     Sequence,
 )
 from openpyxl.descriptors.excel import Coordinate
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.utils import coordinate_to_tuple
+
+from openpyxl.xml.constants import SHEET_DRAWING_NS
 
 from .chartspace import RelId
 from .shapes import Shape
@@ -198,6 +201,8 @@ class SpreadsheetDrawing(Serialisable):
     oneCellAnchor = Sequence(expected_type=OneCellAnchor, allow_none=True)
     absoluteAnchor = Sequence(expected_type=AbsoluteAnchor, allow_none=True)
 
+    __elements__ = ("twoCellAnchor", "oneCellAnchor", "absoluteAnchor")
+
     def __init__(self,
                  twoCellAnchor=(),
                  oneCellAnchor=(),
@@ -208,7 +213,6 @@ class SpreadsheetDrawing(Serialisable):
         self.absoluteAnchor = absoluteAnchor
         self.charts = []
         self.rels = []
-
 
     def _write(self):
         """
@@ -227,4 +231,7 @@ class SpreadsheetDrawing(Serialisable):
 
             anchors.append(anchor)
         self.oneCellAnchor = anchors
-        return self.to_tree()
+
+        tree = self.to_tree()
+        tree.set('xmlns', SHEET_DRAWING_NS)
+        return tree
