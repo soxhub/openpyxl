@@ -16,7 +16,16 @@ Minor changes
 * Read-only and write-only worksheets renamed.
 
 
-2.2.2 (unreleased)
+2.2.3 (unreleased)
+==================
+
+
+Bug fixes
+
+* `#458 <https://bitbucket.org/openpyxl/openpyxl/issue/458>`_ Trailing spaces lost when saving files.
+
+
+2.2.2 (2015-04-28)
 ==================
 
 
