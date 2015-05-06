@@ -51,8 +51,14 @@ class Point2D(Serialisable):
 
 class PositiveSize2D(Serialisable):
 
+    """
+    Dimensions in EMUs
+    """
+
     cx = Integer()
+    width = Alias('cx')
     cy = Integer()
+    height = Alias('cy')
 
     def __init__(self,
                  cx=None,
