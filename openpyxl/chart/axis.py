@@ -74,7 +74,7 @@ class _BaseAxis(Serialisable):
     axId = NestedInteger(expected_type=int)
     scaling = Typed(expected_type=Scaling)
     delete = NestedBool(allow_none=True)
-    axPos = NestedNoneSet(values=(['b', 'l', 'r', 't']))
+    axPos = NestedSet(values=(['b', 'l', 'r', 't']))
     majorGridlines = NestedShapeProperties()
     minorGridlines = NestedShapeProperties()
     title = Typed(expected_type=Title, allow_none=True)
@@ -100,7 +100,7 @@ class _BaseAxis(Serialisable):
                  axId=None,
                  scaling=None,
                  delete=None,
-                 axPos=None,
+                 axPos='l',
                  majorGridlines=None,
                  minorGridlines=None,
                  title=None,

@@ -42,7 +42,8 @@ class TestAxis:
             <scaling>
               <orientation val="minMax"></orientation>
             </scaling>
-            <crossAx val="100"></crossAx>
+            <axPos val="l" />
+            <crossAx val="100" />
         </baseAxis>
         """
         diff = compare_xml(xml, expected)
@@ -67,8 +68,9 @@ class TestCatAx:
          <scaling>
            <orientation val="minMax"></orientation>
          </scaling>
-         <crossAx val="100"></crossAx>
-         <lblOffset val="100"></lblOffset>
+         <axPos val="l" />
+         <crossAx val="100" />
+         <lblOffset val="100" />
         </catAx>
         """
         diff = compare_xml(xml, expected)
@@ -120,7 +122,8 @@ class TestValAx:
           <scaling>
             <orientation val="minMax"></orientation>
           </scaling>
-          <crossAx val="10"></crossAx>
+          <axPos val="l" />
+          <crossAx val="10" />
         </valAx>
         """
         diff = compare_xml(xml, expected)
@@ -171,7 +174,8 @@ class TestDateAx:
            <scaling>
              <orientation val="minMax"></orientation>
            </scaling>
-           <crossAx val="10"></crossAx>
+           <axPos val="l" />
+           <crossAx val="10" />
         </dateAx>
         """
         diff = compare_xml(xml, expected)
@@ -225,7 +229,8 @@ class TestSerAx:
           <scaling>
             <orientation val="minMax"></orientation>
           </scaling>
-          <crossAx val="10"></crossAx>
+          <axPos val="l" />
+          <crossAx val="10" />
         </serAx>
         """
         diff = compare_xml(xml, expected)
@@ -239,7 +244,8 @@ class TestSerAx:
           <scaling>
             <orientation val="minMax"></orientation>
           </scaling>
-          <crossAx val="10"></crossAx>
+          <axPos val="l" />
+          <crossAx val="10" />
         </serAx>
         """
         node = fromstring(src)
