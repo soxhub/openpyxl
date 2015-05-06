@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors import Typed, Integer
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.xml.constants import CHART_NS
 
 from .legend import Legend
 from .series import attribute_mapping
@@ -26,6 +27,7 @@ class ChartBase(Serialisable):
     _series_type = ""
     ser = ()
     anchor = "A25" # default anchor position
+    _shapes = ()
 
     __elements__ = ()
 
@@ -70,7 +72,9 @@ class ChartBase(Serialisable):
             setattr(plot, axis.tagname, axis)
         container = ChartContainer(plotArea=plot, legend=self.legend)
         cs = ChartSpace(chart=container)
-        return cs.to_tree()
+        tree = cs.to_tree()
+        tree.set("xmlns", CHART_NS)
+        return tree
 
 
     @property

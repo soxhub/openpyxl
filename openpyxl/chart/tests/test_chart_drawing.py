@@ -132,6 +132,21 @@ class TestSpreadsheetDrawing:
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <wsDr>
+          <twoCellAnchor>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <to col="0" colOff="0" row="0" rowOff="0" />
+            <clientData></clientData>
+          </twoCellAnchor>
+          <twoCellAnchor>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <to col="0" colOff="0" row="0" rowOff="0" />
+            <clientData></clientData>
+          </twoCellAnchor>
+          <oneCellAnchor>
+            <from col="0" colOff="0" row="0" rowOff="0" />
+            <ext cx="0" cy="0" />
+            <clientData></clientData>
+          </oneCellAnchor>
           <absoluteAnchor>
             <pos x="0" y="0"  />
             <ext cx="0" cy="0" />
@@ -142,21 +157,6 @@ class TestSpreadsheetDrawing:
             <ext cx="0" cy="0" />
             <clientData></clientData>
           </absoluteAnchor>
-          <oneCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
-            <ext cx="0" cy="0" />
-            <clientData></clientData>
-          </oneCellAnchor>
-          <twoCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
-            <to col="0" colOff="0" row="0" rowOff="0" />
-            <clientData></clientData>
-          </twoCellAnchor>
-          <twoCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
-            <to col="0" colOff="0" row="0" rowOff="0" />
-            <clientData></clientData>
-          </twoCellAnchor>
         </wsDr>
         """
         diff = compare_xml(xml, expected)
@@ -173,7 +173,7 @@ class TestSpreadsheetDrawing:
         drawing.charts.append(Chart())
         xml = tostring(drawing._write())
         expected = """
-        <wsDr>
+        <wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
         <oneCellAnchor>
           <from col="0" colOff="0" row="24" rowOff="0"/>
           <ext cx="0" cy="0"/>

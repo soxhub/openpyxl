@@ -51,7 +51,7 @@ class TestBarChart:
         chart = BarChart()
         xml = tostring(chart._write())
         expected = """
-        <chartBase>
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
           <chart>
             <plotArea>
               <barChart>
@@ -83,7 +83,7 @@ class TestBarChart:
            </legend>
            <dispBlanksAs val="zero"></dispBlanksAs>
           </chart>
-        </chartBase>
+        </chartSpace>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

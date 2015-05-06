@@ -50,7 +50,7 @@ class TestAreaChart:
         chart = AreaChart(ser=[s1, s2])
         xml = tostring(chart._write())
         expected = """
-       <chartBase>
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
          <chart>
            <plotArea>
              <areaChart>
@@ -98,7 +98,7 @@ class TestAreaChart:
            </legend>
            <dispBlanksAs val="zero"></dispBlanksAs>
          </chart>
-       </chartBase>
+        </chartSpace>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
