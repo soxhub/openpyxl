@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from openpyxl.xml.functions import NS_REGEX, Element
-from openpyxl.xml.constants import CHART_NS, REL_NS
+from openpyxl.xml.constants import CHART_NS, REL_NS, DRAWING_NS
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -271,6 +271,7 @@ class ChartRelation(Serialisable):
 class GraphicData(Serialisable):
 
     tagname = "graphicData"
+    namespace = DRAWING_NS
 
     uri = String()
     chart = Typed(expected_type=ChartRelation, allow_none=True)
@@ -287,6 +288,7 @@ class GraphicData(Serialisable):
 class GraphicObject(Serialisable):
 
     tagname = "graphic"
+    namespace = DRAWING_NS
 
     graphicData = Typed(expected_type=GraphicData)
 

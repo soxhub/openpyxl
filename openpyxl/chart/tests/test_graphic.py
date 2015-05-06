@@ -105,7 +105,7 @@ class TestGraphicData:
         graphic = GraphicData()
         xml = tostring(graphic.to_tree())
         expected = """
-        <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart" />
+        <graphicData xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" uri="http://schemas.openxmlformats.org/drawingml/2006/chart" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -132,7 +132,7 @@ class TestGraphicObject:
         graphic = GraphicObject()
         xml = tostring(graphic.to_tree())
         expected = """
-        <graphic>
+        <graphic xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
           <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"></graphicData>
         </graphic>
         """
@@ -162,15 +162,15 @@ class TestGraphicFrame:
         graphic = GraphicFrame()
         xml = tostring(graphic.to_tree())
         expected = """
-        <graphicFrame>
+        <graphicFrame xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <nvGraphicFramePr>
             <cNvPr id="0" name="Chart 0"></cNvPr>
             <cNvGraphicFramePr></cNvGraphicFramePr>
           </nvGraphicFramePr>
           <xfrm></xfrm>
-          <graphic>
-            <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"></graphicData>
-          </graphic>
+          <a:graphic>
+            <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart" />
+          </a:graphic>
         </graphicFrame>
         """
         diff = compare_xml(xml, expected)

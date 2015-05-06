@@ -18,8 +18,18 @@ class TestTwoCellAnchor:
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <twoCellAnchor>
-          <from col="0" colOff="0" row="0" rowOff="0" />
-          <to col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
+          <to>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </to>
           <clientData />
         </twoCellAnchor>
         """
@@ -30,8 +40,18 @@ class TestTwoCellAnchor:
     def test_from_xml(self, TwoCellAnchor):
         src = """
         <twoCellAnchor>
-          <from col="0" colOff="0" row="0" rowOff="0" />
-          <to col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
+          <to>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </to>
           <clientData></clientData>
          </twoCellAnchor>
         """
@@ -53,7 +73,12 @@ class TestOneCellAnchor:
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <oneCellAnchor>
-          <from col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
           <ext cx="0" cy="0" />
           <clientData></clientData>
         </oneCellAnchor>
@@ -65,7 +90,12 @@ class TestOneCellAnchor:
     def test_from_xml(self, OneCellAnchor):
         src = """
         <oneCellAnchor>
-          <from col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
           <ext cx="0" cy="0" />
           <clientData></clientData>
         </oneCellAnchor>
@@ -133,17 +163,42 @@ class TestSpreadsheetDrawing:
         expected = """
         <wsDr>
           <twoCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
-            <to col="0" colOff="0" row="0" rowOff="0" />
-            <clientData></clientData>
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
+          <to>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </to>
+          <clientData></clientData>
           </twoCellAnchor>
           <twoCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
-            <to col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
+          <to>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </to>
             <clientData></clientData>
           </twoCellAnchor>
           <oneCellAnchor>
-            <from col="0" colOff="0" row="0" rowOff="0" />
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>0</row>
+            <rowOff>0</rowOff>
+          </from>
             <ext cx="0" cy="0" />
             <clientData></clientData>
           </oneCellAnchor>
@@ -173,9 +228,15 @@ class TestSpreadsheetDrawing:
         drawing.charts.append(Chart())
         xml = tostring(drawing._write())
         expected = """
-        <wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
+        <wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+           xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
         <oneCellAnchor>
-          <from col="0" colOff="0" row="24" rowOff="0"/>
+          <from>
+            <col>0</col>
+            <colOff>0</colOff>
+            <row>24</row>
+            <rowOff>0</rowOff>
+          </from>
           <ext cx="0" cy="0"/>
           <graphicFrame>
             <nvGraphicFramePr>
@@ -183,11 +244,11 @@ class TestSpreadsheetDrawing:
               <cNvGraphicFramePr/>
             </nvGraphicFramePr>
             <xfrm/>
-            <graphic>
-              <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+            <a:graphic>
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
                 <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
-              </graphicData>
-            </graphic>
+              </a:graphicData>
+            </a:graphic>
           </graphicFrame>
           <clientData/>
         </oneCellAnchor>
