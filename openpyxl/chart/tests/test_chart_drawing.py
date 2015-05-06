@@ -222,7 +222,7 @@ class TestSpreadsheetDrawing:
 
         class Chart:
 
-            anchor = "E25"
+            anchor = "E15"
 
         drawing = SpreadsheetDrawing()
         drawing.charts.append(Chart())
@@ -232,15 +232,15 @@ class TestSpreadsheetDrawing:
            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
         <oneCellAnchor>
           <from>
-            <col>0</col>
+            <col>4</col>
             <colOff>0</colOff>
-            <row>24</row>
+            <row>14</row>
             <rowOff>0</rowOff>
           </from>
-          <ext cx="0" cy="0"/>
+          <ext cx="5400000" cy="2700000"/>
           <graphicFrame>
             <nvGraphicFramePr>
-              <cNvPr id="2" name="Chart 1"/>
+              <cNvPr id="1" name="Chart 1"/>
               <cNvGraphicFramePr/>
             </nvGraphicFramePr>
             <xfrm/>
