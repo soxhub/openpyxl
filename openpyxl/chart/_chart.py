@@ -26,7 +26,7 @@ class ChartBase(Serialisable):
 
     _series_type = ""
     ser = ()
-    anchor = "A25" # default anchor position
+    anchor = "E15" # default anchor position
     _shapes = ()
 
     __elements__ = ()

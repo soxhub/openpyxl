@@ -18,14 +18,17 @@ from openpyxl.utils import coordinate_to_tuple
 from openpyxl.xml.constants import SHEET_DRAWING_NS
 
 from .chartspace import RelId
-from .shapes import Shape
+from .shapes import (
+    Shape,
+    Point2D,
+    PositiveSize2D,
+)
+
 from .graphic import (
     GroupShape,
     GraphicFrame,
     Connector,
     Picture,
-    PositiveSize2D,
-    Point2D,
     ChartRelation,
     )
 
@@ -226,13 +229,16 @@ class SpreadsheetDrawing(Serialisable):
             chart_rel = ChartRelation("rId%s" % idx)
             frame = GraphicFrame()
             nv = frame.nvGraphicFramePr.cNvPr
-            nv.id = idx + 1
+            nv.id = idx
             nv.name = "Chart {0}".format(idx)
             frame.graphic.graphicData.chart = chart_rel
             row, col = coordinate_to_tuple(c.anchor)
+            print(row, col)
             anchor = OneCellAnchor()
             anchor._from.row = row -1
-            anchor._from.to = col -1
+            anchor._from.col = col -1
+            anchor.ext.width = 5400000 # 15cm, approx 5 cols
+            anchor.ext.height = 2700000 # 7.5cm approx 14 rows
             anchor.graphicFrame = frame
 
             anchors.append(anchor)
