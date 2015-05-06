@@ -39,7 +39,7 @@ class Relationship(Serialisable):
 
 
 def to_tree(sequence):
-    root = Element("Relationships", xmlns=REL_NS)
+    root = Element("Relationships", xmlns=PKG_REL_NS)
     for idx, rel in enumerate(sequence, 1):
         rel.id = "rId{0}".format(idx)
         root.append(rel.to_tree())

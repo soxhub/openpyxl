@@ -35,7 +35,7 @@ def test_sequence(Relationship):
     rels.append(Relationship("chart", "chart1.xml", "", ""))
     xml = tostring(to_tree(rels))
     expected = """
-    <Relationships xmlns="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
       <Relationship Id="rId1" Target="drawings.xml" TargetMode="external" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
       <Relationship Id="rId2" Target="chart1.xml" TargetMode="" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
     </Relationships>
