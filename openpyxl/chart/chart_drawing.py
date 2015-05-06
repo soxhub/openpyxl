@@ -225,6 +225,9 @@ class SpreadsheetDrawing(Serialisable):
         for idx, c in enumerate(self.charts, 1):
             chart_rel = ChartRelation("rId%s" % idx)
             frame = GraphicFrame()
+            nv = frame.nvGraphicFramePr.cNvPr
+            nv.id = idx + 1
+            nv.name = "Chart {0}".format(idx)
             frame.graphic.graphicData.chart = chart_rel
             row, col = coordinate_to_tuple(c.anchor)
             anchor = OneCellAnchor()

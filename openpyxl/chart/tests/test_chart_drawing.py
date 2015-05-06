@@ -240,7 +240,7 @@ class TestSpreadsheetDrawing:
           <ext cx="0" cy="0"/>
           <graphicFrame>
             <nvGraphicFramePr>
-              <cNvPr id="0" name="Chart 0"/>
+              <cNvPr id="2" name="Chart 1"/>
               <cNvGraphicFramePr/>
             </nvGraphicFramePr>
             <xfrm/>
