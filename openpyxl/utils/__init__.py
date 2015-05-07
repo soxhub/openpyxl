@@ -13,16 +13,16 @@ from openpyxl.utils.exceptions import CellCoordinatesException
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
-ABSOLUTE_RE = re.compile(
-'''^[$]?
-(?P<min_col>[A-Z]+)
-[$]?
-(?P<min_row>\d+)
-(:[$]?
-(?P<max_col>[A-Z]+)
-[$]?
-(?P<max_row>\d+))?$''',
-re.VERBOSE)
+RANGE_EXPR = """
+[$]?(?P<min_col>[A-Z]+)
+[$]?(?P<min_row>\d+)
+(:[$]?(?P<max_col>[A-Z]+)
+[$]?(?P<max_row>\d+))?
+"""
+ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
+SHEETRANGE_RE = re.compile("""
+^(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!
+(?P<cells>{0})$""".format(RANGE_EXPR), re.VERBOSE)
 
 
 def get_column_interval(start, end):
@@ -149,3 +149,11 @@ def coordinate_to_tuple(coordinate):
     """
     col, row = coordinate_from_string(coordinate)
     return row, _COL_STRING_CACHE[col]
+
+
+def range_to_tuple(range_string):
+    m = SHEETRANGE_RE.match(range_string)
+    sheetname = m.group("quoted") or m.group("notquoted")
+    cells = m.group("cells")
+    boundaries = range_boundaries(cells)
+    return sheetname, boundaries
