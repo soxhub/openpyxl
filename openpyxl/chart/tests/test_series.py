@@ -268,14 +268,14 @@ class TestSurfaceSer:
 
 
 @pytest.fixture
-def make_series():
-    from openpyxl.chart.series import make_series
-    return make_series
+def Series():
+    from .. import Series
+    return Series
 
 class TestSeries:
 
-    def test_ctor(self, make_series):
-        series = make_series(values="Sheet1!$A$1:$A$10")
+    def test_ctor(self, Series):
+        series = Series(values="Sheet1!$A$1:$A$10")
         series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree())
         expected = """
@@ -293,8 +293,8 @@ class TestSeries:
         assert diff is None, diff
 
 
-    def test_manual_idx(self, make_series):
-        series = make_series(values="Sheet1!$A$1:$A$10")
+    def test_manual_idx(self, Series):
+        series = Series(values="Sheet1!$A$1:$A$10")
         series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree(idx=5))
         expected = """
@@ -312,8 +312,8 @@ class TestSeries:
         assert diff is None, diff
 
 
-    def test_manual_order(self, make_series):
-        series = make_series(values="Sheet1!$A$1:$A$10")
+    def test_manual_order(self, Series):
+        series = Series(values="Sheet1!$A$1:$A$10")
         series.order = 2
         series.__elements__ = ('idx', 'order', 'val')
         xml = tostring(series.to_tree(idx=5))

@@ -5,7 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
-from ..series import make_series
+from .. import Series
 
 
 @pytest.fixture
@@ -45,8 +45,8 @@ class TestAreaChart:
 
 
     def test_write(self, AreaChart):
-        s1 = make_series(values="Sheet1!$A$1:$A$12")
-        s2 = make_series(values="Sheet1!$B$1:$B$12")
+        s1 = Series(values="Sheet1!$A$1:$A$12")
+        s2 = Series(values="Sheet1!$B$1:$B$12")
         chart = AreaChart(ser=[s1, s2])
         xml = tostring(chart._write())
         expected = """

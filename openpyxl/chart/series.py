@@ -44,23 +44,17 @@ attribute_mapping = {
                      }
 
 
-def make_series(name_ref=None, cat_ref=None, values=None, order=None):
-    """
-    High level function for creating series
-
-    See http://exceluser.com/excel_help/functions/function-series.htm for a description
-    """
-    series = Series()
-    series.val = NumDataSource(numRef=NumRef(f=values))
-    return series
-
-
 class SerTx(Serialisable):
 
     strRef = Typed(expected_type=StrRef)
 
 
 class Series(Serialisable):
+
+    """
+    Generic series object. Should not be instantiated directly.
+    User the chart.Series factory instead.
+    """
 
     tagname = "ser"
 
