@@ -233,7 +233,6 @@ class SpreadsheetDrawing(Serialisable):
             nv.name = "Chart {0}".format(idx)
             frame.graphic.graphicData.chart = chart_rel
             row, col = coordinate_to_tuple(c.anchor)
-            print(row, col)
             anchor = OneCellAnchor()
             anchor._from.row = row -1
             anchor._from.col = col -1
