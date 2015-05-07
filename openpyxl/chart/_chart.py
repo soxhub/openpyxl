@@ -46,13 +46,6 @@ class ChartBase(Serialisable):
         return self
 
 
-    def append(self, series):
-        """
-        Add another series to the chart
-        """
-        self.ser = self.ser + (series, )
-
-
     def to_tree(self, tagname=None, idx=None):
         if self.ser is not None:
             for s in self.ser:
@@ -82,5 +75,5 @@ class ChartBase(Serialisable):
         x = getattr(self, "x_axis", None)
         y = getattr(self, "y_axis", None)
         z = getattr(self, "z_axis", None)
-        ids = (AxId(axis.axId) for axis in (x, y, z) if axis)
-        return tuple(ids)
+        ids = [AxId(axis.axId) for axis in (x, y, z) if axis]
+        return ids

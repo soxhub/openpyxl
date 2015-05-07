@@ -24,7 +24,7 @@ class TestGradientFill:
         assert gf.right == 0
         assert gf.top == 0
         assert gf.bottom == 0
-        assert gf.stop == ()
+        assert gf.stop == []
 
 
     def test_ctor(self, GradientFill):
@@ -39,7 +39,7 @@ class TestGradientFill:
     def test_sequence(self, GradientFill):
         colors = [Color(BLACK), Color(WHITE)]
         gf = GradientFill(stop=colors)
-        assert gf.stop == tuple(colors)
+        assert gf.stop == colors
 
 
     def test_invalid_sequence(self, GradientFill):
@@ -88,7 +88,7 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == (Color(theme=0), Color(theme=4))
+        assert fill.stop == [Color(theme=0), Color(theme=4)]
 
 
 @pytest.fixture

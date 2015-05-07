@@ -228,8 +228,8 @@ class TestRule:
             rules.append(Rule.from_tree(el))
 
         assert len(rules) == 30
-        assert rules[17].formula == ('2', '7')
-        assert rules[-1].formula == ("AD1>3",)
+        assert rules[17].formula == ['2', '7']
+        assert rules[-1].formula == ["AD1>3",]
 
 
     def test_serialise(self, Rule):
@@ -254,7 +254,7 @@ def test_formula_rule():
 
     cf = FormulaRule(formula=['ISBLANK(C1)'], stopIfTrue=True)
     assert dict(cf) == {'priority': '0', 'stopIfTrue': '1', 'type': 'expression'}
-    assert cf.formula == ('ISBLANK(C1)',)
+    assert cf.formula == ['ISBLANK(C1)']
     assert cf.dxf == DifferentialStyle()
 
 
@@ -267,7 +267,7 @@ def test_cellis_rule():
 
     rule = CellIsRule(operator='<', formula=['C$1'], stopIfTrue=True, fill=red_fill)
     assert dict(rule) == {'operator': 'lessThan', 'priority': '0', 'type': 'cellIs', 'stopIfTrue':'1'}
-    assert rule.formula == ('C$1',)
+    assert rule.formula == ['C$1']
     assert rule.dxf.fill == red_fill
 
 

@@ -7,8 +7,14 @@ KEYWORDS = frozenset(kwlist)
 from . import _Serialiasable, Sequence
 
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element, SubElement, safe_iterator, localname
+from openpyxl.xml.functions import (
+    Element,
+    SubElement,
+    safe_iterator,
+    localname,
+)
 
+seq_types = (list, tuple)
 
 class Serialisable(_Serialiasable):
     """
@@ -79,7 +85,7 @@ class Serialisable(_Serialiasable):
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
                 if hasattr(desc, "to_tree"):
-                    if isinstance(value, tuple):
+                    if isinstance(value, seq_types):
                         for obj in desc.to_tree(child, value):
                             el.append(obj)
                     else:
@@ -91,7 +97,7 @@ class Serialisable(_Serialiasable):
 
             else:
                 obj = getattr(self, child)
-                if isinstance(obj, tuple):
+                if isinstance(obj, seq_types):
                     for idx, v in enumerate(obj):
                         if hasattr(v, 'to_tree'):
                             el.append(v.to_tree(tagname=child, idx=idx))

@@ -21,13 +21,6 @@ class TestChartBase:
             xml = tostring(chart.to_tree())
 
 
-    def test_append(self, ChartBase):
-        chart = ChartBase()
-        s = Series()
-        chart.append(s)
-        assert chart.ser == (s, )
-
-
     def test_iadd(self, ChartBase):
         chart1 = ChartBase()
         chart2 = ChartBase()
