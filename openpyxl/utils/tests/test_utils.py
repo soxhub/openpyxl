@@ -105,3 +105,8 @@ def test_coordinate_tuple():
 def test_range_to_tuple(range_string, sheetname, boundaries):
     from .. import range_to_tuple
     assert range_to_tuple(range_string) == (sheetname, boundaries)
+
+
+def test_quote_sheetname():
+    from .. import quote_sheetname
+    assert quote_sheetname("My Sheet") == "'My Sheet'"

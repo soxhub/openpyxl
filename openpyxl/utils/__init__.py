@@ -157,3 +157,9 @@ def range_to_tuple(range_string):
     cells = m.group("cells")
     boundaries = range_boundaries(cells)
     return sheetname, boundaries
+
+
+def quote_sheetname(sheetname):
+    if " " in sheetname:
+        sheetname = "'{0}'".format(sheetname)
+    return sheetname
