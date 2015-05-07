@@ -26,16 +26,6 @@ from .line import *
 from openpyxl.styles.colors import Color
 
 
-class Shape(Serialisable):
-
-    val = Set(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
 class Point2D(Serialisable):
 
     x = Coordinate()

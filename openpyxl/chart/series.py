@@ -12,9 +12,10 @@ from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedBool,
+    NestedNoneSet,
 )
 
-from .shapes import ShapeProperties, Shape
+from .shapes import ShapeProperties
 from .data_source import (
     AxDataSource,
     NumDataSource,
@@ -28,17 +29,17 @@ from .trendline import Trendline
 
 attribute_mapping = {
     'area': ('idx', 'order', 'tx', 'spPr', 'pictureOptions', 'dPt', 'dLbls', 'errBars',
- 'trendline', 'cat', 'val',),
+             'trendline', 'cat', 'val',),
     'bar':('idx', 'order','tx', 'spPr', 'invertIfNegative', 'pictureOptions', 'dPt',
- 'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape'),
+           'dLbls', 'trendline', 'errBars', 'cat', 'val', 'shape'),
     'bubble':('idx','order', 'tx', 'spPr', 'invertIfNegative', 'dPt', 'dLbls',
- 'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize', 'bubble3D'),
+              'trendline', 'errBars', 'xVal', 'yVal', 'bubbleSize', 'bubble3D'),
     'line':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
- 'errBars', 'cat', 'val', 'smooth'),
+            'errBars', 'cat', 'val', 'smooth'),
     'pie':('idx', 'order', 'tx', 'spPr', 'explosion', 'dPt', 'dLbls', 'cat', 'val'),
     'radar':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'cat', 'val'),
     'scatter':('idx', 'order', 'tx', 'spPr', 'marker', 'dPt', 'dLbls', 'trendline',
- 'errBars', 'xVal', 'yVal', 'smooth'),
+               'errBars', 'xVal', 'yVal', 'smooth'),
     'surface':('idx', 'order', 'tx', 'spPr', 'cat', 'val'),
                      }
 
@@ -81,7 +82,7 @@ class Series(Serialisable):
 
     #bar chart
     invertIfNegative = NestedBool(allow_none=True)
-    shape = Typed(expected_type=Shape, allow_none=True)
+    shape = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
 
     #bubble chart
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
