@@ -76,7 +76,7 @@ class Series(Serialisable):
     idx = NestedInteger()
     order = NestedInteger()
     tx = Typed(expected_type=SeriesLabel, allow_none=True)
-    label = Alias('tx')
+    title = Alias('tx')
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     ShapeProperties = Alias('spPr')
 

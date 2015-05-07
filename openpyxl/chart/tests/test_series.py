@@ -332,8 +332,8 @@ class TestSeriesFactory:
         assert diff is None, diff
 
 
-    def test_label(self, Series):
-        series = Series("Sheet1!A1:A10", label="First Series")
+    def test_title(self, Series):
+        series = Series("Sheet1!A1:A10", title="First Series")
         series.__elements__ = ('idx', 'order', 'tx')
         xml = tostring(series.to_tree(idx=0))
         expected = """
@@ -349,8 +349,8 @@ class TestSeriesFactory:
         assert diff is None, diff
 
 
-    def test_label_from_data(self, Series):
-        series = Series("Sheet1!A1:A10", label_from_data=True)
+    def test_title_from_data(self, Series):
+        series = Series("Sheet1!A1:A10", title_from_data=True)
         series.__elements__ = ('tx', 'val')
         xml = tostring(series.to_tree(idx=0))
         expected = """
