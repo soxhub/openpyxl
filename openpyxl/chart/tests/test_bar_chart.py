@@ -93,8 +93,8 @@ class TestBarChart:
 
     def test_series(self, BarChart):
         from .. import Series
-        s1 = Series(values="Sheet1!A$1$:A$10")
-        s2 = Series(values="Sheet1!B$1$:B$10")
+        s1 = Series(values="Sheet1!$A$1:$A$10")
+        s2 = Series(values="Sheet1!$B$1:$B$10")
         bc = BarChart(ser=[s1, s2])
         xml = tostring(bc.to_tree())
         expected = """
@@ -106,7 +106,7 @@ class TestBarChart:
             <order val="0"></order>
             <val>
               <numRef>
-                <f>Sheet1!A$1$:A$10</f>
+                <f>Sheet1!$A$1:$A$10</f>
               </numRef>
             </val>
           </ser>
@@ -115,7 +115,7 @@ class TestBarChart:
             <order val="1"></order>
             <val>
               <numRef>
-                <f>Sheet1!B$1$:B$10</f>
+                <f>Sheet1!$B$1:$B$10</f>
               </numRef>
             </val>
           </ser>
