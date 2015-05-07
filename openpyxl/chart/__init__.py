@@ -11,7 +11,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 
 
 def Series(values=None, xvalues=None, name_ref=None, title=None,
-           title_from_data=None):
+           title_from_data=None, axis_labels=None):
     from .data_source import NumDataSource, NumRef, AxDataSource
     from .series import Series, XYSeries, SeriesLabel, StrRef
     from ..utils import SHEETRANGE_RE, cells_from_range, quote_sheetname
@@ -42,6 +42,8 @@ def Series(values=None, xvalues=None, name_ref=None, title=None,
     else:
         series = Series()
         series.val = source
+        if axis_labels is not None:
+            series.cat = AxDataSource(numRef=NumRef(f=axis_labels))
 
     if title is not None:
         series.title = title
