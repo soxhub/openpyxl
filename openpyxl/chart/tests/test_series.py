@@ -349,6 +349,28 @@ class TestSeriesFactory:
         assert diff is None, diff
 
 
+    def test_label_from_data(self, Series):
+        series = Series("Sheet1!A1:A10", label_from_data=True)
+        series.__elements__ = ('tx', 'val')
+        xml = tostring(series.to_tree(idx=0))
+        expected = """
+        <ser>
+        <tx>
+          <strRef>
+            <f>Sheet1!A1</f>
+          </strRef>
+         </tx>
+        <val>
+        <numRef>
+           <f>Sheet1!A2:A10</f>
+          </numRef>
+        </val>
+        </ser>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
     def test_xy(self, Series):
         from ..series import XYSeries
         series = Series("A1:A10", xvalues="B1:B10")
