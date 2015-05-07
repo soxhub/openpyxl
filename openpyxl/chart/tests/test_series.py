@@ -272,7 +272,7 @@ def Series():
     from .. import Series
     return Series
 
-class TestSeries:
+class TestSeriesFactory:
 
     def test_ctor(self, Series):
         series = Series(values="Sheet1!$A$1:$A$10")
@@ -330,6 +330,29 @@ class TestSeries:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_label(self, Series):
+        series = Series("Sheet1!A1:A10", label="First Series")
+        series.__elements__ = ('idx', 'order', 'tx')
+        xml = tostring(series.to_tree(idx=0))
+        expected = """
+        <ser>
+          <idx val="0"></idx>
+          <order val="0"></order>
+          <tx>
+            <v>First Series</v>
+          </tx>
+        </ser>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    @pytest.mark.xfail
+    def test_xy(self, Series):
+        from ..series import XYSeries
+        series = Series("A1:A10", xvalues="B1:B10")
+        assert isinstance(series, XYSeries)
 
 
 @pytest.fixture

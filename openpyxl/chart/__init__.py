@@ -10,9 +10,10 @@ from .stock_chart import StockChart
 from .surface_chart import SurfaceChart, SurfaceChart3D
 
 
-def Series(values=None, xvalues=None, name_ref=None, cat_ref=None, order=None):
+def Series(values=None, xvalues=None, name_ref=None, label=None,
+           label_from_data=None):
     from .data_source import NumDataSource, NumRef
-    from .series import Series, XYSeries
+    from .series import Series, XYSeries, SeriesLabel
 
     """
     High level function for creating series
@@ -27,4 +28,7 @@ def Series(values=None, xvalues=None, name_ref=None, cat_ref=None, order=None):
     else:
         series = Series()
         series.val = source
+
+    if label is not None:
+        series.label = SeriesLabel(v=label)
     return series
