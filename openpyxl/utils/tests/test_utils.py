@@ -23,12 +23,14 @@ def test_invalid_coordinate(value):
         coordinate_from_string(value)
 
 
-def test_absolute():
-    assert '$ZF$51' == absolute_coordinate('ZF51')
-
-def test_absolute_multiple():
-
-    assert '$ZF$51:$ZF$53' == absolute_coordinate('ZF51:ZF53')
+@pytest.mark.parametrize("coord, result",
+                         [
+                             ("ZF51",'$ZF$51',),
+                             ('ZF51:ZF53', '$ZF$51:$ZF$53')
+                         ]
+                         )
+def test_absolute(coord, result):
+    assert absolute_coordinate(coord) == result
 
 
 def test_column_interval():
