@@ -36,3 +36,34 @@ class TestNumRef:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+@pytest.fixture
+def StrRef():
+    from ..data_source import StrRef
+    return StrRef
+
+
+class TestStrRef:
+
+    def test_ctor(self, StrRef):
+        data_source = StrRef(f="Sheet1!A1")
+        xml = tostring(data_source.to_tree())
+        expected = """
+        <strRef>
+          <f>Sheet1!A1</f>
+        </strRef>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, StrRef):
+        src = """
+        <strRef>
+            <f>'Render Start'!$A$2</f>
+        </strRef>
+        """
+        node = fromstring(src)
+        data_source = StrRef.from_tree(node)
+        assert data_source == StrRef(f="'Render Start'!$A$2")

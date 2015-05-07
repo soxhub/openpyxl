@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from openpyxl.compat import basestring
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -13,6 +15,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedBool,
     NestedNoneSet,
+    NestedText,
 )
 
 from .shapes import ShapeProperties
@@ -44,9 +47,21 @@ attribute_mapping = {
                      }
 
 
-class SerTx(Serialisable):
+class SeriesLabel(Serialisable):
 
-    strRef = Typed(expected_type=StrRef)
+    tagname = "tx"
+
+    strRef = Typed(expected_type=StrRef, allow_none=True)
+    v = NestedText(expected_type=basestring, allow_none=True)
+    value = Alias('v')
+
+    __elements__ = ('strRef', 'v')
+
+    def __init__(self,
+                 strRef=None,
+                 v=None):
+        self.strRef = strRef
+        self.v = v
 
 
 class Series(Serialisable):
@@ -60,7 +75,8 @@ class Series(Serialisable):
 
     idx = NestedInteger()
     order = NestedInteger()
-    tx = Typed(expected_type=SerTx, allow_none=True)
+    tx = Typed(expected_type=SeriesLabel, allow_none=True)
+    label = Alias('tx')
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     ShapeProperties = Alias('spPr')
 

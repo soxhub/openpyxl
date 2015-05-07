@@ -105,7 +105,9 @@ class StrData(Serialisable):
 
 class StrRef(Serialisable):
 
-    f = Typed(expected_type=String, )
+    tagname = "strRef"
+
+    f = NestedText(expected_type=basestring, allow_none=True)
     strCache = Typed(expected_type=StrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

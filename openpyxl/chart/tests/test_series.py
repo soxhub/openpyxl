@@ -330,3 +330,34 @@ class TestSeries:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+@pytest.fixture
+def SeriesLabel():
+    from ..series import SeriesLabel
+    return SeriesLabel
+
+
+class TestSeriesLabel:
+
+    def test_ctor(self, SeriesLabel):
+        label = SeriesLabel(v="Label")
+        xml = tostring(label.to_tree())
+        expected = """
+        <tx>
+          <v>Label</v>
+        </tx>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SeriesLabel):
+        src = """
+        <tx>
+          <v>Label</v>
+        </tx>
+        """
+        node = fromstring(src)
+        label = SeriesLabel.from_tree(node)
+        assert label == SeriesLabel(v="Label")
