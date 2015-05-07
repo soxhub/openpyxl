@@ -19,7 +19,7 @@ from openpyxl.descriptors.nested import (
 
 from ._chart import ChartBase
 from .axis import CatAx, ValAx
-from .series import Series
+from .series import XYSeries
 from .label import DataLabels
 
 
@@ -28,7 +28,7 @@ class BubbleChart(ChartBase):
     tagname = "bubbleChart"
 
     varyColors = NestedBool(allow_none=True)
-    ser = Typed(expected_type=Series, allow_none=True)
+    ser = Typed(expected_type=XYSeries, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     bubble3D = NestedBool(allow_none=True)
