@@ -12,7 +12,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 
 def Series(values=None, xvalues=None, name_ref=None, label=None,
            label_from_data=None):
-    from .data_source import NumDataSource, NumRef
+    from .data_source import NumDataSource, NumRef, AxDataSource
     from .series import Series, XYSeries, SeriesLabel
 
     """
@@ -24,7 +24,7 @@ def Series(values=None, xvalues=None, name_ref=None, label=None,
     if xvalues is not None:
         series = XYSeries()
         series.yVal = source
-        series.xVal = NumDataSource(numRef=NumRef(f=xvalues))
+        series.xVal = AxDataSource(numRef=NumRef(f=xvalues))
     else:
         series = Series()
         series.val = source

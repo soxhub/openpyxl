@@ -348,7 +348,7 @@ class TestSeriesFactory:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    @pytest.mark.xfail
+
     def test_xy(self, Series):
         from ..series import XYSeries
         series = Series("A1:A10", xvalues="B1:B10")
