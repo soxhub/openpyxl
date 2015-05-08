@@ -86,3 +86,11 @@ class ChartBase(Serialisable):
         """
         for s in self.ser:
             s.cat = AxDataSource(numRef=NumRef(f=axis_labels))
+
+
+    def add_data(self, data, from_rows=False, title_from_data=False):
+        """
+        Add a range of data in a single pass.
+        The default is to treat each column as a data series.
+        """
+        pass
