@@ -46,18 +46,6 @@ def test_bounds(range_string, coords):
     assert range_boundaries(range_string) == coords
 
 
-def test_cells_from_range():
-    from .. worksheet import cells_from_range
-    cells = cells_from_range("A1:D4")
-    cells = [list(row) for row in cells]
-    assert cells == [
-       ['A1', 'B1', 'C1', 'D1'],
-       ['A2', 'B2', 'C2', 'D2'],
-       ['A3', 'B3', 'C3', 'D3'],
-       ['A4', 'B4', 'C4', 'D4'],
-                           ]
-
-
 class TestWorksheet:
 
     def test_new_worksheet(self, Worksheet):

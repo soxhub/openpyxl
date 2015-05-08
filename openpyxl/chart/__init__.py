@@ -13,7 +13,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 def Series(values=None, xvalues=None, title=None, title_from_data=False):
     from .data_source import NumDataSource, NumRef, AxDataSource
     from .series import Series, XYSeries, SeriesLabel, StrRef
-    from ..utils import SHEETRANGE_RE, cells_from_range, quote_sheetname
+    from ..utils import SHEETRANGE_RE, rows_from_range, quote_sheetname
     from itertools import chain
 
     """
@@ -25,7 +25,7 @@ def Series(values=None, xvalues=None, title=None, title_from_data=False):
         m = SHEETRANGE_RE.match(values)
         sheetname = m.group('notquoted') or m.group('quotes')
         cells = m.group('cells')
-        cells = cells_from_range(cells)
+        cells = rows_from_range(cells)
         cells = tuple(chain.from_iterable(cells))
         title = "{0}!{1}".format(quote_sheetname(sheetname), cells[0])
         values = "{0}!{1}:{2}".format(quote_sheetname(sheetname), cells[1], cells[-1])

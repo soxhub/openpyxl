@@ -132,7 +132,7 @@ def range_boundaries(range_string):
     return min_col, min_row, max_col, max_row
 
 
-def cells_from_range(range_string):
+def rows_from_range(range_string):
     """
     Get individual addresses for every cell in a range.
     Yields one row at a time.
@@ -141,6 +141,17 @@ def cells_from_range(range_string):
     for row in range(min_row, max_row+1):
         yield tuple('%s%d' % (get_column_letter(col), row)
                     for col in range(min_col, max_col+1))
+
+
+def cols_from_range(range_string):
+    """
+    Get individual addresses for every cell in a range.
+    Yields one row at a time.
+    """
+    min_col, min_row, max_col, max_row = range_boundaries(range_string)
+    for col in range(min_col, max_col+1):
+        yield tuple('%s%d' % (get_column_letter(col), row)
+                    for row in range(min_row, max_row+1))
 
 
 def coordinate_to_tuple(coordinate):

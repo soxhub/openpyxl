@@ -110,3 +110,27 @@ def test_range_to_tuple(range_string, sheetname, boundaries):
 def test_quote_sheetname():
     from .. import quote_sheetname
     assert quote_sheetname("My Sheet") == "'My Sheet'"
+
+
+def test_rows_from_range():
+    from .. import rows_from_range
+    cells = rows_from_range("A1:D4")
+    cells = [list(row) for row in cells]
+    assert cells == [
+       ['A1', 'B1', 'C1', 'D1'],
+       ['A2', 'B2', 'C2', 'D2'],
+       ['A3', 'B3', 'C3', 'D3'],
+       ['A4', 'B4', 'C4', 'D4'],
+                           ]
+
+
+def test_cols_from_range():
+    from .. import cols_from_range
+    cells = cols_from_range("A1:D4")
+    cells = [list(row) for row in cells]
+    assert cells == [
+       ['A1', 'A2', 'A3', 'A4'],
+       ['B1', 'B2', 'B3', 'B4'],
+       ['C1', 'C2', 'C3', 'C4'],
+       ['D1', 'D2', 'D3', 'D4'],
+                           ]

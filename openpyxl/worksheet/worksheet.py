@@ -29,7 +29,7 @@ from openpyxl.utils import (
     column_index_from_string,
     get_column_letter,
     range_boundaries,
-    cells_from_range,
+    rows_from_range,
     coordinate_to_tuple,
 )
 from openpyxl.cell import Cell
@@ -662,7 +662,7 @@ class Worksheet(object):
         if range_string not in self._merged_cells:
             self._merged_cells.append(range_string)
 
-        cells = cells_from_range(range_string)
+        cells = rows_from_range(range_string)
         # only the top-left cell is preserved
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
@@ -674,7 +674,7 @@ class Worksheet(object):
         """Utility for checking whether a cell has been merged or not"""
         cells = set()
         for _range in self._merged_cells:
-            for row in cells_from_range(_range):
+            for row in rows_from_range(_range):
                 cells = cells.union(set(row))
         return cells
 
