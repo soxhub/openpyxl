@@ -10,8 +10,7 @@ from .stock_chart import StockChart
 from .surface_chart import SurfaceChart, SurfaceChart3D
 
 
-def Series(values=None, xvalues=None, title=None,
-           title_from_data=None):
+def Series(values=None, xvalues=None, title=None, title_from_data=False):
     from .data_source import NumDataSource, NumRef, AxDataSource
     from .series import Series, XYSeries, SeriesLabel, StrRef
     from ..utils import SHEETRANGE_RE, cells_from_range, quote_sheetname
