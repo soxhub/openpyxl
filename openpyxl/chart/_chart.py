@@ -4,6 +4,7 @@ from openpyxl.descriptors import Typed, Integer
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS
 
+from .data_source import AxDataSource, NumRef
 from .legend import Legend
 from .series import attribute_mapping
 
@@ -77,3 +78,11 @@ class ChartBase(Serialisable):
         z = getattr(self, "z_axis", None)
         ids = [AxId(axis.axId) for axis in (x, y, z) if axis]
         return ids
+
+
+    def set_categories(self, ref):
+        """
+        Set the categories / x-axis values
+        """
+        for s in self.ser:
+            s.cat = AxDataSource(numRef=NumRef(f=axis_labels))

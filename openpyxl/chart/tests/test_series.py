@@ -377,29 +377,6 @@ class TestSeriesFactory:
         assert isinstance(series, XYSeries)
 
 
-    def test_axis_labels(self, Series):
-        series = Series("B1:B10", axis_labels="A1:A10")
-        series.__elements__ = ('cat', 'val')
-        xml = tostring(series.to_tree(idx=0))
-        expected = """
-            <ser>
-            <cat>
-            <numRef>
-               <f>A1:A10</f>
-              </numRef>
-            </cat>
-            <val>
-            <numRef>
-               <f>B1:B10</f>
-              </numRef>
-            </val>
-            </ser>
-            """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-
 @pytest.fixture
 def SeriesLabel():
     from ..series import SeriesLabel
