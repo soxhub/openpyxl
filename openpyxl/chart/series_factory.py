@@ -1,26 +1,17 @@
 from __future__ import absolute_import
 
-from .area_chart import AreaChart, AreaChart3D
-from .bar_chart import BarChart, BarChart3D
-from .bubble_chart import BubbleChart
-from .line_chart import LineChart, LineChart3D
-from .pie_chart import PieChart, PieChart3D, DoughnutChart, ProjectedPieChart
-from .scatter_chart import ScatterChart
-from .stock_chart import StockChart
-from .surface_chart import SurfaceChart, SurfaceChart3D
+from itertools import chain
+
+from .data_source import NumDataSource, NumRef, AxDataSource
+from .series import Series, XYSeries, SeriesLabel, StrRef
+from ..utils import SHEETRANGE_RE, rows_from_range, quote_sheetname
 
 
-def Series(values=None, xvalues=None, title=None, title_from_data=False):
-    from .data_source import NumDataSource, NumRef, AxDataSource
-    from .series import Series, XYSeries, SeriesLabel, StrRef
-    from ..utils import SHEETRANGE_RE, rows_from_range, quote_sheetname
-    from itertools import chain
-
+def SeriesFactory(values=None, xvalues=None, title=None, title_from_data=False):
     """
-    High level function for creating series
-
-    See http://exceluser.com/excel_help/functions/function-series.htm for a description
+    Convenience Factory for creating chart data series.
     """
+
     if title_from_data:
         m = SHEETRANGE_RE.match(values)
         sheetname = m.group('notquoted') or m.group('quotes')
