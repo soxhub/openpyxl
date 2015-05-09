@@ -11,6 +11,7 @@ def Series():
     from ..series_factory import SeriesFactory
     return SeriesFactory
 
+
 class TestSeriesFactory:
 
     def test_ctor(self, Series):
