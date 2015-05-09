@@ -102,7 +102,7 @@ class TestSeriesFactory:
          </tx>
         <val>
         <numRef>
-           <f>Sheet1!A2:A10</f>
+           <f>Sheet1!$A$2:$A$10</f>
           </numRef>
         </val>
         </ser>
@@ -113,5 +113,5 @@ class TestSeriesFactory:
 
     def test_xy(self, Series):
         from ..series import XYSeries
-        series = Series("A1:A10", xvalues="B1:B10")
+        series = Series("Sheet!A1:A10", xvalues="Sheet!B1:B10")
         assert isinstance(series, XYSeries)
