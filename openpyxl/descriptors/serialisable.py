@@ -90,8 +90,8 @@ class Serialisable(_Serialiasable):
                             el.append(obj)
                     else:
                         obj = desc.to_tree(child, value)
-                    if obj is not None:
-                        el.append(obj)
+                        if obj is not None:
+                            el.append(obj)
                 elif value:
                     SubElement(el, child, val=safe_string(value))
 
