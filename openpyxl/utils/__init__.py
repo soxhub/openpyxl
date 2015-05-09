@@ -163,7 +163,13 @@ def coordinate_to_tuple(coordinate):
 
 
 def range_to_tuple(range_string):
+    """
+    Convert a worksheet range to the sheetname and maximum and minimum
+    coordinate indices
+    """
     m = SHEETRANGE_RE.match(range_string)
+    if m is None:
+        raise ValueError("Value must be of the form sheetname!A1:E4")
     sheetname = m.group("quoted") or m.group("notquoted")
     cells = m.group("cells")
     boundaries = range_boundaries(cells)

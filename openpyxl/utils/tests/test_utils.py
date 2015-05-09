@@ -107,6 +107,12 @@ def test_range_to_tuple(range_string, sheetname, boundaries):
     assert range_to_tuple(range_string) == (sheetname, boundaries)
 
 
+def test_invalid_range():
+    from .. import range_to_tuple
+    with pytest.raises(ValueError):
+        range_to_tuple("A1:E5")
+
+
 def test_quote_sheetname():
     from .. import quote_sheetname
     assert quote_sheetname("My Sheet") == "'My Sheet'"
