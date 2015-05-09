@@ -35,6 +35,11 @@ class TestReference:
         assert str(ref) == "dummy!$A$1:$J$12"
 
 
+    def test_single_cell(self, Reference):
+        ref = Reference(range_string="Sheet!A1")
+        assert str(ref) == "Sheet!$A$1"
+
+
     def test_from_string(self, Reference):
         ref = Reference(range_string="Sheet1!$A$1:$A$10")
         assert (ref.min_col, ref.min_row, ref.max_col, ref.max_row) == (1,1, 1,10)
@@ -76,5 +81,5 @@ class TestReference:
                              )
     def test_pop(self, Reference, range_string, cell, min_col, min_row):
         ref = Reference(range_string=range_string)
-        assert (min_col, min_row) == (min_col, min_row)
-        assert cell == cell
+        assert cell == ref.pop()
+        assert (ref.min_col, ref.min_row) == (min_col, min_row)
