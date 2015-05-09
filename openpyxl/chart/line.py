@@ -11,6 +11,7 @@ from openpyxl.descriptors import (
     NoneSet,
     String,
     Alias,
+    Sequence
 )
 from openpyxl.descriptors.excel import Coordinate, Percentage
 
@@ -56,7 +57,7 @@ class DashStop(Serialisable):
 
 class DashStopList(Serialisable):
 
-    ds = Typed(expected_type=DashStop, allow_none=True)
+    ds = Sequence(expected_type=DashStop, allow_none=True)
 
     def __init__(self,
                  ds=None,
@@ -66,7 +67,9 @@ class DashStopList(Serialisable):
 
 class LineProperties(Serialisable):
 
-    w = Coordinate()
+    tagname = "ln"
+
+    w = Integer()
     cap = NoneSet(values=(['rnd', 'sq', 'flat']))
     cmpd = NoneSet(values=(['sng', 'dbl', 'thickThin', 'thinThick', 'tri']))
     algn = NoneSet(values=(['ctr', 'in']))
@@ -86,6 +89,9 @@ class LineProperties(Serialisable):
     tailEnd = Typed(expected_type=LineEndProperties, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
+    __elements__ = ('noFill', 'solidFill', 'gradFill', 'pattFill',
+                    'prstDash', 'custDash', 'headEnd', 'tailEnd')
+
     def __init__(self,
                  w=None,
                  cap=None,
@@ -95,7 +101,7 @@ class LineProperties(Serialisable):
                  solidFill=None,
                  gradFill=None,
                  pattFill=None,
-                 prstDash=None,
+                 prstDash='sysDot',
                  custDash=None,
                  headEnd=None,
                  tailEnd=None,
