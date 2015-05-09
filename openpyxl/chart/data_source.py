@@ -75,11 +75,13 @@ class NumRef(Serialisable):
 
 class StrVal(Serialisable):
 
+    tagname = "strVal"
+
     idx = Integer()
-    v = Typed(expected_type=String(), )
+    v = NestedString()
 
     def __init__(self,
-                 idx=None,
+                 idx=0,
                  v=None,
                 ):
         self.idx = idx
@@ -88,7 +90,9 @@ class StrVal(Serialisable):
 
 class StrData(Serialisable):
 
-    ptCount = Integer(allow_none=True, nested=True)
+    tagname = "strData"
+
+    ptCount = NestedInteger(allow_none=True)
     pt = Typed(expected_type=StrVal, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
