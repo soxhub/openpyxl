@@ -19,6 +19,7 @@ from openpyxl.descriptors.nested import (
     NestedFloat,
     NestedNoneSet,
     NestedSet,
+    NestedSequence
 )
 
 from ._chart import ChartBase
@@ -110,14 +111,16 @@ class DoughnutChart(_PieChartBase):
         super(DoughnutChart, self).__init__(**kw)
 
 
-class CustSplit(Serialisable):
+class CustomSplit(Serialisable):
 
-    secondPiePt = NestedInteger(allow_none=True)
+    tagname = "custSplit"
+
+    secondPiePt = NestedSequence(expected_type=int)
 
     __elements__ = ('secondPiePt',)
 
     def __init__(self,
-                 secondPiePt=None,
+                 secondPiePt=(),
                 ):
         self.secondPiePt = secondPiePt
 
@@ -142,7 +145,7 @@ class ProjectedPieChart(_PieChartBase):
     gapWidth = NestedGapAmount()
     splitType = NestedNoneSet(values=(['auto', 'cust', 'percent', 'pos', 'val']))
     splitPos = NestedFloat(allow_none=True)
-    custSplit = Typed(expected_type=CustSplit, allow_none=True)
+    custSplit = Typed(expected_type=CustomSplit, allow_none=True)
     secondPieSize = NestedMinMax(min=5, max=200, allow_none=True)
     serLines = NestedShapeProperties()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)

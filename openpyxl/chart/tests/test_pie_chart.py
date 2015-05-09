@@ -144,3 +144,37 @@ class TestProjectedPieChart:
         assert dict(chart) == {}
         assert chart.gapWidth == 150
         assert chart.secondPieSize == 75
+
+
+@pytest.fixture
+def CustomSplit():
+    from ..pie_chart import CustomSplit
+    return CustomSplit
+
+
+class TestCustomSplit:
+
+    def test_ctor(self, CustomSplit):
+        pie_chart = CustomSplit([1, 2, 3])
+        xml = tostring(pie_chart.to_tree())
+        expected = """
+        <custSplit>
+          <secondPiePt val="1" />
+          <secondPiePt val="2" />
+          <secondPiePt val="3" />
+        </custSplit>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, CustomSplit):
+        src = """
+        <custSplit>
+          <secondPiePt val="1" />
+          <secondPiePt val="2" />
+        </custSplit>
+        """
+        node = fromstring(src)
+        pie_chart = CustomSplit.from_tree(node)
+        assert pie_chart == CustomSplit([1, 2])
