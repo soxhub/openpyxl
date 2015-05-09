@@ -10,8 +10,9 @@ from openpyxl.descriptors import (
     Typed,
 )
 from openpyxl.descriptors.excel import Percentage
+from openpyxl.descriptors.nested import NestedNoneSet
 
-from .colors import SchemeColor, PresetColor
+from .colors import PRESET_COLORS, SCHEME_COLORS
 from .drawing import OfficeArtExtensionList
 
 
@@ -30,8 +31,8 @@ class PatternFillProperties(Serialisable):
                         'dotGrid', 'smConfetti', 'lgConfetti', 'horzBrick', 'diagBrick',
                         'solidDmnd', 'openDmnd', 'dotDmnd', 'plaid', 'sphere', 'weave', 'divot',
                         'shingle', 'wave', 'trellis', 'zigZag']))
-    fgClr = Typed(expected_type=SchemeColor, allow_none=True)
-    bgClr = Typed(expected_type=PresetColor, allow_none=True)
+    fgClr = NestedNoneSet(values=SCHEME_COLORS)
+    bgClr = NestedNoneSet(values=PRESET_COLORS)
 
     def __init__(self,
                  prst=None,
