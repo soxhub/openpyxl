@@ -35,9 +35,9 @@ class TestReference:
         assert str(ref) == "dummy!$A$1:$J$12"
 
 
-    def test_single_cell(self, Reference):
-        ref = Reference(range_string="Sheet!A1")
-        assert str(ref) == "Sheet!$A$1"
+    def test_single_cell(self, Reference, Worksheet):
+        ref = Reference(Worksheet(), min_col=1, min_row=1)
+        assert str(ref) == "dummy!$A$1"
 
 
     def test_from_string(self, Reference):
