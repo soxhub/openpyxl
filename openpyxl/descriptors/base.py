@@ -183,13 +183,8 @@ class Sequence(Descriptor):
     def __set__(self, instance, seq):
         if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
-        seq = list(seq)
-        for idx, value in enumerate(seq):
-            if not isinstance(value, self.expected_type):
-                raise TypeError(
-                    "[{0}] of sequence must be of type {1}".format(
-                        idx, self.expected_type)
-                )
+        seq = [_convert(self.expected_type, value) for value in seq]
+
         super(Sequence, self).__set__(instance, seq)
 
 

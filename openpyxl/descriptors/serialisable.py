@@ -44,12 +44,17 @@ class Serialisable(_Serialiasable):
             tag = localname(el)
             if tag in KEYWORDS:
                 tag = "_" + tag
+            print(tag)
             desc = getattr(cls, tag, None)
             if desc is None:
                 continue
             if tag in cls.__nested__:
                 if hasattr(desc, 'from_tree'):
-                    attrib[tag] = el
+                    if isinstance(desc, Sequence):
+                        attrib.setdefault(tag, [])
+                        attrib[tag].append(desc.from_tree(el))
+                    else:
+                        attrib[tag] = el
             else:
                 if isinstance(desc, property):
                     continue

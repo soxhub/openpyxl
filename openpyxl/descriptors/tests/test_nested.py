@@ -212,67 +212,98 @@ def test_min_max_value():
     assert simple.size == 6
 
 
-def test_sequence():
-    from ..nested import NestedSequence
+class TestSequence:
 
 
-    class Simple(Serialisable):
-        tagname = "xf"
+    def test_ctor(self):
+        from ..nested import NestedSequence
 
-        formula = NestedSequence(expected_type=str)
+        class Simple(Serialisable):
+            tagname = "xf"
 
-        def __init__(self, formula):
-            self.formula = formula
+            formula = NestedSequence(expected_type=str)
 
-
-    simple = Simple(formula=['1', '2', '3'])
-    xml = tostring(simple.to_tree())
-    expected = """
-    <xf>
-       <formula val="1"/>
-       <formula val="2"/>
-       <formula val="3"/>
-    </xf>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+            def __init__(self, formula):
+                self.formula = formula
 
 
-def test_custom_sequence():
-    from ..nested import NestedSequence
+        simple = Simple(formula=['1', '2', '3'])
+        xml = tostring(simple.to_tree())
+        expected = """
+        <xf>
+           <formula val="1"/>
+           <formula val="2"/>
+           <formula val="3"/>
+        </xf>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
-    def to_tree(tagname, value):
-        from openpyxl.xml.functions import Element
-        for s in sequence:
-            container = Element("stop")
-            container.append(Element(tagname, val=s))
-            yield container
+    def test_from_xml(self):
+        from ..nested import NestedSequence
+
+        class Simple(Serialisable):
+            tagname = "xf"
+
+            formula = NestedSequence(expected_type=str)
+
+            def __init__(self, formula):
+                self.formula = formula
+
+        xml = """
+        <xf>
+           <formula val="1"/>
+           <formula val="2"/>
+           <formula val="3"/>
+        </xf>
+        """
+        node = fromstring(xml)
+        simple = Simple.from_tree(node)
+        simple = Simple(formula=['1', '2', '3'])
 
 
-    class Simple(Serialisable):
-
-        tagname = "fill"
-
-        stop = NestedSequence(expected_type=str)
-
-        def __init__(self, stop):
-            self.stop = stop
+    def test_custom_sequence(self):
+        from ..nested import NestedSequence
 
 
-    simple = Simple(['a', 'b', 'c'])
-    xml = tostring(simple.to_tree())
+        def to_tree(tagname, sequence):
+            from openpyxl.xml.functions import Element
+            for s in sequence:
+                container = Element("color")
+                container.append(Element(tagname, position=s))
+                yield container
 
-    expected = """
-    <fill>
-        <stop val="a"/>
-        <stop val="b"/>
-        <stop val="c"/>
-    </fill>
-    """
 
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+        class Simple(Serialisable):
+
+            tagname = "fill"
+
+            stop = NestedSequence(expected_type=str, to_tree=to_tree)
+
+            def __init__(self, stop):
+                self.stop = stop
+
+
+        simple = Simple(['a', 'b', 'c'])
+        xml = tostring(simple.to_tree())
+
+        expected = """
+        <fill>
+          <color>
+            <stop position="a"></stop>
+          </color>
+          <color>
+            <stop position="b"></stop>
+          </color>
+          <color>
+            <stop position="c"></stop>
+          </color>
+        </fill>
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
 def test_nested_integer():
