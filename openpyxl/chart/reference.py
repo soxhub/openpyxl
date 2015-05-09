@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from itertools import chain
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     MinMax,
@@ -30,8 +32,8 @@ class Reference(Strict):
 
     min_row = MinMax(min=1, max=1000000, expected_type=int)
     max_row = MinMax(min=1, max=1000000, expected_type=int)
-    min_col = MinMax(min=1, max=16384)
-    max_col = MinMax(min=1, max=16384)
+    min_col = MinMax(min=1, max=16384, expected_type=int)
+    max_col = MinMax(min=1, max=16384, expected_type=int)
     range_string = String(allow_none=True)
 
     def __init__(self,
@@ -75,7 +77,7 @@ class Reference(Strict):
 
 
     @property
-    def cols(self):
+    def rows(self):
         """
         Return all cells in range by column
         """
@@ -85,10 +87,29 @@ class Reference(Strict):
 
 
     @property
-    def rows(self):
+    def cols(self):
         """
         Return all cells in range by row
         """
         for col in range(self.min_col, self.max_col+1):
             yield tuple('%s%d' % (get_column_letter(col), row)
                         for row in range(self.min_row, self.max_row+1))
+
+
+    @property
+    def cells(self):
+        """
+        Return a flattened list of all cells (by column)
+        """
+        return chain.from_iterable(self.cols)
+
+
+    def pop(self):
+        """
+        Return and remove the first cell
+        """
+        if self.min_row == self.max_row:
+            self.min_col += 1
+        else:
+            self.min_row += 1
+        return next(self.cells)

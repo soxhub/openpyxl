@@ -38,3 +38,42 @@ class TestReference:
     def test_from_string(self, Reference):
         ref = Reference(range_string="Sheet1!$A$1:$A$10")
         assert (ref.min_col, ref.min_row, ref.max_col, ref.max_row) == (1,1, 1,10)
+
+
+    def test_cols(self, Reference):
+        ref = Reference(range_string="Sheet!A1:B2")
+        assert list(ref.cols) == [
+            ('A1', 'A2'),
+            ('B1', 'B2')
+        ]
+
+
+    def test_rows(self, Reference):
+        ref = Reference(range_string="Sheet!A1:B2")
+        assert list(ref.rows) == [
+            ('A1', 'B1'),
+            ('A2', 'B2')
+        ]
+
+
+    @pytest.mark.parametrize("range_string, cells",
+                             [
+                                 ("Sheet!A1:A5", ['A1', 'A2', 'A3', 'A4', 'A5']),
+                                 ("Sheet!A1:E1", ['A1', 'B1', 'C1', 'D1', 'E1']),
+                             ]
+                             )
+    def test_cells(self, Reference, range_string, cells):
+        ref = Reference(range_string=range_string)
+        assert list(ref.cells) == cells
+
+
+    @pytest.mark.parametrize("range_string, cell, min_col, min_row",
+                             [
+                                 ("Sheet!A1:A5", 'A1', 1, 2),
+                                 ("Sheet!A1:E1", 'A1', 2, 1),
+                             ]
+                             )
+    def test_pop(self, Reference, range_string, cell, min_col, min_row):
+        ref = Reference(range_string=range_string)
+        assert cell == cell
+        assert (min_col, min_row) == (min_col, min_row)
