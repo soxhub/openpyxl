@@ -19,16 +19,6 @@ from .drawing import OfficeArtExtensionList
 Fill elements from drawing main schema
 """
 
-class NoFillProperties(Serialisable):
-
-    pass
-
-
-class SolidColorFillProperties(Serialisable):
-
-    pass
-
-
 class PatternFillProperties(Serialisable):
 
     prst = Set(values=(['pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40',
