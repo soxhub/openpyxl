@@ -44,7 +44,6 @@ class Serialisable(_Serialiasable):
             tag = localname(el)
             if tag in KEYWORDS:
                 tag = "_" + tag
-            print(tag)
             desc = getattr(cls, tag, None)
             if desc is None:
                 continue
