@@ -61,12 +61,11 @@ class Reference(Strict):
 
 
     def __repr__(self):
-        sheetname = quote_sheetname(self.worksheet.title)
-        fmt = "{0}!{1}{2}:{3}{4}"
+        fmt = "{0}!${1}${2}:${3}${4}"
         if (self.min_col == self.max_col
-            and self.min_row == self.min_row):
-            fmt = "{0}!{1}{2}"
-        return fmt.format(sheetname,
+            and self.min_row == self.max_row):
+            fmt = "{0}!${1}${2}"
+        return fmt.format(self.sheetname,
                           get_column_letter(self.min_col), self.min_row,
                           get_column_letter(self.max_col), self.max_row
                           )
@@ -108,8 +107,14 @@ class Reference(Strict):
         """
         Return and remove the first cell
         """
+        cell = next(self.cells)
         if self.min_row == self.max_row:
             self.min_col += 1
         else:
             self.min_row += 1
-        return next(self.cells)
+        return cell
+
+
+    @property
+    def sheetname(self):
+        return quote_sheetname(self.worksheet.title)
