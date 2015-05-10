@@ -93,21 +93,37 @@ class ChartBase(Serialisable):
             s.cat = AxDataSource(numRef=NumRef(f=labels))
 
 
-    def add_data(self, data, from_rows=False, title_from_data=False, labels=None):
+    def add_data(self, data, from_rows=False, titles_from_data=False, labels_from_data=False):
         """
         Add a range of data in a single pass.
         The default is to treat each column as a data series.
         """
         if not isinstance(data, Reference):
             data = Reference(range_string=data)
+
         if from_rows:
             values = data.rows
+
         else:
             values = data.cols
+
+        if labels_from_data:
+            if from_rows:
+                # first row used for labels
+                labels = Reference(data.worksheet, data.min_col,
+                                   data.min_row, data.max_col, data.min_row)
+                data.min_row += 1
+            else:
+                # first column used for labels
+                labels = Reference(data.worksheet, data.min_col,
+                                   data.min_row, data.min_col, data.max_row)
+                data.min_col += 1
+
         for v in values:
             range_string = "{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
-            series = SeriesFactory(range_string, title_from_data=title_from_data)
+            series = SeriesFactory(range_string, title_from_data=titles_from_data)
             self.ser.append(series)
-        if labels is not None:
+
+        if labels_from_data:
             self.set_categories(labels)
 
