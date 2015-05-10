@@ -10,3 +10,4 @@ from .stock_chart import StockChart
 from .surface_chart import SurfaceChart, SurfaceChart3D
 
 from .series_factory import SeriesFactory as Series
+from .reference import Reference
