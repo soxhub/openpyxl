@@ -33,6 +33,8 @@ class Serialisable(_Serialiasable):
     def tagname(self):
         raise(NotImplementedError)
 
+    namespace = None
+
 
     @classmethod
     def from_tree(cls, node):
@@ -88,6 +90,8 @@ class Serialisable(_Serialiasable):
             if child in self.__nested__:
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
+                if getattr(self, 'namespace', None):
+                    child = "{%s}%s" % (self.namespace, child)
                 if hasattr(desc, "to_tree"):
                     if isinstance(value, seq_types):
                         for obj in desc.to_tree(child, value):

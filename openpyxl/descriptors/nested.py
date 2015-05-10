@@ -39,8 +39,10 @@ class Nested(Descriptor):
 
 
     @staticmethod
-    def to_tree(tagname=None, value=None):
+    def to_tree(tagname=None, value=None, namespace=None):
         if value is not None:
+            if namespace is not None:
+                tagname = "{%s}%s" % (namespace, tagname)
             value = safe_string(value)
             return Element(tagname, val=value)
 
@@ -63,8 +65,10 @@ class NestedText(NestedValue):
 
 
     @staticmethod
-    def to_tree(tagname=None, value=None):
+    def to_tree(tagname=None, value=None, namespace=None):
         if value is not None:
+            if namespace is not None:
+                tagname = "{%s}%s" % (namespace, tagname)
             el = Element(tagname)
             el.text = safe_string(value)
             return el
@@ -111,6 +115,6 @@ class NestedSequence(Nested, Sequence):
 
 
     @staticmethod
-    def to_tree(tagname, value):
+    def to_tree(tagname, value, namespace=None):
         for s in value:
             yield Element(tagname, val=safe_string(s))
