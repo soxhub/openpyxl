@@ -19,6 +19,9 @@ from openpyxl.descriptors.nested import (
     NoneSet,
     NestedSet,
 )
+from openpyxl.compat import safe_string
+from openpyxl.xml.constants import DRAWING_NS
+from openpyxl.xml.functions import Element
 
 from .colors import ColorChoice
 from .fill import GradientFillProperties, PatternFillProperties
@@ -31,6 +34,7 @@ Line elements from drawing main schema
 class LineEndProperties(Serialisable):
 
     tagname = "end"
+    namespace = DRAWING_NS
 
     type = NoneSet(values=(['none', 'triangle', 'stealth', 'diamond', 'oval', 'arrow']))
     w = NoneSet(values=(['sm', 'med', 'lg']))
@@ -49,6 +53,7 @@ class LineEndProperties(Serialisable):
 class DashStop(Serialisable):
 
     tagname = "ds"
+    namespace = DRAWING_NS
 
     d = Integer()
     length = Alias('d')
@@ -76,6 +81,7 @@ class DashStopList(Serialisable):
 class LineJoinMiterProperties(Serialisable):
 
     tagname = "miter"
+    namespace = DRAWING_NS
 
     lim = Integer(allow_none=True)
 
@@ -88,8 +94,10 @@ class LineJoinMiterProperties(Serialisable):
 class LineProperties(Serialisable):
 
     tagname = "ln"
+    namespace = DRAWING_NS
 
-    w = Integer()
+    w = MinMax(min=0, max=20116800, allow_none=True) # EMU
+    width = Alias('w')
     cap = NoneSet(values=(['rnd', 'sq', 'flat']))
     cmpd = NoneSet(values=(['sng', 'dbl', 'thickThin', 'thinThick', 'tri']))
     algn = NoneSet(values=(['ctr', 'in']))
@@ -101,7 +109,7 @@ class LineProperties(Serialisable):
 
     prstDash = NestedSet(values=(['solid', 'dot', 'dash', 'lgDash', 'dashDot',
                        'lgDashDot', 'lgDashDotDot', 'sysDash', 'sysDot', 'sysDashDot',
-                       'sysDashDotDot']))
+                       'sysDashDotDot']), namespace=namespace)
 
     custDash = Typed(expected_type=DashStop, allow_none=True)
 
@@ -125,7 +133,7 @@ class LineProperties(Serialisable):
                  solidFill=None,
                  gradFill=None,
                  pattFill=None,
-                 prstDash='sysDot',
+                 prstDash=None,
                  custDash=None,
                  round=None,
                  bevel=None,
@@ -139,9 +147,13 @@ class LineProperties(Serialisable):
         self.cmpd = cmpd
         self.algn = algn
         self.noFill = noFill
+        if solidFill is None:
+            solidFill = ColorChoice()
         self.solidFill = solidFill
         self.gradFill = gradFill
         self.pattFill = pattFill
+        if prstDash is None:
+            prstDash = "solid"
         self.prstDash = prstDash
         self.custDash = custDash
         self.round = round

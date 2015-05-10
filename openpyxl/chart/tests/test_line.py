@@ -17,10 +17,22 @@ class TestLineProperties:
         line = LineProperties(w=10)
         xml = tostring(line.to_tree())
         expected = """
-        <ln w="10">
-          <prstDash val="sysDot" />
+        <ln w="10" xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <prstDash val="solid" />
         </ln>
         """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_color(self, LineProperties):
+        line = LineProperties(w=10)
+        line.solidFill = "FF0000"
+        expected = """
+            <ln w="10" xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <prstDash val="solid" />
+            </ln>
+            """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -28,7 +40,7 @@ class TestLineProperties:
     def test_from_xml(self, LineProperties):
         src = """
         <ln w="38100" cmpd="sng">
-          <prstDash val="sysDot"/>
+          <prstDash val="solid"/>
         </ln>
         """
         node = fromstring(src)
@@ -48,7 +60,7 @@ class TestLineEndProperties:
         line = LineEndProperties()
         xml = tostring(line.to_tree())
         expected = """
-        <end />
+        <end xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -75,7 +87,7 @@ class TestDashStop:
         line = DashStop()
         xml = tostring(line.to_tree())
         expected = """
-        <ds d="0" sp="0"></ds>
+        <ds xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" d="0" sp="0"></ds>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -102,7 +114,7 @@ class TestLineJoinMiterProperties:
         line = LineJoinMiterProperties()
         xml = tostring(line.to_tree())
         expected = """
-        <miter />
+        <miter xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
