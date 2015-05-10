@@ -49,7 +49,7 @@ class Marker(Serialisable):
     __elements__ = ('symbol', 'size', 'spPr')
 
     def __init__(self,
-                 symbol='auto',
+                 symbol=None,
                  size=None,
                  spPr=None,
                  extLst=None,
