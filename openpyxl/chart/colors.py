@@ -1,16 +1,23 @@
 from __future__ import absolute_import
 
+from openpyxl.compat import unicode
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
+    Alias,
     Typed,
     Integer,
     Set,
     MinMax,
 )
 from openpyxl.descriptors.excel import Percentage
-from openpyxl.descriptors.nested import NestedNoneSet
+from openpyxl.descriptors.nested import (
+    NestedNoneSet,
+    NestedValue,
+)
 
 from openpyxl.styles.colors import RGB
+from openpyxl.xml.constants import DRAWING_NS
 
 from .drawing import OfficeArtExtensionList
 
@@ -97,16 +104,6 @@ class HslColor(Serialisable):
         self.lum = lum
 
 
-class SRgbColor(Serialisable):
-
-    val = Typed(expected_type=RGB)
-    # also EG_ColorTransform
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
 
 class ScRgbColor(Serialisable):
 
@@ -126,8 +123,12 @@ class ScRgbColor(Serialisable):
 
 class ColorChoice(Serialisable):
 
+    tagname = "colorChoice"
+    namespace = DRAWING_NS
+
     scrgbClr = Typed(expected_type=ScRgbColor, allow_none=True)
-    srgbClr = Typed(expected_type=SRgbColor, allow_none=True)
+    srgbClr = NestedValue(expected_type=unicode, allow_none=True)
+    RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HslColor, allow_none=True)
     sysClr = Typed(expected_type=SystemColor, allow_none=True)
     schemeClr = NestedNoneSet(values=SCHEME_COLORS)
