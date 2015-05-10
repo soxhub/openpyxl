@@ -15,6 +15,7 @@ from openpyxl.descriptors.nested import (
 
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.utils import coordinate_to_tuple
+from openpyxl.utils.units import cm_to_EMU
 
 from openpyxl.xml.constants import SHEET_DRAWING_NS
 
@@ -236,8 +237,8 @@ class SpreadsheetDrawing(Serialisable):
             anchor = OneCellAnchor()
             anchor._from.row = row -1
             anchor._from.col = col -1
-            anchor.ext.width = 5400000 # 15cm, approx 5 cols
-            anchor.ext.height = 2700000 # 7.5cm approx 14 rows
+            anchor.ext.width = cm_to_EMU(c.width)
+            anchor.ext.height = cm_to_EMU(c.height)
             anchor.graphicFrame = frame
 
             anchors.append(anchor)

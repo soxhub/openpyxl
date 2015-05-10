@@ -223,6 +223,8 @@ class TestSpreadsheetDrawing:
         class Chart:
 
             anchor = "E15"
+            width = 15
+            height = 7.5
 
         drawing = SpreadsheetDrawing()
         drawing.charts.append(Chart())
