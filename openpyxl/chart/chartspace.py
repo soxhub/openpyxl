@@ -5,7 +5,7 @@ Enclosing chart object. The various chart types are actually child objects.
 Will probably need to call this indirectly
 """
 
-from openpyxl.compat import basestring
+from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -368,7 +368,7 @@ class PivotSource(Serialisable):
 
     tagname = "pivotSource"
 
-    name = NestedText(expected_type=basestring)
+    name = NestedText(expected_type=unicode)
     fmtId = NestedText(expected_type=int)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

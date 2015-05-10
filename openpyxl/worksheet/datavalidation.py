@@ -7,7 +7,7 @@ import warnings
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import Bool, NoneSet, Set, String
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import OrderedDict, safe_string, deprecated, basestring
+from openpyxl.compat import OrderedDict, safe_string, deprecated, unicode
 from openpyxl.cell import coordinate_from_string
 from openpyxl.worksheet import rows_from_range
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -79,8 +79,8 @@ class DataValidation(Serialisable):
     promptTitle = String(allow_none = True)
     prompt = String(allow_none = True)
     sqref = String(allow_none = True)
-    formula1 = NestedText(allow_none=True, expected_type=basestring)
-    formula2 = NestedText(allow_none=True, expected_type=basestring)
+    formula1 = NestedText(allow_none=True, expected_type=unicode)
+    formula2 = NestedText(allow_none=True, expected_type=unicode)
 
     type = NoneSet(values=("whole", "decimal", "list", "date", "time",
                            "textLength", "custom"))

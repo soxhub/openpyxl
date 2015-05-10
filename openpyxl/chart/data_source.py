@@ -2,7 +2,7 @@
 Collection of utility primitives for charts.
 """
 
-from openpyxl.compat import basestring
+from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Bool,
@@ -23,7 +23,7 @@ from openpyxl.descriptors.nested import (
 class NumVal(Serialisable):
 
     idx = Integer()
-    formatCode = NestedText(allow_none=True, expected_type=basestring)
+    formatCode = NestedText(allow_none=True, expected_type=unicode)
     v = NestedText(allow_none=True, expected_type=float)
 
     def __init__(self,
@@ -58,7 +58,7 @@ class NumData(Serialisable):
 
 class NumRef(Serialisable):
 
-    f = NestedText(expected_type=basestring)
+    f = NestedText(expected_type=unicode)
     ref = Alias('f')
     numCache = Typed(expected_type=NumData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -111,7 +111,7 @@ class StrRef(Serialisable):
 
     tagname = "strRef"
 
-    f = NestedText(expected_type=basestring, allow_none=True)
+    f = NestedText(expected_type=unicode, allow_none=True)
     strCache = Typed(expected_type=StrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
