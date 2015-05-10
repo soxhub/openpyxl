@@ -318,7 +318,7 @@ class ChartContainer(Serialisable):
                  plotArea=None,
                  legend=None,
                  plotVisOnly=None,
-                 dispBlanksAs="zero",
+                 dispBlanksAs="gap",
                  showDLblsOverMax=None,
                  extLst=None,
                 ):

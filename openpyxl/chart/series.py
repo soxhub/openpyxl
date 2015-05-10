@@ -78,7 +78,7 @@ class Series(Serialisable):
     tx = Typed(expected_type=SeriesLabel, allow_none=True)
     title = Alias('tx')
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    ShapeProperties = Alias('spPr')
+    shapeProperties = Alias('spPr')
 
     # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
@@ -135,6 +135,8 @@ class Series(Serialisable):
         self.idx = idx
         self.order = order
         self.tx = tx
+        if spPr is None:
+            spPr = ShapeProperties()
         self.spPr = spPr
         self.pictureOptions = pictureOptions
         self.dPt = dPt
@@ -149,6 +151,8 @@ class Series(Serialisable):
         self.yVal = yVal
         self.bubbleSize = bubbleSize
         self.bubble3D = bubble3D
+        if marker is None:
+            marker = Marker()
         self.marker = marker
         self.smooth = smooth
         self.explosion = explosion

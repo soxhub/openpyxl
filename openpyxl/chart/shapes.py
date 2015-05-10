@@ -479,6 +479,7 @@ class ShapeProperties(Serialisable):
     prstGeom = Typed(expected_type=PresetGeometry2D, allow_none=True)
 
     ln = Typed(expected_type=LineProperties, allow_none=True)
+    line = Alias('ln')
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     sp3d = Typed(expected_type=Shape3D, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
@@ -497,6 +498,8 @@ class ShapeProperties(Serialisable):
                 ):
         self.bwMode = bwMode
         self.xfrm = xfrm
+        if ln is None:
+            ln = LineProperties()
         self.ln = ln
         self.custGeom = custGeom
         self.prstGeom = prstGeom
