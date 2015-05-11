@@ -19,6 +19,12 @@ from openpyxl.descriptors.nested import (
     )
 
 from .drawing import OfficeArtExtensionList
+from .colors import ColorChoiceDescriptor
+from .fill import (
+    GradientFillProperties,
+    BlipFillProperties,
+    PatternFillProperties,
+    )
 from .line import LineProperties
 
 from openpyxl.styles.colors import Color
@@ -476,17 +482,30 @@ class ShapeProperties(Serialisable):
     custGeom = Typed(expected_type=CustomGeometry2D, allow_none=True) # either or
     prstGeom = Typed(expected_type=PresetGeometry2D, allow_none=True)
 
+    # fills one of
+    noFill = Typed(expected_type=Serialisable, allow_none=True)
+    solidFill = ColorChoiceDescriptor()
+    gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
+    pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
+    #pattFill = Typed(expected_type=CT_PatternFillProperties)
+    #grpFill = Typed(expected_type=CT_GroupFillProperties)
+
     ln = Typed(expected_type=LineProperties, allow_none=True)
     line = Alias('ln')
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     sp3d = Typed(expected_type=Shape3D, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
-    __elements__ = ('xfrm', 'ln', 'scene3d', 'sp3d')
+    __elements__ = ('xfrm', 'noFill', 'solidFill', 'gradFill', 'pattFill',
+                    'ln', 'scene3d', 'sp3d')
 
     def __init__(self,
                  bwMode=None,
                  xfrm=None,
+                 noFill=None,
+                 solidFill=None,
+                 gradFill=None,
+                 pattFill=None,
                  ln=None,
                  scene3d=None,
                  custGeom=None,
@@ -496,6 +515,10 @@ class ShapeProperties(Serialisable):
                 ):
         self.bwMode = bwMode
         self.xfrm = xfrm
+        self.noFill = noFill
+        self.solidFill = solidFill
+        self.gradFill = gradFill
+        self.pattFill = pattFill
         if ln is None:
             ln = LineProperties()
         self.ln = ln

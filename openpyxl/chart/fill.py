@@ -11,6 +11,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import Percentage
 from openpyxl.descriptors.nested import NestedNoneSet
+from openpyxl.xml.constants import DRAWING_NS
 
 from .colors import PRESET_COLORS, SCHEME_COLORS
 from .drawing import OfficeArtExtensionList
@@ -173,3 +174,8 @@ class BlipFillProperties(Serialisable):
         self.rotWithShape = rotWithShape
         self.blip = blip
         self.srcRect = srcRect
+
+
+class NoFill(Serialisable):
+
+    namespace = DRAWING_NS
