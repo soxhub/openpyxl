@@ -52,6 +52,11 @@ class TestDataPoint:
         expected = """
         <dPt>
           <idx val="9"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid"/>
+              </a:ln>
+            </spPr>
         </dPt>
         """
         diff = compare_xml(xml, expected)
