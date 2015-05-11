@@ -29,6 +29,8 @@ class Serialisable(_Serialiasable):
     __nested__ = None
     __elements__ = None
 
+    idx_base = 0
+
     @property
     def tagname(self):
         raise(NotImplementedError)
@@ -106,7 +108,7 @@ class Serialisable(_Serialiasable):
             else:
                 obj = getattr(self, child)
                 if isinstance(obj, seq_types):
-                    for idx, v in enumerate(obj):
+                    for idx, v in enumerate(obj, self.idx_base):
                         if hasattr(v, 'to_tree'):
                             el.append(v.to_tree(tagname=child, idx=idx))
                         else:
