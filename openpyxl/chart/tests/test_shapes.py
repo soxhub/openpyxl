@@ -17,7 +17,11 @@ class TestShapeProperties:
         shapes = ShapeProperties()
         xml = tostring(shapes.to_tree())
         expected = """
-        <spPr />
+        <spPr>
+        <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:prstDash val="solid" />
+        </a:ln>
+        </spPr>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -46,7 +50,7 @@ class TestShapeProperties:
 
 @pytest.fixture
 def GradientFillProperties():
-    from ..shapes import GradientFillProperties
+    from ..fill import GradientFillProperties
     return GradientFillProperties
 
 

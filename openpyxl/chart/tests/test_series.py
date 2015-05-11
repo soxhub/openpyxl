@@ -15,6 +15,11 @@ class TestBarSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
           <val>
             <numRef>
                 <f>Blatt1!$A$1:$A$12</f>
@@ -43,6 +48,11 @@ class TestAreaSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
           <val>
             <numRef>
               <f>Blatt1!$A$1:$A$12</f>
@@ -71,6 +81,11 @@ class TestBubbleSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+          </spPr>
           <xVal>
             <numRef>
               <f>Blatt1!$A$1:$A$12</f>
@@ -149,6 +164,11 @@ class TestPieSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+         </spPr>
           <explosion val="25"/>
           <val>
             <numRef>
@@ -179,6 +199,11 @@ class TestRadarSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+          </spPr>
           <marker>
             <symbol val="none"/>
           </marker>
@@ -210,6 +235,11 @@ class TestScatterSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+          </spPr>
           <marker>
             <symbol val="none"/>
           </marker>
@@ -248,6 +278,11 @@ class TestSurfaceSer:
         <ser>
           <idx val="0"/>
           <order val="0"/>
+          <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+          </spPr>
           <val>
             <numRef>
               <f>Blatt1!$A$1:$A$12</f>

@@ -19,7 +19,7 @@ class TestChartContainer:
         expected = """
         <chart>
           <plotArea></plotArea>
-          <dispBlanksAs val="zero"></dispBlanksAs>
+          <dispBlanksAs val="gap"></dispBlanksAs>
         </chart>
         """
         diff = compare_xml(xml, expected)
@@ -30,7 +30,7 @@ class TestChartContainer:
         src = """
         <chart>
           <plotArea></plotArea>
-          <dispBlanksAs val="zero"></dispBlanksAs>
+          <dispBlanksAs val="gap"></dispBlanksAs>
         </chart>
         """
         node = fromstring(src)

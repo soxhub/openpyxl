@@ -58,6 +58,11 @@ class TestAreaChart:
                <ser>
                  <idx val="0"></idx>
                  <order val="0"></order>
+                 <spPr>
+                 <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                   <a:prstDash val="solid" />
+                 </a:ln>
+                 </spPr>
                  <val>
                    <numRef>
                      <f>Sheet1!$A$1:$A$12</f>
@@ -67,6 +72,11 @@ class TestAreaChart:
                <ser>
                  <idx val="1"></idx>
                  <order val="1"></order>
+                 <spPr>
+                 <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                   <a:prstDash val="solid" />
+                 </a:ln>
+                 </spPr>
                  <val>
                    <numRef>
                      <f>Sheet1!$B$1:$B$12</f>
@@ -98,7 +108,7 @@ class TestAreaChart:
              <legendPos val="r"></legendPos>
              <overlay val="1"></overlay>
            </legend>
-           <dispBlanksAs val="zero"></dispBlanksAs>
+           <dispBlanksAs val="gap"></dispBlanksAs>
          </chart>
         </chartSpace>
         """

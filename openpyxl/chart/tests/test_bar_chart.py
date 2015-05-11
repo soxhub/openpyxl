@@ -83,7 +83,7 @@ class TestBarChart:
              <legendPos val="r"></legendPos>
              <overlay val="1"></overlay>
            </legend>
-           <dispBlanksAs val="zero"></dispBlanksAs>
+           <dispBlanksAs val="gap"></dispBlanksAs>
           </chart>
         </chartSpace>
         """
@@ -104,6 +104,11 @@ class TestBarChart:
           <ser>
             <idx val="0"></idx>
             <order val="0"></order>
+            <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
             <val>
               <numRef>
                 <f>Sheet1!$A$1:$A$10</f>
@@ -113,15 +118,20 @@ class TestBarChart:
           <ser>
             <idx val="1"></idx>
             <order val="1"></order>
+            <spPr>
+              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
             <val>
               <numRef>
                 <f>Sheet1!$B$1:$B$10</f>
               </numRef>
             </val>
           </ser>
-          <gapWidth val="150"></gapWidth>
-          <axId val="10"></axId>
-          <axId val="100"></axId>
+          <gapWidth val="150" />
+          <axId val="10" />
+          <axId val="100" />
         </barChart>
         """
         diff = compare_xml(xml, expected)
