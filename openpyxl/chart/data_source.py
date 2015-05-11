@@ -20,6 +20,19 @@ from openpyxl.descriptors.nested import (
 )
 
 
+class NumFmt(Serialisable):
+
+    formatCode = String()
+    sourceLinked = Bool()
+
+    def __init__(self,
+                 formatCode=None,
+                 sourceLinked=False
+                ):
+        self.formatCode = formatCode
+        self.sourceLinked = sourceLinked
+
+
 class NumVal(Serialisable):
 
     idx = Integer()

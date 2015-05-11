@@ -20,6 +20,12 @@ from openpyxl.descriptors.excel import (
 
 from openpyxl.descriptors.nested import NestedInteger
 
+from .data_source import (
+    NumFmt,
+    StrData,
+    StrVal,
+    StrRef,
+)
 from .shapes import (
     LineProperties,
     Color,
@@ -100,7 +106,13 @@ class TextCharacterProperties(Serialisable):
     sz = Typed(expected_type=Integer())
     b = Typed(expected_type=Bool, allow_none=True)
     i = Typed(expected_type=Bool, allow_none=True)
-    u = Typed(expected_type=Set(values=(['none', 'words', 'sng', 'dbl', 'heavy', 'dotted', 'dottedHeavy', 'dash', 'dashHeavy', 'dashLong', 'dashLongHeavy', 'dotDash', 'dotDashHeavy', 'dotDotDash', 'dotDotDashHeavy', 'wavy', 'wavyHeavy', 'wavyDbl'])))
+    u = Typed(expected_type=Set(values=(
+        ['none', 'words', 'sng', 'dbl',
+         'heavy', 'dotted', 'dottedHeavy', 'dash', 'dashHeavy', 'dashLong',
+         'dashLongHeavy', 'dotDash', 'dotDashHeavy', 'dotDotDash',
+         'dotDotDashHeavy', 'wavy', 'wavyHeavy', 'wavyDbl'
+         ]
+    )))
     strike = Typed(expected_type=Set(values=(['noStrike', 'sngStrike', 'dblStrike'])))
     kern = Typed(expected_type=Integer())
     cap = Typed(expected_type=Set(values=(['none', 'small', 'all'])))
@@ -349,17 +361,19 @@ class GeomGuideList(Serialisable):
 
 class PresetTextShape(Serialisable):
 
-    prst = Typed(expected_type=Set(values=(['textNoShape', 'textPlain',
-                                            'textStop', 'textTriangle', 'textTriangleInverted', 'textChevron',
-                                            'textChevronInverted', 'textRingInside', 'textRingOutside', 'textArchUp',
-                                            'textArchDown', 'textCircle', 'textButton', 'textArchUpPour',
-                                            'textArchDownPour', 'textCirclePour', 'textButtonPour', 'textCurveUp',
-                                            'textCurveDown', 'textCanUp', 'textCanDown', 'textWave1', 'textWave2',
-                                            'textDoubleWave1', 'textWave4', 'textInflate', 'textDeflate',
-                                            'textInflateBottom', 'textDeflateBottom', 'textInflateTop',
-                                            'textDeflateTop', 'textDeflateInflate', 'textDeflateInflateDeflate',
-                                            'textFadeRight', 'textFadeLeft', 'textFadeUp', 'textFadeDown',
-                                            'textSlantUp', 'textSlantDown', 'textCascadeUp', 'textCascadeDown'])))
+    prst = Typed(expected_type=Set(values=(
+        ['textNoShape', 'textPlain','textStop', 'textTriangle', 'textTriangleInverted', 'textChevron',
+         'textChevronInverted', 'textRingInside', 'textRingOutside', 'textArchUp',
+         'textArchDown', 'textCircle', 'textButton', 'textArchUpPour',
+         'textArchDownPour', 'textCirclePour', 'textButtonPour', 'textCurveUp',
+         'textCurveDown', 'textCanUp', 'textCanDown', 'textWave1', 'textWave2',
+         'textDoubleWave1', 'textWave4', 'textInflate', 'textDeflate',
+         'textInflateBottom', 'textDeflateBottom', 'textInflateTop',
+         'textDeflateTop', 'textDeflateInflate', 'textDeflateInflateDeflate',
+         'textFadeRight', 'textFadeLeft', 'textFadeUp', 'textFadeDown',
+         'textSlantUp', 'textSlantDown', 'textCascadeUp', 'textCascadeDown'
+         ]
+    )))
     avLst = Typed(expected_type=GeomGuideList, allow_none=True)
 
     def __init__(self,
@@ -376,8 +390,8 @@ class TextBodyProperties(Serialisable):
     spcFirstLastPara = Bool(allow_none=True)
     vertOverflow = NoneSet(values=(['overflow', 'ellipsis', 'clip']))
     horzOverflow = NoneSet(values=(['overflow', 'clip']))
-    vert = NoneSet(values=(['horz', 'vert', 'vert270', 'wordArtVert', 'eaVert',
-                        'mongolianVert', 'wordArtVertRtl']))
+    vert = NoneSet(values=(['horz', 'vert', 'vert270', 'wordArtVert',
+                            'eaVert', 'mongolianVert', 'wordArtVertRtl']))
     wrap = NoneSet(values=(['none', 'square']))
     lIns = Coordinate(allow_none=True)
     tIns = Coordinate(allow_none=True)
@@ -468,64 +482,6 @@ class TextBody(Serialisable):
         self.bodyPr = bodyPr
         self.lstStyle = lstStyle
         self.p = p
-
-
-class NumFmt(Serialisable):
-
-    formatCode = String(allow_none=True)
-    sourceLinked = Bool(allow_none=True)
-
-    def __init__(self,
-                 formatCode=None,
-                 sourceLinked=None,
-                ):
-        self.formatCode = formatCode
-        self.sourceLinked = sourceLinked
-
-
-class StrVal(Serialisable):
-
-    idx = Integer()
-    v = Typed(expected_type=String(), )
-
-    def __init__(self,
-                 idx=None,
-                 v=None,
-                ):
-        self.idx = idx
-        self.v = v
-
-
-class StrData(Serialisable):
-
-    ptCount = NestedInteger(allow_none=True)
-    pt = Typed(expected_type=StrVal, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    def __init__(self,
-                 ptCount=None,
-                 pt=None,
-                 extLst=None,
-                ):
-        self.ptCount = ptCount
-        self.pt = pt
-        self.extLst = extLst
-
-
-class StrRef(Serialisable):
-
-    f = Typed(expected_type=String, )
-    strCache = Typed(expected_type=StrData, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    def __init__(self,
-                 f=None,
-                 strCache=None,
-                 extLst=None,
-                ):
-        self.f = f
-        self.strCache = strCache
-        self.extLst = extLst
 
 
 class Tx(Serialisable):
