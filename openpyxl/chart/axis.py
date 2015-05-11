@@ -23,6 +23,7 @@ from openpyxl.descriptors.nested import (
     NestedFloat,
     NestedInteger,
     NestedMinMax,
+    NestedSequence,
 )
 
 from .descriptors import NestedShapeProperties
@@ -31,6 +32,18 @@ from .layout import Layout
 from .text import Tx, TextBody
 from .shapes import ShapeProperties
 from .title import Title
+
+
+class ChartLines(Serialisable):
+
+    tagname = "chartLines"
+
+    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    shapeProperties = Alias('spPr')
+
+    def __init__(self, spPr=None):
+        self.spPr = spPr
+
 
 class Scaling(Serialisable):
 
@@ -63,8 +76,8 @@ class _BaseAxis(Serialisable):
     scaling = Typed(expected_type=Scaling)
     delete = NestedBool(allow_none=True)
     axPos = NestedSet(values=(['b', 'l', 'r', 't']))
-    majorGridlines = NestedShapeProperties()
-    minorGridlines = NestedShapeProperties()
+    majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
+    minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     title = Typed(expected_type=Title, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
@@ -204,6 +217,7 @@ class ValAx(_BaseAxis):
         self.majorUnit = majorUnit
         self.minorUnit = minorUnit
         self.dispUnits = dispUnits
+        kw.setdefault('majorGridlines', ChartLines())
         kw.setdefault('axId', 100)
         kw.setdefault('crossAx', 10)
         super(ValAx, self).__init__(**kw)

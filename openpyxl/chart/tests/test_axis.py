@@ -123,6 +123,7 @@ class TestValAx:
             <orientation val="minMax"></orientation>
           </scaling>
           <axPos val="l" />
+          <majorGridlines />
           <crossAx val="10" />
         </valAx>
         """
@@ -305,3 +306,30 @@ class TestDisplayUnits:
         node = fromstring(src)
         axis = DisplayUnits.from_tree(node)
         assert axis == DisplayUnits()
+
+
+@pytest.fixture
+def ChartLines():
+    from ..axis import ChartLines
+    return ChartLines
+
+
+class TestChartLines:
+
+    def test_ctor(self, ChartLines):
+        axis = ChartLines()
+        xml = tostring(axis.to_tree())
+        expected = """
+        <chartLines />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ChartLines):
+        src = """
+        <chartLines />
+        """
+        node = fromstring(src)
+        axis = ChartLines.from_tree(node)
+        assert axis == ChartLines()

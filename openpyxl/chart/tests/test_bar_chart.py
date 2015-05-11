@@ -67,6 +67,7 @@ class TestBarChart:
                   <orientation val="minMax"></orientation>
                 </scaling>
                 <axPos val="l" />
+                <majorGridlines />
                 <crossAx val="10"></crossAx>
               </valAx>
               <catAx>
