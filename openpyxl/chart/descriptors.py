@@ -1,12 +1,13 @@
 from __future__ import absolute_import
 
-from openpyxl.compat import unicode
+from openpyxl.compat import unicode, safe_string
 from openpyxl.descriptors import Typed
 from openpyxl.descriptors.nested import (
     NestedInteger,
     Nested,
     NestedMinMax
     )
+from openpyxl.xml.functions import Element
 
 from .shapes import ShapeProperties
 from .colors import ColorChoice
