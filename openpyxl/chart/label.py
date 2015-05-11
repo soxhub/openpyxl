@@ -37,12 +37,13 @@ class _DataLabelBase(Serialisable):
     showSerName = NestedBool(allow_none=True)
     showPercent = NestedBool(allow_none=True)
     showBubbleSize = NestedBool(allow_none=True)
+    showLeaderLines = NestedBool(allow_none=True)
     separator = NestedString(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ("delete", "numFmt", "spPr", "txPr", "dLblPos",
                     "showLegendKey", "showVal", "showCatName", "showPercent",
-                    "showBubbleSize", "separator")
+                    "showBubbleSize", "showLeaderLines", "separator")
 
     def __init__(self,
                  delete=None,
@@ -56,6 +57,7 @@ class _DataLabelBase(Serialisable):
                  showSerName=None,
                  showPercent=None,
                  showBubbleSize=None,
+                 showLeaderLines=None,
                  separator=None,
                  extLst=None,
                  ):
@@ -70,6 +72,7 @@ class _DataLabelBase(Serialisable):
         self.showSerName = showSerName
         self.showPercent = showPercent
         self.showBubbleSize = showBubbleSize
+        self.showLeaderLines = showLeaderLines
         self.separator = separator
 
 
@@ -89,6 +92,7 @@ class DataLabel(_DataLabelBase):
     showSerName = _DataLabelBase.showSerName
     showPercent = _DataLabelBase.showPercent
     showBubbleSize = _DataLabelBase.showBubbleSize
+    showLeaderLines = _DataLabelBase.showLeaderLines
     separator = _DataLabelBase.separator
     extLst = _DataLabelBase.extLst
 
@@ -115,6 +119,7 @@ class DataLabels(_DataLabelBase):
     showSerName = _DataLabelBase.showSerName
     showPercent = _DataLabelBase.showPercent
     showBubbleSize = _DataLabelBase.showBubbleSize
+    showLeaderLines = _DataLabelBase.showLeaderLines
     separator = _DataLabelBase.separator
     extLst = _DataLabelBase.extLst
 
