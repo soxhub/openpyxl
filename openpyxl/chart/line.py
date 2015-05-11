@@ -23,7 +23,7 @@ from openpyxl.compat import safe_string
 from openpyxl.xml.constants import DRAWING_NS
 from openpyxl.xml.functions import Element
 
-from .colors import ColorChoice
+from .colors import ColorChoiceDescriptor
 from .fill import GradientFillProperties, PatternFillProperties
 from .drawing import OfficeArtExtensionList
 
@@ -103,7 +103,7 @@ class LineProperties(Serialisable):
     algn = NoneSet(values=(['ctr', 'in']))
 
     noFill = Typed(expected_type=Serialisable, allow_none=True)
-    solidFill = Typed(expected_type=ColorChoice, allow_none=True)
+    solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
 
@@ -147,8 +147,6 @@ class LineProperties(Serialisable):
         self.cmpd = cmpd
         self.algn = algn
         self.noFill = noFill
-        if solidFill is None:
-            solidFill = ColorChoice()
         self.solidFill = solidFill
         self.gradFill = gradFill
         self.pattFill = pattFill

@@ -28,8 +28,12 @@ class TestLineProperties:
     def test_color(self, LineProperties):
         line = LineProperties(w=10)
         line.solidFill = "FF0000"
+        xml = tostring(line.to_tree())
         expected = """
             <ln w="10" xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <solidFill>
+              <srgbClr val="FF0000" />
+              </solidFill>
               <prstDash val="solid" />
             </ln>
             """

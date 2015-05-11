@@ -18,10 +18,8 @@ from openpyxl.descriptors.nested import (
     NoneSet,
     )
 
-from .colors import *
 from .drawing import OfficeArtExtensionList
-from .fill import *
-from .line import *
+from .line import LineProperties
 
 from openpyxl.styles.colors import Color
 

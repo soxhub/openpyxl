@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from openpyxl.compat import unicode
+from openpyxl.descriptors import Typed
 from openpyxl.descriptors.nested import (
     NestedInteger,
     Nested,
@@ -7,6 +9,7 @@ from openpyxl.descriptors.nested import (
     )
 
 from .shapes import ShapeProperties
+from .colors import ColorChoice
 
 
 """
@@ -43,3 +46,4 @@ class NestedShapeProperties(Nested):
         if value is not None:
             value = safe_string(value)
             return Element(tagname, spPr=value)
+

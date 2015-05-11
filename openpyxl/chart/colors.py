@@ -105,7 +105,7 @@ class HslColor(Serialisable):
 
 
 
-class ScRgbColor(Serialisable):
+class RGBPercent(Serialisable):
 
     r = MinMax(min=0, max=100)
     g = MinMax(min=0, max=100)
@@ -126,7 +126,8 @@ class ColorChoice(Serialisable):
     tagname = "colorChoice"
     namespace = DRAWING_NS
 
-    scrgbClr = Typed(expected_type=ScRgbColor, allow_none=True)
+    scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
+    RGBPercent = Alias('scrgbClr')
     srgbClr = NestedValue(expected_type=unicode, allow_none=True)
     RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HslColor, allow_none=True)
@@ -199,3 +200,18 @@ class ColorMapping(Serialisable):
         self.hlink = hlink
         self.folHlink = folHlink
         self.extLst = extLst
+
+
+class ColorChoiceDescriptor(Typed):
+    """
+    Objects can choose from 7 different kinds of color system.
+    Assume RGBHex if a string is passed in.
+    """
+
+    expected_type = ColorChoice
+    allow_none = True
+
+    def __set__(self, instance, value):
+        if isinstance(value, unicode):
+            value = ColorChoice(srgbClr=value)
+        super(ColorChoiceDescriptor, self).__set__(instance, value)
