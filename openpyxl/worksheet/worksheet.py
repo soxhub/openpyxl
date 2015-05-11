@@ -620,13 +620,11 @@ class Worksheet(object):
         """ Add a chart to the sheet """
         chart._sheet = self
         self._charts.append(chart)
-        self.add_drawing(chart)
 
     def add_image(self, img):
         """ Add an image to the sheet """
         img._sheet = self
         self._images.append(img)
-        self.add_drawing(img)
 
     def add_drawing(self, obj):
         """Images and charts both create drawings"""
