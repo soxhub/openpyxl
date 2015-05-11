@@ -66,13 +66,17 @@ class ChartBase(Serialisable):
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer, PlotArea
         plot = PlotArea()
+        names = ['layout']
         for chart in self._charts:
             setattr(plot, chart.tagname, chart)
+            names.append(chart.tagname)
+
         for axis in ("x_axis", "y_axis", 'z_axis'):
             axis = getattr(self, axis, None)
             if axis is None:
                 continue
             setattr(plot, axis.tagname, axis)
+        plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
         container = ChartContainer(plotArea=plot, legend=self.legend)
         cs = ChartSpace(chart=container)
         tree = cs.to_tree()
