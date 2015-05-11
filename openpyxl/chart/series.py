@@ -9,6 +9,7 @@ from openpyxl.descriptors import (
     Integer,
     Bool,
     Alias,
+    Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
@@ -82,7 +83,7 @@ class Series(Serialisable):
 
     # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
-    dPt = Typed(expected_type=DataPoint, allow_none=True)
+    dPt = Sequence(expected_type=DataPoint, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -116,7 +117,7 @@ class Series(Serialisable):
                  tx=None,
                  spPr=None,
                  pictureOptions=None,
-                 dPt=None,
+                 dPt=(),
                  dLbls=None,
                  trendline=None,
                  errBars=None,
