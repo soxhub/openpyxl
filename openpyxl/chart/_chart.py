@@ -40,6 +40,11 @@ class ChartBase(Serialisable):
         self._charts = [self]
         self.legend = Legend()
 
+    def __hash__(self):
+        """
+        Just need to check for identity
+        """
+        return id(self)
 
     def __iadd__(self, other):
         """

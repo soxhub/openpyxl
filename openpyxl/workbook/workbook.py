@@ -56,7 +56,7 @@ class Workbook(object):
         self._guess_types = guess_types
         self.data_only = data_only
         self.relationships = []
-        self.drawings = []
+        self.drawings = IndexedList()
         self._charts = []
         self.code_name = None
         self.excel_base_date = CALENDAR_WINDOWS_1900

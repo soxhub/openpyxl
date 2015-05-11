@@ -221,6 +221,14 @@ class SpreadsheetDrawing(Serialisable):
         self.charts = []
         self.rels = []
 
+
+    def __hash__(self):
+        """
+        Just need to check for identity
+        """
+        return id(self)
+
+
     def _write(self):
         """
         create required structure and the serialise
