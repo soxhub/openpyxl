@@ -58,7 +58,7 @@ class Legend(Serialisable):
                  legendPos="r",
                  legendEntry=None,
                  layout=None,
-                 overlay=True,
+                 overlay=None,
                  spPr=None,
                  txPr=None,
                  extLst=None,

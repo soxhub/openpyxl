@@ -20,7 +20,6 @@ class TestLegend:
         expected = """
         <legend>
           <legendPos val="r" />
-          <overlay val="1" />
         </legend>
         """
         diff = compare_xml(xml, expected)
