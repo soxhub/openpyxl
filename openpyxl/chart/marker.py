@@ -91,5 +91,7 @@ class DataPoint(Serialisable):
         self.marker = marker
         self.bubble3D = bubble3D
         self.explosion = explosion
+        if spPr is None:
+            spPr = ShapeProperties()
         self.spPr = spPr
         self.pictureOptions = pictureOptions
