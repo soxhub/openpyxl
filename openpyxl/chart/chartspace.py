@@ -54,7 +54,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 from .axis import ValAx, CatAx, SerAx, DateAx
 from .title import Title
 
-from openpyxl.worksheet.page import PageMargins, PageSetup
+from openpyxl.worksheet.page import PageMargins, PrintPageSetup
 from openpyxl.worksheet.header_footer import HeaderFooter
 
 
@@ -409,7 +409,7 @@ class PrintSettings(Serialisable):
 
     headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
-    pageSetup = Typed(expected_type=PageSetup, allow_none=True)
+    pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
 
     __elements__ = ("headerFooter", "pageMargins", "pageMargins")
 
