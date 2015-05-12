@@ -3,17 +3,23 @@ from __future__ import absolute_import
 from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.descriptors import (
+    Alias,
     Bool,
     Integer,
     Set,
     NoneSet,
     Typed,
+    MinMax,
+    Sequence,
 )
 from openpyxl.descriptors.excel import Percentage
-from openpyxl.descriptors.nested import NestedNoneSet
+from openpyxl.descriptors.nested import (
+    NestedNoneSet,
+    NestedSequence,
+)
 from openpyxl.xml.constants import DRAWING_NS
 
-from .colors import PRESET_COLORS, SCHEME_COLORS
+from .colors import ColorChoice
 from .drawing import OfficeArtExtensionList
 
 
@@ -23,7 +29,9 @@ Fill elements from drawing main schema
 
 class PatternFillProperties(Serialisable):
 
-    prst = Set(values=(['pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40',
+    tagname = "pattFill"
+
+    prst = NoneSet(values=(['pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40',
                         'pct50', 'pct60', 'pct70', 'pct75', 'pct80', 'pct90', 'horz', 'vert',
                         'ltHorz', 'ltVert', 'dkHorz', 'dkVert', 'narHorz', 'narVert', 'dashHorz',
                         'dashVert', 'cross', 'dnDiag', 'upDiag', 'ltDnDiag', 'ltUpDiag',
@@ -32,8 +40,13 @@ class PatternFillProperties(Serialisable):
                         'dotGrid', 'smConfetti', 'lgConfetti', 'horzBrick', 'diagBrick',
                         'solidDmnd', 'openDmnd', 'dotDmnd', 'plaid', 'sphere', 'weave', 'divot',
                         'shingle', 'wave', 'trellis', 'zigZag']))
-    fgClr = NestedNoneSet(values=SCHEME_COLORS)
-    bgClr = NestedNoneSet(values=PRESET_COLORS)
+    preset = Alias("prst")
+    fgClr = Typed(expected_type=ColorChoice, allow_none=True)
+    foreground = Alias("fgClr")
+    bgClr = Typed(expected_type=ColorChoice, allow_none=True)
+    background = Alias("bgClr")
+
+    __elements__ = ("fgClr", "bgClr")
 
     def __init__(self,
                  prst=None,
@@ -47,12 +60,16 @@ class PatternFillProperties(Serialisable):
 
 class RelativeRect(Serialisable):
 
-    l = Percentage()
-    t = Percentage()
-    r = Percentage()
-    b = Percentage()
+    tagname = "rect"
 
-    __elements__ = ('l', 't', 'r', 'b')
+    l = MinMax(min=0, max=100, allow_none=True)
+    left = Alias('l')
+    t = MinMax(min=0, max=100, allow_none=True)
+    top = Alias('t')
+    r = MinMax(min=0, max=100, allow_none=True)
+    right = Alias('r')
+    b = MinMax(min=0, max=100, allow_none=True)
+    bottom = Alias('b')
 
     def __init__(self,
                  l=None,
@@ -66,9 +83,24 @@ class RelativeRect(Serialisable):
         self.b = b
 
 
+class StretchInfoProperties(Serialisable):
+
+    tagname = "stretch"
+
+    fillRect = Typed(expected_type=RelativeRect, allow_none=True)
+
+    def __init__(self,
+                 fillRect=None,
+                ):
+        self.fillRect = fillRect
+
+
 class GradientStop(Serialisable):
 
-    pos = Percentage()
+    tagname = "gradStop"
+
+    pos = MinMax(min=0, max=100, allow_none=True)
+    # Color Choice Group
 
     def __init__(self,
                  pos=None,
@@ -78,11 +110,15 @@ class GradientStop(Serialisable):
 
 class GradientStopList(Serialisable):
 
-    gs = Typed(expected_type=GradientStop, )
+    tagname = "gradStopLst"
+
+    gs = Sequence(expected_type=GradientStop)
 
     def __init__(self,
                  gs=None,
                 ):
+        if gs is None:
+            gs = [GradientStop(), GradientStop()]
         self.gs = gs
 
 
@@ -120,13 +156,15 @@ class GradientFillProperties(Serialisable):
     rotWithShape = Bool(allow_none=True)
 
     gsLst = Typed(expected_type=GradientStopList, allow_none=True)
+    stop_list = Alias("gsLst")
 
     lin = Typed(expected_type=LinearShadeProperties, allow_none=True)
+    linear = Alias("lin")
     path = Typed(expected_type=PathShadeProperties, allow_none=True)
 
     tileRect = Typed(expected_type=RelativeRect, allow_none=True)
 
-    __elements__ = ('gsLst', 'lin', 'path')
+    __elements__ = ('gsLst', 'lin', 'path', 'tileRect')
 
     def __init__(self,
                  flip=None,
@@ -146,23 +184,56 @@ class GradientFillProperties(Serialisable):
 
 class Blip(Serialisable):
 
+    tagname = "blip"
+
     cstate = NoneSet(values=(['email', 'screen', 'print', 'hqprint']))
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    __elements__ = ('cstate', )
 
     def __init__(self,
                  cstate=None,
                  extLst=None,
                 ):
         self.cstate = cstate
-        self.extLst = extLst
+
+
+class TileInfoProperties(Serialisable):
+
+    tx = Integer(allow_none=True)
+    ty = Integer(allow_none=True)
+    sx = Integer(allow_none=True)
+    sy = Integer(allow_none=True)
+    flip = NoneSet(values=(['x', 'y', 'xy']))
+    algn = Set(values=(['tl', 't', 'tr', 'l', 'ctr', 'r', 'bl', 'b', 'br']))
+
+    def __init__(self,
+                 tx=None,
+                 ty=None,
+                 sx=None,
+                 sy=None,
+                 flip=None,
+                 algn=None,
+                ):
+        self.tx = tx
+        self.ty = ty
+        self.sx = sx
+        self.sy = sy
+        self.flip = flip
+        self.algn = algn
 
 
 class BlipFillProperties(Serialisable):
 
     dpi = Integer(allow_none=True)
     rotWithShape = Bool(allow_none=True)
+
     blip = Typed(expected_type=Blip, allow_none=True)
     srcRect = Typed(expected_type=RelativeRect, allow_none=True)
+    tile = Typed(expected_type=TileInfoProperties, allow_none=True)
+    stretch = Typed(expected_type=StretchInfoProperties, allow_none=True)
+
+    __elements__ = (blip, srcRect, tile, stretch)
 
     def __init__(self,
                  dpi=None,
