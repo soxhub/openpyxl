@@ -43,7 +43,9 @@ class PageSetup(Serialisable):
     copies = Integer(allow_none=True)
     id = String(allow_none=True)
 
-    def __init__(self, orientation=None,
+
+    def __init__(self, worksheet=None,
+                 orientation=None,
                  paperSize=None,
                  scale=None,
                  fitToHeight=None,
@@ -62,6 +64,7 @@ class PageSetup(Serialisable):
                  verticalDpi=None,
                  copies=None,
                  id=None):
+        self._parent = worksheet
         self.orientation = orientation
         self.paperSize = paperSize
         self.scale = scale
@@ -98,9 +101,25 @@ class PageSetup(Serialisable):
     def verticalCentered(self):
         pass
 
-    @deprecated("this property has to be called via sheet_properties")
+
+    @property
     def fitToPage(self):
-        pass
+        return self._parent.sheet_properties.pageSetUpPr.fitToPage
+
+
+    @fitToPage.setter
+    def fitToPage(self, value):
+        self._parent.sheet_properties.pageSetUpPr.fitToPage = value
+
+
+    @property
+    def autoPageBreaks(self):
+        return self._parent.sheet_properties.pageSetUpPr.autoPageBreaks
+
+
+    @autoPageBreaks.setter
+    def autoPageBreaks(self, value):
+        self._parent.sheet_properties.pageSetUpPr.autoPageBreaks = value
 
 
     @classmethod
