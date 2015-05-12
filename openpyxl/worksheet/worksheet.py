@@ -50,7 +50,7 @@ from openpyxl.workbook.names.named_range import NamedRange
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .header_footer import HeaderFooter
-from .page import PageSetup, PageMargins, PrintOptions
+from .page import PrintPageSetup, PageMargins, PrintOptions
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
 from .filters import AutoFilter
@@ -119,7 +119,7 @@ class Worksheet(object):
         self.relationships = []
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
-        self.page_setup = PageSetup(worksheet=self)
+        self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
         self.page_margins = PageMargins()
         self.header_footer = HeaderFooter()

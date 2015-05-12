@@ -35,7 +35,7 @@ class Outline(Serialisable):
         self.showOutlineSymbols = showOutlineSymbols
 
 
-class PageSetUpPr(Serialisable):
+class PageSetupProperties(Serialisable):
 
     tag = "{%s}pageSetUpPr" % SHEET_MAIN_NS
     tagname = "pageSetUpPr"
@@ -64,7 +64,7 @@ class WorksheetProperties(Serialisable):
     transitionEntry = Bool(allow_none=True)
     tabColor = ColorDescriptor(allow_none=True)
     outlinePr = Typed(expected_type=Outline, allow_none=True)
-    pageSetUpPr = Typed(expected_type=PageSetUpPr, allow_none=True)
+    pageSetUpPr = Typed(expected_type=PageSetupProperties, allow_none=True)
 
 
     def __init__(self,
@@ -99,6 +99,6 @@ class WorksheetProperties(Serialisable):
             self.outlinePr = outlinePr
 
         if pageSetUpPr is None:
-            self.pageSetUpPr = PageSetUpPr()
+            self.pageSetUpPr = PageSetupProperties()
         else:
             self.pageSetUpPr = pageSetUpPr

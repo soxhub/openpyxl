@@ -17,8 +17,8 @@ from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.compat import deprecated
 
 
-class PageSetup(Serialisable):
-    """ Worksheet page setup """
+class PrintPageSetup(Serialisable):
+    """ Worksheet print page setup """
 
     tagname = "pageSetup"
     tag = "{%s}" % SHEET_MAIN_NS + tagname
@@ -103,23 +103,31 @@ class PageSetup(Serialisable):
 
 
     @property
+    def sheet_properties(self):
+        """
+        Proxy property
+        """
+        return self._parent.sheet_properties.pageSetUpPr
+
+
+    @property
     def fitToPage(self):
-        return self._parent.sheet_properties.pageSetUpPr.fitToPage
+        return self.sheet_properties.fitToPage
 
 
     @fitToPage.setter
     def fitToPage(self, value):
-        self._parent.sheet_properties.pageSetUpPr.fitToPage = value
+        self.sheet_properties.fitToPage = value
 
 
     @property
     def autoPageBreaks(self):
-        return self._parent.sheet_properties.pageSetUpPr.autoPageBreaks
+        return self.sheet_properties.autoPageBreaks
 
 
     @autoPageBreaks.setter
     def autoPageBreaks(self, value):
-        self._parent.sheet_properties.pageSetUpPr.autoPageBreaks = value
+        self.sheet_properties.autoPageBreaks = value
 
 
     @classmethod
