@@ -87,3 +87,8 @@ class TestChartBase:
         first_series = chart.ser[0]
         assert first_series.cat.numRef.f == labels
         assert first_series.val.numRef.f == values
+
+
+    def test_hash_function(self, ChartBase):
+        chart = ChartBase()
+        assert hash(chart) == hash(id(chart))

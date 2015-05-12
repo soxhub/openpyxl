@@ -258,3 +258,8 @@ class TestSpreadsheetDrawing:
         """
         diff = compare_xml (xml, expected)
         assert diff is None, diff
+
+
+    def test_hash_function(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        assert hash(drawing) == hash(id(drawing))
