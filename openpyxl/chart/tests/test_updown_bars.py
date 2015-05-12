@@ -30,8 +30,6 @@ class TestUpDownBars:
         src = """
         <upDownBars>
           <gapWidth val="156"/>
-          <upBars/>
-          <downBars/>
         </upDownBars>
         """
         node = fromstring(src)

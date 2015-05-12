@@ -18,8 +18,8 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .descriptors import NestedShapeProperties, NestedGapAmount
-from .axis import CatAx, ValAx, SerAx
+from .descriptors import NestedGapAmount
+from .axis import CatAx, ValAx, SerAx, ChartLines
 from .label import DataLabels
 from .series import Series
 
@@ -31,7 +31,7 @@ class _AreaChartBase(ChartBase):
     ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
-    dropLines = NestedShapeProperties()
+    dropLines = Typed(expected_type=ChartLines, allow_none=True)
 
     _series_type = "area"
 

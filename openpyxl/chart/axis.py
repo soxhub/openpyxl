@@ -26,7 +26,6 @@ from openpyxl.descriptors.nested import (
     NestedSequence,
 )
 
-from .descriptors import NestedShapeProperties
 from .data_source import NumFmt
 from .layout import Layout
 from .text import Tx, TextBody

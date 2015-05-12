@@ -21,10 +21,9 @@ from openpyxl.descriptors.nested import (
 from .descriptors import (
     NestedGapAmount,
     NestedOverlap,
-    NestedShapeProperties
 )
 from ._chart import ChartBase
-from .axis import CatAx, ValAx, SerAx
+from .axis import CatAx, ValAx, SerAx, ChartLines
 from .shapes import ShapeProperties
 from .series import Series
 from .legend import Legend
@@ -70,7 +69,7 @@ class BarChart(_BarChartBase):
 
     gapWidth = NestedGapAmount()
     overlap = NestedOverlap()
-    serLines = NestedShapeProperties()
+    serLines = Typed(expected_type=ChartLines, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # chart properties actually used by containing classes
@@ -111,7 +110,7 @@ class BarChart3D(_BarChartBase):
     gapWidth = NestedGapAmount()
     gapDepth = NestedGapAmount()
     shape = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
-    serLines = NestedShapeProperties()
+    serLines = Typed(expected_type=ChartLines, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     x_axis = Typed(expected_type=CatAx)

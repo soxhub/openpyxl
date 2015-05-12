@@ -23,7 +23,8 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .descriptors import NestedGapAmount, NestedShapeProperties
+from .axis import ChartLines
+from .descriptors import NestedGapAmount
 from .series import Series
 from .label import DataLabels
 
@@ -147,7 +148,7 @@ class ProjectedPieChart(_PieChartBase):
     splitPos = NestedFloat(allow_none=True)
     custSplit = Typed(expected_type=CustomSplit, allow_none=True)
     secondPieSize = NestedMinMax(min=5, max=200, allow_none=True)
-    serLines = NestedShapeProperties()
+    serLines = Typed(expected_type=ChartLines, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _PieChartBase.__elements__ + ('ofPieType', 'gapWidth',
