@@ -44,7 +44,8 @@ class PrintPageSetup(Serialisable):
     id = String(allow_none=True)
 
 
-    def __init__(self, worksheet=None,
+    def __init__(self,
+                 worksheet=None,
                  orientation=None,
                  paperSize=None,
                  scale=None,
