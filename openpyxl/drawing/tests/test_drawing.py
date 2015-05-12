@@ -7,7 +7,6 @@ from openpyxl.xml.constants import CHART_DRAWING_NS, SHEET_DRAWING_NS
 from openpyxl.xml.functions import Element, fromstring, tostring
 
 from openpyxl.tests.helper import compare_xml
-from openpyxl.tests.schema import drawing_schema, chart_schema
 
 def test_bounding_box():
     from openpyxl.drawing import bounding_box
@@ -257,7 +256,6 @@ class TestDrawingWriter(object):
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    @pytest.mark.lxml_required
     def test_write_chart(self):
         from openpyxl.drawing import Drawing
         root = Element("{%s}wsDr" % SHEET_DRAWING_NS)
@@ -265,7 +263,6 @@ class TestDrawingWriter(object):
         drawing = Drawing()
         chart.drawing = drawing
         self.dw._write_chart(root, chart, 1)
-        drawing_schema.assertValid(root)
         xml = tostring(root)
         expected = """<xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
         xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
@@ -293,13 +290,11 @@ class TestDrawingWriter(object):
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    @pytest.mark.lxml_required
     @pytest.mark.pil_required
     def test_write_images(self, ImageFile):
 
         root = Element("{%s}wsDr" % SHEET_DRAWING_NS)
         self.dw._write_image(root, ImageFile, 1)
-        drawing_schema.assertValid(root)
         xml = tostring(root)
         expected = """<xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
   <xdr:absoluteAnchor>
@@ -391,11 +386,9 @@ class TestShapeWriter(object):
         self.shape = Shape(chart=chart, text="My first chart")
         self.sw = ShapeWriter(shapes=[self.shape])
 
-    @pytest.mark.lxml_required
     def test_write(self):
         xml = self.sw.write(0)
         tree = fromstring(xml)
-        chart_schema.assertValid(tree)
         expected = """
            <c:userShapes xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
              <cdr:relSizeAnchor xmlns:cdr="http://schemas.openxmlformats.org/drawingml/2006/chartDrawing">
