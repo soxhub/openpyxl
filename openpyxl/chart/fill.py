@@ -21,7 +21,7 @@ from openpyxl.xml.constants import DRAWING_NS
 
 from .colors import ColorChoice
 from .drawing import OfficeArtExtensionList
-
+from .effect import *
 
 """
 Fill elements from drawing main schema
@@ -187,15 +187,76 @@ class Blip(Serialisable):
     tagname = "blip"
 
     cstate = NoneSet(values=(['email', 'screen', 'print', 'hqprint']))
+    link = String(allow_none=True) # hyperlink
+    embed = String(allow_none=True) # relId
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    # some elements are choice
+    alphaBiLevel = Typed(expected_type=AlphaBiLevelEffect, allow_none=True)
+    alphaCeiling = Typed(expected_type=AlphaCeilingEffect, allow_none=True)
+    alphaFloor = Typed(expected_type=AlphaFloorEffect, allow_none=True)
+    alphaInv = Typed(expected_type=AlphaInverseEffect, allow_none=True)
+    alphaMod = Typed(expected_type=AlphaModulateEffect, allow_none=True)
+    alphaModFix = Typed(expected_type=AlphaModulateFixedEffect, allow_none=True)
+    alphaRepl = Typed(expected_type=AlphaReplaceEffect, allow_none=True)
+    biLevel = Typed(expected_type=BiLevelEffect, allow_none=True)
+    blur = Typed(expected_type=BlurEffect, allow_none=True)
+    clrChange = Typed(expected_type=ColorChangeEffect, allow_none=True)
+    clrRepl = Typed(expected_type=ColorReplaceEffect, allow_none=True)
+    duotone = Typed(expected_type=DuotoneEffect, allow_none=True)
+    fillOverlay = Typed(expected_type=FillOverlayEffect, allow_none=True)
+    grayscl = Typed(expected_type=GrayscaleEffect, allow_none=True)
+    hsl = Typed(expected_type=HSLEffect, allow_none=True)
+    lum = Typed(expected_type=LuminanceEffect, allow_none=True)
+    tint = Typed(expected_type=TintEffect, allow_none=True)
 
-    __elements__ = ('cstate', )
+    __elements__ = ('alphaBiLevel', 'alphaCeiling', 'alphaFloor',
+                    'alphaInv', 'alphaMod', 'alphaModFix', 'alphaRepl',
+                    'biLevel', 'blur', 'clrChange', 'clrRepl', 'duotone',
+                    'fillOverlay', 'grayscl', 'hsl', 'lum', 'tint')
 
     def __init__(self,
                  cstate=None,
+                 embed=None,
+                 link=None,
                  extLst=None,
+                 alphaBiLevel=None,
+                 alphaCeiling=None,
+                 alphaFloor=None,
+                 alphaInv=None,
+                 alphaMod=None,
+                 alphaModFix=None,
+                 alphaRepl=None,
+                 biLevel=None,
+                 blur=None,
+                 clrChange=None,
+                 clrRepl=None,
+                 duotone=None,
+                 fillOverlay=None,
+                 grayscl=None,
+                 hsl=None,
+                 lum=None,
+                 tint=None,
                 ):
         self.cstate = cstate
+        self.embed = embed
+        self.link = link
+        self.alphaBiLevel = alphaBiLevel
+        self.alphaCeiling = alphaCeiling
+        self.alphaFloor = alphaFloor
+        self.alphaInv = alphaInv
+        self.alphaMod = alphaMod
+        self.alphaModFix = alphaModFix
+        self.alphaRepl = alphaRepl
+        self.biLevel = biLevel
+        self.blur = blur
+        self.clrChange = clrChange
+        self.clrRepl = clrRepl
+        self.duotone = duotone
+        self.fillOverlay = fillOverlay
+        self.grayscl = grayscl
+        self.hsl = hsl
+        self.lum = lum
+        self.tint = tint
 
 
 class TileInfoProperties(Serialisable):
