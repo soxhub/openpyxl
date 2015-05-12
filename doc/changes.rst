@@ -22,6 +22,7 @@ Minor changes
 
 Bug fixes
 
+* `#451 <https://bitbucket.org/openpyxl/openpyxl/issue/451>`_ fitToPage setting ignored
 * `#458 <https://bitbucket.org/openpyxl/openpyxl/issue/458>`_ Trailing spaces lost when saving files.
 
 

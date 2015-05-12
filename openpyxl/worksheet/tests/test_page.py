@@ -5,6 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl import Workbook
 
 @pytest.fixture
 def PageMargins():
@@ -36,15 +37,22 @@ class TestPageMargins:
 
 
 @pytest.fixture
-def PageSetup():
-    from .. page import PageSetup
-    return PageSetup
+def PrintPageSetup():
+    from .. page import PrintPageSetup
+    return PrintPageSetup
+
+
+@pytest.fixture
+def DummyWorksheet():
+    from openpyxl import Workbook
+    wb = Workbook()
+    return wb.active
 
 
 class TestPageSetup:
 
-    def test_ctor(self, PageSetup):
-        p = PageSetup()
+    def test_ctor(self, PrintPageSetup):
+        p = PrintPageSetup()
         assert dict(p) == {}
         p.scale = 1
         assert p.scale == 1
@@ -58,8 +66,24 @@ class TestPageSetup:
                            'orientation': 'default', 'id':'a12'}
 
 
-    def test_write(self, PageSetup):
-        page_setup = PageSetup()
+    def test_fitToPage(self, DummyWorksheet):
+        ws = DummyWorksheet
+        p = ws.page_setup
+        assert p.fitToPage is None
+        p.fitToPage = 1
+        assert p.fitToPage == True
+
+
+    def test_autoPageBreaks(self, DummyWorksheet):
+        ws = DummyWorksheet
+        p = ws.page_setup
+        assert p.autoPageBreaks is None
+        p.autoPageBreaks = 1
+        assert p.autoPageBreaks == True
+
+
+    def test_write(self, PrintPageSetup):
+        page_setup = PrintPageSetup()
         page_setup.orientation = "landscape"
         page_setup.paperSize = 3
         page_setup.fitToHeight = False

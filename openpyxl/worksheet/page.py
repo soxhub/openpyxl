@@ -17,8 +17,8 @@ from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.compat import deprecated
 
 
-class PageSetup(Serialisable):
-    """ Worksheet page setup """
+class PrintPageSetup(Serialisable):
+    """ Worksheet print page setup """
 
     tagname = "pageSetup"
     tag = "{%s}" % SHEET_MAIN_NS + tagname
@@ -43,7 +43,10 @@ class PageSetup(Serialisable):
     copies = Integer(allow_none=True)
     id = String(allow_none=True)
 
-    def __init__(self, orientation=None,
+
+    def __init__(self,
+                 worksheet=None,
+                 orientation=None,
                  paperSize=None,
                  scale=None,
                  fitToHeight=None,
@@ -62,6 +65,7 @@ class PageSetup(Serialisable):
                  verticalDpi=None,
                  copies=None,
                  id=None):
+        self._parent = worksheet
         self.orientation = orientation
         self.paperSize = paperSize
         self.scale = scale
@@ -98,9 +102,33 @@ class PageSetup(Serialisable):
     def verticalCentered(self):
         pass
 
-    @deprecated("this property has to be called via sheet_properties")
+
+    @property
+    def sheet_properties(self):
+        """
+        Proxy property
+        """
+        return self._parent.sheet_properties.pageSetUpPr
+
+
+    @property
     def fitToPage(self):
-        pass
+        return self.sheet_properties.fitToPage
+
+
+    @fitToPage.setter
+    def fitToPage(self, value):
+        self.sheet_properties.fitToPage = value
+
+
+    @property
+    def autoPageBreaks(self):
+        return self.sheet_properties.autoPageBreaks
+
+
+    @autoPageBreaks.setter
+    def autoPageBreaks(self, value):
+        self.sheet_properties.autoPageBreaks = value
 
 
     @classmethod
