@@ -98,9 +98,13 @@ def classify(tagname, src=sheet_src, schema=None):
                 s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
 
     children = []
-    elements = []
-    child_elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    for el in node.iterfind("{%s}sequence/{%s}element" % (XSD, XSD)):
+    element_names =[]
+    elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
+    choice = node.findall("{%s}sequence/{%s}choice/{%s}element" % (XSD, XSD, XSD))
+    if choice:
+        s += """    # some elements are choice\n"""
+    elements.extend(choice)
+    for el in elements:
         attr = {'name': el.get("name"),}
 
         typename = el.get("type")
@@ -115,16 +119,18 @@ def classify(tagname, src=sheet_src, schema=None):
             typename = match.group('typename')
             attr['type'] = simple(typename, schema)
         else:
-            children.append(typename)
             if (typename.startswith("a:")
                 or typename.startswith("s:")
                 ):
                 attr['type'] = typename[5:]
             else:
                 attr['type'] = typename[3:]
+            children.append(typename)
+            element_names.append(attr['type'])
+
 
         attr['use'] = ""
-        if el.get("minOccurs") == "0":
+        if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
         attrs.append(attr['name'])
         if attr['type'] in complex_mapping:
@@ -133,9 +139,9 @@ def classify(tagname, src=sheet_src, schema=None):
         else:
             s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
 
-    #if children:
-        #names = (c.name for c in children)
-        #s += "\n__elements__ = {0}\n".format(tuple(names))
+    if element_names:
+        names = (c for c in element_names)
+        s += "\n__elements__ = {0}\n".format(tuple(names))
 
     if attrs:
         s += "\n    def __init__(self,\n"
