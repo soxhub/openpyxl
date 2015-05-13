@@ -61,6 +61,7 @@ class PatternFillProperties(Serialisable):
 class RelativeRect(Serialisable):
 
     tagname = "rect"
+    namespace = DRAWING_NS
 
     l = MinMax(min=0, max=100, allow_none=True)
     left = Alias('l')
@@ -86,6 +87,7 @@ class RelativeRect(Serialisable):
 class StretchInfoProperties(Serialisable):
 
     tagname = "stretch"
+    namespace = DRAWING_NS
 
     fillRect = Typed(expected_type=RelativeRect, allow_none=True)
 
@@ -185,6 +187,7 @@ class GradientFillProperties(Serialisable):
 class Blip(Serialisable):
 
     tagname = "blip"
+    namespace = DRAWING_NS
 
     cstate = NoneSet(values=(['email', 'screen', 'print', 'hqprint']))
     link = String(allow_none=True) # hyperlink
