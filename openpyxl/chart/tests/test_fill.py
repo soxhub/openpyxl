@@ -44,7 +44,7 @@ class TestRelativeRect:
         fill = RelativeRect(10, 15, 20, 25)
         xml = tostring(fill.to_tree())
         expected = """
-        <rect b="25" l="10" r="20" t="15" />
+        <rect xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" b="25" l="10" r="20" t="15" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -71,7 +71,7 @@ class TestStretchInfoProperties:
         fill = StretchInfoProperties()
         xml = tostring(fill.to_tree())
         expected = """
-        <stretch />
+        <stretch xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -185,7 +185,7 @@ class TestBlip:
         fill = Blip()
         xml = tostring(fill.to_tree())
         expected = """
-        <blip />
+        <blip xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -193,7 +193,7 @@ class TestBlip:
 
     def test_from_xml(self, Blip):
         src = """
-        <root />
+        <blip />
         """
         node = fromstring(src)
         fill = Blip.from_tree(node)
