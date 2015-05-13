@@ -514,6 +514,7 @@ class ShapeProperties(Serialisable):
                  )
 
     xfrm = Typed(expected_type=Transform2D, allow_none=True)
+    transform = Alias('xfrm')
     custGeom = Typed(expected_type=CustomGeometry2D, allow_none=True) # either or
     prstGeom = Typed(expected_type=PresetGeometry2D, allow_none=True)
 
@@ -529,6 +530,7 @@ class ShapeProperties(Serialisable):
     line = Alias('ln')
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     sp3d = Typed(expected_type=Shape3D, allow_none=True)
+    shape3D = Alias('sp3d')
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
     __elements__ = ('xfrm', 'noFill', 'solidFill', 'gradFill', 'pattFill',
