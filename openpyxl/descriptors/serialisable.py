@@ -28,6 +28,7 @@ class Serialisable(_Serialiasable):
     __attrs__ = None
     __nested__ = None
     __elements__ = None
+    __namespaced__ = None
 
     idx_base = 0
 
@@ -37,13 +38,16 @@ class Serialisable(_Serialiasable):
 
     namespace = None
 
-
     @classmethod
     def from_tree(cls, node):
         """
         Create object from XML
         """
         attrib = dict(node.attrib)
+        for key, ns in cls.__namespaced__.items():
+            if ns in attrib:
+                attrib[key] = attrib[ns]
+                del attrib[ns]
         for el in node:
             tag = localname(el)
             if tag in KEYWORDS:
