@@ -54,7 +54,7 @@ complex_mapping = {
 ST_REGEX = re.compile("(?P<schema>[a-z]:)?(?P<typename>ST_[A-Za-z]+)")
 
 
-def attribute_group(schema, tagname):
+def get_attribute_group(schema, tagname):
     for node in schema.iterfind("{%s}attributeGroup" % XSD):
         if node.get("ref") == tagname:
             break
@@ -88,7 +88,7 @@ def classify(tagname, src=sheet_src, schema=None):
     _group = node.find("{%s}attributeGroup" % XSD)
     if _group is not None:
         s += "    #Using attribute group{0}\n".format(_group.get('ref'))
-        attributes.extend(attribute_group(schema, _group.get('ref')))
+        attributes.extend(get_attribute_group(schema, _group.get('ref')))
     for el in attributes:
         attr = el.attrib
         if 'ref' in attr:
