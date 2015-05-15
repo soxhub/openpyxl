@@ -19,15 +19,15 @@ class MetaSerialisable(type):
         attrs = []
         nested = []
         elements = []
-        namespaced = {}
+        namespaced = []
         for k, v in methods.items():
             if isinstance(v, Descriptor):
+                ns= getattr(v, 'namespace', None)
+                if ns:
+                    namespaced.append((k, "{%s}%s" % (ns, k)))
                 if getattr(v, 'nested', False):
                     nested.append(k)
                     elements.append(k)
-                ns= getattr(v, 'namespace', None)
-                if ns:
-                    namespaced[k] = "{%s}%s" % (ns, k)
                 elif isinstance(v, Sequence):
                     elements.append(k)
                 elif isinstance(v, Typed):
@@ -38,8 +38,9 @@ class MetaSerialisable(type):
                 else:
                     if not isinstance(v, Alias):
                         attrs.append(k)
+
         methods['__attrs__'] = tuple(attrs)
-        methods['__namespaced__'] = namespaced
+        methods['__namespaced__'] = tuple(namespaced)
         if methods.get('__nested__') is None:
             methods['__nested__'] = tuple(sorted(nested))
         if methods.get('__elements__') is None:

@@ -44,7 +44,7 @@ class Serialisable(_Serialiasable):
         Create object from XML
         """
         attrib = dict(node.attrib)
-        for key, ns in cls.__namespaced__.items():
+        for key, ns in cls.__namespaced__:
             if ns in attrib:
                 attrib[key] = attrib[ns]
                 del attrib[ns]
@@ -86,6 +86,10 @@ class Serialisable(_Serialiasable):
             tagname = "{%s}%s" % (namespace, tagname)
 
         attrs = dict(self)
+        for key, ns in self.__namespaced__:
+            if key in attrs:
+                attrs[ns] = attrs[key]
+                del attrs[key]
 
         # keywords have to be masked
         if tagname.startswith("_"):
