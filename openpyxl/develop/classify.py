@@ -3,10 +3,16 @@ from __future__ import absolute_import, print_function
 
 """
 Generate Python classes from XML Schema
+Disclaimer: this is really shabby, "works well enough" code.
+
+The spyne library does a much better job of interpreting the schema.
 """
 
 import argparse
 import re
+import logging
+
+logging.basicConfig(filename="classify.log", level=logging.DEBUG)
 
 from openpyxl.tests.schema import (
     sheet_src,
@@ -60,6 +66,15 @@ def get_attribute_group(schema, tagname):
             break
     attrs = node.findall("{%s}attribute" % XSD)
     return attrs
+
+
+def get_element_group(schema, tagname):
+    for node in schema.iterfind("{%s}group" % XSD):
+        if node.get("name") == tagname:
+            break
+    seq = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
+    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
+    return seq + choice
 
 
 def classify(tagname, src=sheet_src, schema=None):
@@ -117,7 +132,13 @@ def classify(tagname, src=sheet_src, schema=None):
     choice = node.findall("{%s}sequence/{%s}choice/{%s}element" % (XSD, XSD, XSD))
     if choice:
         s += """    # some elements are choice\n"""
-    elements.extend(choice)
+        elements.extend(choice)
+    group = node.find("{%s}sequence/{%s}group" % (XSD, XSD))
+    if group is not None:
+        ref = group.get("ref")
+        s += """    # uses element group {0}\n""".format(ref)
+        elements.extend(get_element_group(schema, ref))
+
     for el in elements:
         attr = {'name': el.get("name"),}
 
@@ -142,7 +163,6 @@ def classify(tagname, src=sheet_src, schema=None):
             children.append(typename)
             element_names.append(attr['name'])
 
-
         attr['use'] = ""
         if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
@@ -155,7 +175,7 @@ def classify(tagname, src=sheet_src, schema=None):
 
     if element_names:
         names = (c for c in element_names)
-        s += "\n__elements__ = {0}\n".format(tuple(names))
+        s += "\n    __elements__ = {0}\n".format(tuple(names))
 
     if attrs:
         s += "\n    def __init__(self,\n"
