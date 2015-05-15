@@ -12,10 +12,11 @@ from openpyxl.descriptors import (
     Set,
     String,
 )
+from openpyxl.descriptors.excel import Relation
 
 from .drawing import OfficeArtExtensionList
 from .effect import *
-from .fill import RelativeRect
+from .fill import RelativeRect, BlipFillProperties
 from .text import Hyperlink, EmbeddedWAVAudioFile
 from .shapes import (
     Transform2D,
@@ -244,29 +245,12 @@ class NonVisualGraphicFrame(Serialisable):
 class ChartRelation(Serialisable):
 
     tagname = "chart"
+    namespace = CHART_NS
 
-    id = String()
+    id = Relation()
 
     def __init__(self, id):
         self.id = id
-
-    @classmethod
-    def from_tree(cls, node):
-        attrib = {}
-        for k, v in node.attrib.items():
-            match = NS_REGEX.match(k)
-            k = match.group('localname')
-            attrib[k] = v
-        return cls(**attrib)
-
-
-    def to_tree(self, tagname=None, idx=None):
-        if tagname is None:
-            tagname = self.tagname
-        return Element(
-            "{%s}%s" %(CHART_NS, tagname),
-            {'{%s}id' % REL_NS:self.id}
-        )
 
 
 class GraphicData(Serialisable):
