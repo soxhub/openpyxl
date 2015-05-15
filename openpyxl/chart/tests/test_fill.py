@@ -199,3 +199,30 @@ class TestBlip:
         node = fromstring(src)
         fill = Blip.from_tree(node)
         assert fill == Blip()
+
+
+@pytest.fixture
+def BlipFillProperties():
+    from ..fill import BlipFillProperties
+    return BlipFillProperties
+
+
+class TestBlipFillProperties:
+
+    def test_ctor(self, BlipFillProperties):
+        fill = BlipFillProperties()
+        xml = tostring(fill.to_tree())
+        expected = """
+        <blipFill />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, BlipFillProperties):
+        src = """
+        <blipFill />
+        """
+        node = fromstring(src)
+        fill = BlipFillProperties.from_tree(node)
+        assert fill == BlipFillProperties()

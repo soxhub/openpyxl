@@ -320,6 +320,8 @@ class TileInfoProperties(Serialisable):
 
 class BlipFillProperties(Serialisable):
 
+    tagname = "blipFill"
+
     dpi = Integer(allow_none=True)
     rotWithShape = Bool(allow_none=True)
 
@@ -328,17 +330,21 @@ class BlipFillProperties(Serialisable):
     tile = Typed(expected_type=TileInfoProperties, allow_none=True)
     stretch = Typed(expected_type=StretchInfoProperties, allow_none=True)
 
-    __elements__ = (blip, srcRect, tile, stretch)
+    __elements__ = ("blip", "srcRect", "tile", "stretch")
 
     def __init__(self,
                  dpi=None,
                  rotWithShape=None,
                  blip=None,
+                 tile=None,
+                 stretch=None,
                  srcRect=None,
                 ):
         self.dpi = dpi
         self.rotWithShape = rotWithShape
         self.blip = blip
+        self.tile = tile
+        self.stretch = stretch
         self.srcRect = srcRect
 
 

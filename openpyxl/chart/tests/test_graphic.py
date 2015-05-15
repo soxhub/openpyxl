@@ -219,3 +219,128 @@ class TestChartRelation:
         node = fromstring(src)
         rel = ChartRelation.from_tree(node)
         assert rel == ChartRelation("rId1")
+
+
+@pytest.fixture
+def PictureLocking():
+    from ..graphic import PictureLocking
+    return PictureLocking
+
+
+class TestPictureLocking:
+
+    def test_ctor(self, PictureLocking):
+        graphic = PictureLocking(noChangeAspect=True)
+        xml = tostring(graphic.to_tree())
+        expected = """
+        <picLocks xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PictureLocking):
+        src = """
+        <picLocks noRot="1" />
+        """
+        node = fromstring(src)
+        graphic = PictureLocking.from_tree(node)
+        assert graphic == PictureLocking(noRot=1)
+
+
+@pytest.fixture
+def NonVisualPictureProperties():
+    from ..graphic import NonVisualPictureProperties
+    return NonVisualPictureProperties
+
+
+class TestNonVisualPictureProperties:
+
+    def test_ctor(self, NonVisualPictureProperties):
+        graphic = NonVisualPictureProperties()
+        xml = tostring(graphic.to_tree())
+        expected = """
+        <cNvPicPr />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, NonVisualPictureProperties):
+        src = """
+        <cNvPicPr />
+        """
+        node = fromstring(src)
+        graphic = NonVisualPictureProperties.from_tree(node)
+        assert graphic == NonVisualPictureProperties()
+
+
+@pytest.fixture
+def PictureNonVisual():
+    from ..graphic import PictureNonVisual
+    return PictureNonVisual
+
+
+class TestPictureNonVisual:
+
+    def test_ctor(self, PictureNonVisual):
+        graphic = PictureNonVisual()
+        xml = tostring(graphic.to_tree())
+        expected = """
+        <nvPicPr>
+          <cNvPr descr="Name of file" id="0" name="Image 1" />
+          <cNvPicPr />
+        </nvPicPr>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PictureNonVisual):
+        src = """
+        <nvPicPr>
+          <cNvPr descr="Name of file" id="0" name="Image 1" />
+          <cNvPicPr />
+        </nvPicPr>
+        """
+        node = fromstring(src)
+        graphic = PictureNonVisual.from_tree(node)
+        assert graphic == PictureNonVisual()
+
+
+@pytest.fixture
+def Picture():
+    from ..graphic import Picture
+    return Picture
+
+
+class TestPicture:
+
+    def test_ctor(self, Picture):
+        graphic = Picture()
+        xml = tostring(graphic.to_tree())
+        expected = """
+        <pic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <nvPicPr>
+            <cNvPr descr="Name of file" id="0" name="Image 1" />
+            <cNvPicPr />
+          </nvPicPr>
+          <blipFill />
+          <spPr>
+            <a:ln>
+              <a:prstDash val="solid" />
+            </a:ln>
+          </spPr>
+        </pic>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Picture):
+        src = """
+        <pic />
+        """
+        node = fromstring(src)
+        graphic = Picture.from_tree(node)
+        assert graphic == Picture()
