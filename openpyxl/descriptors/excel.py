@@ -6,6 +6,7 @@ Excel specific descriptors
 """
 
 from openpyxl.compat import basestring
+from openpyxl.xml.constants import REL_NS
 from . import MatchPattern, MinMax, Integer, String, Typed
 from .serialisable import Serialisable
 
@@ -57,3 +58,9 @@ class ExtensionList(Serialisable):
                  ext=None,
                 ):
         self.ext = ext
+
+
+class Relation(String):
+
+    namespace = REL_NS
+    allow_none = True
