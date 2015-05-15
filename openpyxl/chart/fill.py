@@ -12,7 +12,7 @@ from openpyxl.descriptors import (
     MinMax,
     Sequence,
 )
-from openpyxl.descriptors.excel import Percentage
+from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.nested import (
     NestedNoneSet,
     NestedSequence,
@@ -189,11 +189,22 @@ class Blip(Serialisable):
     tagname = "blip"
     namespace = DRAWING_NS
 
+    #Using attribute groupAG_Blob
     cstate = NoneSet(values=(['email', 'screen', 'print', 'hqprint']))
-    link = String(allow_none=True) # hyperlink
-    embed = String(allow_none=True) # relId
-    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    embed = Relation() #rId
+    link = Relation() #hyperlink
+    noGrp = Bool(allow_none=True)
+    noSelect = Bool(allow_none=True)
+    noRot = Bool(allow_none=True)
+    noChangeAspect = Bool(allow_none=True)
+    noMove = Bool(allow_none=True)
+    noResize = Bool(allow_none=True)
+    noEditPoints = Bool(allow_none=True)
+    noAdjustHandles = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noChangeShapeType = Bool(allow_none=True)
     # some elements are choice
+    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
     alphaBiLevel = Typed(expected_type=AlphaBiLevelEffect, allow_none=True)
     alphaCeiling = Typed(expected_type=AlphaCeilingEffect, allow_none=True)
     alphaFloor = Typed(expected_type=AlphaFloorEffect, allow_none=True)
@@ -212,15 +223,24 @@ class Blip(Serialisable):
     lum = Typed(expected_type=LuminanceEffect, allow_none=True)
     tint = Typed(expected_type=TintEffect, allow_none=True)
 
-    __elements__ = ('alphaBiLevel', 'alphaCeiling', 'alphaFloor',
-                    'alphaInv', 'alphaMod', 'alphaModFix', 'alphaRepl',
-                    'biLevel', 'blur', 'clrChange', 'clrRepl', 'duotone',
-                    'fillOverlay', 'grayscl', 'hsl', 'lum', 'tint')
+    __elements__ = ('alphaBiLevel', 'alphaCeiling', 'alphaFloor', 'alphaInv',
+                    'alphaMod', 'alphaModFix', 'alphaRepl', 'biLevel', 'blur', 'clrChange',
+                    'clrRepl', 'duotone', 'fillOverlay', 'grayscl', 'hsl', 'lum', 'tint')
 
     def __init__(self,
                  cstate=None,
                  embed=None,
                  link=None,
+                 noGrp=None,
+                 noSelect=None,
+                 noRot=None,
+                 noChangeAspect=None,
+                 noMove=None,
+                 noResize=None,
+                 noEditPoints=None,
+                 noAdjustHandles=None,
+                 noChangeArrowheads=None,
+                 noChangeShapeType=None,
                  extLst=None,
                  alphaBiLevel=None,
                  alphaCeiling=None,
@@ -243,6 +263,17 @@ class Blip(Serialisable):
         self.cstate = cstate
         self.embed = embed
         self.link = link
+        self.noGrp = noGrp
+        self.noSelect = noSelect
+        self.noRot = noRot
+        self.noChangeAspect = noChangeAspect
+        self.noMove = noMove
+        self.noResize = noResize
+        self.noEditPoints = noEditPoints
+        self.noAdjustHandles = noAdjustHandles
+        self.noChangeArrowheads = noChangeArrowheads
+        self.noChangeShapeType = noChangeShapeType
+        self.extLst = extLst
         self.alphaBiLevel = alphaBiLevel
         self.alphaCeiling = alphaCeiling
         self.alphaFloor = alphaFloor

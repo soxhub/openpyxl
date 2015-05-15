@@ -14,6 +14,7 @@ from openpyxl.descriptors import (
 )
 
 from .drawing import OfficeArtExtensionList
+from .effect import *
 from .fill import RelativeRect
 from .text import Hyperlink, EmbeddedWAVAudioFile
 from .shapes import (
@@ -409,48 +410,49 @@ class Connector(Serialisable):
         self.style = style
 
 
-class Blip(Serialisable):
-
-    cstate = NoneSet(values=(['email', 'screen', 'print', 'hqprint']))
-    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
-
-    def __init__(self,
-                 cstate=None,
-                 extLst=None,
-                ):
-        self.cstate = cstate
-        self.extLst = extLst
-
-
-class BlipFillProperties(Serialisable):
-
-    dpi = Integer(allow_none=True)
-    rotWithShape = Bool(allow_none=True)
-    blip = Typed(expected_type=Blip, allow_none=True)
-    srcRect = Typed(expected_type=RelativeRect, allow_none=True)
-
-    def __init__(self,
-                 dpi=None,
-                 rotWithShape=None,
-                 blip=None,
-                 srcRect=None,
-                ):
-        self.dpi = dpi
-        self.rotWithShape = rotWithShape
-        self.blip = blip
-        self.srcRect = srcRect
-
-
 class PictureLocking(Serialisable):
 
+    #Using attribute groupAG_Locking
     noCrop = Bool(allow_none=True)
+    noGrp = Bool(allow_none=True)
+    noSelect = Bool(allow_none=True)
+    noRot = Bool(allow_none=True)
+    noChangeAspect = Bool(allow_none=True)
+    noMove = Bool(allow_none=True)
+    noResize = Bool(allow_none=True)
+    noEditPoints = Bool(allow_none=True)
+    noAdjustHandles = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noChangeShapeType = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    __elements__ = ('extLst',)
 
     def __init__(self,
                  noCrop=None,
+                 noGrp=None,
+                 noSelect=None,
+                 noRot=None,
+                 noChangeAspect=None,
+                 noMove=None,
+                 noResize=None,
+                 noEditPoints=None,
+                 noAdjustHandles=None,
+                 noChangeArrowheads=None,
+                 noChangeShapeType=None,
                  extLst=None,
                 ):
         self.noCrop = noCrop
+        self.noGrp = noGrp
+        self.noSelect = noSelect
+        self.noRot = noRot
+        self.noChangeAspect = noChangeAspect
+        self.noMove = noMove
+        self.noResize = noResize
+        self.noEditPoints = noEditPoints
+        self.noAdjustHandles = noAdjustHandles
+        self.noChangeArrowheads = noChangeArrowheads
+        self.noChangeShapeType = noChangeShapeType
         self.extLst = extLst
 
 

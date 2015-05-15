@@ -182,10 +182,11 @@ def Blip():
 class TestBlip:
 
     def test_ctor(self, Blip):
-        fill = Blip()
+        fill = Blip(embed="rId1")
         xml = tostring(fill.to_tree())
         expected = """
-        <blip xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        <blip xmlns="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rId1" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
