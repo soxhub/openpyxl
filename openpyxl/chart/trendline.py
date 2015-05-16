@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .shapes import ShapeProperties
-from .text import TextBody, NumFmt, Tx
+from .text import RichText, NumFmt, Text
 from .layout import Layout
 
 
@@ -22,10 +22,10 @@ class TrendlineLabel(Serialisable):
     tagname = "trendlineLbl"
 
     layout = Typed(expected_type=Layout, allow_none=True)
-    tx = Typed(expected_type=Tx, allow_none=True)
+    tx = Typed(expected_type=Text, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('layout', 'tx', 'numFmt', 'spPr', 'txPr')

@@ -28,7 +28,7 @@ from openpyxl.descriptors.nested import (
 
 from .data_source import NumFmt
 from .layout import Layout
-from .text import Tx, TextBody
+from .text import Text, RichText
 from .shapes import ShapeProperties
 from .title import Title
 
@@ -84,7 +84,7 @@ class _BaseAxis(Serialisable):
     tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     shapeProperties = Alias('spPr')
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
     crossAx = NestedInteger(expected_type=int) # references other axis
     crosses = NestedNoneSet(values=(['autoZero', 'max', 'min']))
@@ -139,9 +139,9 @@ class DisplayUnitsLabel(Serialisable):
     tagname = "dispUnitsLbl"
 
     layout = Typed(expected_type=Layout, allow_none=True)
-    tx = Typed(expected_type=Tx, allow_none=True)
+    tx = Typed(expected_type=Text, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
 
     __elements__ = ('layout', 'tx', 'spPr', 'txPr')
 

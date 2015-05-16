@@ -172,7 +172,7 @@ class DataTable(Serialisable):
     showKeys = NestedBool(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     ShapeProperties = Alias('spPr')
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('showHorzBorder', 'showVertBorder', 'showOutline',
@@ -436,7 +436,7 @@ class ChartSpace(Serialisable):
     protection = Typed(expected_type=Protection, allow_none=True)
     chart = Typed(expected_type=ChartContainer)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)
     userShapes = Typed(expected_type=RelId, allow_none=True)

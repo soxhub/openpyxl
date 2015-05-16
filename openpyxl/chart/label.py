@@ -18,7 +18,7 @@ from openpyxl.descriptors.nested import (
     )
 
 from .shapes import ShapeProperties
-from .text import TextBody
+from .text import RichText
 
 
 class _DataLabelBase(Serialisable):
@@ -26,7 +26,7 @@ class _DataLabelBase(Serialisable):
     numFmt = NestedString(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     shapeProperties = Alias('spPr')
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
     dLblPos = NestedNoneSet(values=['bestFit', 'b', 'ctr', 'inBase', 'inEnd',
                                     'l', 'outEnd', 'r', 't'])
