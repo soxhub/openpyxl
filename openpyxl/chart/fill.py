@@ -351,3 +351,8 @@ class BlipFillProperties(Serialisable):
 class NoFill(Serialisable):
 
     namespace = DRAWING_NS
+
+
+class GroupFillProperties(Serialisable):
+
+    namespace = DRAWING_NS

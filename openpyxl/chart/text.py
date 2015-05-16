@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
+    Alias,
     Typed,
     Set,
     NoneSet,
@@ -17,8 +18,11 @@ from openpyxl.descriptors.excel import (
     Coordinate,
     ExtensionList
 )
-
-from openpyxl.descriptors.nested import NestedInteger
+from openpyxl.descriptors.nested import (
+    NestedInteger,
+    NestedString,
+)
+from openpyxl.xml.constants import DRAWING_NS
 
 from .data_source import (
     NumFmt,
@@ -26,6 +30,9 @@ from .data_source import (
     StrVal,
     StrRef,
 )
+from .colors import ColorChoiceDescriptor
+from .effect import *
+from .fill import *
 from .shapes import (
     LineProperties,
     Color,
@@ -79,7 +86,7 @@ class Hyperlink(Serialisable):
         self.extLst = extLst
 
 
-class TextFont(Serialisable):
+class Font(Serialisable):
 
     typeface = Typed(expected_type=String())
     panose = Typed(expected_type=HexBinary, allow_none=True)
@@ -98,43 +105,86 @@ class TextFont(Serialisable):
         self.charset = charset
 
 
-class TextCharacterProperties(Serialisable):
+class TextUnderlineLineFollowText(Serialisable):
 
-    kumimoji = Typed(expected_type=Bool, allow_none=True)
-    lang = Typed(expected_type=String, allow_none=True)
-    altLang = Typed(expected_type=String, allow_none=True)
-    sz = Typed(expected_type=Integer())
-    b = Typed(expected_type=Bool, allow_none=True)
-    i = Typed(expected_type=Bool, allow_none=True)
-    u = Typed(expected_type=Set(values=(
-        ['none', 'words', 'sng', 'dbl',
-         'heavy', 'dotted', 'dottedHeavy', 'dash', 'dashHeavy', 'dashLong',
-         'dashLongHeavy', 'dotDash', 'dotDashHeavy', 'dotDotDash',
-         'dotDotDashHeavy', 'wavy', 'wavyHeavy', 'wavyDbl'
-         ]
-    )))
-    strike = Typed(expected_type=Set(values=(['noStrike', 'sngStrike', 'dblStrike'])))
-    kern = Typed(expected_type=Integer())
-    cap = Typed(expected_type=Set(values=(['none', 'small', 'all'])))
-    spc = Typed(expected_type=TextPoint, allow_none=True)
-    normalizeH = Typed(expected_type=Bool, allow_none=True)
-    baseline = Typed(expected_type=String, allow_none=True)
-    noProof = Typed(expected_type=Bool, allow_none=True)
-    dirty = Typed(expected_type=Bool, allow_none=True)
-    err = Typed(expected_type=Bool, allow_none=True)
-    smtClean = Typed(expected_type=Bool, allow_none=True)
-    smtId = Typed(expected_type=Integer, allow_none=True)
-    bmk = Typed(expected_type=String, allow_none=True)
+    pass
+
+
+class TextUnderlineFillFollowText(Serialisable):
+
+    pass
+
+
+class TextUnderlineFillGroupWrapper(Serialisable):
+
+    pass
+
+
+class TextBulletSizeFollowText(Serialisable):
+
+    pass
+
+
+class TextNoBullet(Serialisable):
+
+    pass
+
+
+class CharacterProperties(Serialisable):
+
+    kumimoji = Bool(allow_none=True)
+    lang = String(allow_none=True)
+    altLang = String(allow_none=True)
+    sz = Integer()
+    b = Bool(allow_none=True)
+    i = Bool(allow_none=True)
+    u = NoneSet(values=(['words', 'sng', 'dbl', 'heavy', 'dotted',
+                         'dottedHeavy', 'dash', 'dashHeavy', 'dashLong', 'dashLongHeavy',
+                         'dotDash', 'dotDashHeavy', 'dotDotDash', 'dotDotDashHeavy', 'wavy',
+                         'wavyHeavy', 'wavyDbl']))
+    strike = Set(values=(['noStrike', 'sngStrike', 'dblStrike']))
+    kern = Integer()
+    cap = NoneSet(values=(['small', 'all']))
+    spc = Integer()
+    normalizeH = Bool(allow_none=True)
+    baseline = Integer()
+    noProof = Bool(allow_none=True)
+    dirty = Bool(allow_none=True)
+    err = Bool(allow_none=True)
+    smtClean = Bool(allow_none=True)
+    smtId = Integer(allow_none=True)
+    bmk = String(allow_none=True)
+    # uses element group EG_FillProperties
+    # uses element group EG_EffectProperties
+    # uses element group EG_TextUnderlineLine
+    # uses element group EG_TextUnderlineFill
     ln = Typed(expected_type=LineProperties, allow_none=True)
     highlight = Typed(expected_type=Color, allow_none=True)
-    latin = Typed(expected_type=TextFont, allow_none=True)
-    ea = Typed(expected_type=TextFont, allow_none=True)
-    cs = Typed(expected_type=TextFont, allow_none=True)
-    sym = Typed(expected_type=TextFont, allow_none=True)
+    latin = Typed(expected_type=Font, allow_none=True)
+    ea = Typed(expected_type=Font, allow_none=True)
+    cs = Typed(expected_type=Font, allow_none=True)
+    sym = Typed(expected_type=Font, allow_none=True)
     hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
     hlinkMouseOver = Typed(expected_type=Hyperlink, allow_none=True)
-    rtl = Typed(expected_type=Bool, allow_none=True, nested=True)
+    rtl = Bool(nested=True, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    noFill = Typed(expected_type=NoFill, allow_none=True)
+    solidFill = ColorChoiceDescriptor()
+    gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
+    blipFill = Typed(expected_type=BlipFillProperties, allow_none=True)
+    pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
+    grpFill = Typed(expected_type=GroupFillProperties, allow_none=True)
+    effectLst = Typed(expected_type=EffectList, allow_none=True)
+    effectDag = Typed(expected_type=EffectContainer, allow_none=True)
+    uLnTx = Typed(expected_type=TextUnderlineLineFollowText, allow_none=True)
+    uLn = Typed(expected_type=LineProperties, allow_none=True)
+    uFillTx = Typed(expected_type=TextUnderlineFillFollowText, allow_none=True)
+    uFill = Typed(expected_type=TextUnderlineFillGroupWrapper, allow_none=True)
+
+    __elements__ = ('ln', 'highlight', 'latin', 'ea', 'cs', 'sym',
+                    'hlinkClick', 'hlinkMouseOver', 'rtl', 'noFill', 'solidFill', 'gradFill',
+                    'blipFill', 'pattFill', 'grpFill', 'effectLst', 'effectDag', 'uLnTx',
+                    'uLn', 'uFillTx', 'uFill')
 
     def __init__(self,
                  kumimoji=None,
@@ -166,6 +216,18 @@ class TextCharacterProperties(Serialisable):
                  hlinkMouseOver=None,
                  rtl=None,
                  extLst=None,
+                 noFill=None,
+                 solidFill=None,
+                 gradFill=None,
+                 blipFill=None,
+                 pattFill=None,
+                 grpFill=None,
+                 effectLst=None,
+                 effectDag=None,
+                 uLnTx=None,
+                 uLn=None,
+                 uFillTx=None,
+                 uFill=None,
                 ):
         self.kumimoji = kumimoji
         self.lang = lang
@@ -195,10 +257,21 @@ class TextCharacterProperties(Serialisable):
         self.hlinkClick = hlinkClick
         self.hlinkMouseOver = hlinkMouseOver
         self.rtl = rtl
-        self.extLst = extLst
+        self.noFill = noFill
+        self.solidFill = solidFill
+        self.gradFill = gradFill
+        self.blipFill = blipFill
+        self.pattFill = pattFill
+        self.grpFill = grpFill
+        self.effectLst = effectLst
+        self.effectDag = effectDag
+        self.uLnTx = uLnTx
+        self.uLn = uLn
+        self.uFillTx = uFillTx
+        self.uFill = uFill
 
 
-class TextTabStop(Serialisable):
+class TabStop(Serialisable):
 
     pos = Typed(expected_type=Coordinate, allow_none=True)
     algn = Typed(expected_type=Set(values=(['l', 'ctr', 'r', 'dec'])))
@@ -211,9 +284,9 @@ class TextTabStop(Serialisable):
         self.algn = algn
 
 
-class TextTabStopList(Serialisable):
+class TabStopList(Serialisable):
 
-    tab = Typed(expected_type=TextTabStop, allow_none=True)
+    tab = Typed(expected_type=TabStop, allow_none=True)
 
     def __init__(self,
                  tab=None,
@@ -221,29 +294,118 @@ class TextTabStopList(Serialisable):
         self.tab = tab
 
 
-class TextSpacing(Serialisable):
+class Spacing(Serialisable):
+
+    spcPct = NestedInteger()
+    spcPts = NestedInteger()
+
+    __elements__ = ('spcPct', 'spcPts')
+
+    def __init__(self,
+                 spcPct=None,
+                 spcPts=None,
+                 ):
+        self.spcPct = spcPct
+        self.spcPts = spcPts
+
+
+class TextBulletColorFollowText(Serialisable):
 
     pass
 
-class TextParagraphProperties(Serialisable):
 
-    marL = Typed(expected_type=Coordinate)
-    marR = Typed(expected_type=Coordinate)
-    lvl = Typed(expected_type=Integer())
-    indent = Typed(expected_type=Coordinate)
-    algn = Typed(expected_type=Set(values=(['l', 'ctr', 'r', 'just', 'justLow', 'dist', 'thaiDist'])))
-    defTabSz = Typed(expected_type=Coordinate, allow_none=True)
-    rtl = Typed(expected_type=Bool, allow_none=True)
-    eaLnBrk = Typed(expected_type=Bool, allow_none=True)
-    fontAlgn = Typed(expected_type=Set(values=(['auto', 't', 'ctr', 'base', 'b'])))
-    latinLnBrk = Typed(expected_type=Bool, allow_none=True)
-    hangingPunct = Typed(expected_type=Bool, allow_none=True)
-    lnSpc = Typed(expected_type=TextSpacing, allow_none=True)
-    spcBef = Typed(expected_type=TextSpacing, allow_none=True)
-    spcAft = Typed(expected_type=TextSpacing, allow_none=True)
-    tabLst = Typed(expected_type=TextTabStopList, allow_none=True)
-    defRPr = Typed(expected_type=TextCharacterProperties, allow_none=True)
+class TextBulletTypefaceFollowText(Serialisable):
+
+    pass
+
+
+class AutonumberBullet(Serialisable):
+
+    type = Set(values=(['alphaLcParenBoth', 'alphaUcParenBoth',
+                        'alphaLcParenR', 'alphaUcParenR', 'alphaLcPeriod', 'alphaUcPeriod',
+                        'arabicParenBoth', 'arabicParenR', 'arabicPeriod', 'arabicPlain',
+                        'romanLcParenBoth', 'romanUcParenBoth', 'romanLcParenR', 'romanUcParenR',
+                        'romanLcPeriod', 'romanUcPeriod', 'circleNumDbPlain',
+                        'circleNumWdBlackPlain', 'circleNumWdWhitePlain', 'arabicDbPeriod',
+                        'arabicDbPlain', 'ea1ChsPeriod', 'ea1ChsPlain', 'ea1ChtPeriod',
+                        'ea1ChtPlain', 'ea1JpnChsDbPeriod', 'ea1JpnKorPlain', 'ea1JpnKorPeriod',
+                        'arabic1Minus', 'arabic2Minus', 'hebrew2Minus', 'thaiAlphaPeriod',
+                        'thaiAlphaParenR', 'thaiAlphaParenBoth', 'thaiNumPeriod',
+                        'thaiNumParenR', 'thaiNumParenBoth', 'hindiAlphaPeriod',
+                        'hindiNumPeriod', 'hindiNumParenR', 'hindiAlpha1Period']))
+    startAt = Integer()
+
+    def __init__(self,
+                 type=None,
+                 startAt=None,
+                ):
+        self.type = type
+        self.startAt = startAt
+
+
+class CharBullet(Serialisable):
+
+    char = String()
+
+    def __init__(self,
+                 char=None,
+                ):
+        self.char = char
+
+
+class BlipBullet(Serialisable):
+
+    blip = Typed(expected_type=Blip,)
+
+    __elements__ = ('blip',)
+
+    def __init__(self,
+                 blip=None,
+                ):
+        self.blip = blip
+
+class ParagraphProperties(Serialisable):
+
+    tagname = "pPr"
+    namespace = DRAWING_NS
+
+    marL = Integer(allow_none=True)
+    marR = Integer(allow_none=True)
+    lvl = Integer(allow_none=True)
+    indent = Integer(allow_none=True)
+    algn = NoneSet(values=(['l', 'ctr', 'r', 'just', 'justLow', 'dist', 'thaiDist']))
+    defTabSz = Integer(expected_type=Coordinate, allow_none=True)
+    rtl = Bool(allow_none=True)
+    eaLnBrk = Bool(allow_none=True)
+    fontAlgn = NoneSet(values=(['auto', 't', 'ctr', 'base', 'b']))
+    latinLnBrk = Bool(allow_none=True)
+    hangingPunct = Bool(allow_none=True)
+
+    # uses element group EG_TextBulletColor
+    # uses element group EG_TextBulletSize
+    # uses element group EG_TextBulletTypeface
+    # uses element group EG_TextBullet
+    lnSpc = Typed(expected_type=Spacing, allow_none=True)
+    spcBef = Typed(expected_type=Spacing, allow_none=True)
+    spcAft = Typed(expected_type=Spacing, allow_none=True)
+    tabLst = Typed(expected_type=TabStopList, allow_none=True)
+    defRPr = Typed(expected_type=CharacterProperties, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    buClrTx = Typed(expected_type=TextBulletColorFollowText, allow_none=True)
+    buClr = Typed(expected_type=Color, allow_none=True)
+    buSzTx = Typed(expected_type=TextBulletSizeFollowText, allow_none=True)
+    buSzPct = NestedInteger(allow_none=True)
+    buSzPts = NestedInteger(allow_none=True)
+    buFontTx = Typed(expected_type=TextBulletTypefaceFollowText, allow_none=True)
+    buFont = Typed(expected_type=Font, allow_none=True)
+    buNone = Typed(expected_type=TextNoBullet, allow_none=True)
+    buAutoNum = Typed(expected_type=AutonumberBullet, allow_none=True)
+    buChar = Typed(expected_type=CharBullet, allow_none=True)
+    buBlip = Typed(expected_type=BlipBullet, allow_none=True)
+
+    __elements__ = ('lnSpc', 'spcBef', 'spcAft', 'tabLst', 'defRPr',
+                    'buClrTx', 'buClr', 'buSzTx', 'buSzPct', 'buSzPts', 'buFontTx', 'buFont',
+                    'buNone', 'buAutoNum', 'buChar', 'buBlip')
 
     def __init__(self,
                  marL=None,
@@ -263,7 +425,18 @@ class TextParagraphProperties(Serialisable):
                  tabLst=None,
                  defRPr=None,
                  extLst=None,
-                ):
+                 buClrTx=None,
+                 buClr=None,
+                 buSzTx=None,
+                 buSzPct=None,
+                 buSzPts=None,
+                 buFontTx=None,
+                 buFont=None,
+                 buNone=None,
+                 buAutoNum=None,
+                 buChar=None,
+                 buBlip=None,
+                 ):
         self.marL = marL
         self.marR = marR
         self.lvl = lvl
@@ -280,22 +453,39 @@ class TextParagraphProperties(Serialisable):
         self.spcAft = spcAft
         self.tabLst = tabLst
         self.defRPr = defRPr
-        self.extLst = extLst
+        self.buClrTx = buClrTx
+        self.buClr = buClr
+        self.buSzTx = buSzTx
+        self.buSzPct = buSzPct
+        self.buSzPts = buSzPts
+        self.buFontTx = buFontTx
+        self.buFont = buFont
+        self.buNone = buNone
+        self.buAutoNum = buAutoNum
+        self.buChar = buChar
+        self.buBlip = buBlip
+        self.defRPr = defRPr
 
 
-class TextListStyle(Serialisable):
+class ListStyle(Serialisable):
 
-    defPPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl1pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl2pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl3pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl4pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl5pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl6pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl7pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl8pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    lvl9pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
+    tagname = "lstStyle"
+    namespace = DRAWING_NS
+
+    defPPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl1pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl2pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl3pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl4pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl5pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl6pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl7pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl8pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    lvl9pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    __elements__ = ("defPPr", "lvl1pPr", "lvl2pPr", "lvl3pPr", "lvl4pPr",
+                    "lvl5pPr", "lvl6pPr", "lvl7pPr", "lvl8pPr", "lvl9pPr")
 
     def __init__(self,
                  defPPr=None,
@@ -320,20 +510,87 @@ class TextListStyle(Serialisable):
         self.lvl7pPr = lvl7pPr
         self.lvl8pPr = lvl8pPr
         self.lvl9pPr = lvl9pPr
-        self.extLst = extLst
 
 
-class TextParagraph(Serialisable):
+class RegularTextRun(Serialisable):
 
-    pPr = Typed(expected_type=TextParagraphProperties, allow_none=True)
-    endParaRPr = Typed(expected_type=TextCharacterProperties, allow_none=True)
+    rPr = Typed(expected_type=CharacterProperties, allow_none=True)
+    properties = Alias("rPr")
+    t = NestedString(allow_none=True)
+    text = Alias("t")
+
+    __elements__ = ('rPr',)
+
+    def __init__(self,
+                 rPr=None,
+                 t=None,
+                ):
+        self.rPr = rPr
+        self.t = t
+
+
+class LineBreak(Serialisable):
+
+    rPr = Typed(expected_type=CharacterProperties, allow_none=True)
+
+    __elements__ = ('rPr',)
+
+    def __init__(self,
+                 rPr=None,
+                ):
+        self.rPr = rPr
+
+
+class TextField(Serialisable):
+
+    id = String()
+    type = String(allow_none=True)
+    rPr = Typed(expected_type=CharacterProperties, allow_none=True)
+    pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    t = Typed(expected_type=String, allow_none=True)
+
+    __elements__ = ('rPr', 'pPr')
+
+    def __init__(self,
+                 id=None,
+                 type=None,
+                 rPr=None,
+                 pPr=None,
+                 t=None,
+                ):
+        self.id = id
+        self.type = type
+        self.rPr = rPr
+        self.pPr = pPr
+        self.t = t
+
+
+class Paragraph(Serialisable):
+
+    tagname = "p"
+    namespace = DRAWING_NS
+
+    # uses element group EG_TextRun
+    pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    endParaRPr = Typed(expected_type=CharacterProperties, allow_none=True)
+    r = Typed(expected_type=RegularTextRun, allow_none=True)
+    br = Typed(expected_type=LineBreak, allow_none=True)
+    fld = Typed(expected_type=TextField, allow_none=True)
+
+    __elements__ = ('pPr', 'endParaRPr', 'r', 'br', 'fld')
 
     def __init__(self,
                  pPr=None,
                  endParaRPr=None,
-                ):
+                 r=None,
+                 br=None,
+                 fld=None,
+                 ):
         self.pPr = pPr
         self.endParaRPr = endParaRPr
+        self.r = r
+        self.br = br
+        self.fld = fld
 
 
 class GeomGuide(Serialisable):
@@ -384,7 +641,43 @@ class PresetTextShape(Serialisable):
         self.avLst = avLst
 
 
-class TextBodyProperties(Serialisable):
+class FlatText(Serialisable):
+
+    z = Integer()
+
+    def __init__(self,
+                 z=None,
+                ):
+        self.z = z
+
+
+class TextNormalAutofit(Serialisable):
+
+    fontScale = Integer()
+    lnSpcReduction = Integer()
+
+    def __init__(self,
+                 fontScale=None,
+                 lnSpcReduction=None,
+                ):
+        self.fontScale = fontScale
+        self.lnSpcReduction = lnSpcReduction
+
+
+class TextShapeAutofit(Serialisable):
+
+    pass
+
+
+class TextNoAutofit(Serialisable):
+
+    pass
+
+
+class RichTextProperties(Serialisable):
+
+    tagname = "bodyPr"
+    namespace = DRAWING_NS
 
     rot = Integer(allow_none=True)
     spcFirstLastPara = Bool(allow_none=True)
@@ -393,12 +686,12 @@ class TextBodyProperties(Serialisable):
     vert = NoneSet(values=(['horz', 'vert', 'vert270', 'wordArtVert',
                             'eaVert', 'mongolianVert', 'wordArtVertRtl']))
     wrap = NoneSet(values=(['none', 'square']))
-    lIns = Coordinate(allow_none=True)
-    tIns = Coordinate(allow_none=True)
-    rIns = Coordinate(allow_none=True)
-    bIns = Coordinate(allow_none=True)
+    lIns = Integer(allow_none=True)
+    tIns = Integer(allow_none=True)
+    rIns = Integer(allow_none=True)
+    bIns = Integer(allow_none=True)
     numCol = Integer(allow_none=True)
-    spcCol = Coordinate(allow_none=True)
+    spcCol = Integer(allow_none=True)
     rtlCol = Bool(allow_none=True)
     fromWordArt = Bool(allow_none=True)
     anchor = NoneSet(values=(['t', 'ctr', 'b', 'just', 'dist']))
@@ -409,6 +702,12 @@ class TextBodyProperties(Serialisable):
     prstTxWarp = Typed(expected_type=PresetTextShape, allow_none=True)
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    noAutofit = Typed(expected_type=TextNoAutofit, allow_none=True)
+    normAutofit = Typed(expected_type=TextNormalAutofit, allow_none=True)
+    spAutoFit = Typed(expected_type=TextShapeAutofit, allow_none=True)
+    flatTx = Typed(expected_type=FlatText, allow_none=True)
+
+    __elements__ = ('prstTxWarp', 'scene3d', 'noAutofit', 'normAutofit', 'spAutoFit')
 
     def __init__(self,
                  rot=None,
@@ -433,6 +732,10 @@ class TextBodyProperties(Serialisable):
                  prstTxWarp=None,
                  scene3d=None,
                  extLst=None,
+                 noAutofit=None,
+                 normAutofit=None,
+                 spAutoFit=None,
+                 flatTx=None,
                 ):
         self.rot = rot
         self.spcFirstLastPara = spcFirstLastPara
@@ -455,10 +758,13 @@ class TextBodyProperties(Serialisable):
         self.compatLnSpc = compatLnSpc
         self.prstTxWarp = prstTxWarp
         self.scene3d = scene3d
-        self.extLst = extLst
+        self.noAutofit = noAutofit
+        self.normAutofit = normAutofit
+        self.spAutoFit = spAutoFit
+        self.flatTx = flatTx
 
 
-class TextBody(Serialisable):
+class RichText(Serialisable):
 
     """
     From the specification: 21.2.2.216
@@ -467,10 +773,15 @@ class TextBody(Serialisable):
     """
 
     tagname = "txBody"
+    namespace = DRAWING_NS
 
-    bodyPr = Typed(expected_type=TextBodyProperties)
-    lstStyle = Typed(expected_type=TextListStyle, allow_none=True)
-    p = Sequence(expected_type=TextParagraph)
+    bodyPr = Typed(expected_type=RichTextProperties)
+    properties = Alias("bodyPr")
+    lstStyle = Typed(expected_type=ListStyle, allow_none=True)
+    p = Sequence(expected_type=Paragraph)
+    paragraph = Alias('p')
+
+    __elements__ = ("bodyPr", "lstStyle", "p")
 
     def __init__(self,
                  bodyPr=None,
@@ -478,13 +789,22 @@ class TextBody(Serialisable):
                  p=(),
                 ):
         if bodyPr is None:
-            bodyPr = TextBodyProperties()
+            bodyPr = RichTextProperties()
         self.bodyPr = bodyPr
         self.lstStyle = lstStyle
         self.p = p
 
 
-class Tx(Serialisable):
+class Text(Serialisable):
 
     strRef = Typed(expected_type=StrRef, allow_none=True)
-    rich = Typed(expected_type=TextBody, allow_none=True)
+    rich = Typed(expected_type=RichText, allow_none=True)
+
+    __elements__ = ("strRef", "rich")
+
+    def __init__(self,
+                 strRef=None,
+                 rich=None
+                 ):
+        self.strRef = strRef
+        self.rich = rich
