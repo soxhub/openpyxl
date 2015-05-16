@@ -34,7 +34,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .colors import ColorMapping
-from .text import Tx, TextBody
+from .text import Text, RichText
 from .layout import Layout
 from .shapes import ShapeProperties
 from .legend import Legend
@@ -124,7 +124,7 @@ class PivotFormat(Serialisable):
     idx = NestedInteger(nested=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     ShapeProperties = Alias("spPr")
-    txPr = Typed(expected_type=TextBody, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     TextBody = Alias("txPr")
     marker = Typed(expected_type=Marker, allow_none=True)
     dLbl = Typed(expected_type=DataLabel, allow_none=True)
