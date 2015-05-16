@@ -37,6 +37,8 @@ class Title(Serialisable):
                  txPr=None,
                  extLst=None,
                 ):
+        if tx is None:
+            tx = Text()
         self.tx = tx
         self.layout = layout
         self.overlay = overlay

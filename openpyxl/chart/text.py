@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from openpyxl.compat import unicode
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
@@ -21,6 +23,7 @@ from openpyxl.descriptors.excel import (
 from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedString,
+    NestedText,
 )
 from openpyxl.xml.constants import DRAWING_NS
 
@@ -514,12 +517,15 @@ class ListStyle(Serialisable):
 
 class RegularTextRun(Serialisable):
 
+    tagname = "r"
+    namespace = DRAWING_NS
+
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
     properties = Alias("rPr")
-    t = NestedString(allow_none=True)
-    text = Alias("t")
+    t = NestedText(expected_type=unicode, allow_none=True)
+    value = Alias("t")
 
-    __elements__ = ('rPr',)
+    __elements__ = ('rPr', 't')
 
     def __init__(self,
                  rPr=None,
@@ -574,6 +580,7 @@ class Paragraph(Serialisable):
     pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
     endParaRPr = Typed(expected_type=CharacterProperties, allow_none=True)
     r = Typed(expected_type=RegularTextRun, allow_none=True)
+    text = Alias('r')
     br = Typed(expected_type=LineBreak, allow_none=True)
     fld = Typed(expected_type=TextField, allow_none=True)
 
@@ -588,6 +595,8 @@ class Paragraph(Serialisable):
                  ):
         self.pPr = pPr
         self.endParaRPr = endParaRPr
+        if r is None:
+            r = RegularTextRun()
         self.r = r
         self.br = br
         self.fld = fld
@@ -772,26 +781,27 @@ class RichText(Serialisable):
     This element specifies text formatting. The lstStyle element is not supported.
     """
 
-    tagname = "txBody"
-    namespace = DRAWING_NS
+    tagname = "rich"
 
     bodyPr = Typed(expected_type=RichTextProperties)
     properties = Alias("bodyPr")
     lstStyle = Typed(expected_type=ListStyle, allow_none=True)
-    p = Sequence(expected_type=Paragraph)
-    paragraph = Alias('p')
+    p = Typed(expected_type=Paragraph, allow_none=True)
+    paragraphs = Alias('p')
 
     __elements__ = ("bodyPr", "lstStyle", "p")
 
     def __init__(self,
                  bodyPr=None,
                  lstStyle=None,
-                 p=(),
+                 p=None,
                 ):
         if bodyPr is None:
             bodyPr = RichTextProperties()
         self.bodyPr = bodyPr
         self.lstStyle = lstStyle
+        if p is None:
+            p = Paragraph()
         self.p = p
 
 
@@ -807,4 +817,6 @@ class Text(Serialisable):
                  rich=None
                  ):
         self.strRef = strRef
+        if rich is None:
+            rich = RichText()
         self.rich = rich

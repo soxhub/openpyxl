@@ -17,7 +17,16 @@ class TestTitle:
         title = Title()
         xml = tostring(title.to_tree())
         expected = """
-        <title />
+        <title xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <tx>
+            <rich>
+              <a:bodyPr></a:bodyPr>
+              <a:p>
+                <a:r></a:r>
+              </a:p>
+            </rich>
+          </tx>
+        </title>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
