@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from openpyxl.descriptors import Typed, Integer
+from openpyxl.descriptors import Typed, Integer, Alias
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS
 
@@ -9,7 +9,7 @@ from .legend import Legend
 from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
-
+from .title import Title
 
 class AxId(Serialisable):
 
@@ -29,6 +29,8 @@ class ChartBase(Serialisable):
 
     _series_type = ""
     ser = ()
+    series = Alias('ser')
+    title = None
     anchor = "E15" # default anchor position
     width = 15 # in cm, approx 5 rows
     height = 7.5 # in cm, approx 14 rows
@@ -77,11 +79,18 @@ class ChartBase(Serialisable):
                 continue
             setattr(plot, axis.tagname, axis)
         plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
-        container = ChartContainer(plotArea=plot, legend=self.legend)
+        title = self._set_title()
+        container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
         cs = ChartSpace(chart=container)
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree
+
+    def _set_title(self):
+        if self.title is not None:
+            title = Title()
+            title.text.rich.paragraphs.text.value = self.title
+            return title
 
 
     @property
