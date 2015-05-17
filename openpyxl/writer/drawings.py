@@ -18,6 +18,8 @@ from openpyxl.chart.chart_drawing import (
     TwoCellAnchor,
     AbsoluteAnchor,
 )
+from openpyxl.chart.graphic import PictureFrame
+from openpyxl.chart.fill import Blip
 from openpyxl.utils.units import pixels_to_EMU
 
 
@@ -85,55 +87,29 @@ class DrawingWriter(object):
         anchor.ext.width = pixels_to_EMU(drawing._width)
         anchor.ext.height = pixels_to_EMU(drawing._height)
 
-        tree = anchor.to_tree()
-        node.append(tree)
-        return tree
+        node.append(anchor.to_tree())
+        return anchor
 
 
     def _write_image(self, node, img, idx):
         anchor = self._write_anchor(node, img.drawing)
 
-        pic = SubElement(anchor, '{%s}pic' % SHEET_DRAWING_NS)
-        name = SubElement(pic, '{%s}nvPicPr' % SHEET_DRAWING_NS)
-        SubElement(name, '{%s}cNvPr' % SHEET_DRAWING_NS,
-                   {'id':'%s' % (idx + 1),
-                    'name':'Picture %s' % idx})
-        cNvPicPr = SubElement(name, '{%s}cNvPicPr' % SHEET_DRAWING_NS)
-        paras = {"noChangeAspect": "0"}
-        if img.nochangeaspect:
-            paras["noChangeAspect"] = "1"
-        if img.nochangearrowheads:
-            paras["noChangeArrowheads"] = "1"
+        pic = PictureFrame()
+        pic.nvPicPr.cNvPr.desc = "Picture 1"
+        pic.nvPicPr.cNvPr.id = 1
+        pic.nvPicPr.cNvPicPr.picLocks
+        pic.blipFill.blip = Blip()
+        pic.blipFill.blip.embed = "rId1"
+        pic.blipFill.blip.cstate = "print"
 
-        SubElement(cNvPicPr, '{%s}picLocks' % DRAWING_NS, paras)
+        pic.spPr.noFill = True
+        pic.spPr.ln.prstDash = None
+        pic.spPr.ln.w = 1
+        pic.spPr.ln.noFill = True
 
-        blipfill = SubElement(pic, '{%s}blipFill' % SHEET_DRAWING_NS)
-        SubElement(blipfill, '{%s}blip' % DRAWING_NS, {
-            '{%s}embed' % REL_NS: 'rId%s' % idx,
-            'cstate':'print'
-        })
-        SubElement(blipfill, '{%s}srcRect' % DRAWING_NS)
-        stretch = SubElement(blipfill, '{%s}stretch' % DRAWING_NS)
-        SubElement(stretch, '{%s}fillRect' % DRAWING_NS)
-
-        sppr = SubElement(pic, '{%s}spPr' % SHEET_DRAWING_NS, {'bwMode':'auto'})
-        frm = SubElement(sppr, '{%s}xfrm' % DRAWING_NS)
-        # no transformation
-        SubElement(frm, '{%s}off' % DRAWING_NS, {'x':'0', 'y':'0'})
-        SubElement(frm, '{%s}ext' % DRAWING_NS, {'cx':'0', 'cy':'0'})
-        prstGeom = SubElement(sppr, '{%s}prstGeom' % DRAWING_NS, {'prst':'rect'})
-        SubElement(prstGeom, '{%s}avLst' % DRAWING_NS)
-
-        SubElement(sppr, '{%s}noFill' % DRAWING_NS)
-
-        ln = SubElement(sppr, '{%s}ln' % DRAWING_NS, {'w':'1'})
-        SubElement(ln, '{%s}noFill' % DRAWING_NS)
-        SubElement(ln, '{%s}miter' % DRAWING_NS, {'lim':'800000'})
-        SubElement(ln, '{%s}headEnd' % DRAWING_NS)
-        SubElement(ln, '{%s}tailEnd' % DRAWING_NS, {'type':'none', 'w':'med', 'len':'med'})
-        SubElement(sppr, '{%s}effectLst' % DRAWING_NS)
-
-        SubElement(anchor, '{%s}clientData' % SHEET_DRAWING_NS)
+        anchor.pic = pic
+        node.append(anchor.to_tree())
+        return anchor
 
     def write_rels(self, chart_id, image_id):
 

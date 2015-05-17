@@ -298,49 +298,31 @@ class TestDrawingWriter(object):
     def test_write_images(self, ImageFile):
 
         root = Element("{%s}wsDr" % SHEET_DRAWING_NS)
-        self.dw._write_image(root, ImageFile, 1)
-        xml = tostring(root)
+        node = self.dw._write_image(root, ImageFile, 1)
+        xml = tostring(node.to_tree())
         expected = """
-        <xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-            xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
-            <xdr:absoluteAnchor>
-              <xdr:pos x="0" y="0"/>
-              <xdr:ext cx="1123950" cy="1123950"/>
-              <xdr:pic>
-                <xdr:nvPicPr>
-                  <xdr:cNvPr id="2" name="Picture 1"/>
-                  <xdr:cNvPicPr>
-                    <a:picLocks noChangeArrowheads="1" noChangeAspect="1"/>
-                  </xdr:cNvPicPr>
-                </xdr:nvPicPr>
-                <xdr:blipFill>
-                  <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" cstate="print" r:embed="rId1"/>
-                  <a:srcRect/>
-                  <a:stretch>
-                    <a:fillRect/>
-                  </a:stretch>
-                </xdr:blipFill>
-                <xdr:spPr bwMode="auto">
-                  <a:xfrm>
-                    <a:off x="0" y="0"/>
-                    <a:ext cx="0" cy="0"/>
-                  </a:xfrm>
-                  <a:prstGeom prst="rect">
-                    <a:avLst/>
-                  </a:prstGeom>
-                  <a:noFill/>
-                  <a:ln w="1">
-                    <a:noFill/>
-                    <a:miter lim="800000"/>
-                    <a:headEnd/>
-                    <a:tailEnd len="med" type="none" w="med"/>
-                  </a:ln>
-                  <a:effectLst/>
-                </xdr:spPr>
-              </xdr:pic>
-              <xdr:clientData/>
-            </xdr:absoluteAnchor>
-        </xdr:wsDr>
+        <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <pos x="0" y="0"/>
+          <ext cx="1123950" cy="1123950"/>
+          <pic>
+            <nvPicPr>
+              <cNvPr descr="Name of file" id="1" name="Image 1"/>
+              <cNvPicPr>
+              </cNvPicPr>
+            </nvPicPr>
+            <blipFill>
+              <a:blip cstate="print" r:embed="rId1"/>
+            </blipFill>
+            <spPr>
+              <a:noFill/>
+              <a:ln w="1">
+                <a:noFill/>
+              </a:ln>
+            </spPr>
+          </pic>
+          <clientData/>
+        </absoluteAnchor>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -351,7 +333,7 @@ class TestDrawingWriter(object):
         drawing = ImageFile.drawing
         root = Element("test",)
         node = self.dw._write_anchor(root, drawing)
-        xml = tostring(node)
+        xml = tostring(node.to_tree())
         expected = """
         <absoluteAnchor>
             <pos x="0" y="0"/>
@@ -371,7 +353,7 @@ class TestDrawingWriter(object):
         drawing.anchorrow = 0
         root = Element("test")
         node = self.dw._write_anchor(root, drawing)
-        xml = tostring(node)
+        xml = tostring(node.to_tree())
         expected = """
         <oneCellAnchor>
             <from>
