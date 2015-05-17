@@ -28,6 +28,7 @@ from .fill import (
 from .line import LineProperties
 
 from openpyxl.styles.colors import Color
+from openpyxl.xml.constants import DRAWING_NS
 
 
 class Point2D(Serialisable):
@@ -519,7 +520,7 @@ class ShapeProperties(Serialisable):
     prstGeom = Typed(expected_type=PresetGeometry2D, allow_none=True)
 
     # fills one of
-    noFill = EmptyTag()
+    noFill = EmptyTag(namespace=DRAWING_NS)
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
