@@ -109,16 +109,6 @@ class Font(Serialisable):
         self.charset = charset
 
 
-class TextBulletSizeFollowText(Serialisable):
-
-    pass
-
-
-class TextNoBullet(Serialisable):
-
-    pass
-
-
 class CharacterProperties(Serialisable):
 
     kumimoji = Bool(allow_none=True)
@@ -143,10 +133,6 @@ class CharacterProperties(Serialisable):
     smtClean = Bool(allow_none=True)
     smtId = Integer(allow_none=True)
     bmk = String(allow_none=True)
-    # uses element group EG_FillProperties
-    # uses element group EG_EffectProperties
-    # uses element group EG_TextUnderlineLine
-    # uses element group EG_TextUnderlineFill
     ln = Typed(expected_type=LineProperties, allow_none=True)
     highlight = Typed(expected_type=Color, allow_none=True)
     latin = Typed(expected_type=Font, allow_none=True)
@@ -157,16 +143,20 @@ class CharacterProperties(Serialisable):
     hlinkMouseOver = Typed(expected_type=Hyperlink, allow_none=True)
     rtl = Bool(nested=True, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
-    noFill = Typed(expected_type=NoFill, allow_none=True)
+    # uses element group EG_FillProperties
+    noFill = EmptyTag(namespace=DRAWING_NS)
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     blipFill = Typed(expected_type=BlipFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
-    grpFill = Typed(expected_type=GroupFillProperties, allow_none=True)
+    grpFill = EmptyTag(namespace=DRAWING_NS)
+    # uses element group EG_EffectProperties
     effectLst = Typed(expected_type=EffectList, allow_none=True)
     effectDag = Typed(expected_type=EffectContainer, allow_none=True)
+    # uses element group EG_TextUnderlineLine
     uLnTx = EmptyTag()
     uLn = Typed(expected_type=LineProperties, allow_none=True)
+    # uses element group EG_TextUnderlineFill
     uFillTx = EmptyTag()
     uFill = EmptyTag()
 
@@ -377,8 +367,8 @@ class ParagraphProperties(Serialisable):
     buSzPts = NestedInteger(allow_none=True)
     buFontTx = EmptyTag()
     buFont = Typed(expected_type=Font, allow_none=True)
-    buNone = Typed(expected_type=TextNoBullet, allow_none=True)
-    buAutoNum = Typed(expected_type=AutonumberBullet, allow_none=True)
+    buNone = EmptyTag()
+    buAutoNum = EmptyTag()
     buChar = Typed(expected_type=CharBullet, allow_none=True)
     buBlip = Typed(expected_type=BlipBullet, allow_none=True)
 

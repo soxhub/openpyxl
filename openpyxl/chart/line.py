@@ -103,7 +103,7 @@ class LineProperties(Serialisable):
     cmpd = NoneSet(values=(['sng', 'dbl', 'thickThin', 'thinThick', 'tri']))
     algn = NoneSet(values=(['ctr', 'in']))
 
-    noFill = EmptyTag()
+    noFill = EmptyTag(namespace=DRAWING_NS)
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)

@@ -346,13 +346,3 @@ class BlipFillProperties(Serialisable):
         self.tile = tile
         self.stretch = stretch
         self.srcRect = srcRect
-
-
-class NoFill(Serialisable):
-
-    namespace = DRAWING_NS
-
-
-class GroupFillProperties(Serialisable):
-
-    namespace = DRAWING_NS
