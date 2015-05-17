@@ -24,6 +24,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedString,
     NestedText,
+    NestedValue,
     EmptyTag
 )
 from openpyxl.xml.constants import DRAWING_NS
@@ -312,27 +313,6 @@ class AutonumberBullet(Serialisable):
         self.startAt = startAt
 
 
-class CharBullet(Serialisable):
-
-    char = String()
-
-    def __init__(self,
-                 char=None,
-                ):
-        self.char = char
-
-
-class BlipBullet(Serialisable):
-
-    blip = Typed(expected_type=Blip,)
-
-    __elements__ = ('blip',)
-
-    def __init__(self,
-                 blip=None,
-                ):
-        self.blip = blip
-
 class ParagraphProperties(Serialisable):
 
     tagname = "pPr"
@@ -369,8 +349,8 @@ class ParagraphProperties(Serialisable):
     buFont = Typed(expected_type=Font, allow_none=True)
     buNone = EmptyTag()
     buAutoNum = EmptyTag()
-    buChar = Typed(expected_type=CharBullet, allow_none=True)
-    buBlip = Typed(expected_type=BlipBullet, allow_none=True)
+    buChar = NestedValue(expected_type=unicode, attribute="char", allow_none=True)
+    buBlip = NestedValue(expected_type=Blip, attribute="blip", allow_none=True)
 
     __elements__ = ('lnSpc', 'spcBef', 'spcAft', 'tabLst', 'defRPr',
                     'buClrTx', 'buClr', 'buSzTx', 'buSzPct', 'buSzPts', 'buFontTx', 'buFont',
@@ -583,7 +563,7 @@ class GeomGuide(Serialisable):
 
 class GeomGuideList(Serialisable):
 
-    gd = Typed(expected_type=GeomGuide, allow_none=True)
+    gd = Sequence(expected_type=GeomGuide, allow_none=True)
 
     def __init__(self,
                  gd=None,
@@ -614,16 +594,6 @@ class PresetTextShape(Serialisable):
                 ):
         self.prst = prst
         self.avLst = avLst
-
-
-class FlatText(Serialisable):
-
-    z = Integer()
-
-    def __init__(self,
-                 z=None,
-                ):
-        self.z = z
 
 
 class TextNormalAutofit(Serialisable):
@@ -670,7 +640,7 @@ class RichTextProperties(Serialisable):
     noAutofit = EmptyTag()
     normAutofit = EmptyTag()
     spAutoFit = EmptyTag()
-    flatTx = Typed(expected_type=FlatText, allow_none=True)
+    flatTx = NestedInteger(attribute="z", allow_none=True)
 
     __elements__ = ('prstTxWarp', 'scene3d', 'noAutofit', 'normAutofit', 'spAutoFit')
 
