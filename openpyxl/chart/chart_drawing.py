@@ -235,19 +235,13 @@ class SpreadsheetDrawing(Serialisable):
         """
         anchors = []
         for idx, c in enumerate(self.charts, 1):
-            chart_rel = ChartRelation("rId%s" % idx)
-            frame = GraphicFrame()
-            nv = frame.nvGraphicFramePr.cNvPr
-            nv.id = idx
-            nv.name = "Chart {0}".format(idx)
-            frame.graphic.graphicData.chart = chart_rel
             row, col = coordinate_to_tuple(c.anchor)
             anchor = OneCellAnchor()
             anchor._from.row = row -1
             anchor._from.col = col -1
             anchor.ext.width = cm_to_EMU(c.width)
             anchor.ext.height = cm_to_EMU(c.height)
-            anchor.graphicFrame = frame
+            anchor.graphicFrame = self._chart_frame(idx)
 
             anchors.append(anchor)
         self.oneCellAnchor = anchors
@@ -255,3 +249,13 @@ class SpreadsheetDrawing(Serialisable):
         tree = self.to_tree()
         tree.set('xmlns', SHEET_DRAWING_NS)
         return tree
+
+
+    def _chart_frame(self, idx):
+        chart_rel = ChartRelation("rId%s" % idx)
+        frame = GraphicFrame()
+        nv = frame.nvGraphicFramePr.cNvPr
+        nv.id = idx
+        nv.name = "Chart {0}".format(idx)
+        frame.graphic.graphicData.chart = chart_rel
+        return frame
