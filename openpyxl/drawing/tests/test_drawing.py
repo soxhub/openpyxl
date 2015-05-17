@@ -251,8 +251,8 @@ class TestDrawingWriter(object):
 
     def test_write(self):
         xml = self.dw.write()
-        expected = """<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
-</xdr:wsDr>"""
+        expected = """<wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
+</wsDr>"""
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -263,20 +263,19 @@ class TestDrawingWriter(object):
         drawing = Drawing()
         chart.drawing = drawing
         node = self.dw._write_chart(root, chart, 1)
-        xml = tostring(node)
+        xml = tostring(node.to_tree())
         expected = """
-        <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
+        <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
           <pos x="0" y="0"/>
           <ext cx="200025" cy="1828800"/>
-          <graphicFrame macro="">
+          <graphicFrame>
             <nvGraphicFramePr>
-              <cNvPr id="2" name="Chart 1"/>
+              <cNvPr id="1" name="Chart 1"/>
               <cNvGraphicFramePr/>
             </nvGraphicFramePr>
-            <xfrm>
-              <a:off x="0" y="0"/>
-              <a:ext cx="0" cy="0"/>
-            </xfrm>
+           <xfrm />
             <a:graphic>
               <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
                 <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
