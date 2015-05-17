@@ -264,29 +264,33 @@ class TestDrawingWriter(object):
         chart.drawing = drawing
         self.dw._write_chart(root, chart, 1)
         xml = tostring(root)
-        expected = """<xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        expected = """
+        <xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+        mlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
         xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart">
-  <xdr:absoluteAnchor>
-    <xdr:pos x="0" y="0"/>
-    <xdr:ext cx="200025" cy="1828800"/>
-    <xdr:graphicFrame macro="">
-      <xdr:nvGraphicFramePr>
-        <xdr:cNvPr id="2" name="Chart 1"/>
-        <xdr:cNvGraphicFramePr/>
-      </xdr:nvGraphicFramePr>
-      <xdr:xfrm>
-        <a:off x="0" y="0"/>
-        <a:ext cx="0" cy="0"/>
-      </xdr:xfrm>
-      <a:graphic>
-        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
-          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
-        </a:graphicData>
-      </a:graphic>
-    </xdr:graphicFrame>
-    <xdr:clientData/>
-  </xdr:absoluteAnchor>
-</xdr:wsDr>"""
+            <xdr:absoluteAnchor>
+              <xdr:pos x="0" y="0"/>
+              <xdr:ext cx="200025" cy="1828800"/>
+              <xdr:graphicFrame macro="">
+                <xdr:nvGraphicFramePr>
+                  <xdr:cNvPr id="2" name="Chart 1"/>
+                  <xdr:cNvGraphicFramePr/>
+                </xdr:nvGraphicFramePr>
+                <xdr:xfrm>
+                  <a:off x="0" y="0"/>
+                  <a:ext cx="0" cy="0"/>
+                </xdr:xfrm>
+                <a:graphic>
+                  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                    <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+                  </a:graphicData>
+                </a:graphic>
+              </xdr:graphicFrame>
+              <xdr:clientData/>
+            </xdr:absoluteAnchor>
+        </xdr:wsDr>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -296,46 +300,48 @@ class TestDrawingWriter(object):
         root = Element("{%s}wsDr" % SHEET_DRAWING_NS)
         self.dw._write_image(root, ImageFile, 1)
         xml = tostring(root)
-        expected = """<xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
-  <xdr:absoluteAnchor>
-    <xdr:pos x="0" y="0"/>
-    <xdr:ext cx="1123950" cy="1123950"/>
-    <xdr:pic>
-      <xdr:nvPicPr>
-        <xdr:cNvPr id="2" name="Picture 1"/>
-        <xdr:cNvPicPr>
-          <a:picLocks noChangeArrowheads="1" noChangeAspect="1"/>
-        </xdr:cNvPicPr>
-      </xdr:nvPicPr>
-      <xdr:blipFill>
-        <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" cstate="print" r:embed="rId1"/>
-        <a:srcRect/>
-        <a:stretch>
-          <a:fillRect/>
-        </a:stretch>
-      </xdr:blipFill>
-      <xdr:spPr bwMode="auto">
-        <a:xfrm>
-          <a:off x="0" y="0"/>
-          <a:ext cx="0" cy="0"/>
-        </a:xfrm>
-        <a:prstGeom prst="rect">
-          <a:avLst/>
-        </a:prstGeom>
-        <a:noFill/>
-        <a:ln w="1">
-          <a:noFill/>
-          <a:miter lim="800000"/>
-          <a:headEnd/>
-          <a:tailEnd len="med" type="none" w="med"/>
-        </a:ln>
-        <a:effectLst/>
-      </xdr:spPr>
-    </xdr:pic>
-    <xdr:clientData/>
-  </xdr:absoluteAnchor>
-</xdr:wsDr>
-"""
+        expected = """
+        <xdr:wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+            xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
+            <xdr:absoluteAnchor>
+              <xdr:pos x="0" y="0"/>
+              <xdr:ext cx="1123950" cy="1123950"/>
+              <xdr:pic>
+                <xdr:nvPicPr>
+                  <xdr:cNvPr id="2" name="Picture 1"/>
+                  <xdr:cNvPicPr>
+                    <a:picLocks noChangeArrowheads="1" noChangeAspect="1"/>
+                  </xdr:cNvPicPr>
+                </xdr:nvPicPr>
+                <xdr:blipFill>
+                  <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" cstate="print" r:embed="rId1"/>
+                  <a:srcRect/>
+                  <a:stretch>
+                    <a:fillRect/>
+                  </a:stretch>
+                </xdr:blipFill>
+                <xdr:spPr bwMode="auto">
+                  <a:xfrm>
+                    <a:off x="0" y="0"/>
+                    <a:ext cx="0" cy="0"/>
+                  </a:xfrm>
+                  <a:prstGeom prst="rect">
+                    <a:avLst/>
+                  </a:prstGeom>
+                  <a:noFill/>
+                  <a:ln w="1">
+                    <a:noFill/>
+                    <a:miter lim="800000"/>
+                    <a:headEnd/>
+                    <a:tailEnd len="med" type="none" w="med"/>
+                  </a:ln>
+                  <a:effectLst/>
+                </xdr:spPr>
+              </xdr:pic>
+              <xdr:clientData/>
+            </xdr:absoluteAnchor>
+        </xdr:wsDr>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -343,10 +349,16 @@ class TestDrawingWriter(object):
     @pytest.mark.pil_required
     def test_write_anchor(self, ImageFile):
         drawing = ImageFile.drawing
-        root = Element("test")
-        self.dw._write_anchor(root, drawing)
-        xml = tostring(root)
-        expected = """<test><xdr:absoluteAnchor xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"><xdr:pos x="0" y="0"/><xdr:ext cx="1123950" cy="1123950"/></xdr:absoluteAnchor></test>"""
+        root = Element("test",)
+        node = self.dw._write_anchor(root, drawing)
+        xml = tostring(node)
+        expected = """
+        <absoluteAnchor>
+            <pos x="0" y="0"/>
+            <ext cx="1123950" cy="1123950"/>
+            <clientData></clientData>
+        </absoluteAnchor>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -358,9 +370,20 @@ class TestDrawingWriter(object):
         drawing.anchorcol = 0
         drawing.anchorrow = 0
         root = Element("test")
-        self.dw._write_anchor(root, drawing)
-        xml = tostring(root)
-        expected = """<test><xdr:oneCellAnchor xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"><xdr:from><xdr:col>0</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>0</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:ext cx="1123950" cy="1123950"/></xdr:oneCellAnchor></test>"""
+        node = self.dw._write_anchor(root, drawing)
+        xml = tostring(node)
+        expected = """
+        <oneCellAnchor>
+            <from>
+                <col>0</col>
+                <colOff>0</colOff>
+                <row>0</row>
+                <rowOff>0</rowOff>
+            </from>
+            <ext cx="1123950" cy="1123950"/>
+            <clientData></clientData>
+        </oneCellAnchor>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -368,11 +391,14 @@ class TestDrawingWriter(object):
         self.dw._sheet._charts.append(None)
         self.dw._sheet._images.append(None)
         xml = self.dw.write_rels(1, 1)
-        expected = """<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Target="../charts/chart1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
-  <Relationship Id="rId1" Target="../media/image1.png" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>
-</Relationships>
-"""
+        expected = """
+        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+            <Relationship Id="rId1" Target="../charts/chart1.xml"
+            Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
+            <Relationship Id="rId1" Target="../media/image1.png"
+            Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>
+        </Relationships>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 

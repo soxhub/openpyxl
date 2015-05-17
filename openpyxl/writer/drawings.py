@@ -13,6 +13,12 @@ from openpyxl.xml.constants import (
     PKG_REL_NS
 )
 from openpyxl.compat.strings import safe_string
+from openpyxl.chart.chart_drawing import (
+    OneCellAnchor,
+    TwoCellAnchor,
+    AbsoluteAnchor,
+)
+from openpyxl.utils.units import pixels_to_EMU
 
 
 class DrawingWriter(object):
@@ -37,21 +43,6 @@ class DrawingWriter(object):
     def _write_chart(self, node, chart, idx):
         """Add a chart"""
         drawing = chart.drawing
-
-        #anchor = SubElement(root, 'xdr:twoCellAnchor')
-        #(start_row, start_col), (end_row, end_col) = drawing.coordinates
-        ## anchor coordinates
-        #_from = SubElement(anchor, 'xdr:from')
-        #x = SubElement(_from, 'xdr:col').text = str(start_col)
-        #x = SubElement(_from, 'xdr:colOff').text = '0'
-        #x = SubElement(_from, 'xdr:row').text = str(start_row)
-        #x = SubElement(_from, 'xdr:rowOff').text = '0'
-
-        #_to = SubElement(anchor, 'xdr:to')
-        #x = SubElement(_to, 'xdr:col').text = str(end_col)
-        #x = SubElement(_to, 'xdr:colOff').text = '0'
-        #x = SubElement(_to, 'xdr:row').text = str(end_row)
-        #x = SubElement(_to, 'xdr:rowOff').text = '0'
 
         # we only support absolute anchor atm (TODO: oneCellAnchor, twoCellAnchor
         x, y, w, h = drawing.get_emu_dimensions()
@@ -82,19 +73,22 @@ class DrawingWriter(object):
         x, y, w, h = drawing.get_emu_dimensions()
 
         if drawing.anchortype == "oneCell":
-            anchor = SubElement(node, '{%s}oneCellAnchor' % SHEET_DRAWING_NS)
-            xdrfrom = SubElement(anchor, '{%s}from' % SHEET_DRAWING_NS)
-            SubElement(xdrfrom, '{%s}col' % SHEET_DRAWING_NS).text = safe_string(drawing.anchorcol)
-            SubElement(xdrfrom, '{%s}colOff' % SHEET_DRAWING_NS).text = safe_string(x)
-            SubElement(xdrfrom, '{%s}row' % SHEET_DRAWING_NS).text = safe_string(drawing.anchorrow)
-            SubElement(xdrfrom, '{%s}rowOff' % SHEET_DRAWING_NS).text = safe_string(y)
+            anchor = OneCellAnchor()
+            anchor._from.col = drawing.anchorcol
+            anchor._from.row = drawing.anchorrow
+
         else:
-            anchor = SubElement(node, '{%s}absoluteAnchor' % SHEET_DRAWING_NS)
-            SubElement(anchor, '{%s}pos' % SHEET_DRAWING_NS, {'x':safe_string(x), 'y':safe_string(y)})
+            anchor = AbsoluteAnchor()
+            anchor.pos.x = pixels_to_EMU(drawing.left)
+            anchor.pos.y = pixels_to_EMU(drawing.top)
 
-        SubElement(anchor, '{%s}ext' % SHEET_DRAWING_NS, {'cx':safe_string(w), 'cy':safe_string(h)})
+        anchor.ext.width = pixels_to_EMU(drawing._width)
+        anchor.ext.height = pixels_to_EMU(drawing._height)
 
-        return anchor
+        tree = anchor.to_tree()
+        node.append(tree)
+        return tree
+
 
     def _write_image(self, node, img, idx):
         anchor = self._write_anchor(node, img.drawing)
