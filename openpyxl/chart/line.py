@@ -18,6 +18,7 @@ from openpyxl.descriptors.excel import Coordinate, Percentage
 from openpyxl.descriptors.nested import (
     NoneSet,
     NestedSet,
+    NestedNoneSet,
     EmptyTag,
 )
 from openpyxl.compat import safe_string
@@ -103,12 +104,12 @@ class LineProperties(Serialisable):
     cmpd = NoneSet(values=(['sng', 'dbl', 'thickThin', 'thinThick', 'tri']))
     algn = NoneSet(values=(['ctr', 'in']))
 
-    noFill = EmptyTag(namespace=DRAWING_NS)
+    noFill = EmptyTag()
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
 
-    prstDash = NestedSet(values=(['solid', 'dot', 'dash', 'lgDash', 'dashDot',
+    prstDash = NestedNoneSet(values=(['solid', 'dot', 'dash', 'lgDash', 'dashDot',
                        'lgDashDot', 'lgDashDotDot', 'sysDash', 'sysDot', 'sysDashDot',
                        'sysDashDotDot']), namespace=namespace)
 
