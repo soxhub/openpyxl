@@ -358,3 +358,59 @@ def test_nested_string():
 
     simple = Simple('4')
     assert simple.name == '4'
+
+
+@pytest.fixture
+def Empty():
+    from ..nested import EmptyTag
+
+    class Simple(Serialisable):
+
+        tagname = "break"
+
+        height = EmptyTag()
+
+        def __init__(self, height=None):
+            self.height = height
+
+    return Simple
+
+
+class TestEmptyTag:
+
+    @pytest.mark.parametrize("value, result",
+                             [
+                                 (False, False),
+                                 (True, True),
+                                 (None, False),
+                                 (1, True)
+                             ]
+                             )
+    def test_ctor(self, Empty, value, result):
+        obj = Empty(value)
+        assert obj.height is result
+
+
+    @pytest.mark.parametrize("value, result",
+                             [
+                                 (False, "<break />"),
+                                 (True, "<break><height /></break>")
+                             ]
+                             )
+    def test_to_tree(self, Empty, value, result):
+        obj = Empty(height=value)
+        xml = tostring(obj.to_tree())
+        diff = compare_xml(xml, result)
+        assert diff is None, diff
+
+
+    @pytest.mark.parametrize("value, src",
+                             [
+                                 (False, "<break />"),
+                                 (True, "<break><height /></break>")
+                             ]
+                             )
+    def test_from_xml(self, Empty, value, src):
+        node = fromstring(src)
+        obj = Empty.from_tree(node)
+        assert obj.height is value

@@ -118,3 +118,21 @@ class NestedSequence(Nested, Sequence):
     def to_tree(tagname, value, namespace=None):
         for s in value:
             yield Element(tagname, val=safe_string(s))
+
+
+class EmptyTag(Nested, Bool):
+
+    """
+    Boolean if a tag exists or not.
+    """
+
+    def from_tree(self, node):
+        return True
+
+
+    @staticmethod
+    def to_tree(tagname=None, value=None, namespace=None):
+        if value:
+            if namespace is not None:
+                tagname = "{%s}%s" % (namespace, tagname)
+            return Element(tagname)
