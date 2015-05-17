@@ -29,7 +29,7 @@ from .graphic import (
     GroupShape,
     GraphicFrame,
     Connector,
-    Picture,
+    PictureFrame,
     ChartRelation,
     )
 
@@ -75,7 +75,7 @@ class _AnchorBase(Serialisable):
     grpSp = Typed(expected_type=GroupShape, allow_none=True)
     graphicFrame = Typed(expected_type=GraphicFrame, allow_none=True)
     cxnSp = Typed(expected_type=Connector, allow_none=True)
-    pic = Typed(expected_type=Picture, allow_none=True)
+    pic = Typed(expected_type=PictureFrame, allow_none=True)
     contentPart = Typed(expected_type=RelId, allow_none=True)
 
     clientData = Typed(expected_type=AnchorClientData)

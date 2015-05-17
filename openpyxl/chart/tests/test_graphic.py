@@ -188,7 +188,8 @@ class TestGraphicFrame:
           <graphic>
             <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"></graphicData>
           </graphic>
-        </graphicFrame>        """
+        </graphicFrame>
+        """
         node = fromstring(src)
         graphic = GraphicFrame.from_tree(node)
         assert graphic == GraphicFrame()
@@ -309,15 +310,15 @@ class TestPictureNonVisual:
 
 
 @pytest.fixture
-def Picture():
-    from ..graphic import Picture
-    return Picture
+def PictureFrame():
+    from ..graphic import PictureFrame
+    return PictureFrame
 
 
 class TestPicture:
 
-    def test_ctor(self, Picture):
-        graphic = Picture()
+    def test_ctor(self, PictureFrame):
+        graphic = PictureFrame()
         xml = tostring(graphic.to_tree())
         expected = """
         <pic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
@@ -337,10 +338,10 @@ class TestPicture:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Picture):
+    def test_from_xml(self, PictureFrame):
         src = """
         <pic />
         """
         node = fromstring(src)
-        graphic = Picture.from_tree(node)
-        assert graphic == Picture()
+        graphic = PictureFrame.from_tree(node)
+        assert graphic == PictureFrame()

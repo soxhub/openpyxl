@@ -482,7 +482,7 @@ class PictureNonVisual(Serialisable):
         self.cNvPicPr = cNvPicPr
 
 
-class Picture(Serialisable):
+class PictureFrame(Serialisable):
 
     tagname = "pic"
 
