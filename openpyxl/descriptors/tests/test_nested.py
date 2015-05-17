@@ -414,3 +414,44 @@ class TestEmptyTag:
         node = fromstring(src)
         obj = Empty.from_tree(node)
         assert obj.height is value
+
+
+@pytest.fixture
+def CustomAttribute():
+    from ..nested import NestedValue
+
+    class Simple(Serialisable):
+
+        tagname = "simple"
+
+        size = NestedValue(expected_type=int, attribute="something")
+
+        def __init__(self, size):
+            self.size = size
+
+    return Simple
+
+
+class TestCustomAttribute:
+
+    def test_to_tree(self, CustomAttribute):
+
+        simple = CustomAttribute(4)
+
+        assert simple.size == 4
+        xml = tostring(CustomAttribute.size.to_tree("size", simple.size))
+        expected = """
+        <size something="4"></size>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, CustomAttribute):
+
+        xml = """
+        <size something="4"></size>
+        """
+        node = fromstring(xml)
+        simple = CustomAttribute(size=node)
+        assert simple.size == 4

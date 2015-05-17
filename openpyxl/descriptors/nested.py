@@ -23,6 +23,7 @@ from openpyxl.xml.functions import Element, localname
 class Nested(Descriptor):
 
     nested = True
+    attribute = "val"
 
     def __set__(self, instance, value):
         if hasattr(value, "tag"):
@@ -35,16 +36,15 @@ class Nested(Descriptor):
 
 
     def from_tree(self, node):
-        return node.get("val")
+        return node.get(self.attribute)
 
 
-    @staticmethod
-    def to_tree(tagname=None, value=None, namespace=None):
+    def to_tree(self, tagname=None, value=None, namespace=None):
         if value is not None:
             if namespace is not None:
                 tagname = "{%s}%s" % (namespace, tagname)
             value = safe_string(value)
-            return Element(tagname, val=value)
+            return Element(tagname, {self.attribute:value})
 
 
 class NestedValue(Nested, Convertible):
