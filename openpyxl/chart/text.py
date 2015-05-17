@@ -24,6 +24,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedString,
     NestedText,
+    EmptyTag
 )
 from openpyxl.xml.constants import DRAWING_NS
 
@@ -108,21 +109,6 @@ class Font(Serialisable):
         self.charset = charset
 
 
-class TextUnderlineLineFollowText(Serialisable):
-
-    pass
-
-
-class TextUnderlineFillFollowText(Serialisable):
-
-    pass
-
-
-class TextUnderlineFillGroupWrapper(Serialisable):
-
-    pass
-
-
 class TextBulletSizeFollowText(Serialisable):
 
     pass
@@ -179,10 +165,10 @@ class CharacterProperties(Serialisable):
     grpFill = Typed(expected_type=GroupFillProperties, allow_none=True)
     effectLst = Typed(expected_type=EffectList, allow_none=True)
     effectDag = Typed(expected_type=EffectContainer, allow_none=True)
-    uLnTx = Typed(expected_type=TextUnderlineLineFollowText, allow_none=True)
+    uLnTx = EmptyTag()
     uLn = Typed(expected_type=LineProperties, allow_none=True)
-    uFillTx = Typed(expected_type=TextUnderlineFillFollowText, allow_none=True)
-    uFill = Typed(expected_type=TextUnderlineFillGroupWrapper, allow_none=True)
+    uFillTx = EmptyTag()
+    uFill = EmptyTag()
 
     __elements__ = ('ln', 'highlight', 'latin', 'ea', 'cs', 'sym',
                     'hlinkClick', 'hlinkMouseOver', 'rtl', 'noFill', 'solidFill', 'gradFill',
@@ -312,16 +298,6 @@ class Spacing(Serialisable):
         self.spcPts = spcPts
 
 
-class TextBulletColorFollowText(Serialisable):
-
-    pass
-
-
-class TextBulletTypefaceFollowText(Serialisable):
-
-    pass
-
-
 class AutonumberBullet(Serialisable):
 
     type = Set(values=(['alphaLcParenBoth', 'alphaUcParenBoth',
@@ -396,10 +372,10 @@ class ParagraphProperties(Serialisable):
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
     buClrTx = Typed(expected_type=TextBulletColorFollowText, allow_none=True)
     buClr = Typed(expected_type=Color, allow_none=True)
-    buSzTx = Typed(expected_type=TextBulletSizeFollowText, allow_none=True)
+    buSzTx = EmptyTag()
     buSzPct = NestedInteger(allow_none=True)
     buSzPts = NestedInteger(allow_none=True)
-    buFontTx = Typed(expected_type=TextBulletTypefaceFollowText, allow_none=True)
+    buFontTx = EmptyTag()
     buFont = Typed(expected_type=Font, allow_none=True)
     buNone = Typed(expected_type=TextNoBullet, allow_none=True)
     buAutoNum = Typed(expected_type=AutonumberBullet, allow_none=True)
@@ -673,16 +649,6 @@ class TextNormalAutofit(Serialisable):
         self.lnSpcReduction = lnSpcReduction
 
 
-class TextShapeAutofit(Serialisable):
-
-    pass
-
-
-class TextNoAutofit(Serialisable):
-
-    pass
-
-
 class RichTextProperties(Serialisable):
 
     tagname = "bodyPr"
@@ -712,8 +678,8 @@ class RichTextProperties(Serialisable):
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
     noAutofit = Typed(expected_type=TextNoAutofit, allow_none=True)
-    normAutofit = Typed(expected_type=TextNormalAutofit, allow_none=True)
-    spAutoFit = Typed(expected_type=TextShapeAutofit, allow_none=True)
+    normAutofit = EmptyTag()
+    spAutoFit = EmptyTag()
     flatTx = Typed(expected_type=FlatText, allow_none=True)
 
     __elements__ = ('prstTxWarp', 'scene3d', 'noAutofit', 'normAutofit', 'spAutoFit')

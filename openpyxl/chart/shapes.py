@@ -15,7 +15,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import Coordinate, Percentage
 
 from openpyxl.descriptors.nested import (
-    NoneSet,
+    EmptyTag
     )
 
 from .drawing import OfficeArtExtensionList
@@ -519,7 +519,7 @@ class ShapeProperties(Serialisable):
     prstGeom = Typed(expected_type=PresetGeometry2D, allow_none=True)
 
     # fills one of
-    noFill = Typed(expected_type=Serialisable, allow_none=True)
+    noFill = EmptyTag()
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
