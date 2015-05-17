@@ -18,7 +18,7 @@ from openpyxl.chart.chart_drawing import (
     TwoCellAnchor,
     AbsoluteAnchor,
 )
-from openpyxl.chart.graphic import PictureFrame
+from openpyxl.chart.graphic import PictureFrame, GraphicFrame
 from openpyxl.chart.fill import Blip
 from openpyxl.utils.units import pixels_to_EMU
 
@@ -46,20 +46,28 @@ class DrawingWriter(object):
         """Add a chart"""
         drawing = chart.drawing
 
+        #anchor = self._write_anchor(node, drawing)
+        #graphic = GraphicFrame()
+        #graphic.nvGraphicFramePr.cNvPr.id = idx+1
+
+        #node.append(anchor)
+        #return anchor
+
+
         # we only support absolute anchor atm (TODO: oneCellAnchor, twoCellAnchor
         x, y, w, h = drawing.get_emu_dimensions()
-        anchor = SubElement(node, '{%s}absoluteAnchor' % SHEET_DRAWING_NS)
-        SubElement(anchor, '{%s}pos' % SHEET_DRAWING_NS, {'x':str(x), 'y':str(y)})
-        SubElement(anchor, '{%s}ext' % SHEET_DRAWING_NS, {'cx':str(w), 'cy':str(h)})
+        anchor = SubElement(node, 'absoluteAnchor')
+        SubElement(anchor, 'pos', {'x':str(x), 'y':str(y)})
+        SubElement(anchor, 'ext', {'cx':str(w), 'cy':str(h)})
 
         # graph frame
-        frame = SubElement(anchor, '{%s}graphicFrame' % SHEET_DRAWING_NS, {'macro':''})
+        frame = SubElement(anchor, 'graphicFrame', {'macro':''})
 
-        name = SubElement(frame, '{%s}nvGraphicFramePr' % SHEET_DRAWING_NS)
-        SubElement(name, '{%s}cNvPr'% SHEET_DRAWING_NS, {'id':'%s' % (idx + 1), 'name':'Chart %s' % idx})
-        SubElement(name, '{%s}cNvGraphicFramePr' % SHEET_DRAWING_NS)
+        name = SubElement(frame, 'nvGraphicFramePr')
+        SubElement(name, 'cNvPr', {'id':'%s' % (idx + 1), 'name':'Chart %s' % idx})
+        SubElement(name, 'cNvGraphicFramePr')
 
-        frm = SubElement(frame, '{%s}xfrm'  % SHEET_DRAWING_NS)
+        frm = SubElement(frame, 'xfrm')
         # no transformation
         SubElement(frm, '{%s}off' % DRAWING_NS, {'x':'0', 'y':'0'})
         SubElement(frm, '{%s}ext' % DRAWING_NS, {'cx':'0', 'cy':'0'})
@@ -68,8 +76,8 @@ class DrawingWriter(object):
         data = SubElement(graph, '{%s}graphicData' % DRAWING_NS, {'uri':CHART_NS})
         SubElement(data, '{%s}chart' % CHART_NS, {'{%s}id' % REL_NS:'rId%s' % idx })
 
-        SubElement(anchor, '{%s}clientData' % SHEET_DRAWING_NS)
-        return node
+        SubElement(anchor, 'clientData')
+        return anchor
 
     def _write_anchor(self, node, drawing):
         x, y, w, h = drawing.get_emu_dimensions()
