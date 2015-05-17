@@ -130,9 +130,9 @@ class EmptyTag(Nested, Bool):
         return True
 
 
-    @staticmethod
-    def to_tree(tagname=None, value=None, namespace=None):
+    def to_tree(self, tagname=None, value=None, namespace=None):
         if value:
-            if namespace is not None:
-                tagname = "{%s}%s" % (namespace, tagname)
+            ns = getattr(self, "namespace", None) or namespace
+            if ns is not None:
+                tagname = "{%s}%s" % (ns, tagname)
             return Element(tagname)
