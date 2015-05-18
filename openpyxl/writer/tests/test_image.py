@@ -18,7 +18,7 @@ def test_write_images(datadir):
     datadir.chdir()
     wb = Workbook()
     ew = ExcelWriter(workbook=wb)
-    from openpyxl.drawing import Image
+    from openpyxl.drawing.image import Image
     img = Image("plain.png")
 
     buf = BytesIO()

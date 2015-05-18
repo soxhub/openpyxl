@@ -36,7 +36,7 @@ from openpyxl.writer.workbook import (
 from openpyxl.workbook.properties import write_properties
 from openpyxl.writer.theme import write_theme
 from openpyxl.writer.styles import StyleWriter
-from openpyxl.writer.drawings import DrawingWriter, ShapeWriter
+from openpyxl.drawing.writer import DrawingWriter
 from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.workbook.names.external import (
