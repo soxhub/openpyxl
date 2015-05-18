@@ -129,12 +129,12 @@ def classify(tagname, src=sheet_src, schema=None):
     children = []
     element_names =[]
     elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    choice = node.findall("{%s}sequence/{%s}choice/{%s}element" % (XSD, XSD, XSD))
+    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
     if choice:
         s += """    # some elements are choice\n"""
         elements.extend(choice)
-    group = node.find("{%s}sequence/{%s}group" % (XSD, XSD))
-    if group is not None:
+    groups = node.findall("{%s}sequence/{%s}group" % (XSD, XSD))
+    for group in groups:
         ref = group.get("ref")
         s += """    # uses element group {0}\n""".format(ref)
         elements.extend(get_element_group(schema, ref))
