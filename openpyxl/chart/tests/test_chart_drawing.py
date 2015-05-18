@@ -7,7 +7,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def TwoCellAnchor():
-    from ..chart_drawing import TwoCellAnchor
+    from ..spreadsheet_drawing import TwoCellAnchor
     return TwoCellAnchor
 
 
@@ -62,7 +62,7 @@ class TestTwoCellAnchor:
 
 @pytest.fixture
 def OneCellAnchor():
-    from ..chart_drawing import OneCellAnchor
+    from ..spreadsheet_drawing import OneCellAnchor
     return OneCellAnchor
 
 
@@ -107,7 +107,7 @@ class TestOneCellAnchor:
 
 @pytest.fixture
 def AbsoluteAnchor():
-    from ..chart_drawing import AbsoluteAnchor
+    from ..spreadsheet_drawing import AbsoluteAnchor
     return AbsoluteAnchor
 
 
@@ -142,14 +142,14 @@ class TestAbsoluteAnchor:
 
 @pytest.fixture
 def SpreadsheetDrawing():
-    from ..chart_drawing import SpreadsheetDrawing
+    from ..spreadsheet_drawing import SpreadsheetDrawing
     return SpreadsheetDrawing
 
 
 class TestSpreadsheetDrawing:
 
     def test_ctor(self, SpreadsheetDrawing):
-        from ..chart_drawing import (
+        from ..spreadsheet_drawing import (
             OneCellAnchor,
             TwoCellAnchor,
             AbsoluteAnchor
