@@ -128,16 +128,6 @@ class ExcelWriter(object):
                     cw = ChartWriter(chart)
                     archive.writestr(PACKAGE_CHARTS + '/chart%d.xml' % chart_id,
                         cw.write())
-
-                    if chart._shapes:
-                        archive.writestr(PACKAGE_CHARTS + '/_rels/chart%d.xml.rels' % chart_id,
-                            cw.write_rels(drawing_id)) # TODO remove this dependency
-                        sw = ShapeWriter(chart._shapes)
-                        archive.writestr(PACKAGE_DRAWINGS + '/drawing%d.xml' % drawing_id,
-                            sw.write(shape_id)) # TODO remove this dependency
-                        shape_id += len(chart._shapes)
-                        drawing_id += 1
-
                     chart_id += 1
 
                 image_id = self._write_images(sheet._images, archive, image_id)
