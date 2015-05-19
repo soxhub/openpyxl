@@ -184,11 +184,10 @@ class TestDrawingWriter(object):
 
     def test_write_chart(self):
         from openpyxl.drawing import Drawing
-        root = Element("{%s}wsDr" % SHEET_DRAWING_NS)
         chart = DummyChart()
         drawing = Drawing()
         chart.drawing = drawing
-        node = self.dw._write_chart(root, chart, 1)
+        node = self.dw._write_chart(chart, 1)
         xml = tostring(node.to_tree())
         expected = """
         <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -217,8 +216,7 @@ class TestDrawingWriter(object):
     @pytest.mark.pil_required
     def test_write_images(self, ImageFile):
 
-        root = Element("wsDr")
-        node = self.dw._write_image(root, ImageFile, 1)
+        node = self.dw._write_image(ImageFile, 1)
         xml = tostring(node.to_tree())
         expected = """
         <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"

@@ -36,45 +36,32 @@ class DrawingWriter(object):
         root = Element("wsDr", xmlns=SHEET_DRAWING_NS)
 
         for idx, chart in enumerate(self._sheet._charts):
-            self._write_chart(root, chart, idx+1)
+            node = self._write_chart(chart, idx+1)
+            self.root.append(node)
 
         for idx, img in enumerate(self._sheet._images):
-            self._write_image(root, img, idx+1)
+            anchor = self._write_image(img, idx+1)
+            self.root.append(node)
 
         return tostring(root)
 
 
-    def _write_chart(self, node, chart, idx):
+    def _write_chart(self, chart, idx):
         """Add a chart"""
         drawing = chart.drawing
         anchor = drawing.anchor
         _drawing = SpreadsheetDrawing()
-
         anchor.graphicFrame = _drawing._chart_frame(idx)
 
-        node.append(anchor.to_tree())
         return anchor
 
 
-    def _write_image(self, node, img, idx):
+    def _write_image(self, img, idx):
         """Add an image"""
-
         anchor = img.drawing.anchor
-        pic = PictureFrame()
-        pic.nvPicPr.cNvPr.desc = "Picture 1"
-        pic.nvPicPr.cNvPr.id = 1
-        pic.nvPicPr.cNvPicPr.picLocks
-        pic.blipFill.blip = Blip()
-        pic.blipFill.blip.embed = "rId1"
-        pic.blipFill.blip.cstate = "print"
+        _drawing = SpreadsheetDrawing()
+        anchor.pic = _drawing._picture_frame(idx)
 
-        pic.spPr.noFill = True
-        pic.spPr.ln.prstDash = None
-        pic.spPr.ln.w = 1
-        pic.spPr.ln.noFill = True
-
-        anchor.pic = pic
-        node.append(anchor.to_tree())
         return anchor
 
     def write_rels(self, chart_id, image_id):
