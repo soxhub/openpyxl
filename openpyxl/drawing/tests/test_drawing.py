@@ -88,6 +88,42 @@ class TestDrawing(object):
         assert dims == (0, 0, 200025, 1828800)
 
 
+    @pytest.mark.pil_required
+    def test_absolute_anchor(self):
+        node = self.drawing.anchor
+        xml = tostring(node.to_tree())
+        expected = """
+        <absoluteAnchor>
+            <pos x="0" y="0"/>
+            <ext cx="200025" cy="1828800"/>
+            <clientData></clientData>
+        </absoluteAnchor>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    @pytest.mark.pil_required
+    def test_onecell_anchor(self):
+        self.drawing.anchortype =  "oneCell"
+        node = self.drawing.anchor
+        xml = tostring(node.to_tree())
+        expected = """
+        <oneCellAnchor>
+            <from>
+                <col>0</col>
+                <colOff>0</colOff>
+                <row>0</row>
+                <rowOff>0</rowOff>
+            </from>
+            <ext cx="200025" cy="1828800"/>
+            <clientData></clientData>
+        </oneCellAnchor>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
 class DummyDrawing(object):
 
     """Shapes need charts which need drawings"""
@@ -207,44 +243,6 @@ class TestDrawingWriter(object):
           </pic>
           <clientData/>
         </absoluteAnchor>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    @pytest.mark.pil_required
-    def test_write_anchor(self, ImageFile):
-        drawing = ImageFile.drawing
-        node = drawing.anchor
-        xml = tostring(node.to_tree())
-        expected = """
-        <absoluteAnchor>
-            <pos x="0" y="0"/>
-            <ext cx="1123950" cy="1123950"/>
-            <clientData></clientData>
-        </absoluteAnchor>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    @pytest.mark.pil_required
-    def test_write_anchor_onecell(self, ImageFile):
-        drawing = ImageFile.drawing
-        drawing.anchortype =  "oneCell"
-        node = drawing.anchor
-        xml = tostring(node.to_tree())
-        expected = """
-        <oneCellAnchor>
-            <from>
-                <col>0</col>
-                <colOff>0</colOff>
-                <row>0</row>
-                <rowOff>0</rowOff>
-            </from>
-            <ext cx="1123950" cy="1123950"/>
-            <clientData></clientData>
-        </oneCellAnchor>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

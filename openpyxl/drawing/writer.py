@@ -47,37 +47,19 @@ class DrawingWriter(object):
     def _write_chart(self, node, chart, idx):
         """Add a chart"""
         drawing = chart.drawing
-        drawing.anchortype = None
-
+        anchor = drawing.anchor
         _drawing = SpreadsheetDrawing()
-        anchor = self._write_anchor(node, drawing)
+
         anchor.graphicFrame = _drawing._chart_frame(idx)
 
         node.append(anchor.to_tree())
         return anchor
 
 
-    def _write_anchor(self, node, drawing):
-        if drawing.anchortype == "oneCell":
-            anchor = OneCellAnchor()
-            anchor._from.col = drawing.anchorcol
-            anchor._from.row = drawing.anchorrow
-
-        else:
-            anchor = AbsoluteAnchor()
-            anchor.pos.x = pixels_to_EMU(drawing.left)
-            anchor.pos.y = pixels_to_EMU(drawing.top)
-
-        anchor.ext.width = pixels_to_EMU(drawing._width)
-        anchor.ext.height = pixels_to_EMU(drawing._height)
-
-        node.append(anchor.to_tree())
-        return anchor
-
-
     def _write_image(self, node, img, idx):
-        anchor = self._write_anchor(node, img.drawing)
+        """Add an image"""
 
+        anchor = img.drawing.anchor
         pic = PictureFrame()
         pic.nvPicPr.cNvPr.desc = "Picture 1"
         pic.nvPicPr.cNvPr.id = 1
