@@ -14,13 +14,8 @@ from openpyxl.xml.constants import (
 )
 from openpyxl.compat.strings import safe_string
 from openpyxl.chart.spreadsheet_drawing import (
-    OneCellAnchor,
-    TwoCellAnchor,
-    AbsoluteAnchor,
     SpreadsheetDrawing,
 )
-from openpyxl.chart.graphic import PictureFrame, GraphicFrame
-from openpyxl.chart.fill import Blip
 from openpyxl.utils.units import pixels_to_EMU
 
 
