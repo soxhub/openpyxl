@@ -25,7 +25,7 @@ from .shapes import (
     Point2D,
     PositiveSize2D,
 )
-
+from .fill import Blip
 from .graphic import (
     GroupShape,
     GraphicFrame,
@@ -260,3 +260,19 @@ class SpreadsheetDrawing(Serialisable):
         nv.name = "Chart {0}".format(idx)
         frame.graphic.graphicData.chart = chart_rel
         return frame
+
+
+    def _picture_frame(self, idx):
+        pic = PictureFrame()
+        pic.nvPicPr.cNvPr.desc = "Picture 1"
+        pic.nvPicPr.cNvPr.id = idx
+        pic.nvPicPr.cNvPicPr.picLocks
+        pic.blipFill.blip = Blip()
+        pic.blipFill.blip.embed = "rId1"
+        pic.blipFill.blip.cstate = "print"
+
+        pic.spPr.noFill = True
+        pic.spPr.ln.prstDash = None
+        pic.spPr.ln.w = 1
+        pic.spPr.ln.noFill = True
+        return pic
