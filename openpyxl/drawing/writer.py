@@ -35,12 +35,12 @@ class DrawingWriter(object):
 
         root = Element("wsDr", xmlns=SHEET_DRAWING_NS)
 
-        for idx, chart in enumerate(self._sheet._charts):
-            node = self._write_chart(chart, idx+1)
+        for idx, chart in enumerate(self._sheet._charts, 1):
+            node = self._write_chart(chart, idx)
             self.root.append(node)
 
-        for idx, img in enumerate(self._sheet._images):
-            anchor = self._write_image(img, idx+1)
+        for idx, img in enumerate(self._sheet._images, 1):
+            anchor = self._write_image(img)
             self.root.append(node)
 
         return tostring(root)
