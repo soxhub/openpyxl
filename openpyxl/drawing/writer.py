@@ -1,4 +1,3 @@
-# coding=UTF-8
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
@@ -8,7 +7,6 @@ from openpyxl.xml.constants import (
     DRAWING_NS,
     SHEET_DRAWING_NS,
     CHART_NS,
-    REL_NS,
     CHART_DRAWING_NS,
     PKG_REL_NS
 )
@@ -16,7 +14,7 @@ from openpyxl.compat.strings import safe_string
 from openpyxl.chart.spreadsheet_drawing import (
     SpreadsheetDrawing,
 )
-from openpyxl.utils.units import pixels_to_EMU
+from openpyxl.packaging.relationship import Relationship
 
 
 class DrawingWriter(object):
@@ -61,18 +59,16 @@ class DrawingWriter(object):
 
     def write_rels(self, chart_id, image_id):
 
-        root = Element("{%s}Relationships" % PKG_REL_NS)
+        root = Element("Relationships", xmlns=PKG_REL_NS)
         i = 0
         for i, chart in enumerate(self._sheet._charts):
-            attrs = {'Id' : 'rId%s' % (i + 1),
-                'Type' : '%s/chart' % REL_NS,
-                'Target' : '../charts/chart%s.xml' % (chart_id + i) }
-            SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
+            rel = Relationship(type="chart", target='../charts/chart%s.xml' %
+                               (chart_id + i), id='rId%s' % (i + 1))
+            root.append(rel.to_tree())
         for j, img in enumerate(self._sheet._images):
-            attrs = {'Id' : 'rId%s' % (i + j + 1),
-                'Type' : '%s/image' % REL_NS,
-                'Target' : '../media/image%s.png' % (image_id + j) }
-            SubElement(root, '{%s}Relationship' % PKG_REL_NS, attrs)
+            rel = Relationship(type="image", target='../media/image%s.png' %
+                       (image_id + i), id='rId%s' % (i + j + 1))
+            root.append(rel.to_tree())
         return tostring(root)
 
 
