@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
 """
 Enclosing chart object. The various chart types are actually child objects.
