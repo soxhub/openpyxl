@@ -57,8 +57,6 @@ class Image(object):
         self.drawing.width = size[0]
         self.drawing.height = size[1]
 
-        self.drawing.anchortype = None
-
     def anchor(self, cell, anchortype="absolute"):
         """ anchors the image to the given cell
             optional parameter anchortype supports 'absolute' or 'oneCell'"""

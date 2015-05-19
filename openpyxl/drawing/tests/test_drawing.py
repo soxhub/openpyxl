@@ -215,8 +215,7 @@ class TestDrawingWriter(object):
     @pytest.mark.pil_required
     def test_write_anchor(self, ImageFile):
         drawing = ImageFile.drawing
-        root = Element("test",)
-        node = self.dw._write_anchor(root, drawing)
+        node = drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
         <absoluteAnchor>
@@ -231,12 +230,9 @@ class TestDrawingWriter(object):
 
     @pytest.mark.pil_required
     def test_write_anchor_onecell(self, ImageFile):
-        drawing =ImageFile.drawing
+        drawing = ImageFile.drawing
         drawing.anchortype =  "oneCell"
-        drawing.anchorcol = 0
-        drawing.anchorrow = 0
-        root = Element("test")
-        node = self.dw._write_anchor(root, drawing)
+        node = drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
         <oneCellAnchor>

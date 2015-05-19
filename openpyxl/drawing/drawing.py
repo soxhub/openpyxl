@@ -11,6 +11,8 @@ from openpyxl.utils.units import (
     EMU_to_pixels,
     short_color,
 )
+from openpyxl.chart.spreadsheet_drawing import OneCellAnchor, TwoCellAnchor, AbsoluteAnchor
+
 
 class Shadow(object):
 
@@ -48,10 +50,14 @@ class Drawing(object):
         self.coordinates = ((1, 2), (16, 8))
         self.left = 0
         self.top = 0
-        self._width = EMU_to_pixels(200000)
-        self._height = EMU_to_pixels(1828800)
+        self._width = 21 # default in px
+        self._height = 192 #default in px
         self.resize_proportional = False
         self.rotation = 0
+        self.anchortype = "absolute"
+        self.anchorcol = 0 # left cell
+        self.anchorrow = 0 # top row
+
 
     @property
     def width(self):
@@ -94,3 +100,21 @@ class Drawing(object):
 
         return (pixels_to_EMU(self.left), pixels_to_EMU(self.top),
             pixels_to_EMU(self._width), pixels_to_EMU(self._height))
+
+
+    @property
+    def anchor(self):
+        if self.anchortype == "absolute":
+            anchor = AbsoluteAnchor()
+            anchor.pos.x = pixels_to_EMU(self.left)
+            anchor.pos.y = pixels_to_EMU(self.top)
+
+        elif self.anchortype == "oneCell":
+            anchor = OneCellAnchor()
+            anchor._from.col = self.anchorcol
+            anchor._from.row = self.anchorrow
+
+        anchor.ext.width = pixels_to_EMU(self._width)
+        anchor.ext.height = pixels_to_EMU(self._height)
+
+        return anchor
