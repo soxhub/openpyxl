@@ -237,6 +237,7 @@ class TestDrawingWriter(object):
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+    @pytest.mark.pil_required
     def test_write_rels(self, ImageFile):
         self.dw._sheet._charts.append(DummyChart())
         self.dw._sheet._images.append(ImageFile)
