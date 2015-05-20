@@ -236,7 +236,7 @@ def write_worksheet(worksheet, shared_strings):
                 xf.write(hf)
 
             if worksheet._charts or worksheet._images:
-                rel = Relationship(type="drawing")
+                rel = Relationship(type="drawing", target="")
                 worksheet.relationships.append(rel)
                 rel.id = "rId%s" % len(worksheet.relationships)
                 drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
