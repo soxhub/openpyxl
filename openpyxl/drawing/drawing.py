@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import division
 # Copyright (c) 2010-2015 openpyxl
 
 import math
