@@ -21,7 +21,6 @@ class PrintPageSetup(Serialisable):
     """ Worksheet print page setup """
 
     tagname = "pageSetup"
-    tag = "{%s}" % SHEET_MAIN_NS + tagname
 
     orientation = NoneSet(values=("default", "portrait", "landscape"))
     paperSize = Integer(allow_none=True)
@@ -136,7 +135,7 @@ class PrintPageSetup(Serialisable):
         attrs = node.attrib
         id_key = '{%s}id' % REL_NS
         if id_key in attrs:
-            attrs['id'] = attrs.pop(id_key)
+            attrs.pop(id_key)
         return cls(**attrs)
 
 
