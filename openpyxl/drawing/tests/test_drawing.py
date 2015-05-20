@@ -124,14 +124,6 @@ class TestDrawing(object):
         assert diff is None, diff
 
 
-class DummyDrawing(object):
-
-    """Shapes need charts which need drawings"""
-
-    width = 10
-    height = 20
-
-
 class DummyChart(object):
 
     """Shapes need a chart to calculate their coordinates"""
@@ -140,7 +132,8 @@ class DummyChart(object):
     height = 100
 
     def __init__(self):
-        self.drawing = DummyDrawing()
+        from openpyxl.drawing import Drawing
+        self.drawing = Drawing()
 
     def _get_margin_left(self):
         return 10
@@ -155,7 +148,7 @@ class DummyChart(object):
         return 15
 
 
-@pytest.fixture()
+@pytest.fixture
 def ImageFile(datadir):
     from ..image import Image
     datadir.chdir()
@@ -164,7 +157,10 @@ def ImageFile(datadir):
 
 class DummySheet:
 
-    pass
+    def __init__(self):
+        self._rels = []
+        self._charts = []
+        self._images = []
 
 
 class TestDrawingWriter(object):
@@ -172,8 +168,6 @@ class TestDrawingWriter(object):
     def setup(self):
         from ..writer import DrawingWriter
         sheet = DummySheet()
-        sheet._charts = []
-        sheet._images = []
         self.dw = DrawingWriter(sheet=sheet)
 
     def test_write(self):
@@ -185,8 +179,6 @@ class TestDrawingWriter(object):
     def test_write_chart(self):
         from openpyxl.drawing import Drawing
         chart = DummyChart()
-        drawing = Drawing()
-        chart.drawing = drawing
         node = self.dw._write_chart(chart, 1)
         xml = tostring(node.to_tree())
         expected = """
@@ -245,15 +237,16 @@ class TestDrawingWriter(object):
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    def test_write_rels(self):
-        self.dw._sheet._charts.append(None)
-        self.dw._sheet._images.append(None)
-        xml = self.dw.write_rels(1, 1)
+    def test_write_rels(self, ImageFile):
+        self.dw._sheet._charts.append(DummyChart())
+        self.dw._sheet._images.append(ImageFile)
+        self.dw.write()
+        xml = self.dw.write_rels()
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
             <Relationship Id="rId1" Target="../charts/chart1.xml"
             Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
-            <Relationship Id="rId1" Target="../media/image1.png"
+            <Relationship Id="rId2" Target="../media/image1.png"
             Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>
         </Relationships>
         """

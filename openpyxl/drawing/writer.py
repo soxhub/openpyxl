@@ -22,6 +22,7 @@ class DrawingWriter(object):
 
     def __init__(self, sheet):
         self._sheet = sheet
+        self._rels = []
 
     def write(self):
         """ write drawings for one sheet in one file """
@@ -30,11 +31,15 @@ class DrawingWriter(object):
 
         for idx, chart in enumerate(self._sheet._charts, 1):
             node = self._write_chart(chart, idx)
-            self.root.append(node)
+            rel = Relationship(type="chart", target='../charts/chart%s.xml' % idx)
+            self._rels.append(rel)
+            root.append(node.to_tree())
 
         for idx, img in enumerate(self._sheet._images, 1):
-            anchor = self._write_image(img)
-            self.root.append(node)
+            anchor = self._write_image(img, idx)
+            rel = Relationship(type="image", target='../media/image%s.png' % idx)
+            self._rels.append(rel)
+            root.append(node.to_tree())
 
         return tostring(root)
 
@@ -57,17 +62,11 @@ class DrawingWriter(object):
 
         return anchor
 
-    def write_rels(self, chart_id, image_id):
+    def write_rels(self):
 
         root = Element("Relationships", xmlns=PKG_REL_NS)
-        i = 0
-        for i, chart in enumerate(self._sheet._charts):
-            rel = Relationship(type="chart", target='../charts/chart%s.xml' %
-                               (chart_id + i), id='rId%s' % (i + 1))
-            root.append(rel.to_tree())
-        for j, img in enumerate(self._sheet._images):
-            rel = Relationship(type="image", target='../media/image%s.png' %
-                       (image_id + i), id='rId%s' % (i + j + 1))
+        for idx, rel in enumerate(self._rels, 1):
+            rel.id = "rId{0}".format(idx)
             root.append(rel.to_tree())
         return tostring(root)
 

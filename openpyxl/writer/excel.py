@@ -121,7 +121,7 @@ class ExcelWriter(object):
                 archive.writestr(PACKAGE_DRAWINGS + '/drawing%d.xml' % drawing_id,
                     dw.write())
                 archive.writestr(PACKAGE_DRAWINGS + '/_rels/drawing%d.xml.rels' % drawing_id,
-                    dw.write_rels(chart_id, image_id)) # TODO remove this dependency
+                    dw.write_rels())
                 drawing_id += 1
 
                 for chart in sheet._charts:
