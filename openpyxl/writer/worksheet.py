@@ -6,10 +6,7 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-# compatibility imports
-
 from openpyxl.compat import safe_string, itervalues, iteritems
-
 from openpyxl import LXML
 
 # package imports
@@ -28,7 +25,9 @@ from openpyxl.xml.constants import (
 )
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.styles.differential import DifferentialStyle
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.properties import WorksheetProperties
+from openpyxl.worksheet.hyperlink import Hyperlink
 
 from .etree_worksheet import write_cell
 
@@ -158,10 +157,11 @@ def write_hyperlinks(worksheet):
     tag = Element('hyperlinks')
     for cell in worksheet.get_cell_collection():
         if cell.hyperlink_rel_id is not None:
-            attrs = {'display': cell.hyperlink,
-                     'ref': cell.coordinate,
-                     '{%s}id' % REL_NS: cell.hyperlink_rel_id}
-            tag.append(Element('hyperlink', attrs))
+            rId = len(worksheet._rels) + 1
+            link = Hyperlink(ref=cell.coordinate, display=cell.hyperlink,
+                            id="rId%s" % rId)
+            worksheet._rels.append(link)
+            tag.append(link.to_tree())
     if tag.getchildren():
         return tag
 
@@ -236,7 +236,10 @@ def write_worksheet(worksheet, shared_strings):
                 xf.write(hf)
 
             if worksheet._charts or worksheet._images:
-                drawing = Element('drawing', {'{%s}id' % REL_NS: 'rId1'})
+                rel = Relationship(type="drawing")
+                worksheet.relationships.append(rel)
+                rel.id = "rId%s" % len(worksheet.relationships)
+                drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
                 xf.write(drawing)
 
             # If vba is being preserved then add a legacyDrawing element so
