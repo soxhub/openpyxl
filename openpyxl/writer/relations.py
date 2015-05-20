@@ -15,28 +15,31 @@ from openpyxl.packaging.relationship import Relationship
 def write_rels(worksheet, drawing_id, comments_id, vba_controls_id):
     """Write relationships for the worksheet to xml."""
     root = Element('Relationships', xmlns=PKG_REL_NS)
-    for rel in worksheet.relationships:
-        root.append(rel.to_tree())
+    rels = worksheet.relationships
 
     if worksheet._charts or worksheet._images:
         rel = Relationship(type="drawing", id="rId1",
                            target='../drawings/drawing%s.xml' % drawing_id)
-        root.append(rel.to_tree())
+        rels.append(rel)
 
     if worksheet._comment_count > 0:
 
         rel = Relationship(type="comments", id="comments",
                            target='../comments%s.xml' % comments_id)
-        root.append(rel.to_tree())
+        rels.append(rel)
 
         rel = Relationship("type", target='../drawings/commentsDrawing%s.vml' % comments_id, id="commentsvml")
         rel.type = VML_NS
-        root.append(rel.to_tree())
+        rels.append(rel)
 
     if worksheet.vba_controls is not None:
         rel = Relationship("type", target='../drawings/vmlDrawing%s.vml' %
                            vba_controls_id, id=worksheet.vba_controls)
         rel.type = VML_NS
+        rels.append(rel)
+
+    for idx, rel in enumerate(rels, 1):
+        rel.id = "rId{0}".format(idx)
         root.append(rel.to_tree())
 
     return root
