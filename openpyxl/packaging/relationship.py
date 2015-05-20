@@ -27,7 +27,7 @@ class Relationship(Serialisable):
     target = Alias('Target')
     TargetMode = String(allow_none=True)
     targetMode = Alias('TargetMode')
-    Id = String()
+    Id = String(allow_none=True)
     id = Alias('Id')
 
 
