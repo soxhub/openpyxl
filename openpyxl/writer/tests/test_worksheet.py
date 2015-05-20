@@ -720,4 +720,3 @@ def test_write_with_fit_to_page(worksheet, write_worksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
-
