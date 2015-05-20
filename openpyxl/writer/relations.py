@@ -12,15 +12,10 @@ from openpyxl.xml.constants import (
 from openpyxl.packaging.relationship import Relationship
 
 
-def write_rels(worksheet, drawing_id, comments_id, vba_controls_id):
+def write_rels(worksheet, drawing_id=None, comments_id=None, vba_controls_id=None):
     """Write relationships for the worksheet to xml."""
     root = Element('Relationships', xmlns=PKG_REL_NS)
     rels = worksheet.relationships
-
-    if worksheet._charts or worksheet._images:
-        rel = Relationship(type="drawing", id="rId1",
-                           target='../drawings/drawing%s.xml' % drawing_id)
-        rels.append(rel)
 
     if worksheet._comment_count > 0:
 

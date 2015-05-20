@@ -103,31 +103,25 @@ class ExcelWriter(object):
         comments_id = 1
         vba_controls_id = 1
 
-        for i, sheet in enumerate(self.workbook.worksheets):
-            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % (i + 1),
-                             write_worksheet(sheet, self.workbook.shared_strings,
-                                             ))
-            if (sheet._charts or sheet._images
-                or sheet.relationships
-                or sheet._comment_count > 0
-                or sheet.vba_controls is not None):
-                rels = write_rels(sheet, drawing_id, comments_id, vba_controls_id)
-                archive.writestr(
-                    PACKAGE_WORKSHEETS + '/_rels/sheet%d.xml.rels' % (i + 1),
-                    tostring(rels)
-                )
+        for i, sheet in enumerate(self.workbook.worksheets, 1):
+            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % i ,
+                             write_worksheet(sheet, self.workbook.shared_strings))
+
             if sheet._charts or sheet._images:
                 dw = DrawingWriter(sheet)
-                archive.writestr(PACKAGE_DRAWINGS + '/drawing%d.xml' % drawing_id,
-                    dw.write())
-                archive.writestr(PACKAGE_DRAWINGS + '/_rels/drawing%d.xml.rels' % drawing_id,
-                    dw.write_rels())
+                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
+                archive.writestr(drawingpath, dw.write())
+                archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
+                                                                        drawing_id), dw.write_rels())
                 drawing_id += 1
+                for r in sheet.relationships:
+                    if r.type == "drawing":
+                        r.target = "/" + drawingpath
 
                 for chart in sheet._charts:
                     cw = ChartWriter(chart)
-                    archive.writestr(PACKAGE_CHARTS + '/chart%d.xml' % chart_id,
-                        cw.write())
+                    chartpath = "{0}/chart{1}.xml".format(PACKAGE_CHARTS, chart_id)
+                    archive.writestr(chartpath, cw.write())
                     chart_id += 1
 
                 image_id = self._write_images(sheet._images, archive, image_id)
@@ -142,6 +136,14 @@ class ExcelWriter(object):
 
             if sheet.vba_controls is not None:
                 vba_controls_id += 1
+
+            if (sheet.relationships
+                or sheet._comment_count > 0
+                or sheet.vba_controls is not None):
+                rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)
+                archive.writestr( PACKAGE_WORKSHEETS +
+                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels))
+
 
     def _write_external_links(self, archive):
         """Write links to external workbooks"""
