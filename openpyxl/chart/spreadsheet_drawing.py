@@ -220,6 +220,7 @@ class SpreadsheetDrawing(Serialisable):
         self.oneCellAnchor = oneCellAnchor
         self.absoluteAnchor = absoluteAnchor
         self.charts = []
+        self.images = []
         self.rels = []
 
 
