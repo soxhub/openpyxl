@@ -20,11 +20,12 @@ def test_write_images(datadir):
     ew = ExcelWriter(workbook=wb)
     from openpyxl.drawing.image import Image
     img = Image("plain.png")
+    wb._images.append(img)
 
     buf = BytesIO()
 
     archive = zipfile.ZipFile(buf, 'w')
-    ew._write_images([img], archive, 1)
+    ew._write_images(archive)
     archive.close()
 
     buf.seek(0)

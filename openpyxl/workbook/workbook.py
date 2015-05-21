@@ -55,7 +55,7 @@ class Workbook(object):
         self._differential_styles = []
         self._guess_types = guess_types
         self.data_only = data_only
-        self.drawings = IndexedList()
+        self._drawings = []
         self._charts = []
         self._images = []
         self.code_name = None

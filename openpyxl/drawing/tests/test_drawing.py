@@ -130,6 +130,7 @@ class DummyChart(object):
 
     width = 100
     height = 100
+    _id = 1
 
     def __init__(self):
         from openpyxl.drawing import Drawing

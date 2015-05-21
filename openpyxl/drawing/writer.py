@@ -31,13 +31,13 @@ class DrawingWriter(object):
 
         for idx, chart in enumerate(self._sheet._charts, 1):
             node = self._write_chart(chart, idx)
-            rel = Relationship(type="chart", target='../charts/chart%s.xml' % idx)
+            rel = Relationship(type="chart", target='../charts/chart%s.xml' % chart._id)
             self._rels.append(rel)
             root.append(node.to_tree())
 
         for idx, img in enumerate(self._sheet._images, 1):
             anchor = self._write_image(img, idx)
-            rel = Relationship(type="image", target='../media/image%s.png' % idx)
+            rel = Relationship(type="image", target='../media/image%s.png' % img._id)
             self._rels.append(rel)
             root.append(node.to_tree())
 

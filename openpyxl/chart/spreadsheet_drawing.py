@@ -17,9 +17,12 @@ from openpyxl.descriptors.nested import (
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.utils import coordinate_to_tuple
 from openpyxl.utils.units import cm_to_EMU
+from openpyxl.drawing.image import Image
 
-from openpyxl.xml.constants import SHEET_DRAWING_NS
+from openpyxl.xml.constants import SHEET_DRAWING_NS, PKG_REL_NS
+from openpyxl.xml.functions import Element
 
+from ._chart import ChartBase
 from .chartspace import RelId
 from .shapes import (
     Point2D,
@@ -221,7 +224,7 @@ class SpreadsheetDrawing(Serialisable):
         self.absoluteAnchor = absoluteAnchor
         self.charts = []
         self.images = []
-        self.rels = []
+        self._rels = []
 
 
     def __hash__(self):
@@ -236,16 +239,24 @@ class SpreadsheetDrawing(Serialisable):
         create required structure and the serialise
         """
         anchors = []
-        for idx, c in enumerate(self.charts, 1):
-            row, col = coordinate_to_tuple(c.anchor)
-            anchor = OneCellAnchor()
-            anchor._from.row = row -1
-            anchor._from.col = col -1
-            anchor.ext.width = cm_to_EMU(c.width)
-            anchor.ext.height = cm_to_EMU(c.height)
-            anchor.graphicFrame = self._chart_frame(idx)
+        for idx, obj in enumerate(self.charts + self.images, 1):
+            if isinstance(obj, ChartBase):
+                rel = Relationship(type="chart", target='../charts/chart%s.xml' % obj._id)
+                row, col = coordinate_to_tuple(obj.anchor)
+                anchor = OneCellAnchor()
+                anchor._from.row = row -1
+                anchor._from.col = col -1
+                anchor.ext.width = cm_to_EMU(obj.width)
+                anchor.ext.height = cm_to_EMU(obj.height)
+                anchor.graphicFrame = self._chart_frame(idx)
+            elif isinstance(obj, Image):
+                rel = Relationship(type="image", target='../media/image%s.png' % obj._id)
+                anchor = obj.drawing.anchor
+                anchor.pic = _drawing._picture_frame(idx)
 
             anchors.append(anchor)
+            self._rels.append(rel)
+
         self.oneCellAnchor = anchors
 
         tree = self.to_tree()
@@ -269,7 +280,7 @@ class SpreadsheetDrawing(Serialisable):
         pic.nvPicPr.cNvPr.id = idx
         pic.nvPicPr.cNvPicPr.picLocks
         pic.blipFill.blip = Blip()
-        pic.blipFill.blip.embed = "rId1"
+        pic.blipFill.blip.embed = "rId{0}".format(idx)
         pic.blipFill.blip.cstate = "print"
 
         pic.spPr.noFill = True
@@ -277,3 +288,11 @@ class SpreadsheetDrawing(Serialisable):
         pic.spPr.ln.w = 1
         pic.spPr.ln.noFill = True
         return pic
+
+
+    def _write_rels(self):
+        root = Element("Relationships", xmlns=PKG_REL_NS)
+        for idx, rel in enumerate(self._rels, 1):
+            rel.id = "rId{0}".format(idx)
+            root.append(rel.to_tree())
+        return tostring(root)

@@ -24,6 +24,7 @@ from openpyxl.xml.constants import (
     PACKAGE_IMAGES,
     PACKAGE_XL
     )
+from openpyxl.chart.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
@@ -52,6 +53,9 @@ class ExcelWriter(object):
 
     def __init__(self, workbook):
         self.workbook = workbook
+        self.workbook._charts = []
+        self.workbook._images = []
+        self.workbook._drawings = []
         self.style_writer = StyleWriter(workbook)
 
     def write_data(self, archive, as_template=False):
@@ -87,19 +91,24 @@ class ExcelWriter(object):
         archive.writestr(ARC_SHARED_STRINGS,
                 write_string_table(self.workbook.shared_strings))
 
-    def _write_images(self, images, archive, image_id):
-        for img in images:
+
+    def _write_images(self, archive):
+        for idx, img in enumerate(self.workbook._images, 1):
             buf = BytesIO()
-            img.image.save(buf, format= 'PNG')
-            archive.writestr(PACKAGE_IMAGES + '/image%d.png' % image_id, buf.getvalue())
-            image_id += 1
-        return image_id
+            img.image.save(buf, format='PNG')
+            img._id = idx
+            img._path = PACKAGE_IMAGES + '/image{0}.png'.format(idx)
+            archive.writestr(img._path, buf.getvalue())
+
+
+    def _write_charts(self, archive):
+        for idx, img in enumerate(self.workbook._charts, 1):
+            chart._id = idx
+            chart._path = PACKAGE_CHARTS + '/chart{0}.xml'.format(idx)
+            archive.writestr(chart._path, chart._write())
+
 
     def _write_worksheets(self, archive):
-        drawing_id = 1
-        chart_id = 1
-        image_id = 1
-        shape_id = 1
         comments_id = 1
         vba_controls_id = 1
 
@@ -108,23 +117,18 @@ class ExcelWriter(object):
                              write_worksheet(sheet, self.workbook.shared_strings))
 
             if sheet._charts or sheet._images:
-                dw = DrawingWriter(sheet)
+                drawing = SpreadsheetDrawing()
+                drawing.charts = sheet._charts
+                drawing.images = sheet._images
+                self.workbook._drawings.append(drawing)
+                drawing_id = len(self.workbook._drawings)
                 drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, dw.write())
+                archive.writestr(drawingpath, drawing._write())
                 archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                        drawing_id), dw.write_rels())
-                drawing_id += 1
+                                                                        drawing_id), drawing._write_rels())
                 for r in sheet._rels:
                     if r.type == "drawing":
                         r.target = "/" + drawingpath
-
-                for chart in sheet._charts:
-                    cw = ChartWriter(chart)
-                    chartpath = "{0}/chart{1}.xml".format(PACKAGE_CHARTS, chart_id)
-                    archive.writestr(chartpath, cw.write())
-                    chart_id += 1
-
-                image_id = self._write_images(sheet._images, archive, image_id)
 
             if sheet._comment_count > 0:
                 cw = CommentWriter(sheet)

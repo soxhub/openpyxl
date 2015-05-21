@@ -220,8 +220,9 @@ class TestSpreadsheetDrawing:
 
 
     def test_write(self, SpreadsheetDrawing):
+        from .._chart import ChartBase
 
-        class Chart:
+        class Chart(ChartBase):
 
             anchor = "E15"
             width = 15

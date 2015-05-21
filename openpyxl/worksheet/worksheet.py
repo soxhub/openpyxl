@@ -116,6 +116,7 @@ class Worksheet(object):
         self._charts = []
         self._images = []
         self._rels = []
+        self._drawing = None
         self._comment_count = 0
         self._merged_cells = []
         self.hyperlinks = set()
