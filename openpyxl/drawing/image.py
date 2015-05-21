@@ -22,28 +22,30 @@ def bounding_box(bw, bh, w, h):
     return (new_width, new_height)
 
 
+def _import_image(img):
+    try:
+        try:
+            import Image as PILImage
+        except ImportError:
+            from PIL import Image as PILImage
+    except ImportError:
+        raise ImportError('You must install PIL to fetch image objects')
+
+    if not isinstance(img, PILImage.Image):
+        img = PILImage.open(img)
+
+    return img
+
+
 class Image(object):
     """ Raw Image class """
 
-    @staticmethod
-    def _import_image(img):
-        try:
-            try:
-                import Image as PILImage
-            except ImportError:
-                from PIL import Image as PILImage
-        except ImportError:
-            raise ImportError('You must install PIL to fetch image objects')
-
-        if not isinstance(img, PILImage.Image):
-            img = PILImage.open(img)
-
-        return img
+    _id = 1
 
     def __init__(self, img, coordinates=((0, 0), (1, 1)), size=(None, None),
                  nochangeaspect=True, nochangearrowheads=True):
 
-        self.image = self._import_image(img)
+        self.image = _import_image(img)
         self.nochangeaspect = nochangeaspect
         self.nochangearrowheads = nochangearrowheads
 
@@ -72,4 +74,3 @@ class Image(object):
             return ((self.drawing.anchorcol, self.drawing.anchorrow), None)
         else:
             raise ValueError("unknown anchortype %s" % anchortype)
-

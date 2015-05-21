@@ -39,9 +39,10 @@ class TestImage:
 
     @pytest.mark.pil_not_installed
     def test_import(self, Image, datadir):
+        from ..image import _import_image
         datadir.chdir()
         with pytest.raises(ImportError):
-            Image._import_image("plain.png")
+            _import_image("plain.png")
 
     @pytest.mark.pil_required
     def test_ctor(self, Image, datadir):
