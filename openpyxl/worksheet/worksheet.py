@@ -10,6 +10,7 @@ from operator import itemgetter
 from collections import defaultdict
 import re
 from inspect import isgenerator
+from weakref import ref
 
 # compatibility imports
 from openpyxl.compat import (
@@ -616,6 +617,7 @@ class Worksheet(object):
         if anchor is not None:
             chart.anchor = anchor
         self._charts.append(chart)
+        self._parent._charts.append(ref(chart))
 
     def add_image(self, img, anchor=None):
         """
@@ -626,6 +628,8 @@ class Worksheet(object):
             cell = self[anchor]
             img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
+        self._parent._images.append(ref(chart))
+
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
