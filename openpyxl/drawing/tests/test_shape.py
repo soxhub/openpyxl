@@ -92,7 +92,7 @@ class TestShape(object):
 class TestShapeWriter(object):
 
     def setup(self):
-        from ..writer import ShapeWriter
+        from ..shape import ShapeWriter
         from ..shape import Shape
         chart = DummyChart()
         self.shape = Shape(chart=chart, text="My first chart")
