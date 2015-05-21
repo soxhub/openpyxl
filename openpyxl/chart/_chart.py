@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors import Typed, Integer, Alias
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.xml.constants import CHART_NS
+from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
 
 from .data_source import AxDataSource, NumRef
 from .legend import Legend
@@ -37,7 +37,6 @@ class ChartBase(Serialisable):
     height = 7.5 # in cm, approx 14 rows
     _shapes = ()
     _id = 1
-    _path = None
 
     __elements__ = ()
 
@@ -150,3 +149,6 @@ class ChartBase(Serialisable):
         if labels_from_data:
             self.set_categories(labels)
 
+    @property
+    def _path(self):
+        return PACKAGE_CHARTS + '/chart{0}.xml'.format(self._id)

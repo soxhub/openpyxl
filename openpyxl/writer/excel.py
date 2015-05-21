@@ -37,7 +37,6 @@ from openpyxl.writer.workbook import (
 from openpyxl.workbook.properties import write_properties
 from openpyxl.writer.theme import write_theme
 from openpyxl.writer.styles import StyleWriter
-from openpyxl.drawing.writer import DrawingWriter
 from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.workbook.names.external import (
@@ -53,8 +52,6 @@ class ExcelWriter(object):
 
     def __init__(self, workbook):
         self.workbook = workbook
-        self.workbook._charts = []
-        self.workbook._images = []
         self.workbook._drawings = []
         self.style_writer = StyleWriter(workbook)
 
@@ -82,6 +79,8 @@ class ExcelWriter(object):
                         archive.writestr(name, vba_archive.read(name))
                         break
 
+        self._write_charts(archive)
+        self._write_images(archive)
         self._write_worksheets(archive)
         self._write_string_table(archive)
         self._write_external_links(archive)
@@ -97,15 +96,16 @@ class ExcelWriter(object):
             buf = BytesIO()
             img.image.save(buf, format='PNG')
             img._id = idx
-            img._path = PACKAGE_IMAGES + '/image{0}.png'.format(idx)
             archive.writestr(img._path, buf.getvalue())
 
 
     def _write_charts(self, archive):
-        for idx, img in enumerate(self.workbook._charts, 1):
+        for idx, ref in enumerate(self.workbook._charts, 1):
+            chart = ref()
+            if not chart:
+                continue
             chart._id = idx
-            chart._path = PACKAGE_CHARTS + '/chart{0}.xml'.format(idx)
-            archive.writestr(chart._path, chart._write())
+            archive.writestr(chart._path, tostring(chart._write()))
 
 
     def _write_worksheets(self, archive):
@@ -123,11 +123,11 @@ class ExcelWriter(object):
                 self.workbook._drawings.append(drawing)
                 drawing_id = len(self.workbook._drawings)
                 drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, drawing._write())
+                archive.writestr(drawingpath, tostring(drawing._write()))
                 archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                        drawing_id), drawing._write_rels())
+                                                                        drawing_id), tostring(drawing._write_rels()))
                 for r in sheet._rels:
-                    if r.type == "drawing":
+                    if "drawing" in r.type:
                         r.target = "/" + drawingpath
 
             if sheet._comment_count > 0:

@@ -295,4 +295,4 @@ class SpreadsheetDrawing(Serialisable):
         for idx, rel in enumerate(self._rels, 1):
             rel.id = "rId{0}".format(idx)
             root.append(rel.to_tree())
-        return tostring(root)
+        return root

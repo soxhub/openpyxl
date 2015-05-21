@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 from openpyxl.cell import column_index_from_string
+from openpyxl.xml.constants import PACKAGE_IMAGES
 
 from .drawing import Drawing
 
@@ -41,7 +42,6 @@ class Image(object):
     """ Raw Image class """
 
     _id = 1
-    _path = None
 
     def __init__(self, img, coordinates=((0, 0), (1, 1)), size=(None, None),
                  nochangeaspect=True, nochangearrowheads=True):
@@ -75,3 +75,8 @@ class Image(object):
             return ((self.drawing.anchorcol, self.drawing.anchorrow), None)
         else:
             raise ValueError("unknown anchortype %s" % anchortype)
+
+
+    @property
+    def _path(self):
+        return PACKAGE_IMAGES + '/image{0}.png'.format(self._id)
