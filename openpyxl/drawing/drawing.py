@@ -13,26 +13,6 @@ from openpyxl.utils.units import (
     short_color,
 )
 
-class Shadow(object):
-
-    SHADOW_BOTTOM = 'b'
-    SHADOW_BOTTOM_LEFT = 'bl'
-    SHADOW_BOTTOM_RIGHT = 'br'
-    SHADOW_CENTER = 'ctr'
-    SHADOW_LEFT = 'l'
-    SHADOW_TOP = 't'
-    SHADOW_TOP_LEFT = 'tl'
-    SHADOW_TOP_RIGHT = 'tr'
-
-    def __init__(self):
-        self.visible = False
-        self.blurRadius = 6
-        self.distance = 2
-        self.direction = 0
-        self.alignment = self.SHADOW_BOTTOM_RIGHT
-        self.color = Color()
-        self.alpha = 50
-
 
 class Drawing(object):
     """ a drawing object - eg container for shapes or charts

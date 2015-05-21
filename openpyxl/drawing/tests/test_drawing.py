@@ -3,27 +3,9 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.xml.constants import SHEET_DRAWING_NS
-from openpyxl.xml.functions import Element, fromstring, tostring
+from openpyxl.xml.functions import Element, tostring
 
 from openpyxl.tests.helper import compare_xml
-
-
-class TestShadow(object):
-
-    def setup(self):
-        from ..drawing import Shadow
-        self.shadow = Shadow()
-
-    def test_ctor(self):
-        s = self.shadow
-        assert s.visible == False
-        assert s.blurRadius == 6
-        assert s.distance == 2
-        assert s.direction == 0
-        assert s.alignment == "br"
-        assert s.color.index == "00000000"
-        assert s.alpha == 50
 
 
 class TestDrawing(object):
