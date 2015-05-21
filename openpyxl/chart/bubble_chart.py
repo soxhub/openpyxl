@@ -28,7 +28,7 @@ class BubbleChart(ChartBase):
     tagname = "bubbleChart"
 
     varyColors = NestedBool(allow_none=True)
-    ser = Typed(expected_type=XYSeries, allow_none=True)
+    ser = Sequence(expected_type=XYSeries, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     bubble3D = NestedBool(allow_none=True)
@@ -47,7 +47,7 @@ class BubbleChart(ChartBase):
 
     def __init__(self,
                  varyColors=None,
-                 ser=None,
+                 ser=(),
                  dLbls=None,
                  bubble3D=None,
                  bubbleScale=None,
