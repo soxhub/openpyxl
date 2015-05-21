@@ -608,23 +608,24 @@ class Worksheet(object):
         data_validation._sheet = self
         self._data_validations.append(data_validation)
 
-    def add_chart(self, chart):
-        """ Add a chart to the sheet """
-        chart._sheet = self
+    def add_chart(self, chart, anchor=None):
+        """
+        Add a chart to the sheet
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            chart.anchor = anchor
         self._charts.append(chart)
 
-    def add_image(self, img):
-        """ Add an image to the sheet """
-        img._sheet = self
+    def add_image(self, img, anchor=None):
+        """
+        Add an image to the sheet.
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            cell = self[anchor]
+            img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-
-    def add_drawing(self, obj):
-        """Images and charts both create drawings"""
-        self._parent.drawings.append(obj)
-
-    def add_rel(self, obj):
-        """Drawings and hyperlinks create relationships"""
-        self._parent.relationships.append(obj)
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
