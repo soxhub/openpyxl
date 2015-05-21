@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
 import pytest
 
@@ -412,7 +413,7 @@ class TestSequence:
     @pytest.mark.parametrize("value", [list(), tuple()])
     def test_valid_ctor(self, Sequence, value):
         Sequence.value = value
-        assert Sequence.value == tuple(value)
+        assert Sequence.value == list(value)
 
     @pytest.mark.parametrize("value", ["", b"", dict(), 1, None])
     def test_invalid_container(self, Sequence, value):

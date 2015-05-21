@@ -6,10 +6,7 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-# compatibility imports
-
 from openpyxl.compat import safe_string, itervalues, iteritems
-
 from openpyxl import LXML
 
 # package imports
@@ -28,7 +25,9 @@ from openpyxl.xml.constants import (
 )
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.styles.differential import DifferentialStyle
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.properties import WorksheetProperties
+from openpyxl.worksheet.hyperlink import Hyperlink
 
 from .etree_worksheet import write_cell
 
@@ -155,19 +154,23 @@ def write_header_footer(worksheet):
 
 def write_hyperlinks(worksheet):
     """Write worksheet hyperlinks to xml."""
+    if not worksheet.hyperlinks:
+        return
     tag = Element('hyperlinks')
-    for cell in worksheet.get_cell_collection():
-        if cell.hyperlink_rel_id is not None:
-            attrs = {'display': cell.hyperlink,
-                     'ref': cell.coordinate,
-                     '{%s}id' % REL_NS: cell.hyperlink_rel_id}
-            tag.append(Element('hyperlink', attrs))
-    if tag.getchildren():
-        return tag
+    for cell in worksheet.hyperlinks:
+        link = cell.hyperlink
+        link.ref = cell.coordinate
+        rel = Relationship(type="hyperlink", targetMode="External", target=link.target)
+        worksheet._rels.append(rel)
+        link.id = "rId{0}".format(len(worksheet._rels))
+
+        tag.append(link.to_tree())
+    return tag
 
 
 def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
+    worksheet._rels = []
     if LXML is True:
         from .lxml_worksheet import write_cell, write_rows
     else:
@@ -236,14 +239,17 @@ def write_worksheet(worksheet, shared_strings):
                 xf.write(hf)
 
             if worksheet._charts or worksheet._images:
-                drawing = Element('drawing', {'{%s}id' % REL_NS: 'rId1'})
+                rel = Relationship(type="drawing", target="")
+                worksheet._rels.append(rel)
+                rel.id = "rId%s" % len(worksheet._rels)
+                drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
                 xf.write(drawing)
 
             # If vba is being preserved then add a legacyDrawing element so
             # that any controls can be drawn.
             if worksheet.vba_controls is not None:
-                xml = Element("{%s}legacyDrawing" % SHEET_MAIN_NS,
-                              {"{%s}id" % REL_NS : worksheet.vba_controls})
+                xml = Element("legacyDrawing", {"{%s}id" % REL_NS :
+                                                worksheet.vba_controls})
                 xf.write(xml)
 
             if len(worksheet.page_breaks):
@@ -251,8 +257,8 @@ def write_worksheet(worksheet, shared_strings):
 
             # add a legacyDrawing so that excel can draw comments
             if worksheet._comment_count > 0:
-                comments = Element('{%s}legacyDrawing' % SHEET_MAIN_NS,
-                                {'{%s}id' % REL_NS: 'commentsvml'})
+                comments = Element('legacyDrawing', {'{%s}id' % REL_NS:
+                                                     'commentsvml'})
                 xf.write(comments)
 
     xml = out.getvalue()

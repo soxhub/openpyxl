@@ -8,12 +8,23 @@ Major changes
 * Shift to using (row, column) indexing for cells. Cells will at some point *lose* coordinates.
 * New implementation of conditional formatting. Databars now partially preserved.
 * et_xmlfile is now a standalone library.
+* Complete rewrite of chart package
 
 
 Minor changes
 -------------
 
 * Read-only and write-only worksheets renamed.
+
+
+Bug fixes
+---------
+
+* `#81 <https://bitbucket.org/openpyxl/openpyxl/issue/81>`_ Support stacked bar charts
+* `#88 <https://bitbucket.org/openpyxl/openpyxl/issue/88>`_ Charts break hyperlinks
+* `#97 <https://bitbucket.org/openpyxl/openpyxl/issue/97>`_ Pie and combination charts
+* `#150 <https://bitbucket.org/openpyxl/openpyxl/issue/451>`_ Support additional chart options
+* `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
 
 
 2.2.3 (unreleased)

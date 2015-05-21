@@ -12,10 +12,14 @@ Chart types
 
 The following charts are available:
 
-* Bar Chart
-* Line Chart
+* Area Chart, 3D Area Chart
+* Bar Chart, 3D Bar Chart
+* BubbleChart
+* Line Chart, 3D Line Chart
+* Pie Chart, 3D PieChart Doughnut Chart, Projected Pie Chart
 * Scatter Chart
-* Pie Chart
+* Stock Chart
+* Surface Chart, 3D Surface Chart
 
 
 Creating a chart
@@ -32,10 +36,9 @@ themselves are comprised of references to cell ranges.
 >>> for i in range(10):
 ...     ws.append([i])
 >>>
->>> from openpyxl.charts import BarChart, Reference, Series
->>> values = Reference(ws, (1, 1), (10, 1))
->>> series = Series(values, title="First series of values")
+>>> from openpyxl.chart import BarChart, Reference, Series
+>>> values = Reference(ws, min_col=1, min_row=1, max_col=1, max_row=10)
 >>> chart = BarChart()
->>> chart.append(series)
+>>> chart.add_data(values)
 >>> ws.add_chart(chart)
 >>> wb.save("SampleChart.xlsx")

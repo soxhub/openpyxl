@@ -10,6 +10,7 @@ from operator import itemgetter
 from collections import defaultdict
 import re
 from inspect import isgenerator
+from weakref import ref
 
 # compatibility imports
 from openpyxl.compat import (
@@ -29,7 +30,7 @@ from openpyxl.utils import (
     column_index_from_string,
     get_column_letter,
     range_boundaries,
-    cells_from_range,
+    rows_from_range,
     coordinate_to_tuple,
 )
 from openpyxl.cell import Cell
@@ -114,9 +115,11 @@ class Worksheet(object):
         self._cells = {}
         self._charts = []
         self._images = []
+        self._rels = []
+        self._drawing = None
         self._comment_count = 0
         self._merged_cells = []
-        self.relationships = []
+        self.hyperlinks = set()
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
@@ -599,13 +602,6 @@ class Worksheet(object):
         self.page_setup.orientation = orientation
 
 
-    def _create_relationship(self, type, target, mode=None):
-        """Add a relationship for this sheet."""
-        rel_id = "rId%d" % (len(self.relationships) + 1)
-        rel = Relationship(type, target, mode, rel_id)
-        self.relationships.append(rel)
-        return rel
-
     def add_data_validation(self, data_validation):
         """ Add a data-validation object to the sheet.  The data-validation
             object defines the type of data-validation to be applied and the
@@ -614,25 +610,27 @@ class Worksheet(object):
         data_validation._sheet = self
         self._data_validations.append(data_validation)
 
-    def add_chart(self, chart):
-        """ Add a chart to the sheet """
-        chart._sheet = self
+    def add_chart(self, chart, anchor=None):
+        """
+        Add a chart to the sheet
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            chart.anchor = anchor
         self._charts.append(chart)
-        self.add_drawing(chart)
+        self._parent._charts.append(ref(chart))
 
-    def add_image(self, img):
-        """ Add an image to the sheet """
-        img._sheet = self
+    def add_image(self, img, anchor=None):
+        """
+        Add an image to the sheet.
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            cell = self[anchor]
+            img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-        self.add_drawing(img)
+        self._parent._images.append(ref(img))
 
-    def add_drawing(self, obj):
-        """Images and charts both create drawings"""
-        self._parent.drawings.append(obj)
-
-    def add_rel(self, obj):
-        """Drawings and hyperlinks create relationships"""
-        self._parent.relationships.append(obj)
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
@@ -660,11 +658,13 @@ class Worksheet(object):
         if range_string not in self._merged_cells:
             self._merged_cells.append(range_string)
 
-        cells = cells_from_range(range_string)
+        cells = rows_from_range(range_string)
         # only the top-left cell is preserved
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
+            if c in self.hyperlinks:
+                del self._hyperlinks[c]
 
 
     @property
@@ -672,7 +672,7 @@ class Worksheet(object):
         """Utility for checking whether a cell has been merged or not"""
         cells = set()
         for _range in self._merged_cells:
-            for row in cells_from_range(_range):
+            for row in rows_from_range(_range):
                 cells = cells.union(set(row))
         return cells
 

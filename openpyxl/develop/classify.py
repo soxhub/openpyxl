@@ -3,10 +3,16 @@ from __future__ import absolute_import, print_function
 
 """
 Generate Python classes from XML Schema
+Disclaimer: this is really shabby, "works well enough" code.
+
+The spyne library does a much better job of interpreting the schema.
 """
 
 import argparse
 import re
+import logging
+
+logging.basicConfig(filename="classify.log", level=logging.DEBUG)
 
 from openpyxl.tests.schema import (
     sheet_src,
@@ -53,6 +59,24 @@ complex_mapping = {
 
 ST_REGEX = re.compile("(?P<schema>[a-z]:)?(?P<typename>ST_[A-Za-z]+)")
 
+
+def get_attribute_group(schema, tagname):
+    for node in schema.iterfind("{%s}attributeGroup" % XSD):
+        if node.get("ref") == tagname:
+            break
+    attrs = node.findall("{%s}attribute" % XSD)
+    return attrs
+
+
+def get_element_group(schema, tagname):
+    for node in schema.iterfind("{%s}group" % XSD):
+        if node.get("name") == tagname:
+            break
+    seq = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
+    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
+    return seq + choice
+
+
 def classify(tagname, src=sheet_src, schema=None):
     """
     Generate a Python-class based on the schema definition
@@ -75,7 +99,12 @@ def classify(tagname, src=sheet_src, schema=None):
     attrs = []
 
     # attributes
-    for el in node.iterfind("{%s}attribute" % XSD):
+    attributes = node.findall("{%s}attribute" % XSD)
+    _group = node.find("{%s}attributeGroup" % XSD)
+    if _group is not None:
+        s += "    #Using attribute group{0}\n".format(_group.get('ref'))
+        attributes.extend(get_attribute_group(schema, _group.get('ref')))
+    for el in attributes:
         attr = el.attrib
         if 'ref' in attr:
             continue
@@ -98,9 +127,19 @@ def classify(tagname, src=sheet_src, schema=None):
                 s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
 
     children = []
-    elements = []
-    child_elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    for el in node.iterfind("{%s}sequence/{%s}element" % (XSD, XSD)):
+    element_names =[]
+    elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
+    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
+    if choice:
+        s += """    # some elements are choice\n"""
+        elements.extend(choice)
+    groups = node.findall("{%s}sequence/{%s}group" % (XSD, XSD))
+    for group in groups:
+        ref = group.get("ref")
+        s += """    # uses element group {0}\n""".format(ref)
+        elements.extend(get_element_group(schema, ref))
+
+    for el in elements:
         attr = {'name': el.get("name"),}
 
         typename = el.get("type")
@@ -115,16 +154,17 @@ def classify(tagname, src=sheet_src, schema=None):
             typename = match.group('typename')
             attr['type'] = simple(typename, schema)
         else:
-            children.append(typename)
             if (typename.startswith("a:")
                 or typename.startswith("s:")
                 ):
                 attr['type'] = typename[5:]
             else:
                 attr['type'] = typename[3:]
+            children.append(typename)
+            element_names.append(attr['name'])
 
         attr['use'] = ""
-        if el.get("minOccurs") == "0":
+        if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
         attrs.append(attr['name'])
         if attr['type'] in complex_mapping:
@@ -133,9 +173,9 @@ def classify(tagname, src=sheet_src, schema=None):
         else:
             s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
 
-    #if children:
-        #names = (c.name for c in children)
-        #s += "\n__elements__ = {0}\n".format(tuple(names))
+    if element_names:
+        names = (c for c in element_names)
+        s += "\n    __elements__ = {0}\n".format(tuple(names))
 
     if attrs:
         s += "\n    def __init__(self,\n"

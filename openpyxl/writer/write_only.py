@@ -230,7 +230,6 @@ class DumpCommentWriter(CommentWriter):
 class ExcelDumpWriter(ExcelWriter):
 
     def _write_worksheets(self, archive):
-        drawing_id = 1
         comments_id = 1
 
         for i, sheet in enumerate(self.workbook.worksheets, 1):
@@ -240,7 +239,7 @@ class ExcelDumpWriter(ExcelWriter):
 
             # write comments
             if sheet._comments:
-                rels = write_rels(sheet, drawing_id, comments_id)
+                rels = write_rels(sheet, comments_id=comments_id)
                 archive.writestr( PACKAGE_WORKSHEETS +
                                   '/_rels/sheet%d.xml.rels' % i, tostring(rels) )
 

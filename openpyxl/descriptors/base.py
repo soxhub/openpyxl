@@ -39,23 +39,33 @@ class Typed(Descriptor):
         return "Value must be type '{0}'".format(self.expected_type.__name__)
 
 
+def _convert(expected_type, value):
+    """
+    Check value is of or can be converted to expected type.
+    """
+    if not isinstance(value, expected_type):
+        try:
+            value = expected_type(value)
+        except:
+            raise TypeError('expected ' + str(expected_type))
+    return value
+
+
 class Convertible(Typed):
     """Values must be convertible to a particular type"""
 
     def __set__(self, instance, value):
         if ((self.allow_none and value is not None)
             or not self.allow_none):
-            try:
-                value = self.expected_type(value)
-            except:
-                raise TypeError('expected ' + str(self.expected_type))
+            value = _convert(self.expected_type, value)
         super(Convertible, self).__set__(instance, value)
 
 
-class Max(Typed):
+class Max(Descriptor):
     """Values must be less than a `max` value"""
 
     expected_type = float
+    allow_none = False
 
     def __init__(self, name=None, **kw):
         if 'max' not in kw and not hasattr(self, 'max'):
@@ -63,19 +73,19 @@ class Max(Typed):
         super(Max, self).__init__(name, **kw)
 
     def __set__(self, instance, value):
-        try:
-            value = self.expected_type(value)
-        except:
-            raise TypeError('expected ' + str(self.expected_type))
-        if value > self.max:
-            raise ValueError('Max value is {0}'.format(self.max))
+        if ((self.allow_none and value is not None)
+            or not self.allow_none):
+            value = _convert(self.expected_type, value)
+            if value > self.max:
+                raise ValueError('Max value is {0}'.format(self.max))
         super(Max, self).__set__(instance, value)
 
 
-class Min(Typed):
+class Min(Descriptor):
     """Values must be greater than a `min` value"""
 
     expected_type = float
+    allow_none = False
 
     def __init__(self, name=None, **kw):
         if 'min' not in kw and not hasattr(self, 'min'):
@@ -83,12 +93,11 @@ class Min(Typed):
         super(Min, self).__init__(name, **kw)
 
     def __set__(self, instance, value):
-        try:
-            value = self.expected_type(value)
-        except:
-            raise TypeError('expected ' + str(self.expected_type))
-        if value < self.min:
-            raise ValueError('Min value is {0}'.format(self.min))
+        if ((self.allow_none and value is not None)
+            or not self.allow_none):
+            value = _convert(self.expected_type, value)
+            if value < self.min:
+                raise ValueError('Min value is {0}'.format(self.min))
         super(Min, self).__set__(instance, value)
 
 
@@ -174,14 +183,8 @@ class Sequence(Descriptor):
     def __set__(self, instance, seq):
         if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
-        elif isinstance(seq, list):
-            seq = tuple(seq)
-        for idx, value in enumerate(seq):
-            if not isinstance(value, self.expected_type):
-                raise TypeError(
-                    "[{0}] of sequence must be of type {1}".format(
-                        idx, self.expected_type)
-                )
+        seq = [_convert(self.expected_type, value) for value in seq]
+
         super(Sequence, self).__set__(instance, seq)
 
 

@@ -46,18 +46,6 @@ def test_bounds(range_string, coords):
     assert range_boundaries(range_string) == coords
 
 
-def test_cells_from_range():
-    from .. worksheet import cells_from_range
-    cells = cells_from_range("A1:D4")
-    cells = [list(row) for row in cells]
-    assert cells == [
-       ['A1', 'B1', 'C1', 'D1'],
-       ['A2', 'B2', 'C2', 'D2'],
-       ['A3', 'B3', 'C3', 'D3'],
-       ['A4', 'B4', 'C4', 'D4'],
-                           ]
-
-
 class TestWorksheet:
 
     def test_new_worksheet(self, Worksheet):
@@ -223,21 +211,13 @@ class TestWorksheet:
 
     def test_hyperlink_relationships(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert len(ws.relationships) == 0
+        assert len(ws.hyperlinks) == 0
 
         ws.cell('A1').hyperlink = "http://test.com"
-        assert len(ws.relationships) == 1
-        assert "rId1" == ws.cell('A1').hyperlink_rel_id
-        assert "rId1" == ws.relationships[0].id
-        assert "http://test.com" == ws.relationships[0].target
-        assert "External" == ws.relationships[0].target_mode
+        assert len(ws.hyperlinks) == 1
 
         ws.cell('A2').hyperlink = "http://test2.com"
-        assert len(ws.relationships) == 2
-        assert "rId2" == ws.cell('A2').hyperlink_rel_id
-        assert "rId2" == ws.relationships[1].id
-        assert "http://test2.com" == ws.relationships[1].target
-        assert "External" == ws.relationships[1].target_mode
+        assert len(ws.hyperlinks) == 2
 
 
     def test_append(self, Worksheet):
