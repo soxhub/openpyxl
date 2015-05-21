@@ -41,6 +41,7 @@ class Image(object):
     """ Raw Image class """
 
     _id = 1
+    _path = None
 
     def __init__(self, img, coordinates=((0, 0), (1, 1)), size=(None, None),
                  nochangeaspect=True, nochangearrowheads=True):
