@@ -114,7 +114,7 @@ class ExcelWriter(object):
                 archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
                                                                         drawing_id), dw.write_rels())
                 drawing_id += 1
-                for r in sheet.relationships:
+                for r in sheet._rels:
                     if r.type == "drawing":
                         r.target = "/" + drawingpath
 
@@ -137,7 +137,7 @@ class ExcelWriter(object):
             if sheet.vba_controls is not None:
                 vba_controls_id += 1
 
-            if (sheet.relationships
+            if (sheet._rels
                 or sheet._comment_count > 0
                 or sheet.vba_controls is not None):
                 rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)

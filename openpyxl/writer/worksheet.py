@@ -154,20 +154,23 @@ def write_header_footer(worksheet):
 
 def write_hyperlinks(worksheet):
     """Write worksheet hyperlinks to xml."""
+    if not worksheet.hyperlinks:
+        return
     tag = Element('hyperlinks')
-    for cell in worksheet.get_cell_collection():
-        if cell.hyperlink_rel_id is not None:
-            rId = len(worksheet._rels) + 1
-            link = Hyperlink(ref=cell.coordinate, display=cell.hyperlink,
-                            id="rId%s" % rId)
-            worksheet._rels.append(link)
-            tag.append(link.to_tree())
-    if tag.getchildren():
-        return tag
+    for cell in worksheet.hyperlinks:
+        link = cell.hyperlink
+        link.ref = cell.coordinate
+        rel = Relationship(type="hyperlink", targetMode="External", target=link.target)
+        worksheet._rels.append(rel)
+        link.id = "rId{0}".format(len(worksheet._rels))
+
+        tag.append(link.to_tree())
+    return tag
 
 
 def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
+    worksheet._rels = []
     if LXML is True:
         from .lxml_worksheet import write_cell, write_rows
     else:
@@ -237,8 +240,8 @@ def write_worksheet(worksheet, shared_strings):
 
             if worksheet._charts or worksheet._images:
                 rel = Relationship(type="drawing", target="")
-                worksheet.relationships.append(rel)
-                rel.id = "rId%s" % len(worksheet.relationships)
+                worksheet._rels.append(rel)
+                rel.id = "rId%s" % len(worksheet._rels)
                 drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
                 xf.write(drawing)
 

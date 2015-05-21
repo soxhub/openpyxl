@@ -434,10 +434,12 @@ def test_hyperlink(worksheet):
     ws.cell('A1').hyperlink = "http://test.com"
 
     hyper = write_hyperlinks(ws)
+    assert len(worksheet._rels) == 1
+    assert worksheet._rels[0].target == "http://test.com"
     xml = tostring(hyper)
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-      <hyperlink display="http://test.com" r:id="rId1" ref="A1"/>
+      <hyperlink r:id="rId1" ref="A1"/>
     </hyperlinks>
     """
     diff = compare_xml(xml, expected)

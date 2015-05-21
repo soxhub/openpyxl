@@ -117,7 +117,7 @@ class Worksheet(object):
         self._rels = []
         self._comment_count = 0
         self._merged_cells = []
-        self.relationships = []
+        self.hyperlinks = set()
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
@@ -600,13 +600,6 @@ class Worksheet(object):
         self.page_setup.orientation = orientation
 
 
-    def _create_relationship(self, type, target, mode=None):
-        """Add a relationship for this sheet."""
-        rel_id = "rId%d" % (len(self.relationships) + 1)
-        rel = Relationship(type, target, mode, rel_id)
-        self.relationships.append(rel)
-        return rel
-
     def add_data_validation(self, data_validation):
         """ Add a data-validation object to the sheet.  The data-validation
             object defines the type of data-validation to be applied and the
@@ -664,6 +657,8 @@ class Worksheet(object):
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
+            if c in self.hyperlinks:
+                del self._hyperlinks[c]
 
 
     @property

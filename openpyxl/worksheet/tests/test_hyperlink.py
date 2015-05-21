@@ -14,11 +14,11 @@ def Hyperlink():
 class TestHyperlink:
 
     def test_ctor(self, Hyperlink):
-        hyperlink = Hyperlink(display="http://test.com", ref="A1", id="rId1")
+        hyperlink = Hyperlink(target="http://test.com", ref="A1", id="rId1", display="Link elsewhere")
         xml = tostring(hyperlink.to_tree())
         expected = """
         <hyperlink xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-           display="http://test.com" r:id="rId1" ref="A1"/>
+           display="Link elsewhere" r:id="rId1" ref="A1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

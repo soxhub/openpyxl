@@ -48,6 +48,7 @@ from openpyxl.utils import (
 )
 from openpyxl.styles import numbers, is_date_format, Style
 from openpyxl.styles.styleable import StyleableObject
+from openpyxl.worksheet.hyperlink import Hyperlink
 
 # constants
 
@@ -88,7 +89,7 @@ class Cell(StyleableObject):
         'data_type',
         'parent',
         'xf_index',
-        '_hyperlink_rel',
+        '_hyperlink',
         '_comment',
                  )
 
@@ -122,7 +123,7 @@ class Cell(StyleableObject):
         self.row = row
         # _value is the stored value, while value is the displayed value
         self._value = None
-        self._hyperlink_rel = None
+        self._hyperlink = None
         self.data_type = 'n'
         if value is not None:
             self.value = value
@@ -328,27 +329,18 @@ class Cell(StyleableObject):
     @property
     def hyperlink(self):
         """Return the hyperlink target or an empty string"""
-        return self._hyperlink_rel is not None and \
-                self._hyperlink_rel.target or ''
+        return self._hyperlink
 
     @hyperlink.setter
     def hyperlink(self, val):
         """Set value and display for hyperlinks in a cell.
-        Automatically setsthe `value` of the cell with link text,
+        Automatically sets the `value` of the cell with link text,
         but you can modify it afterwards by setting the `value`
-        property, and the hyperlink will remain.\n\n' ':rtype: string"""
-        if self._hyperlink_rel is None:
-            self._hyperlink_rel = self.parent._create_relationship(type="hyperlink", target=val, mode="External")
-        self._hyperlink_rel.target = val
-        self._hyperlink_rel.target_mode = "External"
+        property, and the hyperlink will remain."""
+        self._hyperlink = Hyperlink(ref=self.coordinate, target=val)
+        self.parent.hyperlinks.add(self)
         if self._value is None:
             self.value = val
-
-    @property
-    def hyperlink_rel_id(self):
-        """Return the id pointed to by the hyperlink, or None"""
-        return self._hyperlink_rel is not None and \
-                self._hyperlink_rel.id or None
 
     @property
     def is_date(self):
