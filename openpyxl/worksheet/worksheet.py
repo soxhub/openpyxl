@@ -629,7 +629,7 @@ class Worksheet(object):
             cell = self[anchor]
             img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-        self._parent._images.append(ref(chart))
+        self._parent._images.append(ref(img))
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):

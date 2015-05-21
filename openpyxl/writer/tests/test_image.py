@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 # stdlib imports
 from io import BytesIO
+from weakref import ref
 import zipfile
 
 import pytest
@@ -20,7 +21,7 @@ def test_write_images(datadir):
     ew = ExcelWriter(workbook=wb)
     from openpyxl.drawing.image import Image
     img = Image("plain.png")
-    wb._images.append(img)
+    wb._images.append(ref(img))
 
     buf = BytesIO()
 
