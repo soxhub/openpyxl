@@ -24,7 +24,7 @@ from openpyxl.xml.constants import (
     PACKAGE_IMAGES,
     PACKAGE_XL
     )
-from openpyxl.chart.spreadsheet_drawing import SpreadsheetDrawing
+from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (

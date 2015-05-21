@@ -28,7 +28,7 @@ from openpyxl.xml.functions import Element
 
 from .colors import ColorChoiceDescriptor
 from .fill import GradientFillProperties, PatternFillProperties
-from .drawing import OfficeArtExtensionList
+from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 
 """
 Line elements from drawing main schema

@@ -30,12 +30,7 @@ from openpyxl.descriptors.nested import (
 )
 from openpyxl.xml.constants import DRAWING_NS
 
-from .data_source import (
-    NumFmt,
-    StrData,
-    StrVal,
-    StrRef,
-)
+
 from .colors import ColorChoiceDescriptor
 from .effect import *
 from .fill import *
@@ -45,7 +40,7 @@ from .shapes import (
     Scene3D
 )
 
-from .drawing import OfficeArtExtensionList
+from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 
 
 class EmbeddedWAVAudioFile(Serialisable):
@@ -698,52 +693,3 @@ class RichTextProperties(Serialisable):
         self.normAutofit = normAutofit
         self.spAutoFit = spAutoFit
         self.flatTx = flatTx
-
-
-class RichText(Serialisable):
-
-    """
-    From the specification: 21.2.2.216
-
-    This element specifies text formatting. The lstStyle element is not supported.
-    """
-
-    tagname = "rich"
-
-    bodyPr = Typed(expected_type=RichTextProperties)
-    properties = Alias("bodyPr")
-    lstStyle = Typed(expected_type=ListStyle, allow_none=True)
-    p = Typed(expected_type=Paragraph, allow_none=True)
-    paragraphs = Alias('p')
-
-    __elements__ = ("bodyPr", "lstStyle", "p")
-
-    def __init__(self,
-                 bodyPr=None,
-                 lstStyle=None,
-                 p=None,
-                ):
-        if bodyPr is None:
-            bodyPr = RichTextProperties()
-        self.bodyPr = bodyPr
-        self.lstStyle = lstStyle
-        if p is None:
-            p = Paragraph()
-        self.p = p
-
-
-class Text(Serialisable):
-
-    strRef = Typed(expected_type=StrRef, allow_none=True)
-    rich = Typed(expected_type=RichText, allow_none=True)
-
-    __elements__ = ("strRef", "rich")
-
-    def __init__(self,
-                 strRef=None,
-                 rich=None
-                 ):
-        self.strRef = strRef
-        if rich is None:
-            rich = RichText()
-        self.rich = rich

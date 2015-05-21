@@ -220,7 +220,7 @@ class TestSpreadsheetDrawing:
 
 
     def test_write(self, SpreadsheetDrawing):
-        from .._chart import ChartBase
+        from openpyxl.chart._chart import ChartBase
 
         class Chart(ChartBase):
 

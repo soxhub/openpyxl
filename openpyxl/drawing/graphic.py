@@ -14,8 +14,10 @@ from openpyxl.descriptors import (
     String,
 )
 from openpyxl.descriptors.excel import Relation
+from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 
-from .drawing import OfficeArtExtensionList
+from openpyxl.chart.shapes import ShapeProperties
+
 from .effect import *
 from .fill import RelativeRect, BlipFillProperties
 from .text import Hyperlink, EmbeddedWAVAudioFile
@@ -24,7 +26,6 @@ from .shapes import (
     Point2D,
     PositiveSize2D,
     Scene3D,
-    ShapeProperties,
     ShapeStyle,
 )
 

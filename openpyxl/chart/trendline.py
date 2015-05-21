@@ -12,8 +12,9 @@ from openpyxl.descriptors.nested import (
     NestedSet
 )
 
+from .data_source import NumFmt
 from .shapes import ShapeProperties
-from .text import RichText, NumFmt, Text
+from .text import RichText, Text
 from .layout import Layout
 
 

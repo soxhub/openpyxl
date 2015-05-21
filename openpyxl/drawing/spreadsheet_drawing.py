@@ -13,6 +13,7 @@ from openpyxl.descriptors.nested import (
     NestedText,
     NestedNoneSet,
 )
+from openpyxl.descriptors.excel import Relation
 
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.utils import coordinate_to_tuple
@@ -22,8 +23,7 @@ from openpyxl.drawing.image import Image
 from openpyxl.xml.constants import SHEET_DRAWING_NS, PKG_REL_NS
 from openpyxl.xml.functions import Element
 
-from ._chart import ChartBase
-from .chartspace import RelId
+from openpyxl.chart._chart import ChartBase
 from .shapes import (
     Point2D,
     PositiveSize2D,
@@ -80,7 +80,7 @@ class _AnchorBase(Serialisable):
     graphicFrame = Typed(expected_type=GraphicFrame, allow_none=True)
     cxnSp = Typed(expected_type=Connector, allow_none=True)
     pic = Typed(expected_type=PictureFrame, allow_none=True)
-    contentPart = Typed(expected_type=RelId, allow_none=True)
+    contentPart = Relation()
 
     clientData = Typed(expected_type=AnchorClientData)
 
@@ -252,7 +252,7 @@ class SpreadsheetDrawing(Serialisable):
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", target='../media/image%s.png' % obj._id)
                 anchor = obj.drawing.anchor
-                anchor.pic = _drawing._picture_frame(idx)
+                anchor.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)

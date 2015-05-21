@@ -83,7 +83,7 @@ class Drawing(object):
 
     @property
     def anchor(self):
-        from openpyxl.chart.spreadsheet_drawing import (
+        from .spreadsheet_drawing import (
             OneCellAnchor,
             TwoCellAnchor,
             AbsoluteAnchor)

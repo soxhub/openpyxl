@@ -21,7 +21,7 @@ from openpyxl.descriptors.nested import (
 from openpyxl.xml.constants import DRAWING_NS
 
 from .colors import ColorChoice
-from .drawing import OfficeArtExtensionList
+from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 from .effect import *
 
 """
