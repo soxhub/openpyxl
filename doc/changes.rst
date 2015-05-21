@@ -23,7 +23,7 @@ Bug fixes
 * `#81 <https://bitbucket.org/openpyxl/openpyxl/issue/81>`_ Support stacked bar charts
 * `#88 <https://bitbucket.org/openpyxl/openpyxl/issue/88>`_ Charts break hyperlinks
 * `#97 <https://bitbucket.org/openpyxl/openpyxl/issue/97>`_ Pie and combination charts
-* `#150 <https://bitbucket.org/openpyxl/openpyxl/issue/451>`_ Support additional chart options
+* `#150 <https://bitbucket.org/openpyxl/openpyxl/issue/150>`_ Support additional chart options
 * `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
 
 

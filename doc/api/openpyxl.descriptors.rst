@@ -13,5 +13,6 @@ Submodules
 
    openpyxl.descriptors.base
    openpyxl.descriptors.excel
+   openpyxl.descriptors.nested
    openpyxl.descriptors.serialisable
 

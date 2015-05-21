@@ -1,7 +1,7 @@
-openpyxl.worksheet.relationship module
+openpyxl.chart.tests.test_label module
 ======================================
 
-.. automodule:: openpyxl.worksheet.relationship
+.. automodule:: openpyxl.chart.tests.test_label
     :members:
     :undoc-members:
     :show-inheritance:

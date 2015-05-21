@@ -1,7 +1,7 @@
-openpyxl.writer.drawings module
+openpyxl.drawing.graphic module
 ===============================
 
-.. automodule:: openpyxl.writer.drawings
+.. automodule:: openpyxl.drawing.graphic
     :members:
     :undoc-members:
     :show-inheritance:

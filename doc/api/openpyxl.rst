@@ -12,7 +12,7 @@ Subpackages
 .. toctree::
 
     openpyxl.cell
-    openpyxl.charts
+    openpyxl.chart
     openpyxl.comments
     openpyxl.descriptors
     openpyxl.drawing
