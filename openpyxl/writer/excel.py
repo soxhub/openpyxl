@@ -92,7 +92,10 @@ class ExcelWriter(object):
 
 
     def _write_images(self, archive):
-        for idx, img in enumerate(self.workbook._images, 1):
+        for idx, ref in enumerate(self.workbook._images, 1):
+            img = ref()
+            if img is None:
+                continue
             buf = BytesIO()
             img.image.save(buf, format='PNG')
             img._id = idx
