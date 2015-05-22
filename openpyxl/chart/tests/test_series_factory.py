@@ -116,3 +116,30 @@ class TestSeriesFactory:
         from ..series import XYSeries
         series = Series("Sheet!A1:A10", xvalues="Sheet!B1:B10")
         assert isinstance(series, XYSeries)
+
+
+    def test_zvalues(self, Series):
+        series = Series("Sheet!A2:A5", xvalues="Sheet!B2:B5", zvalues="Sheet!C2:C5")
+        series.__elements__ = ('xVal', 'yVal', 'bubbleSize')
+        xml = tostring(series.to_tree())
+        expected = """
+        <ser>
+          <xVal>
+            <numRef>
+              <f>Sheet!$B$2:$B$5</f>
+            </numRef>
+          </xVal>
+          <yVal>
+            <numRef>
+              <f>Sheet!$A$2:$A$5</f>
+            </numRef>
+          </yVal>
+          <bubbleSize>
+            <numRef>
+              <f>Sheet!$C$2:$C$5</f>
+            </numRef>
+          </bubbleSize>
+        </ser>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
