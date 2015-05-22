@@ -224,10 +224,10 @@ class PlotArea(Serialisable):
     bubbleChart = Typed(expected_type=BubbleChart, allow_none=True)
 
     # maybe axes
-    valAx = Typed(expected_type=ValAx, allow_none=True)
-    catAx = Typed(expected_type=CatAx, allow_none=True)
-    dateAx = Typed(expected_type=DateAx, allow_none=True)
-    serAx = Typed(expected_type=SerAx, allow_none=True)
+    valAx = Sequence(expected_type=ValAx, allow_none=True)
+    catAx = Sequence(expected_type=CatAx, allow_none=True)
+    dateAx = Sequence(expected_type=DateAx, allow_none=True)
+    serAx = Sequence(expected_type=SerAx, allow_none=True)
 
     __elements__ = ('layout', 'areaChart', 'area3DChart', 'lineChart',
                     'line3DChart', 'stockChart', 'radarChart', 'scatterChart', 'pieChart',
@@ -255,10 +255,10 @@ class PlotArea(Serialisable):
                  surfaceChart=None,
                  surface3DChart=None,
                  bubbleChart=None,
-                 valAx=None,
-                 catAx=None,
-                 serAx=None,
-                 dateAx=None,
+                 valAx=(),
+                 catAx=(),
+                 serAx=(),
+                 dateAx=(),
                  extLst=None,
                 ):
         self.layout = layout

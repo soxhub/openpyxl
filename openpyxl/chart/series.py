@@ -100,6 +100,7 @@ class Series(Serialisable):
     xVal = Typed(expected_type=AxDataSource, allow_none=True)
     yVal = Typed(expected_type=NumDataSource, allow_none=True)
     bubbleSize = Typed(expected_type=NumDataSource, allow_none=True)
+    zVal = Alias("bubbleSize")
     bubble3D = NestedBool(allow_none=True)
 
     #line chart

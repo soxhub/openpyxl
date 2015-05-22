@@ -79,7 +79,8 @@ class ChartBase(Serialisable):
             axis = getattr(self, axis, None)
             if axis is None:
                 continue
-            setattr(plot, axis.tagname, axis)
+            ax = getattr(plot, axis.tagname)
+            ax.append(axis)
         plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
         title = self._set_title()
         container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
