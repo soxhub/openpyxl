@@ -109,7 +109,7 @@ or ::
 
     After extracting the archive, you can do::
 
-    $ python setup.py install
+    $ python setup.py develop
 
 .. _bitbucket: https://bitbucket.org/openpyxl/openpyxl/downloads
 .. _lxml: http://lxml.de
@@ -117,7 +117,7 @@ or ::
 .. warning::
 
     To be able to include images (jpeg,png,bmp,...) into an openpyxl file,
-    you will also need the 'PIL' library that can be installed with::
+    you will also need the "pillow" library that can be installed with::
 
     $ pip install pillow
 
@@ -159,7 +159,7 @@ Charts
 
 .. toctree::
 
-    charts
+    charts/introduction
 
 Comments
 ++++++++
