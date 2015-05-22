@@ -116,3 +116,8 @@ class TestChartBase:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_path(self, ChartBase):
+        chart = ChartBase()
+        assert chart._path == "xl/charts/chart1.xml"
