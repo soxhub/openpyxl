@@ -37,6 +37,7 @@ class ChartBase(Serialisable):
     height = 7.5 # in cm, approx 14 rows
     _shapes = ()
     _id = 1
+    style = None
 
     __elements__ = ()
 
@@ -85,6 +86,7 @@ class ChartBase(Serialisable):
         title = self._set_title()
         container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
         cs = ChartSpace(chart=container)
+        cs.style = getattr(self, "style")
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree
