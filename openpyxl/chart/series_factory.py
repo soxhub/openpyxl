@@ -7,7 +7,7 @@ from .series import Series, XYSeries, SeriesLabel, StrRef
 from ..utils import SHEETRANGE_RE, rows_from_range, quote_sheetname
 
 
-def SeriesFactory(values, xvalues=None, title=None, title_from_data=False):
+def SeriesFactory(values, xvalues=None, zvalues=None, title=None, title_from_data=False):
     """
     Convenience Factory for creating chart data series.
     """
@@ -29,6 +29,10 @@ def SeriesFactory(values, xvalues=None, title=None, title_from_data=False):
         series = XYSeries()
         series.yVal = source
         series.xVal = AxDataSource(numRef=NumRef(f=xvalues))
+        if zvalues is not None:
+            if not isinstance(zvalues, Reference):
+                zvalues = Reference(range_string=zvalues)
+            series.zVal = NumDataSource(NumRef(f=zvalues))
     else:
         series = Series()
         series.val = source
