@@ -37,7 +37,7 @@ class BubbleChart(ChartBase):
     sizeRepresents = NestedNoneSet(values=(['area', 'w']))
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=CatAx)
+    x_axis = Typed(expected_type=ValAx)
     y_axis = Typed(expected_type=ValAx)
 
     _series_type = "bubble"
@@ -63,6 +63,6 @@ class BubbleChart(ChartBase):
         self.bubbleScale = bubbleScale
         self.showNegBubbles = showNegBubbles
         self.sizeRepresents = sizeRepresents
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
+        self.x_axis = ValAx(axId=10, crossAx=20)
+        self.y_axis = ValAx(axId=20, crossAx=10)
         super(BubbleChart, self).__init__()

@@ -19,8 +19,8 @@ class TestBubbleChart:
         xml = tostring(bubble_chart.to_tree())
         expected = """
         <bubbleChart>
-          <axId val="10"></axId>
-          <axId val="100"></axId>
+          <axId val="10" />
+          <axId val="20" />
         </bubbleChart>
         """
         diff = compare_xml(xml, expected)
@@ -30,8 +30,8 @@ class TestBubbleChart:
     def test_from_xml(self, BubbleChart):
         src = """
         <bubbleChart>
-          <axId val="10"></axId>
-          <axId val="100"></axId>
+          <axId val="10" />
+          <axId val="20" />
         </bubbleChart>
         """
         node = fromstring(src)
