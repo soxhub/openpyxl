@@ -10,7 +10,9 @@ from .legend import Legend
 from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
+from .shapes import ShapeProperties
 from .title import Title
+from .shapes import ShapeProperties
 
 class AxId(Serialisable):
 
@@ -38,6 +40,7 @@ class ChartBase(Serialisable):
     _shapes = ()
     _id = 1
     style = None
+    shape = None
 
     __elements__ = ()
 
@@ -71,6 +74,7 @@ class ChartBase(Serialisable):
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer, PlotArea
         plot = PlotArea()
+        plot.spPr = self.shape
         names = ['layout']
         for chart in self._charts:
             setattr(plot, chart.tagname, chart)
