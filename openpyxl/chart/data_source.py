@@ -157,8 +157,8 @@ class AxDataSource(Serialisable):
 
     numRef = Typed(expected_type=NumRef, allow_none=True)
     numLit = Typed(expected_type=NumData, allow_none=True)
-    strRef = Typed(expected_type=StrData, allow_none=True)
-    strLit = Typed(expected_type=StrRef, allow_none=True)
+    strRef = Typed(expected_type=StrRef, allow_none=True)
+    strLit = Typed(expected_type=StrData, allow_none=True)
 
     def __init__(self,
                  numRef=None,
