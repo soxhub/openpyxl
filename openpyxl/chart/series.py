@@ -91,6 +91,7 @@ class Series(Serialisable):
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)
+    identifiers = Alias("cat")
     val = Typed(expected_type=NumDataSource, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
