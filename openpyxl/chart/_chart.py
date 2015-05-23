@@ -86,7 +86,7 @@ class ChartBase(Serialisable):
         title = self._set_title()
         container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
         cs = ChartSpace(chart=container)
-        cs.style = getattr(self, "style")
+        cs.style = self.style
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree
