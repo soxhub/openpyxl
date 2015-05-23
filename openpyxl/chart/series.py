@@ -85,7 +85,9 @@ class Series(Serialisable):
     # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Sequence(expected_type=DataPoint, allow_none=True)
+    data_points = Alias("dPt")
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    labels = Alias("dLbls")
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
     cat = Typed(expected_type=AxDataSource, allow_none=True)

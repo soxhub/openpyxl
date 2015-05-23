@@ -34,6 +34,7 @@ from .label import DataLabels
 class _BarChartBase(ChartBase):
 
     barDir = NestedSet(values=(['bar', 'col']))
+    type = Alias("barDir")
     grouping = NestedSet(values=(['percentStacked', 'clustered', 'standard',
                                   'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
