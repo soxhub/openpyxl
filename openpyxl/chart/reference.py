@@ -76,6 +76,12 @@ class Reference(Strict):
         return repr(self)
 
 
+    def __len__(self):
+        if self.min_row == self.max_row:
+            return 1 + self.max_col - self.min_col
+        return 1 + self.max_row - self.min_row
+
+
     @property
     def rows(self):
         """

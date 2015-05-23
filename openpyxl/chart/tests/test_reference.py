@@ -84,3 +84,14 @@ class TestReference:
         ref = Reference(range_string=range_string)
         assert cell == ref.pop()
         assert (ref.min_col, ref.min_row) == (min_col, min_row)
+
+
+    @pytest.mark.parametrize("range_string, length",
+                             [
+                                 ("Sheet1!A1:A10", 10),
+                                 ("Sheet!A1:E1", 5),
+                             ]
+                             )
+    def test_length(self, Reference, range_string, length):
+        ref = Reference(range_string=range_string)
+        assert len(ref) == length
