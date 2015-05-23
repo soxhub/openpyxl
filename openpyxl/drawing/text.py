@@ -89,7 +89,10 @@ class Hyperlink(Serialisable):
 
 class Font(Serialisable):
 
-    typeface = Typed(expected_type=String())
+    tagname = "latin"
+    namespace = DRAWING_NS
+
+    typeface = String()
     panose = Typed(expected_type=HexBinary, allow_none=True)
     pitchFamily = Typed(expected_type=MinMax, allow_none=True)
     charset = Typed(expected_type=MinMax, allow_none=True)
@@ -108,6 +111,9 @@ class Font(Serialisable):
 
 class CharacterProperties(Serialisable):
 
+    tagname = "defRPr"
+    namespace = DRAWING_NS
+
     kumimoji = Bool(allow_none=True)
     lang = String(allow_none=True)
     altLang = String(allow_none=True)
@@ -118,12 +124,12 @@ class CharacterProperties(Serialisable):
                          'dottedHeavy', 'dash', 'dashHeavy', 'dashLong', 'dashLongHeavy',
                          'dotDash', 'dotDashHeavy', 'dotDotDash', 'dotDotDashHeavy', 'wavy',
                          'wavyHeavy', 'wavyDbl']))
-    strike = Set(values=(['noStrike', 'sngStrike', 'dblStrike']))
-    kern = Integer()
+    strike = NoneSet(values=(['noStrike', 'sngStrike', 'dblStrike']))
+    kern = Integer(allow_none=True)
     cap = NoneSet(values=(['small', 'all']))
-    spc = Integer()
+    spc = Integer(allow_none=True)
     normalizeH = Bool(allow_none=True)
-    baseline = Integer()
+    baseline = Integer(allow_none=True)
     noProof = Bool(allow_none=True)
     dirty = Bool(allow_none=True)
     err = Bool(allow_none=True)
@@ -520,6 +526,7 @@ class Paragraph(Serialisable):
 
     # uses element group EG_TextRun
     pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
+    properties = Alias("pPr")
     endParaRPr = Typed(expected_type=CharacterProperties, allow_none=True)
     r = Typed(expected_type=RegularTextRun, allow_none=True)
     text = Alias('r')
