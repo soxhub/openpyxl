@@ -16,7 +16,7 @@ from openpyxl.descriptors.nested import (
 from ._chart import ChartBase
 from .updown_bars import UpDownBars
 from .descriptors import NestedGapAmount
-from .axis import CatAx, ValAx, SerAx, ChartLines
+from .axis import CatAx, ValAx, SerAx, ChartLines, _BaseAxis
 from .label import DataLabels
 from .series import Series
 
@@ -65,7 +65,7 @@ class LineChart(_LineChartBase):
     smooth = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=CatAx)
+    x_axis = Typed(expected_type=_BaseAxis)
     y_axis = Typed(expected_type=ValAx)
 
     __elements__ = _LineChartBase.__elements__ + ('hiLowLines', 'upDownBars', 'marker', 'smooth', 'axId')
