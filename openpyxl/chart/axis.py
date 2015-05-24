@@ -28,7 +28,6 @@ from openpyxl.descriptors.nested import (
 )
 
 from .descriptors import NumberFormatDescriptor
-#from .data_source import NumFmt
 from .layout import Layout
 from .text import Text, RichText
 from .shapes import ShapeProperties
