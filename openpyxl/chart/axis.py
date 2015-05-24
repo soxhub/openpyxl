@@ -80,6 +80,7 @@ class _BaseAxis(Serialisable):
     minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     title = Typed(expected_type=Title, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
+    number_format = Alias("numFmt")
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
