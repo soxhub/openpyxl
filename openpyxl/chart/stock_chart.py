@@ -10,7 +10,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 
 from ._chart import ChartBase
-from .axis import CatAx, ValAx, ChartLines
+from .axis import TextAxis, NumericAxis, ChartLines
 from .updown_bars import UpDownBars
 from .label import DataLabels
 from .series import Series
@@ -27,8 +27,8 @@ class StockChart(ChartBase):
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=CatAx)
-    y_axis = Typed(expected_type=ValAx)
+    x_axis = Typed(expected_type=TextAxis)
+    y_axis = Typed(expected_type=NumericAxis)
 
     _series_type = "line"
 
@@ -49,7 +49,7 @@ class StockChart(ChartBase):
         self.dropLines = dropLines
         self.hiLowLines = hiLowLines
         self.upDownBars = upDownBars
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
         super(StockChart, self).__init__()
 

@@ -53,49 +53,49 @@ class TestAxis:
 
 
 @pytest.fixture
-def CatAx():
-    from ..axis import CatAx
-    return CatAx
+def TextAxis():
+    from ..axis import TextAxis
+    return TextAxis
 
 
-class TestCatAx:
+class TestTextAxis:
 
-    def test_ctor(self, CatAx):
-        axis = CatAx(axId=10, crossAx=100)
+    def test_ctor(self, TextAxis):
+        axis = TextAxis(axId=10, crossAx=100)
         xml = tostring(axis.to_tree())
         expected = """
         <catAx>
-         <axId val="10"></axId>
-         <scaling>
-           <orientation val="minMax"></orientation>
-         </scaling>
-         <axPos val="l" />
-         <crossAx val="100" />
-         <lblOffset val="100" />
+            <axId val="10"></axId>
+            <scaling>
+              <orientation val="minMax"></orientation>
+            </scaling>
+            <axPos val="l" />
+            <crossAx val="100" />
+            <lblOffset val="100" />
         </catAx>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def from_xml(self, CatAx):
+    def from_xml(self, TextAxis):
         src = """
         <catAx>
-        <axId val="2065276984"/>
-        <scaling>
-          <orientation val="minMax"/>
-        </scaling>
-        <delete val="0"/>
-        <axPos val="b"/>
-        <majorTickMark val="out"/>
-        <minorTickMark val="none"/>
-        <tickLblPos val="nextTo"/>
-        <crossAx val="2056619928"/>
-        <crosses val="autoZero"/>
-        <auto val="1"/>
-        <lblAlgn val="ctr"/>
-        <lblOffset val="100"/>
-        <noMultiLvlLbl val="0"/>
+            <axId val="2065276984"/>
+            <scaling>
+              <orientation val="minMax"/>
+            </scaling>
+            <delete val="0"/>
+            <axPos val="b"/>
+            <majorTickMark val="out"/>
+            <minorTickMark val="none"/>
+            <tickLblPos val="nextTo"/>
+            <crossAx val="2056619928"/>
+            <crosses val="autoZero"/>
+            <auto val="1"/>
+            <lblAlgn val="ctr"/>
+            <lblOffset val="100"/>
+            <noMultiLvlLbl val="0"/>
         </catAx>
         """
         node = fromstring(src)
@@ -107,15 +107,15 @@ class TestCatAx:
 
 
 @pytest.fixture
-def ValAx():
-    from ..axis import ValAx
-    return ValAx
+def NumericAxis():
+    from ..axis import NumericAxis
+    return NumericAxis
 
 
 class TestValAx:
 
-    def test_ctor(self, ValAx):
-        axis = ValAx(axId=100, crossAx=10)
+    def test_ctor(self, NumericAxis):
+        axis = NumericAxis(axId=100, crossAx=10)
         xml = tostring(axis.to_tree())
         expected = """
         <valAx>
@@ -132,7 +132,7 @@ class TestValAx:
         assert diff is None, diff
 
 
-    def test_from_xml(self, ValAx):
+    def test_from_xml(self, NumericAxis):
         src = """
         <valAx>
             <axId val="2056619928"/>
@@ -152,23 +152,23 @@ class TestValAx:
         </valAx>
         """
         node = fromstring(src)
-        axis = ValAx.from_tree(node)
+        axis = NumericAxis.from_tree(node)
         assert axis.delete is False
         assert axis.crossAx == 2065276984
         assert axis.crossBetween == "between"
 
 
 @pytest.fixture
-def DateAx():
-    from ..axis import DateAx
-    return DateAx
+def DateAxis():
+    from ..axis import DateAxis
+    return DateAxis
 
 
 class TestDateAx:
 
 
-    def test_ctor(self, DateAx):
-        axis = DateAx(axId=500, crossAx=10)
+    def test_ctor(self, DateAxis):
+        axis = DateAxis(axId=500, crossAx=10)
         xml = tostring(axis.to_tree())
         expected = """
         <dateAx>
@@ -184,7 +184,7 @@ class TestDateAx:
         assert diff is None, diff
 
 
-    def test_from_xml(self, DateAx):
+    def test_from_xml(self, DateAxis):
         from openpyxl.chart.axis import NumFmt
 
         src = """
@@ -207,23 +207,23 @@ class TestDateAx:
         </dateAx>
         """
         node = fromstring(src)
-        axis = DateAx.from_tree(node)
-        assert axis == DateAx(axId=20, crossAx=10, axPos="b",
+        axis = DateAxis.from_tree(node)
+        assert axis == DateAxis(axId=20, crossAx=10, axPos="b",
                               scaling="minMax", delete=False, numFmt=NumFmt("d-mmm", True),
                               majorTickMark="out", crosses="autoZero", tickLblPos="nextTo",
                               auto=True, lblOffset=100, baseTimeUnit="months")
 
 
 @pytest.fixture
-def SerAx():
-    from ..axis import SerAx
-    return SerAx
+def SeriesAxis():
+    from ..axis import SeriesAxis
+    return SeriesAxis
 
 
-class TestSerAx:
+class TestSeriesAxis:
 
-    def test_ctor(self, SerAx):
-        axis = SerAx(axId=1000, crossAx=10)
+    def test_ctor(self, SeriesAxis):
+        axis = SeriesAxis(axId=1000, crossAx=10)
         xml = tostring(axis.to_tree())
         expected = """
         <serAx>
@@ -239,7 +239,7 @@ class TestSerAx:
         assert diff is None, diff
 
 
-    def test_from_xml(self, SerAx):
+    def test_from_xml(self, SeriesAxis):
         src = """
         <serAx>
           <axId val="1000"></axId>
@@ -251,8 +251,8 @@ class TestSerAx:
         </serAx>
         """
         node = fromstring(src)
-        axis = SerAx.from_tree(node)
-        assert axis == SerAx()
+        axis = SeriesAxis.from_tree(node)
+        assert axis == SeriesAxis()
 
 
 @pytest.fixture

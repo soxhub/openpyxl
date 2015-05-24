@@ -24,7 +24,7 @@ from .descriptors import (
     NestedOverlap,
 )
 from ._chart import ChartBase
-from .axis import CatAx, ValAx, SerAx, ChartLines
+from .axis import TextAxis, NumericAxis, SeriesAxis, ChartLines
 from .shapes import ShapeProperties
 from .series import Series
 from .legend import Legend
@@ -75,8 +75,8 @@ class BarChart(_BarChartBase):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # chart properties actually used by containing classes
-    x_axis = Typed(expected_type=CatAx)
-    y_axis = Typed(expected_type=ValAx)
+    x_axis = Typed(expected_type=TextAxis)
+    y_axis = Typed(expected_type=NumericAxis)
 
     _series_type = "bar"
 
@@ -93,8 +93,8 @@ class BarChart(_BarChartBase):
         self.gapWidth = gapWidth
         self.overlap = overlap
         self.serLines = serLines
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
         self.legend = Legend()
         super(BarChart, self).__init__(**kw)
 
@@ -115,9 +115,9 @@ class BarChart3D(_BarChartBase):
     serLines = Typed(expected_type=ChartLines, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=CatAx)
-    y_axis = Typed(expected_type=ValAx)
-    z_axis = Typed(expected_type=SerAx, allow_none=True)
+    x_axis = Typed(expected_type=TextAxis)
+    y_axis = Typed(expected_type=NumericAxis)
+    z_axis = Typed(expected_type=SeriesAxis, allow_none=True)
 
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'gapDepth', 'shape', 'serLines', 'axId')
 
@@ -134,8 +134,8 @@ class BarChart3D(_BarChartBase):
         self.gapDepth = gapDepth
         self.shape = shape
         self.serLines = serLines
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
-        self.z_axis = SerAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
+        self.z_axis = SeriesAxis()
 
         super(BarChart3D, self).__init__(**kw)

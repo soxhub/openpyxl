@@ -175,7 +175,7 @@ class DisplayUnits(Serialisable):
         self.dispUnitsLbl = dispUnitsLbl
 
 
-class ValAx(_BaseAxis):
+class NumericAxis(_BaseAxis):
 
     tagname = "valAx"
 
@@ -221,10 +221,10 @@ class ValAx(_BaseAxis):
         kw.setdefault('majorGridlines', ChartLines())
         kw.setdefault('axId', 100)
         kw.setdefault('crossAx', 10)
-        super(ValAx, self).__init__(**kw)
+        super(NumericAxis, self).__init__(**kw)
 
 
-class CatAx(_BaseAxis):
+class TextAxis(_BaseAxis):
 
     tagname = "catAx"
 
@@ -274,10 +274,10 @@ class CatAx(_BaseAxis):
         self.noMultiLvlLbl = noMultiLvlLbl
         kw.setdefault('axId', 10)
         kw.setdefault('crossAx', 100)
-        super(CatAx, self).__init__(**kw)
+        super(TextAxis, self).__init__(**kw)
 
 
-class DateAx(_BaseAxis):
+class DateAxis(_BaseAxis):
 
     tagname = "dateAx"
 
@@ -330,10 +330,10 @@ class DateAx(_BaseAxis):
         self.minorUnit = minorUnit
         self.minorTimeUnit = minorTimeUnit
         kw.setdefault('axId', 500)
-        super(DateAx, self).__init__(**kw)
+        super(DateAxis, self).__init__(**kw)
 
 
-class SerAx(_BaseAxis):
+class SeriesAxis(_BaseAxis):
 
     tagname = "serAx"
 
@@ -370,4 +370,4 @@ class SerAx(_BaseAxis):
         self.tickMarkSkip = tickMarkSkip
         kw.setdefault('axId', 1000)
         kw.setdefault('crossAx', 10)
-        super(SerAx, self).__init__(**kw)
+        super(SeriesAxis, self).__init__(**kw)

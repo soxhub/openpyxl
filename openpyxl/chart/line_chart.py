@@ -16,7 +16,7 @@ from openpyxl.descriptors.nested import (
 from ._chart import ChartBase
 from .updown_bars import UpDownBars
 from .descriptors import NestedGapAmount
-from .axis import CatAx, ValAx, SerAx, ChartLines, _BaseAxis
+from .axis import TextAxis, NumericAxis, SeriesAxis, ChartLines, _BaseAxis
 from .label import DataLabels
 from .series import Series
 
@@ -66,7 +66,7 @@ class LineChart(_LineChartBase):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     x_axis = Typed(expected_type=_BaseAxis)
-    y_axis = Typed(expected_type=ValAx)
+    y_axis = Typed(expected_type=NumericAxis)
 
     __elements__ = _LineChartBase.__elements__ + ('hiLowLines', 'upDownBars', 'marker', 'smooth', 'axId')
 
@@ -83,8 +83,8 @@ class LineChart(_LineChartBase):
         self.upDownBars = upDownBars
         self.marker = marker
         self.smooth = smooth
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
 
         super(LineChart, self).__init__(**kw)
 
@@ -106,9 +106,9 @@ class LineChart3D(_LineChartBase):
     smooth = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=CatAx)
-    y_axis = Typed(expected_type=ValAx)
-    z_axis = Typed(expected_type=SerAx)
+    x_axis = Typed(expected_type=TextAxis)
+    y_axis = Typed(expected_type=NumericAxis)
+    z_axis = Typed(expected_type=SeriesAxis)
 
     __elements__ = _LineChartBase.__elements__ + ('gapDepth', 'hiLowLines',
                                                   'upDownBars', 'marker', 'smooth', 'axId')
@@ -127,7 +127,7 @@ class LineChart3D(_LineChartBase):
         self.upDownBars = upDownBars
         self.marker = marker
         self.smooth = smooth
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
-        self.z_axis = SerAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
+        self.z_axis = SeriesAxis()
         super(LineChart3D, self).__init__(**kw)

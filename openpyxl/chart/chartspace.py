@@ -52,7 +52,7 @@ from .scatter_chart import ScatterChart
 from .stock_chart import StockChart
 from .surface_chart import SurfaceChart, SurfaceChart3D
 
-from .axis import ValAx, CatAx, SerAx, DateAx
+from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
 from .title import Title
 
 from openpyxl.worksheet.page import PageMargins, PrintPageSetup
@@ -224,10 +224,10 @@ class PlotArea(Serialisable):
     bubbleChart = Typed(expected_type=BubbleChart, allow_none=True)
 
     # maybe axes
-    valAx = Sequence(expected_type=ValAx, allow_none=True)
-    catAx = Sequence(expected_type=CatAx, allow_none=True)
-    dateAx = Sequence(expected_type=DateAx, allow_none=True)
-    serAx = Sequence(expected_type=SerAx, allow_none=True)
+    valAx = Sequence(expected_type=NumericAxis, allow_none=True)
+    catAx = Sequence(expected_type=TextAxis, allow_none=True)
+    dateAx = Sequence(expected_type=DateAxis, allow_none=True)
+    serAx = Sequence(expected_type=SeriesAxis, allow_none=True)
 
     __elements__ = ('layout', 'areaChart', 'area3DChart', 'lineChart',
                     'line3DChart', 'stockChart', 'radarChart', 'scatterChart', 'pieChart',

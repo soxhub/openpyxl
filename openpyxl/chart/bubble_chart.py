@@ -18,7 +18,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .axis import CatAx, ValAx
+from .axis import TextAxis, NumericAxis
 from .series import XYSeries
 from .label import DataLabels
 
@@ -37,8 +37,8 @@ class BubbleChart(ChartBase):
     sizeRepresents = NestedNoneSet(values=(['area', 'w']))
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=ValAx)
-    y_axis = Typed(expected_type=ValAx)
+    x_axis = Typed(expected_type=NumericAxis)
+    y_axis = Typed(expected_type=NumericAxis)
 
     _series_type = "bubble"
 
@@ -63,6 +63,6 @@ class BubbleChart(ChartBase):
         self.bubbleScale = bubbleScale
         self.showNegBubbles = showNegBubbles
         self.sizeRepresents = sizeRepresents
-        self.x_axis = ValAx(axId=10, crossAx=20)
-        self.y_axis = ValAx(axId=20, crossAx=10)
+        self.x_axis = NumericAxis(axId=10, crossAx=20)
+        self.y_axis = NumericAxis(axId=20, crossAx=10)
         super(BubbleChart, self).__init__()

@@ -12,7 +12,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .axis import CatAx, ValAx
+from .axis import TextAxis, NumericAxis
 from .series import Series
 from .label import DataLabels
 
@@ -31,8 +31,8 @@ class RadarChart(ChartBase):
 
     _series_type = "radar"
 
-    x_axis = Typed(expected_type=CatAx)
-    y_axis = Typed(expected_type=ValAx)
+    x_axis = Typed(expected_type=TextAxis)
+    y_axis = Typed(expected_type=NumericAxis)
 
     __elements__ = ('radarStyle', 'varyColors', 'ser', 'dLbls', 'axId')
 
@@ -48,7 +48,7 @@ class RadarChart(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
-        self.x_axis = CatAx()
-        self.y_axis = ValAx()
+        self.x_axis = TextAxis()
+        self.y_axis = NumericAxis()
         super(RadarChart, self).__init__()
 
