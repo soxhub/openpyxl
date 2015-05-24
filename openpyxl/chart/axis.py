@@ -27,7 +27,8 @@ from openpyxl.descriptors.nested import (
     NestedSequence,
 )
 
-from .data_source import NumFmt
+from .descriptors import NumberFormatDescriptor
+#from .data_source import NumFmt
 from .layout import Layout
 from .text import Text, RichText
 from .shapes import ShapeProperties
@@ -79,7 +80,7 @@ class _BaseAxis(Serialisable):
     majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     title = Typed(expected_type=Title, allow_none=True)
-    numFmt = Typed(expected_type=NumFmt, allow_none=True)
+    numFmt = NumberFormatDescriptor()
     number_format = Alias("numFmt")
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
