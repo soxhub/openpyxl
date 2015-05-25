@@ -11,7 +11,7 @@ from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
 from .shapes import ShapeProperties
-from .title import Title
+from .title import title_maker
 from .shapes import ShapeProperties
 
 class AxId(Serialisable):
@@ -87,19 +87,15 @@ class ChartBase(Serialisable):
             ax = getattr(plot, axis.tagname)
             ax.append(axis)
         plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
-        title = self._set_title()
+        title = self.title
+        if title is not None:
+            title = title_maker(title)
         container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
         cs = ChartSpace(chart=container)
         cs.style = self.style
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree
-
-    def _set_title(self):
-        if self.title is not None:
-            title = Title()
-            title.text.rich.paragraphs.text.value = self.title
-            return title
 
 
     @property

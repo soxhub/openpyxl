@@ -95,29 +95,6 @@ class TestChartBase:
         assert hash(chart) == hash(id(chart))
 
 
-    def test_title(self, ChartBase):
-        chart = ChartBase()
-        chart.title = "A title"
-        t = chart._set_title()
-        xml = tostring(t.to_tree())
-        expected = """
-        <title xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
-          <tx>
-            <rich>
-              <a:bodyPr />
-              <a:p>
-                <a:r>
-                   <a:t>A title</a:t>
-                </a:r>
-              </a:p>
-            </rich>
-          </tx>
-        </title>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
     def test_path(self, ChartBase):
         chart = ChartBase()
         assert chart._path == "xl/charts/chart1.xml"

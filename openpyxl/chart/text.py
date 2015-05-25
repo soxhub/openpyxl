@@ -3,7 +3,8 @@ from __future__ import absolute_import
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    Alias
+    Alias,
+    Sequence,
 )
 
 
@@ -29,7 +30,7 @@ class RichText(Serialisable):
     bodyPr = Typed(expected_type=RichTextProperties)
     properties = Alias("bodyPr")
     lstStyle = Typed(expected_type=ListStyle, allow_none=True)
-    p = Typed(expected_type=Paragraph, allow_none=True)
+    p = Sequence(expected_type=Paragraph, allow_none=True)
     paragraphs = Alias('p')
 
     __elements__ = ("bodyPr", "lstStyle", "p")
@@ -44,7 +45,7 @@ class RichText(Serialisable):
         self.bodyPr = bodyPr
         self.lstStyle = lstStyle
         if p is None:
-            p = Paragraph()
+            p = [Paragraph()]
         self.p = p
 
 

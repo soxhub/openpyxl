@@ -45,3 +45,12 @@ class Title(Serialisable):
         self.overlay = overlay
         self.spPr = spPr
         self.txPr = txPr
+
+
+def title_maker(text):
+    from openpyxl.drawing.text import Paragraph, RegularTextRun, LineBreak
+    title = Title()
+    paras = [Paragraph(r=RegularTextRun(t=s)) for s in text.split("\n")]
+
+    title.tx.rich.paragraphs = paras
+    return title
