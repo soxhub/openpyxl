@@ -43,6 +43,10 @@ class TestTitle:
 
 
 def test_title_maker():
+    """
+    Create a title element from a string preserving line breaks.
+    """
+
     from ..title import title_maker
     text = "Two-line\nText"
     title = title_maker(text)
