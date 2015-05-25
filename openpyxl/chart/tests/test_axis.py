@@ -178,6 +178,7 @@ class TestDateAx:
            </scaling>
            <axPos val="l" />
            <crossAx val="10" />
+           <majorUnit val="1" />
         </dateAx>
         """
         diff = compare_xml(xml, expected)
