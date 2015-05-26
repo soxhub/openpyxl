@@ -170,7 +170,7 @@ class DisplayUnits(Serialisable):
     dispUnitsLbl = Typed(expected_type=DisplayUnitsLabel, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('dispUnitsLbl',)
+    __elements__ = ('custUnit', 'builtInUnit', 'dispUnitsLbl',)
 
     def __init__(self,
                  custUnit=None,
