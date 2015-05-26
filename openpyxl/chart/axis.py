@@ -163,15 +163,23 @@ class DisplayUnits(Serialisable):
 
     tagname = "dispUnits"
 
+    custUnit = Integer(allow_none=True)
+    builtInUnit = NestedNoneSet(values=(['hundreds', 'thousands',
+                                         'tenThousands', 'hundredThousands', 'millions', 'tenMillions',
+                                         'hundredMillions', 'billions', 'trillions']))
     dispUnitsLbl = Typed(expected_type=DisplayUnitsLabel, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('dispUnitsLbl',)
 
     def __init__(self,
+                 custUnit=None,
+                 builtInUnit=None,
                  dispUnitsLbl=None,
                  extLst=None,
                 ):
+        self.custUnit = custUnit
+        self.builtInUnit = builtInUnit
         self.dispUnitsLbl = dispUnitsLbl
 
 
