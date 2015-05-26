@@ -28,7 +28,7 @@ Bug fixes
 * `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
 
 
-2.2.3 (unreleased)
+2.2.3 (2015-05-26)
 ==================
 
 
