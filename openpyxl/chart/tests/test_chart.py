@@ -75,21 +75,6 @@ class TestChartBase:
         assert chart.ser[-1].val.numRef.f == "Sheet!$A$4:$E$4"
 
 
-    @pytest.mark.parametrize("from_rows, labels, values",
-                             [
-                                 (False, "Sheet!$A$1:$A$4", 'Sheet!$B$1:$B$4'),
-                                 (True, "Sheet!$A$1:$E$1", 'Sheet!$A$2:$E$2'),
-                             ]
-                             )
-    def test_add_data_labels(self, ChartBase, from_rows, values, labels):
-        chart = ChartBase()
-        chart.ser = []
-        chart.add_data("Sheet!A1:E4", from_rows=from_rows, labels_from_data=True)
-        first_series = chart.ser[0]
-        assert first_series.cat.numRef.f == labels
-        assert first_series.val.numRef.f == values
-
-
     def test_hash_function(self, ChartBase):
         chart = ChartBase()
         assert hash(chart) == hash(id(chart))
