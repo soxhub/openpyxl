@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from openpyxl.compat import basestring
+
 from openpyxl.descriptors import Typed, Integer, Alias
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
@@ -88,7 +90,7 @@ class ChartBase(Serialisable):
             ax.append(axis)
         plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
         title = self.title
-        if title is not None:
+        if isinstance(title, basestring):
             title = title_maker(title)
         container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
         cs = ChartSpace(chart=container)
