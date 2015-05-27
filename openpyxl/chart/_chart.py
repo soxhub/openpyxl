@@ -79,9 +79,12 @@ class ChartBase(Serialisable):
         plot = PlotArea()
         plot.graphical_properties = self.graphical_properties
         names = ['layout']
+        idx_base = 0
         for chart in self._charts:
+            chart.idx_base = idx_base
             setattr(plot, chart.tagname, chart)
             names.append(chart.tagname)
+            idx_base = len(chart.series)
 
         for axis in ("x_axis", "y_axis", 'z_axis'):
             axis = getattr(self, axis, None)
