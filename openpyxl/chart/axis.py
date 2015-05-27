@@ -163,7 +163,7 @@ class DisplayUnits(Serialisable):
 
     tagname = "dispUnits"
 
-    custUnit = Integer(allow_none=True)
+    custUnit = NestedFloat(allow_none=True)
     builtInUnit = NestedNoneSet(values=(['hundreds', 'thousands',
                                          'tenThousands', 'hundredThousands', 'millions', 'tenMillions',
                                          'hundredMillions', 'billions', 'trillions']))
