@@ -13,8 +13,7 @@ from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
 from .shapes import ShapeProperties
-from .title import title_maker
-from .shapes import ShapeProperties
+from .title import TitleDescriptor
 
 class AxId(Serialisable):
 
@@ -33,22 +32,25 @@ class ChartBase(Serialisable):
     legend = Typed(expected_type=Legend, allow_none=True)
 
     _series_type = ""
+    _shapes = ()
     ser = ()
     series = Alias('ser')
-    title = None
+    title = TitleDescriptor()
     anchor = "E15" # default anchor position
     width = 15 # in cm, approx 5 rows
     height = 7.5 # in cm, approx 14 rows
-    _shapes = ()
     _id = 1
-    style = None
-    shape = None
+    style = Integer(allow_none=True)
+    graphical_properties = Typed(expected_type=ShapeProperties, allow_none=True)
 
     __elements__ = ()
 
     def __init__(self):
         self._charts = [self]
+        self.title = None
         self.legend = Legend()
+        self.graphical_properties = None
+        self.style = None
 
     def __hash__(self):
         """
@@ -76,7 +78,7 @@ class ChartBase(Serialisable):
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer, PlotArea
         plot = PlotArea()
-        plot.spPr = self.shape
+        plot.graphical_properties = self.graphical_properties
         names = ['layout']
         for chart in self._charts:
             setattr(plot, chart.tagname, chart)
@@ -89,10 +91,8 @@ class ChartBase(Serialisable):
             ax = getattr(plot, axis.tagname)
             ax.append(axis)
         plot.__elements__ = names + ['valAx', 'catAx', 'dateAx', 'serAx', 'dTable', 'spPr']
-        title = self.title
-        if isinstance(title, basestring):
-            title = title_maker(title)
-        container = ChartContainer(plotArea=plot, legend=self.legend, title=title)
+
+        container = ChartContainer(plotArea=plot, legend=self.legend, title=self.title)
         cs = ChartSpace(chart=container)
         cs.style = self.style
         tree = cs.to_tree()

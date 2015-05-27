@@ -203,6 +203,7 @@ class PlotArea(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     dTable = Typed(expected_type=DataTable, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    graphical_properties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # at least one chart
