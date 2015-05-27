@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from openpyxl.compat import basestring
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -13,6 +15,12 @@ from openpyxl.descriptors.nested import NestedBool
 from .text import Text, RichTextProperties
 from .layout import Layout
 from .shapes import ShapeProperties
+
+from openpyxl.drawing.text import (
+    Paragraph,
+    RegularTextRun,
+    LineBreak
+)
 
 
 class Title(Serialisable):
@@ -48,9 +56,19 @@ class Title(Serialisable):
 
 
 def title_maker(text):
-    from openpyxl.drawing.text import Paragraph, RegularTextRun, LineBreak
     title = Title()
     paras = [Paragraph(r=RegularTextRun(t=s)) for s in text.split("\n")]
 
     title.tx.rich.paragraphs = paras
     return title
+
+
+class TitleDescriptor(Typed):
+
+    expected_type = Title
+    allow_none = True
+
+    def __set__(self, instance, value):
+        if isinstance(value, basestring):
+            value = title_maker(value)
+        super(TitleDescriptor, self).__set__(instance, value)
