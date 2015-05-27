@@ -22,7 +22,7 @@ class RadarChart(ChartBase):
     tagname = "radarChart"
 
     radarStyle = NestedSet(values=(['standard', 'marker', 'filled']))
-    style = Alias("radarStyle")
+    type = Alias("radarStyle")
     varyColors = NestedBool(nested=True, allow_none=True)
     ser = Typed(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)

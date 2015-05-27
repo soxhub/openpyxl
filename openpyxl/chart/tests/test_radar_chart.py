@@ -40,5 +40,5 @@ class TestStockChart:
         node = fromstring(src)
         chart = RadarChart.from_tree(node)
         assert dict(chart) == {}
-        assert chart.style == "marker"
+        assert chart.type == "marker"
         assert [x.val for x in chart.axId] == [10, 100]
