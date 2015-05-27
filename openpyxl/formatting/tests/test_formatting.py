@@ -61,7 +61,7 @@ def rules():
 
 
 def test_unpack_rules(rules):
-    from .. import unpack_rules
+    from ..formatting import unpack_rules
     assert list(unpack_rules(rules)) == [
         ('H1:H10', 0, 23),
         ('Q1:Q10', 0, 14),
@@ -92,7 +92,7 @@ def test_unpack_rules(rules):
 
 
 def test_fix_priorities(rules):
-    from .. import unpack_rules, ConditionalFormatting
+    from ..formatting import unpack_rules, ConditionalFormatting
     cf = ConditionalFormatting()
     cf.cf_rules = rules
     cf._fix_priorities()
