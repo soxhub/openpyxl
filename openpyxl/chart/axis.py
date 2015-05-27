@@ -31,7 +31,7 @@ from .descriptors import NumberFormatDescriptor
 from .layout import Layout
 from .text import Text, RichText
 from .shapes import ShapeProperties
-from .title import Title
+from .title import Title, TitleDescriptor
 
 
 class ChartLines(Serialisable):
@@ -78,7 +78,7 @@ class _BaseAxis(Serialisable):
     axPos = NestedSet(values=(['b', 'l', 'r', 't']))
     majorGridlines = Typed(expected_type=ChartLines, allow_none=True)
     minorGridlines = Typed(expected_type=ChartLines, allow_none=True)
-    title = Typed(expected_type=Title, allow_none=True)
+    title = TitleDescriptor()
     numFmt = NumberFormatDescriptor()
     number_format = Alias("numFmt")
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
