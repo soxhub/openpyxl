@@ -32,7 +32,6 @@ class ChartBase(Serialisable):
     legend = Typed(expected_type=Legend, allow_none=True)
 
     _series_type = ""
-    _shapes = ()
     ser = ()
     series = Alias('ser')
     title = TitleDescriptor()

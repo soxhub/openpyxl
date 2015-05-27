@@ -144,16 +144,6 @@ def write_content_types(workbook, as_template=False):
 
                 chart_id += 1
 
-                if chart._shapes:
-                    name = '/xl/drawings/drawing%d.xml' % drawing_id
-                    if name not in seen:
-                        SubElement(root, '{%s}Override' % CONTYPES_NS, {
-                            'PartName': name,
-                            'ContentType': CHARTSHAPE_TYPE
-                        })
-
-                    drawing_id += 1
-
         if sheet._comment_count > 0:
             SubElement(root, '{%s}Override' % CONTYPES_NS, {
                 'PartName': '/xl/comments%d.xml' % comments_id,
