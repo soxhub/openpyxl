@@ -335,3 +335,12 @@ def test_write_empty_row(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_save():
+    from tempfile import NamedTemporaryFile
+    filename = NamedTemporaryFile(delete=False)
+    from openpyxl.workbook import Workbook
+    from ..write_only import save_dump
+    wb = Workbook(write_only=True)
+    save_dump(wb, filename)
