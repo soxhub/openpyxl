@@ -55,6 +55,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
 from .title import Title
 
+from openpyxl.xml.functions import Element
 from openpyxl.worksheet.page import PageMargins, PrintPageSetup
 from openpyxl.worksheet.header_footer import HeaderFooter
 
@@ -285,6 +286,27 @@ class PlotArea(Serialisable):
         self.catAx = catAx
         self.dateAx = dateAx
         self.serAx = serAx
+        self._charts = []
+
+
+    def to_tree(self, tagname=None, idx=None):
+        if tagname is None:
+            tagname = self.tagname
+        el = Element(tagname)
+        if self.layout is not None:
+            el.append(self.layout.to_tree())
+        for chart in self._charts:
+            el.append(chart.to_tree())
+        for ax in ['valAx', 'catAx', 'dateAx', 'serAx',]:
+            seq = getattr(self, ax)
+            if seq:
+                for obj in seq:
+                    el.append(obj.to_tree())
+        for attr in ['dTable', 'spPr']:
+            obj = getattr(self, attr)
+            if obj is not None:
+                el.append(obj.to_tree())
+        return el
 
 
 class ChartContainer(Serialisable):
