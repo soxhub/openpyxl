@@ -15,6 +15,7 @@ Minor changes
 -------------
 
 * Read-only and write-only worksheets renamed.
+* Write-only workbooks support charts and images.
 
 
 Bug fixes
