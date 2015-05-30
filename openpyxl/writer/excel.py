@@ -50,6 +50,8 @@ from openpyxl.writer.comments import CommentWriter
 class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
 
+    comment_writer = CommentWriter
+
     def __init__(self, workbook):
         self.workbook = workbook
         self.workbook._drawings = []
@@ -116,8 +118,8 @@ class ExcelWriter(object):
         vba_controls_id = 1
 
         for i, sheet in enumerate(self.workbook.worksheets, 1):
-            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % i ,
-                             write_worksheet(sheet, self.workbook.shared_strings))
+            xml = sheet._write(self.workbook.shared_strings)
+            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % i , xml)
 
             if sheet._charts or sheet._images:
                 drawing = SpreadsheetDrawing()
@@ -134,7 +136,7 @@ class ExcelWriter(object):
                         r.target = "/" + drawingpath
 
             if sheet._comment_count > 0:
-                cw = CommentWriter(sheet)
+                cw = self.comment_writer(sheet)
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
                     cw.write_comments())
                 archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,

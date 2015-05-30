@@ -820,3 +820,8 @@ class Worksheet(object):
         """Dimension factory for row information"""
 
         return RowDimension(self)
+
+
+    def _write(self, shared_strings=None):
+        from openpyxl.writer.worksheet import write_worksheet
+        return write_worksheet(self, shared_strings)

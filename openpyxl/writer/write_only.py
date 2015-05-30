@@ -201,6 +201,14 @@ class WriteOnlyWorksheet(Worksheet):
             type(iterable))
                         )
 
+    def _write(self, shared_strings=None):
+        self.close()
+        with open(self.filename) as src:
+            out = src.read()
+        self._cleanup()
+        return out
+
+
 def removed_method(*args, **kw):
     raise NotImplementedError
 
@@ -229,23 +237,4 @@ class DumpCommentWriter(CommentWriter):
 
 class ExcelDumpWriter(ExcelWriter):
 
-    def _write_worksheets(self, archive):
-        comments_id = 1
-
-        for i, sheet in enumerate(self.workbook.worksheets, 1):
-            sheet.close()
-            archive.write(sheet.filename, PACKAGE_WORKSHEETS + '/sheet%d.xml' % i)
-            sheet._cleanup()
-
-            # write comments
-            if sheet._comments:
-                rels = write_rels(sheet, comments_id=comments_id)
-                archive.writestr( PACKAGE_WORKSHEETS +
-                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels) )
-
-                cw = DumpCommentWriter(sheet)
-                archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
-                    cw.write_comments())
-                archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
-                    cw.write_comments_vml())
-                comments_id += 1
+    comment_writer = DumpCommentWriter
