@@ -236,6 +236,6 @@ def save_dump(workbook, filename):
     if workbook.worksheets == []:
         workbook.create_sheet()
     writer = ExcelWriter(workbook)
-    writet.comment_writer = DumpCommentWriter
+    writer.comment_writer = DumpCommentWriter
     writer.save(filename)
     return True
