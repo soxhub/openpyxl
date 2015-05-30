@@ -168,6 +168,18 @@ def write_hyperlinks(worksheet):
     return tag
 
 
+def write_drawing(worksheet):
+    """
+    Add link to drawing if required
+    """
+    if worksheet._charts or worksheet._images:
+        rel = Relationship(type="drawing", target="")
+        worksheet._rels.append(rel)
+        rel.id = "rId%s" % len(worksheet._rels)
+        drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
+        return drawing
+
+
 def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
     worksheet._rels = []
@@ -238,11 +250,8 @@ def write_worksheet(worksheet, shared_strings):
             if hf is not None:
                 xf.write(hf)
 
-            if worksheet._charts or worksheet._images:
-                rel = Relationship(type="drawing", target="")
-                worksheet._rels.append(rel)
-                rel.id = "rId%s" % len(worksheet._rels)
-                drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
+            drawing = write_drawing(worksheet)
+            if drawing is not None:
                 xf.write(drawing)
 
             # If vba is being preserved then add a legacyDrawing element so

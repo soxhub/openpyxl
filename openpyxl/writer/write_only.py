@@ -22,6 +22,7 @@ from .worksheet import (
     write_autofilter,
     write_cell,
     write_cols,
+    write_drawing,
     write_format,
 )
 from openpyxl.xml.constants import (
@@ -127,6 +128,10 @@ class WriteOnlyWorksheet(Worksheet):
                 af = write_autofilter(self)
                 if af is not None:
                     xf.write(af)
+
+                drawing = write_drawing(self)
+                if drawing is not None:
+                    xf.write(drawing)
                 if self._comments:
                     comments = Element('legacyDrawing', {'{%s}id' % REL_NS: 'commentsvml'})
                     xf.write(comments)
@@ -219,14 +224,6 @@ setattr(WriteOnlyWorksheet, 'range', removed_method)
 setattr(WriteOnlyWorksheet, 'merge_cells', removed_method)
 
 
-def save_dump(workbook, filename):
-    if workbook.worksheets == []:
-        workbook.create_sheet()
-    writer = ExcelDumpWriter(workbook)
-    writer.save(filename)
-    return True
-
-
 class DumpCommentWriter(CommentWriter):
     def extract_comments(self):
         for comment in self.sheet._comments:
@@ -235,6 +232,10 @@ class DumpCommentWriter(CommentWriter):
                 self.comments.append(comment)
 
 
-class ExcelDumpWriter(ExcelWriter):
-
-    comment_writer = DumpCommentWriter
+def save_dump(workbook, filename):
+    if workbook.worksheets == []:
+        workbook.create_sheet()
+    writer = ExcelWriter(workbook)
+    writet.comment_writer = DumpCommentWriter
+    writer.save(filename)
+    return True
