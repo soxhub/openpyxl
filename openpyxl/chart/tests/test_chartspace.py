@@ -95,7 +95,7 @@ class TestDataTable:
 
 @pytest.fixture
 def Surface():
-    from ..chartspace import Surface
+    from .._3d import Surface
     return Surface
 
 
@@ -122,7 +122,7 @@ class TestSurface:
 
 @pytest.fixture
 def View3D():
-    from ..chartspace import View3D
+    from .._3d import View3D
     return View3D
 
 
@@ -132,7 +132,11 @@ class TestView3D:
         view = View3D()
         xml = tostring(view.to_tree())
         expected = """
-        <view3D />
+        <view3D>
+          <rotX val="15"></rotX>
+          <rotY val="20"></rotY>
+          <rAngAx val="1"></rAngAx>
+        </view3D>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

@@ -41,6 +41,7 @@ from .shapes import ShapeProperties
 from .legend import Legend
 from .marker import PictureOptions, Marker
 from .label import DataLabel
+from ._3d import _3DBase, View3D
 
 from .area_chart import AreaChart, AreaChart3D
 from .bar_chart import BarChart, BarChart3D
@@ -58,65 +59,6 @@ from .title import Title
 from openpyxl.xml.functions import Element
 from openpyxl.worksheet.page import PageMargins, PrintPageSetup
 from openpyxl.worksheet.header_footer import HeaderFooter
-
-
-class Surface(Serialisable):
-
-    tagname = "surface"
-
-    thickness = NestedInteger(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
-    pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('thickness', 'spPr', 'pictureOptions',)
-
-    def __init__(self,
-                 thickness=None,
-                 spPr=None,
-                 pictureOptions=None,
-                 extLst=None,
-                ):
-        self.thickness = thickness
-        self.spPr = spPr
-        self.pictureOptions = pictureOptions
-
-
-class View3D(Serialisable):
-
-    tagname = "view3D"
-
-    rotX = NestedMinMax(min=-90, max=90, allow_none=True)
-    x_rotation = Alias('rotX')
-    hPercent = NestedMinMax(min=5, max=500, allow_none=True)
-    height_percent = Alias('hPercent')
-    rotY = NestedInteger(min=-90, max=90, allow_none=True)
-    y_rotation = Alias('rotY')
-    depthPercent = NestedInteger(allow_none=True)
-    rAngAx = NestedBool(allow_none=True)
-    right_angle_axes = Alias('rAngAx')
-    perspective = NestedInteger(allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('rotX', 'hPercent', 'rotY', 'depthPercent', 'rAngAx',
-                    'perspective',)
-
-    def __init__(self,
-                 rotX=None,
-                 hPercent=None,
-                 rotY=None,
-                 depthPercent=None,
-                 rAngAx=None,
-                 perspective=None,
-                 extLst=None,
-                ):
-        self.rotX = rotX
-        self.hPercent = hPercent
-        self.rotY = rotY
-        self.depthPercent = depthPercent
-        self.rAngAx = rAngAx
-        self.perspective = perspective
 
 
 class PivotFormat(Serialisable):
@@ -316,10 +258,10 @@ class ChartContainer(Serialisable):
     title = Typed(expected_type=Title, allow_none=True)
     autoTitleDeleted = NestedBool(allow_none=True)
     pivotFmts = Typed(expected_type=PivotFormats, allow_none=True)
-    view3D = Typed(expected_type=View3D, allow_none=True)
-    floor = Typed(expected_type=Surface, allow_none=True)
-    sideWall = Typed(expected_type=Surface, allow_none=True)
-    backWall = Typed(expected_type=Surface, allow_none=True)
+    view3D = _3DBase.view3D
+    floor = _3DBase.floor
+    sideWall = _3DBase.sideWall
+    backWall = _3DBase.backWall
     plotArea = Typed(expected_type=PlotArea, )
     legend = Typed(expected_type=Legend, allow_none=True)
     plotVisOnly = NestedBool(allow_none=True)

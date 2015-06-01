@@ -24,6 +24,7 @@ from .descriptors import (
     NestedOverlap,
 )
 from ._chart import ChartBase
+from ._3d import _3DBase
 from .axis import TextAxis, NumericAxis, SeriesAxis, ChartLines
 from .shapes import ShapeProperties
 from .series import Series
@@ -43,6 +44,8 @@ class _BarChartBase(ChartBase):
     dataLabels = Alias("dLbls")
 
     __elements__ = ('barDir', 'grouping', 'varyColors', 'ser', 'dLbls')
+
+    _series_type = "bar"
 
     def __init__(self,
                  barDir="col",
@@ -78,8 +81,6 @@ class BarChart(_BarChartBase):
     x_axis = Typed(expected_type=TextAxis)
     y_axis = Typed(expected_type=NumericAxis)
 
-    _series_type = "bar"
-
     __elements__ = _BarChartBase.__elements__ + ('gapWidth', 'overlap', 'serLines', 'axId')
 
     def __init__(self,
@@ -99,7 +100,7 @@ class BarChart(_BarChartBase):
         super(BarChart, self).__init__(**kw)
 
 
-class BarChart3D(_BarChartBase):
+class BarChart3D(_BarChartBase, _3DBase):
 
     tagname = "bar3DChart"
 
@@ -108,6 +109,11 @@ class BarChart3D(_BarChartBase):
     varyColors = _BarChartBase.varyColors
     ser = _BarChartBase.ser
     dLbls = _BarChartBase.dLbls
+
+    view3D = _3DBase.view3D
+    floor = _3DBase.floor
+    sideWall = _3DBase.sideWall
+    backWall = _3DBase.backWall
 
     gapWidth = NestedGapAmount()
     gapDepth = NestedGapAmount()

@@ -7,6 +7,7 @@ from openpyxl.descriptors import Typed, Integer, Alias
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
 
+from ._3d import _3DBase
 from .data_source import AxDataSource, NumRef
 from .legend import Legend
 from .reference import Reference
@@ -44,12 +45,13 @@ class ChartBase(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self):
+    def __init__(self, **kw):
         self._charts = [self]
         self.title = None
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
+        super(ChartBase, self).__init__(**kw)
 
     def __hash__(self):
         """
@@ -92,6 +94,11 @@ class ChartBase(Serialisable):
             ax.append(axis)
 
         container = ChartContainer(plotArea=plot, legend=self.legend, title=self.title)
+        if isinstance(chart, _3DBase):
+            container.view3D = chart.view3D
+            container.floor = chart.floor
+            container.sideWall = chart.sideWall
+            container.backWall = chart.backWall
         cs = ChartSpace(chart=container)
         cs.style = self.style
         tree = cs.to_tree()
