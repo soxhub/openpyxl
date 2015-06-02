@@ -8,18 +8,15 @@ from openpyxl.compat import zip
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Relationship, flatten
-from openpyxl.cell import Cell, coordinate_from_string
+from openpyxl.worksheet import flatten
+from openpyxl.cell import Cell
+from openpyxl.utils import coordinate_from_string
 from openpyxl.comments import Comment
 from openpyxl.utils.exceptions import (
-    CellCoordinatesException,
     SheetTitleException,
     InsufficientCoordinatesException,
     NamedRangeException
     )
-
-from openpyxl.styles.colors import Color
-from ..properties import WorksheetProperties
 
 
 class DummyWorkbook:

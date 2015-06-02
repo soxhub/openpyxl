@@ -4,11 +4,8 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.xml.functions import tostring, fromstring
-
-from openpyxl.styles.colors import Color
 from openpyxl.tests.helper import compare_xml
 
-from openpyxl.xml.functions import safe_iterator, tostring
 
 def test_ctor():
     from .. properties import WorksheetProperties, Outline

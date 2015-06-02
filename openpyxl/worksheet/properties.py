@@ -3,13 +3,10 @@ from __future__ import absolute_import
 
 """Worksheet Properties"""
 
-from openpyxl.compat import safe_string
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Bool, Typed
 from openpyxl.styles.colors import ColorDescriptor
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import Element
-from openpyxl.styles.colors import Color
 
 
 class Outline(Serialisable):

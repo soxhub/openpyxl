@@ -5,7 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import tostring
 from openpyxl.tests.helper import compare_xml
-from openpyxl import Workbook
+
 
 @pytest.fixture
 def PageMargins():
