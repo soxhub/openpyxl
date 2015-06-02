@@ -134,9 +134,17 @@ Using formulae
 >>> wb.save("formula.xlsx")
 
 .. warning::
-    NB function arguments *must* be separated by commas and not other
-    punctuation such as semi-colons
+    NB you must use the English name for a function and function arguments *must* be separated by commas and not other punctuation such as semi-colons.
 
+openpyxl never evaluates formula but it is possible to check the name of a formula:
+
+.. :: doctest
+
+>>> from openpyxl.utils import FORMULAE
+>>> "HEX2DEC" in FORMULAE
+True
+
+If you're trying to use a formula that isn't known this could be because you're using a formula that was not included in the initial specification. Such formulae must be prefixed with `xlfn.` to work.
 
 Merge / Unmerge cells
 ---------------------
