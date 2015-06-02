@@ -3,6 +3,8 @@
 # test imports
 import pytest
 
+from itertools import islice
+
 # compatibility imports
 from openpyxl.compat import zip
 
@@ -107,7 +109,22 @@ class TestWorksheet:
             assert tuple(c.coordinate for c in row) == coord
 
 
-    def test_iter_rows(self, Worksheet):
+    @pytest.mark.parametrize("row, column, coordinate",
+                             [
+                                 (1, 0, 'A1'),
+                                 (9, 2, 'C9'),
+                             ])
+    def test_iter_rows_1(self, Worksheet, row, column, coordinate):
+        ws = Worksheet(Workbook())
+        ws.cell('A1').value = 'first'
+        ws.cell('C9').value = 'last'
+        assert ws.calculate_dimension() == 'A1:C9'
+        rows = ws.iter_rows()
+        first_row = tuple(next(islice(rows, row - 1, row)))
+        assert first_row[column].coordinate == coordinate
+
+
+    def test_iter_rows_2(self, Worksheet):
         ws = Worksheet(Workbook())
         expected = [
             ('A1', 'B1', 'C1'),
@@ -297,22 +314,6 @@ class TestWorksheet:
         ws.append([cell])
 
         assert ws['A2'].value == 25
-
-
-    @pytest.mark.parametrize("row, column, coordinate",
-                             [
-                                 (1, 0, 'A1'),
-                                 (9, 2, 'C9'),
-                             ])
-    def test_iter_rows(self, Worksheet, row, column, coordinate):
-        from itertools import islice
-        ws = Worksheet(Workbook())
-        ws.cell('A1').value = 'first'
-        ws.cell('C9').value = 'last'
-        assert ws.calculate_dimension() == 'A1:C9'
-        rows = ws.iter_rows()
-        first_row = tuple(next(islice(rows, row - 1, row)))
-        assert first_row[column].coordinate == coordinate
 
 
     def test_rows(self, Worksheet):
