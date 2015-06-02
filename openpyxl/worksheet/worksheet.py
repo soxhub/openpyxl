@@ -357,21 +357,21 @@ class Worksheet(object):
             coordinate = coordinate_to_tuple(coordinate)
             row, column = coordinate
 
-        if coordinate not in self._cells:
-            cell = Cell(self, row=row, col_idx=column, value=value)
-            self._add_cell(cell)
+        cell = self._get_cell(row, column)
+        if value is not None:
+            cell.value = value
 
-        return self._cells[coordinate]
+        return cell
 
 
-    def _get_cell(self, coordinate):
+    def _get_cell(self, row, column):
         """
         Internal method for getting a cell from a worksheet.
         Will create a new cell if one doesn't already exist.
         """
-        coordinate = coordinate_to_tuple(coordinate)
+        coordinate = (row, column)
         if not coordinate in self._cells:
-            cell = Cell(self, row=coordinate[0], col_idx=coordinate[1])
+            cell = Cell(self, row=row, col_idx=column)
             self._add_cell(cell)
         return self._cells[coordinate]
 
@@ -392,7 +392,8 @@ class Worksheet(object):
             return self.iter_rows("{0}:{1}".format(key.start, key.stop))
         if ":" in key:
             return self.iter_rows(key)
-        return self._get_cell(key)
+        row, column = coordinate_to_tuple(key)
+        return self._get_cell(row, column)
 
     def __setitem__(self, key, value):
         self[key].value = value

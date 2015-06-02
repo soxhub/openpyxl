@@ -19,6 +19,7 @@ from openpyxl.utils import (
     coordinate_from_string,
     column_index_from_string,
     get_column_letter,
+    coordinate_to_tuple,
 )
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 
@@ -165,11 +166,9 @@ class ReadOnlyWorksheet(Worksheet):
                 yield EMPTY_CELL
 
 
-    def _get_cell(self, coordinate):
+    def _get_cell(self, row, column):
         """Cells are returned by a generator which can be empty"""
-        col, row = coordinate_from_string(coordinate)
-        col = column_index_from_string(col)
-        cell = tuple(self.get_squared_range(col, row, col, row))[0]
+        cell = tuple(self.get_squared_range(column, row, column, row))[0]
         if cell:
             return cell[0]
         return EMPTY_CELL

@@ -29,11 +29,22 @@ Bug fixes
 * `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
 
 
+2.2.4 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* ws.cell() returns an empty cell on read-only workbooks
+
+
 2.2.3 (2015-05-26)
 ==================
 
 
 Bug fixes
+---------
 
 * `#451 <https://bitbucket.org/openpyxl/openpyxl/issue/451>`_ fitToPage setting ignored
 * `#458 <https://bitbucket.org/openpyxl/openpyxl/issue/458>`_ Trailing spaces lost when saving files.
