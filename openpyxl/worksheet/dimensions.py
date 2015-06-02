@@ -2,8 +2,18 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 from openpyxl.compat import safe_string
-from openpyxl.cell import get_column_interval, column_index_from_string
-from openpyxl.descriptors import Integer, Float, Bool, Strict, String, Alias
+from openpyxl.utils import (
+    get_column_interval,
+    column_index_from_string,
+)
+from openpyxl.descriptors import (
+    Integer,
+    Float,
+    Bool,
+    Strict,
+    String,
+    Alias,
+)
 from openpyxl.styles.styleable import StyleableObject
 
 from openpyxl.utils.bound_dictionary import BoundDictionary

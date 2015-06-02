@@ -8,7 +8,7 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import Bool, NoneSet, Set, String
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.compat import OrderedDict, safe_string, deprecated, unicode
-from openpyxl.cell import coordinate_from_string
+from openpyxl.utils import coordinate_from_string
 from openpyxl.worksheet import rows_from_range
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import Element, safe_iterator, SubElement

@@ -3,8 +3,12 @@ from __future__ import absolute_import
 
 
 # Python stdlib imports
-from datetime import time, datetime, timedelta, date
-import decimal
+from datetime import (
+    time,
+    datetime,
+    timedelta,
+    date,
+)
 
 # 3rd party imports
 import pytest
@@ -12,7 +16,6 @@ import pytest
 # package imports
 
 from openpyxl.comments import Comment
-from openpyxl.utils import get_column_letter
 from openpyxl.cell.cell import ERROR_CODES
 
 
@@ -284,7 +287,6 @@ def test_remove_comment(dummy_cell):
 
 def test_cell_offset(dummy_cell):
     cell = dummy_cell
-    ws = cell.parent
     assert cell.offset(2, 1).coordinate == 'B3'
 
 

@@ -6,7 +6,10 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.compat import iteritems
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import Element, SubElement, tostring
-from openpyxl.cell import column_index_from_string, coordinate_from_string
+from openpyxl.utils import (
+    column_index_from_string,
+    coordinate_from_string,
+)
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"

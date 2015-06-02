@@ -9,7 +9,6 @@ from openpyxl.utils import get_column_letter
 from openpyxl.utils.datetime import from_excel
 from openpyxl.styles import is_date_format, Style
 from openpyxl.styles.numbers import BUILTIN_FORMATS
-from openpyxl.styles.styleable import StyleableObject
 
 
 class ReadOnlyCell(object):

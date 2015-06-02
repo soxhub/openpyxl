@@ -20,7 +20,6 @@ from openpyxl.compat import (
     basestring,
     bytes,
     NUMERIC_TYPES,
-    lru_cache,
     range,
     deprecated,
 )
@@ -35,18 +34,14 @@ from openpyxl.utils.datetime  import (
     from_excel
     )
 from openpyxl.utils.exceptions import (
-    CellCoordinatesException,
     IllegalCharacterError
 )
 from openpyxl.utils.units import points_to_pixels
 from openpyxl.utils import (
-    absolute_coordinate,
-    get_column_interval,
     get_column_letter,
     column_index_from_string,
-    coordinate_from_string,
 )
-from openpyxl.styles import numbers, is_date_format, Style
+from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
 
