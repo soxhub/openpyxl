@@ -134,9 +134,8 @@ class ReadOnlyWorksheet(Worksheet):
         col_counter = min_col
 
         for cell in safe_iterator(element, CELL_TAG):
-            coord = cell.get('r')
-            column_str, row = coordinate_from_string(coord)
-            column = column_index_from_string(column_str)
+            coordinate = cell.get('r')
+            row, column = coordinate_to_tuple(coordinate)
 
             if max_col is not None and column > max_col:
                 break
@@ -158,7 +157,7 @@ class ReadOnlyWorksheet(Worksheet):
                         data_type = 'f'
                         value = "=%s" % formula
 
-                yield ReadOnlyCell(self, row, column_str,
+                yield ReadOnlyCell(self, row, column,
                                    value, data_type, style_id)
             col_counter = column + 1
         if max_col is not None:
@@ -198,7 +197,7 @@ class ReadOnlyWorksheet(Worksheet):
         max_col = 0
         for r in self.rows:
             cell = r[-1]
-            max_col = max(max_col, column_index_from_string(cell.column))
+            max_col = max(max_col, cell.column)
 
         self.max_row = cell.row
         self.max_column = max_col

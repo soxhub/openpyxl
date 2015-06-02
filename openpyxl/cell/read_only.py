@@ -5,7 +5,8 @@ from __future__ import absolute_import
 from openpyxl.compat import unicode
 
 from openpyxl.cell import Cell
-from openpyxl.utils.datetime  import from_excel
+from openpyxl.utils import get_column_letter
+from openpyxl.utils.datetime import from_excel
 from openpyxl.styles import is_date_format, Style
 from openpyxl.styles.numbers import BUILTIN_FORMATS
 from openpyxl.styles.styleable import StyleableObject
@@ -45,7 +46,8 @@ class ReadOnlyCell(object):
     def coordinate(self):
         if self.row is None or self.column is None:
             raise AttributeError("Empty cells have no coordinates")
-        return "{1}{0}".format(self.row, self.column)
+        column = get_column_letter(self.column)
+        return "{1}{0}".format(self.row, column)
 
     @property
     def style_id(self):
