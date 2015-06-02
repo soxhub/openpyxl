@@ -8,6 +8,7 @@ Collection of utilities used within the package and also available for client co
 import datetime
 import re
 
+from .formulas import FORMULAE
 from openpyxl.compat import basestring
 from openpyxl.utils.exceptions import CellCoordinatesException
 
