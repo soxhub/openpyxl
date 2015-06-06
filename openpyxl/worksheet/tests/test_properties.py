@@ -32,9 +32,9 @@ def test_write_properties(SimpleTestProps):
     xml = tostring(SimpleTestProps.to_tree())
     expected = """
     <sheetPr filterMode="0">
+      <tabColor rgb="FF123456"/>
       <outlinePr summaryBelow="1" summaryRight="1"></outlinePr>
       <pageSetUpPr fitToPage="0" />
-      <tabColor rgb="FF123456"/>
     </sheetPr>"""
     diff = compare_xml(xml, expected)
     assert diff is None, diff

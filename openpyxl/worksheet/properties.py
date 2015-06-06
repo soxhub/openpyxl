@@ -63,6 +63,8 @@ class WorksheetProperties(Serialisable):
     outlinePr = Typed(expected_type=Outline, allow_none=True)
     pageSetUpPr = Typed(expected_type=PageSetupProperties, allow_none=True)
 
+    __elements__ = ('tabColor', 'outlinePr', 'pageSetUpPr')
+
 
     def __init__(self,
                  codeName=None,
