@@ -175,9 +175,8 @@ def write_drawing(worksheet):
     if worksheet._charts or worksheet._images:
         rel = Relationship(type="drawing", target="")
         worksheet._rels.append(rel)
-        rel.id = "rId%s" % len(worksheet._rels)
-        drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
-        return drawing
+        rel.id = str(len(worksheet._rels))
+        return rel.to_tree('drawing')
 
 
 def write_worksheet(worksheet, shared_strings):
