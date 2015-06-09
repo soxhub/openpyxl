@@ -63,6 +63,24 @@ def flatten(results):
         yield(c.value for c in row)
 
 
+def avoid_duplicate_name(names, value):
+    # check if sheet_name already exists
+    # do this *before* length check
+    if value in names:
+        names = ",".join(names)
+        sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value))
+        matches = sheet_title_regex.findall(names)
+        if matches:
+            # use name, but append with the next highest integer
+            counts = [int(idx) for (t, idx) in matches if idx.isdigit()]
+            if counts:
+                highest = max(counts)
+            else:
+                highest = 0
+            value = "%s%d" % (value, highest + 1)
+    return value
+
+
 class Worksheet(object):
     """Represents a worksheet.
 
@@ -209,6 +227,7 @@ class Worksheet(object):
         """Return the title for this sheet."""
         return self._title
 
+
     @title.setter
     def title(self, value):
         """Set a sheet title, ensuring it is valid.
@@ -216,33 +235,13 @@ class Worksheet(object):
         if self.bad_title_char_re.search(value):
             msg = 'Invalid character found in sheet title'
             raise SheetTitleException(msg)
-        value = self._unique_sheet_name(value)
+        sheets = self._parent.get_sheet_names()
+        value = avoid_duplicate_name(sheets, value)
         if len(value) > 31:
             msg = 'Maximum 31 characters allowed in sheet title'
             raise SheetTitleException(msg)
         self._title = value
 
-    @deprecated('this method is private and should not be called directly')
-    def unique_sheet_name(self, value):
-        return self._unique_sheet_name(value)
-
-    def _unique_sheet_name(self, value):
-        # check if sheet_name already exists
-        # do this *before* length check
-        sheets = self._parent.get_sheet_names()
-        if value in sheets:
-            sheets = ",".join(sheets)
-            sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d?),?" % re.escape(value))
-            matches = sheet_title_regex.findall(sheets)
-            if matches:
-                # use name, but append with the next highest integer
-                counts = [int(idx) for (t, idx) in matches if idx.isdigit()]
-                if counts:
-                    highest = max(counts)
-                else:
-                    highest = 0
-                value = "%s%d" % (value, highest + 1)
-        return value
 
     @property
     def auto_filter(self):
