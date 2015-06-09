@@ -65,11 +65,12 @@ class TestWorksheet:
         with pytest.raises(SheetTitleException):
             Worksheet(Workbook(), 'X' * 50)
 
-    def test_escapes_regex_chars_in_title(self, Worksheet):
+    def test_increment_title_with_regex_chars(self, Worksheet):
         wb = Workbook()
         ws1 = wb.create_sheet(title='Regex Test (')
         ws2 = wb.create_sheet(title='Regex Test (')
-        assert ws1.title != ws2.title
+        assert ws1.title == 'Regex Test ('
+        assert ws2.title == 'Regex Test (1'
 
     def test_increment_title(self, Worksheet):
         wb = Workbook()
