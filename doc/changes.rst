@@ -27,7 +27,7 @@ Bug fixes
 * `#99 <https://bitbucket.org/openpyxl/openpyxl/issue/99>`_ Quote worksheet names in chart references
 * `#150 <https://bitbucket.org/openpyxl/openpyxl/issue/150>`_ Support additional chart options
 * `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
-
+* `#470 <https://bitbucket.org/openpyxl/openpyxl/issue/470>`_ Adding more than 10 worksheets with the same name leads to duplicates sheet names and an invalid file
 
 2.2.4 (unreleased)
 ==================
