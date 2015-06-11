@@ -671,3 +671,14 @@ def test_write_comments(worksheet, write_worksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_write_drawing(worksheet):
+    from ..worksheet import write_drawing
+    worksheet._images = [1]
+    expected = """
+    <drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+    """
+    xml = tostring(write_drawing(worksheet))
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
