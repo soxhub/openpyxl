@@ -28,6 +28,7 @@ from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.related import Related
 
 from .etree_worksheet import write_cell
 
@@ -175,9 +176,9 @@ def write_drawing(worksheet):
     if worksheet._charts or worksheet._images:
         rel = Relationship(type="drawing", target="")
         worksheet._rels.append(rel)
-        rel.id = "rId%s" % len(worksheet._rels)
-        drawing = Element('drawing', {'{%s}id' % REL_NS: rel.id})
-        return drawing
+        drawing = Related()
+        drawing.id = "rId%s" % len(worksheet._rels)
+        return drawing.to_tree("drawing")
 
 
 def write_worksheet(worksheet, shared_strings):
