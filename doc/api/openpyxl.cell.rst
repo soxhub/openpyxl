@@ -12,7 +12,6 @@ Submodules
 .. toctree::
 
    openpyxl.cell.cell
-   openpyxl.cell.formula
    openpyxl.cell.interface
    openpyxl.cell.read_only
 

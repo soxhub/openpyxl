@@ -21,6 +21,7 @@ Submodules
    openpyxl.worksheet.properties
    openpyxl.worksheet.protection
    openpyxl.worksheet.read_only
+   openpyxl.worksheet.related
    openpyxl.worksheet.views
    openpyxl.worksheet.worksheet
 
