@@ -115,7 +115,7 @@ class ExcelWriter(object):
 
     def _write_worksheets(self, archive):
         comments_id = 0
-        vba_controls_id = 1
+        vba_controls_id = 0
 
         for i, sheet in enumerate(self.workbook.worksheets, 1):
             xml = sheet._write(self.workbook.shared_strings)
