@@ -34,7 +34,8 @@ def write_rels(worksheet, drawing_id=None, comments_id=None, vba_controls_id=Non
         rels.append(rel)
 
     for idx, rel in enumerate(rels, 1):
-        rel.id = "rId{0}".format(idx)
+        if rel.id is None:
+            rel.id = "rId{0}".format(idx)
         root.append(rel.to_tree())
 
     return root
