@@ -114,7 +114,7 @@ class ExcelWriter(object):
 
 
     def _write_worksheets(self, archive):
-        comments_id = 1
+        comments_id = 0
         vba_controls_id = 1
 
         for i, sheet in enumerate(self.workbook.worksheets, 1):
@@ -136,12 +136,12 @@ class ExcelWriter(object):
                         r.target = "/" + drawingpath
 
             if sheet._comment_count > 0:
+                comments_id += 1
                 cw = self.comment_writer(sheet)
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
                     cw.write_comments())
                 archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
                     cw.write_comments_vml())
-                comments_id += 1
 
             if sheet.vba_controls is not None:
                 vba_controls_id += 1
