@@ -12,7 +12,7 @@ from openpyxl.xml.constants import (
 from openpyxl.packaging.relationship import Relationship
 
 
-def write_rels(worksheet, drawing_id=None, comments_id=None, vba_controls_id=None):
+def write_rels(worksheet, comments_id=None, vba_controls_id=None):
     """Write relationships for the worksheet to xml."""
     root = Element('Relationships', xmlns=PKG_REL_NS)
     rels = worksheet._rels

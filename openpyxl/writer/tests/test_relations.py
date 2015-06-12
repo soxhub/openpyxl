@@ -61,6 +61,6 @@ class TestRels:
           <Relationship Id="rId1" Target="/drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
         </Relationships>
                 """
-        xml = tostring(writer(ws, 1, None, None))
+        xml = tostring(writer(ws))
         diff = compare_xml(xml, expected)
         assert diff is None, diff
