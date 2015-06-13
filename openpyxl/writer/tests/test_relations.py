@@ -31,8 +31,8 @@ class TestRels:
         ws._comment_count = 1
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-         <Relationship Id="comments" Target="/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
-          <Relationship Id="commentsvml" Target="/drawings/commentsDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+         <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
+          <Relationship Id="commentsvml" Target="/xl/drawings/commentsDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         </Relationships>
         """
         xml = tostring(writer(ws, comments_id=1))
@@ -45,7 +45,7 @@ class TestRels:
         ws.vba_controls = "vba"
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-          <Relationship Id="vba" Target="/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+          <Relationship Id="vba" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         </Relationships>
             """
         xml = tostring(writer(ws, vba_controls_id=1))
@@ -55,10 +55,10 @@ class TestRels:
 
     def test_implicit(self, writer):
         ws = Worksheet()
-        ws._rels = [Relationship(type="drawing", target="/drawings/drawing1.xml")]
+        ws._rels = [Relationship(type="drawing", target="/xl/drawings/drawing1.xml")]
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-          <Relationship Id="rId1" Target="/drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
+          <Relationship Id="rId1" Target="/xl/drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
         </Relationships>
                 """
         xml = tostring(writer(ws))

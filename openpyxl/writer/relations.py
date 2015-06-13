@@ -17,16 +17,16 @@ def write_rels(worksheet, comments_id=None, vba_controls_id=None):
     if worksheet._comment_count > 0:
 
         rel = Relationship(type="comments", id="comments",
-                           target='/comments%s.xml' % comments_id)
+                           target='/xl/comments%s.xml' % comments_id)
         rels.append(rel)
 
         rel = Relationship(type="vmlDrawing", id="commentsvml",
-                           target='/drawings/commentsDrawing%s.vml' % comments_id)
+                           target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
         rels.append(rel)
 
     if worksheet.vba_controls is not None:
         rel = Relationship("vmlDrawing", id=worksheet.vba_controls,
-                           target='/drawings/vmlDrawing%s.vml' % vba_controls_id)
+                           target='/xl/drawings/vmlDrawing%s.vml' % vba_controls_id)
         rels.append(rel)
 
     for idx, rel in enumerate(rels, 1):
