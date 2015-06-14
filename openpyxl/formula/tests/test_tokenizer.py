@@ -2,19 +2,15 @@ from __future__ import absolute_import
 
 import pytest
 
-from .. import tokenizer
+@pytest.fixture
+def Tokenizer():
+    from ..tokenizer import Tokenizer
+    return Tokenizer
 
-# Example formulae:
-#
-# =IF(A$3<$B37,"",INDEX(Pipeline!B$4:B$138,$A37))
-# ='Summary slices'!$C$3
-# =MAX(Pipeline!AA4:AA138)
-# Product
-# =TEXT(S7/1000,"$#,##0""M""")
-# =IF(A$3<$B7,"",IF(ISNA(K7),"N/A",TEXT(K7*10000,"0")&"bp"))
-# =IF(A$3<$B7,"",(MIN(IF(W7:AQ7,AW6:BQ6,$S7))>=$S7)*($BR6>$S7))
-# =(AW$4=$D7)+0
-# =IF($A$3<$B7,"",($E7=BK$4)+0)
+@pytest.fixture
+def Token():
+    from ..tokenizer import Token
+    return Token
 
 
 class TestTokenizerRegexes(object):
@@ -27,7 +23,7 @@ class TestTokenizerRegexes(object):
                 assert regex.match(string)
                 assert regex.match(string).group(0) == expected
 
-    def test_scientific_re(self):
+    def test_scientific_re(self, Tokenizer):
         positive = [
             '1.0E',
             '1.53321E',
@@ -41,13 +37,13 @@ class TestTokenizerRegexes(object):
             '',
             'E',
         ]
-        regex = tokenizer.Tokenizer.SN_RE
+        regex = Tokenizer.SN_RE
         for string in positive:
             assert bool(regex.match(string))
         for string in negative:
             assert not bool(regex.match(string))
 
-    def test_whitespace_re(self):
+    def test_whitespace_re(self, Tokenizer):
         cases = [
             (' ', ' '),
             (' *', ' '),
@@ -58,9 +54,9 @@ class TestTokenizerRegexes(object):
             ('', None),
             ('*', None),
         ]
-        self.check_regex(tokenizer.Tokenizer.WSPACE_RE, cases)
+        self.check_regex(Tokenizer.WSPACE_RE, cases)
 
-    def test_string_re(self):
+    def test_string_re(self, Tokenizer):
         cases = [
             ('"spamspamspam"', '"spamspamspam"'),
             ('"this is "" a test "" "', '"this is "" a test "" "'),
@@ -69,10 +65,10 @@ class TestTokenizerRegexes(object):
             ('\'"spam and ""cheese"""+"ignore"', None),
             ('"oops ""', None),
         ]
-        regex = tokenizer.Tokenizer.STRING_REGEXES['"']
+        regex = Tokenizer.STRING_REGEXES['"']
         self.check_regex(regex, cases)
 
-    def test_link_re(self):
+    def test_link_re(self, Tokenizer):
         cases = [
             ("'spam and ham'", "'spam and ham'"),
             ("'double'' triple''' quadruple ''''", "'double'' triple'''"),
@@ -82,20 +78,19 @@ class TestTokenizerRegexes(object):
             ("'oops ''", None),
             ("gunk'hello world'", None),
         ]
-        regex = tokenizer.Tokenizer.STRING_REGEXES["'"]
+        regex = Tokenizer.STRING_REGEXES["'"]
         self.check_regex(regex, cases)
 
 
 class TestTokenizer(object):
 
-    def test_init(self):
-        tok = tokenizer.Tokenizer("abcdefg")
+    def test_init(self, Tokenizer):
+        tok = Tokenizer("abcdefg")
         assert tok.offset == 0
-        tok = tokenizer.Tokenizer("=abcdefg")
+        tok = Tokenizer("=abcdefg")
         assert tok.offset == 0
 
-    def test_parse(self):
-        Token = tokenizer.Token # to save on typing
+    def test_parse(self, Tokenizer, Token):
         cases = [
             (u'=IF(A$3<40%,"",INDEX(Pipeline!B$4:B$138,#REF!))',
              [(u'IF(', Token.FUNC, Token.OPEN),
@@ -219,13 +214,13 @@ class TestTokenizer(object):
             (u"", []),
         ]
         for formula, tokens in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.parse()
             result = [(token.value, token.type, token.subtype)
                       for token in tok.items]
             assert result == tokens
 
-    def test_parse_string(self):
+    def test_parse_string(self, Tokenizer, Token):
         cases = [
             (u'"spamspamspam"spam', 0, u'"spamspamspam"'),
             (u'"this is "" a test "" "test', 0, u'"this is "" a test "" "'),
@@ -239,20 +234,20 @@ class TestTokenizer(object):
             (u"''", 0, u"''"),
             (u"'oops ''", 0, None),
         ]
-        tok = tokenizer.Tokenizer(u'')
+        tok = Tokenizer(u'')
         for formula, offset, result in cases:
             tok.offset = offset
             tok.formula = formula
             if result is None:
-                with pytest.raises(tokenizer.TokenizerError):
+                with pytest.raises(TokenizerError):
                     tok.parse_string()
                 continue
             assert tok.parse_string() == len(result)
             if formula[offset] == '"':
                 token = tok.items[0]
                 assert token.value == result
-                assert token.type == tokenizer.Token.OPERAND
-                assert token.subtype == tokenizer.Token.TEXT
+                assert token.type == Token.OPERAND
+                assert token.subtype == Token.TEXT
                 assert not tok.token
             else:
                 assert not tok.items
@@ -260,7 +255,7 @@ class TestTokenizer(object):
                 assert len(tok.token) == 1
             del tok.items[:], tok.token[:], tok.token_stack[:]
 
-    def test_parse_brackets(self):
+    def test_parse_brackets(self, Tokenizer):
         cases = [
             ('[abc]def', 0, '[abc]'),
             ('[]abcdef', 0, '[]'),
@@ -268,7 +263,7 @@ class TestTokenizer(object):
             ('a[bcd]ef', 1, '[bcd]'),
             ('ab[cde]f', 2, '[cde]'),
         ]
-        tok = tokenizer.Tokenizer('')
+        tok = Tokenizer('')
         for formula, offset, result in cases:
             tok.offset = offset
             tok.formula = formula
@@ -277,41 +272,40 @@ class TestTokenizer(object):
             assert tok.token[0] == result
             assert len(tok.token) == 1
             del tok.items[:], tok.token[:], tok.token_stack[:]
-        with pytest.raises(tokenizer.TokenizerError):
+        with pytest.raises(TokenizerError):
             tok.formula = '[unfinished business'
             tok.offset = 0
             tok.parse_brackets()
 
-    def test_parse_error(self):
+    def test_parse_error(self, Tokenizer, Token):
         errors = (u"#NULL!", u"#DIV/0!", u"#VALUE!", u"#REF!", u"#NAME?",
                   u"#NUM!", u"#N/A")
         for error in errors:
-            tok = tokenizer.Tokenizer(error)
+            tok = Tokenizer(error)
             assert tok.parse_error() == len(error)
             assert len(tok.items) == 1
             assert not tok.token
             token = tok.items[0]
             assert token.value == error
-            assert token.type == tokenizer.Token.OPERAND
-            assert token.subtype == tokenizer.Token.ERROR
+            assert token.type == Token.OPERAND
+            assert token.subtype == Token.ERROR
 
-        with pytest.raises(tokenizer.TokenizerError):
-            tok = tokenizer.Tokenizer(u"#NotAnError")
+        with pytest.raises(TokenizerError):
+            tok = Tokenizer(u"#NotAnError")
             tok.parse_error()
 
-    def test_parse_whitespace(self):
+    def test_parse_whitespace(self, Tokenizer, Token):
         for i in range(1, 10):
-            tok = tokenizer.Tokenizer(u" " * i)
+            tok = Tokenizer(u" " * i)
             assert tok.parse_whitespace() == i
             assert len(tok.items) == 1
             token = tok.items[0]
             assert token.value == u" "
-            assert token.type == tokenizer.Token.WSPACE
+            assert token.type == Token.WSPACE
             assert token.subtype == u""
             assert not tok.token
 
-    def test_parse_operator(self):
-        Token = tokenizer.Token
+    def test_parse_operator(self, Tokenizer, Token):
         cases = [
             (u'>=', u'>=', Token.OP_IN),
             (u'<=', u'<=', Token.OP_IN),
@@ -332,7 +326,7 @@ class TestTokenizer(object):
             (u'>>', u'>', Token.OP_IN),
         ]
         for formula, result, type_ in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             assert tok.parse_operator() == len(result)
             assert len(tok.items) == 1
             assert not tok.token
@@ -341,15 +335,14 @@ class TestTokenizer(object):
             assert token.type == type_
             assert token.subtype == u''
 
-    def test_parse_opener(self):
-        Token = tokenizer.Token
+    def test_parse_opener(self, Tokenizer, Token):
         cases = [
             (u'name', u'(', Token.FUNC),
             (u'', u'(', Token.PAREN),
             (u'', u'{', Token.ARRAY),
         ]
         for prefix, char, type_ in cases:
-            tok = tokenizer.Tokenizer(prefix + char)
+            tok = Tokenizer(prefix + char)
             tok.offset = len(prefix)
             if prefix:
                 tok.token.append(prefix)
@@ -362,14 +355,13 @@ class TestTokenizer(object):
             assert token.subtype == Token.OPEN
             assert len(tok.token_stack) == 1
             assert tok.token_stack[0] is token
-        with pytest.raises(tokenizer.TokenizerError):
-            tok = tokenizer.Tokenizer('name{')
+        with pytest.raises(TokenizerError):
+            tok = Tokenizer('name{')
             tok.offset = 4
             tok.token.append('name')
             tok.parse_opener()
 
-    def test_parse_closer(self):
-        Token = tokenizer.Token
+    def test_parse_closer(self, Tokenizer, Token):
         cases = [
             #  formula offset top of token_stack
             (u'func(a)', 6, Token('func(', Token.FUNC, Token.OPEN)),
@@ -377,7 +369,7 @@ class TestTokenizer(object):
             (u'{a,b,c}', 6, Token('{', Token.ARRAY, Token.OPEN)),
         ]
         for formula, offset, opener in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.offset = offset
             tok.token_stack.append(opener)
             assert tok.parse_closer() == 1
@@ -392,14 +384,13 @@ class TestTokenizer(object):
             (u'{a,b,c)', 6, Token('{', Token.ARRAY, Token.OPEN)),
         ]
         for formula, offset, opener in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.offset = offset
             tok.token_stack.append(opener)
-            with pytest.raises(tokenizer.TokenizerError):
+            with pytest.raises(TokenizerError):
                 tok.parse_closer()
 
-    def test_parse_separator(self):
-        Token = tokenizer.Token
+    def test_parse_separator(self, Tokenizer, Token):
         cases = [
             (u"{a;b}", 2, Token('{', Token.ARRAY, Token.OPEN),
              Token.SEP, Token.ROW),
@@ -412,7 +403,7 @@ class TestTokenizer(object):
             (u"$A$15:$B$20,$A$1:$B$5", 11, None, Token.OP_IN, u"")
         ]
         for formula, offset, opener, type_, subtype in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.offset = offset
             if opener:
                 tok.token_stack.append(opener)
@@ -423,7 +414,7 @@ class TestTokenizer(object):
             assert token.type == type_
             assert token.subtype == subtype
 
-    def test_check_scientific_notation(self):
+    def test_check_scientific_notation(self, Tokenizer):
         cases = [
             # formula offset  token-pre         retval
             (u'1.0E-5', 4, ['1', '.', '0', 'E'], True),
@@ -438,7 +429,7 @@ class TestTokenizer(object):
             (u'+', 0, [], False),
         ]
         for formula, offset, token, ret in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.offset = offset
             tok.token[:] = token
             assert ret is tok.check_scientific_notation()
@@ -450,19 +441,19 @@ class TestTokenizer(object):
                 assert offset == tok.offset
                 assert token == tok.token
 
-    def test_assert_empty_token(self):
-        tok = tokenizer.Tokenizer(u"")
+    def test_assert_empty_token(self, Tokenizer):
+        tok = Tokenizer(u"")
         try:
             tok.assert_empty_token()
-        except tokenizer.TokenizerError:
+        except TokenizerError:
             pytest.fail(
                 u"assert_empty_token raised TokenizerError incorrectly")
         tok.token.append(u"test")
-        with pytest.raises(tokenizer.TokenizerError):
+        with pytest.raises(TokenizerError):
             tok.assert_empty_token()
 
-    def test_save_token(self):
-        tok = tokenizer.Tokenizer(u"")
+    def test_save_token(self, Tokenizer, Token):
+        tok = Tokenizer(u"")
         tok.save_token()
         assert not tok.items
         tok.token.append(u"test")
@@ -470,9 +461,9 @@ class TestTokenizer(object):
         assert len(tok.items) == 1
         token = tok.items[0]
         assert token.value == u"test"
-        assert token.type == tokenizer.Token.OPERAND
+        assert token.type == Token.OPERAND
 
-    def test_render(self):
+    def test_render(self, Tokenizer):
         cases = [
             u'=IF(A$3<40%,"",INDEX(Pipeline!B$4:B$138,#REF!))',
             u"='Summary slices'!$C$3",
@@ -489,18 +480,17 @@ class TestTokenizer(object):
             u"",
         ]
         for formula in cases:
-            tok = tokenizer.Tokenizer(formula)
+            tok = Tokenizer(formula)
             tok.parse()
             assert tok.render() == formula
 
 
 class TestToken(object):
 
-    def test_init(self):
-        tokenizer.Token(u'val', u'type', u'subtype')
+    def test_init(self, Token):
+        Token(u'val', u'type', u'subtype')
 
-    def test_make_operand(self):
-        Token = tokenizer.Token
+    def test_make_operand(self, Token):
         cases = [
             (u'"text"', Token.TEXT),
             (u'#REF!', Token.ERROR),
@@ -524,8 +514,7 @@ class TestToken(object):
             assert tok.type == Token.OPERAND
             assert tok.subtype == subtype
 
-    def test_make_subexp(self):
-        Token = tokenizer.Token
+    def test_make_subexp(self, Token):
         cases = [
             (u'{', Token.ARRAY, Token.OPEN),
             (u'}', Token.ARRAY, Token.CLOSE),
@@ -549,8 +538,7 @@ class TestToken(object):
         assert tok.type == Token.FUNC
         assert tok.subtype == Token.OPEN
 
-    def test_get_closer(self):
-        Token = tokenizer.Token
+    def test_get_closer(self, Token):
         cases = [
             (Token(u'(', Token.PAREN, Token.OPEN), u')'),
             (Token(u'{', Token.ARRAY, Token.OPEN), u'}'),
@@ -562,13 +550,13 @@ class TestToken(object):
             assert closer.type == token.type
             assert closer.subtype == Token.CLOSE
 
-    def test_make_separator(self):
-        token = tokenizer.Token.make_separator(u',')
+    def test_make_separator(self, Token):
+        token = Token.make_separator(u',')
         assert token.value == u','
-        assert token.type == tokenizer.Token.SEP
-        assert token.subtype == tokenizer.Token.ARG
+        assert token.type == Token.SEP
+        assert token.subtype == Token.ARG
 
-        token = tokenizer.Token.make_separator(u';')
+        token = Token.make_separator(u';')
         assert token.value == u';'
-        assert token.type == tokenizer.Token.SEP
-        assert token.subtype == tokenizer.Token.ROW
+        assert token.type == Token.SEP
+        assert token.subtype == Token.ROW
