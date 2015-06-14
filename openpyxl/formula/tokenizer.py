@@ -343,14 +343,6 @@ class Token(object):
         self.type = type_
         self.subtype = subtype
 
-    def __repr__(self):  # pragma: no cover
-        if self.subtype:
-            subtype = ", subtype=%s" % self.subtype
-        else:
-            subtype = ""
-        return "<%s: value=%s, type=%s%s>" % (
-            self.__class__.__name__, self.value, self.type, subtype)
-
     # Literal operands:
     #
     # Literal operands are always of type 'OPERAND' and can be of subtype
