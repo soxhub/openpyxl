@@ -1,4 +1,4 @@
-u"""
+"""
 This module contains a tokenizer for Excel formulae.
 
 The tokenizer is based on the Javascript tokenizer found at
@@ -12,12 +12,12 @@ import re
 
 
 class TokenizerError(Exception):
-    u"Base class for all Tokenizer errors."
+    "Base class for all Tokenizer errors."
 
 
 class Tokenizer(object):
 
-    u"""
+    """
     A tokenizer for Excel worksheet formulae.
 
     Converts a unicode string representing an Excel formula (in A1 notation)
@@ -30,19 +30,19 @@ class Tokenizer(object):
 
     """
 
-    SN_RE = re.compile(u"^[1-9](\\.[0-9]+)?E$")  # Scientific notation
-    WSPACE_RE = re.compile(u" +")
+    SN_RE = re.compile("^[1-9](\\.[0-9]+)?E$")  # Scientific notation
+    WSPACE_RE = re.compile(" +")
     STRING_REGEXES = {
         # Inside a string, all characters are treated as literals, except for
         # the quote character used to start the string. That character, when
         # doubled is treated as a single character in the string. If an
         # unmatched quote appears, the string is terminated.
-        u'"': re.compile(u'"(?:[^"]*"")*[^"]*"(?!")'),
-        u"'": re.compile(u"'(?:[^']*'')*[^']*'(?!')"),
+        '"': re.compile('"(?:[^"]*"")*[^"]*"(?!")'),
+        "'": re.compile("'(?:[^']*'')*[^']*'(?!')"),
     }
-    ERROR_CODES = (u"#NULL!", u"#DIV/0!", u"#VALUE!", u"#REF!", u"#NAME?",
-                   u"#NUM!", u"#N/A")
-    TOKEN_ENDERS = u',;}) +-*/^&=><%'  # Each of these characters, marks the
+    ERROR_CODES = ("#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?",
+                   "#NUM!", "#N/A")
+    TOKEN_ENDERS = ',;}) +-*/^&=><%'  # Each of these characters, marks the
                                        # end of an operand token
 
     def __init__(self, formula):
@@ -54,7 +54,7 @@ class Tokenizer(object):
         self.token = []  # Used to build up token values char by char
 
     def parse(self):
-        u"Populate self.items with the tokens from the formula."
+        "Populate self.items with the tokens from the formula."
         if not self.formula:
             return
         elif self.formula[0] == '=':
@@ -63,14 +63,14 @@ class Tokenizer(object):
             self.items.append(Token(self.formula, Token.LITERAL))
             return
         consumers = (
-            (u'"\'', self.parse_string),
-            (u'[', self.parse_brackets),
-            (u'#', self.parse_error),
-            (u' ', self.parse_whitespace),
-            (u'+-*/^&=><%', self.parse_operator),
-            (u'{(', self.parse_opener),
-            (u')}', self.parse_closer),
-            (u';,', self.parse_separator),
+            ('"\'', self.parse_string),
+            ('[', self.parse_brackets),
+            ('#', self.parse_error),
+            (' ', self.parse_whitespace),
+            ('+-*/^&=><%', self.parse_operator),
+            ('{(', self.parse_opener),
+            (')}', self.parse_closer),
+            (';,', self.parse_separator),
         )
         dispatcher = {}  # maps chars to the specific parsing function
         for chars, consumer in consumers:
@@ -91,7 +91,7 @@ class Tokenizer(object):
         self.save_token()
 
     def parse_string(self):
-        u"""
+        """
         Parse a "-delimited string or '-delimited link.
 
         The offset must be pointing to either a single quote ("'") or double
@@ -105,31 +105,31 @@ class Tokenizer(object):
         """
         self.assert_empty_token()
         delim = self.formula[self.offset]
-        assert delim in (u'"', u"'")
+        assert delim in ('"', "'")
         regex = self.STRING_REGEXES[delim]
         match = regex.match(self.formula[self.offset:])
         if match is None:
-            subtype = u"string" if delim == u'"' else u'link'
+            subtype = "string" if delim == '"' else 'link'
             raise TokenizerError(
-                u"Reached end of formula while parsing %s in %s" %
+                "Reached end of formula while parsing %s in %s" %
                 (subtype, self.formula))
         match = match.group(0)
-        if delim == u'"':
+        if delim == '"':
             self.items.append(Token.make_operand(match))
         else:
             self.token.append(match)
         return len(match)
 
     def parse_brackets(self):
-        u"""
+        """
         Consume all the text between square brackets [].
 
         Returns the number of characters matched. (Does not update
         self.offset)
 
         """
-        assert self.formula[self.offset] == u'['
-        right = self.formula.find(u']', self.offset) + 1
+        assert self.formula[self.offset] == '['
+        right = self.formula.find(']', self.offset) + 1
         if right == 0:
             raise TokenizerError(
                 "Encountered unmatched '[' in %s" % self.formula)
@@ -137,7 +137,7 @@ class Tokenizer(object):
         return right - self.offset
 
     def parse_error(self):
-        u"""
+        """
         Consume the text following a '#' as an error.
 
         Looks for a match in self.ERROR_CODES and returns the number of
@@ -145,46 +145,46 @@ class Tokenizer(object):
 
         """
         self.assert_empty_token()
-        assert self.formula[self.offset] == u'#'
+        assert self.formula[self.offset] == '#'
         subformula = self.formula[self.offset:]
         for err in self.ERROR_CODES:
             if subformula.startswith(err):
                 self.items.append(Token.make_operand(err))
                 return len(err)
         raise TokenizerError(
-            u"Invalid error code at position %d in '%s'" %
+            "Invalid error code at position %d in '%s'" %
             (self.offset, self.formula))
 
     def parse_whitespace(self):
-        u"""
+        """
         Consume a string of consecutive spaces.
 
         Returns the number of spaces found. (Does not update self.offset).
 
         """
-        assert self.formula[self.offset] == u' '
-        self.items.append(Token(u' ', Token.WSPACE))
+        assert self.formula[self.offset] == ' '
+        self.items.append(Token(' ', Token.WSPACE))
         return self.WSPACE_RE.match(self.formula[self.offset:]).end()
 
     def parse_operator(self):
-        u"""
+        """
         Consume the characters constituting an operator.
 
         Returns the number of charactes consumed. (Does not update
         self.offset)
 
         """
-        if self.formula[self.offset:self.offset + 2] in (u'>=', u'<=', u'<>'):
+        if self.formula[self.offset:self.offset + 2] in ('>=', '<=', '<>'):
             self.items.append(Token(
                 self.formula[self.offset:self.offset + 2],
                 Token.OP_IN
             ))
             return 2
         curr_char = self.formula[self.offset]  # guaranteed to be 1 char
-        assert curr_char in u'%*/^&=><+-'
-        if curr_char == u'%':
-            token = Token(u'%', Token.OP_POST)
-        elif curr_char in u"*/^&=><":
+        assert curr_char in '%*/^&=><+-'
+        if curr_char == '%':
+            token = Token('%', Token.OP_POST)
+        elif curr_char in "*/^&=><":
             token = Token(curr_char, Token.OP_IN)
         # From here on, curr_char is guaranteed to be in '+-'
         elif not self.items:
@@ -204,45 +204,45 @@ class Tokenizer(object):
         return 1
 
     def parse_opener(self):
-        u"""
+        """
         Consumes a ( or { character.
 
         Returns the number of charactes consumed. (Does not update
         self.offset)
 
         """
-        assert self.formula[self.offset] in (u'(', u'{')
-        if self.formula[self.offset] == u'{':
+        assert self.formula[self.offset] in ('(', '{')
+        if self.formula[self.offset] == '{':
             self.assert_empty_token()
-            token = Token.make_subexp(u"{")
+            token = Token.make_subexp("{")
         elif self.token:
-            token_value = u"".join(self.token) + u'('
+            token_value = "".join(self.token) + '('
             del self.token[:]
             token = Token.make_subexp(token_value)
         else:
-            token = Token.make_subexp(u"(")
+            token = Token.make_subexp("(")
         self.items.append(token)
         self.token_stack.append(token)
         return 1
 
     def parse_closer(self):
-        u"""
+        """
         Consumes a } or ) character.
 
         Returns the number of charactes consumed. (Does not update
         self.offset)
 
         """
-        assert self.formula[self.offset] in (u')', u'}')
+        assert self.formula[self.offset] in (')', '}')
         token = self.token_stack.pop().get_closer()
         if token.value != self.formula[self.offset]:
             raise TokenizerError(
-                u"Mismatched ( and { pair in '%s'" % self.formula)
+                "Mismatched ( and { pair in '%s'" % self.formula)
         self.items.append(token)
         return 1
 
     def parse_separator(self):
-        u"""
+        """
         Consumes a ; or , character.
 
         Returns the number of charactes consumed. (Does not update
@@ -250,19 +250,19 @@ class Tokenizer(object):
 
         """
         curr_char = self.formula[self.offset]
-        assert curr_char in (u';', u',')
-        if curr_char == u';':
-            token = Token.make_separator(u";")
+        assert curr_char in (';', ',')
+        if curr_char == ';':
+            token = Token.make_separator(";")
         else:
             try:
                 top_type = self.token_stack[-1].type
             except IndexError:
-                token = Token(u",", Token.OP_IN)  # Range Union operator
+                token = Token(",", Token.OP_IN)  # Range Union operator
             else:
                 if top_type == Token.PAREN:
-                    token = Token(u",", Token.OP_IN)  # Range Union operator
+                    token = Token(",", Token.OP_IN)  # Range Union operator
                 else:
-                    token = Token.make_separator(u",")
+                    token = Token.make_separator(",")
         self.items.append(token)
         return 1
 
@@ -275,9 +275,9 @@ class Tokenizer(object):
 
         """
         curr_char = self.formula[self.offset]
-        if (curr_char in u'+-'
+        if (curr_char in '+-'
                 and len(self.token) >= 1
-                and self.SN_RE.match(u"".join(self.token))):
+                and self.SN_RE.match("".join(self.token))):
             self.token.append(curr_char)
             self.offset += 1
             return True
@@ -293,27 +293,27 @@ class Tokenizer(object):
         """
         if self.token:
             raise TokenizerError(
-                u"Unexpected character at position %d in '%s'" %
+                "Unexpected character at position %d in '%s'" %
                 (self.offset, self.formula))
 
     def save_token(self):
-        u"""If there's a token being parsed, add it to the item list."""
+        """If there's a token being parsed, add it to the item list."""
         if self.token:
-            self.items.append(Token.make_operand(u"".join(self.token)))
+            self.items.append(Token.make_operand("".join(self.token)))
             del self.token[:]
 
     def render(self):
-        u"Convert the parsed tokens back to a string."
+        "Convert the parsed tokens back to a string."
         if not self.items:
-            return u""
+            return ""
         elif self.items[0].type == Token.LITERAL:
             return self.items[0].value
-        return u"=" + u"".join(token.value for token in self.items)
+        return "=" + "".join(token.value for token in self.items)
 
 
 class Token(object):
 
-    u"""
+    """
     A token in an Excel formula.
 
     Tokens have three attributes:
@@ -321,24 +321,24 @@ class Token(object):
     * `value`: The string value parsed that led to this token
     * `type`: A string identifying the type of token
     * `subtype`: A string identifying subtype of the token (optional, and
-                 defaults to u"")
+                 defaults to "")
 
     """
 
     __slots__ = ['value', 'type', 'subtype']
 
-    LITERAL = u"LITERAL"
-    OPERAND = u"OPERAND"
-    FUNC = u"FUNC"
-    ARRAY = u"ARRAY"
-    PAREN = u"PAREN"
-    SEP = u"SEP"
-    OP_PRE = u"OPERATOR-PREFIX"
-    OP_IN = u"OPERATOR-INFIX"
-    OP_POST = u"OPERATOR-POSTFIX"
-    WSPACE = u"WHITE-SPACE"
+    LITERAL = "LITERAL"
+    OPERAND = "OPERAND"
+    FUNC = "FUNC"
+    ARRAY = "ARRAY"
+    PAREN = "PAREN"
+    SEP = "SEP"
+    OP_PRE = "OPERATOR-PREFIX"
+    OP_IN = "OPERATOR-INFIX"
+    OP_POST = "OPERATOR-POSTFIX"
+    WSPACE = "WHITE-SPACE"
 
-    def __init__(self, value, type_, subtype=u""):
+    def __init__(self, value, type_, subtype=""):
         self.value = value
         self.type = type_
         self.subtype = subtype
@@ -350,20 +350,20 @@ class Token(object):
     # (for TRUE and FALSE), 'ERROR' (for literal error values), or 'RANGE'
     # (for all range references).
 
-    TEXT = u'TEXT'
-    NUMBER = u'NUMBER'
-    LOGICAL = u'LOGICAL'
-    ERROR = u'ERROR'
-    RANGE = u'RANGE'
+    TEXT = 'TEXT'
+    NUMBER = 'NUMBER'
+    LOGICAL = 'LOGICAL'
+    ERROR = 'ERROR'
+    RANGE = 'RANGE'
 
     @classmethod
     def make_operand(cls, value):
-        u"Create an operand token."
+        "Create an operand token."
         if value.startswith('"'):
             subtype = cls.TEXT
         elif value.startswith('#'):
             subtype = cls.ERROR
-        elif value in (u'TRUE', u'FALSE'):
+        elif value in ('TRUE', 'FALSE'):
             subtype = cls.LOGICAL
         else:
             try:
@@ -382,8 +382,8 @@ class Token(object):
     # and 'CLOSE' is used when parsing the closing expression token ('}' or
     # ')').
 
-    OPEN = u"OPEN"
-    CLOSE = u"CLOSE"
+    OPEN = "OPEN"
+    CLOSE = "CLOSE"
 
     @classmethod
     def make_subexp(cls, value, func=False):
@@ -394,21 +394,21 @@ class Token(object):
         `func`: If True, force the token to be of type FUNC
 
         """
-        assert value[-1] in (u'{', u'}', u'(', u')')
+        assert value[-1] in ('{', '}', '(', ')')
         if func:
-            assert re.match(u'.+\\(|\\)', value)
+            assert re.match('.+\\(|\\)', value)
             type_ = Token.FUNC
-        elif value in u'{}':
+        elif value in '{}':
             type_ = Token.ARRAY
-        elif value in u'()':
+        elif value in '()':
             type_ = Token.PAREN
         else:
             type_ = Token.FUNC
-        subtype = cls.CLOSE if value in u')}' else cls.OPEN
+        subtype = cls.CLOSE if value in ')}' else cls.OPEN
         return cls(value, type_, subtype)
 
     def get_closer(self):
-        u"Return a closing token that matches this token's type."
+        "Return a closing token that matches this token's type."
         assert self.type in (self.FUNC, self.ARRAY, self.PAREN)
         assert self.subtype == self.OPEN
         value = "}" if self.type == self.ARRAY else ")"
@@ -422,12 +422,12 @@ class Token(object):
     # the ';' token, which is always used to delimit rows in an array
     # literal.
 
-    ARG = u"ARG"
-    ROW = u"ROW"
+    ARG = "ARG"
+    ROW = "ROW"
 
     @classmethod
     def make_separator(cls, value):
-        u"Create a separator token"
-        assert value in (u',', u';')
-        subtype = cls.ARG if value == u',' else cls.ROW
+        "Create a separator token"
+        assert value in (',', ';')
+        subtype = cls.ARG if value == ',' else cls.ROW
         return cls(value, cls.SEP, subtype)
