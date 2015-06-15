@@ -3,9 +3,7 @@ This module contains a tokenizer for Excel formulae.
 
 The tokenizer is based on the Javascript tokenizer found at
 http://ewbi.blogs.com/develops/2004/12/excel_formula_p.html written by Eric
-Bachtal (ewbachtal -AT- ewbi -DOT- com), who provided the software AS IS,
-without warranty of any kind.
-
+Bachtal
 """
 
 import re
