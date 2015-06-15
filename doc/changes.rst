@@ -9,6 +9,7 @@ Major changes
 * New implementation of conditional formatting. Databars now partially preserved.
 * et_xmlfile is now a standalone library.
 * Complete rewrite of chart package
+* Include a tokenizer for fomulae to be able to adjust cell references in them. PR 63
 
 
 Minor changes
@@ -28,6 +29,7 @@ Bug fixes
 * `#150 <https://bitbucket.org/openpyxl/openpyxl/issue/150>`_ Support additional chart options
 * `#172 <https://bitbucket.org/openpyxl/openpyxl/issue/172>`_ Support surface charts
 * `#470 <https://bitbucket.org/openpyxl/openpyxl/issue/470>`_ Adding more than 10 worksheets with the same name leads to duplicates sheet names and an invalid file
+
 
 2.2.4 (unreleased)
 ==================
