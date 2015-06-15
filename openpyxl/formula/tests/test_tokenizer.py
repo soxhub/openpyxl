@@ -12,6 +12,11 @@ def Token():
     from ..tokenizer import Token
     return Token
 
+@pytest.fixture
+def TokenizerError():
+    from ..tokenizer import TokenizerError
+    return TokenizerError
+
 
 class TestTokenizerRegexes(object):
 
@@ -220,7 +225,7 @@ class TestTokenizer(object):
                       for token in tok.items]
             assert result == tokens
 
-    def test_parse_string(self, Tokenizer, Token):
+    def test_parse_string(self, Tokenizer, Token, TokenizerError):
         cases = [
             (u'"spamspamspam"spam', 0, u'"spamspamspam"'),
             (u'"this is "" a test "" "test', 0, u'"this is "" a test "" "'),
@@ -255,7 +260,7 @@ class TestTokenizer(object):
                 assert len(tok.token) == 1
             del tok.items[:], tok.token[:], tok.token_stack[:]
 
-    def test_parse_brackets(self, Tokenizer):
+    def test_parse_brackets(self, Tokenizer, TokenizerError):
         cases = [
             ('[abc]def', 0, '[abc]'),
             ('[]abcdef', 0, '[]'),
@@ -277,7 +282,7 @@ class TestTokenizer(object):
             tok.offset = 0
             tok.parse_brackets()
 
-    def test_parse_error(self, Tokenizer, Token):
+    def test_parse_error(self, Tokenizer, Token, TokenizerError):
         errors = (u"#NULL!", u"#DIV/0!", u"#VALUE!", u"#REF!", u"#NAME?",
                   u"#NUM!", u"#N/A")
         for error in errors:
@@ -335,7 +340,7 @@ class TestTokenizer(object):
             assert token.type == type_
             assert token.subtype == u''
 
-    def test_parse_opener(self, Tokenizer, Token):
+    def test_parse_opener(self, Tokenizer, Token, TokenizerError):
         cases = [
             (u'name', u'(', Token.FUNC),
             (u'', u'(', Token.PAREN),
@@ -361,7 +366,7 @@ class TestTokenizer(object):
             tok.token.append('name')
             tok.parse_opener()
 
-    def test_parse_closer(self, Tokenizer, Token):
+    def test_parse_closer(self, Tokenizer, Token, TokenizerError):
         cases = [
             #  formula offset top of token_stack
             (u'func(a)', 6, Token('func(', Token.FUNC, Token.OPEN)),
@@ -441,7 +446,7 @@ class TestTokenizer(object):
                 assert offset == tok.offset
                 assert token == tok.token
 
-    def test_assert_empty_token(self, Tokenizer):
+    def test_assert_empty_token(self, Tokenizer, TokenizerError):
         tok = Tokenizer(u"")
         try:
             tok.assert_empty_token()
