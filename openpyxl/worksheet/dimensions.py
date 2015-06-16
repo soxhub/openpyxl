@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.compat import safe_string
+from openpyxl.compat import safe_string, deprecated
 from openpyxl.utils import (
     get_column_interval,
     column_index_from_string,
@@ -56,6 +56,7 @@ class Dimension(Strict, StyleableObject):
                 yield key, safe_string(value)
 
     @property
+    @deprecated("Use `hidden` instead")
     def visible(self):
         return not self.hidden
 
