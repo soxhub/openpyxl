@@ -125,6 +125,9 @@ class DumpWorksheet(Worksheet):
                             xf.write(r)
                     except GeneratorExit:
                         pass
+                if self.protection.sheet:
+                    prot = Element('sheetProtection', dict(self.protection))
+                    xf.write(prot)
                 af = write_autofilter(self)
                 if af is not None:
                     xf.write(af)
