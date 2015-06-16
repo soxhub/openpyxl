@@ -50,26 +50,24 @@ def write_cols(worksheet):
     <cols> may never be empty -
     spec says must contain at least one child
     """
-    cols = []
-    for label, dimension in iteritems(worksheet.column_dimensions):
-        col_def = dict(dimension)
-        if col_def == {}:
-            continue
-        idx = column_index_from_string(label)
-        cols.append((idx, col_def))
 
-    if not cols:
-        return
+    def sorter(value):
+        return column_index_from_string(value[0])
 
     el = Element('cols')
+    obj = None
 
-    for idx, col_def in sorted(cols):
-        v = "%d" % idx
-        cmin = col_def.get('min') or v
-        cmax = col_def.get('max') or v
-        col_def.update({'min': cmin, 'max': cmax})
-        el.append(Element('col', col_def))
-    return el
+    for idx, col in sorted(worksheet.column_dimensions.items(), key=sorter):
+        if dict(col) == {}:
+            continue
+        idx = column_index_from_string(idx)
+        obj = Element('col', dict(col))
+        obj.set('min', '%d' % (col.min or idx))
+        obj.set('max', '%d' % (col.max or idx))
+        el.append(obj)
+
+    if obj is not None:
+        return el
 
 
 def write_autofilter(worksheet):
