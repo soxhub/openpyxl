@@ -31,7 +31,6 @@ class Dimension(Strict, StyleableObject):
     outlineLevel = Integer(allow_none=True)
     outline_level = Alias('outlineLevel')
     collapsed = Bool()
-    _style_id = None
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
