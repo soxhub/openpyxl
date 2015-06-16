@@ -6,10 +6,6 @@ import pytest
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.styles.styleable import StyleId
 
-def test_invalid_dimension_ctor():
-    from .. dimensions import Dimension
-    with pytest.raises(TypeError):
-        Dimension()
 
 class DummyWorkbook:
 
@@ -29,17 +25,17 @@ class DummyWorksheet:
         self.parent = DummyWorkbook()
 
 
-def test_dimension():
-    from .. dimensions import Dimension
-    with pytest.raises(TypeError):
-        Dimension()
-
-
 def test_dimension_interface():
     from .. dimensions import Dimension
     d = Dimension(1, True, 1, False, DummyWorksheet())
     assert isinstance(d.parent, DummyWorksheet)
     assert dict(d) == {'hidden': '1', 'outlineLevel': '1'}
+
+
+def test_invalid_dimension_ctor():
+    from .. dimensions import Dimension
+    with pytest.raises(TypeError):
+        Dimension()
 
 
 @pytest.mark.parametrize("key, value, expected",
