@@ -145,7 +145,7 @@ class DataValidation(Serialisable):
         return el
 
 
-    @deprecated("Use DataValidation.add()")
+    @deprecated("Use DataValidation.add(). Will be removed in 2.4")
     def add_cell(self, cell):
         """Adds a openpyxl.cell to this validator"""
         self.add(cell)
@@ -154,14 +154,14 @@ class DataValidation(Serialisable):
         """Adds a openpyxl.cell to this validator"""
         self.cells.add(cell.coordinate)
 
-    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error")
+    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error Will be removed in 2.4")
     def set_error_message(self, error, error_title="Validation Error"):
         """Creates a custom error message, displayed when a user changes a cell
            to an invalid value"""
         self.errorTitle = error_title
         self.error = error
 
-    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt")
+    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt Will be removed in 2.4")
     def set_prompt_message(self, prompt, prompt_title="Validation Prompt"):
         """Creates a custom prompt message"""
         self.promptTitle = prompt_title
@@ -183,34 +183,3 @@ class DataValidation(Serialisable):
             value = getattr(self, attr)
             if value is not None:
                 yield attr, safe_string(value)
-
-
-@deprecated("Class descriptors check values")
-class ValidationType(object):
-    NONE = "none"
-    WHOLE = "whole"
-    DECIMAL = "decimal"
-    LIST = "list"
-    DATE = "date"
-    TIME = "time"
-    TEXT_LENGTH = "textLength"
-    CUSTOM = "custom"
-
-
-@deprecated("Class descriptors check values")
-class ValidationOperator(object):
-    BETWEEN = "between"
-    NOT_BETWEEN = "notBetween"
-    EQUAL = "equal"
-    NOT_EQUAL = "notEqual"
-    LESS_THAN = "lessThan"
-    LESS_THAN_OR_EQUAL = "lessThanOrEqual"
-    GREATER_THAN = "greaterThan"
-    GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
-
-
-@deprecated("Class descriptors check values")
-class ValidationErrorStyle(object):
-    STOP = "stop"
-    WARNING = "warning"
-    INFORMATION = "information"
