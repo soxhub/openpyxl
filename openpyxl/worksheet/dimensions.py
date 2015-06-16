@@ -187,11 +187,10 @@ class ColumnDimension(Dimension):
 
 class DimensionHolder(BoundDictionary):
     "hold (row|column)dimensions and allow operations over them"
-    def __init__(self, worksheet, reference="index", default_factory=None, *args, **kwargs):
+    def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
-        self.reference = reference
-        self.default_factory = default_factory
-        super(DimensionHolder, self).__init__(*args, **kwargs)
+        super(DimensionHolder, self).__init__(reference, default_factory)
+
 
     def group(self, start, end=None, outline_level=1, hidden=False):
         """allow grouping a range of consecutive columns together

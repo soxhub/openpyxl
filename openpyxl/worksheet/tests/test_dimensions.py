@@ -82,3 +82,11 @@ def test_group_columns_collapse():
     dims.group('A', 'C', 1, hidden=True)
     group = list(dims.values())[0]
     assert group.hidden
+
+
+def test_column_dimension():
+    from ..worksheet import Worksheet
+    from .. dimensions import ColumnDimension
+    ws = Worksheet(parent_workbook=DummyWorkbook())
+    cols = ws.column_dimensions
+    assert isinstance(cols['A'], ColumnDimension)
