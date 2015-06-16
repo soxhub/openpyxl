@@ -21,8 +21,7 @@ from openpyxl.utils.bound_dictionary import BoundDictionary
 
 class Dimension(Strict, StyleableObject):
     """Information about the display properties of a row or column."""
-    __fields__ = ('index',
-                 'hidden',
+    __fields__ = ('hidden',
                  'outlineLevel',
                  'collapsed',)
 
@@ -51,7 +50,7 @@ class Dimension(Strict, StyleableObject):
 
 
     def __iter__(self):
-        for key in self.__fields__[1:]:
+        for key in self.__fields__:
             value = getattr(self, key)
             if value:
                 yield key, safe_string(value)
@@ -66,6 +65,7 @@ class RowDimension(Dimension):
 
     __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's')
     r = Alias('index')
+    s = Alias('style_id')
     ht = Float(allow_none=True)
     height = Alias('ht')
     thickBot = Bool()
@@ -111,15 +111,6 @@ class RowDimension(Dimension):
     def customHeight(self):
         """Always true if there is a height for the row"""
         return self.ht is not None
-
-    def __iter__(self):
-        for key in self.__fields__[1:]:
-            if key == 's':
-                value = getattr(self, 'style_id')
-            else:
-                value = getattr(self, key)
-            if value:
-                yield key, safe_string(value)
 
 
 class ColumnDimension(Dimension):
@@ -171,7 +162,7 @@ class ColumnDimension(Dimension):
         return self.width is not None
 
     def __iter__(self):
-        for key in self.__fields__[1:]:
+        for key in self.__fields__:
             if key == 'style':
                 value = self.style_id
             else:
