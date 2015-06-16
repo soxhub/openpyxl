@@ -171,10 +171,6 @@ class ColumnDimension(Dimension):
             if value:
                 yield key, safe_string(value)
 
-   #@property
-    # def col_label(self):
-        # return get_column_letter(self.index)
-
 
 class DimensionHolder(BoundDictionary):
     """
