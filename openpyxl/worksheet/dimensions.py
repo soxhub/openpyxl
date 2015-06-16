@@ -186,7 +186,10 @@ class ColumnDimension(Dimension):
 
 
 class DimensionHolder(BoundDictionary):
-    "hold (row|column)dimensions and allow operations over them"
+    """
+    Allow columns to be grouped
+    """
+
     def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
         super(DimensionHolder, self).__init__(reference, default_factory)
@@ -202,16 +205,13 @@ class DimensionHolder(BoundDictionary):
         """
         if end is None:
             end = start
-        if start in self:
-            new_dim = self.pop(start)
-        else:
-            new_dim = ColumnDimension(worksheet=self.worksheet, index=start)
 
-        work_sequence = get_column_interval(start, end)
+        new_dim = self[start]
+        new_dim.outline_level = outline_level
+        new_dim.hidden = hidden
+
+        work_sequence = get_column_interval(start, end)[1:]
         for column_letter in work_sequence:
             if column_letter in self:
                 del self[column_letter]
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
-        new_dim.outline_level = outline_level
-        new_dim.hidden = hidden
-        self[start] = new_dim
