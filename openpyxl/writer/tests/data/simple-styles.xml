@@ -42,7 +42,7 @@
     </xf>
   </cellXfs>
   <cellStyles count="1">
-    <cellStyle builtinId="0" name="Normal" xfId="0"/>
+    <cellStyle builtinId="0" name="Normal" xfId="0" hidden="0"/>
   </cellStyles>
   <dxfs count="0"/>
   <tableStyles count="0" defaultPivotStyle="PivotStyleLight16" defaultTableStyle="TableStyleMedium9"/>

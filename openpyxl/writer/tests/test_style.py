@@ -238,7 +238,7 @@ class TestStyleWriter(object):
         expected = """
             <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
             <cellStyles count="1">
-              <cellStyle name="Normal" xfId="0" builtinId="0" />
+              <cellStyle name="Normal" xfId="0" builtinId="0" hidden="0"/>
             </cellStyles>
             </styleSheet>
             """
@@ -312,7 +312,7 @@ def test_empty_workbook():
         <xf borderId="0" fillId="0" fontId="0" numFmtId="0" xfId="0"/>
       </cellXfs>
       <cellStyles count="1">
-        <cellStyle builtinId="0" name="Normal" xfId="0"/>
+        <cellStyle builtinId="0" name="Normal" xfId="0" hidden="0"/>
       </cellStyles>
       <dxfs count="0"/>
       <tableStyles count="0" defaultPivotStyle="PivotStyleLight16" defaultTableStyle="TableStyleMedium9"/>
