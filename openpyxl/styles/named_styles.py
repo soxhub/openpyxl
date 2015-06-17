@@ -6,19 +6,15 @@ from openpyxl.descriptors import (
     Strict,
     Typed,
 )
-from .fills import PatternFill, GradientFill, Fill
+from .fills import PatternFill, Fill
 from . fonts import Font
 from . borders import Border
 from . alignment import Alignment
 from . numbers import NumberFormatDescriptor
 from . protection import Protection
 
-from openpyxl.xml.constants import SHEET_MAIN_NS
-
 
 class NamedStyle(Strict):
-
-    tag = '{%s}cellStyleXfs' % SHEET_MAIN_NS
 
     """
     Named and editable styles
@@ -34,7 +30,7 @@ class NamedStyle(Strict):
     __fields__ = ("name", "font", "fill", "border", "number_format", "alignment", "protection")
 
     def __init__(self,
-                 name,
+                 name="Normal",
                  font=Font(),
                  fill=PatternFill(),
                  border=Border(),

@@ -17,6 +17,7 @@ from openpyxl.writer.write_only import WriteOnlyWorksheet, save_dump
 from . names.named_range import NamedRange
 from openpyxl.styles import Style
 from openpyxl.styles.style import StyleId
+from openpyxl.styles.named_styles import NamedStyle
 from openpyxl.styles.numbers import BUILTIN_FORMATS
 from openpyxl.writer.excel import save_workbook
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
@@ -93,7 +94,7 @@ class Workbook(object):
 
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleId()])
-        self._named_styles = IndexedList()
+        self._named_styles = IndexedList([NamedStyle()])
 
 
     @property
