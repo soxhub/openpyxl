@@ -90,3 +90,11 @@ def test_column_dimension():
     ws = Worksheet(parent_workbook=DummyWorkbook())
     cols = ws.column_dimensions
     assert isinstance(cols['A'], ColumnDimension)
+
+
+def test_row_dimension():
+    from ..worksheet import Worksheet
+    from ..dimensions import RowDimension
+    ws = Worksheet(parent_workbook=DummyWorkbook())
+    row_info = ws.row_dimensions
+    assert isinstance(row_info[1], RowDimension)
