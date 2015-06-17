@@ -50,6 +50,8 @@ class SharedStylesParser(object):
         self.border_list = IndexedList(self.parse_borders())
         self.parse_dxfs()
         self.parse_cell_styles()
+        self.parse_named_styles()
+
 
     def parse_custom_num_formats(self):
         """Read in custom numeric formatting rules from the shared style table"""
@@ -101,14 +103,12 @@ class SharedStylesParser(object):
         """
         Extract named styles
         """
-        ns = []
-        styles_node = self.root.find("{%s}cellStyleXfs" % SHEET_MAIN_NS)
-        self._parse_xfs(styles_node)
-        _ids = self.cell_styles
+        node = self.root.find("{%s}cellStyleXfs" % SHEET_MAIN_NS)
+        styles = self._parse_xfs(node)
 
         names = dict(self._parse_style_names())
         for name, idx in names.items():
-            _id = _ids[idx]
+            _id = styles[idx]
             style = NamedStyle(name)
             style.border = self.border_list[_id.border]
             style.fill = self.fill_list[_id.fill]
@@ -136,7 +136,7 @@ class SharedStylesParser(object):
         """
         node = self.root.find('{%s}cellXfs' % SHEET_MAIN_NS)
         if node is not None:
-            self._parse_xfs(node)
+            self.cell_styles = self._parse_xfs(node)
 
 
     def _parse_xfs(self, node):
@@ -165,7 +165,7 @@ class SharedStylesParser(object):
                 attrs["numFmtId"] = self.number_formats.add(format_code) + 164
 
             _style_ids.append(StyleId(**attrs))
-        self.cell_styles = IndexedList(_style_ids)
+        return IndexedList(_style_ids)
 
 
 def read_style_table(archive):

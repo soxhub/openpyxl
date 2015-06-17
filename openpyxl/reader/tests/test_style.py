@@ -333,6 +333,6 @@ def test_assign_number_formats(StyleReader):
           <alignment vertical="center"/>
     </xf>
     """)
-    reader._parse_xfs(node)
+    styles = reader._parse_xfs(node)
 
-    assert reader.cell_styles[0] == StyleId(numFmtId=164, fontId=2, alignmentId=1)
+    assert styles[0] == StyleId(numFmtId=164, fontId=2, alignmentId=1)
