@@ -94,7 +94,7 @@ class Workbook(object):
 
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleId()])
-        self._named_styles = {'Normal': NamedStyle()}
+        self._named_styles = {'Normal': NamedStyle(font=DEFAULT_FONT)}
 
 
     @property

@@ -7,7 +7,7 @@ from openpyxl.descriptors import (
     Typed,
 )
 from .fills import PatternFill, Fill
-from . fonts import Font
+from . fonts import Font, DEFAULT_FONT
 from . borders import Border
 from . alignment import Alignment
 from . numbers import NumberFormatDescriptor

@@ -17,7 +17,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.styles.colors import COLOR_INDEX
 from openpyxl.styles import DEFAULTS
-from openpyxl.styles import numbers
+from openpyxl.styles.numbers import BUILTIN_FORMATS_REVERSE
 from openpyxl.styles.fills import GradientFill, PatternFill
 
 
@@ -68,12 +68,23 @@ class StyleWriter(object):
             borders_node.append(border.to_tree())
 
     def _write_named_styles(self):
-        style_names = []
+        styles = self.wb._named_styles
+        cell_style_xfs = SubElement(self._root, 'cellStyleXfs', count="%d" % len(styles))
+
         for style in self.wb._named_styles.values():
-            style_names.append(style.name)
-        cell_style_xfs = SubElement(self._root, 'cellStyleXfs', {'count':'1'})
-        SubElement(cell_style_xfs, 'xf',
-            {'numFmtId':"0", 'fontId':"0", 'fillId':"0", 'borderId':"0"})
+            attrs = {}
+
+            attrs['fontId'] =  str(self.wb._fonts.add(style.font))
+            attrs['borderId'] = str(self.wb._borders.add(style.border))
+            attrs['fillId'] =  str(self.wb._fills.add(style.fill))
+            fmt = style.number_format
+            if fmt in BUILTIN_FORMATS_REVERSE:
+                fmt = BUILTIN_FORMATS_REVERSE[fmt]
+            else:
+                fmt = self.wb._number_formats.add(style.number_format) + 164
+            attrs['numFmtId'] = str(fmt)
+
+            SubElement(cell_style_xfs, 'xf', attrs)
 
     def _write_cell_styles(self):
         """ write styles combinations based on ids found in tables """
