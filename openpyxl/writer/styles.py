@@ -68,6 +68,9 @@ class StyleWriter(object):
             borders_node.append(border.to_tree())
 
     def _write_named_styles(self):
+        style_names = []
+        for style in self.wb._named_styles.values():
+            style_names.append(style.name)
         cell_style_xfs = SubElement(self._root, 'cellStyleXfs', {'count':'1'})
         SubElement(cell_style_xfs, 'xf',
             {'numFmtId':"0", 'fontId':"0", 'fillId':"0", 'borderId':"0"})
