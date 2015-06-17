@@ -106,9 +106,10 @@ class SharedStylesParser(object):
         self._parse_xfs(styles_node)
         _ids = self.cell_styles
 
-        for _name, idx in self._parse_style_names():
+        names = dict(self._parse_style_names())
+        for name, idx in names.items():
             _id = _ids[idx]
-            style = NamedStyle(name=_name)
+            style = NamedStyle(name)
             style.border = self.border_list[_id.border]
             style.fill = self.fill_list[_id.fill]
             style.font = self.font_list[_id.font]
@@ -116,11 +117,14 @@ class SharedStylesParser(object):
                 style.alignment = self.alignments[_id.alignment]
             if _id.protection:
                 style.protection = self.protections[_id.protection]
-            ns.append(style)
-        self.named_styles = IndexedList(ns)
+            names[name] = style
+        self.named_styles = names
 
 
     def _parse_style_names(self):
+        """
+        Extract style names. There can be duplicates in which case last wins
+        """
         names_node = self.root.find("{%s}cellStyles" % SHEET_MAIN_NS)
         for _name in names_node:
             yield _name.get("name"), int(_name.get("xfId"))

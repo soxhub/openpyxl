@@ -239,7 +239,15 @@ def test_style_names(datadir, StyleReader):
     ]
 
 
-@pytest.mark.xfail
+def test_style_names(datadir, StyleReader):
+    datadir.chdir()
+    with open("complex-styles.xml") as src:
+        reader = StyleReader(src.read())
+
+    names = dict(reader._parse_style_names())
+    assert names == {'Followed Hyperlink': 10, 'Hyperlink': 9, 'Normal': 0}
+
+
 def test_named_styles(datadir, StyleReader):
     from openpyxl.styles.named_styles import NamedStyle
     from openpyxl.styles.fonts import DEFAULT_FONT
@@ -252,14 +260,26 @@ def test_named_styles(datadir, StyleReader):
     reader.border_list = list(reader.parse_borders())
     reader.fill_list = list(reader.parse_fills())
     reader.font_list = list(reader.parse_fonts())
-    reader.parse_cell_styles()
     reader.parse_named_styles()
-    assert len(reader.named_styles) == 11
-    first_style = reader.named_styles[0]
-    assert first_style.name == "Followed Hyperlink"
-    assert first_style.font == Font(size=12, color=Color(theme=11), underline="single", scheme="minor")
-    assert first_style.fill == DEFAULT_EMPTY_FILL
-    assert first_style.border == Border()
+    assert set(reader.named_styles.keys()) == set(['Followed Hyperlink', 'Hyperlink', 'Normal'])
+
+    followed = reader.named_styles['Followed Hyperlink']
+    assert followed.name == "Followed Hyperlink"
+    assert followed.font == reader.font_list[2]
+    assert followed.fill == DEFAULT_EMPTY_FILL
+    assert followed.border == Border()
+
+    link = reader.named_styles['Hyperlink']
+    assert link.name == "Hyperlink"
+    assert link.font == reader.font_list[1]
+    assert link.fill == DEFAULT_EMPTY_FILL
+    assert link.border == Border()
+
+    normal = reader.named_styles['Normal']
+    assert normal.name == "Normal"
+    assert normal.font == reader.font_list[0]
+    assert normal.fill == DEFAULT_EMPTY_FILL
+    assert normal.border == Border()
 
 
 def test_no_styles():
