@@ -20,6 +20,7 @@ from openpyxl.writer.comments import CommentWriter
 from .relations import write_rels
 from .worksheet import (
     write_autofilter,
+    write_datavalidation,
     write_cell,
     write_cols,
     write_drawing,
@@ -132,9 +133,14 @@ class WriteOnlyWorksheet(Worksheet):
                 if af is not None:
                     xf.write(af)
 
+                dv = write_datavalidation(self)
+                if dv is not None:
+                    xf.write(dv)
+
                 drawing = write_drawing(self)
                 if drawing is not None:
                     xf.write(drawing)
+
                 if self._comments:
                     comments = Element('legacyDrawing', {'{%s}id' % REL_NS: 'commentsvml'})
                     xf.write(comments)
