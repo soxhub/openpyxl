@@ -3,6 +3,12 @@ from __future__ import absolute_import
 
 import pytest
 
+from ..fonts import Font
+from ..borders import Border
+from ..fills import PatternFill
+from ..alignment import Alignment
+from ..protection import Protection
+
 
 @pytest.fixture
 def NamedStyle():
@@ -15,7 +21,12 @@ class TestNamedStyle:
     def test_ctor(self, NamedStyle):
         style = NamedStyle()
 
-        assert repr(style) == """NamedStyle(name='Normal', font=Font(color=Color(indexed=Values must be of type <class 'int'>, auto=Values must be of type <class 'bool'>, theme=Values must be of type <class 'int'>)), fill=, border=, number_format='General', alignment=, protection=)"""
+        assert style.font == Font()
+        assert style.border == Border()
+        assert style.fill == PatternFill()
+        assert style.protection == Protection()
+        assert style.alignment == Alignment()
+        assert style.number_format == "General"
 
 
     def test_dict(self, NamedStyle):
