@@ -74,7 +74,7 @@ class NamedStyle(Strict):
             if not hasattr(other, '_key'):
                 other._make_key()
             return self._key == other._key
-        return self._key == other
+
 
     def __ne__(self, other):
         return not self == other
