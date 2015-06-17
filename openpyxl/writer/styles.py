@@ -109,9 +109,12 @@ class StyleWriter(object):
 
 
     def _write_style_names(self):
-        cell_styles = SubElement(self._root, 'cellStyles', {'count':'1'})
-        SubElement(cell_styles, 'cellStyle',
-            {'name':"Normal", 'xfId':"0", 'builtinId':"0"})
+        styles = self.wb._named_styles
+
+        cell_styles = SubElement(self._root, 'cellStyles', count=str(len(styles)))
+
+        for idx, style in enumerate(styles.values()):
+            SubElement(cell_styles, 'cellStyle', name=style.name, xfId=str(idx), builtinId="0")
 
 
     def _write_differential_styles(self):
