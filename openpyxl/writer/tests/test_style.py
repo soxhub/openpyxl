@@ -231,6 +231,22 @@ class TestStyleWriter(object):
         assert diff is None, diff
 
 
+    def test_style_names(self):
+        writer = StyleWriter(self.workbook)
+        writer._write_style_names()
+        xml = tostring(writer._root)
+        expected = """
+            <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <cellStyles count="1">
+              <cellStyle name="Normal" xfId="0" builtinId="0" />
+            </cellStyles>
+            </styleSheet>
+            """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+
 def test_simple_styles(datadir):
     wb = Workbook(guess_types=True)
     ws = wb.active
