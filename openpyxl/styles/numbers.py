@@ -87,7 +87,7 @@ FORMAT_CURRENCY_EUR_SIMPLE = '[$EUR ]#,##0.00_-'
 
 
 DATE_INDICATORS = 'dmyhs'
-BAD_DATE_RE = re.compile(r'((?<=\[\$)|").*[dmhys]+.*(\]|")', re.UNICODE)
+BAD_DATE_RE = re.compile(r'((?<=\[)|").*[dmhys]+.*(\]|")', re.UNICODE)
 
 def is_date_format(fmt):
     if fmt is None:
