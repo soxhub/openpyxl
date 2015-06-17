@@ -217,35 +217,21 @@ def test_alignment(datadir, StyleReader):
         ]
 
 
-
 def test_style_names(datadir, StyleReader):
     datadir.chdir()
     with open("complex-styles.xml") as src:
         reader = StyleReader(src.read())
 
-    styles = list(reader._parse_style_names())
-    assert styles == [
-        ('Followed Hyperlink', 2),
-        ('Followed Hyperlink', 4),
-        ('Followed Hyperlink', 6),
-        ('Followed Hyperlink', 8),
-        ('Followed Hyperlink', 10),
-        ('Hyperlink', 1),
-        ('Hyperlink', 3),
-        ('Hyperlink', 5),
-        ('Hyperlink', 7),
-        ('Hyperlink', 9),
-        ('Normal', 0),
+    def sorter(value):
+        return value.name
+
+    names = reader._parse_style_names()
+    references = [dict(style) for style in sorted(names.values(), key=sorter)]
+    assert references == [
+        {'builtinId': '9', 'name': 'Followed Hyperlink', 'xfId': '10', 'hidden':'1'},
+        {'builtinId': '8', 'name': 'Hyperlink', 'xfId': '9', 'hidden':'1'},
+        {'builtinId': '0', 'name': 'Normal', 'xfId': '0'}
     ]
-
-
-def test_style_names(datadir, StyleReader):
-    datadir.chdir()
-    with open("complex-styles.xml") as src:
-        reader = StyleReader(src.read())
-
-    names = dict(reader._parse_style_names())
-    assert names == {'Followed Hyperlink': 10, 'Hyperlink': 9, 'Normal': 0}
 
 
 def test_named_styles(datadir, StyleReader):

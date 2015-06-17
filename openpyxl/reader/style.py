@@ -106,10 +106,9 @@ class SharedStylesParser(object):
         node = self.root.find("{%s}cellStyleXfs" % SHEET_MAIN_NS)
         styles = self._parse_xfs(node)
 
-        names = dict(self._parse_style_names())
-        for name, idx in names.items():
-            _id = styles[idx]
-            style = NamedStyle(name)
+        names = self._parse_style_names()
+        for style in names.values():
+            _id = styles[style.xfId]
             style.border = self.border_list[_id.border]
             style.fill = self.fill_list[_id.fill]
             style.font = self.font_list[_id.font]
@@ -117,7 +116,6 @@ class SharedStylesParser(object):
                 style.alignment = self.alignments[_id.alignment]
             if _id.protection:
                 style.protection = self.protections[_id.protection]
-            names[name] = style
         self.named_styles = names
 
 
@@ -125,9 +123,17 @@ class SharedStylesParser(object):
         """
         Extract style names. There can be duplicates in which case last wins
         """
-        names_node = self.root.find("{%s}cellStyles" % SHEET_MAIN_NS)
-        for _name in names_node:
-            yield _name.get("name"), int(_name.get("xfId"))
+        node = self.root.find("{%s}cellStyles" % SHEET_MAIN_NS)
+        names = {}
+        for _name in node:
+            name = _name.get("name")
+            style = NamedStyle(name=name,
+                               builtinId=_name.get("builtinId"),
+                               hidden=_name.get("hidden")
+                               )
+            style.xfId = int(_name.get("xfId"))
+            names[name] = style
+        return names
 
 
     def parse_cell_styles(self):

@@ -54,7 +54,7 @@ class NamedStyle(Strict):
         self.number_format = number_format
         self.protection = protection
         self.builtinId = builtinId
-        self.hidden = None
+        self.hidden = hidden
 
 
     def _make_key(self):
@@ -88,7 +88,7 @@ class NamedStyle(Strict):
 
 
     def __iter__(self):
-        for key in ('name', 'builtinId', 'hidden'):
-            value = getattr(self, key)
+        for key in ('name', 'builtinId', 'hidden', 'xfId'):
+            value = getattr(self, key, None)
             if value is not None:
                 yield key, safe_string(value)
