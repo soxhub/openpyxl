@@ -31,4 +31,4 @@ class TestNamedStyle:
 
     def test_dict(self, NamedStyle):
         style = NamedStyle()
-        assert dict(style) == {'builtinId':'0', 'name':'Normal'}
+        assert dict(style) == {'builtinId':'0', 'name':'Normal', 'hidden':'0'}
