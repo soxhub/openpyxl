@@ -203,6 +203,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     if parsed_styles is not None:
         wb._differential_styles = parsed_styles.differential_styles
         wb._cell_styles = parsed_styles.cell_styles
+        wb._named_styles = parsed_styles.named_styles
         wb._colors = parsed_styles.color_index
         wb._borders = parsed_styles.border_list
         wb._fonts = parsed_styles.font_list
