@@ -31,7 +31,7 @@ Bug fixes
 * `#470 <https://bitbucket.org/openpyxl/openpyxl/issue/470>`_ Adding more than 10 worksheets with the same name leads to duplicates sheet names and an invalid file
 
 
-2.2.4 (unreleased)
+2.2.4 (2015-06-17)
 ==================
 
 
