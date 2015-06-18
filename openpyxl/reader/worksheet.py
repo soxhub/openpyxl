@@ -17,7 +17,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
-from openpyxl.formatting import ConditionalFormatting
+from openpyxl.formatting import ConditionalFormatting, Rule
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.utils import (
     coordinate_from_string,
@@ -206,12 +206,11 @@ class WorkSheetParser(object):
         if oddFooter is not None and oddFooter.text is not None:
             self.ws.header_footer.setFooter(oddFooter.text)
 
+
     def parser_conditional_formatting(self, element):
         range_string = element.get('sqref')
         cfRules = element.findall('{%s}cfRule' % SHEET_MAIN_NS)
-        from openpyxl.formatting.rule import Rule
-        if range_string not in self.ws.conditional_formatting.cf_rules:
-            self.ws.conditional_formatting.cf_rules[range_string] = []
+        self.ws.conditional_formatting.cf_rules[range_string] = []
         for node in cfRules:
             rule = Rule.from_tree(node)
             if rule.dxfId is not None:
