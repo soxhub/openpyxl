@@ -231,9 +231,8 @@ class WorkSheetParser(object):
             self.ws.auto_filter.add_sort_condition(sc.get("ref"), sc.get("descending"))
 
     def parse_sheet_protection(self, element):
-        values = element.attrib
-        self.ws.protection = SheetProtection(**values)
-        password = values.get("password")
+        self.ws.protection = SheetProtection.from_tree(element)
+        password = element.get("password")
         if password is not None:
             self.ws.protection.set_password(password, True)
 
