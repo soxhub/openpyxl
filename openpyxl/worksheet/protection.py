@@ -38,6 +38,8 @@ class SheetProtection(Serialisable):
     **default** when protection is active, ie. users cannot do something
     """
 
+    tagname = "sheetProtection"
+
     sheet = Bool()
     enabled = Alias('sheet')
     objects = Bool()

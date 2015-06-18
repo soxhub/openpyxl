@@ -209,8 +209,7 @@ def write_worksheet(worksheet, shared_strings):
             write_rows(xf, worksheet)
 
             if worksheet.protection.sheet:
-                prot = Element('sheetProtection', dict(worksheet.protection))
-                xf.write(prot)
+                xf.write(worksheet.protection.to_tree())
 
             af = write_autofilter(worksheet)
             if af is not None:
