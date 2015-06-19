@@ -4,15 +4,14 @@ from __future__ import absolute_import
 
 """Write worksheets to xml representations in an optimized way"""
 
-from fileinput import FileInput
+import atexit
 from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
-import atexit
 
-from openpyxl.compat import OrderedDict
-from openpyxl.cell import get_column_letter, Cell
+from openpyxl.cell import Cell
 from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.related import Related
 
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
 from openpyxl.writer.excel import ExcelWriter
@@ -26,18 +25,9 @@ from .worksheet import (
     write_drawing,
     write_format,
 )
-from openpyxl.xml.constants import (
-    PACKAGE_WORKSHEETS,
-    SHEET_MAIN_NS,
-    REL_NS,
-    MAX_COLUMN,
-    MAX_ROW,
-    PACKAGE_XL
-)
-from openpyxl.xml.functions import xmlfile, Element, SubElement
+from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import xmlfile, Element
 
-
-DESCRIPTORS_CACHE_SIZE = 50
 ALL_TEMP_FILES = []
 
 
@@ -126,9 +116,10 @@ class WriteOnlyWorksheet(Worksheet):
                             xf.write(r)
                     except GeneratorExit:
                         pass
+
                 if self.protection.sheet:
-                    prot = Element('sheetProtection', dict(self.protection))
-                    xf.write(prot)
+                    xf.write(worksheet.protection.to_tree())
+
                 af = write_autofilter(self)
                 if af is not None:
                     xf.write(af)
@@ -142,8 +133,9 @@ class WriteOnlyWorksheet(Worksheet):
                     xf.write(drawing)
 
                 if self._comments:
-                    comments = Element('legacyDrawing', {'{%s}id' % REL_NS: 'commentsvml'})
-                    xf.write(comments)
+                    legacyDrawing = Related(id="commentsvml")
+                    xml = legacyDrawing.to_tree("legacyDrawing")
+                    xf.write(xml)
 
     def close(self):
         if self.__saved:
