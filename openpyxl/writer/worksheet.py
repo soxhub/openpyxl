@@ -72,28 +72,8 @@ def write_cols(worksheet):
 
 def write_autofilter(worksheet):
     auto_filter = worksheet.auto_filter
-    if auto_filter.ref is None:
-        return
-
-    el = Element('autoFilter', ref=auto_filter.ref)
-    if (auto_filter.filter_columns
-        or auto_filter.sort_conditions):
-        for col_id, filter_column in sorted(auto_filter.filter_columns.items()):
-            fc = SubElement(el, 'filterColumn', colId=str(col_id))
-            attrs = {}
-            if filter_column.blank:
-                attrs = {'blank': '1'}
-            flt = SubElement(fc, 'filters', attrs)
-            for val in filter_column.vals:
-                flt.append(Element('filter', val=val))
-        if auto_filter.sort_conditions:
-            srt = SubElement(el, 'sortState', ref=auto_filter.ref)
-            for sort_condition in auto_filter.sort_conditions:
-                sort_attr = {'ref': sort_condition.ref}
-                if sort_condition.descending:
-                    sort_attr['descending'] = '1'
-                srt.append(Element('sortCondtion', sort_attr))
-    return el
+    if auto_filter.ref is not None:
+        return auto_filter.to_tree()
 
 
 def write_mergecells(worksheet):
