@@ -8,7 +8,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def FilterColumn():
-    from .. autofilter import FilterColumn
+    from .. filters import FilterColumn
     return FilterColumn
 
 
@@ -30,7 +30,7 @@ class TestFilterColumn:
 
 @pytest.fixture
 def SortCondition():
-    from .. autofilter import SortCondition
+    from .. filters import SortCondition
     return SortCondition
 
 
@@ -48,7 +48,7 @@ class TestSortCondition:
 
 @pytest.fixture
 def AutoFilter():
-    from .. autofilter import AutoFilter
+    from .. filters import AutoFilter
     return AutoFilter
 
 
