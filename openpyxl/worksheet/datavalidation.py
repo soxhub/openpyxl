@@ -49,6 +49,8 @@ def collapse_cell_addresses(cells, input_ranges=()):
 
     return " ".join(ranges)
 
+from .worksheet import rows_from_range
+
 
 def expand_cell_ranges(range_string):
     """
@@ -134,33 +136,21 @@ class DataValidation(Serialisable):
         self.error = error
         self.prompt = prompt
         self.errorTitle = errorTitle
+        self.__attrs__ = ('type', 'allowBlank', 'operator', 'sqref',
+                          'showInputMessage', 'showErrorMessage', 'errorTitle', 'error',
+                          'errorStyle', 'promptTitle', 'prompt')
 
-    def to_tree(self, tagname=None):
-        attrs = dict(self)
-        el = Element(self.tagname, attrs)
-        for n in self.__nested__:
-            value = getattr(self, n)
-            if value:
-                SubElement(el, n).text = value
-        return el
 
     def add(self, cell):
         """Adds a openpyxl.cell to this validator"""
         self.cells.add(cell.coordinate)
 
+
     @property
     def sqref(self):
         return collapse_cell_addresses(self.cells, self.ranges)
 
+
     @sqref.setter
     def sqref(self, range_string):
         self.cells = expand_cell_ranges(range_string)
-
-    def __iter__(self):
-        for attr in ('type', 'allowBlank', 'operator', 'sqref',
-                     'showInputMessage', 'showErrorMessage', 'errorTitle', 'error',
-                     'errorStyle',
-                     'promptTitle', 'prompt'):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
