@@ -250,7 +250,7 @@ class MatchPattern(Descriptor):
             raise TypeError('missing pattern value')
 
         super(MatchPattern, self).__init__(name, **kw)
-        self.test_pattern = re.compile(self.pattern)
+        self.test_pattern = re.compile(self.pattern, re.VERBOSE)
 
 
     def __set__(self, instance, value):
