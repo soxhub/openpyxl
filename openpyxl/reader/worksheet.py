@@ -9,6 +9,7 @@ from openpyxl.xml.functions import iterparse
 
 # package imports
 from openpyxl.cell import Cell
+from openpyxl.worksheet.filters import AutoFilter
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
@@ -219,16 +220,8 @@ class WorkSheetParser(object):
 
 
     def parse_auto_filter(self, element):
-        self.ws.auto_filter.ref = element.get("ref")
-        for fc in safe_iterator(element, '{%s}filterColumn' % SHEET_MAIN_NS):
-            filters = fc.find('{%s}filters' % SHEET_MAIN_NS)
-            if filters is None:
-                continue
-            vals = [f.get("val") for f in safe_iterator(filters, '{%s}filter' % SHEET_MAIN_NS)]
-            blank = filters.get("blank")
-            self.ws.auto_filter.add_filter_column(fc.get("colId"), vals, blank=blank)
-        for sc in safe_iterator(element, '{%s}sortCondition' % SHEET_MAIN_NS):
-            self.ws.auto_filter.add_sort_condition(sc.get("ref"), sc.get("descending"))
+        self.ws._auto_filter = AutoFilter.from_tree(element)
+
 
     def parse_sheet_protection(self, element):
         self.ws.protection = SheetProtection.from_tree(element)
