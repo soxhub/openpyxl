@@ -7,8 +7,10 @@ Based on Python Cookbook 3rd Edition, 8.13
 http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
 """
 
-from openpyxl.compat import basestring, bytes, long
+import datetime
 import re
+from openpyxl.compat import basestring, bytes, long
+from openpyxl.utils.datetime import W3CDTF_to_datetime
 
 class Descriptor(object):
 
@@ -259,3 +261,16 @@ class MatchPattern(Descriptor):
                 raise ValueError('Value does not match pattern {0}'.format(self.pattern))
 
         super(MatchPattern, self).__set__(instance, value)
+
+
+class DateTime(Typed):
+
+    expected_type = datetime.datetime
+
+    def __set__(self, instance, value):
+        if value is not None and isinstance(value, basestring):
+            try:
+                value = W3CDTF_to_datetime(value)
+            except ValueError:
+                raise ValueError("Value must be ISO datetime format")
+        super(DateTime, self).__set__(instance, value)

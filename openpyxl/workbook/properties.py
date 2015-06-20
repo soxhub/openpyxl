@@ -4,24 +4,10 @@ from __future__ import absolute_import
 import datetime
 
 from openpyxl.compat import safe_string, unicode
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, datetime_to_W3CDTF, W3CDTF_to_datetime
-from openpyxl.descriptors import Strict, String, Typed, Alias
+from openpyxl.utils.datetime import CALENDAR_WINDOWS_1900, datetime_to_W3CDTF, W3CDTF_to_datetime
+from openpyxl.descriptors import Strict, String, DateTime, Alias
 from openpyxl.xml.functions import ElementTree, Element, SubElement, tostring, fromstring, safe_iterator, localname
 from openpyxl.xml.constants import COREPROPS_NS, DCORE_NS, XSI_NS, DCTERMS_NS, DCTERMS_PREFIX
-
-
-
-class W3CDateTime(Typed):
-
-    expected_type = datetime.datetime
-
-    def __set__(self, instance, value):
-        if value is not None and isinstance(value, str):
-            try:
-                value = W3CDTF_to_datetime(value)
-            except ValueError:
-                raise ValueError("Value must be W3C datetime format")
-        super(W3CDateTime, self).__set__(instance, value)
 
 
 class DocumentProperties(Strict):
@@ -33,7 +19,7 @@ class DocumentProperties(Strict):
     contentStatus = String(allow_none=True)
     keywords = String(allow_none=True)
     lastModifiedBy = String(allow_none=True)
-    lastPrinted = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
+    lastPrinted = DateTime(expected_type=datetime.datetime, allow_none=True)
     revision = String(allow_none=True)
     version = String(allow_none=True)
     last_modified_by = Alias("lastModifiedBy")
@@ -45,8 +31,8 @@ class DocumentProperties(Strict):
     description = String(allow_none=True)
     identifier = String(allow_none=True)
     language = String(allow_none=True)
-    created = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
-    modified = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
+    created = DateTime(expected_type=datetime.datetime, allow_none=True)
+    modified = DateTime(expected_type=datetime.datetime, allow_none=True)
 
     __fields__ = ("category", "contentStatus", "lastModifiedBy", "keywords",
                 "lastPrinted", "revision", "version", "created", "creator", "description",
