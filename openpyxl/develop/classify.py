@@ -30,6 +30,7 @@ XSD = "http://www.w3.org/2001/XMLSchema"
 simple_mapping = {
     'xsd:boolean':'Bool',
     'xsd:unsignedInt':'Integer',
+    'xsd:unsignedShort':'Integer',
     'xsd:int':'Integer',
     'xsd:double':'Float',
     'xsd:string':'String',
@@ -37,6 +38,7 @@ simple_mapping = {
     'xsd:byte':'Integer',
     'xsd:long':'Float',
     'xsd:token':'String',
+    'xsd:dateTime':'DateTime',
     's:ST_Panose':'HexBinary',
     's:ST_Lang':'String',
     'ST_Percentage':'String',
