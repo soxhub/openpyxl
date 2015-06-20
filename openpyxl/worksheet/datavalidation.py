@@ -144,28 +144,9 @@ class DataValidation(Serialisable):
                 SubElement(el, n).text = value
         return el
 
-
-    @deprecated("Use DataValidation.add(). Will be removed in 2.4")
-    def add_cell(self, cell):
-        """Adds a openpyxl.cell to this validator"""
-        self.add(cell)
-
     def add(self, cell):
         """Adds a openpyxl.cell to this validator"""
         self.cells.add(cell.coordinate)
-
-    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error Will be removed in 2.4")
-    def set_error_message(self, error, error_title="Validation Error"):
-        """Creates a custom error message, displayed when a user changes a cell
-           to an invalid value"""
-        self.errorTitle = error_title
-        self.error = error
-
-    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt Will be removed in 2.4")
-    def set_prompt_message(self, prompt, prompt_title="Validation Prompt"):
-        """Creates a custom prompt message"""
-        self.promptTitle = prompt_title
-        self.prompt = prompt
 
     @property
     def sqref(self):

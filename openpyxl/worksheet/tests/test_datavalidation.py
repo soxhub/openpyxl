@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.workbook import Workbook
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -63,10 +62,13 @@ def test_prompt_message(DataValidation):
 
 
 def test_writer_validation(DataValidation):
-    wb = Workbook()
-    ws = wb.active
+
+    class DummyCell:
+
+        coordinate = "A1"
+
     dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"')
-    dv.add_cell(ws['A1'])
+    dv.add(DummyCell())
 
     xml = tostring(dv.to_tree())
     expected = """
