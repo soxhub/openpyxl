@@ -81,7 +81,7 @@ class Serialisable(_Serialiasable):
     def to_tree(self, tagname=None, idx=None, namespace=None):
         if tagname is None:
             tagname = self.tagname
-        namespace = getattr(self, "namespace", None) or namespace
+        namespace = getattr(self, "namespace", namespace)
         if namespace is not None:
             tagname = "{%s}%s" % (namespace, tagname)
 
@@ -100,14 +100,12 @@ class Serialisable(_Serialiasable):
             if child in self.__nested__:
                 desc = getattr(self.__class__, child)
                 value = getattr(self, child)
-                if getattr(self, 'namespace', None):
-                    child = "{%s}%s" % (self.namespace, child)
                 if hasattr(desc, "to_tree"):
                     if isinstance(value, seq_types):
-                        for obj in desc.to_tree(child, value):
+                        for obj in desc.to_tree(child, value, namespace):
                             el.append(obj)
                     else:
-                        obj = desc.to_tree(child, value)
+                        obj = desc.to_tree(child, value, namespace)
                         if obj is not None:
                             el.append(obj)
                 elif value:

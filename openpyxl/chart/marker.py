@@ -28,10 +28,12 @@ from .text import *
 from .error_bar import *
 
 
-def _marker_symbol(tagname, value):
+def _marker_symbol(tagname, value, namespace=None):
     """
     Override serialisation because explicit none required
     """
+    if namespace is not None:
+        tagname = "{%s}%s" % (namespace, tagname)
     return Element(tagname, val=safe_string(value))
 
 
