@@ -4,16 +4,9 @@ from __future__ import absolute_import
 import datetime
 
 import pytest
-from lxml.etree import fromstring
 from openpyxl.tests.helper import compare_xml
 
-
-def test_ctor():
-    from .. properties import DocumentProperties
-    dt = datetime.datetime(2014, 10, 12, 10, 35, 36)
-    props = DocumentProperties(created=dt, modified=dt)
-    assert dict(props) == {'created': '2014-10-12 10:35:36', 'modified':
-                           '2014-10-12 10:35:36', 'creator': 'openpyxl',}
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture()
@@ -38,41 +31,39 @@ def SampleProperties():
     return props
 
 
-def test_dict_interface(SampleProperties):
-    assert dict(SampleProperties) == {
-        'created': '2010-04-01 20:30:00',
-        'creator': 'TEST_USER',
-        'lastModifiedBy': 'SOMEBODY',
-        'modified':'2010-04-05 14:05:30',
-        'category': 'The category',
-        'contentStatus': 'The status',
-        'description': 'The description',
-        'identifier': 'The identifier',
-        'language': 'The language',
-        'lastPrinted': '2014-10-14 10:30:00',
-        'revision': '0',
-        'subject': 'The subject',
-        'title': 'The title',
-        'version': '2.5',
-        'keywords': 'one, two, three',
-                           }
-
-
-def test_write_properties_core(datadir, SampleProperties):
-    from .. properties import write_properties
-    datadir.chdir()
-
-    content = write_properties(SampleProperties)
-    with open('core.xml') as expected:
-        diff = compare_xml(content, expected.read())
+def test_ctor(SampleProperties):
+    expected = """
+    <coreProperties
+        xmlns="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:dcterms="http://purl.org/dc/terms/">
+        <dc:creator>TEST_USER</dc:creator>
+        <dc:title>The title</dc:title>
+        <dc:description>The description</dc:description>
+        <dc:subject>The subject</dc:subject>
+        <dc:identifier>The identifier</dc:identifier>
+        <dc:language>The language</dc:language>
+        <dcterms:created>2010-04-01T20:30:00Z</dcterms:created>
+        <dcterms:modified>2010-04-05T14:05:30Z</dcterms:modified>
+        <lastModifiedBy>SOMEBODY</lastModifiedBy>
+        <category>The category</category>
+        <contentStatus>The status</contentStatus>
+        <version>2.5</version>
+        <revision>0</revision>
+        <keywords>one, two, three</keywords>
+        <lastPrinted>2014-10-14T10:30:00Z</lastPrinted>
+    </coreProperties>
+    """
+    xml = tostring(SampleProperties.to_tree())
+    diff = compare_xml(xml, expected)
     assert diff is None, diff
 
 
-def test_read_properties_core(datadir, SampleProperties):
-    from .. properties import read_properties
+def test_from_tree(datadir, SampleProperties):
     datadir.chdir()
-
     with open("core.xml") as src:
         content = src.read()
-    props = read_properties(content)
-    assert dict(props) == dict(SampleProperties)
+
+    content = fromstring(content)
+    props = SampleProperties.from_tree(content)
+    assert props == SampleProperties

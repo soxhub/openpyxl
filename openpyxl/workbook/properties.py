@@ -5,38 +5,63 @@ import datetime
 
 from openpyxl.compat import safe_string, unicode
 from openpyxl.utils.datetime import CALENDAR_WINDOWS_1900, datetime_to_W3CDTF, W3CDTF_to_datetime
-from openpyxl.descriptors import Strict, String, DateTime, Alias
+from openpyxl.descriptors import (
+    String,
+    DateTime,
+    Alias,
+    )
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors.nested import NestedText
 from openpyxl.xml.functions import ElementTree, Element, SubElement, tostring, fromstring, safe_iterator, localname
 from openpyxl.xml.constants import COREPROPS_NS, DCORE_NS, XSI_NS, DCTERMS_NS, DCTERMS_PREFIX
 
 
-class DocumentProperties(Strict):
+class NestedDateTime(DateTime, NestedText):
+
+    expected_type = datetime.datetime
+
+    def to_tree(self, tagname=None, value=None, namespace=None):
+        namespace = getattr(self, "namespace", namespace)
+        if namespace is not None:
+            tagname = "{%s}%s" % (namespace, tagname)
+        el = Element(tagname)
+        if value is not None:
+            el.text = datetime_to_W3CDTF(value)
+        return el
+
+
+class DocumentProperties(Serialisable):
     """High-level properties of the document.
     Defined in ECMA-376 Par2 Annex D
     """
 
-    category = String(allow_none=True)
-    contentStatus = String(allow_none=True)
-    keywords = String(allow_none=True)
-    lastModifiedBy = String(allow_none=True)
-    lastPrinted = DateTime(expected_type=datetime.datetime, allow_none=True)
-    revision = String(allow_none=True)
-    version = String(allow_none=True)
+    tagname = "coreProperties"
+    namespace = COREPROPS_NS
+
+    category = NestedText(expected_type=unicode, allow_none=True)
+    contentStatus = NestedText(expected_type=unicode, allow_none=True)
+    keywords = NestedText(expected_type=unicode, allow_none=True)
+    lastModifiedBy = NestedText(expected_type=unicode, allow_none=True)
+    lastPrinted = NestedDateTime(allow_none=True)
+    revision = NestedText(expected_type=unicode, allow_none=True)
+    version = NestedText(expected_type=unicode, allow_none=True)
     last_modified_by = Alias("lastModifiedBy")
 
     # Dublin Core Properties
-    subject = String(allow_none=True)
-    title = String(allow_none=True)
-    creator = String(allow_none=True)
-    description = String(allow_none=True)
-    identifier = String(allow_none=True)
-    language = String(allow_none=True)
-    created = DateTime(expected_type=datetime.datetime, allow_none=True)
-    modified = DateTime(expected_type=datetime.datetime, allow_none=True)
+    subject = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    title = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    creator = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    description = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    identifier = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    language = NestedText(expected_type=unicode,allow_none=True, namespace=DCORE_NS)
+    # Dubline Core Terms
+    created = NestedDateTime(allow_none=True, namespace=DCTERMS_NS)
+    modified = NestedDateTime(allow_none=True, namespace=DCTERMS_NS)
 
-    __fields__ = ("category", "contentStatus", "lastModifiedBy", "keywords",
-                "lastPrinted", "revision", "version", "created", "creator", "description",
-                "identifier", "language", "modified", "subject", "title")
+    __elements__ = ("creator","title", "description", "subject","identifier",
+                  "language", "created", "modified", "lastModifiedBy", "category",
+                  "contentStatus", "version", "revision", "keywords", "lastPrinted",
+                  )
 
     def __init__(self,
                  category=None,
@@ -70,45 +95,6 @@ class DocumentProperties(Strict):
         self.language = language
         self.keywords = keywords
         self.category = category
-
-    def __iter__(self):
-        for attr in self.__fields__:
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-
-def write_properties(props):
-    """Write the core properties to xml."""
-    root = Element('{%s}coreProperties' % COREPROPS_NS)
-    for attr in ("creator", "title", "description", "subject", "identifier",
-                 "language"):
-        SubElement(root, '{%s}%s' % (DCORE_NS, attr)).text = getattr(props, attr)
-
-    for attr in ("created", "modified"):
-        value = datetime_to_W3CDTF(getattr(props, attr))
-        SubElement(root, '{%s}%s' % (DCTERMS_NS, attr),
-                   {'{%s}type' % XSI_NS:'%s:W3CDTF' % DCTERMS_PREFIX}).text = value
-
-    for attr in ("lastModifiedBy", "category", "contentStatus", "version",
-                 "revision", "keywords"):
-        SubElement(root, '{%s}%s' % (COREPROPS_NS, attr)).text = getattr(props, attr)
-
-    if props.lastPrinted is not None:
-        SubElement(root, "{%s}lastPrinted" % COREPROPS_NS).text = datetime_to_W3CDTF(props.lastPrinted
-                                                                            )
-    return tostring(root)
-
-
-def read_properties(xml_source):
-    properties = DocumentProperties()
-    root = fromstring(xml_source)
-
-    for node in safe_iterator(root):
-        tag = localname(node)
-        setattr(properties, tag, node.text)
-
-    return properties
 
 
 class DocumentSecurity(object):

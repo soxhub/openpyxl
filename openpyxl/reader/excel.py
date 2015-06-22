@@ -47,8 +47,9 @@ from .workbook import (
     read_workbook_code_name,
     read_workbook_settings,
 )
-from openpyxl.workbook.properties import read_properties, DocumentProperties
+from openpyxl.workbook.properties import DocumentProperties
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+from openpyxl.xml.functions import fromstring
 from .worksheet import WorkSheetParser
 from .comments import read_comments, get_comments_file
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
@@ -176,7 +177,8 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
 
     # get workbook-level information
     try:
-        wb.properties = read_properties(archive.read(ARC_CORE))
+        src = fromstring(archive.read(ARC_CORE))
+        wb.properties = DocumentProperties.from_tree(src)
     except KeyError:
         wb.properties = DocumentProperties()
     wb.active = read_workbook_settings(archive.read(ARC_WORKBOOK)) or 0
