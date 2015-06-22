@@ -40,6 +40,7 @@ class Nested(Descriptor):
 
 
     def to_tree(self, tagname=None, value=None, namespace=None):
+        namespace = getattr(self, "namespace", namespace)
         if value is not None:
             if namespace is not None:
                 tagname = "{%s}%s" % (namespace, tagname)
@@ -64,8 +65,8 @@ class NestedText(NestedValue):
         return node.text
 
 
-    @staticmethod
-    def to_tree(tagname=None, value=None, namespace=None):
+    def to_tree(self, tagname=None, value=None, namespace=None):
+        namespace = getattr(self, "namespace", namespace)
         if value is not None:
             if namespace is not None:
                 tagname = "{%s}%s" % (namespace, tagname)
@@ -114,8 +115,10 @@ class NestedMinMax(Nested, MinMax):
 class NestedSequence(Nested, Sequence):
 
 
-    @staticmethod
-    def to_tree(tagname, value, namespace=None):
+    def to_tree(self, tagname, value, namespace=None):
+        namespace = getattr(self, "namespace", namespace)
+        if namespace is not None:
+            tagname = "{%s}%s" % (namespace, tagname)
         for s in value:
             yield Element(tagname, val=safe_string(s))
 
@@ -132,7 +135,7 @@ class EmptyTag(Nested, Bool):
 
     def to_tree(self, tagname=None, value=None, namespace=None):
         if value:
-            ns = getattr(self, "namespace", None) or namespace
-            if ns is not None:
-                tagname = "{%s}%s" % (ns, tagname)
+            namespace = getattr(self, "namespace", namespace)
+            if namespace is not None:
+                tagname = "{%s}%s" % (namespace, tagname)
             return Element(tagname)
