@@ -42,6 +42,16 @@ Bug fixes
 * `#470 <https://bitbucket.org/openpyxl/openpyxl/issue/470>`_ Adding more than 10 worksheets with the same name leads to duplicates sheet names and an invalid file
 
 
+2.2.5 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#463 <https://bitbucket.org/openpyxl/openpyxl/issue/463>`_ Unexpected keyword "mergeCell"
+
+
 2.2.4 (2015-06-17)
 ==================
 
