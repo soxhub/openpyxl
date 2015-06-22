@@ -20,7 +20,7 @@ from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement
 
 
-def _no_value(tagname, value):
+def _no_value(tagname, value, namespace=None):
     if value:
         return Element(tagname, val=safe_string(value))
 

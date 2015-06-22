@@ -117,7 +117,7 @@ DEFAULT_EMPTY_FILL = PatternFill()
 DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
-def _serialise_stop(tagname, sequence):
+def _serialise_stop(tagname, sequence, namespace=None):
     for idx, color in enumerate(sequence):
         stop = Element("stop", position=str(idx))
         stop.append(color.to_tree())
@@ -167,7 +167,7 @@ class GradientFill(Fill):
             colors.append(Color.from_tree(color))
         return cls(stop=colors, **node.attrib)
 
-    def to_tree(self, tagname=None):
+    def to_tree(self, tagname=None, namespace=None):
         parent = Element("fill")
         el = super(GradientFill, self).to_tree()
         parent.append(el)

@@ -267,7 +267,7 @@ class TestSequence:
         from ..nested import NestedSequence
 
 
-        def to_tree(tagname, sequence):
+        def to_tree(tagname, sequence, namespace=None):
             from openpyxl.xml.functions import Element
             for s in sequence:
                 container = Element("color")
