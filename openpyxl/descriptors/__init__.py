@@ -39,7 +39,8 @@ class MetaSerialisable(type):
                     if not isinstance(v, Alias):
                         attrs.append(k)
 
-        methods['__attrs__'] = tuple(attrs)
+        if methods.get('__attrs__') is None:
+            methods['__attrs__'] = tuple(attrs)
         methods['__namespaced__'] = tuple(namespaced)
         if methods.get('__nested__') is None:
             methods['__nested__'] = tuple(sorted(nested))
