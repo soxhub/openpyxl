@@ -1,3 +1,13 @@
+2.2.5 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#463 <https://bitbucket.org/openpyxl/openpyxl/issue/463>`_ Unexpected keyword "mergeCell"
+
+
 2.2.4 (2015-06-17)
 ==================
 
