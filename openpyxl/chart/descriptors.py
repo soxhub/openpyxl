@@ -26,8 +26,8 @@ class NestedGapAmount(NestedMinMax):
 class NestedOverlap(NestedMinMax):
 
     allow_none = True
-    min = 0
-    max = 150
+    min = -100
+    max = 100
 
 
 class NumberFormatDescriptor(Typed):

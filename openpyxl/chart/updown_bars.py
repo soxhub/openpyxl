@@ -1,6 +1,5 @@
-"""
-Collection of utility primitives for charts.
-"""
+from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import Typed
@@ -8,10 +7,7 @@ from openpyxl.descriptors.excel import ExtensionList
 
 from .shapes import ShapeProperties
 from .axis import ChartLines
-from .descriptors import (
-    NestedGapAmount,
-    NestedOverlap,
-)
+from .descriptors import NestedGapAmount
 
 
 class UpDownBars(Serialisable):
@@ -26,7 +22,7 @@ class UpDownBars(Serialisable):
     __elements__ = ('gapWidth', 'upBars', 'downBars')
 
     def __init__(self,
-                 gapWidth=None,
+                 gapWidth=150,
                  upBars=None,
                  downBars=None,
                  extLst=None,

@@ -63,6 +63,12 @@ class SheetProtection(Serialisable):
 
     _password = None
 
+    __attrs__ = ('selectLockedCells', 'selectUnlockedCells', 'algorithmName',
+              'sheet', 'objects', 'insertRows', 'insertHyperlinks', 'autoFilter',
+              'scenarios', 'formatColumns', 'deleteColumns', 'insertColumns',
+              'pivotTables', 'deleteRows', 'formatCells', 'saltValue', 'formatRows',
+              'sort', 'spinCount', 'password')
+
 
     def __init__(self, sheet=False, objects=False, scenarios=False,
                  formatCells=True, formatRows=True, formatColumns=True,
@@ -91,7 +97,6 @@ class SheetProtection(Serialisable):
         self.algorithmName = algorithmName
         self.saltValue = saltValue
         self.spinCount = spinCount
-        self.__attrs__ = self.__attrs__ + ('password',)
 
 
     def set_password(self, value='', already_hashed=False):
