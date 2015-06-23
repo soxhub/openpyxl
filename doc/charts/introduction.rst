@@ -15,9 +15,9 @@ The following charts are available:
 .. toctree::
 
     bubble
+    bar
 
 * Area Chart, 3D Area Chart
-* Bar Chart, 3D Bar Chart
 * Line Chart, 3D Line Chart
 * Pie Chart, 3D PieChart Doughnut Chart, Projected Pie Chart
 * Scatter Chart
