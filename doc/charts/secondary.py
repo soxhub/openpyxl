@@ -40,4 +40,4 @@ c1 += c2
 
 ws.add_chart(c1, "D4")
 
-wb.save("secundary.xlsx")
+wb.save("secondary.xlsx")

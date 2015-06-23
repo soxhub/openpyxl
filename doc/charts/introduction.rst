@@ -45,3 +45,11 @@ themselves are comprised of references to cell ranges.
 >>> chart.add_data(values)
 >>> ws.add_chart(chart)
 >>> wb.save("SampleChart.xlsx")
+
+
+Working with axes
+-----------------
+
+.. toctree::
+
+    secondary
