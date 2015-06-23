@@ -23,6 +23,7 @@ class TestBarChart:
           <barDir val="col" />
           <grouping val="clustered" />
           <gapWidth val="150" />
+          <overlap val="100" />
           <axId val="10" />
           <axId val="100" />
         </barChart>
@@ -59,6 +60,7 @@ class TestBarChart:
                 <barDir val="col"></barDir>
                 <grouping val="clustered"></grouping>
                 <gapWidth val="150"></gapWidth>
+                <overlap val="100" />
                 <axId val="10"></axId>
                 <axId val="100"></axId>
               </barChart>
@@ -131,6 +133,7 @@ class TestBarChart:
             </val>
           </ser>
           <gapWidth val="150" />
+          <overlap val="100" />
           <axId val="10" />
           <axId val="100" />
         </barChart>
