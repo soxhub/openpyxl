@@ -196,6 +196,13 @@ Data Validation
 
     validation
 
+Parsing Formulas
+++++++++++++++++
+
+.. toctreee::
+
+   formula
+
 
 Information for Developers
 --------------------------
