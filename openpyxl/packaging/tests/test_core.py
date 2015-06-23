@@ -11,7 +11,7 @@ from openpyxl.xml.functions import fromstring, tostring
 
 @pytest.fixture()
 def SampleProperties():
-    from .. properties import DocumentProperties
+    from .. core import DocumentProperties
     props = DocumentProperties()
     props.keywords = "one, two, three"
     props.created = datetime.datetime(2010, 4, 1, 20, 30, 00)

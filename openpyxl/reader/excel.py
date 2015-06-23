@@ -47,7 +47,7 @@ from .workbook import (
     read_workbook_code_name,
     read_workbook_settings,
 )
-from openpyxl.workbook.properties import DocumentProperties
+from openpyxl.packaging.core import DocumentProperties
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.xml.functions import fromstring
 from .worksheet import WorkSheetParser
