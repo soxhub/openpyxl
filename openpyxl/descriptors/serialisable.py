@@ -61,7 +61,7 @@ class Serialisable(_Serialiasable):
                         attrib.setdefault(tag, [])
                         attrib[tag].append(desc.from_tree(el))
                     else:
-                        attrib[tag] = el
+                        attrib[tag] = desc.from_tree(el)
             else:
                 if isinstance(desc, property):
                     continue
