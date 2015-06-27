@@ -34,6 +34,7 @@ def test_open_many_sheets(datadir):
                              ("sheet2.xml", ('D', 1, 'AA', 30)),
                              ("sheet2_no_dimension.xml", None),
                              ("sheet2_no_span.xml", None),
+                             ("sheet2_invalid_dimension.xml", None),
                           ]
                          )
 def test_read_dimension(datadir, filename, expected):
