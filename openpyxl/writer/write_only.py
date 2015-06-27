@@ -174,19 +174,20 @@ class WriteOnlyWorksheet(Worksheet):
                 continue
             if isinstance(value, Cell):
                 cell = value
+                if cell.comment is not None:
+                    comment = cell.comment
+                    comment._parent = CommentParentCell(cell)
+                    self._comments.append(comment)
             else:
                 cell.value = value
 
             cell.col_idx = col_idx
             cell.row = row_idx
-            if cell.comment is not None:
-                comment = cell.comment
-                comment._parent = CommentParentCell(cell)
-                self._comments.append(comment)
 
-            tree = write_cell(self, cell)
+            styled = cell.has_style
+            tree = write_cell(self, cell, styled)
             el.append(tree)
-            if cell.has_style: # styled cell or datetime
+            if styled: # styled cell or datetime
                 cell = WriteOnlyCell(self)
 
         if col_idx:

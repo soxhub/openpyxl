@@ -172,9 +172,10 @@ def test_write_cell(worksheet, value, expected):
     from openpyxl.cell import Cell
     from .. etree_worksheet import write_cell
     ws = worksheet
-    ws['A1'] = value
+    cell = ws['A1']
+    cell.value = value
 
-    el = write_cell(ws, ws['A1'])
+    el = write_cell(ws, cell, cell.has_style)
     xml = tostring(el)
     diff = compare_xml(xml, expected)
     assert diff is None, diff
