@@ -200,7 +200,7 @@ class IterableWorksheet(Worksheet):
             cell = r[-1]
             max_col = max(max_col, column_index_from_string(cell.column))
         self.max_row = cell.row
-        self.max_col = max_col
+        self.max_col = get_column_letter(max_col)
 
     def get_highest_column(self):
         if self.max_col is not None:
