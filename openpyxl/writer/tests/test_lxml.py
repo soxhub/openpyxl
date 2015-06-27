@@ -39,11 +39,13 @@ def test_write_cell(worksheet, value, expected):
     from .. lxml_worksheet import write_cell
 
     ws = worksheet
-    ws['A1'] = value
+    cell = ws['A1']
+    cell.value = value
 
     out = BytesIO()
     with xmlfile(out) as xf:
-        write_cell(xf, ws, ws['A1'])
+        cell = ws['A1']
+        write_cell(xf, ws, cell, cell.has_style)
     xml = out.getvalue()
     diff = compare_xml(xml, expected)
     assert diff is None, diff

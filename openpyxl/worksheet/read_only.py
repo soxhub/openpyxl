@@ -34,6 +34,8 @@ def read_dimension(source):
         if element.tag == DIMENSION_TAG:
             dim = element.get("ref")
             m = ABSOLUTE_RE.match(dim.upper())
+            if m is None:
+                return
             min_col, min_row, sep, max_col, max_row = m.groups()
             min_row = int(min_row)
             if max_col is None or max_row is None:
