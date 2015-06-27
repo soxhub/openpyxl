@@ -40,24 +40,26 @@ def write_rows(xf, worksheet):
 
             with xf.element("row", attrs):
                 for col, cell in sorted(row, key=itemgetter(0)):
-                    el = write_cell(worksheet, cell)
+                    if cell.value is None and not cell.has_style:
+                        continue
+                    el = write_cell(worksheet, cell, cell.has_style)
                     xf.write(el)
 
 
-def write_cell(worksheet, cell):
+def write_cell(worksheet, cell, styled=None):
     string_table = worksheet.parent.shared_strings
     coordinate = cell.coordinate
     attributes = {'r': coordinate}
-    if cell.has_style:
+    if styled:
         attributes['s'] = '%d' % cell.style_id
 
     if cell.data_type != 'f':
         attributes['t'] = cell.data_type
 
-    value = cell.internal_value
+    value = cell._value
 
     el = Element("c", attributes)
-    if value in ('', None):
+    if value is None or value == "":
         return el
 
     if cell.data_type == 'f':

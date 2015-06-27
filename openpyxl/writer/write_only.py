@@ -172,21 +172,25 @@ class WriteOnlyWorksheet(Worksheet):
         for col_idx, value in enumerate(row, 1):
             if value is None:
                 continue
-            if isinstance(value, Cell):
-                cell = value
-            else:
+            try:
                 cell.value = value
+            except ValueError:
+                if isinstance(value, Cell):
+                    cell = value
+                    if cell.comment is not None:
+                        comment = cell.comment
+                        comment._parent = CommentParentCell(cell)
+                        self._comments.append(comment)
+                else:
+                    raise ValueError
 
             cell.col_idx = col_idx
             cell.row = row_idx
-            if cell.comment is not None:
-                comment = cell.comment
-                comment._parent = CommentParentCell(cell)
-                self._comments.append(comment)
 
-            tree = write_cell(self, cell)
+            styled = cell.has_style
+            tree = write_cell(self, cell, styled)
             el.append(tree)
-            if cell.has_style: # styled cell or datetime
+            if styled: # styled cell or datetime
                 cell = WriteOnlyCell(self)
 
         if col_idx:
