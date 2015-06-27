@@ -50,7 +50,7 @@ def test_force_dimension(datadir, DummyWorkbook):
 
     ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [], [])
     dims = ws.calculate_dimension(True)
-    assert dims == "A1:2730"
+    assert dims == "A1:AA30"
 
 
 
