@@ -18,6 +18,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
 from openpyxl.formatting import ConditionalFormatting, Rule
+from openpyxl.formula.translate import Translator
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.utils import (
     coordinate_from_string,
@@ -74,6 +75,7 @@ class WorkSheetParser(object):
         self.styles = [dict(v) for v in self.ws.parent._cell_styles]
         self.differential_styles = wb._differential_styles
         self.keep_vba = wb.vba_archive is not None
+        self.shared_formula_masters = {}  # {si_str: Translator()}
 
     def parse(self):
         dispatcher = {
@@ -126,6 +128,50 @@ class WorkSheetParser(object):
                 si = formula.get('si')  # Shared group index for shared formulas
                 if si:
                     self.ws.formula_attributes[coordinate]['si'] = si
+                    if formula_type == "shared":
+                        # The spec (18.3.1.40) defines shared formulae in
+                        # terms of the following:
+                        #
+                        # `master`: "The first formula in a group of shared
+                        #            formulas"
+                        # `ref`: "Range of cells which the formula applies
+                        #        to." It's a required attribute on the master
+                        #        cell, forbidden otherwise.
+                        # `shared cell`: "A cell is shared only when si is
+                        #                 used and t is `shared`."
+                        #
+                        # Whether to use the cell's given formula or the
+                        # master's depends on whether the cell is shared,
+                        # whether it's in the ref, and whether it defines its
+                        # own formula, as follows:
+                        #
+                        #  Shared?   Has formula? | In ref    Not in ref
+                        # ========= ==============|======== ===============
+                        #   Yes          Yes      | master   impl. defined
+                        #    No          Yes      |  own         own
+                        #   Yes           No      | master   impl. defined
+                        #    No           No      |  ??          N/A
+                        #
+                        # The ?? is because the spec is silent on this issue,
+                        # though my inference is that the cell does not
+                        # receive a formula at all.
+                        #
+                        # For this implementation, we are using the master
+                        # formula in the two "impl. defined" cases and no
+                        # formula in the "??" case. This choice of
+                        # implementation allows us to disregard the `ref`
+                        # parameter altogether, and does not require
+                        # computing expressions like `C5 in A1:D6`.
+                        # Presumably, Excel does not generate spreadsheets
+                        # with such contradictions.
+                        try:
+                            trans = self.shared_formula_masters[si]
+                        except KeyError:
+                            # This cell must be master
+                            self.shared_formula_masters[si] = Translator(
+                                value, coordinate)
+                        else:
+                            value = trans.translate_formula(coordinate)
                 ref = formula.get('ref')  # Range for shared formulas
                 if ref:
                     self.ws.formula_attributes[coordinate]['ref'] = ref
