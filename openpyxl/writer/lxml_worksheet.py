@@ -34,7 +34,6 @@ def write_rows(xf, worksheet):
 
 
 def write_cell(xf, worksheet, cell, styled=False):
-    string_table = worksheet.parent.shared_strings
     coordinate = cell.coordinate
     attributes = {'r': coordinate}
     if styled:
@@ -61,7 +60,7 @@ def write_cell(xf, worksheet, cell, styled=False):
                     value = None
 
         if cell.data_type == 's':
-            value = string_table.add(value)
+            value = worksheet.parent.shared_strings.add(value)
         with xf.element("v"):
             if value is not None:
                 xf.write(safe_string(value))

@@ -147,17 +147,17 @@ def test_read_complex_formulae(datadir):
     assert ws.formula_attributes['C7']['t'] == 'shared'
     assert ws.formula_attributes['C7']['si'] == '0'
     assert 'ref' not in ws.formula_attributes['C7']
-    assert ws.cell('C7').value == '='
+    assert ws.cell('C7').value == '=C4*2'
     assert ws.cell('D7').data_type == 'f'
     assert ws.formula_attributes['D7']['t'] == 'shared'
     assert ws.formula_attributes['D7']['si'] == '0'
     assert 'ref' not in ws.formula_attributes['D7']
-    assert ws.cell('D7').value == '='
+    assert ws.cell('D7').value == '=D4*2'
     assert ws.cell('E7').data_type == 'f'
     assert ws.formula_attributes['E7']['t'] == 'shared'
     assert ws.formula_attributes['E7']['si'] == '0'
     assert 'ref' not in ws.formula_attributes['E7']
-    assert ws.cell('E7').value == '='
+    assert ws.cell('E7').value == '=E4*2'
 
     # Test array forumlae
     assert ws.cell('C10').data_type == 'f'

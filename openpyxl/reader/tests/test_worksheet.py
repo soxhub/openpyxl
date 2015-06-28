@@ -479,3 +479,22 @@ def test_legacy_document_no_keep(WorkSheetParser, datadir):
     element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
     parser.parse_legacy_drawing(element)
     assert parser.ws.vba_controls is None
+
+
+@pytest.fixture
+def Translator():
+    from openpyxl.formula import translate
+    return translate.Translator
+
+def test_shared_formula(WorkSheetParser, Translator):
+    parser = WorkSheetParser
+    src = """
+    <x:c r="A9" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <x:f t="shared" si="0"/>
+      <x:v>9</x:v>
+    </x:c>
+    """
+    element = fromstring(src)
+    parser.shared_formula_masters['0'] = Translator("=A4*B4", "A1")
+    parser.parse_cell(element)
+    assert parser.ws['A9'].value == "=A12*B12"
