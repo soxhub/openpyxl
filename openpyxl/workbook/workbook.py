@@ -130,7 +130,7 @@ class Workbook(object):
                 number_format = self._number_formats[sid.number_format - 164]
             styles.append(Style(font, fill, border, alignment,
                                 number_format, protection))
-            return styles
+        return styles
 
 
     @property
