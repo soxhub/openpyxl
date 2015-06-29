@@ -99,28 +99,6 @@ class Workbook(object):
 
 
     @property
-    def shared_styles(self):
-        """
-        Legacy
-        On the fly conversion of style references to style objects
-        """
-        styles = []
-        for sid in self._cell_styles:
-            font = self._fonts[sid.fontId]
-            fill = self._fills[sid.fillId]
-            border = self._borders[sid.borderId]
-            alignment = self._alignments[sid.alignmentId]
-            protection = self._protections[sid.protectionId]
-            nf_id = sid.number_format
-            if nf_id < 164:
-                number_format = BUILTIN_FORMATS.get(nf_id, "General")
-            else:
-                number_format = self._number_formats[sid.number_format - 164]
-            styles.append(Style(font, fill, border, alignment,
-                                number_format, protection))
-            return styles
-
-    @property
     def read_only(self):
         return self.__read_only
 
