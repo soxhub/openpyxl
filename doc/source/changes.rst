@@ -7,6 +7,7 @@ Bug fixes
 
 * `#463 <https://bitbucket.org/openpyxl/openpyxl/issue/463>`_ Unexpected keyword "mergeCell"
 * `#484 <https://bitbucket.org/openpyxl/openpyxl/issue/484>`_ Unusual dimensions breaks read-only mode
+* `#485 <https://bitbucket.org/openpyxl/openpyxl/issue/485>`_ Move return out of loop
 
 
 2.2.4 (2015-06-17)
