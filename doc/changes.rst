@@ -1,5 +1,5 @@
-2.3.0-b1 (unreleased)
-==================
+2.3.0-b1 (2015-06-29)
+=====================
 
 
 Major changes
@@ -31,7 +31,8 @@ Bug fixes
 * `#470 <https://bitbucket.org/openpyxl/openpyxl/issue/470>`_ Adding more than 10 worksheets with the same name leads to duplicates sheet names and an invalid file
 
 
-2.2.5 (unreleased)
+
+2.2.5 (2015-06-29)
 ==================
 
 
