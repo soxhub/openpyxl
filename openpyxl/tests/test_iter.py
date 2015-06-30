@@ -34,6 +34,7 @@ def test_open_many_sheets(datadir):
                              ("sheet2.xml", ('D', 1, 'AA', 30)),
                              ("sheet2_no_dimension.xml", None),
                              ("sheet2_no_span.xml", None),
+                             ("sheet2_invalid_dimension.xml", None),
                           ]
                          )
 def test_read_dimension(datadir, filename, expected):
@@ -49,7 +50,7 @@ def test_force_dimension(datadir, DummyWorkbook):
 
     ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [], [])
     dims = ws.calculate_dimension(True)
-    assert dims == "A1:2730"
+    assert dims == "A1:AA30"
 
 
 

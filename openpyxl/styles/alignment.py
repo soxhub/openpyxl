@@ -46,7 +46,7 @@ class Alignment(HashableObject):
     def __init__(self, horizontal=None, vertical=None,
                  textRotation=0, wrapText=None, shrinkToFit=None, indent=0, relativeIndent=0,
                  justifyLastLine=None, readingOrder=0, text_rotation=None,
-                 wrap_text=None, shrink_to_fit=None) :
+                 wrap_text=None, shrink_to_fit=None, mergeCell=None):
         self.horizontal = horizontal
         self.vertical = vertical
         self.indent = indent
@@ -63,6 +63,7 @@ class Alignment(HashableObject):
         if shrink_to_fit is not None:
             shrinkToFit = shrink_to_fit
         self.shrinkToFit = shrinkToFit
+        # mergeCell is vestigial
 
 
     def __iter__(self):

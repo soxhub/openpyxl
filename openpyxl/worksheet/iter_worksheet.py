@@ -34,6 +34,8 @@ def read_dimension(source):
         if element.tag == DIMENSION_TAG:
             dim = element.get("ref")
             m = ABSOLUTE_RE.match(dim.upper())
+            if m is None:
+                return
             min_col, min_row, sep, max_col, max_row = m.groups()
             min_row = int(min_row)
             if max_col is None or max_row is None:
@@ -174,6 +176,12 @@ class IterableWorksheet(Worksheet):
     def rows(self):
         return self.iter_rows()
 
+    @property
+    def columns(self):
+        if self.max_column is None:
+            self.calculate_dimension()
+        return super(IterableWorksheet, self).columns
+
     def calculate_dimension(self, force=False):
         if not all([self.max_col, self.max_row]):
             if force:
@@ -192,7 +200,7 @@ class IterableWorksheet(Worksheet):
             cell = r[-1]
             max_col = max(max_col, column_index_from_string(cell.column))
         self.max_row = cell.row
-        self.max_col = max_col
+        self.max_col = get_column_letter(max_col)
 
     def get_highest_column(self):
         if self.max_col is not None:
