@@ -1,3 +1,13 @@
+2.3.0-b2 (unreleased)
+=====================
+
+
+Bug fixes
+---------
+
+* `#488 <https://bitbucket.org/openpyxl/openpyxl/issue/488>`_ Support hashValue attribute for sheetProtection
+
+
 2.3.0-b1 (2015-06-29)
 =====================
 
