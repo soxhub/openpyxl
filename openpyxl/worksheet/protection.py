@@ -60,6 +60,7 @@ class SheetProtection(Serialisable):
     saltValue = String(allow_none=True)
     spinCount = Integer(allow_none=True)
     algorithmName = String(allow_none=True)
+    hashValue = String(allow_none=True)
 
     _password = None
 
@@ -75,7 +76,7 @@ class SheetProtection(Serialisable):
                  insertColumns=True, insertRows=True, insertHyperlinks=True,
                  deleteColumns=True, deleteRows=True, selectLockedCells=False,
                  selectUnlockedCells=False, sort=True, autoFilter=True, pivotTables=True,
-                 password=None, algorithmName=None, saltValue=None, spinCount=None):
+                 password=None, algorithmName=None, saltValue=None, spinCount=None, hashValue=None):
         self.sheet = sheet
         self.objects = objects
         self.scenarios = scenarios
@@ -97,6 +98,7 @@ class SheetProtection(Serialisable):
         self.algorithmName = algorithmName
         self.saltValue = saltValue
         self.spinCount = spinCount
+        self.hashValue = hashValue
 
 
     def set_password(self, value='', already_hashed=False):
