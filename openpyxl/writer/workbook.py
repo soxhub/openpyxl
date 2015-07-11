@@ -326,6 +326,7 @@ def write_workbook_rels(workbook):
     if workbook.vba_archive:
         i += 1
         vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % i)
+        vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         root.append(vba.to_tree())
 
     external_links = workbook._external_links
