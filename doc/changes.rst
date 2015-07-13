@@ -6,6 +6,7 @@ Bug fixes
 ---------
 
 * `#488 <https://bitbucket.org/openpyxl/openpyxl/issue/488>`_ Support hashValue attribute for sheetProtection
+* `#493 <https://bitbucket.org/openpyxl/openpyxl/issue/493>`_ Warn that unsupported extensions will be dropped
 
 
 2.3.0-b1 (2015-06-29)
