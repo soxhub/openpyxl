@@ -498,3 +498,16 @@ def test_shared_formula(WorkSheetParser, Translator):
     parser.shared_formula_masters['0'] = Translator("=A4*B4", "A1")
     parser.parse_cell(element)
     assert parser.ws['A9'].value == "=A12*B12"
+
+
+def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
+    datadir.chdir()
+    parser = WorkSheetParser
+
+    with open("extended_conditional_formatting_sheet.xml") as src:
+        sheet = fromstring(src.read())
+
+    element = sheet.find("{%s}extLst" % SHEET_MAIN_NS)
+    parser.parse_extensions(element)
+    w = recwarn.pop()
+    assert issubclass(w.category, UserWarning)
