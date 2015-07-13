@@ -7,7 +7,7 @@ Excel specific descriptors
 
 from openpyxl.compat import basestring
 from openpyxl.xml.constants import REL_NS
-from . import MatchPattern, MinMax, Integer, String, Typed
+from . import MatchPattern, MinMax, Integer, String, Typed, Sequence
 from .serialisable import Serialisable
 
 
@@ -42,7 +42,7 @@ class Percentage(MatchPattern):
 
 class Extension(Serialisable):
 
-    uri = Typed(expected_type=String, )
+    uri = String()
 
     def __init__(self,
                  uri=None,
@@ -52,7 +52,7 @@ class Extension(Serialisable):
 
 class ExtensionList(Serialisable):
 
-    ext = Typed(expected_type=Extension, allow_none=True)
+    ext = Sequence(expected_type=Extension)
 
     def __init__(self,
                  ext=None,
