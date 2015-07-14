@@ -514,3 +514,13 @@ def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
     parser.parse_extensions(element)
     w = recwarn.pop()
     assert issubclass(w.category, UserWarning)
+
+
+def test_row_dimensions(WorkSheetParser):
+    src = """<row r="2" spans="1:6" x14ac:dyDescent="0.3" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" />"""
+    element = fromstring(src)
+
+    parser = WorkSheetParser
+    parser.parse_row_dimensions(element)
+
+    assert 2 not in parser.ws.row_dimensions

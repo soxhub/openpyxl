@@ -225,10 +225,16 @@ class WorkSheetParser(object):
 
 
     def parse_row_dimensions(self, row):
-        attrs = dict(row.attrib)
-        if set(attrs) - set(['r', 'span']):
-            attrs['worksheet'] = self.ws
-            dim = RowDimension(**attrs)
+        attrs = row.attrib
+        keys = set(attrs)
+        for key in keys:
+            if key.startswith('{'):
+                del attrs[key]
+
+        keys = set(attrs)
+        if keys != set(['r', 'spans']) and keys != set(['r']):
+            # don't create dimension objects unless they have relevant information
+            dim = RowDimension(self.ws, **attrs)
             self.ws.row_dimensions[dim.index] = dim
 
         for cell in safe_iterator(row, self.CELL_TAG):
