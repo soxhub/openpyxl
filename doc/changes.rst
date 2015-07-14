@@ -7,6 +7,13 @@ Bug fixes
 
 * `#488 <https://bitbucket.org/openpyxl/openpyxl/issue/488>`_ Support hashValue attribute for sheetProtection
 * `#493 <https://bitbucket.org/openpyxl/openpyxl/issue/493>`_ Warn that unsupported extensions will be dropped
+* `#494 <https://bitbucket.org/openpyxl/openpyxl/issues/494/>`_ Cells with exponentials causes a ValueError
+
+
+Minor changes
+-------------
+
+* Worksheets are now iterable by row.
 
 
 2.3.0-b1 (2015-06-29)
