@@ -1,14 +1,26 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+import re
 
-from openpyxl.compat import unicode
+from openpyxl.compat import unicode, long
 
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.datetime import from_excel
 from openpyxl.styles import is_date_format, Style
 from openpyxl.styles.numbers import BUILTIN_FORMATS
+
+
+FLOAT_REGEX = re.compile(r"\.|[E-e]")
+
+
+def _cast_number(value):
+    "Convert numbers as string to an int or float"
+    m = FLOAT_REGEX.search(value)
+    if m is not None:
+        return float(value)
+    return long(value)
 
 
 class ReadOnlyCell(object):
@@ -120,10 +132,7 @@ class ReadOnlyCell(object):
         if value is None:
             self.data_type = 'n'
         elif self.data_type == 'n':
-            try:
-                value = int(value)
-            except ValueError:
-                value = float(value)
+            value = _cast_number(value)
         self._value = value
 
     @property
