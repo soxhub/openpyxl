@@ -392,6 +392,10 @@ class Worksheet(object):
         self[key].value = value
 
 
+    def __iter__(self):
+        return self.iter_rows()
+
+
     @deprecated("Use the max_row property")
     def get_highest_row(self):
         return self.max_row
