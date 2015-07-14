@@ -11,6 +11,7 @@ from openpyxl.xml.functions import iterparse
 # package imports
 from openpyxl.cell import Cell
 from openpyxl.worksheet.filters import AutoFilter
+from openpyxl.cell.read_only import _cast_number
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
@@ -52,14 +53,6 @@ def _get_xml_iter(xml_source):
         except:
             pass
         return xml_source
-
-
-def _cast_number(value):
-    "Convert numbers as string to an int or float"
-
-    if "." in value:
-        return float(value)
-    return int(value)
 
 
 class WorkSheetParser(object):
