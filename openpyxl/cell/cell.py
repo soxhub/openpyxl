@@ -83,7 +83,6 @@ class Cell(StyleableObject):
         '_value',
         'data_type',
         'parent',
-        'xf_index',
         '_hyperlink',
         '_comment',
                  )
@@ -122,7 +121,6 @@ class Cell(StyleableObject):
         self.data_type = 'n'
         if value is not None:
             self.value = value
-        self.xf_index = 0
         self._comment = None
         if column is not None:
             col_idx = column_index_from_string(column)

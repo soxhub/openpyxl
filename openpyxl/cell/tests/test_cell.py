@@ -100,7 +100,6 @@ def test_ctor(dummy_cell):
     assert cell.row == 1
     assert cell.coordinate == "A1"
     assert cell.value is None
-    assert cell.xf_index == 0
     assert cell.comment is None
 
 
