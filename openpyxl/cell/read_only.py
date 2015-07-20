@@ -114,8 +114,9 @@ class ReadOnlyCell(object):
         if self._value is None:
             return
         if self.data_type == 'n':
-            if is_date_format(self.number_format):
-                return from_excel(self._value, self.base_date)
+            if self.style_id:
+                if is_date_format(self.number_format):
+                    return from_excel(self._value, self.base_date)
             return self._value
         if self.data_type == 'b':
             return self._value == '1'
