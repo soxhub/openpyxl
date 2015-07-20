@@ -71,6 +71,15 @@ def test_save_with_vba(datadir):
                     ])
     assert files == expected
 
+def test_save_with_saved_comments(datadir):
+    datadir.join('reader').chdir()
+    fname = 'vba-comments-saved.xlsm'
+    wb = load_workbook(fname, keep_vba=True)
+    buf = save_virtual_workbook(wb)
+    files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
+    expected = set(zipfile.ZipFile(fname, 'r').namelist())
+    assert files == expected
+
 def test_save_without_vba(datadir):
     datadir.join('reader').chdir()
     fname = 'vba-test.xlsm'
