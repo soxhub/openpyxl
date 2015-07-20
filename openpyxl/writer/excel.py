@@ -46,7 +46,7 @@ from openpyxl.workbook.names.external import (
 
 from openpyxl.writer.comments import CommentWriter
 
-ARC_VBA = ('xl/vba', r'xl/drawings/.*\.vml', 'xl/ctrlProps', 'customUI',
+ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
            'xl/activeX', r'xl/media/.*\.emf')
 
 class ExcelWriter(object):
