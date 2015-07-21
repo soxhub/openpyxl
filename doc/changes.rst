@@ -35,6 +35,7 @@ Minor changes
 
 * Read-only and write-only worksheets renamed.
 * Write-only workbooks support charts and images.
+* `PR76 <https://bitbucket.org/openpyxl/openpyxl/pull-request/76>`_ Prevent comment images from conflicting with VBA
 
 
 Bug fixes
