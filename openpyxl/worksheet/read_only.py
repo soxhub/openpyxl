@@ -62,6 +62,7 @@ VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
 FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
+CELL_TAGS = (CELL_TAG, VALUE_TAG, FORMULA_TAG)
 
 class ReadOnlyWorksheet(Worksheet):
 
@@ -124,7 +125,7 @@ class ReadOnlyWorksheet(Worksheet):
                     yield tuple(self._get_row(element, min_col, max_col))
                     row_counter += 1
 
-            if element.tag in (CELL_TAG, VALUE_TAG, FORMULA_TAG):
+            if element.tag in CELL_TAGS:
                 # sub-elements of rows should be skipped as handled within a cell
                 continue
             element.clear()
@@ -133,6 +134,7 @@ class ReadOnlyWorksheet(Worksheet):
     def _get_row(self, element, min_col=1, max_col=None):
         """Return cells from a particular row"""
         col_counter = min_col
+        data_only = getattr(self.parent, 'data_only', False)
 
         for cell in safe_iterator(element, CELL_TAG):
             coordinate = cell.get('r')
@@ -149,14 +151,18 @@ class ReadOnlyWorksheet(Worksheet):
 
                 data_type = cell.get('t', 'n')
                 style_id = int(cell.get('s', 0))
-                formula = cell.findtext(FORMULA_TAG)
-                value = cell.find(VALUE_TAG)
-                if value is not None:
-                    value = value.text
-                if formula is not None:
-                    if not self.parent.data_only:
+                value = None
+
+                for el in cell:
+                    if el.tag == VALUE_TAG:
+                        value = el.text
+
+                    elif el.tag == FORMULA_TAG and not data_only:
                         data_type = 'f'
-                        value = "=%s" % formula
+                        formula = "=%s" % el.text
+
+                if data_type == 'f':
+                    value = formula
 
                 yield ReadOnlyCell(self, row, column,
                                    value, data_type, style_id)
