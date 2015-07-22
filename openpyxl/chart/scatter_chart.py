@@ -25,7 +25,7 @@ class ScatterChart(ChartBase):
 
     scatterStyle = NestedNoneSet(values=(['line', 'lineMarker', 'marker', 'smooth', 'smoothMarker']))
     varyColors = NestedBool(allow_none=True)
-    ser = Typed(expected_type=XYSeries, allow_none=True)
+    ser = Sequence(expected_type=XYSeries, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -40,7 +40,7 @@ class ScatterChart(ChartBase):
     def __init__(self,
                  scatterStyle=None,
                  varyColors=None,
-                 ser=None,
+                 ser=(),
                  dLbls=None,
                  axId=None,
                  extLst=None,

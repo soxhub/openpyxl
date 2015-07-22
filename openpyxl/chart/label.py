@@ -42,7 +42,7 @@ class _DataLabelBase(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ("delete", "numFmt", "spPr", "txPr", "dLblPos",
-                    "showLegendKey", "showVal", "showCatName", "showPercent",
+                    "showLegendKey", "showVal", "showCatName", "showSerName", "showPercent",
                     "showBubbleSize", "showLeaderLines", "separator")
 
     def __init__(self,
