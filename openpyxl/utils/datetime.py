@@ -6,6 +6,7 @@ from __future__ import division
 
 # Python stdlib imports
 import datetime
+from datetime import timezone, timedelta
 import re
 
 from jdcal import (
@@ -72,6 +73,8 @@ def from_excel(value, offset=CALENDAR_WINDOWS_1900):
 @lru_cache()
 def time_to_days(value):
     """Convert a time value to fractions of day"""
+    if value.tzinfo is not None:
+        value = value.astimezone(timezone(timedelta(0)))
     return (
         (value.hour * 3600)
         + (value.minute * 60)
@@ -79,7 +82,7 @@ def time_to_days(value):
         + value.microsecond / 10**6
         ) / SECS_PER_DAY
 
-@lru_cache()
+
 def timedelta_to_days(value):
     """Convert a timedelta value to fractions of a day"""
     if not hasattr(value, 'total_seconds'):
