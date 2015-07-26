@@ -9,6 +9,7 @@ Bug fixes
 * `#493 <https://bitbucket.org/openpyxl/openpyxl/issue/493>`_ Warn that unsupported extensions will be dropped
 * `#494 <https://bitbucket.org/openpyxl/openpyxl/issues/494/>`_ Cells with exponentials causes a ValueError
 * `#497 <https://bitbucket.org/openpyxl/openpyxl/issues/497/>`_ Scatter charts are broken
+* `#499 <https://bitbucket.org/openpyxl/openpyxl/issues/499/>`_ Inconsistent conversion of localised datetimes
 
 
 Minor changes
