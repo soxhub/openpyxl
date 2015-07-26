@@ -104,6 +104,7 @@ def time_to_days(value):
         ) / SECS_PER_DAY
 
 
+@lru_cache()
 def timedelta_to_days(value):
     """Convert a timedelta value to fractions of a day"""
     if not hasattr(value, 'total_seconds'):
@@ -112,6 +113,7 @@ def timedelta_to_days(value):
     else:
         secs =value.total_seconds()
     return secs / SECS_PER_DAY
+
 
 @lru_cache()
 def days_to_time(value):
