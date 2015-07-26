@@ -85,7 +85,7 @@ class GMT(tzinfo):
 
 try:
     from datetime import timezone
-    UTC = tzinfo(timedelta(0), offset=0)
+    UTC = timezone(timedelta(0))
 except ImportError:
     # Python 2.6
     UTC = GMT()
