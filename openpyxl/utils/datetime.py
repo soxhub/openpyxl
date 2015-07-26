@@ -6,6 +6,7 @@ from __future__ import division
 
 # Python stdlib imports
 import datetime
+from datetime import timedelta, tzinfo
 import re
 
 from jdcal import (
@@ -69,15 +70,39 @@ def from_excel(value, offset=CALENDAR_WINDOWS_1900):
         return datetime.datetime(*parts[:3] + [0])
 
 
+UTC = tzinfo(timedelta(0), offset=0)
+
+class GMT(tzinfo):
+
+    def utcoffset(self, dt):
+        return timedelta(0)
+
+    def dst(self, dt):
+        return timedelta(0)
+
+    def tzname(self,dt):
+        return "GMT"
+
+try:
+    from datetime import timezone
+    UTC = timezone(timedelta(0))
+except ImportError:
+    # Python 2.6
+    UTC = GMT()
+
+
 @lru_cache()
 def time_to_days(value):
     """Convert a time value to fractions of day"""
+    if value.tzinfo is not None:
+        value = value.astimezone(UTC)
     return (
         (value.hour * 3600)
         + (value.minute * 60)
         + value.second
         + value.microsecond / 10**6
         ) / SECS_PER_DAY
+
 
 @lru_cache()
 def timedelta_to_days(value):
@@ -88,6 +113,7 @@ def timedelta_to_days(value):
     else:
         secs =value.total_seconds()
     return secs / SECS_PER_DAY
+
 
 @lru_cache()
 def days_to_time(value):
