@@ -437,6 +437,8 @@ class CustomGeometry2D(Serialisable):
 
 class PresetGeometry2D(Serialisable):
 
+    namespace = DRAWING_NS
+
     prst = Set(values=(
         ['line', 'lineInv', 'triangle', 'rtTriangle', 'rect',
          'diamond', 'parallelogram', 'trapezoid', 'nonIsoscelesTrapezoid',
