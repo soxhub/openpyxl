@@ -36,15 +36,16 @@ def test_ctor(SampleProperties):
     <coreProperties
         xmlns="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
         xmlns:dc="http://purl.org/dc/elements/1.1/"
-        xmlns:dcterms="http://purl.org/dc/terms/">
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <dc:creator>TEST_USER</dc:creator>
         <dc:title>The title</dc:title>
         <dc:description>The description</dc:description>
         <dc:subject>The subject</dc:subject>
         <dc:identifier>The identifier</dc:identifier>
         <dc:language>The language</dc:language>
-        <dcterms:created>2010-04-01T20:30:00Z</dcterms:created>
-        <dcterms:modified>2010-04-05T14:05:30Z</dcterms:modified>
+        <dcterms:created xsi:type="dcterms:W3CDTF">2010-04-01T20:30:00Z</dcterms:created>
+        <dcterms:modified xsi:type="dcterms:W3CDTF">2010-04-05T14:05:30Z</dcterms:modified>
         <lastModifiedBy>SOMEBODY</lastModifiedBy>
         <category>The category</category>
         <contentStatus>The status</contentStatus>
@@ -67,3 +68,17 @@ def test_from_tree(datadir, SampleProperties):
     content = fromstring(content)
     props = SampleProperties.from_tree(content)
     assert props == SampleProperties
+
+
+def test_qualified_datetime():
+    from ..core import QualifiedDateTime
+    dt = QualifiedDateTime()
+    tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30))
+    xml = tostring(tree)
+    expected = """
+    <time xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dcterms:W3CDTF">
+      2015-07-20T12:30:00Z
+    </time>"""
+
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
