@@ -41,7 +41,7 @@ class QualifiedDateTime(NestedDateTime):
     attribute isn't set"""
 
     def to_tree(self, tagname=None, value=None, namespace=None):
-        el = super(W3CDateTime, self).to_tree(tagname, value, namespace)
+        el = super(QualifiedDateTime, self).to_tree(tagname, value, namespace)
         el.set("{%s}type" % XSI_NS, "dcterms:W3CDTF")
         return el
 
@@ -79,10 +79,6 @@ class DocumentProperties(Serialisable):
                   "contentStatus", "version", "revision", "keywords", "lastPrinted",
                   )
 
-    __elements__ = ("creator","title", "description", "subject","identifier",
-                    "language", "created", "modified", "lastModifiedBy", "category",
-                    "contentStatus", "version", "revision", "keywords",
-                    )
 
     def __init__(self,
                  category=None,
