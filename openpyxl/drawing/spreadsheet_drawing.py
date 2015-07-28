@@ -27,6 +27,7 @@ from openpyxl.chart._chart import ChartBase
 from .shapes import (
     Point2D,
     PositiveSize2D,
+    PresetGeometry2D,
 )
 from .fill import Blip
 from .graphic import (
@@ -276,17 +277,16 @@ class SpreadsheetDrawing(Serialisable):
 
     def _picture_frame(self, idx):
         pic = PictureFrame()
-        pic.nvPicPr.cNvPr.desc = "Picture 1"
+        pic.nvPicPr.cNvPr.descr = "Picture"
         pic.nvPicPr.cNvPr.id = idx
-        pic.nvPicPr.cNvPicPr.picLocks
+        pic.nvPicPr.cNvPr.name = "Image {0}".format(idx)
+
         pic.blipFill.blip = Blip()
         pic.blipFill.blip.embed = "rId{0}".format(idx)
         pic.blipFill.blip.cstate = "print"
 
-        pic.spPr.noFill = True
-        pic.spPr.ln.prstDash = None
-        pic.spPr.ln.w = 1
-        pic.spPr.ln.noFill = True
+        pic.spPr.prstGeom = PresetGeometry2D(prst="rect")
+        pic.spPr.ln = None
         return pic
 
 

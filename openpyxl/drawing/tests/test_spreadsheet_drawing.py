@@ -219,7 +219,7 @@ class TestSpreadsheetDrawing:
         assert diff is None, diff
 
 
-    def test_write(self, SpreadsheetDrawing):
+    def test_write_chart(self, SpreadsheetDrawing):
         from openpyxl.chart._chart import ChartBase
 
         class Chart(ChartBase):
@@ -265,3 +265,26 @@ class TestSpreadsheetDrawing:
     def test_hash_function(self, SpreadsheetDrawing):
         drawing = SpreadsheetDrawing()
         assert hash(drawing) == hash(id(drawing))
+
+
+    def test_write_picture(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        pic = drawing._picture_frame(4)
+        xml = tostring(pic.to_tree())
+        expected = """
+        <pic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <nvPicPr>
+            <cNvPr descr="Picture" id="4" name="Image 4"></cNvPr>
+            <cNvPicPr />
+          </nvPicPr>
+          <blipFill>
+            <a:blip cstate="print" r:embed="rId4" />
+          </blipFill>
+          <spPr>
+            <a:prstGeom prst="rect" />
+          </spPr>
+        </pic>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

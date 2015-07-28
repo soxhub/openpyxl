@@ -59,7 +59,7 @@ class ShapeProperties(Serialisable):
     shape3D = Alias('sp3d')
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
-    __elements__ = ('xfrm', 'noFill', 'solidFill', 'gradFill', 'pattFill',
+    __elements__ = ('xfrm', 'prstGeom', 'noFill', 'solidFill', 'gradFill', 'pattFill',
                     'ln', 'scene3d', 'sp3d')
 
     def __init__(self,
