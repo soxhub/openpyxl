@@ -73,8 +73,6 @@ def test_write_header(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-
-
 def test_append(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
 
@@ -240,6 +238,7 @@ def test_close(WriteOnlyWorksheet):
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
+
 @pytest.mark.lxml_required
 def test_auto_filter(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
@@ -265,6 +264,7 @@ def test_auto_filter(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
 
 @pytest.mark.lxml_required
 def test_frozen_panes(WriteOnlyWorksheet):
