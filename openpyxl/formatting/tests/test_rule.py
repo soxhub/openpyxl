@@ -1,5 +1,7 @@
+# coding=utf8
 from __future__ import absolute_import
 # copyright 2010-2015 openpyxl
+
 
 import pytest
 
@@ -199,6 +201,21 @@ class TestRule:
         </cfRule>
         """
         diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_non_ascii_formula(self, Rule):
+
+        rule = Rule(type="cellIs", priority=10, formula=[b"D\xc3\xbcsseldorf".decode("utf-8")])
+
+        xml = tostring(rule.to_tree())
+        expected = """
+        <cfRule priority="10" type="cellIs">
+          <formula>Düsseldorf</formula>
+        </cfRule>
+        """
+        diff = compare_xml(xml, expected)
+
         assert diff is None, diff
 
 
