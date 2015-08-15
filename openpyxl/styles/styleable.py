@@ -80,9 +80,6 @@ class StyleArray(array):
     namedStyleId = ArrayDescriptor(8)
 
     def __new__(cls, args=[0]*9):
-        l = len(args)
-        if l < 9:
-            args.extend([0]*(9-l))
         return array.__new__(cls, 'i', args)
 
 
