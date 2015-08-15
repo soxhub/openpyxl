@@ -236,7 +236,8 @@ class Worksheet(object):
             msg = 'Invalid character found in sheet title'
             raise SheetTitleException(msg)
         sheets = self._parent.get_sheet_names()
-        value = avoid_duplicate_name(sheets, value)
+        if self.title is not None and self.title != value:
+            value = avoid_duplicate_name(sheets, value)
         if len(value) > 31:
             msg = 'Maximum 31 characters allowed in sheet title'
             raise SheetTitleException(msg)

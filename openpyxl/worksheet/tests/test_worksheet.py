@@ -80,6 +80,15 @@ class TestWorksheet:
             ws2 = wb.create_sheet(title="Test")
         assert ws2.title == "Test15"
 
+    def test_sheet_title(self, Worksheet):
+        wb = Workbook()
+        titles = ["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"]
+        for title in titles:
+            worksheet = wb.create_sheet()
+            worksheet.title = title
+        titles.insert(0, 'Sheet')
+        assert wb.get_sheet_names() == titles
+
     @pytest.mark.parametrize("value", ["[", "]", "*", ":", "?", "/", "\\"])
     def test_set_bad_title_character(self, Worksheet, value):
         with pytest.raises(SheetTitleException):
