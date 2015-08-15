@@ -3,29 +3,33 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
 
 
 @pytest.fixture
 def StyleId():
-    from .. style import StyleId
-    return StyleId
+    from .. styleable import StyleArray
+    return StyleArray
 
 
-def test_ctor(StyleId):
-    style = StyleId()
-    assert dict(style) == {'borderId': 0, 'fillId': 0, 'fontId': 0,
-                           'numFmtId': 0, 'xfId': 0, 'alignmentId':0, 'protectionId':0}
+def test_from_tree(StyleId):
+    xml = """<xf borderId="0" fillId="0" fontId="10" numFmtId="4" xfId="0" />"""
+    node = fromstring(xml)
+    style = StyleId.from_tree(node)
+    assert style.fontId == 10
+    assert style.numFmtId == 4
 
 
 def test_protection(StyleId):
-    style = StyleId(protectionId=1)
+    style = StyleId()
+    style.protectionId = 1
     assert style.applyProtection is True
 
 
 def test_alignment(StyleId):
-    style = StyleId(alignmentId=1)
+    style = StyleId()
+    style.alignmentId = 1
     assert style.applyAlignment is True
 
 

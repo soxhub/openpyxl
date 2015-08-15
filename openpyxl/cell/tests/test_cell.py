@@ -325,7 +325,7 @@ def test_font(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._fonts.add(font)
 
-    cell = Cell(ws, column='A', row=1, fontId=0)
+    cell = Cell(ws, column='A', row=1)
     assert cell.font == font
 
 
@@ -335,7 +335,7 @@ def test_fill(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._fills.add(fill)
 
-    cell = Cell(ws, column='A', row=1, fillId=0)
+    cell = Cell(ws, column='A', row=1)
     assert cell.fill == fill
 
 
@@ -345,7 +345,7 @@ def test_border(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._borders.add(border)
 
-    cell = Cell(ws, column='A', row=1, borderId=0)
+    cell = Cell(ws, column='A', row=1)
     assert cell.border == border
 
 
@@ -353,7 +353,8 @@ def test_number_format(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._number_formats.add("dd--hh--mm")
 
-    cell = Cell(ws, column="A", row=1, numFmtId=164)
+    cell = Cell(ws, column="A", row=1)
+    cell._style.numFmtId = 164
     assert cell.number_format == "dd--hh--mm"
 
 
@@ -363,7 +364,7 @@ def test_alignment(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._alignments.add(align)
 
-    cell = Cell(ws, column="A", row=1, alignmentId=0)
+    cell = Cell(ws, column="A", row=1)
     assert cell.alignment == align
 
 
@@ -373,19 +374,21 @@ def test_protection(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._protections.add(prot)
 
-    cell = Cell(ws, column="A", row=1, protectionId=0)
+    cell = Cell(ws, column="A", row=1)
     assert cell.protection == prot
 
 
 def test_pivot_button(DummyWorksheet, Cell):
     ws = DummyWorksheet
 
-    cell = Cell(ws, column="A", row=1, pivotButton=True)
+    cell = Cell(ws, column="A", row=1)
+    cell._style.pivotButton = 1
     assert cell.pivotButton is True
 
 
 def test_quote_prefix(DummyWorksheet, Cell):
     ws = DummyWorksheet
 
-    cell = Cell(ws, column="A", row=1, quotePrefix=True)
+    cell = Cell(ws, column="A", row=1)
+    cell._style.quotePrefix = 1
     assert cell.quotePrefix is True
