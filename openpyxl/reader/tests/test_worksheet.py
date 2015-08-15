@@ -434,7 +434,7 @@ def test_cell_exotic_style(WorkSheetParser, datadir):
 
     sheet = fromstring(src)
     parser.parse_cell(sheet)
-    assert ws['A1'].pivotButton is None
+    assert ws['A1'].pivotButton is False
 
     cell = ws['D4']
     assert cell.pivotButton is True

@@ -104,16 +104,9 @@ class Cell(StyleableObject):
 
     def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, fontId=0,
                  fillId=0, borderId=0, alignmentId=0, protectionId=0, numFmtId=0,
-                 pivotButton=None, quotePrefix=None, xfId=None):
-        self._font_id = fontId
-        self._fill_id = fillId
-        self._border_id = borderId
-        self._alignment_id = alignmentId
-        self._protection_id = protectionId
-        self._number_format_id = numFmtId
-        self.quotePrefix = quotePrefix
-        self.pivotButton = pivotButton
-        self.parent = worksheet
+                 pivotButton=0, quotePrefix=0, xfId=0):
+        super(Cell, self).__init__(worksheet, fontId, fillId, borderId,
+                                   alignmentId, protectionId, numFmtId, pivotButton, quotePrefix)
         self.row = row
         # _value is the stored value, while value is the displayed value
         self._value = None

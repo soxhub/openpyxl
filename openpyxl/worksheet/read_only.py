@@ -153,20 +153,18 @@ class ReadOnlyWorksheet(Worksheet):
                 style_id = int(cell.get('s', 0))
                 value = None
 
-                for el in cell:
-                    if el.tag == VALUE_TAG:
-                        value = el.text
+                formula = cell.findtext(FORMULA_TAG)
+                if formula is not None and not data_only:
+                    data_type = 'f'
+                    value = "=%s" % formula
 
-                    elif el.tag == FORMULA_TAG and not data_only:
-                        data_type = 'f'
-                        formula = "=%s" % el.text
-
-                if data_type == 'f':
-                    value = formula
+                else:
+                    value = cell.findtext(VALUE_TAG) or None
 
                 yield ReadOnlyCell(self, row, column,
                                    value, data_type, style_id)
             col_counter = column + 1
+
         if max_col is not None:
             for _ in range(col_counter, max_col+1):
                 yield EMPTY_CELL
