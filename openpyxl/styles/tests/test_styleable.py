@@ -13,14 +13,15 @@ def test_descriptor():
 
     class Styled(object):
 
-        font = StyleDescriptor('_fonts', '_font_id')
+        font = StyleDescriptor('_fonts', 0)
 
         def __init__(self):
+            self._style = [0]
             self.parent = DummyWorksheet()
 
     styled = Styled()
     styled.font = Font()
-    assert styled._font_id == 0
+    assert styled._style == [0]
     assert styled.font == Font()
 
 
@@ -47,9 +48,8 @@ def StyleableObject():
 
 def test_has_style(StyleableObject):
     so = StyleableObject(sheet=DummyWorksheet())
-    assert so._number_format_id == 0
     assert not so.has_style
-    so._number_format_id = 1
+    so.number_format= 'dd'
     assert so.has_style
 
 

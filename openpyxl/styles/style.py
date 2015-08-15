@@ -44,21 +44,21 @@ class StyleId(Serialisable):
 
 
     def __init__(self,
-                 numFmtId=0,
                  fontId=0,
                  fillId=0,
                  borderId=0,
-                 alignmentId=0,
+                 numFmtId=0,
                  protectionId=0,
-                 xfId=0,
-                 quotePrefix=None,
-                 pivotButton=None,
+                 alignmentId=0,
+                 pivotButton=0,
+                 quotePrefix=0,
                  applyNumberFormat=None,
                  applyFont=None,
                  applyFill=None,
                  applyBorder=None,
                  applyAlignment=None,
                  applyProtection=None,
+                 xfId=0,
                  extLst=None,
                  ):
         self.numFmtId = numFmtId
@@ -102,6 +102,8 @@ class StyleId(Serialisable):
         attrs = set(self.__attrs__)
         for key in attrs:
             value = getattr(self, key)
+            if key in ('quotePrefix', 'pivotButton') and not value:
+                continue
             if value is not None:
                 yield key, value
 

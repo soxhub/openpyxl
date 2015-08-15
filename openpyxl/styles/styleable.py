@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from array import array
 from warnings import warn
 
 from openpyxl.utils.indexed_list import IndexedList
@@ -18,92 +19,69 @@ class StyleDescriptor(object):
 
     def __set__(self, instance, value):
         coll = getattr(instance.parent.parent, self.collection)
-        setattr(instance, self.key, coll.add(value))
+        instance._style[self.key] = coll.add(value)
 
 
     def __get__(self, instance, cls):
         coll = getattr(instance.parent.parent, self.collection)
-        idx = getattr(instance, self.key)
+        idx =  instance._style[self.key]
         return StyleProxy(coll[idx])
 
 
 class NumberFormatDescriptor(object):
 
-    key = '_number_format_id'
+    key = 3
     collection = '_number_formats'
 
     def __set__(self, instance, value):
         coll = getattr(instance.parent.parent, self.collection)
         if value in BUILTIN_FORMATS_REVERSE:
-            _id = BUILTIN_FORMATS_REVERSE[value]
+            idx = BUILTIN_FORMATS_REVERSE[value]
         else:
-            _id = coll.add(value) + 164
-        setattr(instance, self.key, _id)
+            idx = coll.add(value) + 164
+        instance._style[self.key] = idx
 
 
     def __get__(self, instance, cls):
-        idx = getattr(instance, self.key)
+        idx = instance._style[self.key]
         if idx < 164:
             return BUILTIN_FORMATS.get(idx, "General")
         coll = getattr(instance.parent.parent, self.collection)
         return coll[idx - 164]
 
 
+style = ['font', 'fill', 'border', 'number_format', 'protection', 'alignment', 'pivotButton', 'quotePrefix', 'named_style']
+style = array('i', [0]*9)
+
 class StyleableObject(object):
     """
     Base class for styleble objects implementing proxy and lookup functions
     """
 
-    font = StyleDescriptor('_fonts', '_font_id')
-    fill = StyleDescriptor('_fills', '_fill_id')
-    border = StyleDescriptor('_borders', '_border_id')
+    font = StyleDescriptor('_fonts', 0)
+    fill = StyleDescriptor('_fills', 1)
+    border = StyleDescriptor('_borders', 2)
     number_format = NumberFormatDescriptor()
-    protection = StyleDescriptor('_protections', '_protection_id')
-    alignment = StyleDescriptor('_alignments', '_alignment_id')
+    protection = StyleDescriptor('_protections', 4)
+    alignment = StyleDescriptor('_alignments', 5)
 
-    __slots__ = ('parent', '_font_id', '_border_id', '_fill_id',
-                 '_alignment_id', '_protection_id', '_number_format_id', 'pivotButton',
-                 'quotePrefix')
+    __slots__ = ('parent', '_style')
 
     def __init__(self, sheet, fontId=0, fillId=0, borderId=0, alignmentId=0,
-                 protectionId=0, numFmtId=0, pivotButton=None, quotePrefix=None):
-        self._font_id = fontId
-        self._fill_id = fillId
-        self._border_id = borderId
-        self._alignment_id = alignmentId
-        self._protection_id = protectionId
-        self._number_format_id = numFmtId
+                 protectionId=0, numFmtId=0, pivotButton=0, quotePrefix=0):
         self.parent = sheet
-        self.pivotButton = pivotButton
-        self.quotePrefix = quotePrefix
-
+        self._style = array('i', [0]*9)
+        for idx, v in enumerate([fontId, fillId, borderId, numFmtId, protectionId, alignmentId, pivotButton, quotePrefix]):
+            self._style[idx] = v
 
     @property
     def style_id(self):
-        style = StyleId(
-            alignmentId=self._alignment_id,
-            borderId=self._border_id,
-            fillId=self._fill_id,
-            fontId=self._font_id,
-            numFmtId=self._number_format_id,
-            protectionId=self._protection_id,
-            pivotButton=self.pivotButton,
-            quotePrefix=self.quotePrefix
-        )
-
+        style = StyleId(*self._style)
         return self.parent.parent._cell_styles.add(style)
 
     @property
     def has_style(self):
-        return bool(self._alignment_id
-               or self._border_id
-               or self._fill_id
-               or self._font_id
-               or self._number_format_id
-               or self._protection_id
-               or self.pivotButton
-               or self.quotePrefix
-               )
+        return any(self._style)
 
     #legacy
     @property
@@ -121,9 +99,19 @@ class StyleableObject(object):
     #legacy
     @style.setter
     def style(self, value):
+        warn("Use formatting objects such as font directly")
         self.font = value.font.copy()
         self.fill = value.fill.copy()
         self.border = value.border.copy()
         self.protection = value.protection.copy()
         self.alignment = value.alignment.copy()
         self.number_format = value.number_format
+
+    @property
+    def pivotButton(self):
+        return bool(self._style[6])
+
+
+    @property
+    def quotePrefix(self):
+        return bool(self._style[7])
