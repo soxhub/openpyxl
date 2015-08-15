@@ -19,18 +19,18 @@ class StyleDescriptor(object):
 
     def __set__(self, instance, value):
         coll = getattr(instance.parent.parent, self.collection)
-        instance._style[self.key] = coll.add(value)
+        setattr(instance._style, self.key, coll.add(value))
 
 
     def __get__(self, instance, cls):
         coll = getattr(instance.parent.parent, self.collection)
-        idx =  instance._style[self.key]
+        idx =  getattr(instance._style, self.key)
         return StyleProxy(coll[idx])
 
 
 class NumberFormatDescriptor(object):
 
-    key = 3
+    key = "numFmtId"
     collection = '_number_formats'
 
     def __set__(self, instance, value):
@@ -39,40 +39,73 @@ class NumberFormatDescriptor(object):
             idx = BUILTIN_FORMATS_REVERSE[value]
         else:
             idx = coll.add(value) + 164
-        instance._style[self.key] = idx
+        setattr(instance._style, self.key, idx)
 
 
     def __get__(self, instance, cls):
-        idx = instance._style[self.key]
+        idx = getattr(instance._style, self.key)
         if idx < 164:
             return BUILTIN_FORMATS.get(idx, "General")
         coll = getattr(instance.parent.parent, self.collection)
         return coll[idx - 164]
 
 
-style = ['font', 'fill', 'border', 'number_format', 'protection', 'alignment', 'pivotButton', 'quotePrefix', 'named_style']
-style = array('i', [0]*9)
+class ArrayDescriptor(object):
+
+    def __init__(self, key):
+        self.key = key
+
+    def __get__(self, instance, cls):
+        return instance[self.key]
+
+    def __set__(self, instance, value):
+        instance[self.key] = value
+
+
+class StyleArray(array):
+    """
+    Simplified named tuple with an array
+    """
+
+    __slots__ = ()
+
+    fontId = ArrayDescriptor(0)
+    fillId = ArrayDescriptor(1)
+    borderId = ArrayDescriptor(2)
+    numFmtId = ArrayDescriptor(3)
+    protectionId = ArrayDescriptor(4)
+    alignmentId = ArrayDescriptor(5)
+    pivotButton = ArrayDescriptor(6)
+    quotePrefix = ArrayDescriptor(7)
+    namedStyleId = ArrayDescriptor(8)
+
+    def __new__(cls, args=[0]*9):
+        l = len(args)
+        if l < 9:
+            args.extend([0]*(9-l))
+        return array.__new__(cls, 'i', args)
+
 
 class StyleableObject(object):
     """
     Base class for styleble objects implementing proxy and lookup functions
     """
 
-    font = StyleDescriptor('_fonts', 0)
-    fill = StyleDescriptor('_fills', 1)
-    border = StyleDescriptor('_borders', 2)
+    font = StyleDescriptor('_fonts', "fontId")
+    fill = StyleDescriptor('_fills', "fillId")
+    border = StyleDescriptor('_borders', "borderId")
     number_format = NumberFormatDescriptor()
-    protection = StyleDescriptor('_protections', 4)
-    alignment = StyleDescriptor('_alignments', 5)
+    protection = StyleDescriptor('_protections', "protectionId")
+    alignment = StyleDescriptor('_alignments', "alignmentId")
 
     __slots__ = ('parent', '_style')
 
     def __init__(self, sheet, fontId=0, fillId=0, borderId=0, alignmentId=0,
-                 protectionId=0, numFmtId=0, pivotButton=0, quotePrefix=0):
+                 protectionId=0, numFmtId=0, pivotButton=0, quotePrefix=0, xfId=0):
         self.parent = sheet
-        self._style = array('i', [0]*9)
-        for idx, v in enumerate([fontId, fillId, borderId, numFmtId, protectionId, alignmentId, pivotButton, quotePrefix]):
-            self._style[idx] = v
+        self._style = StyleArray([fontId, fillId, borderId, numFmtId,
+                                  protectionId, alignmentId, pivotButton, quotePrefix, xfId])
+
 
     @property
     def style_id(self):

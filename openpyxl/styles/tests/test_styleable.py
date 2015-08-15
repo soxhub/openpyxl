@@ -8,20 +8,19 @@ from ..import Style, Font, Border, PatternFill, Alignment, Protection
 
 
 def test_descriptor():
-    from ..styleable import StyleDescriptor
+    from ..styleable import StyleDescriptor, StyleArray
     from ..fonts import Font
 
     class Styled(object):
 
-        font = StyleDescriptor('_fonts', 0)
+        font = StyleDescriptor('_fonts', "fontId")
 
         def __init__(self):
-            self._style = [0]
+            self._style = StyleArray()
             self.parent = DummyWorksheet()
 
     styled = Styled()
     styled.font = Font()
-    assert styled._style == [0]
     assert styled.font == Font()
 
 
