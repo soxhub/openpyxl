@@ -34,8 +34,12 @@ from openpyxl.xml.constants import (
     MAX_ROW,
     PACKAGE_XL
 )
-from openpyxl.xml.functions import xmlfile, Element, SubElement
-
+from openpyxl.xml.functions import (
+    xmlfile,
+    Element,
+    SubElement,
+    tostring,
+)
 
 DESCRIPTORS_CACHE_SIZE = 50
 ALL_TEMP_FILES = []
@@ -249,7 +253,7 @@ class ExcelDumpWriter(ExcelWriter):
 
             # write comments
             if sheet._comments:
-                rels = write_rels(sheet, drawing_id, comments_id)
+                rels = write_rels(sheet, drawing_id, comments_id, False)
                 archive.writestr( PACKAGE_WORKSHEETS +
                                   '/_rels/sheet%d.xml.rels' % i, tostring(rels) )
 
