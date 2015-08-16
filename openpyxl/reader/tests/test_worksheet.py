@@ -59,6 +59,7 @@ def test_get_xml_iter():
 @pytest.fixture
 def Workbook():
     from openpyxl.styles.style import StyleId
+    from openpyxl.styles.styleable import StyleArray
     from openpyxl.styles import numbers
 
     class DummyStyle:
@@ -92,8 +93,8 @@ def Workbook():
             self._cell_styles = IndexedList()
             self.vba_archive = None
             for i in range(29):
-                self._cell_styles.add((StyleId(i, i, i, i, i, i)))
-            self._cell_styles.add(StyleId(fillId=4, borderId=6, alignmentId=1))
+                self._cell_styles.add((StyleArray([i]*9)))
+            self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
 
 
         def create_sheet(self, title):
@@ -191,7 +192,6 @@ def test_styled_row(datadir, WorkSheetParser):
     assert 23 in ws.row_dimensions
     rd = ws.row_dimensions[23]
     assert rd.style_id == 28
-    #assert rd.style == Style()
     assert dict(rd) == {'s':'28', 'customFormat':'1'}
 
 
@@ -417,7 +417,9 @@ def test_cell_style(WorkSheetParser, datadir):
 
     element = sheet.find("{%s}sheetData/{%s}row[2]/{%s}c[1]" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS))
     assert element.get('r') == 'A2'
+    assert element.get('s') == '2'
     parser.parse_cell(element)
+    assert ws['A2']._style == parser.styles[2]
     assert ws['A2'].style_id == 2
 
 
@@ -425,7 +427,7 @@ def test_cell_exotic_style(WorkSheetParser, datadir):
     datadir.chdir()
     parser = WorkSheetParser
     ws = parser.ws
-    parser.styles = [None, None, {'pivotButton':True, 'quotePrefix':True}]
+    parser.styles = [None, None, [0,0,0,0,0,0,1,1,0]]
 
     src = """
     <x:c xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="D4" s="2">

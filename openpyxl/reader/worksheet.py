@@ -71,7 +71,7 @@ class WorkSheetParser(object):
         self.shared_strings = shared_strings
         self.guess_types = wb._guess_types
         self.data_only = wb.data_only
-        self.styles = [dict(v) for v in self.ws.parent._cell_styles]
+        self.styles = self.ws.parent._cell_styles
         self.differential_styles = wb._differential_styles
         self.keep_vba = wb.vba_archive is not None
         self.shared_formula_masters = {}  # {si_str: Translator()}
@@ -177,13 +177,13 @@ class WorkSheetParser(object):
                     self.ws.formula_attributes[coordinate]['ref'] = ref
 
 
-        style = {}
+        style_array = None
         if style_id is not None:
             style_id = int(style_id)
-            style = self.styles[style_id]
+            style_array = self.styles[style_id]
 
         row, column = coordinate_to_tuple(coordinate)
-        cell = Cell(self.ws, row=row, col_idx=column, **style)
+        cell = Cell(self.ws, row=row, col_idx=column, style_array=style_array)
         self.ws._cells[(row, column)] = cell
 
         if value is not None:
@@ -220,16 +220,21 @@ class WorkSheetParser(object):
         attrs = dict(col.attrib)
         column = get_column_letter(int(attrs['min']))
         attrs['index'] = column
+        if 'style' in attrs:
+            attrs['style'] = self.styles[int(attrs['style'])]
         dim = ColumnDimension(self.ws, **attrs)
         self.ws.column_dimensions[column] = dim
 
 
     def parse_row_dimensions(self, row):
-        attrs = row.attrib
+        attrs = dict(row.attrib)
         keys = set(attrs)
         for key in keys:
-            if key.startswith('{'):
+            if key == "s":
+                attrs['s'] = self.styles[int(attrs['s'])]
+            elif key.startswith('{'):
                 del attrs[key]
+
 
         keys = set(attrs)
         if keys != set(['r', 'spans']) and keys != set(['r']):
