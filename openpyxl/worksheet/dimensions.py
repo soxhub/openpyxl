@@ -14,7 +14,7 @@ from openpyxl.descriptors import (
     String,
     Alias,
 )
-from openpyxl.styles.styleable import StyleableObject
+from openpyxl.styles.styleable import StyleableObject, StyleArray
 
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
@@ -33,15 +33,11 @@ class Dimension(Strict, StyleableObject):
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
-        super(Dimension, self).__init__(sheet=worksheet)
+        super(Dimension, self).__init__(sheet=worksheet, style_array=style)
         self.index = index
         self.hidden = hidden
         self.outlineLevel = outlineLevel
         self.collapsed = collapsed
-        if style is not None:
-            style_id = int(style)
-            style = self.parent.parent._cell_styles[style_id]
-            self._style = style[:]
 
 
     def __iter__(self):

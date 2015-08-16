@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.styles.styleable import StyleId
+from openpyxl.styles.styleable import StyleArray
 
 
 class DummyWorkbook:
@@ -12,8 +12,8 @@ class DummyWorkbook:
     def __init__(self):
         self.shared_styles = IndexedList()
         self._cell_styles = IndexedList()
-        self._cell_styles.add(StyleId())
-        self._cell_styles.add(StyleId(fontId=10))
+        self._cell_styles.add(StyleArray())
+        self._cell_styles.add(StyleArray([10,0,0,0,0,0,0,0,0,0]))
 
     def get_sheet_names(self):
         return []
