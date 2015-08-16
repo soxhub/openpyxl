@@ -8,6 +8,7 @@ Bug fixes
 * `#502 <https://bitbucket.org/openpyxl/openpyxl/issue/502>`_ Unexpected keyword "mergeCell"
 * `#503 <https://bitbucket.org/openpyxl/openpyxl/issue/503>`_ tostring missing in dump_worksheet
 * `#506 <https://bitbucket.org/openpyxl/openpyxl/issues/506>`_ Non-ASCII formulae cannot be parsed
+* `#508 <https://bitbucket.org/openpyxl/openpyxl/issues/508>`_ Cannot save files with coloured tabs
 
 
 2.2.5 (2015-06-29)
