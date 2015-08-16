@@ -34,6 +34,7 @@ def DummyWorksheet():
         _protections = IndexedList()
         _alignments = IndexedList()
         _number_formats = IndexedList()
+        _cell_styles = IndexedList()
 
 
     class Ws(object):
@@ -354,7 +355,7 @@ def test_number_format(DummyWorksheet, Cell):
     ws.parent._number_formats.add("dd--hh--mm")
 
     cell = Cell(ws, column="A", row=1)
-    cell._style.numFmtId = 164
+    cell.number_format = "dd--hh--mm"
     assert cell.number_format == "dd--hh--mm"
 
 
@@ -382,6 +383,7 @@ def test_pivot_button(DummyWorksheet, Cell):
     ws = DummyWorksheet
 
     cell = Cell(ws, column="A", row=1)
+    cell.style_id
     cell._style.pivotButton = 1
     assert cell.pivotButton is True
 
@@ -390,5 +392,6 @@ def test_quote_prefix(DummyWorksheet, Cell):
     ws = DummyWorksheet
 
     cell = Cell(ws, column="A", row=1)
+    cell.style_id
     cell._style.quotePrefix = 1
     assert cell.quotePrefix is True
