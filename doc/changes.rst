@@ -18,6 +18,7 @@ Minor changes
 -------------
 
 * Worksheets are now iterable by row.
+* Assign individual cell styles only if they are explicitly set.
 
 
 2.3.0-b1 (2015-06-29)
