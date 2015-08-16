@@ -98,7 +98,7 @@ class StyleArray(array):
 
 
     def __hash__(self):
-        return hash(self.tobytes())
+        return hash(tuple(self))
 
 
     @classmethod
