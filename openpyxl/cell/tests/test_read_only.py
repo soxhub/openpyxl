@@ -117,7 +117,7 @@ def test_read_only():
     with pytest.raises(AttributeError):
         cell.value = 10
     with pytest.raises(AttributeError):
-        cell.style_id = 1
+        cell.style = 1
 
 
 def test_equality():

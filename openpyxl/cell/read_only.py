@@ -61,16 +61,16 @@ class ReadOnlyCell(object):
         return "{1}{0}".format(self.row, column)
 
     @property
-    def style_id(self):
+    def style_array(self):
         if not self._style_id:
             return
         return self.parent.parent._cell_styles[self._style_id]
 
     @property
     def number_format(self):
-        if not self.style_id:
+        if not self.style_array:
             return
-        _id = self.style_id.number_format
+        _id = self.style_array.numFmtId
         if _id < 164:
             return BUILTIN_FORMATS.get(_id, "General")
         else:
@@ -78,27 +78,27 @@ class ReadOnlyCell(object):
 
     @property
     def font(self):
-        _id = self.style_id.font
+        _id = self.style_array.fontId
         return self.parent.parent._fonts[_id]
 
     @property
     def fill(self):
-        _id = self.style_id.fill
+        _id = self.style_array.fillId
         return self.parent.parent._fills[_id]
 
     @property
     def border(self):
-        _id = self.style_id.border
+        _id = self.style_array.borderId
         return self.parent.parent._borders[_id]
 
     @property
     def alignment(self):
-        _id = self.style_id.alignment
+        _id = self.style_array.alignmentId
         return self.parent.parent._alignments[_id]
 
     @property
     def protection(self):
-        _id = self.style_id.protection
+        _id = self.style_array.protectionId
         return self.parent.parent._protections[_id]
 
     @property
@@ -114,7 +114,7 @@ class ReadOnlyCell(object):
         if self._value is None:
             return
         if self.data_type == 'n':
-            if self.style_id:
+            if self.style_array:
                 if is_date_format(self.number_format):
                     return from_excel(self._value, self.base_date)
             return self._value
