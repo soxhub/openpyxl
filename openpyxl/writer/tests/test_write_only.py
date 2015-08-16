@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import datetime
 import decimal
 from io import BytesIO
+from zipfile import ZipFile
+from tempfile import TemporaryFile
 
 from openpyxl.xml.functions import tostring, xmlfile
 
