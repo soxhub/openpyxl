@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import datetime
 import decimal
 from io import BytesIO
+from zipfile import ZipFile
+from tempfile import TemporaryFile
 
 from openpyxl.xml.functions import tostring, xmlfile
 
@@ -194,6 +196,22 @@ def test_cell_comment(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_rels(DumpWorksheet):
+    from .. dump_worksheet import ExcelDumpWriter, WriteOnlyCell
+    from openpyxl.comments import Comment
+
+    archive = ZipFile(TemporaryFile(), "w")
+    ws = DumpWorksheet
+    cell = WriteOnlyCell(ws)
+    cell.comment = Comment("blah", "shakespeare")
+
+    ws._comments = [cell.comment]
+    wb = DummyWorkbook()
+    wb.worksheets = [ws]
+    writer = ExcelDumpWriter(wb)
+    writer._write_worksheets(archive)
 
 
 @pytest.mark.lxml_required
