@@ -10,7 +10,6 @@ from zipfile import ZipFile
 # package imports
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.styles.style import StyleId
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 

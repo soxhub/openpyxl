@@ -58,7 +58,6 @@ def test_get_xml_iter():
 
 @pytest.fixture
 def Workbook():
-    from openpyxl.styles.style import StyleId
     from openpyxl.styles.styleable import StyleArray
     from openpyxl.styles import numbers
 
