@@ -20,7 +20,7 @@ from openpyxl.styles import (
 )
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.styles.colors import COLOR_INDEX, Color
-from openpyxl.styles.style import StyleId
+from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
 from openpyxl.xml.functions import fromstring, safe_iterator, localname
 from openpyxl.xml.constants import SHEET_MAIN_NS, ARC_STYLE
@@ -109,13 +109,13 @@ class SharedStylesParser(object):
         names = self._parse_style_names()
         for style in names.values():
             _id = styles[style.xfId]
-            style.border = self.border_list[_id.border]
-            style.fill = self.fill_list[_id.fill]
-            style.font = self.font_list[_id.font]
-            if _id.alignment:
-                style.alignment = self.alignments[_id.alignment]
-            if _id.protection:
-                style.protection = self.protections[_id.protection]
+            style.border = self.border_list[_id.borderId]
+            style.fill = self.fill_list[_id.fillId]
+            style.font = self.font_list[_id.fontId]
+            if _id.alignmentId:
+                style.alignment = self.alignments[_id.alignmentId]
+            if _id.protectionId:
+                style.protection = self.protections[_id.protectionId]
         self.named_styles = names
 
 
@@ -151,26 +151,26 @@ class SharedStylesParser(object):
 
         xfs = safe_iterator(node, '{%s}xf' % SHEET_MAIN_NS)
         for xf in xfs:
-            attrs = dict(xf.attrib)
+            style = StyleArray.from_tree(xf)
 
             al = xf.find('{%s}alignment' % SHEET_MAIN_NS)
             if al is not None:
                 alignment = Alignment(**al.attrib)
-                attrs['alignmentId'] = self.alignments.add(alignment)
+                style.alignmentId = self.alignments.add(alignment)
 
             prot = xf.find('{%s}protection' % SHEET_MAIN_NS)
             if prot is not None:
                 protection = Protection(**prot.attrib)
-                attrs['protectionId'] = self.protections.add(protection)
+                style.protectionId = self.protections.add(protection)
 
             numFmtId = int(xf.get("numFmtId", 0))
             # check for custom formats and normalise indices
 
             if numFmtId in self.custom_number_formats:
                 format_code = self.custom_number_formats[numFmtId]
-                attrs["numFmtId"] = self.number_formats.add(format_code) + 164
+                style.numFmtId = self.number_formats.add(format_code) + 164
 
-            _style_ids.append(StyleId(**attrs))
+            _style_ids.append(style)
         return IndexedList(_style_ids)
 
 

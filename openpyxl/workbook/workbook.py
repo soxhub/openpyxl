@@ -4,19 +4,13 @@ from __future__ import absolute_import
 
 """Workbook is the top-level container for all document information."""
 
-__docformat__ = "restructuredtext en"
 
-# Python stdlib imports
-import threading
-
-# package imports
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
 from openpyxl.worksheet import Worksheet
 from openpyxl.writer.write_only import WriteOnlyWorksheet, save_dump
 from . names.named_range import NamedRange
-from openpyxl.styles import Style
-from openpyxl.styles.style import StyleId
+from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
 from openpyxl.styles.numbers import BUILTIN_FORMATS
 from openpyxl.writer.excel import save_workbook
@@ -94,7 +88,7 @@ class Workbook(object):
         self._protections = IndexedList([Protection()])
 
         self._colors = COLOR_INDEX
-        self._cell_styles = IndexedList([StyleId()])
+        self._cell_styles = IndexedList([StyleArray()])
         self._named_styles = {'Normal': NamedStyle(font=DEFAULT_FONT)}
 
 

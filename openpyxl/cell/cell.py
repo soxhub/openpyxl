@@ -102,11 +102,8 @@ class Cell(StyleableObject):
                    TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
 
-    def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, fontId=0,
-                 fillId=0, borderId=0, alignmentId=0, protectionId=0, numFmtId=0,
-                 pivotButton=0, quotePrefix=0, xfId=0):
-        super(Cell, self).__init__(worksheet, fontId, fillId, borderId,
-                                   alignmentId, protectionId, numFmtId, pivotButton, quotePrefix)
+    def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, style_array=None):
+        super(Cell, self).__init__(worksheet, style_array)
         self.row = row
         # _value is the stored value, while value is the displayed value
         self._value = None
