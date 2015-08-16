@@ -147,8 +147,9 @@ def write_sheetPr(props):
     el = Element(props.tag, attributes)
 
     tab_color = props.tabColor
-    if tab_color:
-        el.append(Element('{%s}tabColor' % SHEET_MAIN_NS, rgb=tab_color.value))
+    if tab_color is not None:
+        node = tab_color.to_tree("{%s}tabColor" % SHEET_MAIN_NS)
+        el.append(node)
 
     outline = props.outlinePr
     if outline:
