@@ -149,16 +149,17 @@ class StyleableObject(object):
         if style_array is None:
             self._style = StyleArray()
         else:
-            self._style = style_array[:]
+            self._style = StyleArray(style_array)
 
 
     @property
     def style_id(self):
-        style = StyleId(*self._style)
-        return self.parent.parent._cell_styles.add(style)
+        return self.parent.parent._cell_styles.add(self._style)
 
     @property
     def has_style(self):
+        if self._style is None:
+            return False
         return any(self._style)
 
     #legacy
