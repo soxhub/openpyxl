@@ -21,11 +21,15 @@ class StyleDescriptor(object):
 
     def __set__(self, instance, value):
         coll = getattr(instance.parent.parent, self.collection)
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
         setattr(instance._style, self.key, coll.add(value))
 
 
     def __get__(self, instance, cls):
         coll = getattr(instance.parent.parent, self.collection)
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
         idx =  getattr(instance._style, self.key)
         return StyleProxy(coll[idx])
 
@@ -41,10 +45,14 @@ class NumberFormatDescriptor(object):
             idx = BUILTIN_FORMATS_REVERSE[value]
         else:
             idx = coll.add(value) + 164
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
         setattr(instance._style, self.key, idx)
 
 
     def __get__(self, instance, cls):
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
         idx = getattr(instance._style, self.key)
         if idx < 164:
             return BUILTIN_FORMATS.get(idx, "General")
@@ -145,14 +153,15 @@ class StyleableObject(object):
 
     def __init__(self, sheet, style_array=None):
         self.parent = sheet
-        if style_array is None:
-            self._style = StyleArray()
-        else:
-            self._style = StyleArray(style_array)
+        if style_array is not None:
+            style_array = StyleArray(style_array)
+        self._style = style_array
 
 
     @property
     def style_id(self):
+        if self._style is None:
+            self._style = StyleArray()
         return self.parent.parent._cell_styles.add(self._style)
 
     @property
@@ -187,9 +196,13 @@ class StyleableObject(object):
 
     @property
     def pivotButton(self):
+        if self._style is None:
+            return False
         return bool(self._style[6])
 
 
     @property
     def quotePrefix(self):
+        if self._style is None:
+            return False
         return bool(self._style[7])
