@@ -198,22 +198,6 @@ def test_cell_comment(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-def test_rels(DumpWorksheet):
-    from .. dump_worksheet import ExcelDumpWriter, WriteOnlyCell
-    from openpyxl.comments import Comment
-
-    archive = ZipFile(TemporaryFile(), "w")
-    ws = DumpWorksheet
-    cell = WriteOnlyCell(ws)
-    cell.comment = Comment("blah", "shakespeare")
-
-    ws._comments = [cell.comment]
-    wb = DummyWorkbook()
-    wb.worksheets = [ws]
-    writer = ExcelDumpWriter(wb)
-    writer._write_worksheets(archive)
-
-
 @pytest.mark.lxml_required
 def test_cannot_save_twice(WriteOnlyWorksheet):
     from .. write_only import WorkbookAlreadySaved
