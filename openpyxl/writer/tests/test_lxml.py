@@ -92,11 +92,8 @@ def test_write_formula(worksheet, write_rows):
     ws['F2'] = 32
     ws['F3'] = '=F1+F2'
     ws['A4'] = '=A1+A2+A3'
-    ws.formula_attributes['A4'] = {'t': 'shared', 'ref': 'A4:C4', 'si': '0'}
-    ws['B4'] = '=1'
-    ws.formula_attributes['B4'] = {'t': 'shared', 'si': '0'}
-    ws['C4'] = '=1'
-    ws.formula_attributes['C4'] = {'t': 'shared', 'si': '0'}
+    ws['B4'] = "=SUM(A10:A14*B10:B14)"
+    ws.formula_attributes['B4'] = {'t': 'array', 'ref': 'B4:B8'}
 
     out = BytesIO()
     with xmlfile(out) as xf:
@@ -123,15 +120,11 @@ def test_write_formula(worksheet, write_rows):
       </row>
       <row r="4" spans="1:6">
         <c r="A4">
-          <f ref="A4:C4" si="0" t="shared">A1+A2+A3</f>
+          <f>A1+A2+A3</f>
           <v></v>
         </c>
         <c r="B4">
-          <f si="0" t="shared"></f>
-          <v></v>
-        </c>
-        <c r="C4">
-          <f si="0" t="shared"></f>
+          <f ref="B4:B8" t="array">SUM(A10:A14*B10:B14)</f>
           <v></v>
         </c>
       </row>

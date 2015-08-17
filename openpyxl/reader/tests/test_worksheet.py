@@ -525,3 +525,29 @@ def test_row_dimensions(WorkSheetParser):
     parser.parse_row_dimensions(element)
 
     assert 2 not in parser.ws.row_dimensions
+
+
+def test_shared_formulae(WorkSheetParser, datadir):
+    datadir.chdir()
+    parser = WorkSheetParser
+    ws = parser.ws
+    parser.shared_strings = ["Whatever"] * 7
+
+    with open("worksheet_formulae.xml") as src:
+        parser.source = src.read()
+
+    parser.parse()
+
+    assert ws.formula_attributes.keys() == set(['C10'])
+
+    # Test shared forumlae
+    assert ws.cell('B7').data_type == 'f'
+    assert ws.cell('B7').value == '=B4*2'
+    assert ws.cell('C7').value == '=C4*2'
+    assert ws.cell('D7').value == '=D4*2'
+    assert ws.cell('E7').value == '=E4*2'
+
+    # Test array forumlae
+    assert ws.cell('C10').data_type == 'f'
+    assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
+    assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'

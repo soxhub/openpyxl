@@ -51,9 +51,6 @@ def write_cell(xf, worksheet, cell, styled=False):
     with xf.element('c', attributes):
         if cell.data_type == 'f':
             shared_formula = worksheet.formula_attributes.get(coordinate, {})
-            if (shared_formula.get('t') == 'shared'
-                and 'ref' not in shared_formula):
-                value = None
             with xf.element('f', shared_formula):
                 if value is not None:
                     xf.write(value[1:])

@@ -1,0 +1,163 @@
+<?xml version="1.0" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+mc:Ignorable="x14ac"
+xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">
+
+  <dimension ref="A1:E16" />
+  <sheetViews>
+    <sheetView tabSelected="1" workbookViewId="0">
+      <selection activeCell="A16" sqref="A16" />
+    </sheetView>
+  </sheetViews>
+  <sheetFormatPr baseColWidth="10" defaultRowHeight="16"
+  x14ac:dyDescent="0" />
+  <sheetData>
+    <row r="1" spans="1:5">
+      <c r="B1" t="s">
+        <v>3</v>
+      </c>
+    </row>
+    <row r="2" spans="1:5">
+      <c r="A2">
+        <v>12345</v>
+      </c>
+      <c r="B2" t="s">
+        <v>0</v>
+      </c>
+    </row>
+    <row r="3" spans="1:5">
+      <c r="A3">
+        <f>12345</f>
+        <v>12345</v>
+      </c>
+      <c r="B3" t="s">
+        <v>4</v>
+      </c>
+    </row>
+    <row r="4" spans="1:5">
+      <c r="A4">
+        <f>A2+A3</f>
+        <v>24690</v>
+      </c>
+      <c r="B4" t="s">
+        <v>5</v>
+      </c>
+    </row>
+    <row r="5" spans="1:5">
+      <c r="A5">
+        <f>SUM(A2:A4)</f>
+        <v>49380</v>
+      </c>
+      <c r="B5" t="s">
+        <v>6</v>
+      </c>
+    </row>
+    <row r="6" spans="1:5">
+      <c r="A6" t="s">
+        <v>2</v>
+      </c>
+    </row>
+    <row r="7" spans="1:5">
+      <c r="A7">
+        <f>A4*2</f>
+        <v>49380</v>
+      </c>
+      <c r="B7" t="e">
+        <f t="shared" ref="B7:E7" si="0">B4*2</f>
+        <v>#VALUE!</v>
+      </c>
+      <c r="C7">
+        <f t="shared" si="0" />
+        <v>0</v>
+      </c>
+      <c r="D7">
+        <f t="shared" si="0" />
+        <v>0</v>
+      </c>
+      <c r="E7">
+        <f t="shared" si="0" />
+        <v>0</v>
+      </c>
+    </row>
+    <row r="9" spans="1:5">
+      <c r="A9" t="s">
+        <v>1</v>
+      </c>
+    </row>
+    <row r="10" spans="1:5">
+      <c r="A10">
+        <v>1</v>
+      </c>
+      <c r="B10">
+        <v>11</v>
+      </c>
+      <c r="C10">
+        <f t="array" ref="C10:C14">SUM(A10:A14*B10:B14)</f>
+        <v>605</v>
+      </c>
+    </row>
+    <row r="11" spans="1:5">
+      <c r="A11">
+        <v>2</v>
+      </c>
+      <c r="B11">
+        <v>22</v>
+      </c>
+      <c r="C11">
+        <v>605</v>
+      </c>
+    </row>
+    <row r="12" spans="1:5">
+      <c r="A12">
+        <v>3</v>
+      </c>
+      <c r="B12">
+        <v>33</v>
+      </c>
+      <c r="C12">
+        <v>605</v>
+      </c>
+    </row>
+    <row r="13" spans="1:5">
+      <c r="A13">
+        <v>4</v>
+      </c>
+      <c r="B13">
+        <v>44</v>
+      </c>
+      <c r="C13">
+        <v>605</v>
+      </c>
+    </row>
+    <row r="14" spans="1:5">
+      <c r="A14">
+        <v>5</v>
+      </c>
+      <c r="B14">
+        <v>55</v>
+      </c>
+      <c r="C14">
+        <v>605</v>
+      </c>
+    </row>
+    <row r="16" spans="1:5">
+      <c r="A16" t="str">
+        <f>IF(ISBLANK(B16), "Düsseldorf", B16)</f>
+        <v>Düsseldorf</v>
+      </c>
+    </row>
+  </sheetData>
+  <pageMargins left="0.75" right="0.75" top="1" bottom="1"
+  header="0.5" footer="0.5" />
+  <pageSetup orientation="portrait" horizontalDpi="4294967292"
+  verticalDpi="4294967292" />
+  <extLst>
+    <ext uri="{64002731-A6B0-56B0-2670-7721B7C09600}"
+    xmlns:mx="http://schemas.microsoft.com/office/mac/excel/2008/main">
+
+      <mx:PLV Mode="0" OnePage="0" WScale="0" />
+    </ext>
+  </extLst>
+</worksheet>
