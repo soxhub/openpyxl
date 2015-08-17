@@ -97,30 +97,6 @@ def test_read_no_theme(datadir):
     assert wb
 
 
-def test_read_cell_formulae(datadir):
-    from openpyxl.reader.worksheet import fast_parse
-    datadir.join("reader").chdir()
-    wb = Workbook()
-    ws = fast_parse(open( "worksheet_formula.xml"), wb, "Title", ['', ''])
-    b1 = ws['B1']
-    assert b1.data_type == 'f'
-    assert b1.value == '=CONCATENATE(A1,A2)'
-    a6 = ws['A6']
-    assert a6.data_type == 'f'
-    assert a6.value == '=SUM(A4:A5)'
-
-
-def test_data_only(datadir):
-    datadir.join("reader").chdir()
-    wb = load_workbook('formulae.xlsx', data_only=True)
-    ws = wb.active
-    # Test cells returning values only, not formulae
-    assert ws['A2'].value == 12345
-    assert ws['A3'].value == 12345
-    assert ws['A4'].value == 24690
-    assert ws['A5'].value == 49380
-
-
 @pytest.mark.parametrize("guess_types, dtype",
                          (
                              (True, float),
