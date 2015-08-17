@@ -538,7 +538,7 @@ def test_shared_formulae(WorkSheetParser, datadir):
 
     parser.parse()
 
-    assert ws.formula_attributes.keys() == set(['C10'])
+    assert set(ws.formula_attributes.keys()) == set(['C10'])
 
     # Test shared forumlae
     assert ws.cell('B7').data_type == 'f'
