@@ -538,6 +538,7 @@ def test_shared_formulae(WorkSheetParser, datadir):
 
     parser.parse()
 
+    assert ws.formula_attributes.keys() == set(['C7', 'E7', 'C10', 'B7', 'D7'])
 
     # Test shared forumlae
     assert ws.cell('B7').data_type == 'f'
@@ -545,27 +546,11 @@ def test_shared_formulae(WorkSheetParser, datadir):
     assert ws.formula_attributes['B7']['si'] == '0'
     assert ws.formula_attributes['B7']['ref'] == 'B7:E7'
     assert ws.cell('B7').value == '=B4*2'
-    assert ws.cell('C7').data_type == 'f'
-    assert ws.formula_attributes['C7']['t'] == 'shared'
-    assert ws.formula_attributes['C7']['si'] == '0'
-    assert 'ref' not in ws.formula_attributes['C7']
     assert ws.cell('C7').value == '=C4*2'
-    assert ws.cell('D7').data_type == 'f'
-    assert ws.formula_attributes['D7']['t'] == 'shared'
-    assert ws.formula_attributes['D7']['si'] == '0'
-    assert 'ref' not in ws.formula_attributes['D7']
     assert ws.cell('D7').value == '=D4*2'
-    assert ws.cell('E7').data_type == 'f'
-    assert ws.formula_attributes['E7']['t'] == 'shared'
-    assert ws.formula_attributes['E7']['si'] == '0'
-    assert 'ref' not in ws.formula_attributes['E7']
     assert ws.cell('E7').value == '=E4*2'
 
     # Test array forumlae
     assert ws.cell('C10').data_type == 'f'
-    assert 'ref' not in ws.formula_attributes['C10']['ref']
-    assert ws.formula_attributes['C10']['t'] == 'array'
-    assert 'si' not in ws.formula_attributes['C10']
     assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
     assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'
-    assert ws.cell('C11').data_type != 'f'
