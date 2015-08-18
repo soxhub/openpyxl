@@ -24,7 +24,7 @@ NAMED_RANGE_RE = re.compile("""
 SPLIT_NAMED_RANGE_RE = re.compile(r"((?:[^,']|'(?:[^']|'')*')+)")
 EXTERNAL_RE = re.compile(r"(?P<external>\[\d+\])?(?P<range_string>.*)")
 FORMULA_REGEX = re.compile(r"^[a-zA-Z]+[(]+.*[)]$")
-DISCARDED_RANGES = re.compile("^[_xnlm.]")
+DISCARDED_RANGES = re.compile("^_xlnm\.")
 
 
 class NamedValue(object):
