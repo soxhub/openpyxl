@@ -281,3 +281,15 @@ def test_formula_names(value):
 def test_formula_not_range(value):
     from .. named_range import refers_to_range
     assert refers_to_range(value) is None
+
+
+@pytest.mark.parametrize("value, result",
+                         [
+                             ('_xlnm.Print_Titles', True),
+                             ('myname', False),
+                         ]
+                         )
+def test_discarded_ranges(value, result):
+    from ..named_range import DISCARDED_RANGES
+    m = DISCARDED_RANGES.match(value) is not None
+    assert m is result
