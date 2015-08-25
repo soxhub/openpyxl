@@ -371,11 +371,6 @@ class TestWorksheet:
 
     def test_auto_filter(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws.auto_filter.ref = ws.iter_rows('a1:f1')
-        assert ws.auto_filter.ref == 'A1:F1'
-
-        ws.auto_filter.ref = ''
-        assert ws.auto_filter.ref is None
 
         ws.auto_filter.ref = 'c1:g9'
         assert ws.auto_filter.ref == 'C1:G9'

@@ -233,10 +233,11 @@ class Worksheet(object):
         """Set a sheet title, ensuring it is valid.
            Limited to 31 characters, no special characters."""
         if hasattr(value, "decode"):
-            try:
-                value = value.decode("ascii")
-            except UnicodeDecodeError:
-                raise ValueError("Worksheet titles must be unicode")
+            if not isinstance(value, unicode):
+                try:
+                    value = value.decode("ascii")
+                except UnicodeDecodeError:
+                    raise ValueError("Worksheet titles must be unicode")
         if self.bad_title_char_re.search(value):
             msg = 'Invalid character found in sheet title'
             raise SheetTitleException(msg)
