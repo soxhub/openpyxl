@@ -81,7 +81,8 @@ def read_sheets(archive):
         attrib = element.attrib
         attrib['id'] = attrib["{%s}id" % REL_NS]
         del attrib["{%s}id" % REL_NS]
-        yield attrib
+        if attrib['id']:
+            yield attrib
 
 
 def detect_worksheets(archive):
