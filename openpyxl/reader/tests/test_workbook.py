@@ -181,3 +181,23 @@ def test_read_win_base_date(datadir, filename, epoch):
     archive = ZipFile(filename)
     base_date = read_excel_base_date(archive)
     assert base_date == epoch
+
+
+def test_missing_ids(datadir, DummyArchive):
+    datadir.chdir()
+    with open("workbook_missing_ids.xml") as src:
+        xml = src.read()
+    archive = DummyArchive
+    archive.writestr("xl/workbook.xml", xml)
+
+    from ..workbook import read_sheets
+    sheets = read_sheets(archive)
+    assert list(sheets) == [
+        {'sheetId': '1', 'id': 'rId1', 'name': '4CASTING RAP'},
+        {'sheetId': '11', 'id': 'rId2', 'name': '4CAST SLOPS'},
+        {'sheetId': '20', 'id': 'rId3', 'name': 'Chart4'},
+        {'sheetId': '18', 'id': 'rId4', 'name': 'Chart3'},
+        {'sheetId': '17', 'id': 'rId5', 'name': 'Chart2'},
+        {'sheetId': '16', 'id': 'rId6', 'name': 'Chart1'},
+        {'sheetId': '21', 'id': 'rId7', 'name': 'Sheet1'}
+    ]

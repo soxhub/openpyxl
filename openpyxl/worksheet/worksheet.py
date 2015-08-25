@@ -88,7 +88,6 @@ class Worksheet(object):
     use :func:`openpyxl.workbook.Workbook.create_sheet` instead
 
     """
-    repr_format = unicode('<Worksheet "%s">')
     bad_title_char_re = re.compile(r'[\\*?:/\[\]]')
 
     BREAK_NONE = 0
@@ -165,7 +164,8 @@ class Worksheet(object):
         return self.sheet_view.showGridLines
 
     def __repr__(self):
-        return self.repr_format % self.title
+        return u'<Worksheet "{0}">'.format(self.title)
+
 
     """ To keep compatibility with previous versions"""
     @property
@@ -232,6 +232,11 @@ class Worksheet(object):
     def title(self, value):
         """Set a sheet title, ensuring it is valid.
            Limited to 31 characters, no special characters."""
+        if hasattr(value, "decode"):
+            try:
+                value = value.decode("ascii")
+            except UnicodeDecodeError:
+                raise ValueError("Worksheet titles must be unicode")
         if self.bad_title_char_re.search(value):
             msg = 'Invalid character found in sheet title'
             raise SheetTitleException(msg)

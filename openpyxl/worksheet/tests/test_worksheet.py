@@ -65,6 +65,10 @@ class TestWorksheet:
         with pytest.raises(SheetTitleException):
             Worksheet(Workbook(), 'X' * 50)
 
+    def test_set_encoded_title(self, Worksheet):
+        with pytest.raises(ValueError):
+            Worksheet(Workbook(), b'B\xc3\xbcro')
+
     def test_increment_title_with_regex_chars(self, Worksheet):
         wb = Workbook()
         ws1 = wb.create_sheet(title='Regex Test (')
@@ -367,6 +371,11 @@ class TestWorksheet:
 
     def test_auto_filter(self, Worksheet):
         ws = Worksheet(Workbook())
+        ws.auto_filter.ref = ws.iter_rows('a1:f1')
+        assert ws.auto_filter.ref == 'A1:F1'
+
+        ws.auto_filter.ref = ''
+        assert ws.auto_filter.ref is None
 
         ws.auto_filter.ref = 'c1:g9'
         assert ws.auto_filter.ref == 'C1:G9'
