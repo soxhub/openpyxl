@@ -12,6 +12,7 @@ Bug fixes
 * `#499 <https://bitbucket.org/openpyxl/openpyxl/issues/499/>`_ Inconsistent conversion of localised datetimes
 * `#500 <https://bitbucket.org/openpyxl/openpyxl/issues/500/>`_ Adding images leads to unreadable files
 * `#509 <https://bitbucket.org/openpyxl/openpyxl/issues/509/>`_ Improve handling of sheet names
+* `#516 <https://bitbucket.org/openpyxl/openpyxl/issues/516/>`_ Ignore unassigned worksheets
 
 
 Minor changes
