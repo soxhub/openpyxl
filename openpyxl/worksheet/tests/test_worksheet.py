@@ -65,6 +65,10 @@ class TestWorksheet:
         with pytest.raises(SheetTitleException):
             Worksheet(Workbook(), 'X' * 50)
 
+    def test_set_encoded_title(self, Worksheet):
+        with pytest.raises(ValueError):
+            Worksheet(Workbook(), b'B\xc3\xbcro')
+
     def test_increment_title_with_regex_chars(self, Worksheet):
         wb = Workbook()
         ws1 = wb.create_sheet(title='Regex Test (')
