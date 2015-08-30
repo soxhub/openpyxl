@@ -273,7 +273,7 @@ class WorkSheetParser(object):
 
 
     def parse_auto_filter(self, element):
-        self.ws._auto_filter = AutoFilter.from_tree(element)
+        self.ws.auto_filter = AutoFilter.from_tree(element)
 
 
     def parse_sort(self, element):

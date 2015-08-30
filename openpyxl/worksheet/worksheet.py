@@ -141,7 +141,7 @@ class Worksheet(object):
         self.protection = SheetProtection()
 
         self._current_row = 0
-        self._auto_filter = AutoFilter()
+        self.auto_filter = AutoFilter()
         self.sort_state = SortState()
         self._freeze_panes = None
         self.paper_size = None
@@ -250,16 +250,6 @@ class Worksheet(object):
             raise SheetTitleException(msg)
         self._title = value
 
-
-    @property
-    def auto_filter(self):
-        """Return :class:`~openpyxl.worksheet.AutoFilter` object.
-
-        `auto_filter` attribute stores/returns string until 1.8. You should change your code like ``ws.auto_filter.ref = "A1:A3"``.
-
-        .. versionchanged:: 1.9
-        """
-        return self._auto_filter
 
     @property
     def freeze_panes(self):
