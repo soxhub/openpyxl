@@ -7,6 +7,7 @@ Minor changes
 
 * Remove deprecated methods from DataValidation
 * Convert AutoFilter to Serialisable and extend support for filters
+* Add support for SortState
 
 
 2.3.0-b2 (unreleased)
