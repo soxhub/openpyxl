@@ -180,4 +180,8 @@ class DataValidationList(Serialisable):
 
     @property
     def count(self):
+        return len(self)
+
+
+    def __len__(self):
         return len(self.dataValidation)

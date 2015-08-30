@@ -98,6 +98,12 @@ class SortState(Serialisable):
         self.sortCondition = sortCondition
 
 
+    def __bool__(self):
+        return self.ref is not None
+
+    __nonzero__ = __bool__
+
+
 class IconFilter(Serialisable):
 
     iconSet = Set(values=(['3Arrows', '3ArrowsGray', '3Flags',
@@ -326,6 +332,12 @@ class AutoFilter(Serialisable):
         self.ref = ref
         self.filterColumn = filterColumn
         self.sortState = sortState
+
+
+    def __bool__(self):
+        return self.ref is not None
+
+    __nonzero__ = __bool__
 
 
     def add_filter_column(self, col_id, vals, blank=False):

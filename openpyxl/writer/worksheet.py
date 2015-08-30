@@ -170,10 +170,10 @@ def write_worksheet(worksheet, shared_strings):
             if worksheet.protection.sheet:
                 xf.write(worksheet.protection.to_tree())
 
-            if worksheet.auto_filter.ref:
+            if worksheet.auto_filter:
                 xf.write(worksheet.auto_filter.to_tree())
 
-            if worksheet.sort_state.ref is not None:
+            if worksheet.sort_state:
                 xf.write(worksheet.sort_state.to_tree())
 
             merge = write_mergecells(worksheet)
@@ -184,7 +184,7 @@ def write_worksheet(worksheet, shared_strings):
             for cf in cfs:
                 xf.write(cf)
 
-            if worksheet.data_validations.count:
+            if worksheet.data_validations:
                 xf.write(worksheet.data_validations.to_tree())
 
             hyper = write_hyperlinks(worksheet)
