@@ -50,7 +50,7 @@ from .header_footer import HeaderFooter
 from .page import PrintPageSetup, PageMargins, PrintOptions
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
-from .filters import AutoFilter
+from .filters import AutoFilter, SortState
 from .views import SheetView, Pane, Selection
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
@@ -142,6 +142,7 @@ class Worksheet(object):
 
         self._current_row = 0
         self._auto_filter = AutoFilter()
+        self.sort_state = SortState()
         self._freeze_panes = None
         self.paper_size = None
         self.formula_attributes = {}

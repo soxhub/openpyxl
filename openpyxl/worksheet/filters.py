@@ -72,6 +72,8 @@ class SortCondition(Serialisable):
 
 class SortState(Serialisable):
 
+    tagname = "sortState"
+
     columnSort = Bool(allow_none=True)
     caseSensitive = Bool(allow_none=True)
     sortMethod = NoneSet(values=(['stroke', 'pinYin']))

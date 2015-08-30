@@ -381,6 +381,20 @@ def test_read_autofilter(datadir):
     assert ws.auto_filter.ref == 'A1:B6'
 
 
+def test_sort_state(WorkSheetParser, datadir):
+    datadir.chdir()
+
+    with open("sort_worksheet.xml") as src:
+        xml = fromstring(src.read())
+    element = xml.find("{%s}sortState" % SHEET_MAIN_NS)
+
+    parser = WorkSheetParser
+    parser.parse_sort(element)
+    sort = parser.ws.sort_state
+    assert sort.ref == "B1:B3"
+    assert len(sort.sortCondition) == 1
+
+
 def test_header_footer(WorkSheetParser, datadir):
     parser = WorkSheetParser
     ws = parser.ws

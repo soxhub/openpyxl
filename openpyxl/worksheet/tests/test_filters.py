@@ -2,7 +2,7 @@
 
 import pytest
 
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
 
 
@@ -94,3 +94,32 @@ class TestAutoFilter:
         xml = tostring(af.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+@pytest.fixture
+def SortState():
+    from ..filters import SortState
+    return SortState
+
+
+class TestSortState:
+
+    def test_ctor(self, SortState):
+        sort = SortState(ref="A1:D5")
+        xml = tostring(sort.to_tree())
+        expected = """
+        <sortState ref="A1:D5" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SortState):
+        src = """
+        <sortState ref="B1:B3">
+          <sortCondition ref="B1"/>
+        </sortState>
+        """
+        node = fromstring(src)
+        sort = SortState.from_tree(node)
+        assert sort.ref == "B1:B3"

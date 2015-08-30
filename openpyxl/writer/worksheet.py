@@ -195,6 +195,9 @@ def write_worksheet(worksheet, shared_strings):
             if af is not None:
                 xf.write(af)
 
+            if worksheet.sort_state.ref is not None:
+                xf.write(worksheet.sort_state.to_tree())
+
             merge = write_mergecells(worksheet)
             if merge is not None:
                 xf.write(merge)

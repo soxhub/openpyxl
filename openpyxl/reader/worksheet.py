@@ -10,7 +10,7 @@ from openpyxl.xml.functions import iterparse
 
 # package imports
 from openpyxl.cell import Cell
-from openpyxl.worksheet.filters import AutoFilter
+from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
@@ -94,6 +94,7 @@ class WorkSheetParser(object):
             '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
             '{%s}sheetViews' % SHEET_MAIN_NS: self.parse_sheet_views,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
+            '{%s}sortState' % SHEET_MAIN_NS: self.parse_sort,
                       }
         tags = dispatcher.keys()
         stream = _get_xml_iter(self.source)
@@ -273,6 +274,10 @@ class WorkSheetParser(object):
 
     def parse_auto_filter(self, element):
         self.ws._auto_filter = AutoFilter.from_tree(element)
+
+
+    def parse_sort(self, element):
+        self.ws.sort_state = SortState.from_tree(element)
 
 
     def parse_sheet_protection(self, element):
