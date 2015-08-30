@@ -70,12 +70,6 @@ def write_cols(worksheet):
         return el
 
 
-def write_autofilter(worksheet):
-    auto_filter = worksheet.auto_filter
-    if auto_filter.ref is not None:
-        return auto_filter.to_tree()
-
-
 def write_mergecells(worksheet):
     """Write merged cells to xml."""
     cells = worksheet._merged_cells
