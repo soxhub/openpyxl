@@ -314,9 +314,3 @@ class WorkSheetParser(object):
             ext_type = EXT_TYPES.get(e.uri.upper(), "Unknown")
             msg = "{0} extension is not supported and will be removed".format(ext_type)
             warn(msg)
-
-
-def fast_parse(xml_source, parent, sheet_title, shared_strings):
-    parser = WorkSheetParser(parent, sheet_title, xml_source, shared_strings)
-    parser.parse()
-    return parser.ws

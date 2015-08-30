@@ -15,48 +15,9 @@ from openpyxl.compat import unicode
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import worksheet
 from openpyxl.styles import numbers, Style
-from openpyxl.reader.worksheet import fast_parse
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
-
-
-def test_read_standalone_worksheet(datadir):
-
-    class DummyWb(object):
-
-        encoding = 'utf-8'
-
-        excel_base_date = CALENDAR_WINDOWS_1900
-        _guess_types = True
-        data_only = False
-        _colors = []
-        vba_archive = None
-
-        def __init__(self):
-            self.shared_styles = [Style()]
-            self._cell_styles = IndexedList()
-            self._differential_styles = []
-
-        def get_sheet_by_name(self, value):
-            return None
-
-        def get_sheet_names(self):
-            return []
-
-        def create_sheet(self, title):
-            return Worksheet(self, title=title)
-
-    datadir.join("reader").chdir()
-    shared_strings = IndexedList(['hello'])
-
-    with open('sheet2.xml') as src:
-        ws = fast_parse(src.read(), DummyWb(), 'Sheet 2', shared_strings)
-        assert isinstance(ws, Worksheet)
-        assert ws.cell('G5').value == 'hello'
-        assert ws.cell('D30').value == 30
-        assert ws.cell('K9').value == 0.09
 
 
 @pytest.fixture
