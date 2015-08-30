@@ -14,7 +14,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.compat import OrderedDict, safe_string, unicode
-from openpyxl.utils import coordinate_from_string
+from openpyxl.utils import coordinate_from_string, rows_from_range
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -60,7 +60,6 @@ def expand_cell_ranges(range_string):
     Reverse of collapse_cell_addresses
     Eg. converts "A1:A2 B1:B2" to (A1, A2, B1, B2)
     """
-    from .worksheet import rows_from_range
     cells = []
     for rs in range_string.split():
         cells.extend(rows_from_range(rs))
