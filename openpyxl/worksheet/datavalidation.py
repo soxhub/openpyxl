@@ -185,3 +185,7 @@ class DataValidationList(Serialisable):
 
     def __len__(self):
         return len(self.dataValidation)
+
+
+    def append(self, dv):
+        self.dataValidation.append(dv)
