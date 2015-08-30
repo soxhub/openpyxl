@@ -1,10 +1,5 @@
 from __future__ import absolute_import
-# coding=utf8
 # Copyright (c) 2010-2015 openpyxl
-
-# Python stdlib imports
-from datetime import datetime
-from io import BytesIO
 
 import pytest
 
@@ -12,22 +7,15 @@ import pytest
 from openpyxl.compat import unicode
 
 # package imports
-from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.workbook import Workbook
-from openpyxl.styles import numbers, Style
+from openpyxl.styles import numbers
 from openpyxl.reader.excel import load_workbook
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 
 
-@pytest.fixture
-def standard_workbook(datadir):
+def test_read_worksheet(datadir):
     datadir.join("genuine").chdir()
-    return load_workbook("empty.xlsx")
-
-
-def test_read_worksheet(standard_workbook):
-    wb = standard_workbook
+    wb = load_workbook("empty.xlsx")
     sheet2 = wb['Sheet2 - Numbers']
     assert isinstance(sheet2, Worksheet)
     assert 'This is cell G5' == sheet2['G5'].value
