@@ -104,21 +104,6 @@ def write_conditional_formatting(worksheet):
         yield cf
 
 
-def write_datavalidation(worksheet):
-    """ Write data validation(s) to xml."""
-    # Filter out "empty" data-validation objects (i.e. with 0 cells)
-    required_dvs = [x for x in worksheet._data_validations
-                    if len(x.cells) or len(x.ranges)]
-    if not required_dvs:
-        return
-
-    dvs = Element("dataValidations", count=str(len(required_dvs)))
-    for dv in required_dvs:
-        dvs.append(dv.to_tree())
-
-    return dvs
-
-
 def write_header_footer(worksheet):
     header = worksheet.header_footer.getHeader()
     footer = worksheet.header_footer.getFooter()
@@ -191,9 +176,8 @@ def write_worksheet(worksheet, shared_strings):
             if worksheet.protection.sheet:
                 xf.write(worksheet.protection.to_tree())
 
-            af = write_autofilter(worksheet)
-            if af is not None:
-                xf.write(af)
+            if worksheet.auto_filter.ref:
+                xf.write(worksheet.auto_filter.to_tree())
 
             if worksheet.sort_state.ref is not None:
                 xf.write(worksheet.sort_state.to_tree())
@@ -206,9 +190,8 @@ def write_worksheet(worksheet, shared_strings):
             for cf in cfs:
                 xf.write(cf)
 
-            dv = write_datavalidation(worksheet)
-            if dv is not None:
-                xf.write(dv)
+            if worksheet.data_validations.count:
+                xf.write(worksheet.data_validations.to_tree())
 
             hyper = write_hyperlinks(worksheet)
             if hyper is not None:

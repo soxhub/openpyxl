@@ -2,15 +2,19 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 from itertools import groupby, chain
-import warnings
 
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import Bool, NoneSet, String
+from openpyxl.descriptors import (
+    Bool,
+    NoneSet,
+    String,
+    Sequence,
+    Alias,
+    Integer,
+)
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import OrderedDict, safe_string, deprecated, unicode
+from openpyxl.compat import OrderedDict, safe_string, unicode
 from openpyxl.utils import coordinate_from_string
-from openpyxl.worksheet import rows_from_range
-from openpyxl.xml.functions import Element, SubElement
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -49,8 +53,6 @@ def collapse_cell_addresses(cells, input_ranges=()):
 
     return " ".join(ranges)
 
-from .worksheet import rows_from_range
-
 
 def expand_cell_ranges(range_string):
     """
@@ -58,6 +60,7 @@ def expand_cell_ranges(range_string):
     Reverse of collapse_cell_addresses
     Eg. converts "A1:A2 B1:B2" to (A1, A2, B1, B2)
     """
+    from .worksheet import rows_from_range
     cells = []
     for rs in range_string.split():
         cells.extend(rows_from_range(rs))
@@ -91,6 +94,7 @@ class DataValidation(Serialisable):
                               "fullHangul", "halfHangul"))
     operator = NoneSet(values=("between", "notBetween", "equal", "notEqual",
                                "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"))
+    validation_type = Alias('type')
 
     def __init__(self,
                  type=None,
@@ -109,7 +113,6 @@ class DataValidation(Serialisable):
                  errorTitle=None,
                  imeMode=None,
                  operator=None,
-                 validation_type=None, # remove in future
                  ):
 
         self.showDropDown = showDropDown
@@ -122,10 +125,6 @@ class DataValidation(Serialisable):
             self.allowBlank = allowBlank
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
-        if validation_type is not None:
-            warnings.warn("Use 'DataValidation(type={0})'".format(validation_type))
-            if type is not None:
-                self.type = validation_type
         self.type = type
         self.cells = set()
         self.ranges = []
@@ -154,3 +153,32 @@ class DataValidation(Serialisable):
     @sqref.setter
     def sqref(self, range_string):
         self.cells = expand_cell_ranges(range_string)
+
+
+class DataValidationList(Serialisable):
+
+    tagname = "dataValidation"
+
+    disablePrompts = Bool(allow_none=True)
+    xWindow = Integer(allow_none=True)
+    yWindow = Integer(allow_none=True)
+    dataValidation = Sequence(expected_type=DataValidation)
+
+    __elements__ = ('dataValidation',)
+
+    def __init__(self,
+                 disablePrompts=None,
+                 xWindow=None,
+                 yWindow=None,
+                 count=None,
+                 dataValidation=(),
+                ):
+        self.disablePrompts = disablePrompts
+        self.xWindow = xWindow
+        self.yWindow = yWindow
+        self.dataValidation = dataValidation
+
+
+    @property
+    def count(self):
+        return len(self.dataValidation)

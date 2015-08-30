@@ -370,8 +370,7 @@ def test_data_validation(WorkSheetParser, datadir):
 
     element = sheet.find("{%s}dataValidations" % SHEET_MAIN_NS)
     parser.parse_data_validation(element)
-    dvs = ws._data_validations
-    assert len(dvs) == 1
+    assert ws.data_validations.count == 1
 
 
 def test_read_autofilter(datadir):

@@ -46,6 +46,7 @@ from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.names.named_range import NamedRange
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
+from .datavalidation import DataValidationList
 from .header_footer import HeaderFooter
 from .page import PrintPageSetup, PageMargins, PrintOptions
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
@@ -131,7 +132,7 @@ class Worksheet(object):
         self._comment_count = 0
         self._merged_cells = []
         self.hyperlinks = set()
-        self._data_validations = []
+        self.data_validations = DataValidationList()
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
@@ -603,8 +604,7 @@ class Worksheet(object):
             object defines the type of data-validation to be applied and the
             cell or range of cells it should apply to.
         """
-        data_validation._sheet = self
-        self._data_validations.append(data_validation)
+        self.data_validations.append(data_validation)
 
     def add_chart(self, chart, anchor=None):
         """

@@ -18,8 +18,6 @@ from openpyxl.writer.excel import ExcelWriter
 from openpyxl.writer.comments import CommentWriter
 from .relations import write_rels
 from .worksheet import (
-    write_autofilter,
-    write_datavalidation,
     write_cell,
     write_cols,
     write_drawing,
@@ -120,13 +118,14 @@ class WriteOnlyWorksheet(Worksheet):
                 if self.protection.sheet:
                     xf.write(worksheet.protection.to_tree())
 
-                af = write_autofilter(self)
-                if af is not None:
-                    xf.write(af)
+                if self.auto_filter.ref:
+                    xf.write(self.auto_filter.to_tree())
 
-                dv = write_datavalidation(self)
-                if dv is not None:
-                    xf.write(dv)
+                if self.sort_state.ref:
+                    xf.write(self.sort_state.to_tree())
+
+                if self.data_validations.count:
+                    xf.write(self.data_validations.to_tree())
 
                 drawing = write_drawing(self)
                 if drawing is not None:
