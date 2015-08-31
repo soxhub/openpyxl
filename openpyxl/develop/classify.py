@@ -100,6 +100,9 @@ def classify(tagname, src=sheet_src, schema=None):
     s = """\n\nclass %s(Serialisable):\n\n""" % tagname[3:]
     attrs = []
 
+    node = derived(node)
+    node = extends(node)
+
     # attributes
     attributes = node.findall("{%s}attribute" % XSD)
     _group = node.find("{%s}attributeGroup" % XSD)
@@ -190,6 +193,16 @@ def classify(tagname, src=sheet_src, schema=None):
         s += "        self.{0} = {0}\n".format(attr)
 
     return s, types, children
+
+
+def derived(node):
+    base = node.find("{%s}simpleContent" % XSD)
+    return base or node
+
+
+def extends(node):
+    base = node.find("{%s}extension" % XSD)
+    return base or node
 
 
 def simple(tagname, schema, use=""):
