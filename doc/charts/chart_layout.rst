@@ -9,4 +9,9 @@ The layout is set by assigning the layout property an instance of a layout class
 This produces a chart looking something like this:
 
 .. image:: chart_layout.png
-   :alt: "Sample chart with a the layout of the legend and plot area manually set"
+   :alt: "Sample chart with the layout of the legend and plot area manually set"
+   
+To be compared with 
+   
+.. image:: chart_layout_default.png
+   :alt: "Sample chart with the default layout"
