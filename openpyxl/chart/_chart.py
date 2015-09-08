@@ -8,7 +8,6 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
 
 from ._3d import _3DBase
-from .chartspace import PlotArea
 from .data_source import AxDataSource, NumRef
 from .legend import Legend
 from .reference import Reference
@@ -52,7 +51,8 @@ class ChartBase(Serialisable):
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
-        self.plot_area = PlotArea()        
+        from .chartspace import PlotArea
+        self.plot_area = PlotArea()
         super(ChartBase, self).__init__(**kw)
 
     def __hash__(self):
