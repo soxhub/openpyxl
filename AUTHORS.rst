@@ -42,6 +42,7 @@ I'd also like to greatly thank all those who participate in the project (in alph
 * Adam Morris
 * aceMueller
 * Gabi Nagy
+* Thomas Nygards
 * Felipe Ochoa
 * Jun Omae
 * Waldemar Osuch
