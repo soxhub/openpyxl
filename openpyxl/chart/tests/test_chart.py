@@ -5,6 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from ..chartspace import PlotArea
 
 from ..series import Series
 
@@ -83,3 +84,7 @@ class TestChartBase:
     def test_path(self, ChartBase):
         chart = ChartBase()
         assert chart._path == "xl/charts/chart1.xml"
+
+    def test_plot_area(self, ChartBase):
+        chart = ChartBase()
+        assert type(chart.plot_area) is PlotArea

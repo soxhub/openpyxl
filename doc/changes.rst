@@ -10,7 +10,17 @@ Minor changes
 * Add support for SortState
 
 
-2.3.0-b2 (unreleased)
+2.3.0 (unreleased)
+==================
+
+
+Minor changes
+-------------
+
+* PR 79 Make PlotArea editable in charts
+
+
+2.3.0-b2 (2015-09-04)
 =====================
 
 

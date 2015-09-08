@@ -51,6 +51,8 @@ class ChartBase(Serialisable):
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
+        from .chartspace import PlotArea
+        self.plot_area = PlotArea()
         super(ChartBase, self).__init__(**kw)
 
     def __hash__(self):
@@ -77,23 +79,22 @@ class ChartBase(Serialisable):
 
 
     def _write(self):
-        from .chartspace import ChartSpace, ChartContainer, PlotArea
-        plot = PlotArea()
-        plot.graphical_properties = self.graphical_properties
+        from .chartspace import ChartSpace, ChartContainer
+        self.plot_area.graphical_properties = self.graphical_properties
         idx_base = 0
         for chart in self._charts:
             chart.idx_base = idx_base
-            plot._charts.append(chart)
+            self.plot_area._charts.append(chart)
             idx_base += len(chart.series)
 
         for axis in ("x_axis", "y_axis", 'z_axis'):
             axis = getattr(self, axis, None)
             if axis is None:
                 continue
-            ax = getattr(plot, axis.tagname)
+            ax = getattr(self.plot_area, axis.tagname)
             ax.append(axis)
 
-        container = ChartContainer(plotArea=plot, legend=self.legend, title=self.title)
+        container = ChartContainer(plotArea=self.plot_area, legend=self.legend, title=self.title)
         if isinstance(chart, _3DBase):
             container.view3D = chart.view3D
             container.floor = chart.floor
