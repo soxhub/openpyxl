@@ -56,7 +56,13 @@ class HashableObject(Serialisable):
     def key(self):
         """Use a tuple of fields as the basis for a key"""
         if self._key is None:
-            self._key = hash(tuple(getattr(self, x) for x in self.__fields__))
+            fields = []
+            for attr in self.__fields__:
+                val = getattr(self, attr)
+                if isinstance(val, list):
+                    val = tuple(val)
+                fields.append(val)
+            self._key = hash(tuple(fields))
         return self._key
 
     def __hash__(self):
