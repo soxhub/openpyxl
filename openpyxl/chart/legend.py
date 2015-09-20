@@ -49,7 +49,7 @@ class Legend(Serialisable):
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     shapeProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
-    textProperies = Alias('txPr')
+    textProperties = Alias('txPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('legendPos', 'legendEntry', 'layout', 'overlay', 'spPr', 'txPr',)
