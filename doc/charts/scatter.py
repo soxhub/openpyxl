@@ -1,6 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.chart import (
-    ScatterChart3D,
+    ScatterChart,
     Reference,
     Series,
 )
@@ -22,7 +22,6 @@ for row in rows:
     ws.append(row)
 
 chart = ScatterChart()
-chart.scatterStyle = "marker"
 chart.title = "Scatter Chart"
 chart.style = 13
 chart.x_axis.title = 'Size'

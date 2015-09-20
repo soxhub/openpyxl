@@ -21,7 +21,6 @@ The following charts are available:
 
 * Line Chart, 3D Line Chart
 * Pie Chart, 3D PieChart Doughnut Chart, Projected Pie Chart
-* Scatter Chart
 * Stock Chart
 * Surface Chart, 3D Surface Chart
 
@@ -54,3 +53,13 @@ Working with axes
 .. toctree::
 
     secondary
+
+
+Advanced charts
+---------------
+
+Charts can be combined to create new charts:
+
+.. toctree::
+
+    gauge
