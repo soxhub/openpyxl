@@ -22,6 +22,5 @@ Submodules
    openpyxl.styles.numbers
    openpyxl.styles.protection
    openpyxl.styles.proxy
-   openpyxl.styles.style
    openpyxl.styles.styleable
 
