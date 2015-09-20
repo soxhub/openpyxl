@@ -1,6 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.chart import (
-    ScatterChart3D,
+    ScatterChart,
     Reference,
     Series,
 )
