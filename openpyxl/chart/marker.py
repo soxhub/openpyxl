@@ -46,7 +46,7 @@ class Marker(Serialisable):
                            to_tree=_marker_symbol)
     size = NestedMinMax(min=2, max=72, allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    ShapeProperties = Alias('sprPr')
+    shapeProperties = Alias('spPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('symbol', 'size', 'spPr')
@@ -59,6 +59,8 @@ class Marker(Serialisable):
                 ):
         self.symbol = symbol
         self.size = size
+        if spPr is None:
+            spPr = ShapeProperties()
         self.spPr = spPr
 
 
