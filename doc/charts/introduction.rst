@@ -17,9 +17,9 @@ The following charts are available:
     area
     bar
     bubble
+    line
     scatter
 
-* Line Chart, 3D Line Chart
 * Pie Chart, 3D PieChart Doughnut Chart, Projected Pie Chart
 * Stock Chart
 * Surface Chart, 3D Surface Chart
