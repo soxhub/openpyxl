@@ -49,8 +49,6 @@ class ShapeProperties(Serialisable):
     solidFill = ColorChoiceDescriptor()
     gradFill = Typed(expected_type=GradientFillProperties, allow_none=True)
     pattFill = Typed(expected_type=PatternFillProperties, allow_none=True)
-    #pattFill = Typed(expected_type=CT_PatternFillProperties)
-    #grpFill = Typed(expected_type=CT_GroupFillProperties)
 
     ln = Typed(expected_type=LineProperties, allow_none=True)
     line = Alias('ln')
