@@ -55,6 +55,14 @@ Working with axes
     secondary
 
 
+Change the chart layout
+-----------------------
+
+.. toctree::
+
+    chart_layout
+
+
 Advanced charts
 ---------------
 
