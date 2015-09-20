@@ -21,6 +21,11 @@ class TestMarker:
         <marker>
             <symbol val="none"/>
             <size val="5"/>
+            <spPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
         </marker>
         """
         diff = compare_xml(xml, expected)
