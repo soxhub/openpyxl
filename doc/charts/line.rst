@@ -9,7 +9,8 @@ to scatter charts, the main difference is that with line charts each data
 series is plotted against the same values. Different kinds of axes can be
 used for the secondary axes.
 
-Similar to bar charts there are three kinds of line charts: standard, stacked and percentStacked.
+Similar to bar charts there are three kinds of line charts: standard, stacked
+and percentStacked.
 
 
 .. literalinclude:: line.py
