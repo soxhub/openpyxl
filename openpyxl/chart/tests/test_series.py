@@ -197,16 +197,21 @@ class TestRadarSer:
         from ..series import Series, attribute_mapping
 
         src = """
-        <ser>
+        <ser xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <idx val="0"/>
           <order val="0"/>
           <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln>
                 <a:prstDash val="solid" />
               </a:ln>
           </spPr>
           <marker>
             <symbol val="none"/>
+            <spPr>
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
           </marker>
           <val>
             <numRef>
@@ -233,16 +238,21 @@ class TestScatterSer:
         from ..series import Series, attribute_mapping
 
         src = """
-        <ser>
+        <ser xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <idx val="0"/>
           <order val="0"/>
           <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln >
                 <a:prstDash val="solid" />
               </a:ln>
           </spPr>
           <marker>
             <symbol val="none"/>
+            <spPr>
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
           </marker>
           <xVal>
             <numRef>
@@ -276,11 +286,11 @@ class TestSurfaceSer:
         from ..series import Series, attribute_mapping
 
         src = """
-        <ser>
+        <ser xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <idx val="0"/>
           <order val="0"/>
           <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln >
                 <a:prstDash val="solid" />
               </a:ln>
           </spPr>

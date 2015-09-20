@@ -20,42 +20,57 @@ class TestStockChart:
         chart = StockChart(ser=[Series(), Series(), Series()])
         xml = tostring(chart.to_tree())
         expected = """
-        <stockChart>
+        <stockChart xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <ser>
             <idx val="0" />
             <order val="0" />
             <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln >
                 <a:prstDash val="solid" />
               </a:ln>
           </spPr>
-            <marker>
-              <symbol val="none"></symbol>
-            </marker>
+          <marker>
+            <symbol val="none"/>
+            <spPr>
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
+          </marker>
             </ser>
           <ser>
             <idx val="1" />
             <order val="1" />
             <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln>
                 <a:prstDash val="solid" />
             </a:ln>
             </spPr>
-            <marker>
-              <symbol val="none"></symbol>
-            </marker>
+          <marker>
+            <symbol val="none"/>
+            <spPr>
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
+          </marker>
           </ser>
           <ser>
             <idx val="2"></idx>
             <order val="2"></order>
             <spPr>
-              <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:ln>
                 <a:prstDash val="solid" />
             </a:ln>
             </spPr>
             <marker>
-              <symbol val="none"></symbol>
-            </marker>
+            <symbol val="none"/>
+            <spPr>
+              <a:ln>
+                <a:prstDash val="solid" />
+              </a:ln>
+            </spPr>
+          </marker>
           </ser>
           <axId val="10"></axId>
           <axId val="100"></axId>
