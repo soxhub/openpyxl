@@ -199,9 +199,9 @@ Data Validation
 Parsing Formulas
 ++++++++++++++++
 
-.. toctreee::
+.. toctree::
 
-   formula
+    formula
 
 
 Information for Developers

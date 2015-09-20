@@ -113,6 +113,7 @@ class LineProperties(Serialisable):
     prstDash = NestedNoneSet(values=(['solid', 'dot', 'dash', 'lgDash', 'dashDot',
                        'lgDashDot', 'lgDashDotDot', 'sysDash', 'sysDot', 'sysDashDot',
                        'sysDashDotDot']), namespace=namespace)
+    dashStyle = Alias('prstDash')
 
     custDash = Typed(expected_type=DashStop, allow_none=True)
 

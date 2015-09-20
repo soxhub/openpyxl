@@ -28,7 +28,6 @@ chart.x_axis.title = 'Size'
 chart.y_axis.title = 'Percentage'
 
 xvalues = Reference(ws, min_col=1, min_row=2, max_row=7)
-data = Reference(ws, min_col=2, min_row=1, max_col=3, max_row=7)
 for i in range(2, 4):
     values = Reference(ws, min_col=i, min_row=1, max_row=7)
     series = Series(values, xvalues, title_from_data=True)
