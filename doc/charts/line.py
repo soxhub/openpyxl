@@ -4,7 +4,6 @@ from openpyxl import Workbook
 from openpyxl.chart import (
     LineChart,
     Reference,
-    Series,
 )
 from openpyxl.chart.axis import DateAxis
 
@@ -51,6 +50,17 @@ s2.smooth = True # Make the line smooth
 
 ws.add_chart(c1, "A10")
 
+from copy import deepcopy
+stacked = deepcopy(c1)
+stacked.grouping = "stacked"
+stacked.title = "Stacked Line Chart"
+ws.add_chart(stacked, "A27")
+
+percent_stacked = deepcopy(c1)
+percent_stacked.grouping = "percentStacked"
+percent_stacked.title = "Percent Stacked Line Chart"
+ws.add_chart(percent_stacked, "A44")
+
 # Chart with date axis
 c2 = LineChart()
 c2.title = "Date Axis"
@@ -66,6 +76,6 @@ c2.add_data(data, titles_from_data=True)
 dates = Reference(ws, min_col=1, min_row=2, max_row=7)
 c2.set_categories(dates)
 
-ws.add_chart(c2, "A27")
+ws.add_chart(c2, "A61")
 
 wb.save("line.xlsx")
