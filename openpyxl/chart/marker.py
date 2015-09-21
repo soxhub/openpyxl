@@ -72,7 +72,7 @@ class DataPoint(Serialisable):
     invertIfNegative = NestedBool(allow_none=True)
     marker = Typed(expected_type=Marker, allow_none=True)
     bubble3D = NestedBool(allow_none=True)
-    explosion = Integer(allow_none=True)
+    explosion = NestedInteger(allow_none=True)
     spPr = Typed(expected_type=ShapeProperties, allow_none=True)
     shapeProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
