@@ -115,6 +115,7 @@ class TestProjectedPieChart:
           <ofPieType val="pie"/>
           <splitType val="auto"/>
           <secondPieSize val="75"/>
+          <serLines/>
         </ofPieChart>
         """
         diff = compare_xml(xml, expected)
