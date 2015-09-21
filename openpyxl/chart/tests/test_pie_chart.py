@@ -112,7 +112,8 @@ class TestProjectedPieChart:
         expected = """
         <ofPieChart>
           <varyColors val="1" />
-          <ofPieType val="pie" />
+          <ofPieType val="pie"/>
+          <splitType val="auto"/>
           <secondPieSize val="75"/>
         </ofPieChart>
         """
@@ -123,8 +124,9 @@ class TestProjectedPieChart:
     def test_from_xml(self, ProjectedPieChart):
         src = """
         <ofPieChart>
-        <ofPieType val="pie"/>
         <varyColors val="1"/>
+        <ofPieType val="pie"/>
+        <splitType val="auto"/>
          <dLbls>
           <showLegendKey val="0"/>
           <showVal val="0"/>

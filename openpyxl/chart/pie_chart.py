@@ -157,7 +157,7 @@ class ProjectedPieChart(_PieChartBase):
     def __init__(self,
                  ofPieType="pie",
                  gapWidth=None,
-                 splitType=None,
+                 splitType="auto",
                  splitPos=None,
                  custSplit=None,
                  secondPieSize=75,
