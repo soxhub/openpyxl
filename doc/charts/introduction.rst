@@ -19,6 +19,7 @@ The following charts are available:
     bubble
     line
     scatter
+    pie
 
 * Pie Chart, 3D PieChart Doughnut Chart, Projected Pie Chart
 * Stock Chart
