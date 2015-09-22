@@ -143,12 +143,14 @@ class ProjectedPieChart(_PieChartBase):
     dLbls = _PieChartBase.dLbls
 
     ofPieType = NestedSet(values=(['pie', 'bar']))
+    type = Alias('ofPieType')
     gapWidth = NestedGapAmount()
     splitType = NestedNoneSet(values=(['auto', 'cust', 'percent', 'pos', 'val']))
     splitPos = NestedFloat(allow_none=True)
     custSplit = Typed(expected_type=CustomSplit, allow_none=True)
     secondPieSize = NestedMinMax(min=5, max=200, allow_none=True)
     serLines = Typed(expected_type=ChartLines, allow_none=True)
+    join_lines = Alias('serLines')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _PieChartBase.__elements__ + ('ofPieType', 'gapWidth',
@@ -157,7 +159,7 @@ class ProjectedPieChart(_PieChartBase):
     def __init__(self,
                  ofPieType="pie",
                  gapWidth=None,
-                 splitType=None,
+                 splitType="auto",
                  splitPos=None,
                  custSplit=None,
                  secondPieSize=75,
@@ -171,5 +173,6 @@ class ProjectedPieChart(_PieChartBase):
         self.splitPos = splitPos
         self.custSplit = custSplit
         self.secondPieSize = secondPieSize
-        self.serLines = serLines
+        if serLines is None:
+            self.serLines = ChartLines()
         super(ProjectedPieChart, self).__init__(**kw)
