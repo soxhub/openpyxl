@@ -8,7 +8,7 @@ from openpyxl.chart import (
 from openpyxl.chart.series import DataPoint
 
 data = [
-    ['Pie', '2014', '2015'],
+    ['Pie', 2014, 2015],
     ['Plain', 40, 50],
     ['Jam', 2, 10],
     ['Lime', 20, 30],
