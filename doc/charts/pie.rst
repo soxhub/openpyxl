@@ -34,3 +34,13 @@ In addition custom splits can be defined.
 
 3D Pie Charts
 -------------
+
+Pie charts can also be created with a 3D effect.
+
+
+.. literalinclude:: pie3D.py
+
+
+.. image:: pie3D.png
+   :alt: "Sample 3D pie chart"
+
