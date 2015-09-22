@@ -1,5 +1,5 @@
-Pie  and Doughnut Charts
-========================
+Pie Charts
+==========
 
 
 Pie Charts
@@ -28,9 +28,9 @@ or pos(ition). If nothing is set then the application decides which to use.
 In addition custom splits can be defined.
 
 
-Doughnut Charts
----------------
+.. image:: projected-pie.png
+   :alt: "Sample pie chart with projections"
 
-Doughnut charts are similar to pie charts except that they use a ring instead
-of a circle. They can also plot several series of data as concentric rings.
 
+3D Pie Charts
+-------------

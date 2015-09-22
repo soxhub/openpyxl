@@ -23,7 +23,7 @@ for row in data:
 
 pie = PieChart()
 labels = Reference(ws, min_col=1, min_row=2, max_row=5)
-data = Reference(ws, min_col=2, min_row=2, max_row=5)
+data = Reference(ws, min_col=2, min_row=1, max_row=5)
 pie.add_data(data, titles_from_data=True)
 pie.set_categories(labels)
 pie.title = "Pies sold by category"
