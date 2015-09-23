@@ -21,6 +21,7 @@ The following charts are available:
     scatter
     pie
     doughnut
+    radar
 
 * Stock Chart
 * Surface Chart, 3D Surface Chart

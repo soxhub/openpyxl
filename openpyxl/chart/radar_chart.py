@@ -24,7 +24,7 @@ class RadarChart(ChartBase):
     radarStyle = NestedSet(values=(['standard', 'marker', 'filled']))
     type = Alias("radarStyle")
     varyColors = NestedBool(nested=True, allow_none=True)
-    ser = Typed(expected_type=Series, allow_none=True)
+    ser = Sequence(expected_type=Series, allow_none=True)
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
     dataLabels = Alias("dLbls")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -39,7 +39,7 @@ class RadarChart(ChartBase):
     def __init__(self,
                  radarStyle="standard",
                  varyColors=None,
-                 ser=None,
+                 ser=(),
                  dLbls=None,
                  axId=None,
                  extLst=None,
