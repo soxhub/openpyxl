@@ -27,7 +27,7 @@ for row in rows:
     ws.append(row)
 
 chart = RadarChart()
-chart.type = "marker"
+chart.type = "filled"
 labels = Reference(ws, min_col=1, min_row=2, max_row=13)
 data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=13)
 chart.add_data(data, titles_from_data=True)
