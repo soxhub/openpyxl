@@ -4,6 +4,7 @@ from openpyxl.chart import (
     Reference,
     Series,
 )
+from openpyxl.chart.axis import SeriesAxis
 
 wb = Workbook()
 ws = wb.active
@@ -27,7 +28,7 @@ for row in data:
 
 
 c1 = SurfaceChart()
-ref = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=10)
+ref = Reference(ws, min_col=2, max_col=6, min_row=1, max_row=10)
 labels = Reference(ws, min_col=1, min_row=2, max_row=10)
 c1.add_data(ref, titles_from_data=True)
 c1.set_categories(labels)
