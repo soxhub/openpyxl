@@ -10,6 +10,7 @@ from openpyxl.chart import (
     Series,
 )
 from openpyxl.chart.axis import DateAxis, ChartLines
+from openpyxl.chart.updown_bars import UpDownBars
 
 wb = Workbook()
 ws = wb.active
@@ -40,6 +41,12 @@ s.marker.size = 5
 c1.title = "High-low-close"
 c1.hiLowLines = ChartLines()
 
+# Excel is broken and needs a cache of values in order to display hiLoLines :-/
+from openpyxl.chart.data_source import NumData, NumVal
+pts = [NumVal(idx=i) for i in range(len(data) - 1)]
+cache = NumData(pt=pts)
+c1.series[-1].val.numRef.numCache = cache
+
 ws.add_chart(c1, "A10")
 
 # Open-high-low-close
@@ -47,11 +54,16 @@ c2 = StockChart()
 data = Reference(ws, min_col=3, max_col=6, min_row=1, max_row=6)
 c2.add_data(data, titles_from_data=True)
 c2.set_categories(labels)
+for s in c2.series:
+    s.shapeProperties.line.noFill = True
+c2.hiLowLines = ChartLines()
+c2.upDownBars = UpDownBars()
 c2.title = "Open-high-low-close"
 
-ws.add_chart(c2, "G10")
+# add dummy cache
+c2.series[-1].val.numRef.numCache = cache
 
-# require charts to be combined bar then stock
+ws.add_chart(c2, "G10")
 
 # Create bar chart for volume
 
@@ -86,6 +98,6 @@ b2.z_axis = c4.y_axis
 b2.y_axis.crosses = "max"
 b2 += c4
 
-ws.add_chart(c4, "G27")
+ws.add_chart(b2, "G27")
 
 wb.save("stock.xlsx")
