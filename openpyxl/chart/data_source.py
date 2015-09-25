@@ -61,7 +61,7 @@ class NumData(Serialisable):
     def __init__(self,
                  formatCode=None,
                  ptCount=None,
-                 pt=None,
+                 pt=(),
                  extLst=None,
                 ):
         self.formatCode = formatCode
@@ -76,7 +76,7 @@ class NumRef(Serialisable):
     numCache = Typed(expected_type=NumData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('f')
+    __elements__ = ('f', 'numCache')
 
     def __init__(self,
                  f=None,
@@ -84,6 +84,7 @@ class NumRef(Serialisable):
                  extLst=None,
                 ):
         self.f = f
+        self.numCache = numCache
 
 
 class StrVal(Serialisable):

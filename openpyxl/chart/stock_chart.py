@@ -22,6 +22,7 @@ class StockChart(ChartBase):
 
     ser = Sequence(expected_type=Series) #min 3, max4
     dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dataLabels = Alias('dLbls')
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
     hiLowLines = Typed(expected_type=ChartLines, allow_none=True)
     upDownBars = Typed(expected_type=UpDownBars, allow_none=True)
@@ -36,7 +37,7 @@ class StockChart(ChartBase):
                     'axId')
 
     def __init__(self,
-                 ser=None,
+                 ser=(),
                  dLbls=None,
                  dropLines=None,
                  hiLowLines=None,
