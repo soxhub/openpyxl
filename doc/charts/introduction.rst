@@ -23,8 +23,7 @@ The following charts are available:
     doughnut
     radar
     stock
-
-* Surface Chart, 3D Surface Chart
+    surface
 
 
 Creating a chart
