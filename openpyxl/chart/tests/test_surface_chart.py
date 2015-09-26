@@ -21,6 +21,7 @@ class TestSurfaceChart:
         <surfaceChart>
           <axId val="10"></axId>
           <axId val="100"></axId>
+          <axId val="1000"></axId>
         </surfaceChart>
         """
         diff = compare_xml(xml, expected)
@@ -47,7 +48,7 @@ class TestSurfaceChart:
         """
         node = fromstring(src)
         chart = SurfaceChart.from_tree(node)
-        assert [a.val for a in chart.axId] == [10, 100]
+        assert [a.val for a in chart.axId] == [10, 100, 1000]
 
 
 @pytest.fixture

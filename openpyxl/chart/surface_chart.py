@@ -16,6 +16,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
+from ._3d import _3DBase
 from .axis import TextAxis, NumericAxis, SeriesAxis
 from .shapes import ShapeProperties
 from .series import Series
@@ -73,30 +74,7 @@ class _SurfaceChartBase(ChartBase):
         super(_SurfaceChartBase, self).__init__()
 
 
-class SurfaceChart(_SurfaceChartBase):
-
-    tagname = "surfaceChart"
-
-    wireframe = _SurfaceChartBase.wireframe
-    ser = _SurfaceChartBase.ser
-    bandFmts = _SurfaceChartBase.bandFmts
-
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    x_axis = Typed(expected_type=TextAxis)
-    y_axis = Typed(expected_type=NumericAxis)
-    z_axis = Typed(expected_type=SeriesAxis, allow_none=True)
-
-    __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
-
-    def __init__(self, axId=None, extLst=None, **kw ):
-        self.x_axis = TextAxis()
-        self.y_axis = NumericAxis()
-        self.z_axis = None
-        super(SurfaceChart, self).__init__(**kw)
-
-
-class SurfaceChart3D(_SurfaceChartBase):
+class SurfaceChart3D(_SurfaceChartBase, _3DBase):
 
     tagname = "surface3DChart"
 
@@ -104,7 +82,7 @@ class SurfaceChart3D(_SurfaceChartBase):
     ser = _SurfaceChartBase.ser
     bandFmts = _SurfaceChartBase.bandFmts
 
-    extLst = SurfaceChart.extLst
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     x_axis = Typed(expected_type=TextAxis)
     y_axis = Typed(expected_type=NumericAxis)
@@ -117,3 +95,24 @@ class SurfaceChart3D(_SurfaceChartBase):
         self.y_axis = NumericAxis()
         self.z_axis = SeriesAxis()
         super(SurfaceChart3D, self).__init__(**kw)
+
+
+class SurfaceChart(SurfaceChart3D):
+
+    tagname = "surfaceChart"
+
+    wireframe = _SurfaceChartBase.wireframe
+    ser = _SurfaceChartBase.ser
+    bandFmts = _SurfaceChartBase.bandFmts
+
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = SurfaceChart3D.__elements__
+
+    def __init__(self, **kw):
+        super(SurfaceChart, self).__init__(**kw)
+        self.y_axis.delete = True
+        self.view3D.x_rotation = 90
+        self.view3D.y_rotation = 0
+        self.view3D.perspective = False
+        self.view3D.right_angle_axes = False
