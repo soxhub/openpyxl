@@ -31,7 +31,27 @@ def hash_password(plaintext_password=''):
     return str(hex(password)).upper()[2:]
 
 
-class SheetProtection(Serialisable):
+class _Protected(object):
+    _password = None
+
+    def set_password(self, value='', already_hashed=False):
+        """Set a password on this sheet."""
+        if not already_hashed:
+            value = hash_password(value)
+        self._password = value
+
+    @property
+    def password(self):
+        """Return the password value, regardless of hash."""
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        """Set a password directly, forcing a hash step."""
+        self.set_password(value)
+
+
+class SheetProtection(Serialisable, _Protected):
     """
     Information about protection of various aspects of a sheet. True values
     mean that protection for the object or action is active This is the
@@ -102,21 +122,8 @@ class SheetProtection(Serialisable):
 
 
     def set_password(self, value='', already_hashed=False):
-        """Set a password on this sheet."""
-        if not already_hashed:
-            value = hash_password(value)
-        self._password = value
+        super(SheetProtection, self).set_password(value, already_hashed)
         self.enable()
-
-    @property
-    def password(self):
-        """Return the password value, regardless of hash."""
-        return self._password
-
-    @password.setter
-    def password(self, value):
-        """Set a password directly, forcing a hash step."""
-        self.set_password(value)
 
 
     def enable(self):
