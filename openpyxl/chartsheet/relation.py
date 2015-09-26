@@ -91,11 +91,3 @@ class DrawingHF(Serialisable):
         self.rfo = rfo
         self.rfe = rfe
         self.rff = rff
-
-
-class LegacyDrawing(Serialisable):
-    pass
-
-
-class Drawing(Serialisable):
-    pass

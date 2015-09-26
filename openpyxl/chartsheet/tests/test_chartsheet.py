@@ -25,7 +25,7 @@ class TestChartsheet:
                 <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
             </sheetViews>
             <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
-            <drawing/>
+            <drawing r:id="rId1"/>
         </chartsheet>
         """
         xml = fromstring(src)
@@ -38,15 +38,15 @@ class TestChartsheet:
         sheetview = ChartsheetView(tabSelected=True, zoomScale=80, workbookViewId=0, zoomToFit=True)
         chartsheetViews = ChartsheetViews(sheetView=[sheetview])
         pageMargins = PageMargins(left=0.7, right=0.7, top=0.75, bottom=0.75, header=0.3, footer=0.3)
-        drawing = Drawing()
+        drawing = Drawing("rId1")
         item = Chartsheet(sheetViews=chartsheetViews, pageMargins=pageMargins, drawing=drawing)
         expected = """
-        <chartsheet>
+        <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
             <sheetViews>
                 <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
             </sheetViews>
             <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
-            <drawing/>
+            <drawing r:id="rId1"/>
         </chartsheet>
         """
         xml = tostring(item.to_tree())

@@ -3,10 +3,14 @@ from __future__ import absolute_import
 from openpyxl.descriptors import Typed
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.worksheet.page import (PageMargins, PrintPageSetup)
+from openpyxl.worksheet.page import (
+    PageMargins,
+    PrintPageSetup
+)
+from openpyxl.worksheet.drawing import Drawing
 from openpyxl.worksheet.header_footer import HeaderFooter
 
-from .relation import Drawing, DrawingHF, SheetBackgroundPicture
+from .relation import DrawingHF, SheetBackgroundPicture
 from .properties import ChartsheetProperties
 from .protection import ChartsheetProtection
 from .views import ChartsheetViews
@@ -15,6 +19,7 @@ from .publish import WebPublishItems
 
 
 class Chartsheet(Serialisable):
+
     tagname = "chartsheet"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
@@ -31,8 +36,9 @@ class Chartsheet(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = (
-        'sheetPr', 'sheetViews', 'sheetProtection', 'customSheetViews', 'pageMargins', 'pageSetup', 'headerFooter',
-        'drawing', 'drawingHF', 'picture', 'webPublishItems')
+        'sheetPr', 'sheetViews', 'sheetProtection', 'customSheetViews',
+        'pageMargins', 'pageSetup', 'headerFooter', 'drawing', 'drawingHF',
+        'picture', 'webPublishItems')
 
     def __init__(self,
                  sheetPr=None,
