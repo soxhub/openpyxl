@@ -78,4 +78,4 @@ class ChartsheetProtection(Serialisable, Protected):
             self.password = password
 
     def hash_password(self, password):
-        self.hashValue = hashlib.sha256(self.saltValue.encode() + password).hexdigest()
+        self.hashValue = hashlib.sha256((self.saltValue + password).encode("utf-8")).hexdigest()

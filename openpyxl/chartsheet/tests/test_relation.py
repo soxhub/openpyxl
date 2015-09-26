@@ -15,7 +15,7 @@ def SheetBackgroundPicture():
 
 
 class TestSheetBackgroundPicture:
-    def test_read_sheetBackgroundPicture(self, SheetBackgroundPicture):
+    def test_read(self, SheetBackgroundPicture):
         src = """
         <picture r:id="rId5" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
         """
@@ -23,7 +23,7 @@ class TestSheetBackgroundPicture:
         sheetBackgroundPicture = SheetBackgroundPicture.from_tree(xml)
         assert sheetBackgroundPicture.id == "rId5"
 
-    def test_serialise_sheetBackgroundPicture(self, SheetBackgroundPicture):
+    def test_write(self, SheetBackgroundPicture):
         sheetBackgroundPicture = SheetBackgroundPicture(id="rId5")
         expected = """
         <picture r:id="rId5" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
@@ -40,7 +40,7 @@ def DrawingHF():
 
 
 class TestDrawingHF:
-    def test_read_drawingHF(self, DrawingHF):
+    def test_read(self, DrawingHF):
         src = """
             <drawingHF lho="7"  lhf="6" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId3"/>
         """
@@ -48,7 +48,7 @@ class TestDrawingHF:
         drawingHF = DrawingHF.from_tree(xml)
         assert drawingHF.lho == 7
 
-    def test_serialise_drawingHF(self, DrawingHF):
+    def test_write(self, DrawingHF):
         drawingHF = DrawingHF(lho=7, lhf=6, id='rId3')
         expected = """
             <drawingHF lho="7" lhf="6" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId3" />

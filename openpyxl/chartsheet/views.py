@@ -1,51 +1,43 @@
 from __future__ import absolute_import
-from openpyxl.worksheet.header_footer import HeaderFooter
 
-from openpyxl.descriptors import (Bool, Integer, Set, Typed, Sequence)
-from openpyxl.descriptors.excel import Guid
+from openpyxl.descriptors import (Bool, Integer, Typed, Sequence)
+from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.worksheet.page import (PageMargins, PrintPageSetup)
 
 
-class CustomChartsheetView(Serialisable):
-    tagname = "customSheetView"
+class ChartsheetView(Serialisable):
+    tagname = "sheetView"
 
-    guid = Guid()
-    scale = Integer()
-    state = Set(values=(['visible', 'hidden', 'veryHidden']))
+    tabSelected = Bool(allow_none=True)
+    zoomScale = Integer(allow_none=True)
+    workbookViewId = Integer()
     zoomToFit = Bool(allow_none=True)
-    pageMargins = Typed(expected_type=PageMargins, allow_none=True)
-    pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
-    headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
-
-    __elements__ = ('pageMargins', 'pageSetup', 'headerFooter')
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     def __init__(self,
-                 guid=None,
-                 scale=None,
-                 state='visible',
+                 tabSelected=None,
+                 zoomScale=None,
+                 workbookViewId=None,
                  zoomToFit=None,
-                 pageMargins=None,
-                 pageSetup=None,
-                 headerFooter=None,
+                 extLst=None,
                  ):
-        self.guid = guid
-        self.scale = scale
-        self.state = state
+        self.tabSelected = tabSelected
+        self.zoomScale = zoomScale
+        self.workbookViewId = workbookViewId
         self.zoomToFit = zoomToFit
-        self.pageMargins = pageMargins
-        self.pageSetup = pageSetup
-        self.headerFooter = headerFooter
+        self.extLst = None
 
 
-class CustomChartsheetViews(Serialisable):
-    tagname = "customSheetViews"
+class ChartsheetViews(Serialisable):
+    tagname = "sheetViews"
 
-    customSheetView = Sequence(expected_type=CustomChartsheetView, allow_none=True)
+    sheetView = Sequence(expected_type=ChartsheetView, )
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('customSheetView',)
+    __elements__ = ('sheetView',)
 
     def __init__(self,
-                 customSheetView=None,
+                 sheetView=None,
+                 extLst=None,
                  ):
-        self.customSheetView = customSheetView
+        self.sheetView = sheetView

@@ -2,43 +2,20 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 import pytest
-from openpyxl.chartsheet.chartsheetprotection import hash_password
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
-from ..chartsheetprotection import ChartsheetProtection as Chartsheet_Protection
-
-
-
-def test_password():
-    enc = hash_password('secret')
-    assert enc == 'DAA7'
-
-def test_ctor_with_password():
-    prot = Chartsheet_Protection(password="secret")
-    assert prot.password == "DAA7"
-
-
-@pytest.mark.parametrize("password, already_hashed, value",
-                         [
-                             ('secret', False, 'DAA7'),
-                             ('secret', True, 'secret'),
-                         ])
-def test_explicit_password(password, already_hashed, value):
-    prot = Chartsheet_Protection()
-    prot.set_password(password, already_hashed)
-    assert prot.password == value
 
 @pytest.fixture
 def ChartsheetProtection():
-    from ..chartsheetprotection import ChartsheetProtection
+    from ..protection import ChartsheetProtection
 
     return ChartsheetProtection
 
 
 class TestChartsheetProtection:
-    def test_read_chartsheetProtection(self, ChartsheetProtection):
+    def test_read(self, ChartsheetProtection):
         src = """
         <sheetProtection
         algorithmName="SHA-512"
@@ -53,7 +30,7 @@ class TestChartsheetProtection:
         assert chartsheetProtection.algorithmName == "SHA-512"
         assert chartsheetProtection.saltValue == "Bo89+SCcqbFEcOS/6LcjBw=="
 
-    def test_serialise_chartsheetProtection(self, ChartsheetProtection):
+    def test_write(self, ChartsheetProtection):
         chartsheetProtection = ChartsheetProtection()
         chartsheetProtection.saltValue = "Bo89+SCcqbFEcOS/6LcjBw=="
         chartsheetProtection.content = "1"

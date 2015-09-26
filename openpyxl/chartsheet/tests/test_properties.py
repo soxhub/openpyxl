@@ -8,28 +8,28 @@ from openpyxl.tests.helper import compare_xml
 
 
 @pytest.fixture
-def ChartsheetPr():
-    from ..chartsheetpr import ChartsheetPr
+def ChartsheetProperties():
+    from ..properties import ChartsheetProperties
 
-    return ChartsheetPr
+    return ChartsheetProperties
 
 
 class TestChartsheetPr:
-    def test_read_chartsheetPr(self, ChartsheetPr):
+    def test_read(self, ChartsheetProperties):
         src = """
         <sheetPr codeName="Chart1">
           <tabColor rgb="FFDCD8F4" />
         </sheetPr>
         """
         xml = fromstring(src)
-        chartsheetPr = ChartsheetPr.from_tree(xml)
+        chartsheetPr = ChartsheetProperties.from_tree(xml)
         assert chartsheetPr.codeName == "Chart1"
         assert chartsheetPr.tabColor.rgb == "FFDCD8F4"
 
-    def test_serialise_chartsheetPr(self, ChartsheetPr):
+    def test_write(self, ChartsheetProperties):
         from openpyxl.styles import Color
 
-        chartsheetPr = ChartsheetPr()
+        chartsheetPr = ChartsheetProperties()
         chartsheetPr.codeName = "Chart Openpyxl"
         tabColor = Color(rgb="FFFFFFF4")
         chartsheetPr.tabColor = tabColor

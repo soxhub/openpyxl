@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 from openpyxl.chartsheet import Drawing
-from openpyxl.chartsheet.chartsheetview import ChartsheetView, ChartsheetViews
+from ..views import ChartsheetView, ChartsheetViews
 from openpyxl.worksheet import PageMargins
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -17,7 +17,7 @@ def Chartsheet():
     return Chartsheet
 
 class TestChartsheet:
-    def test_read_chartsheet(self, Chartsheet):
+    def test_read(self, Chartsheet):
         src = """
         <chartsheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
             <sheetPr/>
@@ -33,7 +33,7 @@ class TestChartsheet:
         assert chart.pageMargins.left == 0.7
         assert chart.sheetViews.sheetView[0].tabSelected == True
 
-    def test_serialise_chartsheet(self, Chartsheet):
+    def test_write(self, Chartsheet):
 
         sheetview = ChartsheetView(tabSelected=True, zoomScale=80, workbookViewId=0, zoomToFit=True)
         chartsheetViews = ChartsheetViews(sheetView=[sheetview])

@@ -8,13 +8,13 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def WebPublishItem():
-    from ..webpublishitem import WebPublishItem
+    from ..publish import WebPublishItem
 
     return WebPublishItem
 
 
 class TestWebPulishItem:
-    def test_parse_webpublishitem(self, WebPublishItem):
+    def test_read(self, WebPublishItem):
         src = """
         <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
             sourceObject="Chart 1" destinationFile="D:\Publish.mht" autoRepublish="0"/>
@@ -24,7 +24,7 @@ class TestWebPulishItem:
         assert webPulishItem.id == 6433
         assert webPulishItem.sourceObject == "Chart 1"
 
-    def test_serialise_WebPublishItem(self, WebPublishItem):
+    def test_write(self, WebPublishItem):
         webPublish = WebPublishItem(id=6433, divId="Views_6433", sourceType="chart", sourceRef="",
                                     sourceObject="Chart 1", destinationFile="D:\Publish.mht", title="First Chart",
                                     autoRepublish=False)
@@ -39,13 +39,13 @@ class TestWebPulishItem:
 
 @pytest.fixture
 def WebPublishItems():
-    from ..webpublishitem import WebPublishItems
+    from ..publish import WebPublishItems
 
     return WebPublishItems
 
 
 class TestWebPublishItems:
-    def test_WebPublishItems(self, WebPublishItems):
+    def test_read(self, WebPublishItems):
         src = """
         <webPublishItems count="1">
             <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
@@ -57,8 +57,8 @@ class TestWebPublishItems:
         assert webPublishItems.count == 1
         assert webPublishItems.webPublishItem[0].sourceObject == "Chart 1"
 
-    def test_serialise_WebPublishItems(self, WebPublishItems):
-        from ..webpublishitem import WebPublishItem
+    def test_write(self, WebPublishItems):
+        from ..publish import WebPublishItem
 
         webPublish_6433 = WebPublishItem(id=6433, divId="Views_6433", sourceType="chart", sourceRef="",
                                          sourceObject="Chart 1", destinationFile="D:\Publish.mht", title="First Chart",
