@@ -64,3 +64,13 @@ class Relation(String):
 
     namespace = REL_NS
     allow_none = True
+
+
+class Base64Binary(MatchPattern):
+    # http://www.w3.org/TR/xmlschema11-2/#nt-Base64Binary
+    pattern = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$"
+
+
+class Guid(MatchPattern):
+    # https://msdn.microsoft.com/en-us/library/dd946381(v=office.12).aspx
+    pattern = "{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}"
