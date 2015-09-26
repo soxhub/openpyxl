@@ -101,6 +101,12 @@ class SurfaceChart(SurfaceChart3D):
 
     tagname = "surfaceChart"
 
+    wireframe = _SurfaceChartBase.wireframe
+    ser = _SurfaceChartBase.ser
+    bandFmts = _SurfaceChartBase.bandFmts
+
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
     __elements__ = SurfaceChart3D.__elements__
 
     def __init__(self, **kw):
