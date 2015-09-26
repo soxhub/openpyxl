@@ -1,6 +1,12 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.descriptors import (Bool, Integer, Typed, Sequence)
+from openpyxl.descriptors import (
+    Bool,
+    Integer,
+    Typed,
+    Sequence
+)
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 

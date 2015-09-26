@@ -1,5 +1,10 @@
 from __future__ import absolute_import
-from openpyxl.descriptors import (Integer, Alias)
+# Copyright (c) 2010-2015 openpyxl
+
+from openpyxl.descriptors import (
+    Integer,
+    Alias
+)
 from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.serialisable import Serialisable
 
