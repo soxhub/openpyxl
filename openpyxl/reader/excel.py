@@ -216,7 +216,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     wb.excel_base_date = read_excel_base_date(archive)
 
     # get worksheets
-    wb.worksheets = []  # remove preset worksheet
+    wb._sheets = []  # remove preset worksheet
     for sheet in detect_worksheets(archive):
         sheet_name = sheet['title']
         worksheet_path = sheet['path']

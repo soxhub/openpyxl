@@ -23,17 +23,17 @@ def test_get_active_sheet():
 
 def test_create_sheet():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
-    assert new_sheet == wb.worksheets[0]
+    new_sheet = wb.create_sheet()
+    assert new_sheet == wb.worksheets[-1]
 
 def test_create_sheet_with_name():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0, title='LikeThisName')
-    assert new_sheet == wb.worksheets[0]
+    new_sheet = wb.create_sheet(title='LikeThisName')
+    assert new_sheet == wb.worksheets[-1]
 
 def test_add_correct_sheet():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
+    new_sheet = wb.create_sheet()
     wb._add_sheet(new_sheet)
     assert new_sheet == wb.worksheets[2]
 
@@ -102,9 +102,9 @@ def test_iter(Workbook):
 
 def test_get_index():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
+    new_sheet = wb.create_sheet()
     sheet_index = wb.get_index(new_sheet)
-    assert sheet_index == 0
+    assert sheet_index == 1
 
 
 def test_get_sheet_names():
