@@ -218,7 +218,7 @@ class Workbook(object):
         :rtype: list of strings
 
         """
-        return [s.title for s in self.worksheets]
+        return [s.title for s in self._sheets]
 
     def create_named_range(self, name, worksheet, range, scope=None):
         """Create a new named_range on a worksheet"""
