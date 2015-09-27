@@ -25,8 +25,8 @@ class DummyWorkbook:
 
     encoding = "UTF-8"
 
-    def get_sheet_names(self):
-        return []
+    def __init__(self):
+        self.sheetnames = []
 
 
 @pytest.fixture
@@ -50,53 +50,13 @@ class TestWorksheet:
     def test_new_worksheet(self, Worksheet):
         wb = Workbook()
         ws = Worksheet(wb)
-        assert ws._parent == wb
+        assert ws.parent == wb
 
-    def test_new_sheet_name(self, Worksheet):
-        ws = Worksheet(Workbook(), title='')
-        assert repr(ws) == '<Worksheet "Sheet1">'
 
     def test_get_cell(self, Worksheet):
         ws = Worksheet(Workbook())
         cell = ws.cell(row=1, column=1)
         assert cell.coordinate == 'A1'
-
-    def test_set_bad_title(self, Worksheet):
-        with pytest.raises(SheetTitleException):
-            Worksheet(Workbook(), 'X' * 50)
-
-    def test_set_encoded_title(self, Worksheet):
-        with pytest.raises(ValueError):
-            Worksheet(Workbook(), b'B\xc3\xbcro')
-
-    def test_increment_title_with_regex_chars(self, Worksheet):
-        wb = Workbook()
-        ws1 = wb.create_sheet(title='Regex Test (')
-        ws2 = wb.create_sheet(title='Regex Test (')
-        assert ws1.title == 'Regex Test ('
-        assert ws2.title == 'Regex Test (1'
-
-    def test_increment_title(self, Worksheet):
-        wb = Workbook()
-        ws1 = wb.create_sheet(title="Test")
-        assert ws1.title == "Test"
-        for i in range(15):
-            ws2 = wb.create_sheet(title="Test")
-        assert ws2.title == "Test15"
-
-    def test_sheet_title(self, Worksheet):
-        wb = Workbook()
-        titles = ["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"]
-        for title in titles:
-            worksheet = wb.create_sheet()
-            worksheet.title = title
-        titles.insert(0, 'Sheet')
-        assert wb.get_sheet_names() == titles
-
-    @pytest.mark.parametrize("value", ["[", "]", "*", ":", "?", "/", "\\"])
-    def test_set_bad_title_character(self, Worksheet, value):
-        with pytest.raises(SheetTitleException):
-            Worksheet(Workbook(), value)
 
 
     def test_worksheet_dimension(self, Worksheet):

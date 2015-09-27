@@ -94,13 +94,12 @@ def Workbook():
             for i in range(29):
                 self._cell_styles.add((StyleArray([i]*9)))
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
+            self.sheetnames = []
 
 
         def create_sheet(self, title):
             return Worksheet(self)
 
-        def get_sheet_names(self):
-            return []
 
     return DummyWorkbook()
 

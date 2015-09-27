@@ -18,8 +18,9 @@ def DummyWorkbook():
         excel_base_date = None
         _cell_styles = [StyleArray([0, 0, 0, 0, 0, 0, 0, 0, 0])]
 
-        def get_sheet_names(self):
-            return []
+        def __init__(self):
+            self.sheetnames = []
+
     return Workbook()
 
 

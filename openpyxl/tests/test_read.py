@@ -38,12 +38,10 @@ def test_read_standalone_worksheet(datadir):
             self.shared_styles = [Style()]
             self._cell_styles = IndexedList()
             self._differential_styles = []
+            self.sheetnames = []
 
         def get_sheet_by_name(self, value):
             return None
-
-        def get_sheet_names(self):
-            return []
 
         def create_sheet(self, title):
             return Worksheet(self, title=title)

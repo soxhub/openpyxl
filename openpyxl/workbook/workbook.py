@@ -57,7 +57,7 @@ class Workbook(object):
         self.encoding = encoding
 
         if not self.write_only:
-            self._sheets.append(Worksheet(parent_workbook=self))
+            self._sheets.append(Worksheet(self))
 
 
     def _setup_styles(self):
@@ -128,7 +128,7 @@ class Workbook(object):
         if self.write_only :
             new_ws = WriteOnlyWorksheet(parent_workbook=self, title=title)
         else:
-            new_ws = Worksheet(parent_workbook=self, title=title)
+            new_ws = Worksheet(parent=self, title=title)
 
         self._add_sheet(sheet=new_ws, index=index)
         return new_ws

@@ -44,6 +44,7 @@ from openpyxl.utils.units import (
 )
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.names.named_range import NamedRange
+from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .header_footer import HeaderFooter
@@ -63,32 +64,13 @@ def flatten(results):
         yield(c.value for c in row)
 
 
-def avoid_duplicate_name(names, value):
-    # check if sheet_name already exists
-    # do this *before* length check
-    if value in names:
-        names = ",".join(names)
-        sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value))
-        matches = sheet_title_regex.findall(names)
-        if matches:
-            # use name, but append with the next highest integer
-            counts = [int(idx) for (t, idx) in matches if idx.isdigit()]
-            if counts:
-                highest = max(counts)
-            else:
-                highest = 0
-            value = "%s%d" % (value, highest + 1)
-    return value
-
-
-class Worksheet(object):
+class Worksheet(_WorkbookChild):
     """Represents a worksheet.
 
     Do not create worksheets yourself,
     use :func:`openpyxl.workbook.Workbook.create_sheet` instead
 
     """
-    bad_title_char_re = re.compile(r'[\\*?:/\[\]]')
 
     BREAK_NONE = 0
     BREAK_ROW = 1
@@ -115,10 +97,8 @@ class Worksheet(object):
     ORIENTATION_PORTRAIT = 'portrait'
     ORIENTATION_LANDSCAPE = 'landscape'
 
-    def __init__(self, parent_workbook, title=None):
-        self._parent = parent_workbook
-        self._title = ''
-        self.title = title or "Sheet"
+    def __init__(self, parent, title=None):
+        super(Worksheet, self).__init__(parent, title)
         self.row_dimensions = BoundDictionary("index", self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
@@ -163,9 +143,6 @@ class Worksheet(object):
     def show_gridlines(self):
         return self.sheet_view.showGridLines
 
-    def __repr__(self):
-        return u'<Worksheet "{0}">'.format(self.title)
-
 
     """ To keep compatibility with previous versions"""
     @property
@@ -195,17 +172,6 @@ class Worksheet(object):
 
     """ End To keep compatibility with previous versions"""
 
-    @property
-    def parent(self):
-        return self._parent
-
-    @property
-    def encoding(self):
-        return self._parent.encoding
-
-    @deprecated('this method is private and should not be called directly')
-    def garbage_collect(self):
-        self._garbage_collect()
 
     def _garbage_collect(self):
         """Delete cells that are not storing a value."""
@@ -218,36 +184,10 @@ class Worksheet(object):
         for coordinate in delete_list:
             del self._cells[coordinate]
 
+
     def get_cell_collection(self):
         """Return an unordered list of the cells in this worksheet."""
         return self._cells.values()
-
-    @property
-    def title(self):
-        """Return the title for this sheet."""
-        return self._title
-
-
-    @title.setter
-    def title(self, value):
-        """Set a sheet title, ensuring it is valid.
-           Limited to 31 characters, no special characters."""
-        if hasattr(value, "decode"):
-            if not isinstance(value, unicode):
-                try:
-                    value = value.decode("ascii")
-                except UnicodeDecodeError:
-                    raise ValueError("Worksheet titles must be unicode")
-        if self.bad_title_char_re.search(value):
-            msg = 'Invalid character found in sheet title'
-            raise SheetTitleException(msg)
-        sheets = self._parent.get_sheet_names()
-        if self.title is not None and self.title != value:
-            value = avoid_duplicate_name(sheets, value)
-        if len(value) > 31:
-            msg = 'Maximum 31 characters allowed in sheet title'
-            raise SheetTitleException(msg)
-        self._title = value
 
 
     @property
@@ -546,7 +486,7 @@ class Worksheet(object):
 
         :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
         """
-        named_range = self._parent.get_named_range(range_string)
+        named_range = self.parent.get_named_range(range_string)
         if named_range is None:
             msg = '%s is not a valid range name' % range_string
             raise NamedRangeException(msg)
