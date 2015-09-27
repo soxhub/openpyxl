@@ -14,6 +14,7 @@ class DummyWorkbook:
 
     def __init__(self):
         self.sheetnames = []
+        self._charts = []
 
 
 @pytest.fixture
@@ -61,5 +62,19 @@ class TestChartsheet:
         </chartsheet>
         """
         xml = tostring(item.to_tree())
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_charts(self, Chartsheet):
+
+        cs = Chartsheet(parent=DummyWorkbook())
+        cs.add_chart(1)
+        expected = """
+        <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+           <drawing r:id="rId1" />
+        </chartsheet>
+        """
+        xml = tostring(cs.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff

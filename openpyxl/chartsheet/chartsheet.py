@@ -8,6 +8,7 @@ from openpyxl.worksheet.page import (
     PageMargins,
     PrintPageSetup
 )
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.drawing import Drawing
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.workbook.child import _WorkbookChild
@@ -62,7 +63,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
         # hack to simplify testing
         if parent is not None:
             super(Chartsheet, self).__init__(parent, title)
-            self.charts = []
+        self.charts = []
         self.sheetPr = sheetPr
         self.sheetViews = sheetViews
         self.sheetProtection = sheetProtection
@@ -75,5 +76,17 @@ class Chartsheet(_WorkbookChild, Serialisable):
         self.picture = picture
         self.webPublishItems = webPublishItems
 
-    def add(self, chart):
+
+    def add_chart(self, chart):
         self.charts.append(chart)
+        self.parent._charts.append(chart)
+
+
+    def to_tree(self):
+        self._rels = []
+        if self.charts:
+            rel = Relationship(type="drawing", target="")
+            self._rels.append(rel)
+            self.drawing = Drawing()
+            self.drawing.id = "rId%s" % len(self._rels)
+        return super(Chartsheet, self).to_tree()
