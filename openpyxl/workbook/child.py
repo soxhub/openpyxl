@@ -45,6 +45,7 @@ class _WorkbookChild(object):
     def __repr__(self):
         return u'<{0} "{1}">'.format(self.__class__.__name__, self.title)
 
+
     @property
     def parent(self):
         return self.__parent
