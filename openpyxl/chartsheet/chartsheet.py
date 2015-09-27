@@ -10,6 +10,7 @@ from openpyxl.worksheet.page import (
 )
 from openpyxl.worksheet.drawing import Drawing
 from openpyxl.worksheet.header_footer import HeaderFooter
+from openpyxl.workbook.child import _WorkbookChild
 
 from .relation import DrawingHF, SheetBackgroundPicture
 from .properties import ChartsheetProperties
@@ -19,18 +20,19 @@ from .custom import CustomChartsheetViews
 from .publish import WebPublishItems
 
 
-class Chartsheet(Serialisable):
+class Chartsheet(_WorkbookChild, Serialisable):
 
     tagname = "chartsheet"
+    _default_title = "Chart"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
-    sheetViews = Typed(expected_type=ChartsheetViews, )
+    sheetViews = Typed(expected_type=ChartsheetViews, allow_none=True)
     sheetProtection = Typed(expected_type=ChartsheetProtection, allow_none=True)
     customSheetViews = Typed(expected_type=CustomChartsheetViews, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
     pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
     headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
-    drawing = Typed(expected_type=Drawing, )
+    drawing = Typed(expected_type=Drawing, allow_none=True)
     drawingHF = Typed(expected_type=DrawingHF, allow_none=True)
     picture = Typed(expected_type=SheetBackgroundPicture, allow_none=True)
     webPublishItems = Typed(expected_type=WebPublishItems, allow_none=True)
@@ -54,7 +56,13 @@ class Chartsheet(Serialisable):
                  picture=None,
                  webPublishItems=None,
                  extLst=None,
+                 parent=None,
+                 title="",
                  ):
+        # hack to simplify testing
+        if parent is not None:
+            super(Chartsheet, self).__init__(parent, title)
+            self.charts = []
         self.sheetPr = sheetPr
         self.sheetViews = sheetViews
         self.sheetProtection = sheetProtection
@@ -66,3 +74,6 @@ class Chartsheet(Serialisable):
         self.drawingHF = drawingHF
         self.picture = picture
         self.webPublishItems = webPublishItems
+
+    def add(self, chart):
+        self.charts.append(chart)

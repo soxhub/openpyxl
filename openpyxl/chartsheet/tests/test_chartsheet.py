@@ -10,6 +10,12 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 
+class DummyWorkbook:
+
+    def __init__(self):
+        self.sheetnames = []
+
+
 @pytest.fixture
 def Chartsheet():
     from ..chartsheet import Chartsheet
@@ -17,6 +23,11 @@ def Chartsheet():
     return Chartsheet
 
 class TestChartsheet:
+
+    def test_ctor(self, Chartsheet):
+        cs = Chartsheet(parent=DummyWorkbook())
+        assert cs.title == "Chart"
+
     def test_read(self, Chartsheet):
         src = """
         <chartsheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
