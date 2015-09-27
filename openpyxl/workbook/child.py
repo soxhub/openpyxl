@@ -68,6 +68,9 @@ class _WorkbookChild(object):
         Limited to 31 characters, no special characters.
         Duplicate titles will be incremented numerically
         """
+        if not value:
+            raise ValueError("Title must have at least one character")
+
         if hasattr(value, "decode"):
             if not isinstance(value, unicode):
                 try:

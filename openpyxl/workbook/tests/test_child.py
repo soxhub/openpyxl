@@ -87,3 +87,9 @@ class TestWorkbookChild:
     def test_set_encoded_title(self, WorkbookChild):
         with pytest.raises(ValueError):
             WorkbookChild(DummyWorkbook(), b'B\xc3\xbcro')
+
+
+    def test_empty_title(self, WorkbookChild):
+        child = WorkbookChild(DummyWorkbook())
+        with pytest.raises(ValueError):
+            child.title = ""
