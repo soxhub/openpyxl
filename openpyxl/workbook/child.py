@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 import re
+from openpyxl.compat import unicode
 
 """
 Base class for worksheets, chartsheets, etc. that can be added to workbooks
@@ -9,18 +10,24 @@ Base class for worksheets, chartsheets, etc. that can be added to workbooks
 
 INVALID_TITLE_REGEX = re.compile(r'[\\*?:/\[\]]')
 
+
 def avoid_duplicate_name(names, value):
-    # check if sheet_name already exists
-    # do this *before* length check
+    """
+    Naive check to see whether name already exists.
+    If name does exist suggest a name using an incrementer
+    """
     if value in names:
         names = ",".join(names)
         sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value))
+        print(sheet_title_regex)
         matches = sheet_title_regex.findall(names)
         if matches:
             # use name, but append with the next highest integer
             counts = [int(idx) for (t, idx) in matches if idx.isdigit()]
-            highest = max(counts) or 0
-            value = "%s%d" % (value, highest + 1)
+            highest = 0
+            if counts:
+                highest = max(counts)
+            value = "{0}{1}".format(value, highest + 1)
     return value
 
 
@@ -28,12 +35,15 @@ class _WorkbookChild(object):
 
     __title = ""
     __parent = None
+    _default_title = "Sheet"
 
     def __init__(self, parent=None, title=None):
         self.__parent = parent
-        if title is not None:
-            self.title = title
+        self.title = title or self._default_title
 
+
+    def __repr__(self):
+        return u'<{0} "{1}">'.format(self.__class__.__name__, self.title)
 
     @property
     def parent(self):
@@ -69,13 +79,10 @@ class _WorkbookChild(object):
             msg = "Invalid character {0} found in sheet title".format(m.group(0))
             raise ValueError(msg)
 
-        sheets = self.parent.sheetnames
-
         if self.title is not None and self.title != value:
-            value = avoid_duplicate_name(sheets, value)
+            value = avoid_duplicate_name(self.parent.sheetnames, value)
 
         if len(value) > 31:
-            msg = 'Maximum 31 characters allowed in sheet title'
-            raise ValueError(msg)
+            raise ValueError('Maximum 31 characters allowed in sheet title')
 
         self.__title = value
