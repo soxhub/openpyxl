@@ -563,7 +563,7 @@ class Worksheet(_WorkbookChild):
         if anchor is not None:
             chart.anchor = anchor
         self._charts.append(chart)
-        self._parent._charts.append(ref(chart))
+        self.parent._charts.append(ref(chart))
 
     def add_image(self, img, anchor=None):
         """
@@ -574,7 +574,7 @@ class Worksheet(_WorkbookChild):
             cell = self[anchor]
             img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-        self._parent._images.append(ref(img))
+        self.parent._images.append(ref(img))
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
