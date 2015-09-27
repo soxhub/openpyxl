@@ -19,6 +19,7 @@ from openpyxl.xml.constants import (
     ARC_STYLE,
     ARC_WORKBOOK,
     PACKAGE_WORKSHEETS,
+    PACKAGE_CHARTSHEETS,
     PACKAGE_DRAWINGS,
     PACKAGE_CHARTS,
     PACKAGE_IMAGES,
@@ -115,6 +116,18 @@ class ExcelWriter(object):
             archive.writestr(chart._path, tostring(chart._write()))
 
 
+    def _write_chartsheets(self, archive):
+        for idx, sheet in enumerate(self.workbook.chartsheets, 1):
+            xml = tostring(sheet.to_tree())
+            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' %i, xml)
+
+            if sheet._rels:
+                rels = write_rels(sheet)
+                archive.writestr(PACKAGE_CHARTSHEETS +
+                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels)
+                                 )
+
+
     def _write_worksheets(self, archive):
         comments_id = 0
         vba_controls_id = 0
@@ -152,8 +165,8 @@ class ExcelWriter(object):
                 or sheet._comment_count > 0
                 or sheet.vba_controls is not None):
                 rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)
-                archive.writestr( PACKAGE_WORKSHEETS +
-                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels))
+                archive.writestr(PACKAGE_WORKSHEETS +
+                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels))
 
 
     def _write_external_links(self, archive):

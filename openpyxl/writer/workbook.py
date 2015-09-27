@@ -311,6 +311,11 @@ def write_workbook_rels(workbook):
         rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % i, id='rId%d' % i)
         root.append(rel.to_tree())
 
+
+    for i, _ in enumerate(workbook.chartsheets, i+1):
+        rel = Relationship(type='chartsheet', target='chartsheets/sheet%s.xml' % i, id='rId%d' % i)
+        root.append(rel.to_tree())
+
     i += 1
     strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % i)
     root.append(strings.to_tree())
