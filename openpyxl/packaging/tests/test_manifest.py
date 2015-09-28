@@ -89,32 +89,29 @@ class TestManifest:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Manifest):
-        src = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-           <Default Extension="xml" ContentType="application/xml"/>
-           <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-           <Override PartName="/xl/workbook.xml"
-             ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
-           <Override PartName="/xl/worksheets/sheet1.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
-           <Override PartName="/xl/chartsheets/sheet1.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml"/>
-           <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
-           <Override PartName="/xl/styles.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
-           <Override PartName="/xl/sharedStrings.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
-           <Override PartName="/xl/drawings/drawing1.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
-           <Override PartName="/xl/charts/chart1.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
-           <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
-           <Override PartName="/docProps/app.xml"
-           ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
-        </Types>
-        """
-        node = fromstring(src)
+    def test_from_xml(self, datadir, Manifest):
+        datadir.chdir()
+        with open("manifest.xml") as src:
+            node = fromstring(src.read())
         manifest = Manifest.from_tree(node)
         assert len(manifest.Default) == 2
         assert len(manifest.Override) == 10
+
+
+    def test_filenames(self, datadir, Manifest):
+        datadir.chdir()
+        with open("manifest.xml") as src:
+            node = fromstring(src.read())
+        manifest = Manifest.from_tree(node)
+        assert manifest.filenames == [
+            '/xl/workbook.xml',
+            '/xl/worksheets/sheet1.xml',
+            '/xl/chartsheets/sheet1.xml',
+            '/xl/theme/theme1.xml',
+            '/xl/styles.xml',
+            '/xl/sharedStrings.xml',
+            '/xl/drawings/drawing1.xml',
+            '/xl/charts/chart1.xml',
+            '/docProps/core.xml',
+            '/docProps/app.xml',
+        ]

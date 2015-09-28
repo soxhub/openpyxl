@@ -49,3 +49,16 @@ class Manifest(Serialisable):
                  ):
         self.Default = Default
         self.Override = Override
+
+
+    @property
+    def filenames(self):
+        return [part.PartName for part in self.Override]
+
+
+def write_content_types(workbook, as_template=False):
+
+    seen = set()
+    if workbook.vba_archive:
+        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+        manifest = Manifest.from_tree(node)
