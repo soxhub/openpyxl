@@ -85,6 +85,20 @@ class TestChartBase:
         chart = ChartBase()
         assert chart._path == "xl/charts/chart1.xml"
 
+
     def test_plot_area(self, ChartBase):
         chart = ChartBase()
         assert type(chart.plot_area) is PlotArea
+
+
+    def test_save_twice(self, ChartBase):
+        ChartBase.tagname = "DummyChart"
+        chart = ChartBase()
+        chart._write()
+        chart._write()
+        area = chart.plot_area
+        assert len(area._charts) == 1
+        assert len(area.catAx) == 0
+        assert len(area.valAx) == 0
+        assert len(area.dateAx) == 0
+        assert len(area.serAx) == 0

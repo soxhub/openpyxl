@@ -24,6 +24,11 @@ class AxId(Serialisable):
         self.val = val
 
 
+def PlotArea():
+    from .chartspace import PlotArea
+    return PlotArea()
+
+
 class ChartBase(Serialisable):
 
     """
@@ -51,7 +56,6 @@ class ChartBase(Serialisable):
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
-        from .chartspace import PlotArea
         self.plot_area = PlotArea()
         super(ChartBase, self).__init__(**kw)
 
@@ -80,7 +84,9 @@ class ChartBase(Serialisable):
 
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer
+        self.plot_area = PlotArea()
         self.plot_area.graphical_properties = self.graphical_properties
+
         idx_base = 0
         for chart in self._charts:
             chart.idx_base = idx_base
