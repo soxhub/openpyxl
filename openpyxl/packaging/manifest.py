@@ -4,10 +4,17 @@ from __future__ import absolute_import
 """
 File manifest
 """
+import mimetypes
+import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
 
+
+# initialise mime-types
+mimetypes.init()
+mimetypes.add_type('application/xml', ".xml")
+mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 
 class FileExtension(Serialisable):
 
@@ -56,9 +63,17 @@ class Manifest(Serialisable):
         return [part.PartName for part in self.Override]
 
 
+    @property
+    def extensions(self):
+        exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
+        exts.add(".rels")
+        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts)]
+
+
 def write_content_types(workbook, as_template=False):
 
     seen = set()
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
         manifest = Manifest.from_tree(node)
+        seen = set(manifest.filenames)

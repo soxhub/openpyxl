@@ -115,3 +115,14 @@ class TestManifest:
             '/docProps/core.xml',
             '/docProps/app.xml',
         ]
+
+
+    def test_exts(self, datadir, Manifest):
+        datadir.chdir()
+        with open("manifest.xml") as src:
+            node = fromstring(src.read())
+        manifest = Manifest.from_tree(node)
+        assert manifest.extensions == [
+            ('rels', 'application/vnd.openxmlformats-package.relationships+xml'),
+            ('xml', 'application/xml'),
+        ]
