@@ -2,9 +2,21 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 import pytest
+from io import BytesIO
+from zipfile import ZipFile
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+
+from openpyxl.xml.constants import (
+    ARC_CONTENT_TYPES,
+    ARC_WORKBOOK,
+    CONTYPES_NS,
+    XLSM,
+    XLSX,
+    XLTM,
+    XLTX,
+)
 
 @pytest.fixture
 def FileExtension():
@@ -87,13 +99,13 @@ class TestManifest:
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="xl/workbook.xml"/>
+            PartName="/xl/workbook.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="xl/sharedStrings.xml"/>
+            PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="xl/styles.xml"/>
+            PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="xl/theme/theme1.xml"/>
+            PartName="/xl/theme/theme1.xml"/>
         </Types>
         """
         diff = compare_xml(xml, expected)
@@ -139,6 +151,9 @@ class TestManifest:
         ]
 
 
+class TestWorbook:
+
+
     def test_workbook(self):
         from openpyxl import Workbook
         wb = Workbook()
@@ -150,13 +165,13 @@ class TestManifest:
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="xl/workbook.xml"/>
+            PartName="/xl/workbook.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="xl/sharedStrings.xml"/>
+            PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="xl/styles.xml"/>
+            PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="xl/theme/theme1.xml"/>
+            PartName="/xl/theme/theme1.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
             PartName="/xl/worksheets/sheet1.xml"/>
         </Types>
@@ -177,13 +192,13 @@ class TestManifest:
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="xl/workbook.xml"/>
+            PartName="/xl/workbook.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="xl/sharedStrings.xml"/>
+            PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="xl/styles.xml"/>
+            PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="xl/theme/theme1.xml"/>
+            PartName="/xl/theme/theme1.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
             PartName="/xl/worksheets/sheet1.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml"
@@ -192,3 +207,29 @@ class TestManifest:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    @pytest.mark.parametrize("has_vba, as_template, content_type",
+                             [
+                                 (None, False, XLSX),
+                                 (None, True, XLTX),
+                                 (True, False, XLSM),
+                                 (True, True, XLTM)
+                             ]
+                             )
+    def test_templates(self, has_vba, as_template, content_type, Manifest, Override):
+        from openpyxl import Workbook
+        from ..manifest import write_content_types
+
+        wb = Workbook()
+        if has_vba:
+            archive = ZipFile(BytesIO(), "w")
+            parts = [Override("/xl/workbook.xml", "")]
+            m = Manifest(Override=parts)
+            archive.writestr(ARC_CONTENT_TYPES, tostring(m.to_tree()))
+            wb.vba_archive = archive
+        manifest = write_content_types(wb, as_template=as_template)
+        xml = tostring(manifest.to_tree())
+        root = fromstring(xml)
+        node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
+        assert node.get("ContentType") == content_type

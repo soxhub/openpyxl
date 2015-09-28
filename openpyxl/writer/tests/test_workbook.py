@@ -21,7 +21,6 @@ from .. excel import (
 from .. workbook import (
     write_workbook,
     write_workbook_rels,
-    write_content_types,
 )
 
 
@@ -153,49 +152,6 @@ def test_write_workbook_code_name():
     """
     diff = compare_xml(content, expected)
     assert diff is None, diff
-
-
-from zipfile import ZipFile
-from openpyxl.xml.constants import CONTYPES_NS, ARC_CONTENT_TYPES, ARC_WORKBOOK
-
-
-class TestContentTypes:
-
-    @pytest.mark.lxml_required
-    @pytest.mark.parametrize("has_vba, as_template, content_type",
-                             [
-                                 (None, False, XLSX),
-                                 (None, True, XLTX),
-                                 (True, False, XLSM),
-                                 (True, True, XLTM)
-                              ]
-                             )
-    def test_write_vba(self, has_vba, as_template, content_type):
-        from .. workbook import write_content_types
-
-        wb = Workbook()
-        if has_vba:
-            archive = ZipFile(BytesIO(), "w")
-            ct = Element("{%s}Override" % CONTYPES_NS, PartName=ARC_WORKBOOK)
-            archive.writestr(ARC_CONTENT_TYPES, tostring(ct))
-            wb.vba_archive = archive
-        xml = write_content_types(wb, as_template=as_template)
-        root = fromstring(xml)
-        node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
-        assert node.get("ContentType") == content_type
-
-
-    @pytest.mark.xfail
-    def test_write_chartsheet(self):
-        from .. workbook import write_content_types
-
-        wb = Workbook()
-        cs = wb.create_chartsheet()
-        xml = write_content_types(wb)
-        expected = "<root />"
-
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
 
 
 def test_write_root_rels():

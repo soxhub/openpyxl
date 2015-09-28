@@ -9,9 +9,10 @@ import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
-from openpyxl.xml.functions import Element
+from openpyxl.xml.functions import Element, fromstring
 from openpyxl.xml.constants import (
     ARC_CORE,
+    ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_APP,
     ARC_THEME,
@@ -62,10 +63,10 @@ class Override(Serialisable):
 
 
 DEFAULT_PARTS = [
-    Override(ARC_WORKBOOK, XLSX), # Workbook
-    Override(ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
-    Override(ARC_STYLE, STYLES_TYPE), # Styles
-    Override(ARC_THEME, THEME_TYPE), # Theme
+    Override("/" + ARC_WORKBOOK, XLSX), # Workbook
+    Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
+    Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
+    Override("/" + ARC_THEME, THEME_TYPE), # Theme
 ]
 
 class Manifest(Serialisable):
@@ -112,19 +113,6 @@ class Manifest(Serialisable):
         for part in self.Override:
             tree.append(part.to_tree())
         return tree
-
-
-static_content_types_config = [
-    ('Override', ARC_THEME, THEME_TYPE),
-    ('Override', ARC_STYLE, STYLES_TYPE),
-
-    ('Override', ARC_WORKBOOK, XLSX),
-    ('Override', ARC_APP,
-     'application/vnd.openxmlformats-officedocument.extended-properties+xml'),
-    ('Override', ARC_CORE,
-     'application/vnd.openxmlformats-package.core-properties+xml'),
-    ('Override', ARC_SHARED_STRINGS, SHARED_STRINGS),
-]
 
 
 def write_content_types(workbook, as_template=False):
