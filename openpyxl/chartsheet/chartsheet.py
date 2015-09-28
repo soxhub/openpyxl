@@ -1,9 +1,12 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from weakref import ref
+
 from openpyxl.descriptors import Typed
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.drawing.spreadsheet_drawing import AbsoluteAnchor
 from openpyxl.worksheet.page import (
     PageMargins,
     PrintPageSetup
@@ -78,8 +81,9 @@ class Chartsheet(_WorkbookChild, Serialisable):
 
 
     def add_chart(self, chart):
+        chart.anchor = AbsoluteAnchor()
         self._charts.append(chart)
-        self.parent._charts.append(chart)
+        self.parent._charts.append(ref(chart))
 
 
     def to_tree(self):
