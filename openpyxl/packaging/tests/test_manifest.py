@@ -86,6 +86,14 @@ class TestManifest:
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
+            PartName="xl/workbook.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
+            PartName="xl/sharedStrings.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
+            PartName="xl/styles.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
+            PartName="xl/theme/theme1.xml"/>
         </Types>
         """
         diff = compare_xml(xml, expected)
@@ -129,3 +137,29 @@ class TestManifest:
             ('rels', 'application/vnd.openxmlformats-package.relationships+xml'),
             ('xml', 'application/xml'),
         ]
+
+
+    def test_workbook(self):
+        from openpyxl import Workbook
+        wb = Workbook()
+        from ..manifest import write_content_types
+        manifest = write_content_types(wb)
+        xml = tostring(manifest.to_tree())
+        expected = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
+          <Default ContentType="application/xml" Extension="xml" />
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
+            PartName="xl/workbook.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
+            PartName="xl/sharedStrings.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
+            PartName="xl/styles.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
+            PartName="xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
+            PartName="/xl/worksheets/sheet1.xml"/>
+        </Types>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
