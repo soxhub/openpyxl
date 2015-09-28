@@ -63,7 +63,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
         # hack to simplify testing
         if parent is not None:
             super(Chartsheet, self).__init__(parent, title)
-        self.charts = []
+        self._charts = []
         self.sheetPr = sheetPr
         self.sheetViews = sheetViews
         self.sheetProtection = sheetProtection
@@ -78,13 +78,13 @@ class Chartsheet(_WorkbookChild, Serialisable):
 
 
     def add_chart(self, chart):
-        self.charts.append(chart)
+        self._charts.append(chart)
         self.parent._charts.append(chart)
 
 
     def to_tree(self):
         self._rels = []
-        if self.charts:
+        if self._charts:
             rel = Relationship(type="drawing", target="")
             self._rels.append(rel)
             self.drawing = Drawing()
