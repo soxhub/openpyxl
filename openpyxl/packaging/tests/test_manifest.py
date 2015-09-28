@@ -209,6 +209,7 @@ class TestWorbook:
         assert diff is None, diff
 
 
+    @pytest.mark.lxml_required # for XPATH lookup
     @pytest.mark.parametrize("has_vba, as_template, content_type",
                              [
                                  (None, False, XLSX),
