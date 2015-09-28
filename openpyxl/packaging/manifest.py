@@ -9,6 +9,7 @@ import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
+from openpyxl.xml.functions import Element
 
 
 # initialise mime-types
@@ -67,7 +68,21 @@ class Manifest(Serialisable):
     def extensions(self):
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
         exts.add(".rels")
+        exts.add(".xml")
         return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts)]
+
+
+    def to_tree(self):
+        """
+        Custom serialisation method to allow setting a default namespace
+        """
+        exts = [FileExtension(ext, mime)  for ext, mime in self.extensions]
+        tree = Element(self.tagname, xmlns=self.namespace)
+        for ext in exts:
+            tree.append(ext.to_tree())
+        for part in self.Override:
+            tree.append(part.to_tree())
+        return tree
 
 
 def write_content_types(workbook, as_template=False):

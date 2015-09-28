@@ -83,7 +83,10 @@ class TestManifest:
         manifest = Manifest()
         xml = tostring(manifest.to_tree())
         expected = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types" />
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
+          <Default ContentType="application/xml" Extension="xml" />
+        </Types>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
