@@ -37,6 +37,7 @@ from openpyxl.xml.constants import (
 mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
+mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
 
 class FileExtension(Serialisable):
 
@@ -106,7 +107,8 @@ class Manifest(Serialisable):
         """
         Custom serialisation method to allow setting a default namespace
         """
-        exts = [FileExtension(ext, mime)  for ext, mime in self.extensions]
+        exts = [FileExtension(ext, mime) for ext, mime in self.extensions]
+        exts.extend(self.Default)
         tree = Element(self.tagname, xmlns=self.namespace)
         for ext in exts:
             tree.append(ext.to_tree())
