@@ -19,6 +19,7 @@ from openpyxl.xml.constants import (
     ARC_STYLE,
     ARC_WORKBOOK,
     PACKAGE_WORKSHEETS,
+    PACKAGE_CHARTSHEETS,
     PACKAGE_DRAWINGS,
     PACKAGE_CHARTS,
     PACKAGE_IMAGES,
@@ -26,9 +27,9 @@ from openpyxl.xml.constants import (
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring
+from openpyxl.packaging.manifest import write_content_types
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
-    write_content_types,
     write_root_rels,
     write_workbook_rels,
     write_properties_app,
@@ -62,8 +63,6 @@ class ExcelWriter(object):
         """Write the various xml files into the zip archive."""
         # cleanup all worksheets
 
-        archive.writestr(ARC_CONTENT_TYPES, write_content_types(self.workbook,
-                                                                as_template=as_template))
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
         archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
         archive.writestr(ARC_APP, write_properties_app(self.workbook))
@@ -88,6 +87,8 @@ class ExcelWriter(object):
         self._write_string_table(archive)
         self._write_external_links(archive)
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
+        manifest = write_content_types(self.workbook, as_template=as_template)
+        archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
     def _write_string_table(self, archive):
         archive.writestr(ARC_SHARED_STRINGS,
@@ -112,6 +113,18 @@ class ExcelWriter(object):
                 continue
             chart._id = idx
             archive.writestr(chart._path, tostring(chart._write()))
+
+
+    def _write_chartsheets(self, archive):
+        for idx, sheet in enumerate(self.workbook.chartsheets, 1):
+            xml = tostring(sheet.to_tree())
+            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' %i, xml)
+
+            if sheet._rels:
+                rels = write_rels(sheet)
+                archive.writestr(PACKAGE_CHARTSHEETS +
+                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels)
+                                 )
 
 
     def _write_worksheets(self, archive):
@@ -151,8 +164,8 @@ class ExcelWriter(object):
                 or sheet._comment_count > 0
                 or sheet.vba_controls is not None):
                 rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)
-                archive.writestr( PACKAGE_WORKSHEETS +
-                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels))
+                archive.writestr(PACKAGE_WORKSHEETS +
+                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels))
 
 
     def _write_external_links(self, archive):

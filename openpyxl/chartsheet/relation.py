@@ -1,5 +1,10 @@
 from __future__ import absolute_import
-from openpyxl.descriptors import (Integer, Alias)
+# Copyright (c) 2010-2015 openpyxl
+
+from openpyxl.descriptors import (
+    Integer,
+    Alias
+)
 from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.serialisable import Serialisable
 
@@ -91,11 +96,3 @@ class DrawingHF(Serialisable):
         self.rfo = rfo
         self.rfe = rfe
         self.rff = rff
-
-
-class LegacyDrawing(Serialisable):
-    pass
-
-
-class Drawing(Serialisable):
-    pass

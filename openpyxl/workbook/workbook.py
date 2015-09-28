@@ -1,26 +1,25 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-
 """Workbook is the top-level container for all document information."""
 
+from openpyxl.compat import deprecated
+from openpyxl.worksheet import Worksheet
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
-from openpyxl.worksheet import Worksheet
+from openpyxl.utils.exceptions import ReadOnlyWorkbookException
+
 from openpyxl.writer.write_only import WriteOnlyWorksheet, save_dump
-from . names.named_range import NamedRange
+from openpyxl.writer.excel import save_workbook
+
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
-from openpyxl.styles.numbers import BUILTIN_FORMATS
-from openpyxl.writer.excel import save_workbook
-from openpyxl.utils.exceptions import ReadOnlyWorkbookException
-from openpyxl.xml import LXML
-from openpyxl.xml.functions import fromstring
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.compat import deprecated
+
+from openpyxl.chartsheet import Chartsheet
+from . names.named_range import NamedRange
 from openpyxl.packaging.core import DocumentProperties
-from . protection import DocumentSecurity
+from .protection import DocumentSecurity
 
 
 class Workbook(object):
@@ -33,7 +32,7 @@ class Workbook(object):
                  data_only=False,
                  read_only=False,
                  write_only=False):
-        self.worksheets = []
+        self._sheets = []
         self._active_sheet_index = 0
         self._named_ranges = []
         self._external_links = []
@@ -59,7 +58,7 @@ class Workbook(object):
         self.encoding = encoding
 
         if not self.write_only:
-            self.worksheets.append(Worksheet(parent_workbook=self))
+            self._sheets.append(Worksheet(self))
 
 
     def _setup_styles(self):
@@ -108,54 +107,62 @@ class Workbook(object):
     @property
     def active(self):
         """Get the currently active sheet"""
-        return self.worksheets[self._active_sheet_index]
+        return self._sheets[self._active_sheet_index]
 
     @active.setter
     def active(self, value):
         """Set the active sheet"""
         self._active_sheet_index = value
 
-    def create_sheet(self, index=None, title=None):
+    def create_sheet(self, title=None, index=None):
         """Create a worksheet (at an optional index).
 
+        :param title: optional title of the sheet
+        :type tile: unicode
         :param index: optional position at which the sheet will be inserted
         :type index: int
 
         """
-
         if self.read_only:
             raise ReadOnlyWorkbookException('Cannot create new sheet in a read-only workbook')
 
         if self.write_only :
             new_ws = WriteOnlyWorksheet(parent_workbook=self, title=title)
         else:
-            new_ws = Worksheet(parent_workbook=self, title=title)
+            new_ws = Worksheet(parent=self, title=title)
 
-        self._add_sheet(worksheet=new_ws, index=index)
+        self._add_sheet(sheet=new_ws, index=index)
         return new_ws
 
-    @deprecated("you probably want to use Workbook.create_sheet('sheet name') instead")
-    def add_sheet(self, worksheet, index=None):
-        self._add_sheet(worksheet, index)
 
-    def _add_sheet(self, worksheet, index=None):
-        """Add an existing worksheet (at an optional index)."""
-        cls = Worksheet
-        if self.write_only:
-            cls = WriteOnlyWorksheet
-        if not isinstance(worksheet, cls):
-            raise TypeError("The parameter you have given is not of the type '%s'" % cls.__name__)
-        if worksheet.parent != self:
+    def _add_sheet(self, sheet, index=None):
+        """Add an worksheet (at an optional index)."""
+
+        if not isinstance(sheet, (Worksheet, Chartsheet)):
+            raise TypeError("Cannot be added to a workbook")
+
+        if sheet.parent != self:
             raise ValueError("You cannot add worksheets from another workbook.")
 
         if index is None:
-            self.worksheets.append(worksheet)
+            self._sheets.append(sheet)
         else:
-            self.worksheets.insert(index, worksheet)
+            self._sheets.insert(index, sheet)
+
 
     def remove_sheet(self, worksheet):
         """Remove a worksheet from this workbook."""
-        self.worksheets.remove(worksheet)
+        self._sheets.remove(worksheet)
+
+
+    def create_chartsheet(self, title=None, index=None):
+        if self.read_only:
+            raise ReadOnlyWorkbookException("Cannot create new sheet in a read-only workbook")
+        cs = Chartsheet(parent=self, title=title)
+
+        self._add_sheet(cs, index=None)
+        return cs
+
 
     def get_sheet_by_name(self, name):
         """Returns a worksheet by its name.
@@ -196,6 +203,14 @@ class Workbook(object):
         return self.sheetnames
 
     @property
+    def worksheets(self):
+        return [s for s in self._sheets if isinstance(s, Worksheet)]
+
+    @property
+    def chartsheets(self):
+        return [s for s in self._sheets if isinstance(s, Chartsheet)]
+
+    @property
     def sheetnames(self):
         """Returns the list of the names of worksheets in the workbook.
 
@@ -204,7 +219,7 @@ class Workbook(object):
         :rtype: list of strings
 
         """
-        return [s.title for s in self.worksheets]
+        return [s.title for s in self._sheets]
 
     def create_named_range(self, name, worksheet, range, scope=None):
         """Create a new named_range on a worksheet"""

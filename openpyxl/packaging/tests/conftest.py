@@ -1,6 +1,4 @@
-# Copyright (c) 2010-2015 openpyxl
 import pytest
-
 
 @pytest.fixture
 def datadir():

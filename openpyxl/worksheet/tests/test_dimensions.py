@@ -14,9 +14,7 @@ class DummyWorkbook:
         self._cell_styles = IndexedList()
         self._cell_styles.add(StyleArray())
         self._cell_styles.add(StyleArray([10,0,0,0,0,0,0,0,0,0]))
-
-    def get_sheet_names(self):
-        return []
+        self.sheetnames = []
 
 
 class DummyWorksheet:
@@ -65,7 +63,7 @@ def test_col_dimensions(key, value, expected):
 
 def test_group_columns_simple():
     from ..worksheet import Worksheet
-    ws = Worksheet(parent_workbook=DummyWorkbook())
+    ws = Worksheet(DummyWorkbook())
     dims = ws.column_dimensions
     dims.group('A', 'C', 1)
     assert len(dims) == 1
@@ -77,7 +75,7 @@ def test_group_columns_simple():
 
 def test_group_columns_collapse():
     from ..worksheet import Worksheet
-    ws = Worksheet(parent_workbook=DummyWorkbook())
+    ws = Worksheet(DummyWorkbook())
     dims = ws.column_dimensions
     dims.group('A', 'C', 1, hidden=True)
     group = list(dims.values())[0]
@@ -87,7 +85,7 @@ def test_group_columns_collapse():
 def test_column_dimension():
     from ..worksheet import Worksheet
     from .. dimensions import ColumnDimension
-    ws = Worksheet(parent_workbook=DummyWorkbook())
+    ws = Worksheet(DummyWorkbook())
     cols = ws.column_dimensions
     assert isinstance(cols['A'], ColumnDimension)
 
@@ -95,6 +93,6 @@ def test_column_dimension():
 def test_row_dimension():
     from ..worksheet import Worksheet
     from ..dimensions import RowDimension
-    ws = Worksheet(parent_workbook=DummyWorkbook())
+    ws = Worksheet(DummyWorkbook())
     row_info = ws.row_dimensions
     assert isinstance(row_info[1], RowDimension)
