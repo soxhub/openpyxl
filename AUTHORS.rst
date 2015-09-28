@@ -1,11 +1,10 @@
-This project is developed by Eric Gazoni.
+This project was started by Eric Gazoni. In 2013 Charlie Clark became
+co-maintainer of the project.
 
-It is *heavily* inspired by the PHPExcel library that can be
-found here: http://www.phpexcel.net/
+It was initiallay *heavily* inspired by the PHPExcel library:
+http://www.phpexcel.net/
 
-Kudos goes to the PHPExcel team, I'm only standing on their shoulders.
-
-I'd also like to greatly thank all those who participate in the project (in alphabetical order):
+Thanks to all those who participate in the project (in alphabetical order):
 
 * Stephane Bard
 * Day Barr
@@ -14,7 +13,6 @@ I'd also like to greatly thank all those who participate in the project (in alph
 * Sven Burk
 * Anders Chrigstrom
 * ccoacley
-* Charlie Clark
 * Maarten De Paepe
 * Etienne Desautels
 * Eric Chlebek
@@ -23,6 +21,7 @@ I'd also like to greatly thank all those who participate in the project (in alph
 * Brice Gelineau
 * Alex Gronholm
 * Yaroslav Halchenko
+* Khchine Hamza
 * Josh Haywood
 * Jeff Holman
 * Brent Hoover
