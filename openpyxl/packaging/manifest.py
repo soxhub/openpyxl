@@ -28,7 +28,8 @@ from openpyxl.xml.constants import (
     SHARED_STRINGS,
     DRAWING_TYPE,
     CHART_TYPE,
-    CHARTSHAPE_TYPE
+    CHARTSHAPE_TYPE,
+    CHARTSHEET_TYPE,
 )
 
 # initialise mime-types
@@ -177,16 +178,15 @@ def write_content_types(workbook, as_template=False):
 
     # chartsheets
     for sheet_id, sheet in enumerate(workbook.chartsheets, sheet_id+1):
-        name = '/xl/charthseets/sheet%d.xml' % (sheet_id)
+        name = '/xl/chartsheets/sheet%d.xml' % (sheet_id)
         if name not in seen:
-            manifest.Override.append(Override(name, WORKSHEET_TYPE))
+            manifest.Override.append(Override(name, CHARTSHEET_TYPE))
 
-        if sheet._charts or sheet._images:
+        if sheet._charts:
             drawing_id += 1
             name = '/xl/drawings/drawing%d.xml' % drawing_id
             if name not in seen:
                 manifest.Override.append(Override(name, DRAWING_TYPE))
-
 
             for chart in sheet._charts:
                 chart_id += 1
