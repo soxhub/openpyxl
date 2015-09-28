@@ -106,6 +106,10 @@ class TestManifest:
             PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
             PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
+            PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
+            PartName="/docProps/app.xml"/>
         </Types>
         """
         diff = compare_xml(xml, expected)
@@ -172,6 +176,10 @@ class TestWorbook:
             PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
             PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
+            PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
+            PartName="/docProps/app.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
             PartName="/xl/worksheets/sheet1.xml"/>
         </Types>
@@ -199,6 +207,10 @@ class TestWorbook:
             PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
             PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
+            PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
+            PartName="/docProps/app.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
             PartName="/xl/worksheets/sheet1.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml"
