@@ -9,7 +9,7 @@ import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
-from openpyxl.xml.functions import Element, fromstring
+from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import (
     ARC_CORE,
     ARC_CONTENT_TYPES,
@@ -112,12 +112,9 @@ class Manifest(Serialisable):
         Custom serialisation method to allow setting a default namespace
         """
         exts = [FileExtension(ext, mime) for ext, mime in self.extensions]
-        exts.extend(self.Default)
-        tree = Element(self.tagname, xmlns=self.namespace)
-        for ext in exts:
-            tree.append(ext.to_tree())
-        for part in self.Override:
-            tree.append(part.to_tree())
+        self.Default.extend(exts)
+        tree = super(Manifest, self).to_tree()
+        tree.set("xmlns", self.namespace)
         return tree
 
 
