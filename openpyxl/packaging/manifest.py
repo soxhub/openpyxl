@@ -18,6 +18,7 @@ from openpyxl.xml.constants import (
     ARC_THEME,
     ARC_STYLE,
     ARC_SHARED_STRINGS,
+    EXTERNAL_LINK,
     THEME_TYPE,
     STYLES_TYPE,
     XLSX,
@@ -186,7 +187,7 @@ def write_content_types(workbook, as_template=False):
 
     #external links
     for idx, _ in enumerate(workbook._external_links, 1):
-        name = '/xl/externalLinks/externalLink{0}.xml'.format(idx),
-        manifest.append(Override(name, EXTERNAL_LINK))
+        name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
+        manifest.Override.append(Override(name, EXTERNAL_LINK))
 
     return manifest
