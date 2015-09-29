@@ -40,6 +40,7 @@ mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
 
+
 class FileExtension(Serialisable):
 
     tagname = "Default"
@@ -50,6 +51,10 @@ class FileExtension(Serialisable):
     def __init__(self, Extension, ContentType):
         self.Extension = Extension
         self.ContentType = ContentType
+
+
+    def __hash__(self):
+        return hash((self.Extension, self.ContentType))
 
 
 class Override(Serialisable):
@@ -111,8 +116,10 @@ class Manifest(Serialisable):
         """
         Custom serialisation method to allow setting a default namespace
         """
-        exts = [FileExtension(ext, mime) for ext, mime in self.extensions]
-        self.Default.extend(exts)
+        for ext, mime in self.extensions:
+            mime = FileExtension(ext, mime)
+            if mime not in self.Default:
+                self.Default.append(mime)
         tree = super(Manifest, self).to_tree()
         tree.set("xmlns", self.namespace)
         return tree
