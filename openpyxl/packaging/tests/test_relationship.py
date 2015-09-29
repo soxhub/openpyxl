@@ -32,12 +32,12 @@ def test_sequence(Relationship):
     from ..relationship import to_tree
     rels = []
     rels.append(Relationship("drawing", "drawings.xml", "external", ""))
-    rels.append(Relationship("chart", "chart1.xml", "", ""))
+    rels.append(Relationship("chart", "chart1.xml", "", "chart"))
     xml = tostring(to_tree(rels))
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
       <Relationship Id="rId1" Target="drawings.xml" TargetMode="external" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
-      <Relationship Id="rId2" Target="chart1.xml" TargetMode="" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
+      <Relationship Id="chart" Target="chart1.xml" TargetMode="" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>
     </Relationships>
     """
     diff = compare_xml(xml, expected)
