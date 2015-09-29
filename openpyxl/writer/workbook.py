@@ -31,6 +31,7 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.utils.datetime  import datetime_to_W3CDTF
 from openpyxl.worksheet import Worksheet
+from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.properties import write_properties
 
@@ -179,30 +180,34 @@ def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     rels = RelationshipList()
 
-    for i, _ in enumerate(workbook.worksheets, 1):
-        rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % i, id='rId%d' % i)
+    rId = 0
+
+    for idx, _ in enumerate(workbook.worksheets, 1):
+        rId += 1
+        rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % idx, id='rId%d' % rId)
         rels.append(rel)
 
 
-    for i, _ in enumerate(workbook.chartsheets, i+1):
-        rel = Relationship(type='chartsheet', target='chartsheets/sheet%s.xml' % i, id='rId%d' % i)
+    for idx, _ in enumerate(workbook.chartsheets, 1):
+        rId += 1
+        rel = Relationship(type='chartsheet', target='chartsheets/sheet%s.xml' % idx, id='rId%d' % rId)
         rels.append(rel)
 
-    i += 1
-    strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % i)
+    rId += 1
+    strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % rId)
     rels.append(strings)
 
-    i += 1
-    styles =  Relationship(type='styles', target='styles.xml', id='rId%d' % i)
+    rId += 1
+    styles =  Relationship(type='styles', target='styles.xml', id='rId%d' % rId)
     rels.append(styles)
 
-    i += 1
-    theme =  Relationship(type='theme', target='theme/theme1.xml', id='rId%d' % i)
+    rId += 1
+    theme =  Relationship(type='theme', target='theme/theme1.xml', id='rId%d' % rId)
     rels.append(theme)
 
     if workbook.vba_archive:
-        i += 1
-        vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % i)
+        rId += 1
+        vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % rId)
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         rels.append(vba)
 
@@ -211,7 +216,7 @@ def write_workbook_rels(workbook):
         for idx, link in enumerate(external_links, 1):
             ext =  Relationship(type='externalLink',
                                 target='externalLinks/externalLink%d.xml' % idx,
-                                id='rId%d' % (i +idx))
+                                id='rId%d' % (rId +idx))
             rels.append(ext)
 
     return tostring(rels.to_tree())
