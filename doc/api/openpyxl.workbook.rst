@@ -18,6 +18,7 @@ Submodules
 
 .. toctree::
 
+   openpyxl.workbook.child
    openpyxl.workbook.properties
    openpyxl.workbook.workbook
 
