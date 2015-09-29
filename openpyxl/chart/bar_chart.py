@@ -85,7 +85,7 @@ class BarChart(_BarChartBase):
 
     def __init__(self,
                  gapWidth=150,
-                 overlap=100,
+                 overlap=None,
                  serLines=None,
                  axId=None,
                  extLst=None,
