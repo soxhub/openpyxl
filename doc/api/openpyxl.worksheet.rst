@@ -13,6 +13,7 @@ Submodules
 
    openpyxl.worksheet.datavalidation
    openpyxl.worksheet.dimensions
+   openpyxl.worksheet.drawing
    openpyxl.worksheet.filters
    openpyxl.worksheet.header_footer
    openpyxl.worksheet.hyperlink
