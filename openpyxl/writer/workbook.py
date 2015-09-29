@@ -31,7 +31,8 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.utils.datetime  import datetime_to_W3CDTF
 from openpyxl.worksheet import Worksheet
-from openpyxl.packaging.relationship import Relationship
+from openpyxl.chartsheet import Chartsheet
+from openpyxl.packaging.relationship import Relationship, RelationshipList
 
 
 def write_properties_app(workbook):
@@ -67,35 +68,35 @@ def write_properties_app(workbook):
 
 def write_root_rels(workbook):
     """Write the relationships xml."""
-    root = Element('Relationships', xmlns=PKG_REL_NS)
-    relation_tag = '{%s}Relationship' % PKG_REL_NS
+
+    rels = RelationshipList()
 
     rel = Relationship(type="officeDocument", target=ARC_WORKBOOK, id="rId1")
-    root.append(rel.to_tree())
+    rels.append(rel)
 
     rel = Relationship("", target=ARC_CORE, id='rId2',)
     rel.type = "%s/metadata/core-properties" % PKG_REL_NS
-    root.append(rel.to_tree())
+    rels.append(rel)
 
     rel = Relationship("extended-properties", target=ARC_APP, id='rId3')
-
-    root.append(rel.to_tree())
+    rels.append(rel)
 
     if workbook.vba_archive is not None:
+        relation_tag = '{%s}Relationship' % PKG_REL_NS
         # See if there was a customUI relation and reuse its id
         arc = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
-        rels = arc.findall(relation_tag)
+        rel_tags = arc.findall(relation_tag)
         rId = None
-        for rel in rels:
+        for rel in rel_tags:
                 if rel.get('Target') == ARC_CUSTOM_UI:
                         rId = rel.get('Id')
                         break
         if rId is not None:
             vba = Relationship("", target=ARC_CUSTOM_UI, id=rId)
             vba.type = CUSTOMUI_NS
-            root.append(vba.to_tree())
+            rels.append(vba)
 
-    return tostring(root)
+    return tostring(rels.to_tree())
 
 
 def write_workbook(workbook):
@@ -119,12 +120,12 @@ def write_workbook(workbook):
 
     # worksheets
     sheets = SubElement(root, '{%s}sheets' % SHEET_MAIN_NS)
-    for i, sheet in enumerate(workbook.worksheets, 1):
+    for i, sheet in enumerate(workbook._sheets, 1):
         sheet_node = SubElement(
             sheets, '{%s}sheet' % SHEET_MAIN_NS,
             {'name': sheet.title, 'sheetId': '%d' % i,
              '{%s}id' % REL_NS: 'rId%d' % i })
-        if not sheet.sheet_state == Worksheet.SHEETSTATE_VISIBLE:
+        if not sheet.sheet_state == 'visible':
             if len(workbook.worksheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
             sheet_node.set('state', sheet.sheet_state)
@@ -176,41 +177,45 @@ def _write_defined_names(workbook, names):
 
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
-    root = Element('Relationships', xmlns=PKG_REL_NS)
+    rels = RelationshipList()
 
-    for i, _ in enumerate(workbook.worksheets, 1):
-        rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % i, id='rId%d' % i)
-        root.append(rel.to_tree())
+    rId = 0
+
+    for idx, _ in enumerate(workbook.worksheets, 1):
+        rId += 1
+        rel = Relationship(type='worksheet', target='worksheets/sheet%s.xml' % idx, id='rId%d' % rId)
+        rels.append(rel)
 
 
-    for i, _ in enumerate(workbook.chartsheets, i+1):
-        rel = Relationship(type='chartsheet', target='chartsheets/sheet%s.xml' % i, id='rId%d' % i)
-        root.append(rel.to_tree())
+    for idx, _ in enumerate(workbook.chartsheets, 1):
+        rId += 1
+        rel = Relationship(type='chartsheet', target='chartsheets/sheet%s.xml' % idx, id='rId%d' % rId)
+        rels.append(rel)
 
-    i += 1
-    strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % i)
-    root.append(strings.to_tree())
+    rId += 1
+    strings =  Relationship(type='sharedStrings', target='sharedStrings.xml', id='rId%d' % rId)
+    rels.append(strings)
 
-    i += 1
-    styles =  Relationship(type='styles', target='styles.xml', id='rId%d' % i)
-    root.append(styles.to_tree())
+    rId += 1
+    styles =  Relationship(type='styles', target='styles.xml', id='rId%d' % rId)
+    rels.append(styles)
 
-    i += 1
-    styles =  Relationship(type='theme', target='theme/theme1.xml', id='rId%d' % i)
-    root.append(styles.to_tree())
+    rId += 1
+    theme =  Relationship(type='theme', target='theme/theme1.xml', id='rId%d' % rId)
+    rels.append(theme)
 
     if workbook.vba_archive:
-        i += 1
-        vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % i)
+        rId += 1
+        vba =  Relationship(type='vbaProject', target='vbaProject.bin', id='rId%d' % rId)
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
-        root.append(vba.to_tree())
+        rels.append(vba)
 
     external_links = workbook._external_links
     if external_links:
         for idx, link in enumerate(external_links, 1):
             ext =  Relationship(type='externalLink',
                                 target='externalLinks/externalLink%d.xml' % idx,
-                                id='rId%d' % (i +idx))
-            root.append(ext.to_tree())
+                                id='rId%d' % (rId +idx))
+            rels.append(ext)
 
-    return tostring(root)
+    return tostring(rels.to_tree())

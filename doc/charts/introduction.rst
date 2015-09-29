@@ -72,3 +72,13 @@ Charts can be combined to create new charts:
 .. toctree::
 
     gauge
+
+
+Using chartsheets
+-----------------
+
+Charts can be added to special worksheets called chartsheets:
+
+.. toctree::
+
+    chartsheet

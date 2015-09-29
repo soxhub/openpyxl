@@ -25,7 +25,7 @@ class ChartsheetView(Serialisable):
     def __init__(self,
                  tabSelected=None,
                  zoomScale=None,
-                 workbookViewId=None,
+                 workbookViewId=0,
                  zoomToFit=None,
                  extLst=None,
                  ):
@@ -35,7 +35,7 @@ class ChartsheetView(Serialisable):
         self.zoomToFit = zoomToFit
 
 
-class ChartsheetViews(Serialisable):
+class ChartsheetViewList(Serialisable):
     tagname = "sheetViews"
 
     sheetView = Sequence(expected_type=ChartsheetView, )
@@ -47,4 +47,6 @@ class ChartsheetViews(Serialisable):
                  sheetView=None,
                  extLst=None,
                  ):
+        if sheetView is None:
+            sheetView = [ChartsheetView()]
         self.sheetView = sheetView

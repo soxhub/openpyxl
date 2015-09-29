@@ -243,12 +243,14 @@ class SpreadsheetDrawing(Serialisable):
         for idx, obj in enumerate(self.charts + self.images, 1):
             if isinstance(obj, ChartBase):
                 rel = Relationship(type="chart", target='../charts/chart%s.xml' % obj._id)
-                row, col = coordinate_to_tuple(obj.anchor)
-                anchor = OneCellAnchor()
-                anchor._from.row = row -1
-                anchor._from.col = col -1
-                anchor.ext.width = cm_to_EMU(obj.width)
-                anchor.ext.height = cm_to_EMU(obj.height)
+                anchor = obj.anchor
+                if not isinstance(anchor, _AnchorBase):
+                    row, col = coordinate_to_tuple(anchor)
+                    anchor = OneCellAnchor()
+                    anchor._from.row = row -1
+                    anchor._from.col = col -1
+                    anchor.ext.width = cm_to_EMU(obj.width)
+                    anchor.ext.height = cm_to_EMU(obj.height)
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", target='../media/image%s.png' % obj._id)
@@ -258,7 +260,13 @@ class SpreadsheetDrawing(Serialisable):
             anchors.append(anchor)
             self._rels.append(rel)
 
-        self.oneCellAnchor = anchors
+        for a in anchors:
+            if isinstance(a, OneCellAnchor):
+                self.oneCellAnchor.append(a)
+            elif isinstance(a, TwoCellAnchor):
+                self.twoCellAnchor.append(a)
+            else:
+                self.absoluteAnchor.append(a)
 
         tree = self.to_tree()
         tree.set('xmlns', SHEET_DRAWING_NS)

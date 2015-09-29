@@ -9,7 +9,7 @@ import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
-from openpyxl.xml.functions import Element, fromstring
+from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import (
     ARC_CORE,
     ARC_CONTENT_TYPES,
@@ -32,6 +32,7 @@ from openpyxl.xml.constants import (
     CHART_TYPE,
     CHARTSHAPE_TYPE,
     CHARTSHEET_TYPE,
+    CONTYPES_NS
 )
 
 # initialise mime-types
@@ -39,6 +40,7 @@ mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
+
 
 class FileExtension(Serialisable):
 
@@ -50,6 +52,10 @@ class FileExtension(Serialisable):
     def __init__(self, Extension, ContentType):
         self.Extension = Extension
         self.ContentType = ContentType
+
+
+    def __hash__(self):
+        return hash((self.Extension, self.ContentType))
 
 
 class Override(Serialisable):
@@ -77,7 +83,6 @@ DEFAULT_PARTS = [
 class Manifest(Serialisable):
 
     tagname = "Types"
-    namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
     Default = Sequence(expected_type=FileExtension)
     Override = Sequence(expected_type=Override)
@@ -111,13 +116,12 @@ class Manifest(Serialisable):
         """
         Custom serialisation method to allow setting a default namespace
         """
-        exts = [FileExtension(ext, mime) for ext, mime in self.extensions]
-        exts.extend(self.Default)
-        tree = Element(self.tagname, xmlns=self.namespace)
-        for ext in exts:
-            tree.append(ext.to_tree())
-        for part in self.Override:
-            tree.append(part.to_tree())
+        for ext, mime in self.extensions:
+            mime = FileExtension(ext, mime)
+            if mime not in self.Default:
+                self.Default.append(mime)
+        tree = super(Manifest, self).to_tree()
+        tree.set("xmlns", CONTYPES_NS)
         return tree
 
 

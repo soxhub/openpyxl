@@ -84,6 +84,7 @@ class ExcelWriter(object):
         self._write_charts(archive)
         self._write_images(archive)
         self._write_worksheets(archive)
+        self._write_chartsheets(archive)
         self._write_string_table(archive)
         self._write_external_links(archive)
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
@@ -116,15 +117,36 @@ class ExcelWriter(object):
 
 
     def _write_chartsheets(self, archive):
+        from openpyxl.packaging.relationship import Relationship, RelationshipList
+        from openpyxl.worksheet.drawing import Drawing
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
-            xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' %i, xml)
 
-            if sheet._rels:
-                rels = write_rels(sheet)
+            if sheet._charts:
+                drawing = SpreadsheetDrawing()
+                drawing.charts = sheet._charts
+                self.workbook._drawings.append(drawing)
+                drawing_id = len(self.workbook._drawings)
+                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
+                archive.writestr(drawingpath, tostring(drawing._write()))
+                archive.writestr(
+                    "{0}/_rels/drawing{1}.xml.rels".format(
+                        PACKAGE_DRAWINGS, drawing_id),
+                    tostring(drawing._write_rels())
+                )
+
+                rel = Relationship(type="drawing", target="/" + drawingpath)
+                rels = RelationshipList()
+                rels.append(rel)
+                tree = rels.to_tree()
+
+                sheet.drawing.id = "rId{0}".format(len(rels))
+
                 archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels)
+                                 '/_rels/sheet%d.xml.rels' % idx, tostring(tree)
                                  )
+
+            xml = tostring(sheet.to_tree())
+            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' % idx, xml)
 
 
     def _write_worksheets(self, archive):

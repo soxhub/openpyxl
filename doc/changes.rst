@@ -14,6 +14,12 @@ Minor changes
 ==================
 
 
+Major changes
+-------------
+
+* Support the creation of chartsheets
+
+
 Minor changes
 -------------
 

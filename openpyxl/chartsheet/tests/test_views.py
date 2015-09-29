@@ -16,7 +16,7 @@ def ChartsheetView():
 class TestChartsheetView:
     def test_read(self, ChartsheetView):
         src = """
-            <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
+        <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
         """
         xml = fromstring(src)
         chart = ChartsheetView.from_tree(xml)
@@ -29,32 +29,37 @@ class TestChartsheetView:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-@pytest.fixture
-def ChartsheetViews():
-    from ..views import ChartsheetViews
-    return ChartsheetViews
 
-class TestchartsheetViews:
-    def test_read(self,ChartsheetViews):
+@pytest.fixture
+def ChartsheetViewList():
+    from ..views import ChartsheetViewList
+    return ChartsheetViewList
+
+
+class TestChartsheetViewList:
+
+
+    def test_read(self, ChartsheetViewList):
         src = """
         <sheetViews>
-                <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
-            </sheetViews>
+            <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
+        </sheetViews>
         """
         xml = fromstring(src)
-        chartsheetViews = ChartsheetViews.from_tree(xml)
-        assert chartsheetViews.sheetView[0].tabSelected == 1
+        views = ChartsheetViewList.from_tree(xml)
+        assert views.sheetView[0].tabSelected == 1
 
-    def test_write(self,ChartsheetViews):
+
+    def test_write(self, ChartsheetViewList):
         from ..views import ChartsheetView
 
-        sheetview = ChartsheetView(tabSelected=True, zoomScale=80, workbookViewId=0, zoomToFit=True)
-        chartsheetViews = ChartsheetViews(sheetView=[sheetview])
+        views = ChartsheetViewList()
+
         expected = """
-            <sheetViews>
-                <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
-            </sheetViews>
+        <sheetViews>
+          <sheetView workbookViewId="0"/>
+        </sheetViews>
         """
-        xml = tostring(chartsheetViews.to_tree())
+        xml = tostring(views.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
