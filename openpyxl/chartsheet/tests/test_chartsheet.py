@@ -68,8 +68,12 @@ class TestChartsheet:
 
     def test_write_charts(self, Chartsheet):
 
+        class DummyChart:
+
+            pass
+
         cs = Chartsheet(parent=DummyWorkbook())
-        cs.add_chart(1)
+        cs.add_chart(DummyChart())
         expected = """
         <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
            <drawing r:id="rId1" />
