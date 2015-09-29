@@ -6,7 +6,7 @@ from openpyxl.descriptors import (
     Set,
     NoneSet,
     Alias,
-    Sequence
+    Sequence,
 )
 from openpyxl.descriptors.serialisable import Serialisable
 
@@ -45,3 +45,28 @@ def to_tree(sequence):
             rel.id = "rId{0}".format(idx)
         root.append(rel.to_tree())
     return root
+
+
+class RelationshipList(Serialisable):
+
+    tagname = "Relationships"
+
+    Relationship = Sequence(expected_type=Relationship)
+
+
+    def __init__(self, Relationship=()):
+        self.Relationship = Relationship
+
+
+    def append(self, value):
+        self.Relationship.append(value)
+
+
+    def __len__(self):
+        return len(self.Relationship)
+
+
+    def to_tree(self):
+        tree = super(RelationshipList, self).to_tree()
+        tree.set("xmlns", PKG_REL_NS)
+        return tree
