@@ -30,7 +30,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
     _default_title = "Chart"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
-    sheetViews = Typed(expected_type=ChartsheetViews, allow_none=True)
+    sheetViews = Typed(expected_type=ChartsheetViews)
     sheetProtection = Typed(expected_type=ChartsheetProtection, allow_none=True)
     customSheetViews = Typed(expected_type=CustomChartsheetViews, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
@@ -72,13 +72,15 @@ class Chartsheet(_WorkbookChild, Serialisable):
             super(Chartsheet, self).__init__(parent, title)
         self._charts = []
         self.sheetPr = sheetPr
+        if sheetViews is None:
+            sheetViews = ChartsheetViews()
         self.sheetViews = sheetViews
         self.sheetProtection = sheetProtection
         self.customSheetViews = customSheetViews
         self.pageMargins = pageMargins
         self.pageSetup = pageSetup
         self.headerFooter = headerFooter
-        self.drawing = drawing
+        self.drawing = Drawing("rId1")
         self.drawingHF = drawingHF
         self.picture = picture
         self.webPublishItems = webPublishItems
@@ -89,13 +91,3 @@ class Chartsheet(_WorkbookChild, Serialisable):
         chart.anchor = AbsoluteAnchor()
         self._charts.append(chart)
         self.parent._charts.append(ref(chart))
-
-
-    def to_tree(self):
-        self._rels = RelationshipList()
-        if self._charts:
-            rel = Relationship(type="drawing", target="")
-            self._rels.append(rel)
-            self.drawing = Drawing()
-            self.drawing.id = "rId%s" % len(self._rels)
-        return super(Chartsheet, self).to_tree()

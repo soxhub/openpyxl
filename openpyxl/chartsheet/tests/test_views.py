@@ -29,10 +29,12 @@ class TestChartsheetView:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+
 @pytest.fixture
 def ChartsheetViews():
     from ..views import ChartsheetViews
     return ChartsheetViews
+
 
 class TestchartsheetViews:
     def test_read(self,ChartsheetViews):

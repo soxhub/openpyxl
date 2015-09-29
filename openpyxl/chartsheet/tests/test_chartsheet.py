@@ -76,6 +76,9 @@ class TestChartsheet:
         cs.add_chart(DummyChart())
         expected = """
         <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+           <sheetViews>
+             <sheetView workbookViewId="0"></sheetView>
+            </sheetViews>
            <drawing r:id="rId1" />
         </chartsheet>
         """
