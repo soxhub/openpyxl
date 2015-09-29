@@ -32,6 +32,7 @@ from openpyxl.xml.constants import (
     CHART_TYPE,
     CHARTSHAPE_TYPE,
     CHARTSHEET_TYPE,
+    CONTYPES_NS
 )
 
 # initialise mime-types
@@ -82,7 +83,6 @@ DEFAULT_PARTS = [
 class Manifest(Serialisable):
 
     tagname = "Types"
-    namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
     Default = Sequence(expected_type=FileExtension)
     Override = Sequence(expected_type=Override)
@@ -121,7 +121,7 @@ class Manifest(Serialisable):
             if mime not in self.Default:
                 self.Default.append(mime)
         tree = super(Manifest, self).to_tree()
-        tree.set("xmlns", self.namespace)
+        tree.set("xmlns", CONTYPES_NS)
         return tree
 
 
