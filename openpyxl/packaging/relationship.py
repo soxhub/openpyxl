@@ -59,7 +59,9 @@ class RelationshipList(Serialisable):
 
 
     def append(self, value):
-        self.Relationship.append(value)
+        values = self.Relationship[:]
+        values.append(value)
+        self.Relationship = values
 
 
     def __len__(self):
