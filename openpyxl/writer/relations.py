@@ -1,17 +1,12 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-
-from openpyxl.xml.functions import Element
-from openpyxl.xml.constants import (
-    PKG_REL_NS,
-)
-from openpyxl.packaging.relationship import Relationship
+from openpyxl.packaging.relationship import Relationship, to_tree
 
 
 def write_rels(worksheet, comments_id=None, vba_controls_id=None):
     """Write relationships for the worksheet to xml."""
-    root = Element('Relationships', xmlns=PKG_REL_NS)
+
     rels = worksheet._rels
 
     # VBA
@@ -31,9 +26,4 @@ def write_rels(worksheet, comments_id=None, vba_controls_id=None):
                            target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
             rels.append(rel)
 
-    for idx, rel in enumerate(rels, 1):
-        if rel.id is None:
-            rel.id = "rId{0}".format(idx)
-        root.append(rel.to_tree())
-
-    return root
+    return to_tree(rels)
