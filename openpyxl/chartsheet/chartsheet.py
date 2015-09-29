@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from weakref import ref
 
-from openpyxl.descriptors import Typed
+from openpyxl.descriptors import Typed, Set
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.drawing.spreadsheet_drawing import AbsoluteAnchor
@@ -41,11 +41,14 @@ class Chartsheet(_WorkbookChild, Serialisable):
     picture = Typed(expected_type=SheetBackgroundPicture, allow_none=True)
     webPublishItems = Typed(expected_type=WebPublishItems, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    sheet_state = Set(values=('visible', 'hidden', 'veryHidden'))
 
     __elements__ = (
         'sheetPr', 'sheetViews', 'sheetProtection', 'customSheetViews',
         'pageMargins', 'pageSetup', 'headerFooter', 'drawing', 'drawingHF',
         'picture', 'webPublishItems')
+
+    __attrs__ = ()
 
     def __init__(self,
                  sheetPr=None,
@@ -62,6 +65,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
                  extLst=None,
                  parent=None,
                  title="",
+                 sheet_state='visible',
                  ):
         # hack to simplify testing
         if parent is not None:
@@ -78,6 +82,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
         self.drawingHF = drawingHF
         self.picture = picture
         self.webPublishItems = webPublishItems
+        self.sheet_state = sheet_state
 
 
     def add_chart(self, chart):
