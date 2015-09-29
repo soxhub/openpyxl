@@ -38,15 +38,6 @@ class Relationship(Serialisable):
         self.id = id
 
 
-def to_tree(sequence):
-    root = Element("Relationships", xmlns=PKG_REL_NS)
-    for idx, rel in enumerate(sequence, 1):
-        if not rel.id:
-            rel.id = "rId{0}".format(idx)
-        root.append(rel.to_tree())
-    return root
-
-
 class RelationshipList(Serialisable):
 
     tagname = "Relationships"
@@ -68,7 +59,15 @@ class RelationshipList(Serialisable):
         return len(self.Relationship)
 
 
+    def __bool__(self):
+        return bool(self.Relationship)
+
+
     def to_tree(self):
-        tree = super(RelationshipList, self).to_tree()
-        tree.set("xmlns", PKG_REL_NS)
+        tree = Element("Relationships", xmlns=PKG_REL_NS)
+        for idx, rel in enumerate(self.Relationship, 1):
+            if not rel.id:
+                rel.id = "rId{0}".format(idx)
+            tree.append(rel.to_tree())
+
         return tree

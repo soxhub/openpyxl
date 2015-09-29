@@ -29,11 +29,11 @@ def test_ctor(Relationship):
 
 
 def test_sequence(Relationship):
-    from ..relationship import to_tree
-    rels = []
+    from ..relationship import RelationshipList
+    rels = RelationshipList()
     rels.append(Relationship("drawing", "drawings.xml", "external", ""))
     rels.append(Relationship("chart", "chart1.xml", "", "chart"))
-    xml = tostring(to_tree(rels))
+    xml = tostring(rels.to_tree())
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
       <Relationship Id="rId1" Target="drawings.xml" TargetMode="external" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
