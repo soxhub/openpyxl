@@ -35,7 +35,7 @@ class ChartsheetView(Serialisable):
         self.zoomToFit = zoomToFit
 
 
-class ChartsheetViews(Serialisable):
+class ChartsheetViewList(Serialisable):
     tagname = "sheetViews"
 
     sheetView = Sequence(expected_type=ChartsheetView, )

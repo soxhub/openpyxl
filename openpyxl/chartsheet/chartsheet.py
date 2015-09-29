@@ -20,7 +20,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from .relation import DrawingHF, SheetBackgroundPicture
 from .properties import ChartsheetProperties
 from .protection import ChartsheetProtection
-from .views import ChartsheetViews
+from .views import ChartsheetViewList
 from .custom import CustomChartsheetViews
 from .publish import WebPublishItems
 
@@ -31,7 +31,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
     _default_title = "Chart"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
-    sheetViews = Typed(expected_type=ChartsheetViews)
+    sheetViews = Typed(expected_type=ChartsheetViewList)
     sheetProtection = Typed(expected_type=ChartsheetProtection, allow_none=True)
     customSheetViews = Typed(expected_type=CustomChartsheetViews, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
@@ -74,7 +74,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
         self._charts = []
         self.sheetPr = sheetPr
         if sheetViews is None:
-            sheetViews = ChartsheetViews()
+            sheetViews = ChartsheetViewList()
         self.sheetViews = sheetViews
         self.sheetProtection = sheetProtection
         self.customSheetViews = customSheetViews

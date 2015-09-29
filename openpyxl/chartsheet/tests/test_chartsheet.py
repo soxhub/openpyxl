@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 from openpyxl.chartsheet import Drawing
-from ..views import ChartsheetView, ChartsheetViews
+from ..views import ChartsheetView, ChartsheetViewList
 from openpyxl.worksheet import PageMargins
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -48,7 +48,7 @@ class TestChartsheet:
     def test_write(self, Chartsheet):
 
         sheetview = ChartsheetView(tabSelected=True, zoomScale=80, workbookViewId=0, zoomToFit=True)
-        chartsheetViews = ChartsheetViews(sheetView=[sheetview])
+        chartsheetViews = ChartsheetViewList(sheetView=[sheetview])
         pageMargins = PageMargins(left=0.7, right=0.7, top=0.75, bottom=0.75, header=0.3, footer=0.3)
         drawing = Drawing("rId1")
         item = Chartsheet(sheetViews=chartsheetViews, pageMargins=pageMargins, drawing=drawing)
