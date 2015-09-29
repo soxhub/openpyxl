@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.packaging.relationship import Relationship, to_tree
+from openpyxl.packaging.relationship import Relationship, RelationshipList
 
 
 def write_rels(worksheet, comments_id=None, vba_controls_id=None):
     """Write relationships for the worksheet to xml."""
 
-    rels = worksheet._rels
+    rels = RelationshipList(worksheet._rels)
 
     # VBA
     if worksheet.vba_controls is not None:
@@ -26,4 +26,4 @@ def write_rels(worksheet, comments_id=None, vba_controls_id=None):
                            target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
             rels.append(rel)
 
-    return to_tree(rels)
+    return rels.to_tree()

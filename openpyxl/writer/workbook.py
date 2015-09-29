@@ -87,7 +87,7 @@ def write_root_rels(workbook):
         arc = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
         rel_tags = arc.findall(relation_tag)
         rId = None
-        for rel in rels:
+        for rel in rel_tags:
                 if rel.get('Target') == ARC_CUSTOM_UI:
                         rId = rel.get('Id')
                         break

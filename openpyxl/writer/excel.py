@@ -85,6 +85,7 @@ class ExcelWriter(object):
         self._write_charts(archive)
         self._write_images(archive)
         self._write_worksheets(archive)
+        self._write_chartsheets(archive)
         self._write_string_table(archive)
         self._write_external_links(archive)
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
@@ -119,12 +120,12 @@ class ExcelWriter(object):
     def _write_chartsheets(self, archive):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
             xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' %i, xml)
+            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' % idx, xml)
 
             if sheet._rels:
-                rels = write_rels(sheet)
+                tree = sheet._rels.to_tree()
                 archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels)
+                                 '/_rels/sheet%d.xml.rels' % idx, tostring(tree)
                                  )
 
 
