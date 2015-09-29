@@ -120,12 +120,12 @@ def write_workbook(workbook):
 
     # worksheets
     sheets = SubElement(root, '{%s}sheets' % SHEET_MAIN_NS)
-    for i, sheet in enumerate(workbook.worksheets, 1):
+    for i, sheet in enumerate(workbook._sheets, 1):
         sheet_node = SubElement(
             sheets, '{%s}sheet' % SHEET_MAIN_NS,
             {'name': sheet.title, 'sheetId': '%d' % i,
              '{%s}id' % REL_NS: 'rId%d' % i })
-        if not sheet.sheet_state == Worksheet.SHEETSTATE_VISIBLE:
+        if not sheet.sheet_state == 'visible':
             if len(workbook.worksheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
             sheet_node.set('state', sheet.sheet_state)
