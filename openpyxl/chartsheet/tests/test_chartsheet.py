@@ -53,7 +53,8 @@ class TestChartsheet:
         drawing = Drawing("rId1")
         item = Chartsheet(sheetViews=chartsheetViews, pageMargins=pageMargins, drawing=drawing)
         expected = """
-        <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        <chartsheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
             <sheetViews>
                 <sheetView tabSelected="1" zoomScale="80" workbookViewId="0" zoomToFit="1"/>
             </sheetViews>
@@ -75,7 +76,8 @@ class TestChartsheet:
         cs = Chartsheet(parent=DummyWorkbook())
         cs.add_chart(DummyChart())
         expected = """
-        <chartsheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        <chartsheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
            <sheetViews>
              <sheetView workbookViewId="0"></sheetView>
             </sheetViews>
