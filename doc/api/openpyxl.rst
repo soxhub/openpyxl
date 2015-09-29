@@ -13,6 +13,7 @@ Subpackages
 
     openpyxl.cell
     openpyxl.chart
+    openpyxl.chartsheet
     openpyxl.comments
     openpyxl.descriptors
     openpyxl.drawing
