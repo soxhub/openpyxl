@@ -43,6 +43,7 @@ class Legend(Serialisable):
     tagname = "legend"
 
     legendPos = NestedSet(values=(['b', 'tr', 'l', 'r', 't']))
+    position = Alias('legendPos')
     legendEntry = Typed(expected_type=LegendEntry, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
     overlay = NestedBool(allow_none=True)

@@ -6,6 +6,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Float,
     Typed,
+    Alias,
 )
 
 from openpyxl.descriptors.excel import ExtensionList
@@ -27,7 +28,9 @@ class ManualLayout(Serialisable):
     x = NestedFloat(allow_none=True)
     y = NestedFloat(allow_none=True)
     w = NestedFloat(allow_none=True)
+    width = Alias('w')
     h = NestedFloat(allow_none=True)
+    height = Alias('h')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('layoutTarget', 'xMode', 'yMode', 'wMode', 'hMode', 'x',

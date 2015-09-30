@@ -3,12 +3,18 @@ from __future__ import absolute_import
 
 from openpyxl.compat import basestring
 
-from openpyxl.descriptors import Typed, Integer, Alias
+from openpyxl.descriptors import (
+    Typed,
+    Integer,
+    Alias
+)
+from openpyxl.descriptors.nested import Nested
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
 
 from ._3d import _3DBase
 from .data_source import AxDataSource, NumRef
+from .layout import Layout
 from .legend import Legend
 from .reference import Reference
 from .series_factory import SeriesFactory
@@ -36,6 +42,7 @@ class ChartBase(Serialisable):
     """
 
     legend = Typed(expected_type=Legend, allow_none=True)
+    layout = Typed(expected_type=Layout, allow_none=True)
 
     _series_type = ""
     ser = ()
@@ -53,6 +60,7 @@ class ChartBase(Serialisable):
     def __init__(self, **kw):
         self._charts = [self]
         self.title = None
+        self.layout = None
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
@@ -85,6 +93,7 @@ class ChartBase(Serialisable):
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer
         self.plot_area = PlotArea()
+        self.plot_area.layout = self.layout
         self.plot_area.graphical_properties = self.graphical_properties
 
         idx_base = 0
