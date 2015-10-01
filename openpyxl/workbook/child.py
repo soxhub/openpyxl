@@ -19,7 +19,6 @@ def avoid_duplicate_name(names, value):
     if value in names:
         names = ",".join(names)
         sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value))
-        print(sheet_title_regex)
         matches = sheet_title_regex.findall(names)
         if matches:
             # use name, but append with the next highest integer
