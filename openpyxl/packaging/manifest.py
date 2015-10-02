@@ -71,7 +71,12 @@ class Override(Serialisable):
         self.ContentType = ContentType
 
 
-DEFAULT_PARTS = [
+DEFAULT_TYPES = [
+    FileExtension("rels", "application/vnd.openxmlformats-package.relationships+xml"),
+    FileExtension("xml", "application/xml"),
+]
+
+DEFAULT_OVERRIDE = [
     Override("/" + ARC_WORKBOOK, XLSX), # Workbook
     Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
     Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
@@ -94,9 +99,11 @@ class Manifest(Serialisable):
                  Default=(),
                  Override=()
                  ):
+        if not Default:
+            Default = DEFAULT_TYPES
         self.Default = Default
         if not Override:
-            Override = DEFAULT_PARTS
+            Override = DEFAULT_OVERRIDE
         self.Override = Override
 
 
@@ -108,8 +115,6 @@ class Manifest(Serialisable):
     @property
     def extensions(self):
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
-        exts.add(".rels")
-        exts.add(".xml")
         return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts)]
 
 
@@ -117,9 +122,10 @@ class Manifest(Serialisable):
         """
         Custom serialisation method to allow setting a default namespace
         """
+        defaults = [t.Extension for t in self.Default]
         for ext, mime in self.extensions:
-            mime = FileExtension(ext, mime)
-            if mime not in self.Default:
+            if ext not in defaults:
+                mime = FileExtension(ext, mime)
                 self.Default.append(mime)
         tree = super(Manifest, self).to_tree()
         tree.set("xmlns", CONTYPES_NS)
@@ -171,7 +177,9 @@ def write_content_types(workbook, as_template=False):
 
         if sheet._comment_count > 0:
             comments_id += 1
-            manifest.Default.append(FileExtension("vml", mimetypes.types_map[".vml"]))
+            vml = FileExtension("vml", mimetypes.types_map[".vml"])
+            if vml not in manifest.Default:
+                manifest.Default.append(vml)
             name = '/xl/comments%d.xml' % comments_id
             if name not in seen:
                 manifest.Override.append(Override(name, COMMENTS_TYPE))
