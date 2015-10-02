@@ -150,12 +150,11 @@ class TestManifest:
             node = fromstring(src.read())
         manifest = Manifest.from_tree(node)
         assert manifest.extensions == [
-            ('rels', 'application/vnd.openxmlformats-package.relationships+xml'),
             ('xml', 'application/xml'),
         ]
 
 
-class TestWorbook:
+class TestContentTypes:
 
 
     def test_workbook(self):
@@ -246,3 +245,31 @@ class TestWorbook:
         root = fromstring(xml)
         node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
         assert node.get("ContentType") == content_type
+
+
+    def test_comments(self, Manifest):
+        from openpyxl import Workbook
+        from ..manifest import write_content_types
+
+        wb = Workbook()
+        ws = wb.active
+        ws._comment_count = 1
+        manifest = write_content_types(wb)
+        xml = tostring(manifest.to_tree())
+        expected = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels"/>
+          <Default ContentType="application/xml" Extension="xml"/>
+          <Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml" PartName="/xl/sharedStrings.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml" PartName="/xl/styles.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml" PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml" PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml" PartName="/docProps/app.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments1.xml"/>
+        </Types>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
