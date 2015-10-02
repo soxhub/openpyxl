@@ -40,6 +40,7 @@ mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
+mimetypes.add_type("application/vnd.openxmlformats-officedocument.vmlDrawing", ".vml")
 
 
 class FileExtension(Serialisable):
@@ -170,9 +171,11 @@ def write_content_types(workbook, as_template=False):
 
         if sheet._comment_count > 0:
             comments_id += 1
+            manifest.Default.append(FileExtension("vml", mimetypes.types_map[".vml"]))
             name = '/xl/comments%d.xml' % comments_id
             if name not in seen:
-                manifest.Override.append(Override(name, CHART_TYPE))
+                manifest.Override.append(Override(name, COMMENTS_TYPE))
+
 
     # chartsheets
     for sheet_id, sheet in enumerate(workbook.chartsheets, sheet_id+1):
