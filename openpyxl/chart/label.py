@@ -17,14 +17,14 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     )
 
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .text import RichText
 
 
 class _DataLabelBase(Serialisable):
 
     numFmt = NestedString(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     shapeProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
@@ -103,7 +103,7 @@ class DataLabel(_DataLabelBase):
         super(DataLabel, self).__init__(**kw)
 
 
-class DataLabels(_DataLabelBase):
+class DataLabelList(_DataLabelBase):
 
     tagname = "dLbls"
 
@@ -127,4 +127,4 @@ class DataLabels(_DataLabelBase):
 
     def __init__(self, dLbl=(), **kw ):
         self.dLbl = dLbl
-        super(DataLabels, self).__init__(**kw)
+        super(DataLabelList, self).__init__(**kw)

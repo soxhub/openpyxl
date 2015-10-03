@@ -30,7 +30,7 @@ from openpyxl.descriptors.nested import (
 from .descriptors import NumberFormatDescriptor
 from .layout import Layout
 from .text import Text, RichText
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .title import Title, TitleDescriptor
 
 
@@ -38,7 +38,7 @@ class ChartLines(Serialisable):
 
     tagname = "chartLines"
 
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     shapeProperties = Alias('spPr')
 
     def __init__(self, spPr=None):
@@ -84,7 +84,7 @@ class _BaseAxis(Serialisable):
     majorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     shapeProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
@@ -142,7 +142,7 @@ class DisplayUnitsLabel(Serialisable):
 
     layout = Typed(expected_type=Layout, allow_none=True)
     tx = Typed(expected_type=Text, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     txPr = Typed(expected_type=RichText, allow_none=True)
 
     __elements__ = ('layout', 'tx', 'spPr', 'txPr')
@@ -159,7 +159,7 @@ class DisplayUnitsLabel(Serialisable):
         self.txPr = txPr
 
 
-class DisplayUnits(Serialisable):
+class DisplayUnitsLabelList(Serialisable):
 
     tagname = "dispUnits"
 
@@ -207,7 +207,7 @@ class NumericAxis(_BaseAxis):
     crossBetween = NestedNoneSet(values=(['between', 'midCat']))
     majorUnit = NestedFloat(allow_none=True)
     minorUnit = NestedFloat(allow_none=True)
-    dispUnits = Typed(expected_type=DisplayUnits, allow_none=True)
+    dispUnits = Typed(expected_type=DisplayUnitsLabelList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _BaseAxis.__elements__ + ('crossBetween', 'majorUnit',

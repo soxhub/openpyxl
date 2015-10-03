@@ -17,7 +17,7 @@ from ._chart import ChartBase
 from .updown_bars import UpDownBars
 from .descriptors import NestedGapAmount
 from .axis import TextAxis, NumericAxis, SeriesAxis, ChartLines, _BaseAxis
-from .label import DataLabels
+from .label import DataLabelList
 from .series import Series
 
 
@@ -26,7 +26,7 @@ class _LineChartBase(ChartBase):
     grouping = NestedSet(values=(['percentStacked', 'standard', 'stacked']))
     varyColors = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     dataLabels = Alias("dLbls")
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
 

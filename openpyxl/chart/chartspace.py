@@ -37,7 +37,7 @@ from openpyxl.descriptors.nested import (
 from openpyxl.drawing.colors import ColorMapping
 from .text import Text, RichText
 from .layout import Layout
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .legend import Legend
 from .marker import PictureOptions, Marker
 from .label import DataLabel
@@ -66,7 +66,7 @@ class PivotFormat(Serialisable):
     tagname = "pivotFmt"
 
     idx = NestedInteger(nested=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     ShapeProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
     TextBody = Alias("txPr")
@@ -114,7 +114,7 @@ class DataTable(Serialisable):
     showVertBorder = NestedBool(allow_none=True)
     showOutline = NestedBool(allow_none=True)
     showKeys = NestedBool(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     ShapeProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -145,7 +145,7 @@ class PlotArea(Serialisable):
 
     layout = Typed(expected_type=Layout, allow_none=True)
     dTable = Typed(expected_type=DataTable, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     graphical_properties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -401,7 +401,7 @@ class ChartSpace(Serialisable):
     pivotSource = Typed(expected_type=PivotSource, allow_none=True)
     protection = Typed(expected_type=Protection, allow_none=True)
     chart = Typed(expected_type=ChartContainer)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     txPr = Typed(expected_type=RichText, allow_none=True)
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)

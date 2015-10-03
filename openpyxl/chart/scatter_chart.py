@@ -16,7 +16,7 @@ from openpyxl.descriptors.nested import (
 from ._chart import ChartBase
 from .axis import NumericAxis
 from .series import XYSeries
-from .label import DataLabels
+from .label import DataLabelList
 
 
 class ScatterChart(ChartBase):
@@ -26,7 +26,7 @@ class ScatterChart(ChartBase):
     scatterStyle = NestedNoneSet(values=(['line', 'lineMarker', 'marker', 'smooth', 'smoothMarker']))
     varyColors = NestedBool(allow_none=True)
     ser = Sequence(expected_type=XYSeries, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     dataLabels = Alias("dLbls")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

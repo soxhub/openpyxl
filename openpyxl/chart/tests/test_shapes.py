@@ -7,15 +7,15 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def ShapeProperties():
-    from ..shapes import ShapeProperties
-    return ShapeProperties
+def GraphicalProperties():
+    from ..shapes import GraphicalProperties
+    return GraphicalProperties
 
 
 class TestShapeProperties:
 
-    def test_ctor(self, ShapeProperties):
-        shapes = ShapeProperties()
+    def test_ctor(self, GraphicalProperties):
+        shapes = GraphicalProperties()
         xml = tostring(shapes.to_tree())
         expected = """
         <spPr>
@@ -28,7 +28,7 @@ class TestShapeProperties:
         assert diff is None, diff
 
 
-    def test_from_xml(self, ShapeProperties):
+    def test_from_xml(self, GraphicalProperties):
         src = """
         <spPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
             <a:pattFill prst="ltDnDiag">
@@ -45,5 +45,5 @@ class TestShapeProperties:
         </spPr>
         """
         node = fromstring(src)
-        shapes = ShapeProperties.from_tree(node)
+        shapes = GraphicalProperties.from_tree(node)
         assert dict(shapes) == {}

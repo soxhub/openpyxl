@@ -20,7 +20,7 @@ from openpyxl.descriptors.nested import (
     NestedText,
 )
 
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .data_source import (
     AxDataSource,
     NumDataSource,
@@ -28,7 +28,7 @@ from .data_source import (
     StrRef,
 )
 from .error_bar import ErrorBars
-from .label import DataLabels
+from .label import DataLabelList
 from .marker import DataPoint, PictureOptions, Marker
 from .trendline import Trendline
 
@@ -79,14 +79,14 @@ class Series(Serialisable):
     order = NestedInteger()
     tx = Typed(expected_type=SeriesLabel, allow_none=True)
     title = Alias('tx')
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     shapeProperties = Alias('spPr')
 
     # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     dPt = Sequence(expected_type=DataPoint, allow_none=True)
     data_points = Alias("dPt")
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     labels = Alias("dLbls")
     trendline = Typed(expected_type=Trendline, allow_none=True)
     errBars = Typed(expected_type=ErrorBars, allow_none=True)
@@ -142,7 +142,7 @@ class Series(Serialisable):
         self.order = order
         self.tx = tx
         if spPr is None:
-            spPr = ShapeProperties()
+            spPr = GraphicalProperties()
         self.spPr = spPr
         self.pictureOptions = pictureOptions
         self.dPt = dPt

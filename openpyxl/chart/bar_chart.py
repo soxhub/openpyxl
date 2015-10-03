@@ -26,10 +26,10 @@ from .descriptors import (
 from ._chart import ChartBase
 from ._3d import _3DBase
 from .axis import TextAxis, NumericAxis, SeriesAxis, ChartLines
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .series import Series
 from .legend import Legend
-from .label import DataLabels
+from .label import DataLabelList
 
 
 class _BarChartBase(ChartBase):
@@ -40,7 +40,7 @@ class _BarChartBase(ChartBase):
                                   'stacked']))
     varyColors = NestedBool(nested=True, allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     dataLabels = Alias("dLbls")
 
     __elements__ = ('barDir', 'grouping', 'varyColors', 'ser', 'dLbls')

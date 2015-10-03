@@ -19,7 +19,7 @@ from .legend import Legend
 from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .title import TitleDescriptor
 
 class AxId(Serialisable):
@@ -53,7 +53,7 @@ class ChartBase(Serialisable):
     height = 7.5 # in cm, approx 14 rows
     _id = 1
     style = Integer(allow_none=True)
-    graphical_properties = Typed(expected_type=ShapeProperties, allow_none=True)
+    graphical_properties = Typed(expected_type=GraphicalProperties, allow_none=True)
 
     __elements__ = ()
 

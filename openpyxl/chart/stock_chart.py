@@ -12,7 +12,7 @@ from openpyxl.descriptors.excel import ExtensionList
 from ._chart import ChartBase
 from .axis import TextAxis, NumericAxis, ChartLines
 from .updown_bars import UpDownBars
-from .label import DataLabels
+from .label import DataLabelList
 from .series import Series
 
 
@@ -21,7 +21,7 @@ class StockChart(ChartBase):
     tagname = "stockChart"
 
     ser = Sequence(expected_type=Series) #min 3, max4
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     dataLabels = Alias('dLbls')
     dropLines = Typed(expected_type=ChartLines, allow_none=True)
     hiLowLines = Typed(expected_type=ChartLines, allow_none=True)

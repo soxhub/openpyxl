@@ -26,14 +26,14 @@ from ._chart import ChartBase
 from .axis import ChartLines
 from .descriptors import NestedGapAmount
 from .series import Series
-from .label import DataLabels
+from .label import DataLabelList
 
 
 class _PieChartBase(ChartBase):
 
     varyColors = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    dLbls = Typed(expected_type=DataLabels, allow_none=True)
+    dLbls = Typed(expected_type=DataLabelList, allow_none=True)
     dataLabels = Alias("dLbls")
 
     _series_type = "pie"

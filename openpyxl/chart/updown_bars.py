@@ -5,7 +5,7 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import Typed
 from openpyxl.descriptors.excel import ExtensionList
 
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .axis import ChartLines
 from .descriptors import NestedGapAmount
 

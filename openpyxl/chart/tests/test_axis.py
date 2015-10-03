@@ -262,7 +262,7 @@ def DisplayUnitsLabel():
     return DisplayUnitsLabel
 
 
-class TestDispUnitsLbl:
+class TestDispUnitsLabel:
 
     def test_ctor(self, DisplayUnitsLabel):
         axis = DisplayUnitsLabel()
@@ -284,15 +284,15 @@ class TestDispUnitsLbl:
 
 
 @pytest.fixture
-def DisplayUnits():
-    from ..axis import DisplayUnits
-    return DisplayUnits
+def DisplayUnitsLabelList():
+    from ..axis import DisplayUnitsLabelList
+    return DisplayUnitsLabelList
 
 
-class TestDisplayUnits:
+class TestDisplayUnitList:
 
-    def test_ctor(self, DisplayUnits):
-        axis = DisplayUnits()
+    def test_ctor(self, DisplayUnitsLabelList):
+        axis = DisplayUnitsLabelList()
         xml = tostring(axis.to_tree())
         expected = """
         <dispUnits />
@@ -301,13 +301,13 @@ class TestDisplayUnits:
         assert diff is None, diff
 
 
-    def test_from_xml(self, DisplayUnits):
+    def test_from_xml(self, DisplayUnitsLabelList):
         src = """
         <dispUnits />
         """
         node = fromstring(src)
-        axis = DisplayUnits.from_tree(node)
-        assert axis == DisplayUnits()
+        axis = DisplayUnitsLabelList.from_tree(node)
+        assert axis == DisplayUnitsLabelList()
 
 
 @pytest.fixture

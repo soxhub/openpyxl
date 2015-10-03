@@ -8,15 +8,15 @@ from openpyxl.tests.helper import compare_xml
 
 
 @pytest.fixture
-def DataLabels():
-    from ..label import DataLabels
-    return DataLabels
+def DataLabelList():
+    from ..label import DataLabelList
+    return DataLabelList
 
 
-class TestDataLabels:
+class TestDataLabeList:
 
-    def test_ctor(self, DataLabels):
-        labels = DataLabels()
+    def test_ctor(self, DataLabelList):
+        labels = DataLabelList()
         xml = tostring(labels.to_tree())
         expected = """
         <dLbls />
@@ -25,7 +25,7 @@ class TestDataLabels:
         assert diff is None, diff
 
 
-    def test_from_xml(self, DataLabels):
+    def test_from_xml(self, DataLabelList):
         src = """
         <dLbls>
           <showLegendKey val="0"/>
@@ -37,7 +37,7 @@ class TestDataLabels:
         </dLbls>
         """
         node = fromstring(src)
-        dl = DataLabels.from_tree(node)
+        dl = DataLabelList.from_tree(node)
 
         assert dl.showLegendKey is False
         assert dl.showVal is False
