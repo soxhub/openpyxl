@@ -12,6 +12,7 @@ Minor changes
 -------------
 
 * PR 79 Make PlotArea editable in charts
+* Use graphicalProperties as the alias for spPr
 
 
 2.3.0-b2 (2015-09-04)
