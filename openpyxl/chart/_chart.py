@@ -162,6 +162,13 @@ class ChartBase(Serialisable):
             self.ser.append(series)
 
 
+    def append(self, value):
+        """Append a data series to the chart"""
+        l = self.series[:]
+        l.append(value)
+        self.series = l
+
+
     @property
     def _path(self):
         return PACKAGE_CHARTS + '/chart{0}.xml'.format(self._id)
