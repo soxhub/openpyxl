@@ -139,15 +139,15 @@ class TestBandFormat:
 
 
 @pytest.fixture
-def BandFormats():
-    from ..surface_chart import BandFormats
-    return BandFormats
+def BandFormatList():
+    from ..surface_chart import BandFormatList
+    return BandFormatList
 
 
-class TestBandFormats:
+class TestBandFormatList:
 
-    def test_ctor(self, BandFormats):
-        fmt = BandFormats()
+    def test_ctor(self, BandFormatList):
+        fmt = BandFormatList()
         xml = tostring(fmt.to_tree())
         expected = """
         <bandFmts />
@@ -156,10 +156,10 @@ class TestBandFormats:
         assert diff is None, diff
 
 
-    def test_from_xml(self, BandFormats):
+    def test_from_xml(self, BandFormatList):
         src = """
         <bandFmts />
         """
         node = fromstring(src)
-        fmt = BandFormats.from_tree(node)
-        assert fmt == BandFormats()
+        fmt = BandFormatList.from_tree(node)
+        assert fmt == BandFormatList()

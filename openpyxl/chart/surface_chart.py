@@ -40,7 +40,7 @@ class BandFormat(Serialisable):
         self.spPr = spPr
 
 
-class BandFormats(Serialisable):
+class BandFormatList(Serialisable):
 
     tagname = "bandFmts"
 
@@ -58,7 +58,7 @@ class _SurfaceChartBase(ChartBase):
 
     wireframe = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    bandFmts = Typed(expected_type=BandFormats, allow_none=True)
+    bandFmts = Typed(expected_type=BandFormatList, allow_none=True)
 
     _series_type = "surface"
 

@@ -92,7 +92,7 @@ class PivotFormat(Serialisable):
         self.dLbl = dLbl
 
 
-class PivotFormats(Serialisable):
+class PivotFormatList(Serialisable):
 
     tagname = "pivotFmts"
 
@@ -257,7 +257,7 @@ class ChartContainer(Serialisable):
 
     title = Typed(expected_type=Title, allow_none=True)
     autoTitleDeleted = NestedBool(allow_none=True)
-    pivotFmts = Typed(expected_type=PivotFormats, allow_none=True)
+    pivotFmts = Typed(expected_type=PivotFormatList, allow_none=True)
     view3D = _3DBase.view3D
     floor = _3DBase.floor
     sideWall = _3DBase.sideWall
