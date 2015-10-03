@@ -46,7 +46,7 @@ class Marker(Serialisable):
                            to_tree=_marker_symbol)
     size = NestedMinMax(min=2, max=72, allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('symbol', 'size', 'spPr')
@@ -74,7 +74,7 @@ class DataPoint(Serialisable):
     bubble3D = NestedBool(allow_none=True)
     explosion = NestedInteger(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

@@ -67,7 +67,7 @@ class PivotFormat(Serialisable):
 
     idx = NestedInteger(nested=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    ShapeProperties = Alias("spPr")
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
     TextBody = Alias("txPr")
     marker = Typed(expected_type=Marker, allow_none=True)
@@ -115,7 +115,7 @@ class DataTable(Serialisable):
     showOutline = NestedBool(allow_none=True)
     showKeys = NestedBool(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    ShapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -146,7 +146,7 @@ class PlotArea(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     dTable = Typed(expected_type=DataTable, allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    graphical_properties = Alias("spPr")
+    graphicalProperties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # at least one chart
@@ -402,7 +402,9 @@ class ChartSpace(Serialisable):
     protection = Typed(expected_type=Protection, allow_none=True)
     chart = Typed(expected_type=ChartContainer)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
+    textProperties = Alias("txPr")
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)
     userShapes = Typed(expected_type=RelId, allow_none=True)

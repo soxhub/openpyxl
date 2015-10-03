@@ -25,7 +25,7 @@ class _DataLabelBase(Serialisable):
 
     numFmt = NestedString(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
     dLblPos = NestedNoneSet(values=['bestFit', 'b', 'ctr', 'inBase', 'inEnd',

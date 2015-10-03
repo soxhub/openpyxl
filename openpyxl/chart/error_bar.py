@@ -33,7 +33,7 @@ class ErrorBars(Serialisable):
     minus = Typed(expected_type=NumDataSource, allow_none=True)
     val = NestedFloat(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias("spPr")
+    graphicalProperties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('errDir','errBarType', 'errValType', 'noEndCap','minus', 'plus', 'val', 'spPr')

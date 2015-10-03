@@ -80,7 +80,7 @@ class Series(Serialisable):
     tx = Typed(expected_type=SeriesLabel, allow_none=True)
     title = Alias('tx')
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
 
     # area chart
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)

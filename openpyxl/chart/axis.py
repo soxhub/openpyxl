@@ -39,7 +39,7 @@ class ChartLines(Serialisable):
     tagname = "chartLines"
 
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
 
     def __init__(self, spPr=None):
         self.spPr = spPr
@@ -85,7 +85,7 @@ class _BaseAxis(Serialisable):
     minorTickMark = NestedNoneSet(values=(['cross', 'in', 'out']))
     tickLblPos = NestedNoneSet(values=(['high', 'low', 'nextTo']))
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
     crossAx = NestedInteger(expected_type=int) # references other axis
@@ -142,8 +142,11 @@ class DisplayUnitsLabel(Serialisable):
 
     layout = Typed(expected_type=Layout, allow_none=True)
     tx = Typed(expected_type=Text, allow_none=True)
+    text = Alias("tx")
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
+    textPropertes = Alias("txPr")
 
     __elements__ = ('layout', 'tx', 'spPr', 'txPr')
 

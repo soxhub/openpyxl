@@ -12,6 +12,7 @@ from openpyxl.descriptors import (
     Integer,
     Set,
     String,
+    Alias,
 )
 from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
@@ -380,6 +381,7 @@ class Connector(Serialisable):
     fPublished = Bool(allow_none=True)
     nvCxnSpPr = Typed(expected_type=ConnectorNonVisual, )
     spPr = Typed(expected_type=GraphicalProperties, )
+    graphicalProperties = Alias("spPr")
     style = Typed(expected_type=ShapeStyle, allow_none=True)
 
     def __init__(self,
@@ -493,6 +495,7 @@ class PictureFrame(Serialisable):
     nvPicPr = Typed(expected_type=PictureNonVisual, )
     blipFill = Typed(expected_type=BlipFillProperties, )
     spPr = Typed(expected_type=GraphicalProperties, )
+    graphicalProperties = Alias('spPr')
     style = Typed(expected_type=ShapeStyle, allow_none=True)
 
     __elements__ = ("nvPicPr", "blipFill", "spPr", "style")

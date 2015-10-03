@@ -31,7 +31,7 @@ class Title(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     overlay = NestedBool(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichTextProperties, allow_none=True)
     body = Alias('txPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)

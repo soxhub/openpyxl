@@ -28,6 +28,7 @@ class BandFormat(Serialisable):
 
     idx = NestedInteger()
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
 
     __elements__ = ('idx', 'spPr')
 

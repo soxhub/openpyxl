@@ -55,7 +55,7 @@ class Surface(Serialisable):
 
     thickness = NestedInteger(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    graphicalProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
