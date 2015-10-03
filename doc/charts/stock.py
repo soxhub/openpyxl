@@ -34,7 +34,7 @@ data = Reference(ws, min_col=4, max_col=6, min_row=1, max_row=6)
 c1.add_data(data, titles_from_data=True)
 c1.set_categories(labels)
 for s in c1.series:
-    s.shapeProperties.line.noFill = True
+    s.graphicalProperties.line.noFill = True
 # marker for close
 s.marker.symbol = "dot"
 s.marker.size = 5
@@ -55,7 +55,7 @@ data = Reference(ws, min_col=3, max_col=6, min_row=1, max_row=6)
 c2.add_data(data, titles_from_data=True)
 c2.set_categories(labels)
 for s in c2.series:
-    s.shapeProperties.line.noFill = True
+    s.graphicalProperties.line.noFill = True
 c2.hiLowLines = ChartLines()
 c2.upDownBars = UpDownBars()
 c2.title = "Open-high-low-close"

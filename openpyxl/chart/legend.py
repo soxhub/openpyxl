@@ -12,7 +12,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .layout import Layout
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .text import RichText
 
 
@@ -47,8 +47,8 @@ class Legend(Serialisable):
     legendEntry = Typed(expected_type=LegendEntry, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
     overlay = NestedBool(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias('txPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)

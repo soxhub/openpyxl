@@ -18,7 +18,7 @@ from openpyxl.descriptors.nested import (
 from ._chart import ChartBase
 from ._3d import _3DBase
 from .axis import TextAxis, NumericAxis, SeriesAxis
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .series import Series
 
 
@@ -27,7 +27,8 @@ class BandFormat(Serialisable):
     tagname = "bandFmt"
 
     idx = NestedInteger()
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
 
     __elements__ = ('idx', 'spPr')
 
@@ -39,7 +40,7 @@ class BandFormat(Serialisable):
         self.spPr = spPr
 
 
-class BandFormats(Serialisable):
+class BandFormatList(Serialisable):
 
     tagname = "bandFmts"
 
@@ -57,7 +58,7 @@ class _SurfaceChartBase(ChartBase):
 
     wireframe = NestedBool(allow_none=True)
     ser = Sequence(expected_type=Series, allow_none=True)
-    bandFmts = Typed(expected_type=BandFormats, allow_none=True)
+    bandFmts = Typed(expected_type=BandFormatList, allow_none=True)
 
     _series_type = "surface"
 

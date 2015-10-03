@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -20,7 +21,7 @@ from openpyxl.drawing.shapes import (
 )
 
 
-class ShapeProperties(Serialisable):
+class GraphicalProperties(Serialisable):
 
     """
     Somewhat vaguely 21.2.2.197 says this:

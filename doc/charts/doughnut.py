@@ -33,10 +33,10 @@ chart.style = 26
 slices = [DataPoint(idx=i) for i in range(4)]
 plain, jam, lime, chocolate = slices
 chart.series[0].data_points = slices
-plain.shapeProperties.solidFill = "FAE1D0"
-jam.shapeProperties.solidFill = "BB2244"
-lime.shapeProperties.solidFill = "22DD22"
-chocolate.shapeProperties.solidFill = "61210B"
+plain.graphicalProperties.solidFill = "FAE1D0"
+jam.graphicalProperties.solidFill = "BB2244"
+lime.graphicalProperties.solidFill = "22DD22"
+chocolate.graphicalProperties.solidFill = "61210B"
 chocolate.explosion = 10
 
 ws.add_chart(chart, "E1")

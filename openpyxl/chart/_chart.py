@@ -19,7 +19,7 @@ from .legend import Legend
 from .reference import Reference
 from .series_factory import SeriesFactory
 from .series import attribute_mapping
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .title import TitleDescriptor
 
 class AxId(Serialisable):
@@ -53,7 +53,7 @@ class ChartBase(Serialisable):
     height = 7.5 # in cm, approx 14 rows
     _id = 1
     style = Integer(allow_none=True)
-    graphical_properties = Typed(expected_type=ShapeProperties, allow_none=True)
+    graphical_properties = Typed(expected_type=GraphicalProperties, allow_none=True)
 
     __elements__ = ()
 
@@ -160,6 +160,13 @@ class ChartBase(Serialisable):
             range_string = "{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
             series = SeriesFactory(range_string, title_from_data=titles_from_data)
             self.ser.append(series)
+
+
+    def append(self, value):
+        """Append a data series to the chart"""
+        l = self.series[:]
+        l.append(value)
+        self.series = l
 
 
     @property

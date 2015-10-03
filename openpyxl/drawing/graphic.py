@@ -12,11 +12,12 @@ from openpyxl.descriptors import (
     Integer,
     Set,
     String,
+    Alias,
 )
 from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 
-from openpyxl.chart.shapes import ShapeProperties
+from openpyxl.chart.shapes import GraphicalProperties
 
 from .effect import *
 from .fill import RelativeRect, BlipFillProperties
@@ -379,7 +380,8 @@ class Connector(Serialisable):
     macro = String(allow_none=True)
     fPublished = Bool(allow_none=True)
     nvCxnSpPr = Typed(expected_type=ConnectorNonVisual, )
-    spPr = Typed(expected_type=ShapeProperties, )
+    spPr = Typed(expected_type=GraphicalProperties, )
+    graphicalProperties = Alias("spPr")
     style = Typed(expected_type=ShapeStyle, allow_none=True)
 
     def __init__(self,
@@ -492,7 +494,8 @@ class PictureFrame(Serialisable):
     fPublished = Bool(allow_none=True)
     nvPicPr = Typed(expected_type=PictureNonVisual, )
     blipFill = Typed(expected_type=BlipFillProperties, )
-    spPr = Typed(expected_type=ShapeProperties, )
+    spPr = Typed(expected_type=GraphicalProperties, )
+    graphicalProperties = Alias('spPr')
     style = Typed(expected_type=ShapeStyle, allow_none=True)
 
     __elements__ = ("nvPicPr", "blipFill", "spPr", "style")
@@ -514,6 +517,6 @@ class PictureFrame(Serialisable):
             blipFill = BlipFillProperties()
         self.blipFill = blipFill
         if spPr is None:
-            spPr = ShapeProperties()
+            spPr = GraphicalProperties()
         self.spPr = spPr
         self.style = style

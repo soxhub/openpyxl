@@ -15,7 +15,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .data_source import NumDataSource
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 
 
 class ErrorBars(Serialisable):
@@ -32,8 +32,8 @@ class ErrorBars(Serialisable):
     plus = Typed(expected_type=NumDataSource, allow_none=True)
     minus = Typed(expected_type=NumDataSource, allow_none=True)
     val = NestedFloat(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    shapeProperties = Alias("spPr")
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('errDir','errBarType', 'errValType', 'noEndCap','minus', 'plus', 'val', 'spPr')

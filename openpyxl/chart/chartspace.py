@@ -37,7 +37,7 @@ from openpyxl.descriptors.nested import (
 from openpyxl.drawing.colors import ColorMapping
 from .text import Text, RichText
 from .layout import Layout
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .legend import Legend
 from .marker import PictureOptions, Marker
 from .label import DataLabel
@@ -66,8 +66,8 @@ class PivotFormat(Serialisable):
     tagname = "pivotFmt"
 
     idx = NestedInteger(nested=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    ShapeProperties = Alias("spPr")
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
     TextBody = Alias("txPr")
     marker = Typed(expected_type=Marker, allow_none=True)
@@ -92,7 +92,7 @@ class PivotFormat(Serialisable):
         self.dLbl = dLbl
 
 
-class PivotFormats(Serialisable):
+class PivotFormatList(Serialisable):
 
     tagname = "pivotFmts"
 
@@ -114,8 +114,8 @@ class DataTable(Serialisable):
     showVertBorder = NestedBool(allow_none=True)
     showOutline = NestedBool(allow_none=True)
     showKeys = NestedBool(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    ShapeProperties = Alias('spPr')
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -145,8 +145,8 @@ class PlotArea(Serialisable):
 
     layout = Typed(expected_type=Layout, allow_none=True)
     dTable = Typed(expected_type=DataTable, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    graphical_properties = Alias("spPr")
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # at least one chart
@@ -257,7 +257,7 @@ class ChartContainer(Serialisable):
 
     title = Typed(expected_type=Title, allow_none=True)
     autoTitleDeleted = NestedBool(allow_none=True)
-    pivotFmts = Typed(expected_type=PivotFormats, allow_none=True)
+    pivotFmts = Typed(expected_type=PivotFormatList, allow_none=True)
     view3D = _3DBase.view3D
     floor = _3DBase.floor
     sideWall = _3DBase.sideWall
@@ -401,8 +401,10 @@ class ChartSpace(Serialisable):
     pivotSource = Typed(expected_type=PivotSource, allow_none=True)
     protection = Typed(expected_type=Protection, allow_none=True)
     chart = Typed(expected_type=ChartContainer)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
+    textProperties = Alias("txPr")
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)
     userShapes = Typed(expected_type=RelId, allow_none=True)

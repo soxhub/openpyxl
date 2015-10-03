@@ -10,7 +10,7 @@ from openpyxl.descriptors.nested import (
 )
 from openpyxl.descriptors.excel import ExtensionList
 from .marker import PictureOptions
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 
 
 class View3D(Serialisable):
@@ -54,8 +54,8 @@ class Surface(Serialisable):
     tagname = "surface"
 
     thickness = NestedInteger(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias('spPr')
     pictureOptions = Typed(expected_type=PictureOptions, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

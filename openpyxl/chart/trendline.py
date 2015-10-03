@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from .data_source import NumFmt
-from .shapes import ShapeProperties
+from .shapes import GraphicalProperties
 from .text import RichText, Text
 from .layout import Layout
 
@@ -25,8 +25,10 @@ class TrendlineLabel(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     tx = Typed(expected_type=Text, allow_none=True)
     numFmt = Typed(expected_type=NumFmt, allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
+    textProperties = Alias("txPr")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('layout', 'tx', 'numFmt', 'spPr', 'txPr')
@@ -51,8 +53,8 @@ class Trendline(Serialisable):
     tagname = "trendline"
 
     name = String(allow_none=True)
-    spPr = Typed(expected_type=ShapeProperties, allow_none=True)
-    shapeProperties = Alias('spPr')
+    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
+    graphicalProperties = Alias('spPr')
     trendlineType = NestedSet(values=(['exp', 'linear', 'log', 'movingAvg', 'poly', 'power']))
     order = NestedInteger(allow_none=True)
     period = NestedInteger(allow_none=True)
