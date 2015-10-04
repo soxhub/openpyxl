@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-
 from openpyxl.compat import safe_string
 
 from openpyxl.descriptors import (
@@ -9,7 +8,12 @@ from openpyxl.descriptors import (
     Typed,
     Integer,
     Bool,
+    String,
+    Sequence,
 )
+from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.serialisable import Serialisable
+
 from .fills import PatternFill, Fill
 from . fonts import Font, DEFAULT_FONT
 from . borders import Border
@@ -92,3 +96,45 @@ class NamedStyle(Strict):
             value = getattr(self, key, None)
             if value is not None:
                 yield key, safe_string(value)
+
+
+class CellStyle(Serialisable):
+
+    name = String(allow_none=True)
+    xfId = Integer()
+    builtinId = Integer(allow_none=True)
+    iLevel = Integer(allow_none=True)
+    hidden = Bool(allow_none=True)
+    customBuiltin = Bool(allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('extLst',)
+
+    def __init__(self,
+                 name=None,
+                 xfId=None,
+                 builtinId=None,
+                 iLevel=None,
+                 hidden=None,
+                 customBuiltin=None,
+                 extLst=None,
+                ):
+        self.name = name
+        self.xfId = xfId
+        self.builtinId = builtinId
+        self.iLevel = iLevel
+        self.hidden = hidden
+        self.customBuiltin = customBuiltin
+
+
+class CellStyleList(Serialisable):
+
+    count = Integer(allow_none=True)
+    cellStyle = Sequence(expected_type=CellStyle)
+
+
+    def __init__(self,
+                 count=None,
+                 cellStyle=(),
+                ):
+        self.cellStyle = cellStyle

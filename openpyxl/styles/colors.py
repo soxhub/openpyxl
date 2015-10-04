@@ -3,10 +3,19 @@ from __future__ import absolute_import
 
 import re
 from openpyxl.compat import safe_string, basestring
-from openpyxl.descriptors import Descriptor, Typed
+from openpyxl.descriptors import (
+    Descriptor,
+    String,
+    Bool,
+    MinMax,
+    Integer,
+    Typed,
+    Sequence
+)
+from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.serialisable import Serialisable
 
 from .hashable import HashableObject
-from openpyxl.descriptors import String, Bool, MinMax, Integer
 
 # Default Color Index as per 18.8.27 of ECMA Part 4
 COLOR_INDEX = (
@@ -117,3 +126,52 @@ class ColorDescriptor(Typed):
         if isinstance(value, basestring):
             value = Color(rgb=value)
         super(ColorDescriptor, self).__set__(instance, value)
+
+
+class MRUColorList(Serialisable):
+
+    color = Sequence(expected_type=Color, )
+
+    __elements__ = ('color',)
+
+    def __init__(self,
+                 color=None,
+                ):
+        self.color = color
+
+
+class RgbColor(Serialisable):
+
+    rgb = HexBinary()
+
+    def __init__(self,
+                 rgb=None,
+                ):
+        self.rgb = rgb
+
+
+class IndexedColorList(Serialisable):
+
+    rgbColor = Typed(expected_type=RgbColor, )
+
+    __elements__ = ('rgbColor',)
+
+    def __init__(self,
+                 rgbColor=None,
+                ):
+        self.rgbColor = rgbColor
+
+
+class ColorList(Serialisable):
+
+    indexedColors = Typed(expected_type=IndexedColorList, allow_none=True)
+    mruColors = Typed(expected_type=MRUColorList, allow_none=True)
+
+    __elements__ = ('indexedColors', 'mruColors')
+
+    def __init__(self,
+                 indexedColors=None,
+                 mruColors=None,
+                ):
+        self.indexedColors = indexedColors
+        self.mruColors = mruColors

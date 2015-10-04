@@ -3,8 +3,12 @@ from __future__ import absolute_import
 
 import re
 
-from openpyxl.descriptors import String
-from .hashable import HashableObject
+from openpyxl.descriptors import (
+    String,
+    Sequence,
+    Integer,
+)
+from openpyxl.descriptors.serialisable import Serialisable
 
 BUILTIN_FORMATS = {
     0: 'General',
@@ -118,3 +122,31 @@ class NumberFormatDescriptor(String):
         if value is None:
             value = FORMAT_GENERAL
         super(NumberFormatDescriptor, self).__set__(instance, value)
+
+
+class NumberFormat(Serialisable):
+
+    numFmtId = Integer()
+    formatCode = String()
+
+    def __init__(self,
+                 numFmtId=None,
+                 formatCode=None,
+                ):
+        self.numFmtId = numFmtId
+        self.formatCode = formatCode
+
+
+class NumFormatList(Serialisable):
+
+    count = Integer(allow_none=True)
+    numFmt = Sequence(expected_type=NumberFormat)
+
+    __elements__ = ('numFmt',)
+
+    def __init__(self,
+                 count=None,
+                 numFmt=None,
+                ):
+        self.count = count
+        self.numFmt = numFmt
