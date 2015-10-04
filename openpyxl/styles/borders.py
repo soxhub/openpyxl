@@ -117,9 +117,13 @@ DEFAULT_BORDER = Border()
 
 class BorderList(Serialisable):
 
+    count = Integer(allow_none=True)
     border = Sequence(expected_type=Border)
 
-    def __init__(self, border=()):
+    def __init__(self,
+                 count=None,
+                 border=(),
+                 ):
         self.border = border
 
 

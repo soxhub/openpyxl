@@ -60,7 +60,7 @@ class DifferentialStyleList(Serialisable):
 
     def __init__(self,
                  count=None,
-                 dxf=None,
+                 dxf=(),
                 ):
         self.dxf = dxf
 

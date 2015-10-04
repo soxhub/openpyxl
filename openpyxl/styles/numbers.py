@@ -137,7 +137,7 @@ class NumberFormat(Serialisable):
         self.formatCode = formatCode
 
 
-class NumFormatList(Serialisable):
+class NumberFormatList(Serialisable):
 
     count = Integer(allow_none=True)
     numFmt = Sequence(expected_type=NumberFormat)
@@ -146,7 +146,11 @@ class NumFormatList(Serialisable):
 
     def __init__(self,
                  count=None,
-                 numFmt=None,
+                 numFmt=(),
                 ):
-        self.count = count
         self.numFmt = numFmt
+
+
+    @property
+    def count(self):
+        return len(self.numFmt)

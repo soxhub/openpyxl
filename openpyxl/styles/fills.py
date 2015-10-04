@@ -184,10 +184,14 @@ class GradientFill(Fill):
 
 class FillList(Serialisable):
 
+    count = Integer(allow_none=True)
     fill = Sequence(expected_type=Fill)
 
 
-    def __init__(self, fill=()):
+    def __init__(self,
+                 count=None,
+                 fill=()
+                 ):
         self.fill = fill
 
 
