@@ -154,6 +154,7 @@ class Stylesheet(Serialisable):
     @classmethod
     def from_tree(cls, node):
         # strip all attribs
-        for k in node.attrib:
+        attrs = dict(node.attrib)
+        for k in attrs:
             del node.attrib[k]
         return super(Stylesheet, cls).from_tree(node)

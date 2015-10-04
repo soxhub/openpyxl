@@ -114,7 +114,8 @@ class FontList(Serialisable):
 
     @classmethod
     def from_tree(cls, node):
-        for k in node.attrib:
+        attrs = dict(node.attrib)
+        for k in attrs:
             if k not in cls.__attrs__:
                 del node.attrib[k]
         return super(FontList, cls).from_tree(node)
