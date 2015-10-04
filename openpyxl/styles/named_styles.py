@@ -98,9 +98,16 @@ class NamedStyle(Strict):
                 yield key, safe_string(value)
 
 
-class CellStyle(Serialisable):
+class NamedCellStyle(Serialisable):
 
-    name = String(allow_none=True)
+    """
+    Pointer-based representation of named styles in XML
+    xfId refers to the corresponding CellStyleXf
+    """
+
+    tagname = "cellStyle"
+
+    name = String()
     xfId = Integer()
     builtinId = Integer(allow_none=True)
     iLevel = Integer(allow_none=True)
@@ -108,7 +115,7 @@ class CellStyle(Serialisable):
     customBuiltin = Bool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
+    __elements__ = ()
 
     def __init__(self,
                  name=None,
@@ -127,10 +134,12 @@ class CellStyle(Serialisable):
         self.customBuiltin = customBuiltin
 
 
-class CellStyleList(Serialisable):
+class NamedCellStyleList(Serialisable):
+
+    tagname = "cellStyles"
 
     count = Integer(allow_none=True)
-    cellStyle = Sequence(expected_type=CellStyle)
+    cellStyle = Sequence(expected_type=NamedCellStyle)
 
 
     def __init__(self,
@@ -138,3 +147,23 @@ class CellStyleList(Serialisable):
                  cellStyle=(),
                 ):
         self.cellStyle = cellStyle
+
+
+    @property
+    def count(self):
+        return len(self.cellStyle)
+
+
+    @property
+    def styles(self):
+        """
+        Convert to NamedStyle objects and remove duplicates
+        """
+        styles = {}
+        for ns in self.cellStyle:
+            style = NamedStyle(name=ns.name,
+                                hidden=ns.hidden
+                                )
+            style.xfId = ns.xfId
+            styles[ns.name] = style
+        return styles
