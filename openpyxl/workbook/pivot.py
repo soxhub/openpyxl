@@ -9,6 +9,8 @@ from openpyxl.descriptors import (
 
 class PivotCache(Serialisable):
 
+    tagname = "pivotCache"
+
     cacheId = Integer()
 
     def __init__(self,
@@ -19,11 +21,13 @@ class PivotCache(Serialisable):
 
 class PivotCacheList(Serialisable):
 
+    tagname = "pivotCaches"
+
     pivotCache = Sequence(expected_type=PivotCache, )
 
     __elements__ = ('pivotCache',)
 
     def __init__(self,
-                 pivotCache=None,
+                 pivotCache=(),
                 ):
         self.pivotCache = pivotCache

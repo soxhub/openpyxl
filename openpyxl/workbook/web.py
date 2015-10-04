@@ -9,11 +9,13 @@ from openpyxl.descriptors import (
     Float,
     Integer,
     Bool,
-    Set,
+    NoneSet,
 )
 
 
 class WebPublishObject(Serialisable):
+
+    tagname = "webPublishingObject"
 
     id = Integer()
     divId = String()
@@ -40,27 +42,35 @@ class WebPublishObject(Serialisable):
 
 class WebPublishObjectList(Serialisable):
 
+    tagname ="webPublishingObjects"
+
     count = Integer(allow_none=True)
-    webPublishObject = Typed(expected_type=WebPublishObject, )
+    webPublishObject = Sequence(expected_type=WebPublishObject)
 
     __elements__ = ('webPublishObject',)
 
     def __init__(self,
                  count=None,
-                 webPublishObject=None,
+                 webPublishObject=(),
                 ):
-        self.count = count
         self.webPublishObject = webPublishObject
 
 
+    @property
+    def count(self):
+        return len(self.webPublishObject)
+
+
 class WebPublishing(Serialisable):
+
+    tagname = "webPublishing"
 
     css = Bool(allow_none=True)
     thicket = Bool(allow_none=True)
     longFileNames = Bool(allow_none=True)
     vml = Bool(allow_none=True)
     allowPng = Bool(allow_none=True)
-    targetScreenSize = Set(values=(['544x376', '640x480', '720x512', '800x600',
+    targetScreenSize = NoneSet(values=(['544x376', '640x480', '720x512', '800x600',
                                     '1024x768', '1152x882', '1152x900', '1280x1024', '1600x1200',
                                     '1800x1440', '1920x1200']))
     dpi = Integer(allow_none=True)
@@ -73,7 +83,7 @@ class WebPublishing(Serialisable):
                  longFileNames=None,
                  vml=None,
                  allowPng=None,
-                 targetScreenSize=None,
+                 targetScreenSize='800x600',
                  dpi=None,
                  codePage=None,
                  characterSet=None,
