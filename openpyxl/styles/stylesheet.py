@@ -20,7 +20,7 @@ from .fonts import FontList
 from .numbers import NumberFormatList
 from .alignment import Alignment
 from .protection import Protection
-from .named_styles import CellStyleList
+from .named_styles import NamedCellStyleList
 
 
 class Xf(Serialisable):
@@ -93,20 +93,6 @@ class CellXfList(Serialisable):
         self.xf = xf
 
 
-class CellStyleXfList(Serialisable):
-
-    count = Integer(allow_none=True)
-    xf = Sequence(expected_type=Xf, )
-
-    __elements__ = ('xf',)
-
-    def __init__(self,
-                 count=None,
-                 xf=None,
-                ):
-        self.xf = xf
-
-
 class Stylesheet(Serialisable):
 
     tagname = "stylesheet"
@@ -115,9 +101,9 @@ class Stylesheet(Serialisable):
     fonts = Typed(expected_type=FontList, allow_none=True)
     fills = Typed(expected_type=FillList, allow_none=True)
     borders = Typed(expected_type=BorderList, allow_none=True)
-    cellStyleXfs = Typed(expected_type=CellStyleXfList, allow_none=True)
+    cellStyleXfs = Typed(expected_type=CellXfList, allow_none=True)
     cellXfs = Typed(expected_type=CellXfList, allow_none=True)
-    cellStyles = Typed(expected_type=CellStyleList, allow_none=True)
+    cellStyles = Typed(expected_type=NamedCellStyleList, allow_none=True)
     dxfs = Typed(expected_type=DifferentialStyleList, allow_none=True)
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)

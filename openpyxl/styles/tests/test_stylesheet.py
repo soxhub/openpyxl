@@ -7,7 +7,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def Stylesheet():
-    from ..parser import Stylesheet
+    from ..stylesheet import Stylesheet
     return Stylesheet
 
 
