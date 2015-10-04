@@ -23,10 +23,19 @@ class TestStylesheet:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Stylesheet, datadir):
+    def test_from_simple(self, Stylesheet, datadir):
         datadir.chdir()
         with open("simple-styles.xml") as src:
             xml = src.read()
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
         assert stylesheet.numFmts.count == 1
+
+
+    def test_from_complex(self, Stylesheet, datadir):
+        datadir.chdir()
+        with open("complex-styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+        assert stylesheet.numFmts is None

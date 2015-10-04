@@ -112,6 +112,14 @@ class FontList(Serialisable):
     font = Sequence(expected_type=Font, allow_none=True)
 
 
+    @classmethod
+    def from_tree(cls, node):
+        for k in node.attrib:
+            if k not in cls.__attrs__:
+                del node.attrib[k]
+        return super(FontList, cls).from_tree(node)
+
+
     def __init__(self,
                  count=None,
                  font=(),
