@@ -26,7 +26,6 @@ from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
     ARC_CORE,
     ARC_WORKBOOK,
-    ARC_STYLE,
     ARC_THEME,
     SHARED_STRINGS,
     EXTERNAL_LINK,
