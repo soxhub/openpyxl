@@ -30,7 +30,6 @@ class Stylesheet(Serialisable):
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
-    namedStyles = Sequence(expected_type=NamedStyle)
 
     __elements__ = ('numFmts', 'fonts', 'fills', 'borders', 'cellStyleXfs',
                     'cellXfs', 'cellStyles', 'dxfs', 'tableStyles', 'colors')
@@ -74,6 +73,7 @@ class Stylesheet(Serialisable):
         """
         Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
         """
+        self.namedStyles = {}
         for name, style in self.cellStyles.names.items():
             xf = self.cellStyleXfs[style.xfId]
             style.font = self.fonts[xf.fontId]
@@ -85,4 +85,4 @@ class Stylesheet(Serialisable):
                 style.alignment = xf.alignment
             if xf.protection:
                 style.protection = xf.alignment
-            self.namedStyles.append(style)
+            namedStyles[name] = style
