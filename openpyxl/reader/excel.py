@@ -38,7 +38,7 @@ from openpyxl.workbook import Workbook
 from openpyxl.workbook.names.external import detect_external_links
 from openpyxl.workbook.names.named_range import read_named_ranges
 from .strings import read_string_table
-from .style import read_style_table
+from openpyxl.styles.stylesheet import apply_stylesheet
 from .workbook import (
     read_content_types,
     read_excel_base_date,
@@ -201,22 +201,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     except KeyError:
         assert wb.loaded_theme == None, "even though the theme information is missing there is a theme object ?"
 
-    stylesheet = archive
-    from openpyxl.styles.stylesheet import read_stylesheet
-
-    stylesheet = read_stylesheet(archive)
-    if stylesheet:
-        wb._differential_styles = stylesheet.differential_list
-        wb._cell_styles = stylesheet.cell_styles
-        wb._named_styles = stylesheet.named_styles
-        wb._colors = stylesheet.color_index
-        wb._borders = stylesheet.border_list
-        wb._fonts = stylesheet.font_list
-        wb._fills = stylesheet.fill_list
-        wb._number_formats = stylesheet.number_formats
-        wb._protections = stylesheet.protections
-        wb._alignments = stylesheet.alignments
-        wb._colors = stylesheet.color_index
+    apply_stylesheet(archive, wb) # bind styles to workbook
 
     wb.excel_base_date = read_excel_base_date(archive)
 

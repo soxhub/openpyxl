@@ -113,32 +113,6 @@ class Stylesheet(Serialisable):
 
 
     @property
-    def color_index(self):
-        if self.colors:
-            return self.colors.index
-        return COLOR_INDEX
-
-
-    @property
-    def font_list(self):
-        return IndexedList(self.fonts.font)
-
-
-    @property
-    def fill_list(self):
-        return IndexedList(self.fills.fill)
-
-
-    @property
-    def border_list(self):
-        return IndexedList(self.borders.border)
-
-
-    @property
-    def differential_list(self):
-        return IndexedList(self.dxfs.dxf)
-
-    @property
     def number_formats(self):
         fmts = [n.formatCode for n in self.numFmts.numFmt]
         return IndexedList(fmts)
@@ -147,10 +121,25 @@ class Stylesheet(Serialisable):
 from openpyxl.xml.constants import ARC_STYLE
 from openpyxl.xml.functions import fromstring
 
-def read_stylesheet(archive):
+def apply_stylesheet(archive, wb):
+    """
+    Add styles to workbook if present
+    """
     try:
         src = archive.read(ARC_STYLE)
     except KeyError:
-        return
+        return wb
     node = fromstring(src)
-    return Stylesheet.from_tree(node)
+    stylesheet = Stylesheet.from_tree(node)
+
+    wb._cell_styles = stylesheet.cell_styles
+    wb._named_styles = stylesheet.named_styles
+    wb._borders = IndexedList(stylesheet.borders.border)
+    wb._fonts = IndexedList(stylesheet.fonts.font)
+    wb._fills = IndexedList(stylesheet.fills.fill)
+    wb._differential_styles = IndexedList(stylesheet.dxfs.dxf)
+    wb._number_formats = stylesheet.number_formats
+    wb._protections = stylesheet.protections
+    wb._alignments = stylesheet.alignments
+    if stylesheet.colors is not None:
+        wb._colors = stylesheet.colors.index
