@@ -170,8 +170,8 @@ class ColorList(Serialisable):
     __elements__ = ('indexedColors', 'mruColors')
 
     def __init__(self,
-                 indexedColors=(),
-                 mruColors=(),
+                 indexedColors=None,
+                 mruColors=None,
                 ):
         self.indexedColors = indexedColors
         self.mruColors = mruColors
