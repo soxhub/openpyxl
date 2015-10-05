@@ -82,6 +82,7 @@ class Stylesheet(Serialisable):
         self.cell_styles = self.cellXfs._to_array()
         self.alignments = self.cellXfs.alignments
         self.protections = self.cellXfs.prots
+        self._normalise_numbers()
         self.named_styles =  self._merge_named_styles()
 
 
@@ -99,13 +100,16 @@ class Stylesheet(Serialisable):
         Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
         """
         named_styles = {}
+        custom = self.custom_formats
+        formats = self.number_formats
         for name, style in self.cellStyles.names.items():
             xf = self.cellStyleXfs[style.xfId]
             style.font = self.fonts[xf.fontId]
             style.fill = self.fills[xf.fillId]
             style.border = self.borders[xf.borderId]
-            if xf.numFmtId > 164:
-                style.number_format = self.numFmts[xf.numFmtId]
+            if xf.numFmtId in custom:
+                fmt = custom[xf.numFmtId]
+                style.numFmtId = formats.index(fmt) + 164
             if xf.alignment:
                 style.alignment = xf.alignment
             if xf.protection:
@@ -118,6 +122,23 @@ class Stylesheet(Serialisable):
     def number_formats(self):
         fmts = [n.formatCode for n in self.numFmts.numFmt]
         return IndexedList(fmts)
+
+
+    @property
+    def custom_formats(self):
+        return dict([(n.numFmtId, n.formatCode) for n in self.numFmts.numFmt])
+
+
+    def _normalise_numbers(self):
+        """
+        Rebase numFmtIds with a floor of 164
+        """
+        custom = self.custom_formats
+        formats = self.number_formats
+        for style in self.cell_styles:
+            if style.numFmtId in custom:
+                fmt = custom[style.numFmtId]
+                style.numFmtId = formats.index(fmt) + 164
 
 
 def apply_stylesheet(archive, wb):
