@@ -50,16 +50,6 @@ def test_bool_attrib(value, expected):
     assert bool_attrib(el, "value") is expected
 
 
-def test_read_cell_style(datadir, StyleReader):
-    datadir.chdir()
-    with open("empty-workbook-styles.xml") as content:
-        reader = StyleReader(content.read())
-    reader.parse()
-    styles  = reader.cell_styles
-    assert len(styles) == 2
-    assert reader.cell_styles[0] == StyleArray()
-    assert reader.cell_styles[1] == StyleArray([0,0,0,9,0,0,0,0,1])
-
 
 def test_read_xf_no_number_format(datadir, StyleReader):
     datadir.chdir()

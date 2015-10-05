@@ -5,6 +5,9 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
+from ..styleable import StyleArray
+
+
 @pytest.fixture
 def Stylesheet():
     from ..stylesheet import Stylesheet
@@ -66,13 +69,20 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
-        #from openpyxl.styles import Font
-        from ..styleable import StyleArray
-        #stylesheet.fonts.font = IndexedList([Font(), Font(), Font(), Font(), Font()])
-        #stylesheet.protections = IndexedList([Protection()])
         styles  = stylesheet.cell_styles
         assert len(styles) == 3
         # default is cells are locked
-        assert styles[0] == StyleArray()
         assert styles[1] == StyleArray([4,0,0,0,0,0,0,0,0])
         assert styles[2] == StyleArray([3,0,0,0,1,0,0,0,0])
+
+
+    def test_read_cell_style(self, datadir, Stylesheet):
+        datadir.chdir()
+        with open("empty-workbook-styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        styles  = stylesheet.cell_styles
+        assert len(styles) == 2
+        assert styles[1] == StyleArray([0,0,0,9,0,0,0,0,1])
