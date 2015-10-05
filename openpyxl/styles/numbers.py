@@ -154,3 +154,7 @@ class NumberFormatList(Serialisable):
     @property
     def count(self):
         return len(self.numFmt)
+
+
+    def __getitem__(self, idx):
+        return self.numFmt[idx]
