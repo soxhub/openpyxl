@@ -219,3 +219,15 @@ class TestStylesheet:
         assert normal.font == stylesheet.fonts.font[0]
         assert normal.fill == DEFAULT_EMPTY_FILL
         assert normal.border == Border()
+
+
+def test_no_styles():
+    from ..stylesheet import apply_stylesheet
+    from zipfile import ZipFile
+    from io import BytesIO
+    from openpyxl.workbook import Workbook
+    wb1 = wb2 = Workbook()
+    archive = ZipFile(BytesIO(), "a")
+    apply_stylesheet(archive, wb1)
+    assert wb1._cell_styles == wb2._cell_styles
+    assert wb2._named_styles == wb2._named_styles
