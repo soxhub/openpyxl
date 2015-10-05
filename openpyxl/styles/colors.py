@@ -152,12 +152,12 @@ class RgbColor(Serialisable):
 
 class IndexedColorList(Serialisable):
 
-    rgbColor = Typed(expected_type=RgbColor, )
+    rgbColor = Sequence(expected_type=RgbColor, )
 
     __elements__ = ('rgbColor',)
 
     def __init__(self,
-                 rgbColor=None,
+                 rgbColor=(),
                 ):
         self.rgbColor = rgbColor
 
@@ -170,8 +170,14 @@ class ColorList(Serialisable):
     __elements__ = ('indexedColors', 'mruColors')
 
     def __init__(self,
-                 indexedColors=None,
-                 mruColors=None,
+                 indexedColors=(),
+                 mruColors=(),
                 ):
         self.indexedColors = indexedColors
         self.mruColors = mruColors
+
+
+    @property
+    def index(self):
+        vals = self.indexedColors.rgbColors
+        return [val.rgb for val in vals]
