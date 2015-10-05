@@ -231,3 +231,48 @@ def test_no_styles():
     apply_stylesheet(archive, wb1)
     assert wb1._cell_styles == wb2._cell_styles
     assert wb2._named_styles == wb2._named_styles
+
+
+
+def test_write_worksheet(Stylesheet):
+    from openpyxl import Workbook
+    wb = Workbook()
+    from ..stylesheet import write_stylesheet
+    node = write_stylesheet(wb)
+    xml = tostring(node)
+    expected = """
+    <stylesheet>
+      <numFmts></numFmts>
+      <fonts>
+        <font>
+          <name val="Calibri"></name>
+          <family val="2"></family>
+          <color theme="1"></color>
+          <sz val="11"></sz>
+          <scheme val="minor"></scheme>
+        </font>
+      </fonts>
+      <fills>
+        <fill>
+          <patternFill></patternFill>
+        </fill>
+        <fill>
+          <patternFill patternType="gray125"></patternFill>
+        </fill>
+      </fills>
+      <borders>
+        <border>
+          <left></left>
+          <right></right>
+          <top></top>
+          <bottom></bottom>
+          <diagonal></diagonal>
+        </border>
+      </borders>
+      <cellXfs></cellXfs>
+      <cellStyles></cellStyles>
+      <dxfs></dxfs>
+    </stylesheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

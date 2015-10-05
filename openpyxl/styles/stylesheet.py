@@ -163,3 +163,31 @@ def apply_stylesheet(archive, wb):
     wb._alignments = stylesheet.alignments
     if stylesheet.colors is not None:
         wb._colors = stylesheet.colors.index
+
+
+def write_stylesheet(wb):
+    stylesheet = Stylesheet()
+    stylesheet.fonts.font = wb._fonts
+    stylesheet.fills.fill = wb._fills
+    stylesheet.borders.border = wb._borders
+    stylesheet.dxfs.dxf = wb._differential_styles
+
+    from .cell_style import CellStyle
+    from .styleable import StyleArray
+    attrs = set(CellStyle.__attrs__).intersection(set(StyleArray.__attrs__))
+
+    for style in wb._cell_styles:
+        xf = CellStyle()
+        for k in attrs:
+            v = getattr(style, k)
+            setattr(xf, k, v)
+
+        if style.applyAlignment:
+            xf.alignment = wb._alignments[style.alignmentId]
+            xf.applyAlignment = True
+
+        if style.applyProtection:
+            xf.protection = self.wb._protections[style.protectionId]
+
+    return stylesheet.to_tree()
+
