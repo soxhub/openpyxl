@@ -50,22 +50,6 @@ def test_bool_attrib(value, expected):
     assert bool_attrib(el, "value") is expected
 
 
-def test_unprotected_cell(StyleReader, datadir):
-    datadir.chdir()
-    with open ("worksheet_unprotected_style.xml") as src:
-        reader = StyleReader(src.read())
-    from openpyxl.styles import Font
-    reader.font_list = IndexedList([Font(), Font(), Font(), Font(), Font()])
-    reader.protections = IndexedList([Protection()])
-    reader.parse_cell_styles()
-    styles  = reader.cell_styles
-    assert len(styles) == 3
-    # default is cells are locked
-    assert styles[0] == StyleArray()
-    assert styles[1] == StyleArray([4,0,0,0,0,0,0,0,0])
-    assert styles[2] == StyleArray([3,0,0,0,1,0,0,0,0])
-
-
 def test_read_cell_style(datadir, StyleReader):
     datadir.chdir()
     with open("empty-workbook-styles.xml") as content:

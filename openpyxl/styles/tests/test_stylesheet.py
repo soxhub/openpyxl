@@ -51,10 +51,28 @@ class TestStylesheet:
 
     def test_merge_named_styles(self, Stylesheet, datadir):
         datadir.chdir()
-        datadir.chdir()
         with open("complex-styles.xml") as src:
             xml = src.read()
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
         named_styles = stylesheet._merge_named_styles()
         assert len(named_styles) == 3
+
+
+    def test_unprotected_cell(self, Stylesheet, datadir):
+        datadir.chdir()
+        with open ("worksheet_unprotected_style.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        #from openpyxl.styles import Font
+        from ..styleable import StyleArray
+        #stylesheet.fonts.font = IndexedList([Font(), Font(), Font(), Font(), Font()])
+        #stylesheet.protections = IndexedList([Protection()])
+        styles  = stylesheet.cell_styles
+        assert len(styles) == 3
+        # default is cells are locked
+        assert styles[0] == StyleArray()
+        assert styles[1] == StyleArray([4,0,0,0,0,0,0,0,0])
+        assert styles[2] == StyleArray([3,0,0,0,1,0,0,0,0])
