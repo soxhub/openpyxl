@@ -130,3 +130,7 @@ class BorderList(Serialisable):
     @property
     def count(self):
         return len(self.border)
+
+
+    def __getitem__(self, idx):
+        return self.border[idx]

@@ -198,3 +198,7 @@ class FillList(Serialisable):
     @property
     def count(self):
         return len(self.fill)
+
+
+    def __getitem__(self, idx):
+        return self.fill[idx]

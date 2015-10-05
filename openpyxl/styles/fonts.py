@@ -131,3 +131,7 @@ class FontList(Serialisable):
     @property
     def count(self):
         return len(self.font)
+
+
+    def __getitem__(self, idx):
+        return self.font[idx]
