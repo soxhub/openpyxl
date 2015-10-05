@@ -17,7 +17,12 @@ class TestStylesheet:
         parser = Stylesheet()
         xml = tostring(parser.to_tree())
         expected = """
-        <stylesheet />
+        <stylesheet>
+          <numFmts></numFmts>
+          <fonts></fonts>
+          <fills></fills>
+          <borders></borders>
+        </stylesheet>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -38,7 +43,7 @@ class TestStylesheet:
             xml = src.read()
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
-        assert stylesheet.numFmts is None
+        assert stylesheet.numFmts.numFmt == []
 
 
     def test_merge_named_styles(self, Stylesheet, datadir):

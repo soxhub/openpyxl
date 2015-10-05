@@ -130,5 +130,5 @@ class TestCellStyleList:
         xfs = CellStyleList.from_tree(node)
         styles = xfs._to_array()
         assert len(styles) == 29
-        assert len(xfs.alignments) == 8
-        assert len(xfs.prots) == 0
+        assert len(xfs.alignments) == 9
+        assert len(xfs.prots) == 1
