@@ -199,7 +199,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     try:
         wb.loaded_theme = archive.read(ARC_THEME)  # some writers don't output a theme, live with it (fixes #160)
     except KeyError:
-        assert wb.loaded_theme == None, "even though the theme information is missing there is a theme object ?"
+        pass
 
     apply_stylesheet(archive, wb) # bind styles to workbook
 
