@@ -148,22 +148,6 @@ def test_read_complex_style(datadir):
     assert ws['A26'].alignment == Alignment(shrinkToFit=True)
 
 
-def test_alignment(datadir, StyleReader):
-    datadir.chdir()
-    with open("alignment_styles.xml") as src:
-        reader = StyleReader(src.read())
-    reader.parse_cell_styles()
-    styles = reader.cell_styles
-    assert len(styles) == 3
-    assert styles[2] == StyleArray([0,0,0,0,0,2,0,0,0])
-
-    assert reader.alignments == [
-        Alignment(),
-        Alignment(textRotation=180),
-        Alignment(vertical='top', textRotation=255),
-        ]
-
-
 def test_style_names(datadir, StyleReader):
     datadir.chdir()
     with open("complex-styles.xml") as src:

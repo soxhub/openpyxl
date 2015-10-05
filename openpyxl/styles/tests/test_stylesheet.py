@@ -112,3 +112,23 @@ class TestStylesheet:
         assert fonts[0].scheme is None
         assert fonts[0].vertAlign is None
         assert fonts[1].u is None
+
+
+    def test_alignment(self, datadir, Stylesheet):
+        datadir.chdir()
+        with open("alignment_styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        styles = stylesheet.cell_styles
+        assert len(styles) == 3
+        assert styles[2] == StyleArray([0,0,0,0,0,2,0,0,0])
+
+        from ..alignment import Alignment
+
+        assert stylesheet.alignments == [
+            Alignment(),
+            Alignment(textRotation=180),
+            Alignment(vertical='top', textRotation=255),
+            ]
