@@ -86,3 +86,16 @@ class TestStylesheet:
         styles  = stylesheet.cell_styles
         assert len(styles) == 2
         assert styles[1] == StyleArray([0,0,0,9,0,0,0,0,1])
+
+
+    def test_read_xf_no_number_format(self, datadir, Stylesheet):
+        datadir.chdir()
+        with open("no_number_format.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        styles = stylesheet.cell_styles
+        assert len(styles) == 3
+        assert styles[1] == StyleArray([1,0,1,0,0,0,0,0,0])
+        assert styles[2] == StyleArray([0,0,0,14,0,0,0,0,0])

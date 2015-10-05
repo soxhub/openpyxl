@@ -50,23 +50,6 @@ def test_bool_attrib(value, expected):
     assert bool_attrib(el, "value") is expected
 
 
-
-def test_read_xf_no_number_format(datadir, StyleReader):
-    datadir.chdir()
-    with open("no_number_format.xml") as src:
-        reader = StyleReader(src.read())
-
-    from openpyxl.styles import Font
-    reader.font_list = [Font(), Font()]
-    reader.parse_cell_styles()
-
-    styles = reader.cell_styles
-    assert len(styles) == 3
-    assert styles[0] == StyleArray()
-    assert styles[1] == StyleArray([1,0,1,0,0,0,0,0,0])
-    assert styles[2] == StyleArray([0,0,0,14,0,0,0,0,0])
-
-
 def test_read_complex_style_mappings(datadir, StyleReader):
     datadir.chdir()
     with open("complex-styles.xml") as content:
