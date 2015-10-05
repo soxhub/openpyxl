@@ -99,3 +99,16 @@ class TestStylesheet:
         assert len(styles) == 3
         assert styles[1] == StyleArray([1,0,1,0,0,0,0,0,0])
         assert styles[2] == StyleArray([0,0,0,14,0,0,0,0,0])
+
+
+    def test_none_values(self, datadir, Stylesheet):
+        datadir.chdir()
+        with open("none_value_styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        fonts = stylesheet.fonts.font
+        assert fonts[0].scheme is None
+        assert fonts[0].vertAlign is None
+        assert fonts[1].u is None

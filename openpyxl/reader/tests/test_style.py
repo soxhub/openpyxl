@@ -148,16 +148,6 @@ def test_read_complex_style(datadir):
     assert ws['A26'].alignment == Alignment(shrinkToFit=True)
 
 
-def test_none_values(datadir, StyleReader):
-    datadir.chdir()
-    with open("none_value_styles.xml") as src:
-        reader = StyleReader(src.read())
-    fonts = tuple(reader.parse_fonts())
-    assert fonts[0].scheme is None
-    assert fonts[0].vertAlign is None
-    assert fonts[1].u is None
-
-
 def test_alignment(datadir, StyleReader):
     datadir.chdir()
     with open("alignment_styles.xml") as src:
