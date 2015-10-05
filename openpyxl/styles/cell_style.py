@@ -96,6 +96,10 @@ class CellStyleList(Serialisable):
         return len(self.xf)
 
 
+    def __getitem__(self, idx):
+        return self.xf[idx]
+
+
     def _to_array(self):
         """
         Extract protection and alignments, convert to style array
