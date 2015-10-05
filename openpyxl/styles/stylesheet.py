@@ -67,6 +67,8 @@ class Stylesheet(Serialisable):
         self.cellStyleXfs = cellStyleXfs
         self.cellXfs = cellXfs
         self.cellStyles = cellStyles
+        if dxfs is None:
+            dxfs = DifferentialStyleList()
         self.dxfs = dxfs
         self.tableStyles = tableStyles
         self.colors = colors
@@ -103,7 +105,7 @@ class Stylesheet(Serialisable):
             if xf.alignment:
                 style.alignment = xf.alignment
             if xf.protection:
-                style.protection = xf.alignment
+                style.protection = xf.protection
             named_styles[name] = style
         return named_styles
 
