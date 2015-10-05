@@ -22,6 +22,7 @@ class TestStylesheet:
           <fonts></fonts>
           <fills></fills>
           <borders></borders>
+          <dxfs></dxfs>
         </stylesheet>
         """
         diff = compare_xml(xml, expected)
