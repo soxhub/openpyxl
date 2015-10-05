@@ -148,57 +148,6 @@ def test_read_complex_style(datadir):
     assert ws['A26'].alignment == Alignment(shrinkToFit=True)
 
 
-def test_style_names(datadir, StyleReader):
-    datadir.chdir()
-    with open("complex-styles.xml") as src:
-        reader = StyleReader(src.read())
-
-    def sorter(value):
-        return value.name
-
-    names = reader._parse_style_names()
-    references = [dict(style) for style in sorted(names.values(), key=sorter)]
-    assert references == [
-        {'builtinId': '9', 'name': 'Followed Hyperlink', 'xfId': '10', 'hidden':'1'},
-        {'builtinId': '8', 'name': 'Hyperlink', 'xfId': '9', 'hidden':'1'},
-        {'builtinId': '0', 'name': 'Normal', 'xfId': '0'}
-    ]
-
-
-def test_named_styles(datadir, StyleReader):
-    from openpyxl.styles.named_styles import NamedStyle
-    from openpyxl.styles.fonts import DEFAULT_FONT
-    from openpyxl.styles.fills import DEFAULT_EMPTY_FILL
-
-    datadir.chdir()
-    with open("complex-styles.xml") as src:
-        reader = StyleReader(src.read())
-
-    reader.border_list = list(reader.parse_borders())
-    reader.fill_list = list(reader.parse_fills())
-    reader.font_list = list(reader.parse_fonts())
-    reader.parse_named_styles()
-    assert set(reader.named_styles.keys()) == set(['Followed Hyperlink', 'Hyperlink', 'Normal'])
-
-    followed = reader.named_styles['Followed Hyperlink']
-    assert followed.name == "Followed Hyperlink"
-    assert followed.font == reader.font_list[2]
-    assert followed.fill == DEFAULT_EMPTY_FILL
-    assert followed.border == Border()
-
-    link = reader.named_styles['Hyperlink']
-    assert link.name == "Hyperlink"
-    assert link.font == reader.font_list[1]
-    assert link.fill == DEFAULT_EMPTY_FILL
-    assert link.border == Border()
-
-    normal = reader.named_styles['Normal']
-    assert normal.name == "Normal"
-    assert normal.font == reader.font_list[0]
-    assert normal.fill == DEFAULT_EMPTY_FILL
-    assert normal.border == Border()
-
-
 def test_no_styles():
     from .. style import read_style_table
     archive = ZipFile(BytesIO(), "a")

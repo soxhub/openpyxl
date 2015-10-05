@@ -155,6 +155,12 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
+        #assert stylesheet.custom_number_formats == {
+            #43:'_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
+            #176: "#,##0.00_ ",
+            #180: "yyyy/m/d;@",
+            #181: "0.00000_ "
+        #}
         assert stylesheet.number_formats == [
             '_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
             "#,##0.00_ ",
@@ -182,3 +188,34 @@ class TestStylesheet:
         styles = stylesheet.cell_styles
 
         assert styles[0] == StyleArray([2, 0, 0, 164, 0, 1, 0, 0, 0])
+
+
+    def test_named_styles(self, datadir, Stylesheet):
+        from openpyxl.styles.named_styles import NamedStyle
+        from openpyxl.styles.fonts import DEFAULT_FONT
+        from openpyxl.styles.fills import DEFAULT_EMPTY_FILL
+        from openpyxl.styles.borders import Border
+
+        datadir.chdir()
+        with open("complex-styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        followed = stylesheet.named_styles['Followed Hyperlink']
+        assert followed.name == "Followed Hyperlink"
+        assert followed.font == stylesheet.fonts.font[2]
+        assert followed.fill == DEFAULT_EMPTY_FILL
+        assert followed.border == Border()
+
+        link = stylesheet.named_styles['Hyperlink']
+        assert link.name == "Hyperlink"
+        assert link.font == stylesheet.fonts.font[1]
+        assert link.fill == DEFAULT_EMPTY_FILL
+        assert link.border == Border()
+
+        normal = stylesheet.named_styles['Normal']
+        assert normal.name == "Normal"
+        assert normal.font == stylesheet.fonts.font[0]
+        assert normal.fill == DEFAULT_EMPTY_FILL
+        assert normal.border == Border()
