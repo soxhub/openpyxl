@@ -65,13 +65,22 @@ class Stylesheet(Serialisable):
             borders = BorderList()
         self.borders = borders
         self.cellStyleXfs = cellStyleXfs
+        if cellXfs is None:
+            cellXfs = CellStyleList()
         self.cellXfs = cellXfs
+        if cellStyles is None:
+            cellStyles = NamedCellStyleList()
         self.cellStyles = cellStyles
         if dxfs is None:
             dxfs = DifferentialStyleList()
         self.dxfs = dxfs
         self.tableStyles = tableStyles
         self.colors = colors
+
+        self.cell_styles = self.cellXfs._to_array()
+        self.alignments = self.cellXfs.alignments
+        self.protections = self.cellXfs.prots
+        self.named_styles =  self._merge_named_styles()
 
 
     @classmethod
@@ -80,14 +89,7 @@ class Stylesheet(Serialisable):
         attrs = dict(node.attrib)
         for k in attrs:
             del node.attrib[k]
-        self = super(Stylesheet, cls).from_tree(node)
-        # convert objects where necessary
-        cell_styles = self.cellXfs
-        self.cell_styles = cell_styles._to_array()
-        self.alignments = cell_styles.alignments
-        self.protections = cell_styles.prots
-        self.named_styles =  self._merge_named_styles()
-        return self
+        return  super(Stylesheet, cls).from_tree(node)
 
 
     def _merge_named_styles(self):

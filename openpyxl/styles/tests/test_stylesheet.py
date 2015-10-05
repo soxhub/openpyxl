@@ -22,6 +22,8 @@ class TestStylesheet:
           <fonts></fonts>
           <fills></fills>
           <borders></borders>
+          <cellXfs></cellXfs>
+          <cellStyles></cellStyles>
           <dxfs></dxfs>
         </stylesheet>
         """
