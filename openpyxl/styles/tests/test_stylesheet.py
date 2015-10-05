@@ -132,3 +132,53 @@ class TestStylesheet:
             Alignment(textRotation=180),
             Alignment(vertical='top', textRotation=255),
             ]
+
+
+    def test_rgb_colors(self, Stylesheet, datadir):
+        datadir.chdir()
+        with open("rgb_colors.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        assert len(stylesheet.colors.index) == 64
+        assert stylesheet.colors.index[0] == "00000000"
+        assert stylesheet.colors.index[-1] == "00333333"
+
+
+    def test_custom_number_formats(self, Stylesheet, datadir):
+        datadir.chdir()
+        import codecs
+        with codecs.open("styles_number_formats.xml", encoding="utf-8") as src:
+            xml = src.read().encode("utf8") # Python 2.6, Windows
+
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+
+        assert stylesheet.number_formats == [
+            '_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
+            "#,##0.00_ ",
+            "yyyy/m/d;@",
+            "0.00000_ "
+        ]
+
+
+    def test_assign_number_formats(self, Stylesheet):
+
+        node = fromstring("""
+        <stylesheet>
+        <numFmts>
+          <numFmt numFmtId="43" formatCode='_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ' />
+        </numFmts>
+        <cellXfs>
+        <xf numFmtId="43" fontId="2" fillId="0" borderId="0"
+             applyFont="0" applyFill="0" applyBorder="0" applyAlignment="0" applyProtection="0">
+            <alignment vertical="center"/>
+        </xf>
+        </cellXfs>
+        </stylesheet>
+        """)
+        stylesheet = Stylesheet.from_tree(node)
+        styles = stylesheet.cell_styles
+
+        assert styles[0] == StyleArray([2, 0, 0, 164, 0, 1, 0, 0, 0])
