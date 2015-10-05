@@ -179,5 +179,5 @@ class ColorList(Serialisable):
 
     @property
     def index(self):
-        vals = self.indexedColors.rgbColors
+        vals = self.indexedColors.rgbColor
         return [val.rgb for val in vals]
