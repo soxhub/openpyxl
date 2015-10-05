@@ -39,3 +39,14 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
         assert stylesheet.numFmts is None
+
+
+    def test_merge_named_styles(self, Stylesheet, datadir):
+        datadir.chdir()
+        datadir.chdir()
+        with open("complex-styles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        stylesheet = Stylesheet.from_tree(node)
+        stylesheet._merge_named_styles()
+        assert len(stylesheet.namedStyles) == 3

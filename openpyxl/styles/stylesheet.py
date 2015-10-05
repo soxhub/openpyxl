@@ -1,5 +1,5 @@
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import Typed
+from openpyxl.descriptors import Typed, Sequence
 from openpyxl.descriptors.excel import ExtensionList
 
 from .colors import ColorList
@@ -11,7 +11,7 @@ from .fonts import FontList
 from .numbers import NumberFormatList
 from .alignment import Alignment
 from .protection import Protection
-from .named_styles import NamedCellStyleList
+from .named_styles import NamedCellStyleList, NamedStyle
 from .cell_style import CellStyleList
 
 
@@ -30,6 +30,7 @@ class Stylesheet(Serialisable):
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    namedStyles = Sequence(expected_type=NamedStyle)
 
     __elements__ = ('numFmts', 'fonts', 'fills', 'borders', 'cellStyleXfs',
                     'cellXfs', 'cellStyles', 'dxfs', 'tableStyles', 'colors')
@@ -57,6 +58,7 @@ class Stylesheet(Serialisable):
         self.dxfs = dxfs
         self.tableStyles = tableStyles
         self.colors = colors
+        self.namedStyles = ()
 
 
     @classmethod
@@ -66,3 +68,21 @@ class Stylesheet(Serialisable):
         for k in attrs:
             del node.attrib[k]
         return super(Stylesheet, cls).from_tree(node)
+
+
+    def _merge_named_styles(self):
+        """
+        Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
+        """
+        for name, style in self.cellStyles.names.items():
+            xf = self.cellStyleXfs[style.xfId]
+            style.font = self.fonts[xf.fontId]
+            style.fill = self.fills[xf.fillId]
+            style.border = self.borders[xf.borderId]
+            if xf.numFmtId > 164:
+                style.number_format = self.numFmts[xf.numFmtId]
+            if xf.alignment:
+                style.alignment = xf.alignment
+            if xf.protection:
+                style.protection = xf.alignment
+            self.namedStyles.append(style)

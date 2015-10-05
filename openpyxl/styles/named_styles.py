@@ -155,7 +155,7 @@ class NamedCellStyleList(Serialisable):
 
 
     @property
-    def styles(self):
+    def names(self):
         """
         Convert to NamedStyle objects and remove duplicates
         """
