@@ -201,19 +201,22 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     except KeyError:
         assert wb.loaded_theme == None, "even though the theme information is missing there is a theme object ?"
 
-    parsed_styles = read_style_table(archive)
-    if parsed_styles is not None:
-        wb._differential_styles = parsed_styles.differential_styles
-        wb._cell_styles = parsed_styles.cell_styles
-        wb._named_styles = parsed_styles.named_styles
-        wb._colors = parsed_styles.color_index
-        wb._borders = parsed_styles.border_list
-        wb._fonts = parsed_styles.font_list
-        wb._fills = parsed_styles.fill_list
-        wb._number_formats = parsed_styles.number_formats
-        wb._protections = parsed_styles.protections
-        wb._alignments = parsed_styles.alignments
-        wb._colors = parsed_styles.color_index
+    stylesheet = archive
+    from openpyxl.styles.stylesheet import read_stylesheet
+
+    stylesheet = read_stylesheet(archive)
+    if stylesheet:
+        wb._differential_styles = stylesheet.differential_list
+        wb._cell_styles = stylesheet.cell_styles
+        wb._named_styles = stylesheet.named_styles
+        wb._colors = stylesheet.color_index
+        wb._borders = stylesheet.border_list
+        wb._fonts = stylesheet.font_list
+        wb._fills = stylesheet.fill_list
+        wb._number_formats = stylesheet.number_formats
+        wb._protections = stylesheet.protections
+        wb._alignments = stylesheet.alignments
+        wb._colors = stylesheet.color_index
 
     wb.excel_base_date = read_excel_base_date(archive)
 
