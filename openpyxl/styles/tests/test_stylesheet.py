@@ -48,5 +48,5 @@ class TestStylesheet:
             xml = src.read()
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
-        stylesheet._merge_named_styles()
-        assert len(stylesheet.namedStyles) == 3
+        named_styles = stylesheet._merge_named_styles()
+        assert len(named_styles) == 3

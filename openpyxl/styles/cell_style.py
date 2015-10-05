@@ -104,10 +104,9 @@ class CellStyleList(Serialisable):
         """
         Extract protection and alignments, convert to style array
         """
-        styles = []
         self.prots = IndexedList()
         self.alignments = IndexedList()
-        self.styles = []
+        styles = [] # allow duplicates
         attrs = set(CellStyle.__attrs__).intersection(set(StyleArray.__attrs__))
         for xf in self.xf:
             style = StyleArray()
@@ -119,4 +118,5 @@ class CellStyleList(Serialisable):
                 style.alignmentId = self.alignments.add(xf.alignment)
             if xf.protection is not None:
                 style.protectionId = self.prots.add(xf.protection)
-            self.styles.append(style)
+            styles.append(style)
+        return IndexedList(styles)

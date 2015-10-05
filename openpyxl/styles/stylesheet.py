@@ -1,8 +1,12 @@
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import Typed, Sequence
+from openpyxl.descriptors import (
+    Alias,
+    Typed,
+    Sequence
+)
 from openpyxl.descriptors.excel import ExtensionList
 
-from .colors import ColorList
+from .colors import ColorList, COLOR_INDEX
 from .differential import DifferentialStyleList
 from .table import TableStyleList
 from .borders import BorderList
@@ -20,6 +24,7 @@ class Stylesheet(Serialisable):
     tagname = "stylesheet"
 
     numFmts = Typed(expected_type=NumberFormatList, allow_none=True)
+    number_formats = Alias('numFmts')
     fonts = Typed(expected_type=FontList, allow_none=True)
     fills = Typed(expected_type=FillList, allow_none=True)
     borders = Typed(expected_type=BorderList, allow_none=True)
@@ -27,6 +32,7 @@ class Stylesheet(Serialisable):
     cellXfs = Typed(expected_type=CellStyleList, allow_none=True)
     cellStyles = Typed(expected_type=NamedCellStyleList, allow_none=True)
     dxfs = Typed(expected_type=DifferentialStyleList, allow_none=True)
+    differential_styles = Alias('dxfs')
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -66,14 +72,21 @@ class Stylesheet(Serialisable):
         attrs = dict(node.attrib)
         for k in attrs:
             del node.attrib[k]
-        return super(Stylesheet, cls).from_tree(node)
+        self = super(Stylesheet, cls).from_tree(node)
+        # convert objects where necessary
+        cell_styles = self.cellXfs
+        self.cell_styles = cell_styles._to_array()
+        self.alignments = cell_styles.alignments
+        self.protections = cell_styles.prots
+        self.named_styles =  self._merge_named_styles()
+        return self
 
 
     def _merge_named_styles(self):
         """
         Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
         """
-        self.namedStyles = {}
+        named_styles = {}
         for name, style in self.cellStyles.names.items():
             xf = self.cellStyleXfs[style.xfId]
             style.font = self.fonts[xf.fontId]
@@ -85,4 +98,24 @@ class Stylesheet(Serialisable):
                 style.alignment = xf.alignment
             if xf.protection:
                 style.protection = xf.alignment
-            namedStyles[name] = style
+            named_styles[name] = style
+        return named_styles
+
+
+    @property
+    def color_index(self):
+        if self.colors:
+            return self.colors.index
+        return COLOR_INDEX
+
+
+from openpyxl.xml.constants import ARC_STYLE
+from openpyxl.xml.functions import fromstring
+
+def read_stylesheet(archive):
+    try:
+        src = archive.read(ARC_STYLE)
+    except KeyError:
+        return
+    node = fromstring(src)
+    return Stylesheet.from_tree(node)
