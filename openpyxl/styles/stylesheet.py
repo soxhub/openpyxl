@@ -138,7 +138,8 @@ class Stylesheet(Serialisable):
 
     @property
     def number_formats(self):
-        return IndexedList(self.numFmts.numFmt)
+        fmts = [n.formatCode for n in self.numFmts.numFmt]
+        return IndexedList(fmts)
 
 
 from openpyxl.xml.constants import ARC_STYLE
