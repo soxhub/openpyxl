@@ -5,6 +5,7 @@ from openpyxl.descriptors import (
     Sequence
 )
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.utils.indexed_list import IndexedList
 
 from .colors import ColorList, COLOR_INDEX
 from .differential import DifferentialStyleList
@@ -24,7 +25,6 @@ class Stylesheet(Serialisable):
     tagname = "stylesheet"
 
     numFmts = Typed(expected_type=NumberFormatList, allow_none=True)
-    number_formats = Alias('numFmts')
     fonts = Typed(expected_type=FontList, allow_none=True)
     fills = Typed(expected_type=FillList, allow_none=True)
     borders = Typed(expected_type=BorderList, allow_none=True)
@@ -32,7 +32,6 @@ class Stylesheet(Serialisable):
     cellXfs = Typed(expected_type=CellStyleList, allow_none=True)
     cellStyles = Typed(expected_type=NamedCellStyleList, allow_none=True)
     dxfs = Typed(expected_type=DifferentialStyleList, allow_none=True)
-    differential_styles = Alias('dxfs')
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -53,9 +52,17 @@ class Stylesheet(Serialisable):
                  colors=None,
                  extLst=None,
                 ):
+        if numFmts is None:
+            numFmts = NumberFormatList()
         self.numFmts = numFmts
+        if fonts is None:
+            fonts = FontList()
         self.fonts = fonts
+        if fills is None:
+            fills = FillList()
         self.fills = fills
+        if borders is None:
+            borders = BorderList()
         self.borders = borders
         self.cellStyleXfs = cellStyleXfs
         self.cellXfs = cellXfs
@@ -63,7 +70,6 @@ class Stylesheet(Serialisable):
         self.dxfs = dxfs
         self.tableStyles = tableStyles
         self.colors = colors
-        self.namedStyles = ()
 
 
     @classmethod
@@ -107,6 +113,30 @@ class Stylesheet(Serialisable):
         if self.colors:
             return self.colors.index
         return COLOR_INDEX
+
+
+    @property
+    def font_list(self):
+        return IndexedList(self.fonts.font)
+
+
+    @property
+    def fill_list(self):
+        return IndexedList(self.fills.fill)
+
+
+    @property
+    def border_list(self):
+        return IndexedList(self.borders.border)
+
+
+    @property
+    def differential_list(self):
+        return IndexedList(self.dxfs.dxf)
+
+    @property
+    def number_formats(self):
+        return IndexedList(self.numFmts.numFmt)
 
 
 from openpyxl.xml.constants import ARC_STYLE
