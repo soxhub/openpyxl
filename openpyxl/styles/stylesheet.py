@@ -233,6 +233,7 @@ def write_stylesheet(wb):
     stylesheet.cellXfs = CellStyleList(xf=xfs)
 
     stylesheet._split_named_styles(wb)
+    stylesheet.tableStyles = TableStyleList()
 
     tree = stylesheet.to_tree()
     tree.set("xmlns", SHEET_MAIN_NS)

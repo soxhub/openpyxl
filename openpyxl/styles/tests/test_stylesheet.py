@@ -278,7 +278,8 @@ def test_write_worksheet(Stylesheet):
       <cellStyles>
         <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
       </cellStyles>
-      <dxfs></dxfs>
+      <dxfs />
+    <tableStyles defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
     </styleSheet>
     """
     diff = compare_xml(xml, expected)
