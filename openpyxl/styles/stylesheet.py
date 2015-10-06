@@ -228,7 +228,7 @@ def write_stylesheet(wb):
             xf.applyAlignment = True
 
         if style.applyProtection:
-            xf.protection = self.wb._protections[style.protectionId]
+            xf.protection = wb._protections[style.protectionId]
         xfs.append(xf)
     stylesheet.cellXfs = CellStyleList(xf=xfs)
 
@@ -237,4 +237,3 @@ def write_stylesheet(wb):
     tree = stylesheet.to_tree()
     tree.set("xmlns", SHEET_MAIN_NS)
     return tree
-
