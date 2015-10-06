@@ -73,6 +73,30 @@ class CellStyle(Serialisable):
         self.protection = protection
 
 
+    def to_array(self):
+        """
+        Convert to StyleArray
+        """
+        style = StyleArray()
+        for k in ("fontId", "fillId", "borderId", "numFmtId", "pivotButton",
+                  "quotePrefix", "xfId"):
+            v = getattr(self, k, 0)
+            if v is not None:
+                setattr(style, k, v)
+        return style
+
+
+    @classmethod
+    def from_array(cls, style):
+        """
+        Convert from StyleArray
+        """
+        return cls(numFmtId=style.numFmtId, fontId=style.FontId,
+                   fillId=style.fillId, borderId=style.borderId, xfId=style.xfId,
+                   quotePrefix=style.quotePrefix, pivotButton=style.pivotButton,)
+
+
+
 class CellStyleList(Serialisable):
 
     tagname = "cellXfs"
@@ -107,13 +131,8 @@ class CellStyleList(Serialisable):
         self.prots = IndexedList([Protection()])
         self.alignments = IndexedList([Alignment()])
         styles = [] # allow duplicates
-        attrs = set(CellStyle.__attrs__).intersection(set(StyleArray.__attrs__))
         for xf in self.xf:
-            style = StyleArray()
-            for k in attrs:
-                v = getattr(xf, k)
-                if v is not None:
-                    setattr(style, k, v)
+            style = xf.to_array()
             if xf.alignment is not None:
                 style.alignmentId = self.alignments.add(xf.alignment)
             if xf.protection is not None:
