@@ -32,7 +32,7 @@ from .cell_style import CellStyleList, CellStyle
 
 class Stylesheet(Serialisable):
 
-    tagname = "stylesheet"
+    tagname = "styleSheet"
 
     numFmts = Typed(expected_type=NumberFormatList, allow_none=True)
     fonts = Typed(expected_type=FontList, allow_none=True)

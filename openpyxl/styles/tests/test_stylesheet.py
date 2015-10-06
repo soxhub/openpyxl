@@ -20,7 +20,7 @@ class TestStylesheet:
         parser = Stylesheet()
         xml = tostring(parser.to_tree())
         expected = """
-        <stylesheet>
+        <styleSheet>
           <numFmts></numFmts>
           <fonts></fonts>
           <fills></fills>
@@ -28,7 +28,7 @@ class TestStylesheet:
           <cellXfs></cellXfs>
           <cellStyles></cellStyles>
           <dxfs></dxfs>
-        </stylesheet>
+        </styleSheet>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -172,7 +172,7 @@ class TestStylesheet:
     def test_assign_number_formats(self, Stylesheet):
 
         node = fromstring("""
-        <stylesheet>
+        <styleSheet>
         <numFmts>
           <numFmt numFmtId="43" formatCode='_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ' />
         </numFmts>
@@ -182,7 +182,7 @@ class TestStylesheet:
             <alignment vertical="center"/>
         </xf>
         </cellXfs>
-        </stylesheet>
+        </styleSheet>
         """)
         stylesheet = Stylesheet.from_tree(node)
         styles = stylesheet.cell_styles
@@ -241,7 +241,7 @@ def test_write_worksheet(Stylesheet):
     node = write_stylesheet(wb)
     xml = tostring(node)
     expected = """
-    <stylesheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
       <numFmts></numFmts>
       <fonts>
         <font>
@@ -279,7 +279,7 @@ def test_write_worksheet(Stylesheet):
         <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
       </cellStyles>
       <dxfs></dxfs>
-    </stylesheet>
+    </styleSheet>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
