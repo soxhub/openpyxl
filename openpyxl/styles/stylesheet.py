@@ -15,11 +15,19 @@ from .table import TableStyleList
 from .borders import BorderList
 from .fills import FillList
 from .fonts import FontList
-from .numbers import NumberFormatList
+from .numbers import (
+    NumberFormatList,
+    BUILTIN_FORMATS,
+    BUILTIN_FORMATS_REVERSE
+)
 from .alignment import Alignment
 from .protection import Protection
-from .named_styles import NamedCellStyleList, NamedStyle
-from .cell_style import CellStyleList
+from .named_styles import (
+    NamedCellStyleList,
+    NamedStyle,
+    NamedCellStyle
+)
+from .cell_style import CellStyleList, CellStyle
 
 
 class Stylesheet(Serialisable):
@@ -118,6 +126,37 @@ class Stylesheet(Serialisable):
         return named_styles
 
 
+    def _split_named_styles(self, wb):
+        """
+        Convert NamedStyle into separate CellStyle and Xf objects
+        """
+        names = []
+        xfs = []
+        for idx, style in enumerate(wb._named_styles.values()):
+            name = NamedCellStyle(
+                name=style.name,
+                builtinId=style.builtinId,
+                hidden=style.hidden,
+                xfId = idx
+            )
+            names.append(name)
+
+            xf = CellStyle()
+            xf.fontId =  wb._fonts.add(style.font)
+            xf.borderId = wb._borders.add(style.border)
+            xf.fillId =  wb._fills.add(style.fill)
+            fmt = style.number_format
+            if fmt in BUILTIN_FORMATS_REVERSE:
+                fmt = BUILTIN_FORMATS_REVERSE[fmt]
+            else:
+                fmt = wb._number_formats.add(style.number_format) + 164
+            xf.numFmtId = fmt
+            xfs.append(xf)
+
+        self.cellStyles.cellStyle = names
+        self.cellStyleXfs = CellStyleList(xf=xfs)
+
+
     @property
     def number_formats(self):
         fmts = [n.formatCode for n in self.numFmts.numFmt]
@@ -172,8 +211,7 @@ def write_stylesheet(wb):
     stylesheet.borders.border = wb._borders
     stylesheet.dxfs.dxf = wb._differential_styles
 
-    from .cell_style import CellStyle
-
+    xfs = []
     for style in wb._cell_styles:
         xf = CellStyle.from_array(style)
 
@@ -183,6 +221,10 @@ def write_stylesheet(wb):
 
         if style.applyProtection:
             xf.protection = self.wb._protections[style.protectionId]
+        xfs.append(xf)
+    stylesheet.cellXfs = CellStyleList(xf=xfs)
+
+    stylesheet._split_named_styles(wb)
 
     return stylesheet.to_tree()
 

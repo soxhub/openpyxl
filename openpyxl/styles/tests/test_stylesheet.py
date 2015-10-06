@@ -269,8 +269,15 @@ def test_write_worksheet(Stylesheet):
           <diagonal></diagonal>
         </border>
       </borders>
-      <cellXfs></cellXfs>
-      <cellStyles></cellStyles>
+      <cellStyleXfs>
+        <xf borderId="0" fillId="0" fontId="0" numFmtId="0"></xf>
+      </cellStyleXfs>
+      <cellXfs>
+        <xf borderId="0" fillId="0" fontId="0" numFmtId="0" pivotButton="0" quotePrefix="0" xfId="0"></xf>
+      </cellXfs>
+      <cellStyles>
+        <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
+      </cellStyles>
       <dxfs></dxfs>
     </stylesheet>
     """
