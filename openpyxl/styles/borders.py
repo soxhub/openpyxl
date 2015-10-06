@@ -120,6 +120,8 @@ class BorderList(Serialisable):
     count = Integer(allow_none=True)
     border = Sequence(expected_type=Border)
 
+    __attrs__ = ("count",)
+
     def __init__(self,
                  count=None,
                  border=(),

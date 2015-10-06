@@ -111,6 +111,7 @@ class FontList(Serialisable):
     count = Integer(allow_none=True)
     font = Sequence(expected_type=Font, allow_none=True)
 
+    __attrs__ = ("count",)
 
     @classmethod
     def from_tree(cls, node):

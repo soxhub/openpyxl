@@ -37,6 +37,8 @@ class CellStyle(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('alignment', 'protection')
+    __attrs__ = ("numFmtId", "fontId", "fillId", "borderId",
+                 "applyAlignment", "applyProtection", "pivotButton", "quotePrefix", "xfId")
 
     def __init__(self,
                  numFmtId=0,
@@ -67,8 +69,6 @@ class CellStyle(Serialisable):
         self.applyFont = applyFont
         self.applyFill = applyFill
         self.applyBorder = applyBorder
-        self.applyAlignment = applyAlignment
-        self.applyProtection = applyProtection
         self.alignment = alignment
         self.protection = protection
 
@@ -96,10 +96,21 @@ class CellStyle(Serialisable):
                    quotePrefix=style.quotePrefix, pivotButton=style.pivotButton,)
 
 
+    @property
+    def applyProtection(self):
+        return self.protection is not None or None
+
+
+    @property
+    def applyAlignment(self):
+        return self.alignment is not None or None
+
 
 class CellStyleList(Serialisable):
 
     tagname = "cellXfs"
+
+    __attrs__ = ("count",)
 
     count = Integer(allow_none=True)
     xf = Sequence(expected_type=CellStyle)

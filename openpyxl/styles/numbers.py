@@ -145,6 +145,7 @@ class NumberFormatList(Serialisable):
     numFmt = Sequence(expected_type=NumberFormat)
 
     __elements__ = ('numFmt',)
+    __attrs__ = ("count",)
 
     def __init__(self,
                  count=None,

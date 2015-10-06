@@ -58,6 +58,8 @@ class DifferentialStyleList(Serialisable):
     count = Integer(allow_none=True)
     dxf = Sequence(expected_type=DifferentialStyle, allow_none=True)
 
+    __attrs__ = ("count",)
+
     def __init__(self,
                  count=None,
                  dxf=(),

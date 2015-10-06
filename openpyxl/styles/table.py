@@ -73,6 +73,7 @@ class TableStyleList(Serialisable):
     tableStyle = Sequence(expected_type=TableStyle, allow_none=True)
 
     __elements__ = ('tableStyle',)
+    __attrs__ = ("count", "defaultTableStyle", "defaultPivotStyle")
 
     def __init__(self,
                  count=None,

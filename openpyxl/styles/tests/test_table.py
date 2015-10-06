@@ -44,7 +44,7 @@ class TestTableStyleList:
         table = TableStyleList()
         xml = tostring(table.to_tree())
         expected = """
-        <tableStyles defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
+        <tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

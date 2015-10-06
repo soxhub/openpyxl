@@ -21,13 +21,13 @@ class TestStylesheet:
         xml = tostring(parser.to_tree())
         expected = """
         <styleSheet>
-          <numFmts></numFmts>
-          <fonts></fonts>
-          <fills></fills>
-          <borders></borders>
-          <cellXfs></cellXfs>
-          <cellStyles></cellStyles>
-          <dxfs></dxfs>
+          <numFmts count="0"></numFmts>
+          <fonts count="0"></fonts>
+          <fills count="0"></fills>
+          <borders count="0"></borders>
+          <cellXfs count="0"></cellXfs>
+          <cellStyles count="0"></cellStyles>
+          <dxfs count="0"></dxfs>
         </styleSheet>
         """
         diff = compare_xml(xml, expected)
@@ -173,10 +173,10 @@ class TestStylesheet:
 
         node = fromstring("""
         <styleSheet>
-        <numFmts>
+        <numFmts count="1">
           <numFmt numFmtId="43" formatCode='_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ' />
         </numFmts>
-        <cellXfs>
+        <cellXfs count="0">
         <xf numFmtId="43" fontId="2" fillId="0" borderId="0"
              applyFont="0" applyFill="0" applyBorder="0" applyAlignment="0" applyProtection="0">
             <alignment vertical="center"/>
@@ -242,8 +242,8 @@ def test_write_worksheet(Stylesheet):
     xml = tostring(node)
     expected = """
     <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-      <numFmts></numFmts>
-      <fonts>
+      <numFmts count="0" />
+      <fonts count="1">
         <font>
           <name val="Calibri"></name>
           <family val="2"></family>
@@ -252,7 +252,7 @@ def test_write_worksheet(Stylesheet):
           <scheme val="minor"></scheme>
         </font>
       </fonts>
-      <fills>
+      <fills count="2">
         <fill>
           <patternFill></patternFill>
         </fill>
@@ -260,7 +260,7 @@ def test_write_worksheet(Stylesheet):
           <patternFill patternType="gray125"></patternFill>
         </fill>
       </fills>
-      <borders>
+      <borders count="1">
         <border>
           <left></left>
           <right></right>
@@ -269,17 +269,17 @@ def test_write_worksheet(Stylesheet):
           <diagonal></diagonal>
         </border>
       </borders>
-      <cellStyleXfs>
+      <cellStyleXfs count="1">
         <xf borderId="0" fillId="0" fontId="0" numFmtId="0"></xf>
       </cellStyleXfs>
-      <cellXfs>
+      <cellXfs count="1">
         <xf borderId="0" fillId="0" fontId="0" numFmtId="0" pivotButton="0" quotePrefix="0" xfId="0"></xf>
       </cellXfs>
-      <cellStyles>
+      <cellStyles count="1">
         <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
       </cellStyles>
-      <dxfs />
-    <tableStyles defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
+      <dxfs count="0"/>
+    <tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
     </styleSheet>
     """
     diff = compare_xml(xml, expected)
@@ -294,7 +294,7 @@ def test_simple_styles(datadir):
     from ..stylesheet import write_stylesheet
     wb = Workbook(guess_types=True)
     ws = wb.active
-    now = datetime.datetime.now()
+    now = datetime.date.today()
     for idx, v in enumerate(['12.34%', now, 'This is a test', '31.31415', None], 1):
         ws.append([v])
         _ = ws.cell(column=1, row=idx).style_id

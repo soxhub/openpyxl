@@ -108,7 +108,7 @@ class TestNamedCellStyleList:
         styles = NamedCellStyleList()
         xml = tostring(styles.to_tree())
         expected = """
-        <cellStyles />
+        <cellStyles count ="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

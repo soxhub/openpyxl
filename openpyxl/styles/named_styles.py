@@ -89,6 +89,7 @@ class NamedCellStyle(Serialisable):
 
     __elements__ = ()
 
+
     def __init__(self,
                  name=None,
                  xfId=None,
@@ -113,6 +114,7 @@ class NamedCellStyleList(Serialisable):
     count = Integer(allow_none=True)
     cellStyle = Sequence(expected_type=NamedCellStyle)
 
+    __attrs__ = ("count",)
 
     def __init__(self,
                  count=None,

@@ -187,6 +187,7 @@ class FillList(Serialisable):
     count = Integer(allow_none=True)
     fill = Sequence(expected_type=Fill)
 
+    __attrs__ = ("count",)
 
     def __init__(self,
                  count=None,
