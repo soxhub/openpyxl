@@ -36,13 +36,13 @@ from openpyxl.writer.workbook import (
     write_workbook
     )
 from openpyxl.writer.theme import write_theme
-from openpyxl.writer.styles import StyleWriter
 from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.workbook.names.external import (
     write_external_link,
     write_external_book_rel
 )
+from openpyxl.styles.stylesheet import write_stylesheet
 
 from openpyxl.writer.comments import CommentWriter
 
@@ -57,7 +57,6 @@ class ExcelWriter(object):
     def __init__(self, workbook):
         self.workbook = workbook
         self.workbook._drawings = []
-        self.style_writer = StyleWriter(workbook)
 
     def write_data(self, archive, as_template=False):
         """Write the various xml files into the zip archive."""
@@ -87,7 +86,8 @@ class ExcelWriter(object):
         self._write_chartsheets(archive)
         self._write_string_table(archive)
         self._write_external_links(archive)
-        archive.writestr(ARC_STYLE, self.style_writer.write_table())
+        stylesheet = write_stylesheet(self.workbook)
+        archive.writestr(ARC_STYLE, tostring(stylesheet))
         manifest = write_content_types(self.workbook, as_template=as_template)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
