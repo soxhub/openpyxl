@@ -5,7 +5,7 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
-from ..styleable import StyleArray
+from ..cell_style import StyleArray
 
 
 @pytest.fixture

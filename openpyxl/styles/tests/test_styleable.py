@@ -8,7 +8,8 @@ from ..import Style, Font, Border, PatternFill, Alignment, Protection
 
 
 def test_descriptor():
-    from ..styleable import StyleDescriptor, StyleArray
+    from ..styleable import StyleDescriptor
+    from ..cell_style import StyleArray
     from ..fonts import Font
 
     class Styled(object):

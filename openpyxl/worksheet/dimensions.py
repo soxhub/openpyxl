@@ -14,7 +14,8 @@ from openpyxl.descriptors import (
     String,
     Alias,
 )
-from openpyxl.styles.styleable import StyleableObject, StyleArray
+from openpyxl.styles.styleable import StyleableObject
+from openpyxl.styles.cell_style import StyleArray
 
 from openpyxl.utils.bound_dictionary import BoundDictionary
 

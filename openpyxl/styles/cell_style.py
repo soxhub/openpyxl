@@ -1,3 +1,8 @@
+from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
+
+from array import array
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -12,7 +17,46 @@ from openpyxl.utils.indexed_list import IndexedList
 
 from .alignment import Alignment
 from .protection import Protection
-from .styleable import StyleArray
+
+
+class ArrayDescriptor(object):
+
+    def __init__(self, key):
+        self.key = key
+
+    def __get__(self, instance, cls):
+        return instance[self.key]
+
+    def __set__(self, instance, value):
+        instance[self.key] = value
+
+
+class StyleArray(array):
+    """
+    Simplified named tuple with an array
+    """
+
+    __slots__ = ()
+    tagname = 'xf'
+
+    fontId = ArrayDescriptor(0)
+    fillId = ArrayDescriptor(1)
+    borderId = ArrayDescriptor(2)
+    numFmtId = ArrayDescriptor(3)
+    protectionId = ArrayDescriptor(4)
+    alignmentId = ArrayDescriptor(5)
+    pivotButton = ArrayDescriptor(6)
+    quotePrefix = ArrayDescriptor(7)
+    xfId = ArrayDescriptor(8)
+
+
+    def __new__(cls, args=[0]*9):
+        return array.__new__(cls, 'i', args)
+
+
+    def __hash__(self):
+        return hash(tuple(self))
+
 
 
 class CellStyle(Serialisable):

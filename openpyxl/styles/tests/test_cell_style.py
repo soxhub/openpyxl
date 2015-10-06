@@ -5,6 +5,30 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
+
+@pytest.fixture
+def StyleArray():
+    from ..cell_style import StyleArray
+    return StyleArray
+
+
+class TestStyleArray:
+
+
+    def test_ctor(self, StyleArray):
+        style = StyleArray(range(9))
+        assert style.fontId == 0
+        assert style.numFmtId == 3
+        assert style.xfId == 8
+
+
+    def test_hash(self, StyleArray):
+        s1 = StyleArray((range(9)))
+        s2 = StyleArray((range(9)))
+        assert hash(s1) == hash(s2)
+
+
+
 @pytest.fixture
 def CellStyle():
     from ..cell_style import CellStyle
@@ -40,7 +64,7 @@ class TestCellStyle:
 
 
     def test_to_array(self, CellStyle):
-        from ..styleable import StyleArray
+        from ..cell_style import StyleArray
         xf = CellStyle(
             numFmtId=43,
             fontId=1,
@@ -63,7 +87,7 @@ class TestCellStyle:
 
 
     def test_from_array(self, CellStyle):
-        from ..styleable import StyleArray
+        from ..cell_style import StyleArray
         style = StyleArray([5, 10, 15, 0, 0, 0, 1, 1, 15])
         xf = CellStyle.from_array(style)
         assert dict(xf) == {'borderId': '15', 'fillId': '10', 'fontId': '5',
