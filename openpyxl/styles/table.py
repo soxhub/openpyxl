@@ -7,8 +7,8 @@ from openpyxl.descriptors import (
     Integer,
     NoneSet,
     String,
+    Sequence
 )
-from openpyxl.descriptors.excel import HexBinary, ExtensionList
 
 from .colors import Color
 
@@ -39,6 +39,8 @@ class TableStyleElement(Serialisable):
 
 class TableStyle(Serialisable):
 
+    tagname = "tableStyle"
+
     name = String()
     pivot = Bool(allow_none=True)
     table = Bool(allow_none=True)
@@ -63,20 +65,26 @@ class TableStyle(Serialisable):
 
 class TableStyleList(Serialisable):
 
+    tagname = "tableStyles"
+
     count = Integer(allow_none=True)
     defaultTableStyle = String(allow_none=True)
     defaultPivotStyle = String(allow_none=True)
-    tableStyle = Typed(expected_type=TableStyle, allow_none=True)
+    tableStyle = Sequence(expected_type=TableStyle, allow_none=True)
 
     __elements__ = ('tableStyle',)
 
     def __init__(self,
                  count=None,
-                 defaultTableStyle=None,
-                 defaultPivotStyle=None,
-                 tableStyle=None,
+                 defaultTableStyle="TableStyleMedium9",
+                 defaultPivotStyle="PivotStyleLight16",
+                 tableStyle=(),
                 ):
-        self.count = count
         self.defaultTableStyle = defaultTableStyle
         self.defaultPivotStyle = defaultPivotStyle
         self.tableStyle = tableStyle
+
+
+    @property
+    def count(self):
+        return len(self.tableStyle)
