@@ -4,8 +4,14 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.utils.indexed_list import IndexedList
-from ..import Style, Font, Border, PatternFill, Alignment, Protection
-
+from ..import (
+    Style,
+    Font,
+    Border,
+    PatternFill,
+    Alignment,
+    Protection
+)
 
 def test_descriptor():
     from ..styleable import StyleDescriptor
