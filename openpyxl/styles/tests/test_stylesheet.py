@@ -241,7 +241,7 @@ def test_write_worksheet(Stylesheet):
     node = write_stylesheet(wb)
     xml = tostring(node)
     expected = """
-    <stylesheet>
+    <stylesheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
       <numFmts></numFmts>
       <fonts>
         <font>

@@ -6,7 +6,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.xml.constants import ARC_STYLE
+from openpyxl.xml.constants import ARC_STYLE, SHEET_MAIN_NS
 from openpyxl.xml.functions import fromstring
 
 from .colors import ColorList, COLOR_INDEX
@@ -226,5 +226,7 @@ def write_stylesheet(wb):
 
     stylesheet._split_named_styles(wb)
 
-    return stylesheet.to_tree()
+    tree = stylesheet.to_tree()
+    tree.set("xmlns", SHEET_MAIN_NS)
+    return tree
 
