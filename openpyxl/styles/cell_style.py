@@ -91,7 +91,7 @@ class CellStyle(Serialisable):
         """
         Convert from StyleArray
         """
-        return cls(numFmtId=style.numFmtId, fontId=style.FontId,
+        return cls(numFmtId=style.numFmtId, fontId=style.fontId,
                    fillId=style.fillId, borderId=style.borderId, xfId=style.xfId,
                    quotePrefix=style.quotePrefix, pivotButton=style.pivotButton,)
 

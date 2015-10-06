@@ -39,6 +39,38 @@ class TestCellStyle:
         )
 
 
+    def test_to_array(self, CellStyle):
+        from ..styleable import StyleArray
+        xf = CellStyle(
+            numFmtId=43,
+            fontId=1,
+            fillId=2,
+            borderId=4,
+            xfId=None,
+            quotePrefix=True,
+            pivotButton=True,
+            applyNumberFormat=None,
+            applyFont=None,
+            applyFill=None,
+            applyBorder=None,
+            applyAlignment=None,
+            applyProtection=None,
+            alignment=None,
+            protection=None,
+        )
+        style = xf.to_array()
+        assert style == StyleArray([1, 2, 4, 43, 0, 0, 1, 1, 0])
+
+
+    def test_from_array(self, CellStyle):
+        from ..styleable import StyleArray
+        style = StyleArray([5, 10, 15, 0, 0, 0, 1, 1, 15])
+        xf = CellStyle.from_array(style)
+        assert dict(xf) == {'borderId': '15', 'fillId': '10', 'fontId': '5',
+                            'numFmtId': '0', 'pivotButton': '1', 'quotePrefix': '1', 'xfId':
+                            '15'}
+
+
 @pytest.fixture
 def CellStyleList():
     from ..cell_style import CellStyleList

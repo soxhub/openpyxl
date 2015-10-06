@@ -173,14 +173,9 @@ def write_stylesheet(wb):
     stylesheet.dxfs.dxf = wb._differential_styles
 
     from .cell_style import CellStyle
-    from .styleable import StyleArray
-    attrs = set(CellStyle.__attrs__).intersection(set(StyleArray.__attrs__))
 
     for style in wb._cell_styles:
-        xf = CellStyle()
-        for k in attrs:
-            v = getattr(style, k)
-            setattr(xf, k, v)
+        xf = CellStyle.from_array(style)
 
         if style.applyAlignment:
             xf.alignment = wb._alignments[style.alignmentId]
