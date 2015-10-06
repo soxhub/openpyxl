@@ -211,6 +211,14 @@ def write_stylesheet(wb):
     stylesheet.borders.border = wb._borders
     stylesheet.dxfs.dxf = wb._differential_styles
 
+    from .numbers import NumberFormat
+    fmts = []
+    for idx, code in enumerate(wb._number_formats, 164):
+        fmt = NumberFormat(idx, code)
+        fmts.append(fmt)
+
+    stylesheet.numFmts.numFmt = fmts
+
     xfs = []
     for style in wb._cell_styles:
         xf = CellStyle.from_array(style)
