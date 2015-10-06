@@ -284,3 +284,34 @@ def test_write_worksheet(Stylesheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_simple_styles(datadir):
+    import datetime
+    from openpyxl import Workbook
+    from ..protection import Protection
+    from .. import numbers
+    from ..stylesheet import write_stylesheet
+    wb = Workbook(guess_types=True)
+    ws = wb.active
+    now = datetime.datetime.now()
+    for idx, v in enumerate(['12.34%', now, 'This is a test', '31.31415', None], 1):
+        ws.append([v])
+        _ = ws.cell(column=1, row=idx).style_id
+
+    # set explicit formats
+    ws['D9'].number_format = numbers.FORMAT_NUMBER_00
+    ws['D9'].protection = Protection(locked=True)
+    ws['D9'].style_id
+    ws['E1'].protection = Protection(hidden=True)
+    ws['E1'].style_id
+
+    assert len(wb._cell_styles) == 5
+    stylesheet = write_stylesheet(wb)
+
+    datadir.chdir()
+    with open('simple-styles.xml') as reference_file:
+        expected = reference_file.read()
+    xml = tostring(stylesheet)
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
