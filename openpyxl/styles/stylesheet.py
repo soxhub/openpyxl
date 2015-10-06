@@ -223,11 +223,11 @@ def write_stylesheet(wb):
     for style in wb._cell_styles:
         xf = CellStyle.from_array(style)
 
-        if style.applyAlignment:
+        if style.alignmentId:
             xf.alignment = wb._alignments[style.alignmentId]
             xf.applyAlignment = True
 
-        if style.applyProtection:
+        if style.protectionId:
             xf.protection = wb._protections[style.protectionId]
         xfs.append(xf)
     stylesheet.cellXfs = CellStyleList(xf=xfs)
