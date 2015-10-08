@@ -228,8 +228,8 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
                                        shared_strings)
             wb._add_sheet(new_ws)
         else:
-            parser = WorkSheetParser(wb, sheet_name, archive.read(worksheet_path),
-                            shared_strings)
+            fh = archive.open(worksheet_path)
+            parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
             parser.parse()
             new_ws = wb[sheet_name]
         new_ws.sheet_state = sheet['state']
