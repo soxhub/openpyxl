@@ -225,7 +225,6 @@ def write_stylesheet(wb):
 
         if style.alignmentId:
             xf.alignment = wb._alignments[style.alignmentId]
-            xf.applyAlignment = True
 
         if style.protectionId:
             xf.protection = wb._protections[style.protectionId]
