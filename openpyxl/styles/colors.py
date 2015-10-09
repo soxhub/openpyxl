@@ -173,6 +173,8 @@ class ColorList(Serialisable):
                  indexedColors=None,
                  mruColors=None,
                 ):
+        if indexedColors is None:
+            indexedColors = IndexedColorList()
         self.indexedColors = indexedColors
         self.mruColors = mruColors
 
