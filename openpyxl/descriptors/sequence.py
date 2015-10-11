@@ -34,8 +34,8 @@ class Sequence(Descriptor):
         """
         tagname = namespaced(obj, tagname, namespace)
         for idx, v in enumerate(obj, self.idx_base):
-            if hasattr(obj, "to_tree"):
-                el = obj.to_tree(tagname, idx)
+            if hasattr(v, "to_tree"):
+                el = v.to_tree(tagname, idx)
             else:
                 el = Element(tagname)
                 el.text = safe_string(v)
@@ -47,11 +47,13 @@ class Sequence(Descriptor):
         Convert XML sequence to object represented by the descriptor
         """
         primitive = True
-        if hasattr(self.expected_type, "to_tree"):
+        if hasattr(self.expected_type, "from_tree"):
             primitive = False
         for el in node:
             if primitive:
                 yield el.text
+            else:
+                yield self.expected_type.from_tree(el)
 
 
 
