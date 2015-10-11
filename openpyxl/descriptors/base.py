@@ -7,8 +7,11 @@ Based on Python Cookbook 3rd Edition, 8.13
 http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
 """
 
-from openpyxl.compat import basestring, bytes, long
 import re
+from openpyxl.compat import basestring, bytes, long
+from openpyxl.xml.functions import Element
+from .namespace import namespaced
+
 
 class Descriptor(object):
 
@@ -174,23 +177,6 @@ class ASCII(Typed):
 class Tuple(Typed):
 
     expected_type = tuple
-
-
-class Sequence(Descriptor):
-    """
-    A sequence (list or tuple) that may only contain objects of the declared
-    type
-    """
-
-    expected_type = type(None)
-    seq_types = (list, tuple)
-
-    def __set__(self, instance, seq):
-        if not isinstance(seq, self.seq_types):
-            raise TypeError("Value must be a sequence")
-        seq = [_convert(self.expected_type, value) for value in seq]
-
-        super(Sequence, self).__set__(instance, seq)
 
 
 class Length(Descriptor):

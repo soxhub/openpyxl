@@ -10,12 +10,12 @@ from .base import (
     Descriptor,
     NoneSet,
     MinMax,
-    Sequence,
     Set,
     Float,
     Integer,
     String,
     )
+from .sequence import Sequence
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
 
