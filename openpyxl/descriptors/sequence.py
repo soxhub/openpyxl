@@ -8,7 +8,6 @@ from .base import Descriptor, _convert
 from .namespace import namespaced
 
 
-
 class Sequence(Descriptor):
     """
     A sequence (list or tuple) that may only contain objects of the declared
@@ -28,7 +27,7 @@ class Sequence(Descriptor):
         super(Sequence, self).__set__(instance, seq)
 
 
-    def to_tree(self, obj, tagname, namespace=None):
+    def to_tree(self, tagname, obj, namespace=None):
         """
         Convert the sequence represented by the descriptor to an XML element
         """
