@@ -5,7 +5,6 @@ from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
 from . import _Serialiasable, Sequence
-from .sequence import to_tree
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import (

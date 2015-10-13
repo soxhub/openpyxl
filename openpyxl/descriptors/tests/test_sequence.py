@@ -47,7 +47,7 @@ class TestPrimitive:
         dummy.value = [1, '2', 3]
 
         root = Element("root")
-        for node in Dummy.value.to_tree(dummy.value, "el"):
+        for node in Dummy.value.to_tree("el", dummy.value, ):
             root.append(node)
 
         xml = tostring(root)
@@ -98,7 +98,7 @@ class TestComplex:
         dummy.vals = [SomeType(1), SomeType(2), SomeType(3)]
 
         root = Element("root")
-        for node in Dummy.vals.to_tree(dummy.vals, "el"):
+        for node in Dummy.vals.to_tree("el", dummy.vals):
             root.append(node)
 
         xml = tostring(root)
