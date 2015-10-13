@@ -5,6 +5,7 @@ from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
 from . import _Serialiasable, Sequence
+from .sequence import to_tree
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import (
@@ -97,30 +98,31 @@ class Serialisable(_Serialiasable):
         el = Element(tagname, attrs)
 
         for child in self.__elements__:
+            desc = getattr(self.__class__, child, None)
+            obj = getattr(self, child)
+
             if child in self.__nested__:
-                desc = getattr(self.__class__, child)
-                value = getattr(self, child)
                 if hasattr(desc, "to_tree"):
-                    if isinstance(value, seq_types):
-                        for obj in desc.to_tree(child, value, namespace):
-                            el.append(obj)
+                    if isinstance(obj, seq_types):
+                        for node in desc.to_tree(child, obj, namespace):
+                            el.append(node)
                     else:
-                        obj = desc.to_tree(child, value, namespace)
-                        if obj is not None:
-                            el.append(obj)
-                elif value:
-                    SubElement(el, child, val=safe_string(value))
+                        node = desc.to_tree(child, obj, namespace)
+                        if node is not None:
+                            el.append(node)
 
             else:
-                obj = getattr(self, child)
                 if isinstance(obj, seq_types):
-                    for idx, v in enumerate(obj, self.idx_base):
-                        if hasattr(v, 'to_tree'):
-                            el.append(v.to_tree(tagname=child, idx=idx))
-                        else:
-                            SubElement(el, child).text = safe_string(v)
+                    if isinstance(desc, Sequence):
+                        desc.idx_base = self.idx_base
+                        nodes = (desc.to_tree(obj, tagname=child))
+                    else:
+                        nodes = (v.to_tree(tagname=child) for v in obj)
+                    for node in nodes:
+                        el.append(node)
                 elif obj is not None:
-                    el.append(obj.to_tree(tagname=child))
+                    node = obj.to_tree(tagname=child)
+                    el.append(node)
         return el
 
 
