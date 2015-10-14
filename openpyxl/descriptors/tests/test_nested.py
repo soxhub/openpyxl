@@ -246,7 +246,7 @@ class TestSequence:
         class Simple(Serialisable):
             tagname = "xf"
 
-            formula = NestedSequence(expected_type=str)
+            formula = NestedSequence(expected_type=int)
 
             def __init__(self, formula):
                 self.formula = formula
@@ -260,7 +260,7 @@ class TestSequence:
         """
         node = fromstring(xml)
         simple = Simple.from_tree(node)
-        simple = Simple(formula=['1', '2', '3'])
+        assert simple.formula == [1, 2, 3]
 
 
     def test_custom_sequence(self):
