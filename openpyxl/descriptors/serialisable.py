@@ -81,14 +81,14 @@ class Serialisable(_Serialiasable):
 
         if tagname is None:
             tagname = self.tagname
-        namespace = getattr(self, "namespace", namespace)
-        if namespace is not None:
-            tagname = "{%s}%s" % (namespace, tagname)
 
         # keywords have to be masked
         if tagname.startswith("_"):
             tagname = tagname[1:]
 
+        namespace = getattr(self, "namespace", namespace)
+        if namespace is not None:
+            tagname = "{%s}%s" % (namespace, tagname)
 
         attrs = dict(self)
         for key, ns in self.__namespaced__:
