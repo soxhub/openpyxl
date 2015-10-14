@@ -5,12 +5,11 @@ from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
 from . import _Serialiasable, Sequence
+from .namespace import namespaced
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import (
     Element,
-    SubElement,
-    safe_iterator,
     localname,
 )
 
@@ -79,11 +78,17 @@ class Serialisable(_Serialiasable):
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
+
         if tagname is None:
             tagname = self.tagname
         namespace = getattr(self, "namespace", namespace)
         if namespace is not None:
             tagname = "{%s}%s" % (namespace, tagname)
+
+        # keywords have to be masked
+        if tagname.startswith("_"):
+            tagname = tagname[1:]
+
 
         attrs = dict(self)
         for key, ns in self.__namespaced__:
@@ -91,36 +96,28 @@ class Serialisable(_Serialiasable):
                 attrs[ns] = attrs[key]
                 del attrs[key]
 
-        # keywords have to be masked
-        if tagname.startswith("_"):
-            tagname = tagname[1:]
         el = Element(tagname, attrs)
 
         for child in self.__elements__:
             desc = getattr(self.__class__, child, None)
             obj = getattr(self, child)
 
-            if child in self.__nested__:
-                if hasattr(desc, "to_tree"):
-                    if isinstance(obj, seq_types):
-                        for node in desc.to_tree(child, obj, namespace):
-                            el.append(node)
-                    else:
-                        node = desc.to_tree(child, obj, namespace)
-                        if node is not None:
-                            el.append(node)
-
+            if isinstance(obj, seq_types):
+                if isinstance(desc, Sequence):
+                    desc.idx_base = self.idx_base
+                    nodes = (desc.to_tree(child, obj, namespace))
+                else:
+                    nodes = (v.to_tree(child, namespace) for v in obj)
+                for node in nodes:
+                    el.append(node)
             else:
-                if isinstance(obj, seq_types):
-                    if isinstance(desc, Sequence):
-                        desc.idx_base = self.idx_base
-                        nodes = (desc.to_tree(obj, tagname=child))
-                    else:
-                        nodes = (v.to_tree(tagname=child) for v in obj)
-                    for node in nodes:
-                        el.append(node)
-                elif obj is not None:
-                    node = obj.to_tree(tagname=child)
+                if child in self.__nested__:
+                    node = desc.to_tree(child, obj, namespace)
+                elif obj is None:
+                    continue
+                else:
+                    node = obj.to_tree(child)
+                if node is not None:
                     el.append(node)
         return el
 
