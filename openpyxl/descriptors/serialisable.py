@@ -86,9 +86,8 @@ class Serialisable(_Serialiasable):
         if tagname.startswith("_"):
             tagname = tagname[1:]
 
+        tagname = namespaced(self, tagname, namespace)
         namespace = getattr(self, "namespace", namespace)
-        if namespace is not None:
-            tagname = "{%s}%s" % (namespace, tagname)
 
         attrs = dict(self)
         for key, ns in self.__namespaced__:
