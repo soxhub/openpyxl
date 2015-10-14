@@ -17,9 +17,9 @@ def Sequence():
 @pytest.fixture
 def Dummy(Sequence):
 
-    class Dummy:
+    class Dummy(Serialisable):
 
-        value = Sequence(expected_type=int, name="value")
+        value = Sequence(expected_type=int)
 
     return Dummy
 
