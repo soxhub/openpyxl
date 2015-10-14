@@ -65,12 +65,15 @@ class ValueSequence(Sequence):
     attribute = "val"
 
 
-    def to_tree(self, obj, namespace=None):
-        pass
+    def to_tree(self, tagname, obj, namespace=None):
+        tagname = namespaced(self, tagname, namespace)
+        for v in obj:
+            yield Element(tagname, {self.attribute:safe_string(v)})
 
 
     def from_tree(self, node):
-        return [el.get(self.attribute) for el in node]
+
+        return node.get(self.attribute)
 
 
 class NestedSequence(Sequence):
@@ -78,7 +81,7 @@ class NestedSequence(Sequence):
     Wrap a sequence in an containing object
     """
 
-    def to_tree(self, obj, namespace=None):
+    def to_tree(self, tagname, obj, namespace=None):
         pass
 
 

@@ -131,3 +131,59 @@ class TestComplex:
         desc = Dummy.vals
         dummy.vals = list(desc.from_tree(node))
         assert dummy.vals == [SomeType(1), SomeType(2), SomeType(3)]
+
+
+@pytest.fixture
+def ValueSequence():
+    from .. sequence import ValueSequence
+    return ValueSequence
+
+
+class TestValueSequence:
+
+    def test_to_tree(self, ValueSequence):
+
+        class Dummy(Serialisable):
+
+            tagname = "el"
+
+            size = ValueSequence(expected_type=int)
+
+        dummy = Dummy()
+        dummy.size = [1, 2, 3]
+        xml = tostring(dummy.to_tree())
+        expected = """
+        <el>
+          <size val="1"></size>
+          <size val="2"></size>
+          <size val="3"></size>
+        </el>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, ValueSequence):
+        class Dummy(Serialisable):
+
+            tagname = "el"
+
+            __nested__ = ("size",)
+            size = ValueSequence(expected_type=int)
+
+            def __init__(self, size):
+                self.size = size
+
+        src = """
+        <el>
+          <size val="1"></size>
+          <size val="2"></size>
+          <size val="3"></size>
+        </el>
+        """
+        node = fromstring(src)
+        desc = Dummy.size
+        vals = desc.from_tree(node)
+
+        dummy = Dummy.from_tree(node)
+        assert dummy.size == [1, 2, 3]
