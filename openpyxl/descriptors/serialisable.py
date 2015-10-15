@@ -54,23 +54,24 @@ class Serialisable(_Serialiasable):
             desc = getattr(cls, tag, None)
             if desc is None or isinstance(desc, property):
                 continue
-            if tag in cls.__nested__:
-                if hasattr(desc, 'from_tree'):
-                    if isinstance(desc, Sequence):
-                        attrib.setdefault(tag, [])
-                        attrib[tag].append(desc.from_tree(el))
-                    else:
-                        attrib[tag] = desc.from_tree(el)
+
+            if hasattr(desc, 'from_tree'):
+                #descriptor manages conversion
+                obj = desc.from_tree(el)
             else:
                 if hasattr(desc.expected_type, "from_tree"):
+                    #complex type
                     obj = desc.expected_type.from_tree(el)
                 else:
+                    #primitive
                     obj = el.text
-                if isinstance(desc, Sequence):
-                    attrib.setdefault(tag, [])
-                    attrib[tag].append(obj)
-                else:
-                    attrib[tag] = obj
+
+            if isinstance(desc, Sequence):
+                attrib.setdefault(tag, [])
+                attrib[tag].append(obj)
+            else:
+                attrib[tag] = obj
+
         return cls(**attrib)
 
 
