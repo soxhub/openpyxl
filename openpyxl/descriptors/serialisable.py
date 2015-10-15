@@ -52,7 +52,7 @@ class Serialisable(_Serialiasable):
             if tag in KEYWORDS:
                 tag = "_" + tag
             desc = getattr(cls, tag, None)
-            if desc is None:
+            if desc is None or isinstance(desc, property):
                 continue
             if tag in cls.__nested__:
                 if hasattr(desc, 'from_tree'):
@@ -62,15 +62,12 @@ class Serialisable(_Serialiasable):
                     else:
                         attrib[tag] = desc.from_tree(el)
             else:
-                if isinstance(desc, property):
-                    continue
-                elif hasattr(desc.expected_type, "from_tree"):
+                if hasattr(desc.expected_type, "from_tree"):
                     obj = desc.expected_type.from_tree(el)
                 else:
                     obj = el.text
                 if isinstance(desc, Sequence):
-                    if tag not in attrib:
-                        attrib[tag] = []
+                    attrib.setdefault(tag, [])
                     attrib[tag].append(obj)
                 else:
                     attrib[tag] = obj
