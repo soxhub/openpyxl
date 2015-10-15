@@ -97,25 +97,25 @@ class Serialisable(_Serialiasable):
 
         el = Element(tagname, attrs)
 
-        for child in self.__elements__:
-            desc = getattr(self.__class__, child, None)
-            obj = getattr(self, child)
+        for child_tag in self.__elements__:
+            desc = getattr(self.__class__, child_tag, None)
+            obj = getattr(self, child_tag)
 
             if isinstance(obj, seq_types):
                 if isinstance(desc, Sequence):
                     desc.idx_base = self.idx_base
-                    nodes = (desc.to_tree(child, obj, namespace))
+                    nodes = (desc.to_tree(child_tag, obj, namespace))
                 else:
-                    nodes = (v.to_tree(child, namespace) for v in obj)
+                    nodes = (v.to_tree(child_tag, namespace) for v in obj)
                 for node in nodes:
                     el.append(node)
             else:
-                if child in self.__nested__:
-                    node = desc.to_tree(child, obj, namespace)
+                if child_tag in self.__nested__:
+                    node = desc.to_tree(child_tag, obj, namespace)
                 elif obj is None:
                     continue
                 else:
-                    node = obj.to_tree(child)
+                    node = obj.to_tree(child_tag)
                 if node is not None:
                     el.append(node)
         return el
