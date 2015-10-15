@@ -41,21 +41,6 @@ class Sequence(Descriptor):
             yield el
 
 
-    def from_tree(self, node):
-        """
-        Convert XML sequence to object represented by the descriptor
-        """
-        primitive = True
-        if hasattr(self.expected_type, "from_tree"):
-            primitive = False
-        for el in node:
-            if primitive:
-                yield el.text
-            else:
-                yield self.expected_type.from_tree(el)
-
-
-
 class ValueSequence(Sequence):
     """
     A sequence of primitive types that are stored as a single attribute.
