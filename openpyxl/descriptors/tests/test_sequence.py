@@ -21,6 +21,9 @@ def Dummy(Sequence):
 
         value = Sequence(expected_type=int)
 
+        def __init__(self, value=()):
+            self.value = value
+
     return Dummy
 
 
@@ -43,8 +46,7 @@ class TestPrimitive:
 
     def test_to_tree(self, Dummy):
 
-        dummy = Dummy()
-        dummy.value = [1, '2', 3]
+        dummy = Dummy([1, '2', 3])
 
         root = Element("root")
         for node in Dummy.value.to_tree("el", dummy.value, ):
@@ -65,16 +67,14 @@ class TestPrimitive:
     def test_from_xml(self, Dummy):
         src = """
         <root>
-          <el>1</el>
-          <el>2</el>
-          <el>3</el>
+          <value>1</value>
+          <value>2</value>
+          <value>3</value>
         </root>
         """
         node = fromstring(src)
 
-        dummy = Dummy()
-        desc = Dummy.value
-        dummy.value = list(desc.from_tree(node))
+        dummy = Dummy.from_tree(node)
         assert dummy.value == [1, 2, 3]
 
 
@@ -116,20 +116,21 @@ class TestComplex:
     def test_from_xml(self, Sequence):
         src = """
         <root>
-          <el value="1"></el>
-          <el value="2"></el>
-          <el value="3"></el>
+          <vals value="1"></vals>
+          <vals value="2"></vals>
+          <vals value="3"></vals>
         </root>
         """
         node = fromstring(src)
 
-        class Dummy:
+        class Dummy(Serialisable):
 
-            vals = Sequence(expected_type=SomeType, name="vals")
+            vals = Sequence(expected_type=SomeType)
 
-        dummy = Dummy()
-        desc = Dummy.vals
-        dummy.vals = list(desc.from_tree(node))
+            def __init__(self, vals):
+                self.vals = vals
+
+        dummy = Dummy.from_tree(node)
         assert dummy.vals == [SomeType(1), SomeType(2), SomeType(3)]
 
 
