@@ -4,7 +4,8 @@ from __future__ import absolute_import
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
-from . import _Serialiasable, Sequence
+from . import _Serialiasable
+from .sequence import Sequence, NestedSequence
 from .namespace import namespaced
 
 from openpyxl.compat import safe_string
@@ -66,7 +67,9 @@ class Serialisable(_Serialiasable):
                     #primitive
                     obj = el.text
 
-            if isinstance(desc, Sequence):
+            if isinstance(desc, NestedSequence):
+                attrib[tag] = obj
+            elif isinstance(desc, Sequence):
                 attrib.setdefault(tag, [])
                 attrib[tag].append(obj)
             else:
@@ -100,10 +103,14 @@ class Serialisable(_Serialiasable):
             obj = getattr(self, child_tag)
 
             if isinstance(obj, seq_types):
-                if isinstance(desc, Sequence):
+                if isinstance(desc, NestedSequence):
+                    # wrap sequence in container
+                    nodes = [desc.to_tree(child_tag, obj, namespace)]
+                elif isinstance(desc, Sequence):
+                    # sequence
                     desc.idx_base = self.idx_base
                     nodes = (desc.to_tree(child_tag, obj, namespace))
-                else:
+                else: # property
                     nodes = (v.to_tree(child_tag, namespace) for v in obj)
                 for node in nodes:
                     el.append(node)

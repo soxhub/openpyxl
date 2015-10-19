@@ -188,3 +188,89 @@ class TestValueSequence:
 
         dummy = Dummy.from_tree(node)
         assert dummy.size == [1, 2, 3]
+
+
+@pytest.fixture
+def NestedSequence():
+    from ..sequence import NestedSequence
+    return NestedSequence
+
+
+from openpyxl.styles import Font
+
+@pytest.fixture
+def ComplexObject(NestedSequence):
+
+
+    class Complex(Serialisable):
+
+        tagname = "style"
+
+        fonts = NestedSequence(expected_type=Font)
+
+        def __init__(self, fonts=()):
+            self.fonts = fonts
+
+    return Complex
+
+
+class TestNestedSequence:
+
+
+    def test_ctor(self, ComplexObject):
+        style = ComplexObject()
+        ft1 = Font()
+        ft2 = Font(bold=True)
+        style.fonts = [ft1, ft2]
+
+        expected = """
+        <style>
+          <fonts count="2">
+            <font>
+              <name val="Calibri"></name>
+              <family val="2"></family>
+              <color rgb="00000000"></color>
+              <sz val="11"></sz>
+            </font>
+            <font>
+              <name val="Calibri"></name>
+              <family val="2"></family>
+              <b val="1"></b>
+              <color rgb="00000000"></color>
+              <sz val="11"></sz>
+            </font>
+          </fonts>
+        </style>
+        """
+        tree = style.__class__.fonts.to_tree('fonts', style.fonts)
+        tree = style.to_tree()
+        xml = tostring(tree)
+        diff = compare_xml(xml, expected)
+
+        assert diff is None, diff
+
+
+    def test_from_tree(self, ComplexObject):
+        xml = """
+        <style>
+          <fonts count="2">
+            <font>
+              <name val="Calibri"></name>
+              <family val="2"></family>
+              <color rgb="00000000"></color>
+              <sz val="11"></sz>
+            </font>
+            <font>
+              <name val="Calibri"></name>
+              <family val="2"></family>
+              <b val="1"></b>
+              <color rgb="00000000"></color>
+              <sz val="11"></sz>
+            </font>
+          </fonts>
+        </style>
+        """
+        node = fromstring(xml)
+        style = ComplexObject.from_tree(node)
+        assert len(style.fonts) == 2
+        assert style.fonts[1].bold is True

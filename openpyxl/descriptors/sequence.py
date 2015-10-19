@@ -66,9 +66,17 @@ class NestedSequence(Sequence):
     Wrap a sequence in an containing object
     """
 
+    count = True
+
     def to_tree(self, tagname, obj, namespace=None):
-        pass
+        tagname = namespaced(self, tagname, namespace)
+        container = Element(tagname)
+        if self.count:
+            container.set('count', str(len(obj)))
+        for v in obj:
+            container.append(v.to_tree())
+        return container
 
 
     def from_tree(self, node):
-        pass
+        return [self.expected_type.from_tree(el) for el in node]
