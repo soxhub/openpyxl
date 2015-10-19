@@ -113,26 +113,3 @@ class Border(HashableObject):
                 yield attr, value
 
 DEFAULT_BORDER = Border()
-
-
-class BorderList(Serialisable):
-
-    count = Integer(allow_none=True)
-    border = Sequence(expected_type=Border)
-
-    __attrs__ = ("count",)
-
-    def __init__(self,
-                 count=None,
-                 border=(),
-                 ):
-        self.border = border
-
-
-    @property
-    def count(self):
-        return len(self.border)
-
-
-    def __getitem__(self, idx):
-        return self.border[idx]

@@ -104,35 +104,3 @@ class Font(HashableObject):
 from . colors import Color
 
 DEFAULT_FONT = Font(color=Color(theme=1), scheme="minor")
-
-
-class FontList(Serialisable):
-
-    count = Integer(allow_none=True)
-    font = Sequence(expected_type=Font, allow_none=True)
-
-    __attrs__ = ("count",)
-
-    @classmethod
-    def from_tree(cls, node):
-        attrs = dict(node.attrib)
-        for k in attrs:
-            if k not in cls.__attrs__:
-                del node.attrib[k]
-        return super(FontList, cls).from_tree(node)
-
-
-    def __init__(self,
-                 count=None,
-                 font=(),
-                ):
-        self.font = font
-
-
-    @property
-    def count(self):
-        return len(self.font)
-
-
-    def __getitem__(self, idx):
-        return self.font[idx]

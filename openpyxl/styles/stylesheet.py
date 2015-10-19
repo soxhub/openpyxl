@@ -4,17 +4,18 @@ from openpyxl.descriptors import (
     Typed,
     Sequence
 )
+from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.xml.constants import ARC_STYLE, SHEET_MAIN_NS
 from openpyxl.xml.functions import fromstring
 
 from .colors import ColorList, COLOR_INDEX
-from .differential import DifferentialStyleList
+from .differential import DifferentialStyle
 from .table import TableStyleList
-from .borders import BorderList
-from .fills import FillList
-from .fonts import FontList
+from .borders import Border
+from .fills import Fill
+from .fonts import Font
 from .numbers import (
     NumberFormatList,
     BUILTIN_FORMATS,
@@ -23,25 +24,25 @@ from .numbers import (
 from .alignment import Alignment
 from .protection import Protection
 from .named_styles import (
-    NamedCellStyleList,
     NamedStyle,
-    NamedCellStyle
+    NamedCellStyle,
+    NamedCellStyleList
 )
-from .cell_style import CellStyleList, CellStyle
+from .cell_style import CellStyle, CellStyleList
 
 
 class Stylesheet(Serialisable):
 
     tagname = "styleSheet"
 
-    numFmts = Typed(expected_type=NumberFormatList, allow_none=True)
-    fonts = Typed(expected_type=FontList, allow_none=True)
-    fills = Typed(expected_type=FillList, allow_none=True)
-    borders = Typed(expected_type=BorderList, allow_none=True)
-    cellStyleXfs = Typed(expected_type=CellStyleList, allow_none=True)
-    cellXfs = Typed(expected_type=CellStyleList, allow_none=True)
-    cellStyles = Typed(expected_type=NamedCellStyleList, allow_none=True)
-    dxfs = Typed(expected_type=DifferentialStyleList, allow_none=True)
+    numFmts = Typed(expected_type=NumberFormatList)
+    fonts = NestedSequence(expected_type=Font)
+    fills = NestedSequence(expected_type=Fill)
+    borders = NestedSequence(expected_type=Border)
+    cellStyleXfs = Typed(expected_type=CellStyleList)
+    cellXfs = Typed(expected_type=CellStyleList)
+    cellStyles = Typed(expected_type=NamedCellStyleList)
+    dxfs = NestedSequence(expected_type=DifferentialStyle)
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -51,13 +52,13 @@ class Stylesheet(Serialisable):
 
     def __init__(self,
                  numFmts=None,
-                 fonts=None,
-                 fills=None,
-                 borders=None,
+                 fonts=(),
+                 fills=(),
+                 borders=(),
                  cellStyleXfs=None,
                  cellXfs=None,
                  cellStyles=None,
-                 dxfs=None,
+                 dxfs=(),
                  tableStyles=None,
                  colors=None,
                  extLst=None,
@@ -65,15 +66,11 @@ class Stylesheet(Serialisable):
         if numFmts is None:
             numFmts = NumberFormatList()
         self.numFmts = numFmts
-        if fonts is None:
-            fonts = FontList()
         self.fonts = fonts
-        if fills is None:
-            fills = FillList()
         self.fills = fills
-        if borders is None:
-            borders = BorderList()
         self.borders = borders
+        if cellStyleXfs is None:
+            cellStyleXfs = CellStyleList()
         self.cellStyleXfs = cellStyleXfs
         if cellXfs is None:
             cellXfs = CellStyleList()
@@ -81,8 +78,7 @@ class Stylesheet(Serialisable):
         if cellStyles is None:
             cellStyles = NamedCellStyleList()
         self.cellStyles = cellStyles
-        if dxfs is None:
-            dxfs = DifferentialStyleList()
+
         self.dxfs = dxfs
         self.tableStyles = tableStyles
         self.colors = colors
@@ -193,10 +189,10 @@ def apply_stylesheet(archive, wb):
 
     wb._cell_styles = stylesheet.cell_styles
     wb._named_styles = stylesheet.named_styles
-    wb._borders = IndexedList(stylesheet.borders.border)
-    wb._fonts = IndexedList(stylesheet.fonts.font)
-    wb._fills = IndexedList(stylesheet.fills.fill)
-    wb._differential_styles = IndexedList(stylesheet.dxfs.dxf)
+    wb._borders = IndexedList(stylesheet.borders)
+    wb._fonts = IndexedList(stylesheet.fonts)
+    wb._fills = IndexedList(stylesheet.fills)
+    wb._differential_styles = IndexedList(stylesheet.dxfs)
     wb._number_formats = stylesheet.number_formats
     wb._protections = stylesheet.protections
     wb._alignments = stylesheet.alignments
@@ -206,10 +202,10 @@ def apply_stylesheet(archive, wb):
 
 def write_stylesheet(wb):
     stylesheet = Stylesheet()
-    stylesheet.fonts.font = wb._fonts
-    stylesheet.fills.fill = wb._fills
-    stylesheet.borders.border = wb._borders
-    stylesheet.dxfs.dxf = wb._differential_styles
+    stylesheet.fonts = wb._fonts
+    stylesheet.fills = wb._fills
+    stylesheet.borders = wb._borders
+    stylesheet.dxfs = wb._differential_styles
 
     from .numbers import NumberFormat
     fmts = []

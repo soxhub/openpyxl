@@ -180,26 +180,3 @@ class GradientFill(Fill):
         el = super(GradientFill, self).to_tree()
         parent.append(el)
         return parent
-
-
-class FillList(Serialisable):
-
-    count = Integer(allow_none=True)
-    fill = Sequence(expected_type=Fill)
-
-    __attrs__ = ("count",)
-
-    def __init__(self,
-                 count=None,
-                 fill=()
-                 ):
-        self.fill = fill
-
-
-    @property
-    def count(self):
-        return len(self.fill)
-
-
-    def __getitem__(self, idx):
-        return self.fill[idx]

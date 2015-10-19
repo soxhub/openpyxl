@@ -22,12 +22,9 @@ class TestStylesheet:
         expected = """
         <styleSheet>
           <numFmts count="0"></numFmts>
-          <fonts count="0"></fonts>
-          <fills count="0"></fills>
-          <borders count="0"></borders>
+          <cellStyleXfs count="0"></cellStyleXfs>
           <cellXfs count="0"></cellXfs>
           <cellStyles count="0"></cellStyles>
-          <dxfs count="0"></dxfs>
         </styleSheet>
         """
         diff = compare_xml(xml, expected)
@@ -108,7 +105,7 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
-        fonts = stylesheet.fonts.font
+        fonts = stylesheet.fonts
         assert fonts[0].scheme is None
         assert fonts[0].vertAlign is None
         assert fonts[1].u is None
@@ -155,12 +152,6 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
-        #assert stylesheet.custom_number_formats == {
-            #43:'_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
-            #176: "#,##0.00_ ",
-            #180: "yyyy/m/d;@",
-            #181: "0.00000_ "
-        #}
         assert stylesheet.number_formats == [
             '_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
             "#,##0.00_ ",
@@ -204,19 +195,19 @@ class TestStylesheet:
 
         followed = stylesheet.named_styles['Followed Hyperlink']
         assert followed.name == "Followed Hyperlink"
-        assert followed.font == stylesheet.fonts.font[2]
+        assert followed.font == stylesheet.fonts[2]
         assert followed.fill == DEFAULT_EMPTY_FILL
         assert followed.border == Border()
 
         link = stylesheet.named_styles['Hyperlink']
         assert link.name == "Hyperlink"
-        assert link.font == stylesheet.fonts.font[1]
+        assert link.font == stylesheet.fonts[1]
         assert link.fill == DEFAULT_EMPTY_FILL
         assert link.border == Border()
 
         normal = stylesheet.named_styles['Normal']
         assert normal.name == "Normal"
-        assert normal.font == stylesheet.fonts.font[0]
+        assert normal.font == stylesheet.fonts[0]
         assert normal.fill == DEFAULT_EMPTY_FILL
         assert normal.border == Border()
 
@@ -278,7 +269,6 @@ def test_write_worksheet(Stylesheet):
       <cellStyles count="1">
         <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
       </cellStyles>
-      <dxfs count="0"/>
     <tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
     </styleSheet>
     """
