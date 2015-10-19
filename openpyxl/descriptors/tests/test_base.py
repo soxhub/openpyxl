@@ -395,27 +395,3 @@ class TestLength:
     def test_invalid(self, Length):
         with pytest.raises(ValueError):
             Length.value = "2"
-
-
-@pytest.fixture
-def Sequence():
-    from ..base import Sequence
-
-    class Dummy(Strict):
-
-        value = Sequence()
-
-    return Dummy()
-
-
-class TestSequence:
-
-    @pytest.mark.parametrize("value", [list(), tuple()])
-    def test_valid_ctor(self, Sequence, value):
-        Sequence.value = value
-        assert Sequence.value == list(value)
-
-    @pytest.mark.parametrize("value", ["", b"", dict(), 1, None])
-    def test_invalid_container(self, Sequence, value):
-        with pytest.raises(TypeError):
-            Sequence.value = value

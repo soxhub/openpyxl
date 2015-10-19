@@ -10,12 +10,12 @@ from .base import (
     Descriptor,
     NoneSet,
     MinMax,
-    Sequence,
     Set,
     Float,
     Integer,
     String,
     )
+from .sequence import Sequence
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname
 
@@ -110,17 +110,6 @@ class NestedSet(Nested, Set):
 class NestedMinMax(Nested, MinMax):
 
     pass
-
-
-class NestedSequence(Nested, Sequence):
-
-
-    def to_tree(self, tagname, value, namespace=None):
-        namespace = getattr(self, "namespace", namespace)
-        if namespace is not None:
-            tagname = "{%s}%s" % (namespace, tagname)
-        for s in value:
-            yield Element(tagname, val=safe_string(s))
 
 
 class EmptyTag(Nested, Bool):

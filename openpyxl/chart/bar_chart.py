@@ -16,7 +16,6 @@ from openpyxl.descriptors.nested import (
     NestedBool,
     NestedInteger,
     NestedMinMax,
-    NestedSequence,
 )
 
 from .descriptors import (

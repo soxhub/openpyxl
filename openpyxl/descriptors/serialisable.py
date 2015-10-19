@@ -4,13 +4,13 @@ from __future__ import absolute_import
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
-from . import _Serialiasable, Sequence
+from . import _Serialiasable
+from .sequence import Sequence, NestedSequence
+from .namespace import namespaced
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import (
     Element,
-    SubElement,
-    safe_iterator,
     localname,
 )
 
@@ -53,37 +53,42 @@ class Serialisable(_Serialiasable):
             if tag in KEYWORDS:
                 tag = "_" + tag
             desc = getattr(cls, tag, None)
-            if desc is None:
+            if desc is None or isinstance(desc, property):
                 continue
-            if tag in cls.__nested__:
-                if hasattr(desc, 'from_tree'):
-                    if isinstance(desc, Sequence):
-                        attrib.setdefault(tag, [])
-                        attrib[tag].append(desc.from_tree(el))
-                    else:
-                        attrib[tag] = desc.from_tree(el)
+
+            if hasattr(desc, 'from_tree'):
+                #descriptor manages conversion
+                obj = desc.from_tree(el)
             else:
-                if isinstance(desc, property):
-                    continue
-                elif hasattr(desc.expected_type, "from_tree"):
+                if hasattr(desc.expected_type, "from_tree"):
+                    #complex type
                     obj = desc.expected_type.from_tree(el)
                 else:
+                    #primitive
                     obj = el.text
-                if isinstance(desc, Sequence):
-                    if tag not in attrib:
-                        attrib[tag] = []
-                    attrib[tag].append(obj)
-                else:
-                    attrib[tag] = obj
+
+            if isinstance(desc, NestedSequence):
+                attrib[tag] = obj
+            elif isinstance(desc, Sequence):
+                attrib.setdefault(tag, [])
+                attrib[tag].append(obj)
+            else:
+                attrib[tag] = obj
+
         return cls(**attrib)
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
+
         if tagname is None:
             tagname = self.tagname
+
+        # keywords have to be masked
+        if tagname.startswith("_"):
+            tagname = tagname[1:]
+
+        tagname = namespaced(self, tagname, namespace)
         namespace = getattr(self, "namespace", namespace)
-        if namespace is not None:
-            tagname = "{%s}%s" % (namespace, tagname)
 
         attrs = dict(self)
         for key, ns in self.__namespaced__:
@@ -91,36 +96,35 @@ class Serialisable(_Serialiasable):
                 attrs[ns] = attrs[key]
                 del attrs[key]
 
-        # keywords have to be masked
-        if tagname.startswith("_"):
-            tagname = tagname[1:]
         el = Element(tagname, attrs)
 
-        for child in self.__elements__:
-            if child in self.__nested__:
-                desc = getattr(self.__class__, child)
-                value = getattr(self, child)
-                if hasattr(desc, "to_tree"):
-                    if isinstance(value, seq_types):
-                        for obj in desc.to_tree(child, value, namespace):
-                            el.append(obj)
-                    else:
-                        obj = desc.to_tree(child, value, namespace)
-                        if obj is not None:
-                            el.append(obj)
-                elif value:
-                    SubElement(el, child, val=safe_string(value))
+        for child_tag in self.__elements__:
+            desc = getattr(self.__class__, child_tag, None)
+            obj = getattr(self, child_tag)
 
+            if isinstance(obj, seq_types):
+                if isinstance(desc, NestedSequence):
+                    # wrap sequence in container
+                    if not obj:
+                        continue
+                    nodes = [desc.to_tree(child_tag, obj, namespace)]
+                elif isinstance(desc, Sequence):
+                    # sequence
+                    desc.idx_base = self.idx_base
+                    nodes = (desc.to_tree(child_tag, obj, namespace))
+                else: # property
+                    nodes = (v.to_tree(child_tag, namespace) for v in obj)
+                for node in nodes:
+                    el.append(node)
             else:
-                obj = getattr(self, child)
-                if isinstance(obj, seq_types):
-                    for idx, v in enumerate(obj, self.idx_base):
-                        if hasattr(v, 'to_tree'):
-                            el.append(v.to_tree(tagname=child, idx=idx))
-                        else:
-                            SubElement(el, child).text = safe_string(v)
-                elif obj is not None:
-                    el.append(obj.to_tree(tagname=child))
+                if child_tag in self.__nested__:
+                    node = desc.to_tree(child_tag, obj, namespace)
+                elif obj is None:
+                    continue
+                else:
+                    node = obj.to_tree(child_tag)
+                if node is not None:
+                    el.append(node)
         return el
 
 
