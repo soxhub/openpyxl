@@ -105,6 +105,8 @@ class Serialisable(_Serialiasable):
             if isinstance(obj, seq_types):
                 if isinstance(desc, NestedSequence):
                     # wrap sequence in container
+                    if not obj:
+                        continue
                     nodes = [desc.to_tree(child_tag, obj, namespace)]
                 elif isinstance(desc, Sequence):
                     # sequence
