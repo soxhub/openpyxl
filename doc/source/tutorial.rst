@@ -133,7 +133,7 @@ If you need to iterate through all the rows or columns of a file, you can instea
 :func:`openpyxl.worksheet.Worksheet.rows` property::
 
     >>> ws = wb.active
-    >>> ws.['C9'] = 'hello world'
+    >>> ws['C9'] = 'hello world'
     >>> ws.rows
     ((<Cell Sheet.A1>, <Cell Sheet.B1>, <Cell Sheet.C1>),
     (<Cell Sheet.A2>, <Cell Sheet.B2>, <Cell Sheet.C2>),
