@@ -13,10 +13,13 @@ from openpyxl.styles.styleable import StyleArray
 def dummy_sheet():
     class DummyWorkbook(object):
         shared_styles = IndexedList()
-        shared_styles.add(None) # Workbooks always have a default style
+        style = StyleArray()
+        shared_styles.add(style) # Workbooks always have a default style
         _cell_styles = IndexedList()
-        _cell_styles.add(None)
+        _cell_styles.add(style)
         _number_formats = IndexedList()
+        _fonts = IndexedList()
+        _fonts.add(None)
 
 
     class DummySheet(object):
@@ -111,8 +114,19 @@ class TestDateTime:
         assert DummyCell.internal_value == 23596
 
 
-def test_read_only():
-    cell = ReadOnlyCell(sheet=None, row=None, column=None, value='1')
+class TestStyle:
+
+    def test_style_array(self, dummy_sheet):
+        cell = ReadOnlyCell(dummy_sheet, None, None, None)
+        assert cell.style_array == StyleArray()
+
+    def test_font(self, dummy_sheet):
+        cell = ReadOnlyCell(dummy_sheet, None, None, None)
+        assert cell.font == None
+
+
+def test_read_only(dummy_sheet):
+    cell = ReadOnlyCell(sheet=dummy_sheet, row=None, column=None, value='1')
     assert cell.value == 1
     with pytest.raises(AttributeError):
         cell.value = 10

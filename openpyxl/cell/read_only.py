@@ -27,7 +27,7 @@ class ReadOnlyCell(object):
 
     __slots__ =  ('parent', 'row', 'column', '_value', 'data_type', '_style_id')
 
-    def __init__(self, sheet, row, column, value, data_type='n', style_id=None):
+    def __init__(self, sheet, row, column, value, data_type='n', style_id=0):
         self.parent = sheet
         self._value = None
         self.row = row
@@ -62,14 +62,10 @@ class ReadOnlyCell(object):
 
     @property
     def style_array(self):
-        if not self._style_id:
-            return
         return self.parent.parent._cell_styles[self._style_id]
 
     @property
     def number_format(self):
-        if not self.style_array:
-            return
         _id = self.style_array.numFmtId
         if _id < 164:
             return BUILTIN_FORMATS.get(_id, "General")

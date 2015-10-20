@@ -20,6 +20,12 @@ Major changes
 * Support the creation of chartsheets
 
 
+Bug fixes
+---------
+
+* `#532 <https://bitbucket.org/openpyxl/openpyxl/issues/532>`_ Problems when cells have no style in read-only mode.
+
+
 Minor changes
 -------------
 
