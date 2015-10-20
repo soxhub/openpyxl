@@ -6,22 +6,29 @@ from io import BytesIO
 
 import pytest
 
+from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
-from openpyxl.worksheet.iter_worksheet import read_dimension
 from openpyxl.reader.excel import load_workbook
 from openpyxl.compat import range, zip
-from openpyxl.styles.styleable import StyleId
 
 
 @pytest.fixture
 def DummyWorkbook():
     class Workbook:
         excel_base_date = None
-        _cell_styles = [StyleId(0, 0, 0, 0, 0, 0)]
+        _cell_styles = [StyleArray([0, 0, 0, 0, 0, 0, 0, 0, 0])]
 
-        def get_sheet_names(self):
-            return []
+        def __init__(self):
+            self.sheetnames = []
+
     return Workbook()
+
+
+@pytest.fixture
+def ReadOnlyWorksheet():
+    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+    return ReadOnlyWorksheet
+
 
 def test_open_many_sheets(datadir):
     datadir.join("reader").chdir()
@@ -31,24 +38,39 @@ def test_open_many_sheets(datadir):
 
 @pytest.mark.parametrize("filename, expected",
                          [
-                             ("sheet2.xml", ('D', 1, 'AA', 30)),
+                             ("sheet2.xml", (4, 1, 27, 30)),
                              ("sheet2_no_dimension.xml", None),
                              ("sheet2_no_span.xml", None),
                              ("sheet2_invalid_dimension.xml", None),
                           ]
                          )
 def test_read_dimension(datadir, filename, expected):
+    from openpyxl.worksheet.read_only import read_dimension
+
     datadir.join("reader").chdir()
     with open(filename) as handle:
         dimension = read_dimension(handle)
     assert dimension == expected
 
 
-def test_force_dimension(datadir, DummyWorkbook):
+@pytest.mark.parametrize("filename, expected",
+                         [
+                             ("sheet2.xml", (1, 4, 30, 27)),
+                             ("sheet2_no_dimension.xml", (1, 1, None, None)),
+                         ]
+                         )
+def test_ctor(datadir, DummyWorkbook, ReadOnlyWorksheet, filename, expected):
     datadir.join("reader").chdir()
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
+    with open(filename) as src:
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", src, [])
+    assert (ws.min_row, ws.min_column, ws.max_row, ws.max_column) == expected
 
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [], [])
+
+def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
+    datadir.join("reader").chdir()
+
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [])
+
     dims = ws.calculate_dimension(True)
     assert dims == "A1:AA30"
 
@@ -59,11 +81,10 @@ def test_force_dimension(datadir, DummyWorkbook):
                           "sheet2_no_dimension.xml"
                          ]
                          )
-def test_get_max_cell(datadir, DummyWorkbook, filename):
+def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
 
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", filename, [], [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
 
@@ -253,23 +274,21 @@ def test_read_style_iter(tmpdir):
     assert cell.font == ft
 
 
-def test_read_hyperlinks_read_only(datadir, Workbook):
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
+def test_read_hyperlinks_read_only(datadir, Workbook, ReadOnlyWorksheet):
 
     datadir.join("reader").chdir()
     filename = 'bug328_hyperlinks.xml'
-    ws = IterableWorksheet(Workbook(data_only=True, read_only=True), "Sheet",
-                           "", filename, ['SOMETEXT'], [])
+    ws = ReadOnlyWorksheet(Workbook(data_only=True, read_only=True), "Sheet",
+                           "", filename, ['SOMETEXT'])
     assert ws['F2'].value is None
 
 
-def test_read_with_missing_cells(datadir, DummyWorkbook):
+def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
 
     filename = "bug393-worksheet.xml"
 
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", filename, [], [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
     rows = tuple(ws.rows)
 
     row = rows[1] # second row
@@ -281,7 +300,7 @@ def test_read_with_missing_cells(datadir, DummyWorkbook):
     assert values == [1, 2, None, None, 3]
 
 
-def test_read_row(datadir, DummyWorkbook):
+def test_read_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
 
     src = b"""
@@ -300,8 +319,7 @@ def test_read_row(datadir, DummyWorkbook):
     </sheetData>
     """
 
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "", [], [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "bug393-worksheet.xml", [])
 
     xml = fromstring(src)
     row = tuple(ws._get_row(xml, 11, 11))
@@ -313,10 +331,9 @@ def test_read_row(datadir, DummyWorkbook):
     assert values == [None, None, None, 1, None, None, None, None, None, None, 0.01]
 
 
-def test_read_empty_row(datadir, DummyWorkbook):
+def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
 
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "", [], [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
 
     src = """
     <row r="2" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />
@@ -327,9 +344,8 @@ def test_read_empty_row(datadir, DummyWorkbook):
     assert len(row) == 10
 
 
-def test_read_empty_rows(datadir, DummyWorkbook):
+def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
 
-    from openpyxl.worksheet.iter_worksheet import IterableWorksheet
-    ws = IterableWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [], [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7

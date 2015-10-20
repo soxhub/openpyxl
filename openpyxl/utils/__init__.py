@@ -8,21 +8,22 @@ Collection of utilities used within the package and also available for client co
 import datetime
 import re
 
+from .formulas import FORMULAE
 from openpyxl.compat import basestring
 from openpyxl.utils.exceptions import CellCoordinatesException
 
 # constants
 COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
-ABSOLUTE_RE = re.compile(
-'''^[$]?
-(?P<min_col>[A-Z]+)
-[$]?
-(?P<min_row>\d+)
-(:[$]?
-(?P<max_col>[A-Z]+)
-[$]?
-(?P<max_row>\d+))?$''',
-re.VERBOSE)
+RANGE_EXPR = """
+[$]?(?P<min_col>[A-Z]+)
+[$]?(?P<min_row>\d+)
+(:[$]?(?P<max_col>[A-Z]+)
+[$]?(?P<max_row>\d+))?
+"""
+ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
+SHEETRANGE_RE = re.compile("""
+^(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!
+(?P<cells>{0})$""".format(RANGE_EXPR), re.VERBOSE)
 
 
 def get_column_interval(start, end):
@@ -132,7 +133,7 @@ def range_boundaries(range_string):
     return min_col, min_row, max_col, max_row
 
 
-def cells_from_range(range_string):
+def rows_from_range(range_string):
     """
     Get individual addresses for every cell in a range.
     Yields one row at a time.
@@ -141,3 +142,42 @@ def cells_from_range(range_string):
     for row in range(min_row, max_row+1):
         yield tuple('%s%d' % (get_column_letter(col), row)
                     for col in range(min_col, max_col+1))
+
+
+def cols_from_range(range_string):
+    """
+    Get individual addresses for every cell in a range.
+    Yields one row at a time.
+    """
+    min_col, min_row, max_col, max_row = range_boundaries(range_string)
+    for col in range(min_col, max_col+1):
+        yield tuple('%s%d' % (get_column_letter(col), row)
+                    for row in range(min_row, max_row+1))
+
+
+def coordinate_to_tuple(coordinate):
+    """
+    Convert an Excel style coordinate to (row, colum) tuple
+    """
+    col, row = coordinate_from_string(coordinate)
+    return row, _COL_STRING_CACHE[col]
+
+
+def range_to_tuple(range_string):
+    """
+    Convert a worksheet range to the sheetname and maximum and minimum
+    coordinate indices
+    """
+    m = SHEETRANGE_RE.match(range_string)
+    if m is None:
+        raise ValueError("Value must be of the form sheetname!A1:E4")
+    sheetname = m.group("quoted") or m.group("notquoted")
+    cells = m.group("cells")
+    boundaries = range_boundaries(cells)
+    return sheetname, boundaries
+
+
+def quote_sheetname(sheetname):
+    if " " in sheetname:
+        sheetname = "'{0}'".format(sheetname)
+    return sheetname

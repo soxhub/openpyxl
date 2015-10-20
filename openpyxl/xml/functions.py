@@ -1,20 +1,13 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-"""Shared xml tools.
-
-Shortcut functions taken from:
-    http://lethain.com/entry/2009/jan/22/handling-very-large-csv-and-xml-files-in-python/
-
+"""
+XML compatability functions
 """
 
 # Python stdlib imports
 import re
 from functools import partial
-from xml.sax.saxutils import XMLGenerator
-
-XMLGenerator = partial(XMLGenerator, encoding="utf-8")
-
 # compatibility
 
 # package imports
@@ -55,7 +48,7 @@ else:
         QName
         )
     from .namespace import register_namespace
-    from .xmlfile import xmlfile
+    from et_xmlfile import xmlfile
 
 
 from openpyxl.xml.constants import (
@@ -94,29 +87,6 @@ register_namespace('cdr', CHART_DRAWING_NS)
 tostring = partial(tostring, encoding="utf-8")
 
 
-def get_document_content(xml_node):
-    """Print nicely formatted xml to a string."""
-    pretty_indent(xml_node)
-    return tostring(xml_node)
-
-
-def pretty_indent(elem, level=0):
-    """Format xml with nice indents and line breaks."""
-    i = "\n" + level * "  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
-            pretty_indent(elem, level + 1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
-
-
 def safe_iterator(node, tag=None):
     """Return an iterator that is compatible with Python 2.6"""
     if node is None:
@@ -143,7 +113,7 @@ def ConditionalElement(node, tag, condition, attr=None):
         return elem
 
 
-NS_REGEX = re.compile("{(?P<namespace>.*)}(?P<localname>.*)")
+NS_REGEX = re.compile("({(?P<namespace>.*)})?(?P<localname>.*)")
 
 def localname(node):
     m = NS_REGEX.match(node.tag)

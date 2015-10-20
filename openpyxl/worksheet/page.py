@@ -1,11 +1,9 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.compat import safe_string
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Strict,
     Float,
-    Typed,
     Bool,
     Integer,
     String,
@@ -17,10 +15,10 @@ from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.compat import deprecated
 
 
-class PageSetup(Strict):
-    """ Worksheet page setup """
+class PrintPageSetup(Serialisable):
+    """ Worksheet print page setup """
 
-    tag = "pageSetup"
+    tagname = "pageSetup"
 
     orientation = NoneSet(values=("default", "portrait", "landscape"))
     paperSize = Integer(allow_none=True)
@@ -41,6 +39,7 @@ class PageSetup(Strict):
     verticalDpi = Integer(allow_none=True)
     copies = Integer(allow_none=True)
     id = String(allow_none=True)
+
 
     def __init__(self,
                  worksheet=None,
@@ -100,6 +99,7 @@ class PageSetup(Strict):
     def verticalCentered(self):
         pass
 
+
     @property
     def sheet_properties(self):
         """
@@ -128,29 +128,28 @@ class PageSetup(Strict):
         self.sheet_properties.autoPageBreaks = value
 
 
-    def __iter__(self):
-        for attr in ("orientation", "paperSize", "scale", "fitToHeight",
-                     "fitToWidth", "firstPageNumber", "useFirstPageNumber" ,
-                     "paperHeight", "paperWidth", "pageOrder", "usePrinterDefaults",
-                     "blackAndWhite", "draft", "cellComments", "errors" , "horizontalDpi",
-                     "verticalDpi", "copies", "id"):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
+    @classmethod
+    def from_tree(cls, node):
+        attrs = node.attrib
+        id_key = '{%s}id' % REL_NS
+        if id_key in attrs:
+            attrs.pop(id_key)
+        return cls(**attrs)
 
-    def write_xml_element(self):
 
+    def to_tree(self):
         attrs = dict(self)
         if 'id' in attrs:
             attrs['{%s}id' % REL_NS] = attrs['id']
             del attrs['id']
-        return Element(self.tag, attrs)
+        return Element(self.tagname, attrs)
 
 
-class PrintOptions(Strict):
+class PrintOptions(Serialisable):
     """ Worksheet print options """
 
-    tag = "{%s}printOptions" % SHEET_MAIN_NS
+    tagname = "printOptions"
+    tag = "{%s}" % SHEET_MAIN_NS + tagname
     horizontalCentered = Bool(allow_none=True)
     verticalCentered = Bool(allow_none=True)
     headings = Bool(allow_none=True)
@@ -169,22 +168,8 @@ class PrintOptions(Strict):
         self.gridLines = gridLines
         self.gridLinesSet = gridLinesSet
 
-    def __iter__(self):
-        for attr in ("horizontalCentered", "verticalCentered", "headings",
-                     "gridLines", "gridLinesSet"):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
 
-
-    def write_xml_element(self):
-
-        el = Element(self.tag, dict(self))
-
-        return el
-
-
-class PageMargins(Strict):
+class PageMargins(Serialisable):
     """
     Information about page margins for view/print layouts.
     Standard values (in inches)
@@ -192,6 +177,7 @@ class PageMargins(Strict):
     top, bottom = 1
     header, footer = 0.5
     """
+    tagname = "pageMargins"
 
     left = Float()
     right = Float()
@@ -208,8 +194,3 @@ class PageMargins(Strict):
         self.bottom = bottom
         self.header = header
         self.footer = footer
-
-    def __iter__(self):
-        for key in ("left", "right", "top", "bottom", "header", "footer"):
-            value = getattr(self, key)
-            yield key, safe_string(value)

@@ -2,44 +2,20 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 
-# package
-from openpyxl import Workbook
-from openpyxl.xml.functions import tostring
-
-# test imports
-from openpyxl.tests.helper import compare_xml
-
-
-def test_write_hyperlink_rels(datadir):
-    from .. relations import write_rels
-    wb = Workbook()
-    ws = wb.active
-
-    assert 0 == len(ws.relationships)
-    ws.cell('A1').value = "test"
-    ws.cell('A1').hyperlink = "http://test.com/"
-    assert 1 == len(ws.relationships)
-    ws.cell('A2').value = "test"
-    ws.cell('A2').hyperlink = "http://test2.com/"
-    assert 2 == len(ws.relationships)
-
-    el = write_rels(ws, 1, 1, 1)
-    xml = tostring(el)
-
-    datadir.chdir()
-    with open('sheet1_hyperlink.xml.rels') as expected:
-        diff = compare_xml(xml, expected.read())
-        assert diff is None, diff
-
 import pytest
+
+from openpyxl.xml.functions import tostring
+from openpyxl.tests.helper import compare_xml
+from openpyxl.packaging.relationship import Relationship
+
 
 class Worksheet:
 
     _comment_count = 0
     vba_controls = None
-    relationships = ()
-    _charts = ()
-    _images = ()
+
+    def __init__(self):
+        self._rels = []
 
 
 @pytest.fixture
@@ -55,11 +31,11 @@ class TestRels:
         ws._comment_count = 1
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-         <Relationship Id="comments" Target="../comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
-          <Relationship Id="commentsvml" Target="../drawings/commentsDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+         <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
+          <Relationship Id="commentsvml" Target="/xl/drawings/commentsDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         </Relationships>
         """
-        xml = tostring(writer(ws, None, 1, None))
+        xml = tostring(writer(ws, comments_id=1))
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -69,22 +45,37 @@ class TestRels:
         ws.vba_controls = "vba"
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-          <Relationship Id="vba" Target="../drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+          <Relationship Id="vba" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         </Relationships>
             """
-        xml = tostring(writer(ws, None, None, 1))
+        xml = tostring(writer(ws, vba_controls_id=1))
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def test_drawing(self, writer):
+    def test_implicit(self, writer):
         ws = Worksheet()
-        ws._charts = [None]
+        ws._rels = [Relationship(type="drawing", target="/xl/drawings/drawing1.xml")]
         expected = """
-            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-              <Relationship Id="rId1" Target="../drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
-            </Relationships>
+        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+          <Relationship Id="rId1" Target="/xl/drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
+        </Relationships>
                 """
-        xml = tostring(writer(ws, 1, None, None))
+        xml = tostring(writer(ws))
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_vba_and_comments(self, writer):
+        ws = Worksheet()
+        ws.vba_controls = "vba"
+        ws._comment_count = 1
+        expected = """
+        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+          <Relationship Id="vba" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+          <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
+        </Relationships>
+            """
+        xml = tostring(writer(ws, vba_controls_id=1, comments_id=1))
         diff = compare_xml(xml, expected)
         assert diff is None, diff

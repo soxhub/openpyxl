@@ -8,7 +8,6 @@ import datetime
 
 from openpyxl.compat import unicode
 from openpyxl.formatting import ConditionalFormatting
-from openpyxl.formatting.rules import FormulaRule
 
 from openpyxl.xml.functions import SubElement
 from openpyxl.styles import (
@@ -74,7 +73,7 @@ class TestStyleWriter(object):
 
     def test_no_style(self):
         w = StyleWriter(self.workbook)
-        assert len(w.styles) == 1  # there is always the empty (defaul) style
+        assert len(w.wb._cell_styles) == 1  # there is always the empty (defaul) style
 
     def test_nb_style(self):
         for i in range(1, 6):
@@ -82,13 +81,13 @@ class TestStyleWriter(object):
             cell.font = Font(size=i)
             _ = cell.style_id
         w = StyleWriter(self.workbook)
-        assert len(w.styles) == 6  # 5 + the default
+        assert len(w.wb._cell_styles) == 6  # 5 + the default
 
         cell = self.worksheet.cell('A10')
         cell.border=Border(top=Side(border_style=borders.BORDER_THIN))
         _ = cell.style_id
         w = StyleWriter(self.workbook)
-        assert len(w.styles) == 7
+        assert len(w.wb._cell_styles) == 7
 
 
     def test_default_xfs(self):
@@ -217,6 +216,37 @@ class TestStyleWriter(object):
         assert diff is None, diff
 
 
+    def test_named_styles(self):
+        writer = StyleWriter(self.workbook)
+        writer._write_named_styles()
+        xml = tostring(writer._root)
+        expected = """
+        <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <cellStyleXfs count="1">
+          <xf borderId="0" fillId="0" fontId="0" numFmtId="0"></xf>
+        </cellStyleXfs>
+        </styleSheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_style_names(self):
+        writer = StyleWriter(self.workbook)
+        writer._write_style_names()
+        xml = tostring(writer._root)
+        expected = """
+            <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <cellStyles count="1">
+              <cellStyle name="Normal" xfId="0" builtinId="0" hidden="0"/>
+            </cellStyles>
+            </styleSheet>
+            """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+
 def test_simple_styles(datadir):
     wb = Workbook(guess_types=True)
     ws = wb.active
@@ -282,7 +312,7 @@ def test_empty_workbook():
         <xf borderId="0" fillId="0" fontId="0" numFmtId="0" xfId="0"/>
       </cellXfs>
       <cellStyles count="1">
-        <cellStyle builtinId="0" name="Normal" xfId="0"/>
+        <cellStyle builtinId="0" name="Normal" xfId="0" hidden="0"/>
       </cellStyles>
       <dxfs count="0"/>
       <tableStyles count="0" defaultPivotStyle="PivotStyleLight16" defaultTableStyle="TableStyleMedium9"/>

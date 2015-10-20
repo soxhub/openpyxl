@@ -15,10 +15,12 @@ PACKAGE_XL = 'xl'
 PACKAGE_RELS = '_rels'
 PACKAGE_THEME = PACKAGE_XL + '/' + 'theme'
 PACKAGE_WORKSHEETS = PACKAGE_XL + '/' + 'worksheets'
+PACKAGE_CHARTSHEETS = PACKAGE_XL + '/' + 'chartsheets'
 PACKAGE_DRAWINGS = PACKAGE_XL + '/' + 'drawings'
 PACKAGE_CHARTS = PACKAGE_XL + '/' + 'charts'
 PACKAGE_IMAGES = PACKAGE_XL + '/' + 'media'
 PACKAGE_WORKSHEET_RELS = PACKAGE_WORKSHEETS + '/' + '_rels'
+PACKAGE_CHARTSHEETS_RELS = PACKAGE_CHARTSHEETS + '/' + '_rels'
 
 ARC_CONTENT_TYPES = '[Content_Types].xml'
 ARC_ROOT_RELS = PACKAGE_RELS + '/.rels'
@@ -85,6 +87,7 @@ EXTERNAL_LINK = SPREADSHEET % "externalLink"
 WORKSHEET_TYPE = SPREADSHEET % "worksheet"
 COMMENTS_TYPE = SPREADSHEET % "comments"
 STYLES_TYPE = SPREADSHEET % "styles"
+CHARTSHEET_TYPE = SPREADSHEET % "chartsheet"
 DRAWING_TYPE = "application/vnd.openxmlformats-officedocument.drawing+xml"
 CHART_TYPE = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
 CHARTSHAPE_TYPE = "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml"
@@ -93,3 +96,18 @@ XLTM = WORKBOOK_MACRO % 'template'
 XLSM = WORKBOOK_MACRO % 'sheet'
 XLTX = WORKBOOK % 'template'
 XLSX = WORKBOOK % 'sheet'
+
+
+# Extensions to the specification
+
+EXT_TYPES = {
+    '{78C0D931-6437-407D-A8EE-F0AAD7539E65}': 'Conditional Formatting',
+    '{CCE6A557-97BC-4B89-ADB6-D9C93CAAB3DF}': 'Data Validation',
+    '{05C60535-1F16-4FD2-B633-F4F36F0B64E0}': 'Sparkline Group',
+    '{A8765BA9-456A-4DAB-B4F3-ACF838C121DE}': 'Slicer List',
+    '{FC87AEE6-9EDD-4A0A-B7FB-166176984837}': 'Protected Range',
+    '{01252117-D84E-4E92-8308-4BE1C098FCBB}': 'Ignored Error',
+    '{F7C9EE02-42E1-4005-9D12-6889AFFD525C}': 'Web Extension',
+    '{3A4CF648-6AED-40f4-86FF-DC5316D8AED3}': 'Slicer List',
+    '{7E03D99C-DC04-49d9-9315-930204A7B6E9}': 'Timeline Ref',
+}

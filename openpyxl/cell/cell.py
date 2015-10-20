@@ -20,7 +20,6 @@ from openpyxl.compat import (
     basestring,
     bytes,
     NUMERIC_TYPES,
-    lru_cache,
     range,
     deprecated,
 )
@@ -35,19 +34,16 @@ from openpyxl.utils.datetime  import (
     from_excel
     )
 from openpyxl.utils.exceptions import (
-    CellCoordinatesException,
     IllegalCharacterError
 )
 from openpyxl.utils.units import points_to_pixels
 from openpyxl.utils import (
-    absolute_coordinate,
-    get_column_interval,
     get_column_letter,
     column_index_from_string,
-    coordinate_from_string,
 )
-from openpyxl.styles import numbers, is_date_format, Style
+from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
+from openpyxl.worksheet.hyperlink import Hyperlink
 
 # constants
 
@@ -81,15 +77,13 @@ class Cell(StyleableObject):
     Properties of interest include style, type, value, and address.
 
     """
-    __slots__ =  (
-        'column',
+    __slots__ = (
         'row',
-        'coordinate',
+        'col_idx',
         '_value',
         'data_type',
         'parent',
-        'xf_index',
-        '_hyperlink_rel',
+        '_hyperlink',
         '_comment',
                  )
 
@@ -108,30 +102,28 @@ class Cell(StyleableObject):
                    TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
 
-    def __init__(self, worksheet, column, row, value=None, fontId=0,
-                 fillId=0, borderId=0, alignmentId=0, protectionId=0, numFmtId=0,
-                 pivotButton=None, quotePrefix=None, xfId=None):
-        self._font_id = fontId
-        self._fill_id = fillId
-        self._border_id = borderId
-        self._alignment_id = alignmentId
-        self._protection_id = protectionId
-        self._number_format_id = numFmtId
-        self.quotePrefix = quotePrefix
-        self.pivotButton = pivotButton
-        self.parent = worksheet
-        self.column = column
+    def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, style_array=None):
+        super(Cell, self).__init__(worksheet, style_array)
         self.row = row
-        self.coordinate = '%s%d' % (self.column, self.row)
         # _value is the stored value, while value is the displayed value
         self._value = None
-        self._hyperlink_rel = None
+        self._hyperlink = None
         self.data_type = 'n'
         if value is not None:
             self.value = value
-        self.xf_index = 0
         self._comment = None
+        if column is not None:
+            col_idx = column_index_from_string(column)
+        self.col_idx = col_idx
 
+
+    @property
+    def coordinate(self):
+        return '%s%d' % (self.column, self.row)
+
+    @property
+    def column(self):
+        return get_column_letter(self.col_idx)
 
     @property
     def encoding(self):
@@ -190,7 +182,7 @@ class Cell(StyleableObject):
 
         self.data_type = "n"
 
-        if isinstance(value, bool):
+        if value is True or value is False:
             self.data_type = self.TYPE_BOOL
 
         elif isinstance(value, NUMERIC_TYPES):
@@ -320,27 +312,18 @@ class Cell(StyleableObject):
     @property
     def hyperlink(self):
         """Return the hyperlink target or an empty string"""
-        return self._hyperlink_rel is not None and \
-                self._hyperlink_rel.target or ''
+        return self._hyperlink
 
     @hyperlink.setter
     def hyperlink(self, val):
         """Set value and display for hyperlinks in a cell.
-        Automatically setsthe `value` of the cell with link text,
+        Automatically sets the `value` of the cell with link text,
         but you can modify it afterwards by setting the `value`
-        property, and the hyperlink will remain.\n\n' ':rtype: string"""
-        if self._hyperlink_rel is None:
-            self._hyperlink_rel = self.parent._create_relationship("hyperlink")
-        self._hyperlink_rel.target = val
-        self._hyperlink_rel.target_mode = "External"
+        property, and the hyperlink will remain."""
+        self._hyperlink = Hyperlink(ref=self.coordinate, target=val)
+        self.parent.hyperlinks.add(self)
         if self._value is None:
             self.value = val
-
-    @property
-    def hyperlink_rel_id(self):
-        """Return the id pointed to by the hyperlink, or None"""
-        return self._hyperlink_rel is not None and \
-                self._hyperlink_rel.id or None
 
     @property
     def is_date(self):
@@ -363,7 +346,7 @@ class Cell(StyleableObject):
 
         :rtype: :class:`openpyxl.cell.Cell`
         """
-        offset_column = column_index_from_string(self.column) + column
+        offset_column = self.col_idx + column
         offset_row = self.row + row
         return self.parent.cell(column=offset_column, row=offset_row)
 

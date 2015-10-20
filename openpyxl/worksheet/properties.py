@@ -3,16 +3,16 @@ from __future__ import absolute_import
 
 """Worksheet Properties"""
 
-from openpyxl.compat import safe_string
-from openpyxl.descriptors import Strict, String, Bool, Typed
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import String, Bool, Typed
 from openpyxl.styles.colors import ColorDescriptor
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import Element
-from openpyxl.styles.colors import Color
 
-class Outline(Strict):
+
+class Outline(Serialisable):
 
     tag = "{%s}outlinePr" % SHEET_MAIN_NS
+    tagname = "outlinePr"
 
     applyStyles = Bool(allow_none=True)
     summaryBelow = Bool(allow_none=True)
@@ -32,16 +32,10 @@ class Outline(Strict):
         self.showOutlineSymbols = showOutlineSymbols
 
 
-    def __iter__(self):
-        for attr in ("applyStyles", "summaryBelow", "summaryRight", "showOutlineSymbols"):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-
-class PageSetupProperties(Strict):
+class PageSetupProperties(Serialisable):
 
     tag = "{%s}pageSetUpPr" % SHEET_MAIN_NS
+    tagname = "pageSetUpPr"
 
     autoPageBreaks = Bool(allow_none=True)
     fitToPage = Bool(allow_none=True)
@@ -50,16 +44,11 @@ class PageSetupProperties(Strict):
         self.autoPageBreaks = autoPageBreaks
         self.fitToPage = fitToPage
 
-    def __iter__(self):
-        for attr in ("autoPageBreaks", "fitToPage"):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
 
-
-class WorksheetProperties(Strict):
+class WorksheetProperties(Serialisable):
 
     tag = "{%s}sheetPr" % SHEET_MAIN_NS
+    tagname = "sheetPr"
 
     codeName = String(allow_none=True)
     enableFormatConditionsCalculation = Bool(allow_none=True)
@@ -74,6 +63,8 @@ class WorksheetProperties(Strict):
     outlinePr = Typed(expected_type=Outline, allow_none=True)
     pageSetUpPr = Typed(expected_type=PageSetupProperties, allow_none=True)
 
+    __elements__ = ('tabColor', 'outlinePr', 'pageSetUpPr')
+
 
     def __init__(self,
                  codeName=None,
@@ -87,7 +78,7 @@ class WorksheetProperties(Strict):
                  transitionEntry=None,
                  tabColor=None,
                  outlinePr=None,
-                 pageSetUpPr=None,
+                 pageSetUpPr=None
                  ):
         """ Attributes """
         self.codeName = codeName
@@ -102,62 +93,11 @@ class WorksheetProperties(Strict):
         """ Elements """
         self.tabColor = tabColor
         if outlinePr is None:
-            outline = Outline(summaryBelow=True, summaryRight=True)
-        self.outlinePr = outlinePr
+            self.outlinePr = Outline(summaryBelow=True, summaryRight=True)
+        else:
+            self.outlinePr = outlinePr
+
         if pageSetUpPr is None:
-            pageSetUpPr = PageSetupProperties()
-        self.pageSetUpPr = pageSetUpPr
-
-
-
-    def __iter__(self):
-        for attr in ("codeName", "enableFormatConditionsCalculation",
-                     "filterMode", "published", "syncHorizontal", "syncRef",
-                     "syncVertical", "transitionEvaluation", "transitionEntry"):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-
-def parse_sheetPr(node):
-    props = WorksheetProperties(**node.attrib)
-
-    outline = node.find(Outline.tag)
-    if outline is not None:
-        props.outlinePr = Outline(**outline.attrib)
-
-    page_setup = node.find(PageSetupProperties.tag)
-    if page_setup is not None:
-        props.pageSetUpPr = PageSetupProperties(**page_setup.attrib)
-
-    tab_color = node.find('{%s}tabColor' % SHEET_MAIN_NS)
-    if tab_color is not None:
-        props.tabColor = Color(**dict(tab_color.attrib))
-
-    return props
-
-
-def write_sheetPr(props):
-
-    attributes = {}
-    for k, v in dict(props).items():
-        if not isinstance(v, dict):
-            attributes[k] = v
-
-    el = Element(props.tag, attributes)
-
-    tab_color = props.tabColor
-    if tab_color is not None:
-        node = tab_color.to_tree("{%s}tabColor" % SHEET_MAIN_NS)
-        el.append(node)
-
-    outline = props.outlinePr
-    if outline:
-        el.append(Element(outline.tag, dict(outline)))
-
-    page_setup = props.pageSetUpPr
-    if page_setup:
-        el.append(Element(page_setup.tag, dict(page_setup)))
-
-
-    return el
+            self.pageSetUpPr = PageSetupProperties()
+        else:
+            self.pageSetUpPr = pageSetUpPr

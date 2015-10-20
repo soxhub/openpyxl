@@ -4,12 +4,13 @@ from __future__ import absolute_import
 from itertools import groupby, chain
 import warnings
 
-from openpyxl.descriptors import Strict, Bool, NoneSet, Set, String
-from openpyxl.compat import OrderedDict, safe_string, deprecated
-from openpyxl.cell import coordinate_from_string
-from openpyxl.worksheet import cells_from_range
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import Element, safe_iterator
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import Bool, NoneSet, String
+from openpyxl.descriptors.nested import NestedText
+from openpyxl.compat import OrderedDict, safe_string, deprecated, unicode
+from openpyxl.utils import coordinate_from_string
+from openpyxl.worksheet import rows_from_range
+from openpyxl.xml.functions import Element, SubElement
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -57,11 +58,13 @@ def expand_cell_ranges(range_string):
     """
     cells = []
     for rs in range_string.split():
-        cells.extend(cells_from_range(rs))
+        cells.extend(rows_from_range(rs))
     return list(chain.from_iterable(cells))
 
 
-class DataValidation(Strict):
+class DataValidation(Serialisable):
+
+    tagname = "dataValidation"
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
@@ -75,8 +78,8 @@ class DataValidation(Strict):
     promptTitle = String(allow_none = True)
     prompt = String(allow_none = True)
     sqref = String(allow_none = True)
-    formula1 = String(allow_none = True)
-    formula2 = String(allow_none = True)
+    formula1 = NestedText(allow_none=True, expected_type=unicode)
+    formula2 = NestedText(allow_none=True, expected_type=unicode)
 
     type = NoneSet(values=("whole", "decimal", "list", "date", "time",
                            "textLength", "custom"))
@@ -132,7 +135,17 @@ class DataValidation(Strict):
         self.prompt = prompt
         self.errorTitle = errorTitle
 
-    @deprecated("Use DataValidation.add()")
+    def to_tree(self, tagname=None):
+        attrs = dict(self)
+        el = Element(self.tagname, attrs)
+        for n in self.__nested__:
+            value = getattr(self, n)
+            if value:
+                SubElement(el, n).text = value
+        return el
+
+
+    @deprecated("Use DataValidation.add(). Will be removed in 2.4")
     def add_cell(self, cell):
         """Adds a openpyxl.cell to this validator"""
         self.add(cell)
@@ -141,14 +154,14 @@ class DataValidation(Strict):
         """Adds a openpyxl.cell to this validator"""
         self.cells.add(cell.coordinate)
 
-    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error")
+    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error Will be removed in 2.4")
     def set_error_message(self, error, error_title="Validation Error"):
         """Creates a custom error message, displayed when a user changes a cell
            to an invalid value"""
         self.errorTitle = error_title
         self.error = error
 
-    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt")
+    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt Will be removed in 2.4")
     def set_prompt_message(self, prompt, prompt_title="Validation Prompt"):
         """Creates a custom prompt message"""
         self.promptTitle = prompt_title
@@ -170,60 +183,3 @@ class DataValidation(Strict):
             value = getattr(self, attr)
             if value is not None:
                 yield attr, safe_string(value)
-
-
-@deprecated("Class descriptors check values")
-class ValidationType(object):
-    NONE = "none"
-    WHOLE = "whole"
-    DECIMAL = "decimal"
-    LIST = "list"
-    DATE = "date"
-    TIME = "time"
-    TEXT_LENGTH = "textLength"
-    CUSTOM = "custom"
-
-
-@deprecated("Class descriptors check values")
-class ValidationOperator(object):
-    BETWEEN = "between"
-    NOT_BETWEEN = "notBetween"
-    EQUAL = "equal"
-    NOT_EQUAL = "notEqual"
-    LESS_THAN = "lessThan"
-    LESS_THAN_OR_EQUAL = "lessThanOrEqual"
-    GREATER_THAN = "greaterThan"
-    GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
-
-
-@deprecated("Class descriptors check values")
-class ValidationErrorStyle(object):
-    STOP = "stop"
-    WARNING = "warning"
-    INFORMATION = "information"
-
-
-def writer(data_validation):
-    """
-    Serialse a data validation
-    """
-    attrs = dict(data_validation)
-    el = Element("{%s}dataValidation" % SHEET_MAIN_NS, attrs)
-    for attr in ("formula1", "formula2"):
-        value = getattr(data_validation, attr, None)
-        if value is not None:
-            f = Element("{%s}%s" % (SHEET_MAIN_NS, attr))
-            f.text = value
-            el.append(f)
-    return el
-
-
-def parser(element):
-    """
-    Parse dataValidation tag
-    """
-    dv = DataValidation(**element.attrib)
-    for attr in ("formula1", "formula2"):
-        for f in safe_iterator(element, "{%s}%s" % (SHEET_MAIN_NS, attr)):
-            setattr(dv, attr, f.text)
-    return dv

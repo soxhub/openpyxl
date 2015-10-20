@@ -2,7 +2,13 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 # Python stdlib imports
-from datetime import datetime, date, timedelta, time
+from datetime import (
+    datetime,
+    date,
+    timedelta,
+    time,
+    tzinfo
+)
 
 import pytest
 
@@ -103,3 +109,48 @@ def test_days_to_time():
     td = timedelta(0, 51320, 1600)
     FUT = days_to_time
     assert FUT(td) == time(14, 15, 20, 1600)
+
+
+class GMT(tzinfo):
+
+    def utcoffset(self, dt):
+        return timedelta(0)
+
+    def dst(self, dt):
+        return timedelta(0)
+
+    def tzname(self,dt):
+        return "GMT"
+
+
+class CET(tzinfo):
+
+    def utcoffset(self, dt):
+        return timedelta(hours=1) + self.dst(dt)
+
+    def dst(self, dt):
+        # DST starts last Sunday in March
+        d = datetime(dt.year, 4, 1)   # ends last Sunday in October
+        self.dston = d - timedelta(days=d.weekday() + 1)
+        d = datetime(dt.year, 11, 1)
+        self.dstoff = d - timedelta(days=d.weekday() + 1)
+        if self.dston <=  dt.replace(tzinfo=None) < self.dstoff:
+            return timedelta(hours=1)
+        else:
+            return timedelta(0)
+
+    def tzname(self,dt):
+        return "CET +1"
+
+
+def test_localised_time():
+    from ..datetime import time_to_days
+    dt1 = datetime(2015, 7, 24, tzinfo=GMT())
+    dt2 = datetime(2015, 7, 24, 2, tzinfo=CET())
+    assert dt2 - dt2 == timedelta(0)
+
+    e1 = time_to_days(dt1)
+    e2 = time_to_days(dt2)
+
+    assert e1 == 0
+    assert e2 == 0

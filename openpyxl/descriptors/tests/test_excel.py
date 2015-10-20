@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
 import pytest
 
@@ -117,3 +118,55 @@ class TestPercentage:
     def test_valid(self, Percentage, value):
         with pytest.raises(ValueError):
             Percentage.value = value
+
+
+@pytest.fixture
+def Guid():
+    from ..excel import Guid
+
+    class Dummy(Strict):
+        value = Guid()
+
+    return Dummy()
+
+
+class TestGuid():
+    @pytest.mark.parametrize("value",
+                             ["{00000000-5BD2-4BC8-9F70-7020E1357FB2}"]
+                             )
+    def test_valid(self, Guid, value):
+        Guid.value = value
+        assert Guid.value == value
+
+    @pytest.mark.parametrize("value",
+                             ["{00000000-5BD2-4BC8-9F70-7020E1357FB2"]
+                             )
+    def test_valid(self, Guid, value):
+        with pytest.raises(ValueError):
+            Guid.value = value
+
+
+@pytest.fixture
+def Base64Binary():
+    from ..excel import Base64Binary
+
+    class Dummy(Strict):
+        value = Base64Binary()
+
+    return Dummy()
+
+
+class TestBase64Binary():
+    @pytest.mark.parametrize("value",
+                             ["9oN7nWkCAyEZib1RomSJTjmPpCY="]
+                             )
+    def test_valid(self, Base64Binary, value):
+        Base64Binary.value = value
+        assert Base64Binary.value == value
+
+    @pytest.mark.parametrize("value",
+                             ["==0F"]
+                             )
+    def test_valid(self, Base64Binary, value):
+        with pytest.raises(ValueError):
+            Base64Binary.value = value

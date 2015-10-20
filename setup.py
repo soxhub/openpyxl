@@ -38,28 +38,23 @@ except IOError:
     README = ''
 
 
-__author__ = 'See AUTHORS'
-__license__ = 'MIT/Expat'
-__author_email__ = 'eric.gazoni@gmail.com'
-__maintainer_email__ = 'openpyxl-users@googlegroups.com'
-__url__ = 'http://openpyxl.readthedocs.org'
+import json
+src_file = os.path.join(here, "openpyxl", ".constants.json")
+with open(src_file) as src:
+    constants = json.load(src)
+    __author__ = constants['__author__']
+    __author_email__ = constants["__author_email__"]
+    __license__ = constants["__license__"]
+    __maintainer_email__ = constants["__maintainer_email__"]
+    __url__ = constants["__url__"]
+    __version__ = constants["__version__"]
 
-
-def get_version():
-    f = open(os.path.join(here, 'openpyxl', '__init__.py'))
-    version_file = f.read()
-    f.close()
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
 
 setup(name='openpyxl',
     packages=find_packages(),
     # metadata
-    version=get_version(),
-    description="A Python library to read/write Excel 2007 xlsx/xlsm files",
+    version=__version__,
+    description="A Python library to read/write Excel 2010 xlsx/xlsm files",
     long_description=README,
     author=__author__,
     author_email=__author_email__,
@@ -69,8 +64,11 @@ setup(name='openpyxl',
         'python (>=2.6.0)',
         ],
     install_requires=[
-        'jdcal',
+        'jdcal', 'et_xmlfile',
         ],
+    package_data={
+        'openpyxl': ['.constants.json']
+    },
     classifiers=[
                  'Development Status :: 5 - Production/Stable',
                  'Operating System :: MacOS :: MacOS X',

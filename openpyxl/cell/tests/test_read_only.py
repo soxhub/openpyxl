@@ -6,17 +6,20 @@ import pytest
 
 from openpyxl.cell.read_only import ReadOnlyCell
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.styles.styleable import StyleId
+from openpyxl.styles.styleable import StyleArray
 
 
 @pytest.fixture(scope='module')
 def dummy_sheet():
     class DummyWorkbook(object):
         shared_styles = IndexedList()
-        shared_styles.add(None) # Workbooks always have a default style
+        style = StyleArray()
+        shared_styles.add(style) # Workbooks always have a default style
         _cell_styles = IndexedList()
-        _cell_styles.add(None)
+        _cell_styles.add(style)
         _number_formats = IndexedList()
+        _fonts = IndexedList()
+        _fonts.add(None)
 
 
     class DummySheet(object):
@@ -28,7 +31,7 @@ def dummy_sheet():
 
 
 def test_ctor(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, None, None, 10, 'n')
+    cell = ReadOnlyCell(dummy_sheet, None, None, '10', 'n')
     assert cell.value == 10
 
 
@@ -39,18 +42,18 @@ def test_empty_cell(dummy_sheet):
 
 
 def test_base_date(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, None, None, 10, 'n')
+    cell = ReadOnlyCell(dummy_sheet, None, None, '10', 'n')
     assert cell.base_date == 2415018.5
 
 
 def test_string_table(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, None, None, 0, 's')
+    cell = ReadOnlyCell(dummy_sheet, None, None, '0', 's')
     assert cell.shared_strings == ['Hello world']
     assert cell.value == 'Hello world'
 
 
 def test_coordinate(dummy_sheet):
-    cell = ReadOnlyCell(dummy_sheet, 1, "A", 10, None)
+    cell = ReadOnlyCell(dummy_sheet, 1, 1, 10, None)
     assert cell.coordinate == "A1"
     cell = ReadOnlyCell(dummy_sheet, None, None, 1, None)
     with pytest.raises(AttributeError):
@@ -90,7 +93,7 @@ def test_numeric(dummy_sheet, value, expected):
 def DummyCell(dummy_sheet):
 
     dummy_sheet.parent._number_formats.add('d-mmm-yy')
-    style = StyleId(numFmtId=164)
+    style = StyleArray([0,0,0,164,0,0,0,0,0])
     dummy_sheet.parent._cell_styles.add(style)
     cell = ReadOnlyCell(dummy_sheet, None, None, "23596", 'n', 1)
     return cell
@@ -111,13 +114,24 @@ class TestDateTime:
         assert DummyCell.internal_value == 23596
 
 
-def test_read_only():
-    cell = ReadOnlyCell(sheet=None, row=None, column=None, value=1)
+class TestStyle:
+
+    def test_style_array(self, dummy_sheet):
+        cell = ReadOnlyCell(dummy_sheet, None, None, None)
+        assert cell.style_array == StyleArray()
+
+    def test_font(self, dummy_sheet):
+        cell = ReadOnlyCell(dummy_sheet, None, None, None)
+        assert cell.font == None
+
+
+def test_read_only(dummy_sheet):
+    cell = ReadOnlyCell(sheet=dummy_sheet, row=None, column=None, value='1')
     assert cell.value == 1
     with pytest.raises(AttributeError):
         cell.value = 10
     with pytest.raises(AttributeError):
-        cell.style_id = 1
+        cell.style = 1
 
 
 def test_equality():
@@ -127,3 +141,21 @@ def test_equality():
     assert c1 == c2
     c3 = ReadOnlyCell(None, None, 5, None)
     assert c3 != c1
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ('4.2', 4.2),
+                             ('-42.000', -42),
+                             ('0', 0),
+                             ('0.9999', 0.9999),
+                             ('99E-02', 0.99),
+                             ('4', 4),
+                             ('-1E3', -1000),
+                             ('1E-3', 0.001),
+                             ('2e+2', 200.0),
+                         ]
+                         )
+def test_number_convesion(value, expected):
+    from .. read_only import _cast_number
+    assert _cast_number(value) == expected

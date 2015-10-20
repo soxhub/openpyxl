@@ -186,8 +186,8 @@ def test_print_titles(Workbook):
     wb = Workbook()
     ws1 = wb.create_sheet()
     ws2 = wb.create_sheet()
-    scope1 = ws1._parent.worksheets.index(ws1)
-    scope2 = ws2._parent.worksheets.index(ws2)
+    scope1 = ws1.parent.worksheets.index(ws1)
+    scope2 = ws2.parent.worksheets.index(ws2)
     ws1.add_print_title(2)
     ws2.add_print_title(3, rows_or_cols='cols')
 

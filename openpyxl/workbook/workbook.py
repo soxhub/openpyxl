@@ -1,73 +1,63 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-
 """Workbook is the top-level container for all document information."""
 
-__docformat__ = "restructuredtext en"
+from openpyxl.compat import deprecated
+from openpyxl.worksheet import Worksheet
 
-# Python stdlib imports
-import threading
-
-# package imports
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
-from openpyxl.worksheet import Worksheet
-from openpyxl.writer.dump_worksheet import DumpWorksheet, save_dump
-from . names.named_range import NamedRange
-from openpyxl.styles import Style
-from openpyxl.styles.styleable import StyleId
-from openpyxl.styles.numbers import BUILTIN_FORMATS
-from openpyxl.writer.excel import save_workbook
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
-from openpyxl.xml import LXML
-from openpyxl.xml.functions import fromstring
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.compat import deprecated
+
+from openpyxl.writer.write_only import WriteOnlyWorksheet, save_dump
+from openpyxl.writer.excel import save_workbook
+
+from openpyxl.styles.styleable import StyleArray
+from openpyxl.styles.named_styles import NamedStyle
+
+from openpyxl.chartsheet import Chartsheet
+from . names.named_range import NamedRange
 from . properties import DocumentProperties, DocumentSecurity
 
 
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
-    _optimized_worksheet_class = DumpWorksheet
-
     def __init__(self,
                  optimized_write=False,
                  encoding='utf-8',
-                 worksheet_class=Worksheet,
                  guess_types=False,
                  data_only=False,
                  read_only=False,
                  write_only=False):
-        self.worksheets = []
+        self._sheets = []
         self._active_sheet_index = 0
         self._named_ranges = []
         self._external_links = []
         self.properties = DocumentProperties()
-        self.style = Style()
         self.security = DocumentSecurity()
         self.__write_only = write_only or optimized_write
         self.__read_only = read_only
-        self.__thread_local_data = threading.local()
         self.shared_strings = IndexedList()
 
         self._setup_styles()
+
         self.loaded_theme = None
-        self._worksheet_class = worksheet_class
         self.vba_archive = None
         self.is_template = False
         self._differential_styles = []
         self._guess_types = guess_types
         self.data_only = data_only
-        self.relationships = []
-        self.drawings = []
+        self._drawings = []
+        self._charts = []
+        self._images = []
         self.code_name = None
         self.excel_base_date = CALENDAR_WINDOWS_1900
         self.encoding = encoding
 
         if not self.write_only:
-            self.worksheets.append(self._worksheet_class(parent_workbook=self))
+            self._sheets.append(Worksheet(self))
 
 
     def _setup_styles(self):
@@ -96,46 +86,9 @@ class Workbook(object):
         self._protections = IndexedList([Protection()])
 
         self._colors = COLOR_INDEX
-        self._cell_styles = IndexedList([StyleId()])
+        self._cell_styles = IndexedList([StyleArray()])
+        self._named_styles = {'Normal': NamedStyle(font=DEFAULT_FONT)}
 
-
-    @deprecated('this method is private and should not be called directly')
-    def read_workbook_settings(self, xml_source):
-        self._read_workbook_settings(xml_source)
-
-    def _read_workbook_settings(self, xml_source):
-        root = fromstring(xml_source)
-        view = root.find('*/' '{%s}workbookView' % SHEET_MAIN_NS)
-        if view is not None:
-            if 'activeTab' in view.attrib:
-                self.active = int(view.attrib['activeTab'])
-
-    @property
-    def shared_styles(self):
-        """
-        Legacy
-        On the fly conversion of style references to style objects
-        """
-        styles = []
-        for sid in self._cell_styles:
-            font = self._fonts[sid.font]
-            fill = self._fills[sid.fill]
-            border = self._borders[sid.border]
-            alignment = self._alignments[sid.alignment]
-            protection = self._protections[sid.protection]
-            nf_id = sid.number_format
-            if nf_id < 164:
-                number_format = BUILTIN_FORMATS.get(nf_id, "General")
-            else:
-                number_format = self._number_formats[sid.number_format - 164]
-            styles.append(Style(font, fill, border, alignment,
-                                number_format, protection))
-        return styles
-
-
-    @property
-    def _local_data(self):
-        return self.__thread_local_data
 
     @property
     def read_only(self):
@@ -145,6 +98,7 @@ class Workbook(object):
     def write_only(self):
         return self.__write_only
 
+    @deprecated("Use the .active property")
     def get_active_sheet(self):
         """Returns the current active sheet."""
         return self.active
@@ -152,57 +106,62 @@ class Workbook(object):
     @property
     def active(self):
         """Get the currently active sheet"""
-        return self.worksheets[self._active_sheet_index]
+        return self._sheets[self._active_sheet_index]
 
     @active.setter
     def active(self, value):
         """Set the active sheet"""
         self._active_sheet_index = value
 
-    def create_sheet(self, index=None, title=None):
+    def create_sheet(self, title=None, index=None):
         """Create a worksheet (at an optional index).
 
+        :param title: optional title of the sheet
+        :type tile: unicode
         :param index: optional position at which the sheet will be inserted
         :type index: int
 
         """
-
         if self.read_only:
             raise ReadOnlyWorkbookException('Cannot create new sheet in a read-only workbook')
 
         if self.write_only :
-            new_ws = self._optimized_worksheet_class(parent_workbook=self,
-                                                      title=title)
-            self._worksheet_class = self._optimized_worksheet_class
+            new_ws = WriteOnlyWorksheet(parent_workbook=self, title=title)
         else:
-            if title is not None:
-                new_ws = self._worksheet_class(
-                    parent_workbook=self, title=title)
-            else:
-                new_ws = self._worksheet_class(parent_workbook=self)
+            new_ws = Worksheet(parent=self, title=title)
 
-        self._add_sheet(worksheet=new_ws, index=index)
+        self._add_sheet(sheet=new_ws, index=index)
         return new_ws
 
-    @deprecated("you probably want to use Workbook.create_sheet('sheet name') instead")
-    def add_sheet(self, worksheet, index=None):
-        self._add_sheet(worksheet, index)
 
-    def _add_sheet(self, worksheet, index=None):
-        """Add an existing worksheet (at an optional index)."""
-        if not isinstance(worksheet, self._worksheet_class):
-            raise TypeError("The parameter you have given is not of the type '%s'" % self._worksheet_class.__name__)
-        if worksheet.parent != self:
+    def _add_sheet(self, sheet, index=None):
+        """Add an worksheet (at an optional index)."""
+
+        if not isinstance(sheet, (Worksheet, Chartsheet)):
+            raise TypeError("Cannot be added to a workbook")
+
+        if sheet.parent != self:
             raise ValueError("You cannot add worksheets from another workbook.")
 
         if index is None:
-            self.worksheets.append(worksheet)
+            self._sheets.append(sheet)
         else:
-            self.worksheets.insert(index, worksheet)
+            self._sheets.insert(index, sheet)
+
 
     def remove_sheet(self, worksheet):
         """Remove a worksheet from this workbook."""
-        self.worksheets.remove(worksheet)
+        self._sheets.remove(worksheet)
+
+
+    def create_chartsheet(self, title=None, index=None):
+        if self.read_only:
+            raise ReadOnlyWorkbookException("Cannot create new sheet in a read-only workbook")
+        cs = Chartsheet(parent=self, title=title)
+
+        self._add_sheet(cs, index=None)
+        return cs
+
 
     def get_sheet_by_name(self, name):
         """Returns a worksheet by its name.
@@ -243,6 +202,14 @@ class Workbook(object):
         return self.sheetnames
 
     @property
+    def worksheets(self):
+        return [s for s in self._sheets if isinstance(s, Worksheet)]
+
+    @property
+    def chartsheets(self):
+        return [s for s in self._sheets if isinstance(s, Chartsheet)]
+
+    @property
     def sheetnames(self):
         """Returns the list of the names of worksheets in the workbook.
 
@@ -251,12 +218,10 @@ class Workbook(object):
         :rtype: list of strings
 
         """
-        return [s.title for s in self.worksheets]
+        return [s.title for s in self._sheets]
 
     def create_named_range(self, name, worksheet, range, scope=None):
         """Create a new named_range on a worksheet"""
-        if not isinstance(worksheet, self._worksheet_class):
-            raise TypeError("Worksheet is not of the right type")
         named_range = NamedRange(name, [(worksheet, range)], scope)
         self.add_named_range(named_range)
 

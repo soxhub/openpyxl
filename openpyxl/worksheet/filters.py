@@ -2,8 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 
-from itertools import islice
-
 def normalize_reference(cell_range):
     # Normalize range to a str or None
     if not cell_range:

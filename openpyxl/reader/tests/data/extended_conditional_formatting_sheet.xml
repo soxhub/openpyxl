@@ -1,0 +1,153 @@
+<?xml version="1.0" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" mc:Ignorable="x14ac">
+  <dimension ref="A1:AA6"/>
+  <sheetViews>
+    <sheetView tabSelected="1" workbookViewId="0">
+      <selection activeCell="N16" sqref="N16"/>
+    </sheetView>
+  </sheetViews>
+  <sheetFormatPr baseColWidth="10" defaultRowHeight="15" x14ac:dyDescent="0.25"/>
+  <sheetData>
+    <row r="1" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A1" s="1">
+        <v>1</v>
+      </c>
+      <c r="AA1">
+        <v>1</v>
+      </c>
+    </row>
+    <row r="2" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A2" s="2">
+        <v>2</v>
+      </c>
+      <c r="AA2">
+        <v>2</v>
+      </c>
+    </row>
+    <row r="3" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A3" s="3">
+        <v>3</v>
+      </c>
+      <c r="AA3">
+        <v>3</v>
+      </c>
+    </row>
+    <row r="4" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A4" s="4">
+        <v>4</v>
+      </c>
+      <c r="AA4">
+        <v>4</v>
+      </c>
+    </row>
+    <row r="5" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A5">
+        <v>5</v>
+      </c>
+      <c r="AA5">
+        <v>5</v>
+      </c>
+    </row>
+    <row r="6" spans="1:27" x14ac:dyDescent="0.25">
+      <c r="A6">
+        <v>6</v>
+      </c>
+      <c r="AA6">
+        <v>6</v>
+      </c>
+    </row>
+  </sheetData>
+  <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
+  <extLst>
+    <ext xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}">
+      <x14:conditionalFormattings>
+        <x14:conditionalFormatting xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main">
+          <x14:cfRule type="containsText" priority="1" operator="containsText" id="{5F3BF262-1B4E-49BC-812D-8F5B1802CE0A}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$7,A1)))</xm:f>
+            <xm:f>$AA$7</xm:f>
+            <x14:dxf>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FF6699FF"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <x14:cfRule type="containsText" priority="2" operator="containsText" id="{77F12508-0BE0-4B3F-9C57-4DEEF91E7B07}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$6,A1)))</xm:f>
+            <xm:f>$AA$6</xm:f>
+            <x14:dxf>
+              <font>
+                <color rgb="FF0000FF"/>
+              </font>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FF99CCFF"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <x14:cfRule type="containsText" priority="3" operator="containsText" id="{B9408987-4273-4439-829B-2F23C9DFBA00}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$5,A1)))</xm:f>
+            <xm:f>$AA$5</xm:f>
+            <x14:dxf>
+              <font>
+                <color rgb="FFFF0000"/>
+              </font>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FFFF7C80"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <x14:cfRule type="containsText" priority="4" operator="containsText" id="{D1733E21-B238-44E5-87FF-1071E4F2CBA1}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$4,A1)))</xm:f>
+            <xm:f>$AA$4</xm:f>
+            <x14:dxf>
+              <font>
+                <color rgb="FFFF9933"/>
+              </font>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FFFFFF99"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <x14:cfRule type="containsText" priority="5" operator="containsText" id="{74AE7D79-4256-425C-8956-A7E4322B4870}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$3,A1)))</xm:f>
+            <xm:f>$AA$3</xm:f>
+            <x14:dxf>
+              <font>
+                <b/>
+                <i val="0"/>
+                <color theme="0"/>
+              </font>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FF00B050"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <x14:cfRule type="containsText" priority="6" operator="containsText" id="{19AA7E66-060D-47D2-9758-B31EDD52FE44}">
+            <xm:f>NOT(ISERROR(SEARCH($AA$2,A1)))</xm:f>
+            <xm:f>$AA$2</xm:f>
+            <x14:dxf>
+              <font>
+                <color rgb="FF006600"/>
+              </font>
+              <fill>
+                <patternFill>
+                  <bgColor rgb="FF92D050"/>
+                </patternFill>
+              </fill>
+            </x14:dxf>
+          </x14:cfRule>
+          <xm:sqref>A1:A6</xm:sqref>
+        </x14:conditionalFormatting>
+      </x14:conditionalFormattings>
+    </ext>
+  </extLst>
+</worksheet>

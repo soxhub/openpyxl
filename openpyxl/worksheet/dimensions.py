@@ -1,17 +1,27 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-from openpyxl.compat import safe_string
-from openpyxl.cell import get_column_interval, column_index_from_string
-from openpyxl.descriptors import Integer, Float, Bool, Strict, String, Alias
-from openpyxl.compat import OrderedDict
-from openpyxl.styles.styleable import StyleableObject
+from openpyxl.compat import safe_string, deprecated
+from openpyxl.utils import (
+    get_column_interval,
+    column_index_from_string,
+)
+from openpyxl.descriptors import (
+    Integer,
+    Float,
+    Bool,
+    Strict,
+    String,
+    Alias,
+)
+from openpyxl.styles.styleable import StyleableObject, StyleArray
+
+from openpyxl.utils.bound_dictionary import BoundDictionary
 
 
 class Dimension(Strict, StyleableObject):
     """Information about the display properties of a row or column."""
-    __fields__ = ('index',
-                 'hidden',
+    __fields__ = ('hidden',
                  'outlineLevel',
                  'collapsed',)
 
@@ -20,33 +30,24 @@ class Dimension(Strict, StyleableObject):
     outlineLevel = Integer(allow_none=True)
     outline_level = Alias('outlineLevel')
     collapsed = Bool()
-    _style_id = None
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
-        super(Dimension, self).__init__(sheet=worksheet)
+        super(Dimension, self).__init__(sheet=worksheet, style_array=style)
         self.index = index
         self.hidden = hidden
         self.outlineLevel = outlineLevel
         self.collapsed = collapsed
-        if style is not None:
-            style_id = int(style)
-            style = self.parent.parent._cell_styles[style_id]
-            self._font_id = style.fontId
-            self._fill_id = style.fillId
-            self._border_id = style.borderId
-            self._alignment_id = style.alignmentId
-            self._protection_id = style.protectionId
-            self._number_format_id = style.numFmtId
 
 
     def __iter__(self):
-        for key in self.__fields__[1:]:
+        for key in self.__fields__:
             value = getattr(self, key)
             if value:
                 yield key, safe_string(value)
 
     @property
+    @deprecated("Use `hidden` instead")
     def visible(self):
         return not self.hidden
 
@@ -56,6 +57,7 @@ class RowDimension(Dimension):
 
     __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's')
     r = Alias('index')
+    s = Alias('style_id')
     ht = Float(allow_none=True)
     height = Alias('ht')
     thickBot = Bool()
@@ -101,23 +103,6 @@ class RowDimension(Dimension):
     def customHeight(self):
         """Always true if there is a height for the row"""
         return self.ht is not None
-
-    #@property
-    #def s(self):
-        #return self.styleid
-
-    #@s.setter
-    #def s(self, style):
-        #self._style = style
-
-    def __iter__(self):
-        for key in self.__fields__[1:]:
-            if key == 's':
-                value = getattr(self, 'style_id')
-            else:
-                value = getattr(self, key)
-            if value:
-                yield key, safe_string(value)
 
 
 class ColumnDimension(Dimension):
@@ -169,7 +154,7 @@ class ColumnDimension(Dimension):
         return self.width is not None
 
     def __iter__(self):
-        for key in self.__fields__[1:]:
+        for key in self.__fields__:
             if key == 'style':
                 value = self.style_id
             else:
@@ -177,17 +162,16 @@ class ColumnDimension(Dimension):
             if value:
                 yield key, safe_string(value)
 
-   #@property
-    # def col_label(self):
-        # return get_column_letter(self.index)
 
+class DimensionHolder(BoundDictionary):
+    """
+    Allow columns to be grouped
+    """
 
-class DimensionHolder(OrderedDict):
-    "hold (row|column)dimensions and allow operations over them"
-    def __init__(self, worksheet, direction, *args, **kwargs):
+    def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
-        self.direction = direction
-        super(DimensionHolder, self).__init__(*args, **kwargs)
+        super(DimensionHolder, self).__init__(reference, default_factory)
+
 
     def group(self, start, end=None, outline_level=1, hidden=False):
         """allow grouping a range of consecutive columns together
@@ -199,16 +183,13 @@ class DimensionHolder(OrderedDict):
         """
         if end is None:
             end = start
-        if start in self:
-            new_dim = self.pop(start)
-        else:
-            new_dim = ColumnDimension(worksheet=self.worksheet, index=start)
 
-        work_sequence = get_column_interval(start, end)
+        new_dim = self[start]
+        new_dim.outline_level = outline_level
+        new_dim.hidden = hidden
+
+        work_sequence = get_column_interval(start, end)[1:]
         for column_letter in work_sequence:
             if column_letter in self:
                 del self[column_letter]
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
-        new_dim.outline_level = outline_level
-        new_dim.hidden = hidden
-        self[start] = new_dim

@@ -23,12 +23,14 @@ def test_invalid_coordinate(value):
         coordinate_from_string(value)
 
 
-def test_absolute():
-    assert '$ZF$51' == absolute_coordinate('ZF51')
-
-def test_absolute_multiple():
-
-    assert '$ZF$51:$ZF$53' == absolute_coordinate('ZF51:ZF53')
+@pytest.mark.parametrize("coord, result",
+                         [
+                             ("ZF51",'$ZF$51',),
+                             ('ZF51:ZF53', '$ZF$51:$ZF$53')
+                         ]
+                         )
+def test_absolute(coord, result):
+    assert absolute_coordinate(coord) == result
 
 
 def test_column_interval():
@@ -86,3 +88,55 @@ def test_column_letter_boundries(value):
                          )
 def test_column_letter(value, expected):
     assert get_column_letter(value) == expected
+
+
+def test_coordinate_tuple():
+    from .. import coordinate_to_tuple
+    assert coordinate_to_tuple("D15") == (15, 4)
+
+
+
+@pytest.mark.parametrize("range_string, sheetname, boundaries",
+                         [
+                        ("Sheet1!$A$1:$A$12", "Sheet1", (1,1, 1,12)),
+                        ("'My Sheet'!A1:E6", "My Sheet", (1,1, 5,6)),
+                         ]
+                         )
+def test_range_to_tuple(range_string, sheetname, boundaries):
+    from .. import range_to_tuple
+    assert range_to_tuple(range_string) == (sheetname, boundaries)
+
+
+def test_invalid_range():
+    from .. import range_to_tuple
+    with pytest.raises(ValueError):
+        range_to_tuple("A1:E5")
+
+
+def test_quote_sheetname():
+    from .. import quote_sheetname
+    assert quote_sheetname("My Sheet") == "'My Sheet'"
+
+
+def test_rows_from_range():
+    from .. import rows_from_range
+    cells = rows_from_range("A1:D4")
+    cells = [list(row) for row in cells]
+    assert cells == [
+       ['A1', 'B1', 'C1', 'D1'],
+       ['A2', 'B2', 'C2', 'D2'],
+       ['A3', 'B3', 'C3', 'D3'],
+       ['A4', 'B4', 'C4', 'D4'],
+                           ]
+
+
+def test_cols_from_range():
+    from .. import cols_from_range
+    cells = cols_from_range("A1:D4")
+    cells = [list(row) for row in cells]
+    assert cells == [
+       ['A1', 'A2', 'A3', 'A4'],
+       ['B1', 'B2', 'B3', 'B4'],
+       ['C1', 'C2', 'C3', 'C4'],
+       ['D1', 'D2', 'D3', 'D4'],
+                           ]

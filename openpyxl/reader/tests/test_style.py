@@ -3,13 +3,14 @@ from __future__ import absolute_import
 
 import pytest
 
+import codecs
 from io import BytesIO
 from zipfile import ZipFile
 
 # package imports
-from openpyxl.compat import safe_string, OrderedDict
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.indexed_list import IndexedList
+from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 
 from openpyxl.styles import (
@@ -57,13 +58,12 @@ def test_unprotected_cell(StyleReader, datadir):
     reader.font_list = IndexedList([Font(), Font(), Font(), Font(), Font()])
     reader.protections = IndexedList([Protection()])
     reader.parse_cell_styles()
-    assert len(reader.cell_styles) == 3
+    styles  = reader.cell_styles
+    assert len(styles) == 3
     # default is cells are locked
-    style = reader.shared_styles[0]
-    assert style.protection.locked is True
-
-    style = reader.shared_styles[2]
-    assert style.protection.locked is False
+    assert styles[0] == StyleArray()
+    assert styles[1] == StyleArray([4,0,0,0,0,0,0,0,0])
+    assert styles[2] == StyleArray([3,0,0,0,1,0,0,0,0])
 
 
 def test_read_cell_style(datadir, StyleReader):
@@ -71,8 +71,10 @@ def test_read_cell_style(datadir, StyleReader):
     with open("empty-workbook-styles.xml") as content:
         reader = StyleReader(content.read())
     reader.parse()
-    style_properties = reader.shared_styles
-    assert len(style_properties) == 2
+    styles  = reader.cell_styles
+    assert len(styles) == 2
+    assert reader.cell_styles[0] == StyleArray()
+    assert reader.cell_styles[1] == StyleArray([0,0,0,9,0,0,0,0,1])
 
 
 def test_read_xf_no_number_format(datadir, StyleReader):
@@ -84,11 +86,11 @@ def test_read_xf_no_number_format(datadir, StyleReader):
     reader.font_list = [Font(), Font()]
     reader.parse_cell_styles()
 
-    styles = reader.shared_styles
+    styles = reader.cell_styles
     assert len(styles) == 3
-    assert styles[0].number_format == 'General'
-    assert styles[1].number_format == 'General'
-    assert styles[2].number_format == 'mm-dd-yy'
+    assert styles[0] == StyleArray()
+    assert styles[1] == StyleArray([1,0,1,0,0,0,0,0,0])
+    assert styles[2] == StyleArray([0,0,0,14,0,0,0,0,0])
 
 
 def test_read_complex_style_mappings(datadir, StyleReader):
@@ -96,9 +98,9 @@ def test_read_complex_style_mappings(datadir, StyleReader):
     with open("complex-styles.xml") as content:
         reader = StyleReader(content.read())
     reader.parse()
-    style_properties = reader.shared_styles
-    assert len(style_properties) == 29
-    assert style_properties[-1].font.bold is False
+    styles  = reader.cell_styles
+    assert len(styles) == 29
+    assert styles[-1] == StyleArray([6,5,0,0,0,0,0,0,0])
 
 
 def test_read_complex_fonts(datadir, StyleReader):
@@ -132,19 +134,19 @@ def test_read_simple_style_mappings(datadir, StyleReader):
     with open("simple-styles.xml") as content:
         reader = StyleReader(content.read())
     reader.parse()
-    style_properties = reader.shared_styles
-    assert len(style_properties) == 4
-    assert numbers.BUILTIN_FORMATS[9] == style_properties[1].number_format
-    assert 'yyyy-mm-dd' == style_properties[2].number_format
+    styles  = reader.cell_styles
+    assert len(styles) == 4
+    assert styles[1].numFmtId == 9
+    assert styles[2].numFmtId == 164
 
 
 def test_read_complex_style(datadir):
     datadir.chdir()
     wb = load_workbook("complex-styles.xlsx")
-    ws = wb.get_active_sheet()
+    ws = wb.active
     assert ws.column_dimensions['A'].width == 31.1640625
 
-    assert ws.column_dimensions['I'].font == Font(sz=12.0, color='FF3300FF', scheme='minor')
+    #assert ws.column_dimensions['I'].font == Font(sz=12.0, color='FF3300FF', scheme='minor')
     assert ws.column_dimensions['I'].fill == PatternFill(patternType='solid', fgColor='FF006600', bgColor=Color(indexed=64))
 
     assert ws['A2'].font == Font(sz=10, name='Arial', color=Color(theme=1))
@@ -204,9 +206,15 @@ def test_alignment(datadir, StyleReader):
     with open("alignment_styles.xml") as src:
         reader = StyleReader(src.read())
     reader.parse_cell_styles()
-    st1 = reader.shared_styles[2]
-    assert len(reader.alignments) == 3
-    assert st1.alignment.textRotation == 255
+    styles = reader.cell_styles
+    assert len(styles) == 3
+    assert styles[2] == StyleArray([0,0,0,0,0,2,0,0,0])
+
+    assert reader.alignments == [
+        Alignment(),
+        Alignment(textRotation=180),
+        Alignment(vertical='top', textRotation=255),
+        ]
 
 
 def test_style_names(datadir, StyleReader):
@@ -214,23 +222,18 @@ def test_style_names(datadir, StyleReader):
     with open("complex-styles.xml") as src:
         reader = StyleReader(src.read())
 
-    styles = list(reader._parse_style_names())
-    assert styles == [
-        ('Followed Hyperlink', 2),
-        ('Followed Hyperlink', 4),
-        ('Followed Hyperlink', 6),
-        ('Followed Hyperlink', 8),
-        ('Followed Hyperlink', 10),
-        ('Hyperlink', 1),
-        ('Hyperlink', 3),
-        ('Hyperlink', 5),
-        ('Hyperlink', 7),
-        ('Hyperlink', 9),
-        ('Normal', 0),
+    def sorter(value):
+        return value.name
+
+    names = reader._parse_style_names()
+    references = [dict(style) for style in sorted(names.values(), key=sorter)]
+    assert references == [
+        {'builtinId': '9', 'name': 'Followed Hyperlink', 'xfId': '10', 'hidden':'1'},
+        {'builtinId': '8', 'name': 'Hyperlink', 'xfId': '9', 'hidden':'1'},
+        {'builtinId': '0', 'name': 'Normal', 'xfId': '0'}
     ]
 
 
-@pytest.mark.xfail
 def test_named_styles(datadir, StyleReader):
     from openpyxl.styles.named_styles import NamedStyle
     from openpyxl.styles.fonts import DEFAULT_FONT
@@ -243,14 +246,26 @@ def test_named_styles(datadir, StyleReader):
     reader.border_list = list(reader.parse_borders())
     reader.fill_list = list(reader.parse_fills())
     reader.font_list = list(reader.parse_fonts())
-    reader.parse_cell_styles()
     reader.parse_named_styles()
-    assert len(reader.named_styles) == 11
-    first_style = reader.named_styles[0]
-    assert first_style.name == "Followed Hyperlink"
-    assert first_style.font == Font(size=12, color=Color(theme=11), underline="single", scheme="minor")
-    assert first_style.fill == DEFAULT_EMPTY_FILL
-    assert first_style.border == Border()
+    assert set(reader.named_styles.keys()) == set(['Followed Hyperlink', 'Hyperlink', 'Normal'])
+
+    followed = reader.named_styles['Followed Hyperlink']
+    assert followed.name == "Followed Hyperlink"
+    assert followed.font == reader.font_list[2]
+    assert followed.fill == DEFAULT_EMPTY_FILL
+    assert followed.border == Border()
+
+    link = reader.named_styles['Hyperlink']
+    assert link.name == "Hyperlink"
+    assert link.font == reader.font_list[1]
+    assert link.fill == DEFAULT_EMPTY_FILL
+    assert link.border == Border()
+
+    normal = reader.named_styles['Normal']
+    assert normal.name == "Normal"
+    assert normal.font == reader.font_list[0]
+    assert normal.fill == DEFAULT_EMPTY_FILL
+    assert normal.border == Border()
 
 
 def test_no_styles():
@@ -272,8 +287,9 @@ def test_rgb_colors(StyleReader, datadir):
 
 def test_custom_number_formats(StyleReader, datadir):
     datadir.chdir()
-    with open("styles_number_formats.xml") as src:
-        reader = StyleReader(src.read())
+    with codecs.open("styles_number_formats.xml", encoding="utf-8") as src:
+        content = src.read().encode("utf8") # Python 2.6, Windows
+        reader = StyleReader(content)
 
     reader.parse_custom_num_formats()
     assert reader.custom_number_formats == {
@@ -303,7 +319,6 @@ def test_assign_number_formats(StyleReader):
           <alignment vertical="center"/>
     </xf>
     """)
-    reader._parse_xfs(node)
+    styles = reader._parse_xfs(node)
 
-    assert reader.cell_styles == [{'fillId': 0, 'fontId': 2, 'xfId': 0,
-                                   'protectionId': 0, 'borderId': 0, 'numFmtId': 164, 'alignmentId': 0}]
+    assert styles[0] == StyleArray([2, 0, 0, 164, 0, 1, 0, 0, 0]) #StyleId(numFmtId=164, fontId=2, alignmentId=1)

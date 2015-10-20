@@ -24,7 +24,7 @@ class TestGradientFill:
         assert gf.right == 0
         assert gf.top == 0
         assert gf.bottom == 0
-        assert gf.stop == ()
+        assert gf.stop == []
 
 
     def test_ctor(self, GradientFill):
@@ -36,16 +36,16 @@ class TestGradientFill:
         assert gf.bottom == 4
 
 
-    def test_sequence(self, GradientFill):
-        colors = [Color(BLACK), Color(WHITE)]
+    @pytest.mark.parametrize("colors",
+                             [
+                                 [Color(BLACK), Color(WHITE)],
+                                 [BLACK, WHITE],
+                             ]
+                             )
+    def test_sequence(self, GradientFill, colors):
         gf = GradientFill(stop=colors)
-        assert gf.stop == tuple(colors)
-
-
-    def test_invalid_sequence(self, GradientFill):
-        colors = [BLACK, WHITE]
-        with pytest.raises(TypeError):
-            GradientFill(stop=colors)
+        assert gf.stop[0].rgb == BLACK
+        assert gf.stop[1].rgb == WHITE
 
 
     def test_dict_interface(self, GradientFill):
@@ -55,7 +55,7 @@ class TestGradientFill:
 
 
     def test_serialise(self, GradientFill):
-        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[Color(BLACK), Color(WHITE)])
+        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[BLACK, WHITE])
         xml = tostring(gf.to_tree())
         expected = """
         <fill>
@@ -88,7 +88,12 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == (Color(theme=0), Color(theme=4))
+        assert fill.stop == [Color(theme=0), Color(theme=4)]
+
+
+    def test_hashable(self, GradientFill):
+        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[BLACK, WHITE])
+        assert hash(gf) == hash(('linear', 90, 1.0, 2.0, 3.0, 4.0, ( Color(BLACK), Color(WHITE) )))
 
 
 @pytest.fixture

@@ -17,7 +17,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.styles.colors import COLOR_INDEX
 from openpyxl.styles import DEFAULTS
-from openpyxl.styles import numbers
+from openpyxl.styles.numbers import BUILTIN_FORMATS_REVERSE
 from openpyxl.styles.fills import GradientFill, PatternFill
 
 
@@ -26,34 +26,6 @@ class StyleWriter(object):
     def __init__(self, workbook):
         self.wb = workbook
         self._root = Element('styleSheet', {'xmlns': SHEET_MAIN_NS})
-
-    @property
-    def styles(self):
-        return self.wb._cell_styles
-
-    @property
-    def fonts(self):
-        return self.wb._fonts
-
-    @property
-    def fills(self):
-        return self.wb._fills
-
-    @property
-    def borders(self):
-        return self.wb._borders
-
-    @property
-    def number_formats(self):
-        return self.wb._number_formats
-
-    @property
-    def alignments(self):
-        return self.wb._alignments
-
-    @property
-    def protections(self):
-        return self.wb._protections
 
     def write_table(self):
         self._write_number_formats()
@@ -72,62 +44,79 @@ class StyleWriter(object):
 
 
     def _write_number_formats(self):
-        node = SubElement(self._root, 'numFmts', count= "%d" % len(self.number_formats))
-        for idx, nf in enumerate(self.number_formats, 164):
+        node = SubElement(self._root, 'numFmts', count= "%d" % len(self.wb._number_formats))
+        for idx, nf in enumerate(self.wb._number_formats, 164):
             SubElement(node, 'numFmt', {'numFmtId':'%d' % idx,
                                         'formatCode':'%s' % nf}
                        )
 
     def _write_fonts(self):
-        fonts_node = SubElement(self._root, 'fonts', count="%d" % len(self.fonts))
-        for font in self.fonts:
+        fonts_node = SubElement(self._root, 'fonts', count="%d" % len(self.wb._fonts))
+        for font in self.wb._fonts:
             fonts_node.append(font.to_tree())
 
 
     def _write_fills(self):
-        fills_node = SubElement(self._root, 'fills', count="%d" % len(self.fills))
-        for fill in self.fills:
+        fills_node = SubElement(self._root, 'fills', count="%d" % len(self.wb._fills))
+        for fill in self.wb._fills:
             fills_node.append(fill.to_tree())
 
     def _write_borders(self):
         """Write the child elements for an individual border section"""
-        borders_node = SubElement(self._root, 'borders', count="%d" % len(self.borders))
-        for border in self.borders:
+        borders_node = SubElement(self._root, 'borders', count="%d" % len(self.wb._borders))
+        for border in self.wb._borders:
             borders_node.append(border.to_tree())
 
     def _write_named_styles(self):
-        cell_style_xfs = SubElement(self._root, 'cellStyleXfs', {'count':'1'})
-        SubElement(cell_style_xfs, 'xf',
-            {'numFmtId':"0", 'fontId':"0", 'fillId':"0", 'borderId':"0"})
+        styles = self.wb._named_styles
+        cell_style_xfs = SubElement(self._root, 'cellStyleXfs', count="%d" % len(styles))
+
+        for style in self.wb._named_styles.values():
+            attrs = {}
+
+            attrs['fontId'] =  str(self.wb._fonts.add(style.font))
+            attrs['borderId'] = str(self.wb._borders.add(style.border))
+            attrs['fillId'] =  str(self.wb._fills.add(style.fill))
+            fmt = style.number_format
+            if fmt in BUILTIN_FORMATS_REVERSE:
+                fmt = BUILTIN_FORMATS_REVERSE[fmt]
+            else:
+                fmt = self.wb._number_formats.add(style.number_format) + 164
+            attrs['numFmtId'] = str(fmt)
+
+            SubElement(cell_style_xfs, 'xf', attrs)
 
     def _write_cell_styles(self):
         """ write styles combinations based on ids found in tables """
         # writing the cellXfs
         cell_xfs = SubElement(self._root, 'cellXfs',
-                              count='%d' % len(self.styles))
+                              count='%d' % len(self.wb._cell_styles))
 
-        for style in self.styles:
+        for style in self.wb._cell_styles:
 
             node = style.to_tree()
             cell_xfs.append(node)
 
             if style.applyAlignment:
-                node.set('applyAlignment', '1')
-                al = self.alignments[style.alignmentId]
+                al = self.wb._alignments[style.alignmentId]
                 el = al.to_tree()
                 node.append(el)
 
             if style.applyProtection:
-                node.set('applyProtection', '1')
-                prot = self.protections[style.protectionId]
+                prot = self.wb._protections[style.protectionId]
                 el = prot.to_tree()
                 node.append(el)
 
 
     def _write_style_names(self):
-        cell_styles = SubElement(self._root, 'cellStyles', {'count':'1'})
-        SubElement(cell_styles, 'cellStyle',
-            {'name':"Normal", 'xfId':"0", 'builtinId':"0"})
+        styles = self.wb._named_styles
+
+        cell_styles = SubElement(self._root, 'cellStyles', count=str(len(styles)))
+
+        for idx, style in enumerate(styles.values()):
+            attrs = dict(style)
+            attrs['xfId'] = str(idx)
+            SubElement(cell_styles, 'cellStyle', attrs)
 
 
     def _write_differential_styles(self):
@@ -148,11 +137,10 @@ class StyleWriter(object):
         Workbook contains a different colour index.
         """
 
-        colors = self.wb._colors
-        if colors == COLOR_INDEX:
+        if self.wb._colors == COLOR_INDEX:
             return
 
         cols = SubElement(self._root, "colors")
         rgb = SubElement(cols, "indexedColors")
-        for color in colors:
+        for color in self.wb._colors:
             SubElement(rgb, "rgbColor", rgb=color)

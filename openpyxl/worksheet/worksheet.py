@@ -8,6 +8,7 @@ from __future__ import absolute_import
 from itertools import islice, chain
 import re
 from inspect import isgenerator
+from weakref import ref
 
 # compatibility imports
 from openpyxl.compat import (
@@ -27,13 +28,13 @@ from openpyxl.utils import (
     column_index_from_string,
     get_column_letter,
     range_boundaries,
-    cells_from_range,
+    rows_from_range,
+    coordinate_to_tuple,
 )
 from openpyxl.cell import Cell
 from openpyxl.utils.exceptions import (
     SheetTitleException,
     InsufficientCoordinatesException,
-    CellCoordinatesException,
     NamedRangeException
 )
 from openpyxl.utils.units import (
@@ -41,18 +42,19 @@ from openpyxl.utils.units import (
     DEFAULT_COLUMN_WIDTH,
     DEFAULT_ROW_HEIGHT
 )
-from openpyxl.styles import DEFAULTS as DEFAULTS_STYLE
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.names.named_range import NamedRange
+from openpyxl.workbook.child import _WorkbookChild
+from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .header_footer import HeaderFooter
-from .relationship import Relationship
-from .page import PageSetup, PageMargins, PrintOptions
+from .page import PrintPageSetup, PageMargins, PrintOptions
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
 from .filters import AutoFilter
 from .views import SheetView, Pane, Selection
-from .properties import WorksheetProperties, Outline, PageSetupProperties
+from .properties import WorksheetProperties
+from .pagebreak import PageBreak
 
 
 def flatten(results):
@@ -62,15 +64,13 @@ def flatten(results):
         yield(c.value for c in row)
 
 
-class Worksheet(object):
+class Worksheet(_WorkbookChild):
     """Represents a worksheet.
 
     Do not create worksheets yourself,
     use :func:`openpyxl.workbook.Workbook.create_sheet` instead
 
     """
-    repr_format = unicode('<Worksheet "%s">')
-    bad_title_char_re = re.compile(r'[\\*?:/\[\]]')
 
     BREAK_NONE = 0
     BREAK_ROW = 1
@@ -97,34 +97,30 @@ class Worksheet(object):
     ORIENTATION_PORTRAIT = 'portrait'
     ORIENTATION_LANDSCAPE = 'landscape'
 
-    def __init__(self, parent_workbook, title='Sheet'):
-        self._parent = parent_workbook
-        self._title = ''
-        if not title:
-            self.title = 'Sheet%d' % (1 + len(self._parent.worksheets))
-        else:
-            self.title = title
-        self.row_dimensions = {}
+    def __init__(self, parent, title=None):
+        super(Worksheet, self).__init__(parent, title)
+        self.row_dimensions = BoundDictionary("index", self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
-                                                 direction=[])
-        self.page_breaks = []
+                                                 default_factory=self._add_column)
+        self.page_breaks = PageBreak()
         self._cells = {}
-        self._styles = {}
         self._charts = []
         self._images = []
+        self._rels = []
+        self._drawing = None
         self._comment_count = 0
         self._merged_cells = []
-        self.relationships = []
+        self.hyperlinks = set()
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
-        self.page_setup = PageSetup(self)
+        self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
         self.page_margins = PageMargins()
         self.header_footer = HeaderFooter()
         self.sheet_view = SheetView()
         self.protection = SheetProtection()
-        self.default_row_dimension = RowDimension(worksheet=self)
-        self.default_column_dimension = ColumnDimension(worksheet=self)
+
+        self._current_row = 0
         self._auto_filter = AutoFilter()
         self._freeze_panes = None
         self.paper_size = None
@@ -133,7 +129,6 @@ class Worksheet(object):
         self.conditional_formatting = ConditionalFormatting()
         self.vba_controls = None
         self.sheet_properties = WorksheetProperties()
-        self.sheet_properties.outlinePr = Outline(summaryBelow=True, summaryRight=True)
 
 
     @property
@@ -148,8 +143,6 @@ class Worksheet(object):
     def show_gridlines(self):
         return self.sheet_view.showGridLines
 
-    def __repr__(self):
-        return self.repr_format % self.title
 
     """ To keep compatibility with previous versions"""
     @property
@@ -179,17 +172,6 @@ class Worksheet(object):
 
     """ End To keep compatibility with previous versions"""
 
-    @property
-    def parent(self):
-        return self._parent
-
-    @property
-    def encoding(self):
-        return self._parent.encoding
-
-    @deprecated('this method is private and should not be called directly')
-    def garbage_collect(self):
-        self._garbage_collect()
 
     def _garbage_collect(self):
         """Delete cells that are not storing a value."""
@@ -197,54 +179,16 @@ class Worksheet(object):
         for coordinate, cell in iteritems(self._cells):
             if (cell.value in ('', None)
             and cell.comment is None
-            and (coordinate not in self._styles or cell.style == DEFAULTS_STYLE)):
+            and (cell.style_id == 0)):
                 delete_list.append(coordinate)
         for coordinate in delete_list:
             del self._cells[coordinate]
+
 
     def get_cell_collection(self):
         """Return an unordered list of the cells in this worksheet."""
         return self._cells.values()
 
-    @property
-    def title(self):
-        """Return the title for this sheet."""
-        return self._title
-
-    @title.setter
-    def title(self, value):
-        """Set a sheet title, ensuring it is valid.
-           Limited to 31 characters, no special characters."""
-        if self.bad_title_char_re.search(value):
-            msg = 'Invalid character found in sheet title'
-            raise SheetTitleException(msg)
-        value = self._unique_sheet_name(value)
-        if len(value) > 31:
-            msg = 'Maximum 31 characters allowed in sheet title'
-            raise SheetTitleException(msg)
-        self._title = value
-
-    @deprecated('this method is private and should not be called directly')
-    def unique_sheet_name(self, value):
-        return self._unique_sheet_name(value)
-
-    def _unique_sheet_name(self, value):
-        # check if sheet_name already exists
-        # do this *before* length check
-        sheets = self._parent.get_sheet_names()
-        if value in sheets:
-            sheets = ",".join(sheets)
-            sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d?),?" % re.escape(value))
-            matches = sheet_title_regex.findall(sheets)
-            if matches:
-                # use name, but append with the next highest integer
-                counts = [int(idx) for (t, idx) in matches if idx.isdigit()]
-                if counts:
-                    highest = max(counts)
-                else:
-                    highest = 0
-                value = "%s%d" % (value, highest + 1)
-        return value
 
     @property
     def auto_filter(self):
@@ -346,47 +290,40 @@ class Worksheet(object):
                 msg = "You have to provide a value either for " \
                     "'coordinate' or for 'row' *and* 'column'"
                 raise InsufficientCoordinatesException(msg)
-            else:
-                column = get_column_letter(column)
-                coordinate = '%s%s' % (column, row)
+            coordinate = (row, column)
+
         else:
             coordinate = coordinate.upper().replace('$', '')
+            coordinate = coordinate_to_tuple(coordinate)
+            row, column = coordinate
 
-        cell = self._get_cell(coordinate)
+        cell = self._get_cell(row, column)
         if value is not None:
             cell.value = value
+
         return cell
 
 
-    def _get_cell(self, coordinate):
+    def _get_cell(self, row, column):
         """
         Internal method for getting a cell from a worksheet.
         Will create a new cell if one doesn't already exist.
         """
-        coordinate = coordinate.upper()
+        coordinate = (row, column)
         if not coordinate in self._cells:
-            column, row = coordinate_from_string(coordinate)
-            self._new_cell(column, row)
+            cell = Cell(self, row=row, col_idx=column)
+            self._add_cell(cell)
         return self._cells[coordinate]
-
-
-    def _new_cell(self, column, row, value=None):
-        cell = Cell(self, column, row, value)
-        self._add_cell(cell)
 
 
     def _add_cell(self, cell):
         """
         Internal method for adding cell objects.
         """
-        column = cell.column
+        column = cell.col_idx
         row = cell.row
-        self._cells[cell.coordinate] = cell
-        if column not in self.column_dimensions:
-            self.column_dimensions[column] = ColumnDimension(index=column, worksheet=self)
-        if row not in self.row_dimensions:
-            self.row_dimensions[row] = RowDimension(index=row, worksheet=self)
-        self._cells[cell.coordinate] = cell
+        self._current_row = max(row, self._current_row)
+        self._cells[(row, column)] = cell
 
 
     def __getitem__(self, key):
@@ -395,62 +332,90 @@ class Worksheet(object):
             return self.iter_rows("{0}:{1}".format(key.start, key.stop))
         if ":" in key:
             return self.iter_rows(key)
-        return self._get_cell(key)
+        row, column = coordinate_to_tuple(key)
+        return self._get_cell(row, column)
 
     def __setitem__(self, key, value):
         self[key].value = value
 
+
+    def __iter__(self):
+        return self.iter_rows()
+
+
+    @deprecated("Use the max_row property")
     def get_highest_row(self):
+        return self.max_row
+
+
+    @property
+    def min_row(self):
+        min_row = 1
+        if self._cells:
+            rows = set(c[0] for c in self._cells)
+            min_row = min(rows)
+        return min_row
+
+
+    @property
+    def max_row(self):
         """Returns the maximum row index containing data
 
         :rtype: int
         """
-        if self.row_dimensions:
-            return max(self.row_dimensions)
-        else:
-            return 0
+        max_row = 1
+        if self._cells:
+            rows = set(c[0] for c in self._cells)
+            max_row = max(rows)
+        return max_row
 
-    @property
-    def min_row(self):
-        if self.row_dimensions:
-            return min(self.row_dimensions)
-        else:
-            return 1
 
-    @property
-    def max_row(self):
-        return self.get_highest_row()
-
+    @deprecated("Use the max_column propery.")
     def get_highest_column(self):
+        return self.max_column
+
+
+    @property
+    def min_column(self):
+        min_col = 1
+        if self._cells:
+            cols = set(c[1] for c in self._cells)
+            min_col = min(cols)
+        return min_col
+
+
+    @property
+    def max_column(self):
         """Get the largest value for column currently stored.
 
         :rtype: int
         """
-        if self.column_dimensions:
-            return max([column_index_from_string(column_index)
-                        for column_index in self.column_dimensions])
-        else:
-            return 1
+        max_col = 1
+        if self._cells:
+            cols = set(c[1] for c in self._cells)
+            max_col = max(cols)
+        return max_col
 
-    @property
-    def min_col(self):
-        if self.column_dimensions:
-            return max([column_index_from_string(column_index)
-                        for column_index in self.column_dimensions])
-        else:
-            return 1
-
-    @property
-    def max_column(self):
-        return self.get_highest_column()
 
     def calculate_dimension(self):
         """Return the minimum bounding range for all cells containing data."""
+        if self._cells:
+            rows = set()
+            cols = set()
+            for row, col in self._cells:
+                rows.add(row)
+                cols.add(col)
+            max_row = max(rows)
+            max_col = max(cols)
+            min_col = min(cols)
+            min_row = min(rows)
+        else:
+            return "A1:A1"
+
         return '%s%d:%s%d' % (
-            get_column_letter(1),
-            self.min_row,
-            get_column_letter(self.max_column or 1),
-            self.max_row or 1)
+            get_column_letter(min_col), min_row,
+            get_column_letter(max_col), max_row
+        )
 
 
     @property
@@ -507,10 +472,9 @@ class Worksheet(object):
         :rtype: generator
         """
         # Column name cache is very important in large files.
-        cache = dict((col, get_column_letter(col)) for col in range(min_col, max_col + 1))
         for row in range(min_row, max_row + 1):
-            yield tuple(self._get_cell('%s%d' % (cache[col], row))
-                        for col in range(min_col, max_col + 1))
+            yield tuple(self.cell(row=row, column=column)
+                        for column in range(min_col, max_col + 1))
 
 
     def get_named_range(self, range_string):
@@ -522,7 +486,7 @@ class Worksheet(object):
 
         :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
         """
-        named_range = self._parent.get_named_range(range_string)
+        named_range = self.parent.get_named_range(range_string)
         if named_range is None:
             msg = '%s is not a valid range name' % range_string
             raise NamedRangeException(msg)
@@ -574,29 +538,6 @@ class Worksheet(object):
             return self.get_named_range(range_string)
 
 
-    @deprecated("Access styles directly from cells, columns or rows")
-    def get_style(self, coordinate):
-        """Return a copy of the style object for the specified cell."""
-        try:
-            obj = self[coordinate]
-        except ValueError:
-            if isinstance(coordinate, int):
-                obj = self.row_dimensions[obj]
-            else:
-                obj = self.column_dimensions[obj]
-        return obj.style
-
-    @deprecated("Set styles directly on cells, columns or rows")
-    def set_style(self, coordinate, style):
-        try:
-            obj = self[coordinate]
-        except ValueError:
-            if isinstance(coordinate, int):
-                obj = self.row_dimensions[obj]
-            else:
-                obj = self.column_dimensions[obj]
-        obj.style = style
-
     def set_printer_settings(self, paper_size, orientation):
         """Set printer settings """
 
@@ -605,17 +546,6 @@ class Worksheet(object):
             raise ValueError("Values should be %s or %s" % (self.ORIENTATION_PORTRAIT, self.ORIENTATION_LANDSCAPE))
         self.page_setup.orientation = orientation
 
-    @deprecated('this method is private and should not be called directly')
-    def create_relationship(self, rel_type):
-        return self._create_relationship(rel_type)
-
-    def _create_relationship(self, rel_type):
-        """Add a relationship for this sheet."""
-        rel = Relationship(rel_type)
-        self.relationships.append(rel)
-        rel_id = self.relationships.index(rel)
-        rel.id = 'rId' + str(rel_id + 1)
-        return self.relationships[rel_id]
 
     def add_data_validation(self, data_validation):
         """ Add a data-validation object to the sheet.  The data-validation
@@ -625,25 +555,27 @@ class Worksheet(object):
         data_validation._sheet = self
         self._data_validations.append(data_validation)
 
-    def add_chart(self, chart):
-        """ Add a chart to the sheet """
-        chart._sheet = self
+    def add_chart(self, chart, anchor=None):
+        """
+        Add a chart to the sheet
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            chart.anchor = anchor
         self._charts.append(chart)
-        self.add_drawing(chart)
+        self.parent._charts.append(ref(chart))
 
-    def add_image(self, img):
-        """ Add an image to the sheet """
-        img._sheet = self
+    def add_image(self, img, anchor=None):
+        """
+        Add an image to the sheet.
+        Optionally provide a cell for the top-left anchor
+        """
+        if anchor is not None:
+            cell = self[anchor]
+            img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-        self.add_drawing(img)
+        self.parent._images.append(ref(img))
 
-    def add_drawing(self, obj):
-        """Images and charts both create drawings"""
-        self._parent.drawings.append(obj)
-
-    def add_rel(self, obj):
-        """Drawings and hyperlinks create relationships"""
-        self._parent.relationships.append(obj)
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
@@ -671,11 +603,13 @@ class Worksheet(object):
         if range_string not in self._merged_cells:
             self._merged_cells.append(range_string)
 
-        cells = cells_from_range(range_string)
+        cells = rows_from_range(range_string)
         # only the top-left cell is preserved
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
+            if c in self.hyperlinks:
+                del self._hyperlinks[c]
 
 
     @property
@@ -683,7 +617,7 @@ class Worksheet(object):
         """Utility for checking whether a cell has been merged or not"""
         cells = set()
         for _range in self._merged_cells:
-            for row in cells_from_range(_range):
+            for row in rows_from_range(_range):
                 cells = cells.union(set(row))
         return cells
 
@@ -734,32 +668,33 @@ class Worksheet(object):
         :raise: TypeError when iterable is neither a list/tuple nor a dict
 
         """
-        row_idx = self.max_row + 1
+        row_idx = self._current_row + 1
 
         if (isinstance(iterable, (list, tuple, range))
             or isgenerator(iterable)):
             for col_idx, content in enumerate(iterable, 1):
-                col = get_column_letter(col_idx)
                 if isinstance(content, Cell):
                     # compatible with write-only mode
                     cell = content
                     cell.parent = self
-                    cell.column = col
+                    cell.col_idx = col_idx
                     cell.row = row_idx
-                    cell.coordinate = "%s%s" % (col, row_idx)
-                    self._add_cell(cell)
                 else:
-                    cell = self._new_cell(col, row_idx, content)
+                    cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                self._cells[(row_idx, col_idx)] = cell
 
         elif isinstance(iterable, dict):
             for col_idx, content in iteritems(iterable):
                 if isinstance(col_idx, basestring):
                     col_idx = column_index_from_string(col_idx)
-                self.cell(row=row_idx, column=col_idx, value=content)
+                cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                self._cells[(row_idx, col_idx)] = cell
 
         else:
             self._invalid_row(iterable)
-        self.row_dimensions[row_idx] = RowDimension(worksheet=self, index=row_idx)
+
+        self._current_row = row_idx
+
 
     def _invalid_row(self, iterable):
         raise TypeError('Value must be a list, tuple, range or generator, or a dict. Supplied value is {0}'.format(
@@ -776,6 +711,8 @@ class Worksheet(object):
         """Iterate over all columns in the worksheet"""
         max_row = self.max_row
         min_row = 1
+        if not self._cells:
+            return ((),)
         cols = []
         for col_idx in range(self.max_column):
             cells = self.get_squared_range(col_idx + 1, min_row, col_idx + 1, max_row)
@@ -817,3 +754,19 @@ class Worksheet(object):
             top_pos += default_height
 
         return (letter, row)
+
+
+    def _add_column(self):
+        """Dimension factory for column information"""
+
+        return ColumnDimension(self)
+
+    def _add_row(self):
+        """Dimension factory for row information"""
+
+        return RowDimension(self)
+
+
+    def _write(self, shared_strings=None):
+        from openpyxl.writer.worksheet import write_worksheet
+        return write_worksheet(self, shared_strings)

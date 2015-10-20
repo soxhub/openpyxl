@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 from .base import *
+from .sequence import Sequence
 
 
 class MetaStrict(type):
@@ -19,10 +20,15 @@ class MetaSerialisable(type):
         attrs = []
         nested = []
         elements = []
+        namespaced = []
         for k, v in methods.items():
             if isinstance(v, Descriptor):
+                ns= getattr(v, 'namespace', None)
+                if ns:
+                    namespaced.append((k, "{%s}%s" % (ns, k)))
                 if getattr(v, 'nested', False):
                     nested.append(k)
+                    elements.append(k)
                 elif isinstance(v, Sequence):
                     elements.append(k)
                 elif isinstance(v, Typed):
@@ -33,7 +39,10 @@ class MetaSerialisable(type):
                 else:
                     if not isinstance(v, Alias):
                         attrs.append(k)
-        methods['__attrs__'] = tuple(attrs)
+
+        if methods.get('__attrs__') is None:
+            methods['__attrs__'] = tuple(attrs)
+        methods['__namespaced__'] = tuple(namespaced)
         if methods.get('__nested__') is None:
             methods['__nested__'] = tuple(sorted(nested))
         if methods.get('__elements__') is None:

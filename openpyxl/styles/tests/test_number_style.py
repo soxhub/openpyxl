@@ -30,7 +30,6 @@ def test_number_descriptor():
                          [
                              ("DD/MM/YY", True),
                              ("H:MM:SS;@", True),
-                             ("H:MM:SS;@", True),
                              (u'#,##0\\ [$\u20bd-46D]', False)
                          ]
                          )

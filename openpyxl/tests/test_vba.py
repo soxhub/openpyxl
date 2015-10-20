@@ -10,18 +10,18 @@ import zipfile
 from openpyxl.tests.helper import compare_xml
 from openpyxl.reader.excel import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
-from openpyxl.writer.workbook import write_content_types
-from openpyxl.xml.functions import fromstring
+from openpyxl.packaging.manifest import write_content_types
+from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS, CONTYPES_NS
 
 def test_write_content_types(datadir):
     datadir.join('reader').chdir()
     wb = load_workbook('vba-test.xlsm', keep_vba=True)
-    content = write_content_types(wb)
+    manifest = write_content_types(wb)
     datadir.chdir()
     datadir.join('writer').chdir()
     with open('Content_types_vba.xml') as expected:
-        diff = compare_xml(content, expected.read())
+        diff = compare_xml(tostring(manifest.to_tree()), expected.read())
         assert diff is None, diff
 
 def test_content_types(datadir):
@@ -69,6 +69,15 @@ def test_save_with_vba(datadir):
                     'xl/activeX/_rels/activeX1.xml.rels',
                     'xl/activeX/activeX2.xml',
                     ])
+    assert files == expected
+
+def test_save_with_saved_comments(datadir):
+    datadir.join('reader').chdir()
+    fname = 'vba-comments-saved.xlsm'
+    wb = load_workbook(fname, keep_vba=True)
+    buf = save_virtual_workbook(wb)
+    files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
+    expected = set(zipfile.ZipFile(fname, 'r').namelist())
     assert files == expected
 
 def test_save_without_vba(datadir):

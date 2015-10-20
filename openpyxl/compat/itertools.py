@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2015 openpyxl
 
 try:
     from itertools import izip as zip

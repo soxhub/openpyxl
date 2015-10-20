@@ -15,6 +15,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.cell import Cell
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.styles import Style
+from openpyxl.worksheet import Worksheet
 
 
 def test_get_xml_iter():
@@ -56,33 +57,9 @@ def test_get_xml_iter():
 
 
 @pytest.fixture
-def Worksheet(Workbook):
+def Workbook():
+    from openpyxl.styles.styleable import StyleArray
     from openpyxl.styles import numbers
-    from openpyxl.styles.style import StyleId
-    from openpyxl.worksheet.header_footer import HeaderFooter
-
-    class DummyWorkbook:
-
-        _guess_types = False
-        data_only = False
-
-        def __init__(self):
-            self.shared_strings = IndexedList()
-            self.shared_strings.add("hello world")
-            self.shared_styles = 28*[DummyStyle()]
-            self.shared_styles.append(Style())
-            self._fonts = IndexedList()
-            self._fills = IndexedList()
-            self._number_formats = IndexedList()
-            self._borders = IndexedList()
-            self._alignments = IndexedList()
-            self._protections = IndexedList()
-            self._cell_styles = IndexedList()
-            self.vba_archive = None
-            for i in range(29):
-                self._cell_styles.add((StyleId(i, i, i, i, i, i)))
-            self._cell_styles.add(StyleId(fillId=4, borderId=6, alignmentId=1, protectionId=0))
-
 
     class DummyStyle:
         number_format = numbers.FORMAT_GENERAL
@@ -93,61 +70,59 @@ def Worksheet(Workbook):
         protection = ""
 
         def copy(self, **kw):
-            return selfexc
+            return self
 
 
-    class DummyWorksheet:
+    class DummyWorkbook:
 
-        encoding = "utf-8"
-        title = "Dummy"
+        _guess_types = False
+        data_only = False
+        _colors = []
 
         def __init__(self):
-            self.parent = DummyWorkbook()
-            self.column_dimensions = {}
-            self.row_dimensions = {}
-            self._styles = {}
-            self.cell = None
-            self._cells = {}
-            self._data_validations = []
-            self.header_footer = HeaderFooter()
-            self.vba_controls = None
+            self._differential_styles = []
+            self.shared_strings = IndexedList()
+            self.shared_strings.add("hello world")
+            self._fonts = IndexedList()
+            self._fills = IndexedList()
+            self._number_formats = IndexedList()
+            self._borders = IndexedList()
+            self._alignments = IndexedList()
+            self._protections = IndexedList()
+            self._cell_styles = IndexedList()
+            self.vba_archive = None
+            for i in range(29):
+                self._cell_styles.add((StyleArray([i]*9)))
+            self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
+            self.sheetnames = []
 
-        def _add_cell(self, cell):
-            self._cells[cell.coordinate] = cell
 
-        def __getitem__(self, value):
-            cell = self._cells.get(value)
+        def create_sheet(self, title):
+            return Worksheet(self)
 
-            if cell is None:
-                cell = Cell(self, 'A', 1)
-                self._cells[value] = cell
-            return cell
 
-        def get_style(self, coordinate):
-            return DummyStyle()
-
-    return DummyWorksheet()
+    return DummyWorkbook()
 
 
 @pytest.fixture
-def WorkSheetParser(Worksheet):
+def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
     from .. worksheet import WorkSheetParser
-    return WorkSheetParser(Worksheet, None, {0:'a'}, {})
+    return WorkSheetParser(Workbook, 'sheet', None, {0:'a'})
 
 
 @pytest.fixture
-def WorkSheetParserKeepVBA(Worksheet):
+def WorkSheetParserKeepVBA(Workbook):
     """Setup a parser instance with an empty source"""
-    Worksheet.parent.vba_archive=True
+    Workbook.vba_archive=True
     from .. worksheet import WorkSheetParser
-    return WorkSheetParser(Worksheet, None, {0:'a'}, {})
+    return WorkSheetParser(Workbook, "sheet", {0:'a'}, {})
 
 
-def test_col_width(datadir, Worksheet, WorkSheetParser):
+def test_col_width(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
 
     with open("complex-styles-worksheet.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
@@ -160,10 +135,10 @@ def test_col_width(datadir, Worksheet, WorkSheetParser):
                                                'width': '31.1640625'}
 
 
-def test_hidden_col(datadir, Worksheet, WorkSheetParser):
+def test_hidden_col(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
 
     with open("hidden_rows_cols.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
@@ -174,10 +149,11 @@ def test_hidden_col(datadir, Worksheet, WorkSheetParser):
                                                '1', 'max': '4', 'min': '4'}
 
 
-def test_styled_col(datadir, Worksheet, WorkSheetParser):
+def test_styled_col(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
+
     with open("complex-styles-worksheet.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
         for _, col in cols:
@@ -188,10 +164,10 @@ def test_styled_col(datadir, Worksheet, WorkSheetParser):
     assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25', 'style':'28'}
 
 
-def test_hidden_row(datadir, Worksheet, WorkSheetParser):
+def test_hidden_row(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
 
     with open("hidden_rows_cols.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
@@ -201,12 +177,11 @@ def test_hidden_row(datadir, Worksheet, WorkSheetParser):
     assert dict(ws.row_dimensions[2]) == {'hidden': '1'}
 
 
-def test_styled_row(datadir, Worksheet, WorkSheetParser):
+def test_styled_row(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
     parser.shared_strings = dict((i, i) for i in range(30))
-    parser.style_table = ws.parent.shared_styles
 
     with open("complex-styles-worksheet.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
@@ -215,14 +190,13 @@ def test_styled_row(datadir, Worksheet, WorkSheetParser):
     assert 23 in ws.row_dimensions
     rd = ws.row_dimensions[23]
     assert rd.style_id == 28
-    #assert rd.style == Style()
     assert dict(rd) == {'s':'28', 'customFormat':'1'}
 
 
-def test_sheet_protection(datadir, Worksheet, WorkSheetParser):
+def test_sheet_protection(datadir, WorkSheetParser):
     datadir.chdir()
-    ws = Worksheet
     parser = WorkSheetParser
+    ws = parser.ws
 
     with open("protected_sheet.xml", "rb") as src:
         tree = iterparse(src, tag='{%s}sheetProtection' % SHEET_MAIN_NS)
@@ -238,9 +212,9 @@ def test_sheet_protection(datadir, Worksheet, WorkSheetParser):
     }
 
 
-def test_formula_without_value(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_formula_without_value(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
 
     src = """
       <x:c r="A1" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -255,9 +229,9 @@ def test_formula_without_value(Worksheet, WorkSheetParser):
     assert ws['A1'].value == '=IF(TRUE, "y", "n")'
 
 
-def test_formula(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_formula(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
 
     src = """
     <x:c r="A1" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -272,9 +246,9 @@ def test_formula(Worksheet, WorkSheetParser):
     assert ws['A1'].value == '=IF(TRUE, "y", "n")'
 
 
-def test_formula_data_only(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_formula_data_only(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
     parser.data_only = True
 
     src = """
@@ -290,9 +264,9 @@ def test_formula_data_only(Worksheet, WorkSheetParser):
     assert ws['A1'].value == 3
 
 
-def test_string_formula_data_only(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_string_formula_data_only(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
     parser.data_only = True
 
     src = """
@@ -308,9 +282,9 @@ def test_string_formula_data_only(Worksheet, WorkSheetParser):
     assert ws['A1'].value == 'y'
 
 
-def test_number(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_number(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
 
     src = """
     <x:c r="A1" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -324,9 +298,9 @@ def test_number(Worksheet, WorkSheetParser):
     assert ws['A1'].value == 1
 
 
-def test_string(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_string(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
 
     src = """
     <x:c r="A1" t="s" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -340,9 +314,9 @@ def test_string(Worksheet, WorkSheetParser):
     assert ws['A1'].value == "a"
 
 
-def test_boolean(Worksheet, WorkSheetParser):
-    ws = Worksheet
+def test_boolean(WorkSheetParser):
     parser = WorkSheetParser
+    ws = parser.ws
 
     src = """
     <x:c r="A1" t="b" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -356,10 +330,9 @@ def test_boolean(Worksheet, WorkSheetParser):
     assert ws['A1'].value is True
 
 
-def test_inline_string(Worksheet, WorkSheetParser, datadir):
-    ws = Worksheet
+def test_inline_string(WorkSheetParser, datadir):
     parser = WorkSheetParser
-    parser.style_table = ws.parent.shared_styles
+    ws = parser.ws
     datadir.chdir()
 
     with open("Table1-XmlFromAccess.xml") as src:
@@ -371,10 +344,9 @@ def test_inline_string(Worksheet, WorkSheetParser, datadir):
     assert ws['A1'].value == "ID"
 
 
-def test_inline_richtext(Worksheet, WorkSheetParser, datadir):
-    ws = Worksheet
+def test_inline_richtext(WorkSheetParser, datadir):
     parser = WorkSheetParser
-    parser.style_table = ws.parent.shared_styles
+    ws = parser.ws
     datadir.chdir()
     with open("jasper_sheet.xml", "rb") as src:
         sheet = fromstring(src.read())
@@ -387,9 +359,9 @@ def test_inline_richtext(Worksheet, WorkSheetParser, datadir):
     assert cell.value == "11 de September de 2014"
 
 
-def test_data_validation(Worksheet, WorkSheetParser, datadir):
-    ws = Worksheet
+def test_data_validation(WorkSheetParser, datadir):
     parser = WorkSheetParser
+    ws = parser.ws
     datadir.chdir()
 
     with open("worksheet_data_validation.xml") as src:
@@ -443,7 +415,9 @@ def test_cell_style(WorkSheetParser, datadir):
 
     element = sheet.find("{%s}sheetData/{%s}row[2]/{%s}c[1]" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS))
     assert element.get('r') == 'A2'
+    assert element.get('s') == '2'
     parser.parse_cell(element)
+    assert ws['A2']._style == parser.styles[2]
     assert ws['A2'].style_id == 2
 
 
@@ -451,7 +425,7 @@ def test_cell_exotic_style(WorkSheetParser, datadir):
     datadir.chdir()
     parser = WorkSheetParser
     ws = parser.ws
-    parser.styles = [None, None, {'pivotButton':True, 'quotePrefix':True}]
+    parser.styles = [None, None, [0,0,0,0,0,0,1,1,0]]
 
     src = """
     <x:c xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="D4" s="2">
@@ -460,7 +434,7 @@ def test_cell_exotic_style(WorkSheetParser, datadir):
 
     sheet = fromstring(src)
     parser.parse_cell(sheet)
-    assert ws['A1'].pivotButton is None
+    assert ws['A1'].pivotButton is False
 
     cell = ws['D4']
     assert cell.pivotButton is True
@@ -505,3 +479,74 @@ def test_legacy_document_no_keep(WorkSheetParser, datadir):
     element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
     parser.parse_legacy_drawing(element)
     assert parser.ws.vba_controls is None
+
+
+@pytest.fixture
+def Translator():
+    from openpyxl.formula import translate
+    return translate.Translator
+
+def test_shared_formula(WorkSheetParser, Translator):
+    parser = WorkSheetParser
+    src = """
+    <x:c r="A9" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <x:f t="shared" si="0"/>
+      <x:v>9</x:v>
+    </x:c>
+    """
+    element = fromstring(src)
+    parser.shared_formula_masters['0'] = Translator("=A4*B4", "A1")
+    parser.parse_cell(element)
+    assert parser.ws['A9'].value == "=A12*B12"
+
+
+import warnings
+warnings.simplefilter("always") # so that tox doesn't suppress warnings.
+
+def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
+    datadir.chdir()
+    parser = WorkSheetParser
+
+    with open("extended_conditional_formatting_sheet.xml") as src:
+        sheet = fromstring(src.read())
+
+    element = sheet.find("{%s}extLst" % SHEET_MAIN_NS)
+    parser.parse_extensions(element)
+    w = recwarn.pop()
+    assert issubclass(w.category, UserWarning)
+
+
+def test_row_dimensions(WorkSheetParser):
+    src = """<row r="2" spans="1:6" x14ac:dyDescent="0.3" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" />"""
+    element = fromstring(src)
+
+    parser = WorkSheetParser
+    parser.parse_row_dimensions(element)
+
+    assert 2 not in parser.ws.row_dimensions
+
+
+def test_shared_formulae(WorkSheetParser, datadir):
+    datadir.chdir()
+    parser = WorkSheetParser
+    ws = parser.ws
+    parser.shared_strings = ["Whatever"] * 7
+
+    with open("worksheet_formulae.xml") as src:
+        parser.source = src.read()
+
+    parser.parse()
+
+    assert set(ws.formula_attributes.keys()) == set(['C10'])
+
+    # Test shared forumlae
+    assert ws.cell('B7').data_type == 'f'
+    assert ws.cell('B7').value == '=B4*2'
+    assert ws.cell('C7').value == '=C4*2'
+    assert ws.cell('D7').value == '=D4*2'
+    assert ws.cell('E7').value == '=E4*2'
+
+    # Test array forumlae
+    assert ws.cell('C10').data_type == 'f'
+    assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
+    assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'

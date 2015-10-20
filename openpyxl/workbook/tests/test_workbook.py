@@ -18,23 +18,22 @@ from openpyxl.tests.schema import validate_archive
 
 def test_get_active_sheet():
     wb = Workbook()
-    active_sheet = wb.get_active_sheet()
-    assert active_sheet == wb.worksheets[0]
+    assert wb.active == wb.worksheets[0]
 
 
 def test_create_sheet():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
-    assert new_sheet == wb.worksheets[0]
+    new_sheet = wb.create_sheet()
+    assert new_sheet == wb.worksheets[-1]
 
 def test_create_sheet_with_name():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0, title='LikeThisName')
-    assert new_sheet == wb.worksheets[0]
+    new_sheet = wb.create_sheet(title='LikeThisName')
+    assert new_sheet == wb.worksheets[-1]
 
 def test_add_correct_sheet():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
+    new_sheet = wb.create_sheet()
     wb._add_sheet(new_sheet)
     assert new_sheet == wb.worksheets[2]
 
@@ -103,9 +102,9 @@ def test_iter(Workbook):
 
 def test_get_index():
     wb = Workbook()
-    new_sheet = wb.create_sheet(0)
+    new_sheet = wb.create_sheet()
     sheet_index = wb.get_index(new_sheet)
-    assert sheet_index == 0
+    assert sheet_index == 1
 
 
 def test_get_sheet_names():
@@ -164,14 +163,14 @@ def test_write_regular_date(tmpdir):
     tmpdir.chdir()
     today = datetime.datetime(2010, 1, 18, 14, 15, 20, 1600)
     book = Workbook()
-    sheet = book.get_active_sheet()
+    sheet = book.active
     sheet.cell("A1").value = today
     dest_filename = 'date_read_write_issue.xlsx'
     book.save(dest_filename)
 
     validate_archive(dest_filename)
     test_book = load_workbook(dest_filename)
-    test_sheet = test_book.get_active_sheet()
+    test_sheet = test_book.active
 
     assert test_sheet.cell("A1").value == today
 
@@ -186,7 +185,7 @@ def test_write_regular_float(tmpdir):
 
     validate_archive(dest_filename)
     test_book = load_workbook(dest_filename)
-    test_sheet = test_book.get_active_sheet()
+    test_sheet = test_book.active
 
     assert test_sheet.cell("A1").value == float_value
 
@@ -197,12 +196,6 @@ class AlternativeWorksheet(object):
         if not title:
             title = 'AlternativeSheet'
         self.title = title
-
-
-def test_worksheet_class():
-    wb = Workbook(worksheet_class=AlternativeWorksheet)
-    assert isinstance(wb.worksheets[0], AlternativeWorksheet)
-
 
 def test_add_invalid_worksheet_class_instance():
     wb = Workbook()

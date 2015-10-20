@@ -7,8 +7,11 @@ Based on Python Cookbook 3rd Edition, 8.13
 http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
 """
 
-from openpyxl.compat import basestring, bytes, long
 import re
+from openpyxl.compat import basestring, bytes, long
+from openpyxl.xml.functions import Element
+from .namespace import namespaced
+
 
 class Descriptor(object):
 
@@ -28,6 +31,10 @@ class Typed(Descriptor):
     allow_none = False
     nested = False
 
+    def __init__(self, *args, **kw):
+        super(Typed, self).__init__(*args, **kw)
+        self.__doc__ = "Values must be of type {0}".format(self.expected_type)
+
     def __set__(self, instance, value):
         if not isinstance(value, self.expected_type):
             if (not self.allow_none
@@ -36,7 +43,19 @@ class Typed(Descriptor):
         super(Typed, self).__set__(instance, value)
 
     def __repr__(self):
-        return "Value must be type '{0}'".format(self.expected_type.__name__)
+        return  self.__doc__
+
+
+def _convert(expected_type, value):
+    """
+    Check value is of or can be converted to expected type.
+    """
+    if not isinstance(value, expected_type):
+        try:
+            value = expected_type(value)
+        except:
+            raise TypeError('expected ' + str(expected_type))
+    return value
 
 
 class Convertible(Typed):
@@ -45,50 +64,47 @@ class Convertible(Typed):
     def __set__(self, instance, value):
         if ((self.allow_none and value is not None)
             or not self.allow_none):
-            try:
-                value = self.expected_type(value)
-            except:
-                raise TypeError('expected ' + str(self.expected_type))
+            value = _convert(self.expected_type, value)
         super(Convertible, self).__set__(instance, value)
 
 
-class Max(Typed):
+class Max(Convertible):
     """Values must be less than a `max` value"""
 
     expected_type = float
+    allow_none = False
 
-    def __init__(self, name=None, **kw):
+    def __init__(self, **kw):
         if 'max' not in kw and not hasattr(self, 'max'):
             raise TypeError('missing max value')
-        super(Max, self).__init__(name, **kw)
+        super(Max, self).__init__(**kw)
 
     def __set__(self, instance, value):
-        try:
-            value = self.expected_type(value)
-        except:
-            raise TypeError('expected ' + str(self.expected_type))
-        if value > self.max:
-            raise ValueError('Max value is {0}'.format(self.max))
+        if ((self.allow_none and value is not None)
+            or not self.allow_none):
+            value = _convert(self.expected_type, value)
+            if value > self.max:
+                raise ValueError('Max value is {0}'.format(self.max))
         super(Max, self).__set__(instance, value)
 
 
-class Min(Typed):
+class Min(Convertible):
     """Values must be greater than a `min` value"""
 
     expected_type = float
+    allow_none = False
 
-    def __init__(self, name=None, **kw):
+    def __init__(self, **kw):
         if 'min' not in kw and not hasattr(self, 'min'):
             raise TypeError('missing min value')
-        super(Min, self).__init__(name, **kw)
+        super(Min, self).__init__(**kw)
 
     def __set__(self, instance, value):
-        try:
-            value = self.expected_type(value)
-        except:
-            raise TypeError('expected ' + str(self.expected_type))
-        if value < self.min:
-            raise ValueError('Min value is {0}'.format(self.min))
+        if ((self.allow_none and value is not None)
+            or not self.allow_none):
+            value = _convert(self.expected_type, value)
+            if value < self.min:
+                raise ValueError('Min value is {0}'.format(self.min))
         super(Min, self).__set__(instance, value)
 
 
@@ -105,10 +121,11 @@ class Set(Descriptor):
             raise TypeError("missing set of values")
         kw['values'] = set(kw['values'])
         super(Set, self).__init__(name, **kw)
+        self.__doc__ = "Value must be one of {0}".format(self.values)
 
     def __set__(self, instance, value):
         if value not in self.values:
-            raise ValueError("Value must be one of {0}".format(self.values))
+            raise ValueError(self.__doc__)
         super(Set, self).__set__(instance, value)
 
 
@@ -160,29 +177,6 @@ class ASCII(Typed):
 class Tuple(Typed):
 
     expected_type = tuple
-
-
-class Sequence(Descriptor):
-    """
-    A sequence (list or tuple) that may only contain objects of the declared
-    type
-    """
-
-    expected_type = type(None)
-    seq_types = (list, tuple)
-
-    def __set__(self, instance, seq):
-        if not isinstance(seq, self.seq_types):
-            raise TypeError("Value must be a sequence")
-        elif isinstance(seq, list):
-            seq = tuple(seq)
-        for idx, value in enumerate(seq):
-            if not isinstance(value, self.expected_type):
-                raise TypeError(
-                    "[{0}] of sequence must be of type {1}".format(
-                        idx, self.expected_type)
-                )
-        super(Sequence, self).__set__(instance, seq)
 
 
 class Length(Descriptor):

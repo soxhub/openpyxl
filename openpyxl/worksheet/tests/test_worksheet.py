@@ -3,23 +3,30 @@
 # test imports
 import pytest
 
+from itertools import islice
+
 # compatibility imports
 from openpyxl.compat import zip
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Relationship, flatten
-from openpyxl.cell import Cell, coordinate_from_string
+from openpyxl.worksheet import flatten
+from openpyxl.cell import Cell
+from openpyxl.utils import coordinate_from_string
 from openpyxl.comments import Comment
 from openpyxl.utils.exceptions import (
-    CellCoordinatesException,
     SheetTitleException,
     InsufficientCoordinatesException,
     NamedRangeException
     )
 
-from openpyxl.styles.colors import Color
-from ..properties import WorksheetProperties
+
+class DummyWorkbook:
+
+    encoding = "UTF-8"
+
+    def __init__(self):
+        self.sheetnames = []
 
 
 @pytest.fixture
@@ -38,67 +45,25 @@ def test_bounds(range_string, coords):
     assert range_boundaries(range_string) == coords
 
 
-def test_cells_from_range():
-    from .. worksheet import cells_from_range
-    cells = cells_from_range("A1:D4")
-    cells = [list(row) for row in cells]
-    assert cells == [
-       ['A1', 'B1', 'C1', 'D1'],
-       ['A2', 'B2', 'C2', 'D2'],
-       ['A3', 'B3', 'C3', 'D3'],
-       ['A4', 'B4', 'C4', 'D4'],
-                           ]
-
-
 class TestWorksheet:
 
     def test_new_worksheet(self, Worksheet):
         wb = Workbook()
         ws = Worksheet(wb)
-        assert ws._parent == wb
+        assert ws.parent == wb
 
-    def test_new_sheet_name(self, Worksheet):
-        ws = Worksheet(Workbook(), title='')
-        assert repr(ws) == '<Worksheet "Sheet2">'
 
     def test_get_cell(self, Worksheet):
         ws = Worksheet(Workbook())
         cell = ws.cell(row=1, column=1)
         assert cell.coordinate == 'A1'
 
-    def test_set_bad_title(self, Worksheet):
-        with pytest.raises(SheetTitleException):
-            Worksheet(Workbook(), 'X' * 50)
-
-    def test_escapes_regex_chars_in_title(self, Worksheet):
-        wb = Workbook()
-        ws1 = wb.create_sheet(title='Regex Test (')
-        ws2 = wb.create_sheet(title='Regex Test (')
-        assert ws1.title != ws2.title
-
-    def test_increment_title(self, Worksheet):
-        wb = Workbook()
-        ws1 = wb.create_sheet(title="Test")
-        assert ws1.title == "Test"
-        ws2 = wb.create_sheet(title="Test")
-        assert ws2.title == "Test1"
-
-    @pytest.mark.parametrize("value", ["[", "]", "*", ":", "?", "/", "\\"])
-    def test_set_bad_title_character(self, Worksheet, value):
-        with pytest.raises(SheetTitleException):
-            Worksheet(Workbook(), value)
-
-
-    def test_unique_sheet_title(self, Worksheet):
-        ws = Workbook().create_sheet(title="AGE")
-        assert ws._unique_sheet_name("GE") == "GE"
-
 
     def test_worksheet_dimension(self, Worksheet):
         ws = Worksheet(Workbook())
         assert 'A1:A1' == ws.calculate_dimension()
         ws.cell('B12').value = 'AAA'
-        assert 'A12:B12' == ws.calculate_dimension()
+        assert 'B12:B12' == ws.calculate_dimension()
 
 
     def test_squared_range(self, Worksheet):
@@ -114,7 +79,22 @@ class TestWorksheet:
             assert tuple(c.coordinate for c in row) == coord
 
 
-    def test_iter_rows(self, Worksheet):
+    @pytest.mark.parametrize("row, column, coordinate",
+                             [
+                                 (1, 0, 'A1'),
+                                 (9, 2, 'C9'),
+                             ])
+    def test_iter_rows_1(self, Worksheet, row, column, coordinate):
+        ws = Worksheet(Workbook())
+        ws.cell('A1').value = 'first'
+        ws.cell('C9').value = 'last'
+        assert ws.calculate_dimension() == 'A1:C9'
+        rows = ws.iter_rows()
+        first_row = tuple(next(islice(rows, row - 1, row)))
+        assert first_row[column].coordinate == coordinate
+
+
+    def test_iter_rows_2(self, Worksheet):
         ws = Worksheet(Workbook())
         expected = [
             ('A1', 'B1', 'C1'),
@@ -215,33 +195,19 @@ class TestWorksheet:
 
     def test_hyperlink_relationships(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert len(ws.relationships) == 0
+        assert len(ws.hyperlinks) == 0
 
         ws.cell('A1').hyperlink = "http://test.com"
-        assert len(ws.relationships) == 1
-        assert "rId1" == ws.cell('A1').hyperlink_rel_id
-        assert "rId1" == ws.relationships[0].id
-        assert "http://test.com" == ws.relationships[0].target
-        assert "External" == ws.relationships[0].target_mode
+        assert len(ws.hyperlinks) == 1
 
         ws.cell('A2').hyperlink = "http://test2.com"
-        assert len(ws.relationships) == 2
-        assert "rId2" == ws.cell('A2').hyperlink_rel_id
-        assert "rId2" == ws.relationships[1].id
-        assert "http://test2.com" == ws.relationships[1].target
-        assert "External" == ws.relationships[1].target_mode
-
-    def test_bad_relationship_type(self, Worksheet):
-        with pytest.raises(ValueError):
-            Relationship('bad_type')
+        assert len(ws.hyperlinks) == 2
 
 
     def test_append(self, Worksheet):
         ws = Worksheet(Workbook())
         ws.append(['value'])
         assert ws['A1'].value == "value"
-        assert ws.row_dimensions[1].parent is ws
-        assert ws.column_dimensions['A'].parent is ws
 
 
     def test_append_list(self, Worksheet):
@@ -270,10 +236,8 @@ class TestWorksheet:
 
     def test_bad_append(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.max_row == 0
         with pytest.raises(TypeError):
             ws.append("test")
-        assert ws.max_row == 0
 
 
     def test_append_range(self, Worksheet):
@@ -320,22 +284,6 @@ class TestWorksheet:
         ws.append([cell])
 
         assert ws['A2'].value == 25
-
-
-    @pytest.mark.parametrize("row, column, coordinate",
-                             [
-                                 (1, 0, 'A1'),
-                                 (9, 2, 'C9'),
-                             ])
-    def test_iter_rows(self, Worksheet, row, column, coordinate):
-        from itertools import islice
-        ws = Worksheet(Workbook())
-        ws.cell('A1').value = 'first'
-        ws.cell('C9').value = 'last'
-        assert ws.calculate_dimension() == 'A1:C9'
-        rows = ws.iter_rows()
-        first_row = tuple(next(islice(rows, row - 1, row)))
-        assert first_row[column].coordinate == coordinate
 
 
     def test_rows(self, Worksheet):
@@ -468,8 +416,8 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws._merged_cells = ["A1:D4"]
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
-        
-    
+
+
     def test_print_titles(self):
         wb = Workbook()
         ws = wb.active
@@ -484,13 +432,13 @@ class TestWorksheet:
 class TestPositioning(object):
     def test_point(self):
         wb = Workbook()
-        ws = wb.get_active_sheet()
+        ws = wb.active
         assert ws.point_pos(top=40, left=150), ('C' == 3)
 
     @pytest.mark.parametrize("value", ('A1', 'D52', 'X11'))
     def test_roundtrip(self, value):
         wb = Workbook()
-        ws = wb.get_active_sheet()
+        ws = wb.active
         assert ws.point_pos(*ws.cell(value).anchor) == coordinate_from_string(value)
 
 
@@ -527,3 +475,31 @@ def test_freeze_panes_both(Worksheet):
     assert dict(view.selection[2]) == {'activeCell': 'A1', 'pane': 'bottomRight', 'sqref': 'A1'}
     assert dict(view.pane) == {'activePane': 'bottomRight', 'state': 'frozen',
                                'topLeftCell': 'D4', 'xSplit': '3', "ySplit":"3"}
+
+
+def test_min_column(Worksheet):
+    ws = Worksheet(DummyWorkbook())
+    assert ws.min_column == 1
+
+
+def test_max_column(Worksheet):
+    ws = Worksheet(DummyWorkbook())
+    ws['F1'] = 10
+    ws['F2'] = 32
+    ws['F3'] = '=F1+F2'
+    ws['A4'] = '=A1+A2+A3'
+    assert ws.max_column == 6
+
+
+def test_min_row(Worksheet):
+    ws = Worksheet(DummyWorkbook())
+    assert ws.min_row == 1
+
+
+def test_max_row(Worksheet):
+    ws = Worksheet(DummyWorkbook())
+    ws.append([])
+    ws.append([5])
+    ws.append([])
+    ws.append([4])
+    assert ws.max_row == 4
