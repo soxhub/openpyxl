@@ -10,7 +10,7 @@ Minor changes
 * Add support for SortState
 
 
-2.3.0 (unreleased)
+2.3.0 (2015-10-20)
 ==================
 
 
