@@ -695,18 +695,19 @@ class Worksheet(_WorkbookChild):
     @property
     def rows(self):
         """Iterate over all rows in the worksheet"""
+        if self.min_row == self.max_row == self.min_column == self.max_column:
+            return ((),)
         return tuple(self.iter_rows())
+
 
     @property
     def columns(self):
         """Iterate over all columns in the worksheet"""
-        max_row = self.max_row
-        min_row = 1
-        if not self._cells:
+        if self.min_row == self.max_row == self.min_column == self.max_column:
             return ((),)
         cols = []
         for col_idx in range(self.max_column):
-            cells = self.get_squared_range(col_idx + 1, min_row, col_idx + 1, max_row)
+            cells = self.get_squared_range(col_idx + 1, self.min_row, col_idx + 1, self.max_row)
             col = chain.from_iterable(cells)
             cols.append(tuple(col))
         return tuple(cols)

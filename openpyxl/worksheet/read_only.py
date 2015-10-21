@@ -186,7 +186,7 @@ class ReadOnlyWorksheet(Worksheet):
     def columns(self):
         if self.max_column is None:
             self.calculate_dimension()
-        return super(IterableWorksheet, self).columns
+        return super(ReadOnlyWorksheet, self).columns
 
 
     def calculate_dimension(self, force=False):

@@ -10,6 +10,16 @@ Minor changes
 * Add support for SortState
 
 
+2.3.1 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#534 <https://bitbucket.org/openpyxl/openpyxl/issues/534>`_ Exception when using columns property in read-only mode.
+
+
 2.3.0 (2015-10-20)
 ==================
 
