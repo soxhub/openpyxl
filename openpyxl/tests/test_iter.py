@@ -75,6 +75,15 @@ def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     assert dims == "A1:AA30"
 
 
+def test_calculate_dimension(datadir):
+    """
+    Behaviour differs between implementations
+    """
+    datadir.join("genuine").chdir()
+    wb = load_workbook(filename="empty.xlsx", read_only=True)
+    sheet2 = wb['Sheet2 - Numbers']
+    assert sheet2.calculate_dimension() == 'D1:AA30'
+
 
 @pytest.mark.parametrize("filename",
                          ["sheet2.xml",
@@ -97,116 +106,139 @@ def sample_workbook(request, datadir):
     return wb
 
 
-def test_calculate_dimension(datadir):
-    """
-    Behaviour differs between implementations
-    """
-    datadir.join("genuine").chdir()
-    wb = load_workbook(filename="empty.xlsx", read_only=True)
-    sheet2 = wb['Sheet2 - Numbers']
-    assert sheet2.calculate_dimension() == 'D1:AA30'
+class TestRead:
+
+    # test API across implementations
+
+    def test_get_missing_cell(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb['Sheet2 - Numbers']
+        assert ws['A1'].value is None
 
 
-def test_get_missing_cell(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet2 - Numbers']
-    assert ws['A1'].value is None
+    def test_getitem(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb['Sheet1 - Text']
+        assert list(ws.iter_rows("A1"))[0][0] == ws['A1']
+        assert list(ws.iter_rows("A1:D30")) == list(ws["A1:D30"])
+        assert list(ws.iter_rows("A1:D30")) == list(ws["A1":"D30"])
 
 
-def test_getitem(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet1 - Text']
-    assert list(ws.iter_rows("A1"))[0][0] == ws['A1']
-    assert list(ws.iter_rows("A1:D30")) == list(ws["A1:D30"])
-    assert list(ws.iter_rows("A1:D30")) == list(ws["A1":"D30"])
+    def test_max_row(self, sample_workbook):
+        wb = sample_workbook
+        sheet2 = wb['Sheet2 - Numbers']
+        assert sheet2.max_row == 30
 
 
-def test_max_row(sample_workbook):
-    wb = sample_workbook
-    sheet2 = wb['Sheet2 - Numbers']
-    assert sheet2.max_row == 30
+    expected = [
+        ("Sheet1 - Text", 7),
+        ("Sheet2 - Numbers", 27),
+        ("Sheet3 - Formulas", 4),
+        ("Sheet4 - Dates", 3)
+                 ]
+    @pytest.mark.parametrize("sheetname, col", expected)
+    def test_max_column(self, sample_workbook, sheetname, col):
+        wb = sample_workbook
+        ws = wb[sheetname]
+        assert ws.max_column == col
 
 
-expected = [
-    ("Sheet1 - Text", 7),
-    ("Sheet2 - Numbers", 27),
-    ("Sheet3 - Formulas", 4),
-    ("Sheet4 - Dates", 3)
-             ]
-@pytest.mark.parametrize("sheetname, col", expected)
-def test_max_column(sample_workbook, sheetname, col):
-    wb = sample_workbook
-    ws = wb[sheetname]
-    assert ws.max_column == col
+    def test_read_single_cell_range(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb['Sheet1 - Text']
+        assert 'This is cell A1 in Sheet 1' == list(ws.iter_rows('A1'))[0][0].value
 
 
-def test_read_single_cell_range(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet1 - Text']
-    assert 'This is cell A1 in Sheet 1' == list(ws.iter_rows('A1'))[0][0].value
-
-
-expected = [['This is cell A1 in Sheet 1', None, None, None, None, None, None],
+    def test_read_fast_integrated_text(self, sample_workbook):
+        expected = [
+            ['This is cell A1 in Sheet 1', None, None, None, None, None, None],
             [None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, 'This is cell G5'], ]
+            [None, None, None, None, None, None, 'This is cell G5'],
+        ]
 
-def test_read_fast_integrated_text(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet1 - Text']
-    for row, expected_row in zip(ws.rows, expected):
-        row_values = [x.value for x in row]
-        assert row_values == expected_row
-
-
-def test_read_single_cell_range(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet1 - Text']
-    assert 'This is cell A1 in Sheet 1' == list(ws.iter_rows('A1'))[0][0].value
+        wb = sample_workbook
+        ws = wb['Sheet1 - Text']
+        for row, expected_row in zip(ws.rows, expected):
+            row_values = [x.value for x in row]
+            assert row_values == expected_row
 
 
-def test_read_single_cell(sample_workbook):
-    wb = sample_workbook
-    ws = wb['Sheet1 - Text']
-    c1 = ws['A1']
-    c2 = ws.cell('A1')
-    assert c1 == c2
-    assert c1.value == c2.value == 'This is cell A1 in Sheet 1'
+    def test_read_single_cell_range(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb['Sheet1 - Text']
+        assert 'This is cell A1 in Sheet 1' == list(ws.iter_rows('A1'))[0][0].value
 
 
-def test_read_fast_integrated_numbers(sample_workbook):
-    wb = sample_workbook
-    expected = [[x + 1] for x in range(30)]
-    query_range = 'D1:D30'
-    ws = wb['Sheet2 - Numbers']
-    for row, expected_row in zip(ws.iter_rows(query_range), expected):
-        row_values = [x.value for x in row]
-        assert row_values == expected_row
+    def test_read_single_cell(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb['Sheet1 - Text']
+        c1 = ws['A1']
+        c2 = ws.cell('A1')
+        assert c1 == c2
+        assert c1.value == c2.value == 'This is cell A1 in Sheet 1'
 
 
-def test_read_fast_integrated_numbers_2(sample_workbook):
-    wb = sample_workbook
-    query_range = 'K1:K30'
-    expected = expected = [[(x + 1) / 100.0] for x in range(30)]
-    ws = wb['Sheet2 - Numbers']
-    for row, expected_row in zip(ws.iter_rows(query_range), expected):
-        row_values = [x.value for x in row]
-        assert row_values == expected_row
+    def test_read_fast_integrated_numbers(self, sample_workbook):
+        wb = sample_workbook
+        expected = [[x + 1] for x in range(30)]
+        query_range = 'D1:D30'
+        ws = wb['Sheet2 - Numbers']
+        for row, expected_row in zip(ws.iter_rows(query_range), expected):
+            row_values = [x.value for x in row]
+            assert row_values == expected_row
 
 
-@pytest.mark.parametrize("cell, value",
-    [
-    ("A1", datetime.datetime(1973, 5, 20)),
-    ("C1", datetime.datetime(1973, 5, 20, 9, 15, 2))
-    ]
-    )
-def test_read_single_cell_date(sample_workbook, cell, value):
-    wb = sample_workbook
-    ws = wb['Sheet4 - Dates']
-    rows = ws.iter_rows(cell)
-    cell = list(rows)[0][0]
-    assert cell.value == value
+    def test_read_fast_integrated_numbers_2(self, sample_workbook):
+        wb = sample_workbook
+        query_range = 'K1:K30'
+        expected = expected = [[(x + 1) / 100.0] for x in range(30)]
+        ws = wb['Sheet2 - Numbers']
+        for row, expected_row in zip(ws.iter_rows(query_range), expected):
+            row_values = [x.value for x in row]
+            assert row_values == expected_row
+
+
+    @pytest.mark.parametrize("cell, value",
+        [
+        ("A1", datetime.datetime(1973, 5, 20)),
+        ("C1", datetime.datetime(1973, 5, 20, 9, 15, 2))
+        ]
+        )
+    def test_read_single_cell_date(self, sample_workbook, cell, value):
+        wb = sample_workbook
+        ws = wb['Sheet4 - Dates']
+        rows = ws.iter_rows(cell)
+        cell = list(rows)[0][0]
+        assert cell.value == value
+
+
+    @pytest.mark.xfail
+    def test_read_cols(self, sample_workbook):
+        wb = sample_workbook
+        ws = wb["Sheet1 - Text"]
+        cols = ws.columns
+        first = cols[0][0]
+        last = cols[-1][-1]
+
+        assert first.value == 'This is cell A1 in Sheet 1'
+        assert last.value == 'This is cell G5'
+
+
+    @pytest.mark.parametrize("cell, expected",
+        [
+        ("G9", True),
+        ("G10", False)
+        ]
+        )
+    def test_read_boolean(self, sample_workbook, cell, expected):
+        wb = sample_workbook
+        ws = wb["Sheet2 - Numbers"]
+        row = list(ws.iter_rows(cell))
+        assert row[0][0].coordinate == cell
+        assert row[0][0].data_type == 'b'
+        assert row[0][0].value == expected
 
 
 @pytest.mark.parametrize("data_only, expected",
@@ -223,21 +255,6 @@ def test_read_single_cell_formula(datadir, data_only, expected):
     cell = list(rows)[0][0]
     assert ws.parent.data_only == data_only
     assert cell.value == expected
-
-
-@pytest.mark.parametrize("cell, expected",
-    [
-    ("G9", True),
-    ("G10", False)
-    ]
-    )
-def test_read_boolean(sample_workbook, cell, expected):
-    wb = sample_workbook
-    ws = wb["Sheet2 - Numbers"]
-    row = list(ws.iter_rows(cell))
-    assert row[0][0].coordinate == cell
-    assert row[0][0].data_type == 'b'
-    assert row[0][0].value == expected
 
 
 def test_read_style_iter(tmpdir):
