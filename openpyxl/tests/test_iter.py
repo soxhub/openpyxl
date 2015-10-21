@@ -107,15 +107,8 @@ def test_calculate_dimension(datadir):
     assert sheet2.calculate_dimension() == 'D1:AA30'
 
 
-@pytest.mark.parametrize("read_only",
-                         [
-                             False,
-                             True
-                         ]
-                         )
-def test_get_missing_cell(read_only, datadir):
-    datadir.join("genuine").chdir()
-    wb = load_workbook(filename="empty.xlsx", read_only=read_only)
+def test_get_missing_cell(sample_workbook):
+    wb = sample_workbook
     ws = wb['Sheet2 - Numbers']
     assert ws['A1'].value is None
 
