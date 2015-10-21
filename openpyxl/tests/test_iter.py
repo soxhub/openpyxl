@@ -214,16 +214,15 @@ class TestRead:
         assert cell.value == value
 
 
-    @pytest.mark.xfail
     def test_read_cols(self, sample_workbook):
         wb = sample_workbook
-        ws = wb["Sheet1 - Text"]
+        ws = wb["Sheet2 - Numbers"]
         cols = ws.columns
         first = cols[0][0]
         last = cols[-1][-1]
 
-        assert first.value == 'This is cell A1 in Sheet 1'
-        assert last.value == 'This is cell G5'
+        assert first.value is None
+        assert last.coordinate, last.value == ("K30", 30)
 
 
     @pytest.mark.parametrize("cell, expected",
