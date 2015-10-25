@@ -74,16 +74,3 @@ def test_comments_with_iterators(datadir):
     ws = wb['Sheet1']
     assert ws.cell(coordinate="A1").comment.author == "Cuke"
     assert ws.cell(coordinate="A1").comment.text == "Cuke:\nFirst Comment"
-
-
-@pytest.mark.xfail
-def test_read_google_docs(datadir):
-    datadir.chdir()
-    wb = Workbook()
-    ws = wb.active
-    with open("google_docs_comments.xml") as src:
-        reader.read_comments(ws, src.read())
-    com = ws['A1'].comment
-    assert com is not None
-    assert com.author is None
-    assert com.text == "some comment\n\t -Peter Lustig"
