@@ -36,7 +36,7 @@ def read_comments(ws, xml_source):
 
         comment_text= []
         if comment.text.t is not None:
-            comment_text.append(t)
+            comment_text.append(comment.text.t)
         for r in comment.text.r:
             comment_text.append(r.t)
 
