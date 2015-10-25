@@ -6,7 +6,7 @@ from zipfile import ZipFile
 
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet import Worksheet
-from openpyxl.reader import comments
+from .. import reader
 from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.functions import fromstring
 
@@ -18,7 +18,7 @@ def test_get_author_list():
     xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors>
     <author>Cuke</author><author>Not Cuke</author></authors><commentList>
     </commentList></comments>"""
-    assert comments._get_author_list(fromstring(xml)) == ['Cuke', 'Not Cuke']
+    assert reader._get_author_list(fromstring(xml)) == ['Cuke', 'Not Cuke']
 
 
 def test_read_comments():
@@ -38,7 +38,7 @@ def test_read_comments():
     <t xml:space="preserve">Third Comment</t></r></text></comment></commentList></comments>"""
     wb = Workbook()
     ws = Worksheet(wb)
-    comments.read_comments(ws, xml)
+    reader.read_comments(ws, xml)
     comments_expected = [['A1', 'Cuke', 'Cuke:\nFirst Comment'],
                          ['D1', 'Cuke', 'Cuke:\nSecond Comment'],
                          ['A2', 'Not Cuke', 'Not Cuke:\nThird Comment']
@@ -53,9 +53,9 @@ def test_get_comments_file(datadir):
     datadir.chdir()
     archive = ZipFile('comments.xlsx')
     valid_files = archive.namelist()
-    assert comments.get_comments_file('sheet1.xml', archive, valid_files) == 'xl/comments1.xml'
-    assert comments.get_comments_file('sheet3.xml', archive, valid_files) == 'xl/comments2.xml'
-    assert comments.get_comments_file('sheet2.xml', archive, valid_files) is None
+    assert reader.get_comments_file('sheet1.xml', archive, valid_files) == 'xl/comments1.xml'
+    assert reader.get_comments_file('sheet3.xml', archive, valid_files) == 'xl/comments2.xml'
+    assert reader.get_comments_file('sheet2.xml', archive, valid_files) is None
 
 
 def test_comments_cell_association(datadir):
@@ -74,3 +74,4 @@ def test_comments_with_iterators(datadir):
     ws = wb['Sheet1']
     assert ws.cell(coordinate="A1").comment.author == "Cuke"
     assert ws.cell(coordinate="A1").comment.text == "Cuke:\nFirst Comment"
+
