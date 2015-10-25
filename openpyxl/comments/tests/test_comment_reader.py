@@ -13,14 +13,6 @@ from openpyxl.xml.functions import fromstring
 import pytest
 
 
-def test_get_author_list():
-    xml = """<?xml version="1.0" standalone="yes"?><comments
-    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors>
-    <author>Cuke</author><author>Not Cuke</author></authors><commentList>
-    </commentList></comments>"""
-    assert reader._get_author_list(fromstring(xml)) == ['Cuke', 'Not Cuke']
-
-
 def test_read_comments():
     xml = """<?xml version="1.0" standalone="yes"?>
     <comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors>

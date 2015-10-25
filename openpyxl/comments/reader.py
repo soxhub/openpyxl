@@ -16,12 +16,6 @@ from openpyxl.xml.functions import fromstring
 from .author import AuthorList
 from .properties import Comments
 
-def _get_author_list(root):
-
-    node = root.find('{%s}authors' % SHEET_MAIN_NS)
-    authors = AuthorList.from_tree(node)
-    return authors.author
-
 
 def read_comments(ws, xml_source):
     """Given a worksheet and the XML of its comments file, assigns comments to cells"""
