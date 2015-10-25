@@ -11,10 +11,10 @@ from openpyxl.xml.constants import (
     COMMENTS_NS,
     PACKAGE_XL,
     )
-from openpyxl.xml.functions import fromstring, safe_iterator
+from openpyxl.xml.functions import fromstring
 
 from .author import AuthorList
-from .properties import Comment as CommentParser
+from .properties import Comments
 
 def _get_author_list(root):
 
@@ -26,11 +26,10 @@ def _get_author_list(root):
 def read_comments(ws, xml_source):
     """Given a worksheet and the XML of its comments file, assigns comments to cells"""
     root = fromstring(xml_source)
-    authors = _get_author_list(root)
+    comments = Comments.from_tree(root)
+    authors = comments.authors.author
 
-    comment_nodes = safe_iterator(root, ('{%s}comment' % SHEET_MAIN_NS))
-    for node in comment_nodes:
-        comment = CommentParser.from_tree(node)
+    for comment in comments.commentList:
         author = authors[comment.authorId]
         ref = comment.ref
 
@@ -42,6 +41,7 @@ def read_comments(ws, xml_source):
 
         comment = Comment("".join(comment_text), author)
         ws.cell(coordinate=ref).comment = comment
+
 
 def get_comments_file(worksheet_path, archive, valid_files):
     """Returns the XML filename in the archive which contains the comments for

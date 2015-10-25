@@ -49,3 +49,15 @@ def test_read_google_docs(datadir, Comment):
     node = fromstring(xml)
     comment = Comment.from_tree(node)
     assert comment.text.t == "some comment\n\t -Peter Lustig"
+
+
+def test_read_comments(datadir):
+    from ..properties import Comments
+
+    datadir.chdir()
+    with open("comments1.xml") as src:
+        node = fromstring(src.read())
+
+    comments = Comments.from_tree(node)
+    assert comments.authors.author == ['author2', 'author', 'author3']
+    assert len(comments.commentList) == 3

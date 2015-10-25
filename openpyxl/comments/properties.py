@@ -10,9 +10,11 @@ from openpyxl.descriptors import (
     String,
     Bool,
 )
-from openpyxl.descriptors.excel import Guid
+from openpyxl.descriptors.excel import Guid, ExtensionList
+from openpyxl.descriptors.sequence import NestedSequence
 
 from .text import Text
+from .author import AuthorList
 
 
 class ObjectAnchor(Serialisable):
@@ -120,3 +122,22 @@ class Comment(Serialisable):
             text = Text()
         self.text = text
         self.commentPr = commentPr
+
+
+class Comments(Serialisable):
+
+    tagname = "comments"
+
+    authors = Typed(expected_type=AuthorList)
+    commentList = NestedSequence(expected_type=Comment)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('authors', 'commentList')
+
+    def __init__(self,
+                 authors=None,
+                 commentList=None,
+                 extLst=None,
+                ):
+        self.authors = authors
+        self.commentList = commentList
