@@ -38,8 +38,14 @@ class TestComment:
 
 def test_read_google_docs(datadir, Comment):
     datadir.chdir()
-    with open("google_docs_comments.xml") as src:
-        xml = src.read()
+    xml = """
+    <comment authorId="0" ref="A1">
+      <text>
+        <t xml:space="preserve">some comment
+	 -Peter Lustig</t>
+      </text>
+    </comment>
+    """
     node = fromstring(xml)
     comment = Comment.from_tree(node)
     assert comment.text.t == "some comment\n\t -Peter Lustig"

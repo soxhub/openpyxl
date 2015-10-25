@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
+from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -122,7 +123,7 @@ class RichText(Serialisable):
 
     rPr = Typed(expected_type=InlineFont, allow_none=True)
     font = Alias("rPr")
-    t = NestedText()
+    t = NestedText(expected_type=unicode, allow_none=True)
     text = Alias("t")
 
     __elements__ = ('rPr', 't')
@@ -139,7 +140,7 @@ class Text(Serialisable):
 
     tagname = "text"
 
-    t = NestedText(allow_none=True)
+    t = NestedText(allow_none=True, expected_type=unicode)
     text = Alias("t")
     r = Sequence(expected_type=RichText, allow_none=True)
     rPh = Sequence(expected_type=PhoneticText, allow_none=True)
