@@ -14,6 +14,7 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import fromstring, safe_iterator
 
 from .author import AuthorList
+from .properties import Comment as CommentParser
 
 def _get_author_list(root):
 
@@ -26,19 +27,21 @@ def read_comments(ws, xml_source):
     """Given a worksheet and the XML of its comments file, assigns comments to cells"""
     root = fromstring(xml_source)
     authors = _get_author_list(root)
+
     comment_nodes = safe_iterator(root, ('{%s}comment' % SHEET_MAIN_NS))
     for node in comment_nodes:
-        author = authors[int(node.attrib['authorId'])]
-        cell = node.attrib['ref']
-        text_node = node.find('{%s}text' % SHEET_MAIN_NS)
-        substrs = []
-        for run in text_node.findall('{%s}r' % SHEET_MAIN_NS):
-            runtext = ''.join([t.text for t in run.findall('{%s}t' % SHEET_MAIN_NS)])
-            substrs.append(runtext)
-        comment_text = ''.join(substrs)
+        comment = CommentParser.from_tree(node)
+        author = authors[comment.authorId]
+        ref = comment.ref
 
-        comment = Comment(comment_text, author)
-        ws.cell(coordinate=cell).comment = comment
+        comment_text= []
+        if comment.text.t is not None:
+            comment_text.append(t)
+        for r in comment.text.r:
+            comment_text.append(r.t)
+
+        comment = Comment("".join(comment_text), author)
+        ws.cell(coordinate=ref).comment = comment
 
 def get_comments_file(worksheet_path, archive, valid_files):
     """Returns the XML filename in the archive which contains the comments for
