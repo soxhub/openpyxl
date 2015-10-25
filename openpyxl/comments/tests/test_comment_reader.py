@@ -86,4 +86,4 @@ def test_read_google_docs(datadir):
     com = ws['A1'].comment
     assert com is not None
     assert com.author is None
-    assert com.text == "some comment\t -Peter Lustig"
+    assert com.text == "some comment\n\t -Peter Lustig"
