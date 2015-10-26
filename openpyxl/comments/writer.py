@@ -92,8 +92,8 @@ class CommentWriter(object):
 
         style = ("position:absolute; margin-left:59.25pt;"
                  "margin-top:1.5pt;width:%(width)s;height:%(height)s;"
-                 "z-index:1;visibility:hidden") % {'height': comment._height,
-                                                   'width': comment._width}
+                 "z-index:1;visibility:hidden") % {'height': comment.height,
+                                                   'width': comment.width}
         attrs = {
             "id": "_x0000_s%04d" % idx ,
             "type": "#_x0000_t202",
