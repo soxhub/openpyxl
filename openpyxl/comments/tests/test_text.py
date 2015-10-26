@@ -70,9 +70,12 @@ class TestText:
 
     def test_ctor(self, Text):
         text = Text()
+        text.body = "comment"
         xml = tostring(text.to_tree())
         expected = """
-        <text />
+        <text>
+          <t>comment</t>
+        </text>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

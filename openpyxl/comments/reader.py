@@ -7,20 +7,18 @@ import os.path
 from openpyxl.comments import Comment
 from openpyxl.xml.constants import (
     PACKAGE_WORKSHEET_RELS,
-    SHEET_MAIN_NS,
     COMMENTS_NS,
     PACKAGE_XL,
     )
 from openpyxl.xml.functions import fromstring
 
-from .author import AuthorList
-from .properties import Comments
+from .properties import CommentSheet
 
 
 def read_comments(ws, xml_source):
     """Given a worksheet and the XML of its comments file, assigns comments to cells"""
     root = fromstring(xml_source)
-    comments = Comments.from_tree(root)
+    comments = CommentSheet.from_tree(root)
     authors = comments.authors.author
 
     for comment in comments.commentList:

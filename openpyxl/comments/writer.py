@@ -11,6 +11,9 @@ from openpyxl.utils import (
     coordinate_from_string,
 )
 
+from .author import AuthorList
+from .properties import CommentSheet, Comment
+
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
 excelns = "urn:schemas-microsoft-com:office:excel"
@@ -18,46 +21,33 @@ excelns = "urn:schemas-microsoft-com:office:excel"
 
 class CommentWriter(object):
 
-    def extract_comments(self):
-        """
-         extract list of comments and authors
-         """
-        for _coord, cell in iteritems(self.sheet._cells):
-            if cell.comment is not None:
-                self.authors.add(cell.comment.author)
-                self.comments.append(cell.comment)
 
     def __init__(self, sheet):
         self.sheet = sheet
-        self.authors = IndexedList()
         self.comments = []
-
-        self.extract_comments()
 
 
     def write_comments(self):
+        """
+        Create list of comments and authors
+        Sorted by row, col
+        """
         # produce xml
-        root = Element("{%s}comments" % SHEET_MAIN_NS)
-        authorlist_tag = SubElement(root, "{%s}authors" % SHEET_MAIN_NS)
-        for author in self.authors:
-            leaf = SubElement(authorlist_tag, "{%s}author" % SHEET_MAIN_NS)
-            leaf.text = author
+        authors = IndexedList()
 
-        commentlist_tag = SubElement(root, "{%s}commentList" % SHEET_MAIN_NS)
-        for comment in self.comments:
-            attrs = {'ref': comment._parent.coordinate,
-                     'authorId': '%d' % self.authors.index(comment.author),
-                     'shapeId': '0'}
-            comment_tag = SubElement(commentlist_tag,
-                                     "{%s}comment" % SHEET_MAIN_NS, attrs)
+        for _coord, cell in sorted(self.sheet._cells.items()):
+            if cell.comment is not None:
+                comment = Comment(ref=cell.coordinate)
+                comment.authorId = authors.add(cell.comment.author)
+                comment.text.t = cell.comment.text
+                comment.height = cell.comment.height
+                comment.width = cell.comment.width
+                self.comments.append(comment)
 
-            text_tag = SubElement(comment_tag, "{%s}text" % SHEET_MAIN_NS)
-            run_tag = SubElement(text_tag, "{%s}r" % SHEET_MAIN_NS)
-            SubElement(run_tag, "{%s}rPr" % SHEET_MAIN_NS)
-            t_tag = SubElement(run_tag, "{%s}t" % SHEET_MAIN_NS)
-            t_tag.text = comment.text
+        author_list = AuthorList(authors)
+        root = CommentSheet(authors=author_list, commentList=self.comments)
 
-        return tostring(root)
+        return tostring(root.to_tree())
 
     def write_comments_vml(self):
         root = Element("xml")
@@ -78,45 +68,50 @@ class CommentWriter(object):
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
 
-        for i, comment in enumerate(self.comments, 1026):
-            shape = self._write_comment_shape(comment, i)
+        for idx, comment in enumerate(self.comments, 1026):
+
+            shape = _shape_factory()
+            col, row = coordinate_from_string(comment.ref)
+            row -= 1
+            column = column_index_from_string(col) - 1
+
+            shape.set('id',  "_x0000_s%04d" % idx)
+            client_data = shape.find("{%s}ClientData" % excelns)
+            client_data.find("{%s}Row" % excelns).text = str(row)
+            client_data.find("{%s}Column" % excelns).text = str(column)
             root.append(shape)
 
         return tostring(root)
 
-    def _write_comment_shape(self, comment, idx):
-        # get zero-indexed coordinates of the comment
-        col, row = coordinate_from_string(comment._parent.coordinate)
-        row -= 1
-        column = column_index_from_string(col) - 1
 
-        style = ("position:absolute; margin-left:59.25pt;"
-                 "margin-top:1.5pt;width:%(width)s;height:%(height)s;"
-                 "z-index:1;visibility:hidden") % {'height': comment._height,
-                                                   'width': comment._width}
-        attrs = {
-            "id": "_x0000_s%04d" % idx ,
-            "type": "#_x0000_t202",
-            "style": style,
-            "fillcolor": "#ffffe1",
-            "{%s}insetmode" % officens: "auto"
-        }
-        shape = Element("{%s}shape" % vmlns, attrs)
+def _shape_factory():
 
-        SubElement(shape, "{%s}fill" % vmlns,
-                   {"color2": "#ffffe1"})
-        SubElement(shape, "{%s}shadow" % vmlns,
-                   {"color": "black", "obscured": "t"})
-        SubElement(shape, "{%s}path" % vmlns,
-                   {"{%s}connecttype" % officens: "none"})
-        textbox = SubElement(shape, "{%s}textbox" % vmlns,
-                             {"style": "mso-direction-alt:auto"})
-        SubElement(textbox, "div", {"style": "text-align:left"})
-        client_data = SubElement(shape, "{%s}ClientData" % excelns,
-                                 {"ObjectType": "Note"})
-        SubElement(client_data, "{%s}MoveWithCells" % excelns)
-        SubElement(client_data, "{%s}SizeWithCells" % excelns)
-        SubElement(client_data, "{%s}AutoFill" % excelns).text = "False"
-        SubElement(client_data, "{%s}Row" % excelns).text = "%d" % row
-        SubElement(client_data, "{%s}Column" % excelns).text = "%d" % column
-        return shape
+    style = ("position:absolute; margin-left:59.25pt;"
+             "margin-top:1.5pt;width:{width};height:{height};"
+             "z-index:1;visibility:hidden").format(height="59.25pt",
+                                               width="108pt")
+    attrs = {
+        "type": "#_x0000_t202",
+        "style": style,
+        "fillcolor": "#ffffe1",
+        "{%s}insetmode" % officens: "auto"
+    }
+    shape = Element("{%s}shape" % vmlns, attrs)
+
+    SubElement(shape, "{%s}fill" % vmlns,
+               {"color2": "#ffffe1"})
+    SubElement(shape, "{%s}shadow" % vmlns,
+               {"color": "black", "obscured": "t"})
+    SubElement(shape, "{%s}path" % vmlns,
+               {"{%s}connecttype" % officens: "none"})
+    textbox = SubElement(shape, "{%s}textbox" % vmlns,
+                         {"style": "mso-direction-alt:auto"})
+    SubElement(textbox, "div", {"style": "text-align:left"})
+    client_data = SubElement(shape, "{%s}ClientData" % excelns,
+                             {"ObjectType": "Note"})
+    SubElement(client_data, "{%s}MoveWithCells" % excelns)
+    SubElement(client_data, "{%s}SizeWithCells" % excelns)
+    SubElement(client_data, "{%s}AutoFill" % excelns).text = "False"
+    SubElement(client_data, "{%s}Row" % excelns)
+    SubElement(client_data, "{%s}Column" % excelns)
+    return shape

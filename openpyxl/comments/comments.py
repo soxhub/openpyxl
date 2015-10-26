@@ -3,40 +3,14 @@ from __future__ import absolute_import
 
 
 class Comment(object):
-    __slots__ = ('_parent',
-                 '_text',
-                 '_author',
-                 '_width',
-                 '_height')
+
+    _parent = None
 
     def __init__(self, text, author):
-        self._text = text
-        self._author = author
-        self._parent = None
-        self._width = '108pt'
-        self._height = '59.25pt'
-
-    @property
-    def author(self):
-        """ The name recorded for the author
-
-            :rtype: string
-        """
-        return self._author
-    @author.setter
-    def author(self, value):
-        self._author = value
-
-    @property
-    def text(self):
-        """ The text of the commment
-
-            :rtype: string
-        """
-        return self._text
-    @text.setter
-    def text(self, value):
-        self._text = value
+        self.text = text
+        self.author = author
+        self.width = '108pt'
+        self.height = '59.25pt'
 
     @property
     def parent(self):
