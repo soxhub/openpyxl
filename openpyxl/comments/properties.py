@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+## Incomplete!
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -122,6 +124,19 @@ class Comment(Serialisable):
             text = Text()
         self.text = text
         self.commentPr = commentPr
+
+
+    @property
+    def flattened_text(self):
+        """
+        Remove all inline formatting and stuff
+        """
+        snippets = []
+        if self.text.t is not None:
+            snippets.append(self.text.t)
+        for run in self.text.r:
+            snippets.append(run.t)
+        return "".join(snippets)
 
 
 class Comments(Serialisable):

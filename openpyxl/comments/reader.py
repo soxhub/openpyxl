@@ -26,14 +26,8 @@ def read_comments(ws, xml_source):
     for comment in comments.commentList:
         author = authors[comment.authorId]
         ref = comment.ref
+        comment = Comment(comment.flattened_text, author)
 
-        comment_text= []
-        if comment.text.t is not None:
-            comment_text.append(comment.text.t)
-        for r in comment.text.r:
-            comment_text.append(r.t)
-
-        comment = Comment("".join(comment_text), author)
         ws.cell(coordinate=ref).comment = comment
 
 
