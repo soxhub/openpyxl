@@ -13,32 +13,24 @@ from openpyxl.xml.functions import fromstring
 import pytest
 
 
-def test_read_comments():
-    xml = """<?xml version="1.0" standalone="yes"?>
-    <comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors>
-    <author>Cuke</author><author>Not Cuke</author></authors><commentList><comment ref="A1"
-    authorId="0" shapeId="0"><text><r><rPr><b/><sz val="9"/><color indexed="81"/><rFont
-    val="Tahoma"/><charset val="1"/></rPr><t>Cuke:\n</t></r><r><rPr><sz val="9"/><color
-    indexed="81"/><rFont val="Tahoma"/><charset val="1"/></rPr>
-    <t xml:space="preserve">First Comment</t></r></text></comment><comment ref="D1" authorId="0" shapeId="0">
-    <text><r><rPr><b/><sz val="9"/><color indexed="81"/><rFont val="Tahoma"/><charset val="1"/>
-    </rPr><t>Cuke:\n</t></r><r><rPr><sz val="9"/><color indexed="81"/><rFont val="Tahoma"/>
-    <charset val="1"/></rPr><t xml:space="preserve">Second Comment</t></r></text></comment>
-    <comment ref="A2" authorId="1" shapeId="0"><text><r><rPr><b/><sz val="9"/><color
-    indexed="81"/><rFont val="Tahoma"/><charset val="1"/></rPr><t>Not Cuke:\n</t></r><r><rPr>
-    <sz val="9"/><color indexed="81"/><rFont val="Tahoma"/><charset val="1"/></rPr>
-    <t xml:space="preserve">Third Comment</t></r></text></comment></commentList></comments>"""
+@pytest.mark.parametrize("cell, author, text",
+                         [
+                             ['A1', 'Cuke', 'Cuke:\nFirst Comment'],
+                             ['D1', 'Cuke', 'Cuke:\nSecond Comment'],
+                             ['A2', 'Not Cuke', 'Not Cuke:\nThird Comment']
+                         ]
+                         )
+def test_read_comments(datadir, cell, author, text):
+    datadir.chdir()
+    with open("comments2.xml") as src:
+        xml = src.read()
+
     wb = Workbook()
     ws = Worksheet(wb)
     reader.read_comments(ws, xml)
-    comments_expected = [['A1', 'Cuke', 'Cuke:\nFirst Comment'],
-                         ['D1', 'Cuke', 'Cuke:\nSecond Comment'],
-                         ['A2', 'Not Cuke', 'Not Cuke:\nThird Comment']
-                        ]
-    for cell, author, text in comments_expected:
-        assert ws.cell(coordinate=cell).comment.author == author
-        assert ws.cell(coordinate=cell).comment.text == text
-        assert ws.cell(coordinate=cell).comment._parent == ws.cell(coordinate=cell)
+    comment = ws[cell].comment
+    assert comment.author == author
+    assert comment.text == text
 
 
 def test_get_comments_file(datadir):
@@ -59,10 +51,9 @@ def test_comments_cell_association(datadir):
     assert wb['Sheet1'].cell(coordinate="D1").comment.text == "Cuke:\nSecond Comment"
 
 
-@pytest.mark.xfail
 def test_comments_with_iterators(datadir):
     datadir.chdir()
     wb = load_workbook('comments.xlsx', use_iterators=True)
     ws = wb['Sheet1']
-    assert ws.cell(coordinate="A1").comment.author == "Cuke"
-    assert ws.cell(coordinate="A1").comment.text == "Cuke:\nFirst Comment"
+    with pytest.raises(AttributeError):
+        assert ws.cell(coordinate="A1").comment.author == "Cuke"
