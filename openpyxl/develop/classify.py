@@ -148,6 +148,10 @@ def classify(tagname, src=sheet_src, schema=None):
         attr = {'name': el.get("name"),}
 
         typename = el.get("type")
+        if typename is None:
+            logging.log(logging.DEBUG, "Cannot resolve {0}".format(el.tag))
+            continue
+
         match = ST_REGEX.match(typename)
         if typename.startswith("xsd:"):
             attr['type'] = simple_mapping[typename]
