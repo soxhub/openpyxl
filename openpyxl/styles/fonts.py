@@ -33,7 +33,7 @@ class Font(HashableObject):
     UNDERLINE_SINGLE = 'single'
     UNDERLINE_SINGLE_ACCOUNTING = 'singleAccounting'
 
-    name = NestedString(allow_none=True)
+    name = NestedString()
     charset = NestedInteger(allow_none=True)
     family = NestedMinMax(min=0, max=14, allow_none=True)
     sz = NestedFloat(allow_none=True)
