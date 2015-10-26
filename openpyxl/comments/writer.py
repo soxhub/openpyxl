@@ -11,6 +11,9 @@ from openpyxl.utils import (
     coordinate_from_string,
 )
 
+from .author import AuthorList
+from .properties import CommentSheet, Comment
+
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
 excelns = "urn:schemas-microsoft-com:office:excel"
@@ -20,12 +23,17 @@ class CommentWriter(object):
 
     def extract_comments(self):
         """
-         extract list of comments and authors
+        extract list of comments and authors
+        Sorted by row, col
          """
-        for _coord, cell in iteritems(self.sheet._cells):
+        for _coord, cell in sorted(self.sheet._cells.items()):
             if cell.comment is not None:
-                self.authors.add(cell.comment.author)
-                self.comments.append(cell.comment)
+                comment = Comment(ref=cell.coordinate)
+                comment.authorId = self.authors.add(cell.comment.author)
+                comment.text.t = cell.comment.text
+                comment.height = cell.comment.height
+                comment.width = cell.comment.width
+                self.comments.append(comment)
 
     def __init__(self, sheet):
         self.sheet = sheet
@@ -37,27 +45,10 @@ class CommentWriter(object):
 
     def write_comments(self):
         # produce xml
-        root = Element("{%s}comments" % SHEET_MAIN_NS)
-        authorlist_tag = SubElement(root, "{%s}authors" % SHEET_MAIN_NS)
-        for author in self.authors:
-            leaf = SubElement(authorlist_tag, "{%s}author" % SHEET_MAIN_NS)
-            leaf.text = author
+        authors = AuthorList(author=self.authors)
+        root = CommentSheet(authors=authors, commentList=self.comments)
 
-        commentlist_tag = SubElement(root, "{%s}commentList" % SHEET_MAIN_NS)
-        for comment in self.comments:
-            attrs = {'ref': comment._parent.coordinate,
-                     'authorId': '%d' % self.authors.index(comment.author),
-                     'shapeId': '0'}
-            comment_tag = SubElement(commentlist_tag,
-                                     "{%s}comment" % SHEET_MAIN_NS, attrs)
-
-            text_tag = SubElement(comment_tag, "{%s}text" % SHEET_MAIN_NS)
-            run_tag = SubElement(text_tag, "{%s}r" % SHEET_MAIN_NS)
-            SubElement(run_tag, "{%s}rPr" % SHEET_MAIN_NS)
-            t_tag = SubElement(run_tag, "{%s}t" % SHEET_MAIN_NS)
-            t_tag.text = comment.text
-
-        return tostring(root)
+        return tostring(root.to_tree())
 
     def write_comments_vml(self):
         root = Element("xml")
@@ -86,7 +77,7 @@ class CommentWriter(object):
 
     def _write_comment_shape(self, comment, idx):
         # get zero-indexed coordinates of the comment
-        col, row = coordinate_from_string(comment._parent.coordinate)
+        col, row = coordinate_from_string(comment.ref)
         row -= 1
         column = column_index_from_string(col) - 1
 

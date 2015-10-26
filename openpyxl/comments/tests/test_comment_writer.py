@@ -30,45 +30,23 @@ def test_comment_writer_init():
     ws, comment1, comment2, comment3 = _create_ws()
     cw = CommentWriter(ws)
     assert set(cw.authors) == set(["author", "author2", "author3"])
-    assert set(cw.comments) == set([comment1, comment2, comment3])
+    texts = ["text", "text2", "text3"]
+    for c, t in zip(cw.comments, texts):
+        assert c.flattened_text == t
+
 
 def test_write_comments(datadir):
     datadir.chdir()
     ws = _create_ws()[0]
     cw = CommentWriter(ws)
-    content = cw.write_comments()
-    with open('comments1.xml') as expected:
-        correct = fromstring(expected.read())
-    check = fromstring(content)
-    # check top-level elements have the same name
-    for i, j in zip(correct.getchildren(), check.getchildren()):
-        assert i.tag == j.tag
+    xml = cw.write_comments()
 
-    correct_comments = correct.find('{%s}commentList' % SHEET_MAIN_NS).getchildren()
-    check_comments = check.find('{%s}commentList' % SHEET_MAIN_NS).getchildren()
-    correct_authors = correct.find('{%s}authors' % SHEET_MAIN_NS).getchildren()
-    check_authors = check.find('{%s}authors' % SHEET_MAIN_NS).getchildren()
+    with open('comments_out.xml') as src:
+        expected = src.read()
 
-    # replace author ids with author names
-    for i in correct_comments:
-        i.attrib["authorId"] = correct_authors[int(i.attrib["authorId"])].text
-    for i in check_comments:
-        i.attrib["authorId"] = check_authors[int(i.attrib["authorId"])].text
-
-    # sort the comment list
-    correct_comments.sort(key=lambda tag: tag.attrib["ref"])
-    check_comments.sort(key=lambda tag: tag.attrib["ref"])
-    correct.find('{%s}commentList' % SHEET_MAIN_NS)[:] = correct_comments
-    check.find('{%s}commentList' % SHEET_MAIN_NS)[:] = check_comments
-
-    # sort the author list
-    correct_authors.sort(key=lambda tag: tag.text)
-    check_authors.sort(key=lambda tag:tag.text)
-    correct.find('{%s}authors' % SHEET_MAIN_NS)[:] = correct_authors
-    check.find('{%s}authors' % SHEET_MAIN_NS)[:] = check_authors
-
-    diff = compare_xml(tostring(correct), tostring(check))
+    diff = compare_xml(xml, expected)
     assert diff is None, diff
+
 
 def test_write_comments_vml(datadir):
     datadir.chdir()
@@ -121,7 +99,7 @@ def test_write_only_cell_vml(datadir):
 
     writer = CommentWriter(ws)
     root = Element("root")
-    xml = writer._write_comment_shape(cell.comment, 1)
+    xml = writer._write_comment_shape(writer.comments[0], 1)
     xml = tostring(xml)
     expected = """
     <v:shape
