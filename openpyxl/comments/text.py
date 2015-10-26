@@ -63,7 +63,7 @@ class InlineFont(Font):
 
     tagname = "RPrElt"
 
-    rFont = Font.name
+    rFont = NestedString(allow_none=True)
     charset = Font.charset
     family = Font.family
     b =Font.b
