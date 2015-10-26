@@ -26,13 +26,12 @@ def _create_ws():
     ws["D9"].comment = comment3
     return ws, comment1, comment2, comment3
 
+
 def test_comment_writer_init():
     ws, comment1, comment2, comment3 = _create_ws()
     cw = CommentWriter(ws)
-    assert set(cw.authors) == set(["author", "author2", "author3"])
-    texts = ["text", "text2", "text3"]
-    for c, t in zip(cw.comments, texts):
-        assert c.flattened_text == t
+    assert cw.comments == []
+    assert cw.sheet == ws
 
 
 def test_write_comments(datadir):
@@ -52,6 +51,7 @@ def test_write_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()[0]
     cw = CommentWriter(ws)
+    cw.write_comments()
     content = cw.write_comments_vml()
     with open('commentsDrawing1.vml') as expected:
         correct = fromstring(expected.read())
@@ -98,6 +98,7 @@ def test_write_only_cell_vml(datadir):
     cell.row = 2
 
     writer = CommentWriter(ws)
+    writer.write_comments()
     root = Element("root")
     xml = writer._write_comment_shape(writer.comments[0], 1)
     xml = tostring(xml)

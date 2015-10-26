@@ -21,32 +21,31 @@ excelns = "urn:schemas-microsoft-com:office:excel"
 
 class CommentWriter(object):
 
-    def extract_comments(self):
+
+    def __init__(self, sheet):
+        self.sheet = sheet
+        self.comments = []
+
+
+    def write_comments(self):
         """
-        extract list of comments and authors
+        Create list of comments and authors
         Sorted by row, col
-         """
+        """
+        # produce xml
+        authors = IndexedList()
+
         for _coord, cell in sorted(self.sheet._cells.items()):
             if cell.comment is not None:
                 comment = Comment(ref=cell.coordinate)
-                comment.authorId = self.authors.add(cell.comment.author)
+                comment.authorId = authors.add(cell.comment.author)
                 comment.text.t = cell.comment.text
                 comment.height = cell.comment.height
                 comment.width = cell.comment.width
                 self.comments.append(comment)
 
-    def __init__(self, sheet):
-        self.sheet = sheet
-        self.authors = IndexedList()
-        self.comments = []
-
-        self.extract_comments()
-
-
-    def write_comments(self):
-        # produce xml
-        authors = AuthorList(author=self.authors)
-        root = CommentSheet(authors=authors, commentList=self.comments)
+        author_list = AuthorList(authors)
+        root = CommentSheet(authors=author_list, commentList=self.comments)
 
         return tostring(root.to_tree())
 
