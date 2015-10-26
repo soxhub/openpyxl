@@ -141,14 +141,14 @@ class Text(Serialisable):
     tagname = "text"
 
     t = NestedText(allow_none=True, expected_type=unicode)
-    text = Alias("t")
+    body = Alias("t")
     r = Sequence(expected_type=RichText, allow_none=True)
     rPh = Sequence(expected_type=PhoneticText, allow_none=True)
     phonetic = Alias("rPh")
     phoneticPr = Typed(expected_type=PhoneticProperties, allow_none=True)
     PhoneticProperties = Alias("phoneticPr")
 
-    __elements__ = ('r', 'rPh', 'phoneticPr')
+    __elements__ = ('t', 'r', 'rPh', 'phoneticPr')
 
     def __init__(self,
                  t=None,

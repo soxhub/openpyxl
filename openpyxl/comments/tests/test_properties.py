@@ -15,10 +15,13 @@ class TestComment:
 
     def test_ctor(self, Comment):
         comment = Comment()
+        comment.text.t = "Some kind of comment"
         xml = tostring(comment.to_tree())
         expected = """
-        <comment authorId="0" ref="">
-          <text></text>
+        <comment authorId="0" ref="" shapeId="0">
+          <text>
+            <t>Some kind of comment</t>
+          </text>
         </comment>
         """
         diff = compare_xml(xml, expected)
@@ -52,12 +55,12 @@ def test_read_google_docs(datadir, Comment):
 
 
 def test_read_comments(datadir):
-    from ..properties import Comments
+    from ..properties import CommentSheet
 
     datadir.chdir()
     with open("comments1.xml") as src:
         node = fromstring(src.read())
 
-    comments = Comments.from_tree(node)
+    comments = CommentSheet.from_tree(node)
     assert comments.authors.author == ['author2', 'author', 'author3']
     assert len(comments.commentList) == 3
