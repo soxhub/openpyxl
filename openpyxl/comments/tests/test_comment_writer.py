@@ -87,28 +87,18 @@ def test_write_comments_vml(datadir):
     assert diff is None, diff
 
 
-def test_write_only_cell_vml(datadir):
+def test_shape():
     from openpyxl.xml.functions import Element, tostring
-    datadir.chdir()
-    wb = Workbook()
-    ws = wb.active
-    cell = ws['A1'] # write-only cells are always A1
-    cell.comment = Comment("Some text", "an author")
-    cell.col_idx = 2
-    cell.row = 2
+    from ..writer import _shape_factory
 
-    writer = CommentWriter(ws)
-    writer.write_comments()
-    root = Element("root")
-    xml = writer._write_comment_shape(writer.comments[0], 1)
-    xml = tostring(xml)
+    shape = _shape_factory()
+    xml = tostring(shape)
     expected = """
     <v:shape
     xmlns:v="urn:schemas-microsoft-com:vml"
     xmlns:x="urn:schemas-microsoft-com:office:excel"
     xmlns:o="urn:schemas-microsoft-com:office:office"
     fillcolor="#ffffe1"
-    id="_x0000_s0001"
     style="position:absolute; margin-left:59.25pt;margin-top:1.5pt;width:108pt;height:59.25pt;z-index:1;visibility:hidden"
     type="#_x0000_t202"
     o:insetmode="auto">
@@ -122,8 +112,8 @@ def test_write_only_cell_vml(datadir):
         <x:MoveWithCells/>
         <x:SizeWithCells/>
         <x:AutoFill>False</x:AutoFill>
-        <x:Row>1</x:Row>
-        <x:Column>1</x:Column>
+        <x:Row />
+        <x:Column />
       </x:ClientData>
     </v:shape>
     """

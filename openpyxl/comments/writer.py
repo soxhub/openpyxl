@@ -68,45 +68,50 @@ class CommentWriter(object):
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
 
-        for i, comment in enumerate(self.comments, 1026):
-            shape = self._write_comment_shape(comment, i)
+        for idx, comment in enumerate(self.comments, 1026):
+
+            shape = _shape_factory()
+            col, row = coordinate_from_string(comment.ref)
+            row -= 1
+            column = column_index_from_string(col) - 1
+
+            shape.set('id',  "_x0000_s%04d" % idx)
+            client_data = shape.find("{%s}ClientData" % excelns)
+            client_data.find("{%s}Row" % excelns).text = str(row)
+            client_data.find("{%s}Column" % excelns).text = str(column)
             root.append(shape)
 
         return tostring(root)
 
-    def _write_comment_shape(self, comment, idx):
-        # get zero-indexed coordinates of the comment
-        col, row = coordinate_from_string(comment.ref)
-        row -= 1
-        column = column_index_from_string(col) - 1
 
-        style = ("position:absolute; margin-left:59.25pt;"
-                 "margin-top:1.5pt;width:%(width)s;height:%(height)s;"
-                 "z-index:1;visibility:hidden") % {'height': comment.height,
-                                                   'width': comment.width}
-        attrs = {
-            "id": "_x0000_s%04d" % idx ,
-            "type": "#_x0000_t202",
-            "style": style,
-            "fillcolor": "#ffffe1",
-            "{%s}insetmode" % officens: "auto"
-        }
-        shape = Element("{%s}shape" % vmlns, attrs)
+def _shape_factory():
 
-        SubElement(shape, "{%s}fill" % vmlns,
-                   {"color2": "#ffffe1"})
-        SubElement(shape, "{%s}shadow" % vmlns,
-                   {"color": "black", "obscured": "t"})
-        SubElement(shape, "{%s}path" % vmlns,
-                   {"{%s}connecttype" % officens: "none"})
-        textbox = SubElement(shape, "{%s}textbox" % vmlns,
-                             {"style": "mso-direction-alt:auto"})
-        SubElement(textbox, "div", {"style": "text-align:left"})
-        client_data = SubElement(shape, "{%s}ClientData" % excelns,
-                                 {"ObjectType": "Note"})
-        SubElement(client_data, "{%s}MoveWithCells" % excelns)
-        SubElement(client_data, "{%s}SizeWithCells" % excelns)
-        SubElement(client_data, "{%s}AutoFill" % excelns).text = "False"
-        SubElement(client_data, "{%s}Row" % excelns).text = "%d" % row
-        SubElement(client_data, "{%s}Column" % excelns).text = "%d" % column
-        return shape
+    style = ("position:absolute; margin-left:59.25pt;"
+             "margin-top:1.5pt;width:{width};height:{height};"
+             "z-index:1;visibility:hidden").format(height="59.25pt",
+                                               width="108pt")
+    attrs = {
+        "type": "#_x0000_t202",
+        "style": style,
+        "fillcolor": "#ffffe1",
+        "{%s}insetmode" % officens: "auto"
+    }
+    shape = Element("{%s}shape" % vmlns, attrs)
+
+    SubElement(shape, "{%s}fill" % vmlns,
+               {"color2": "#ffffe1"})
+    SubElement(shape, "{%s}shadow" % vmlns,
+               {"color": "black", "obscured": "t"})
+    SubElement(shape, "{%s}path" % vmlns,
+               {"{%s}connecttype" % officens: "none"})
+    textbox = SubElement(shape, "{%s}textbox" % vmlns,
+                         {"style": "mso-direction-alt:auto"})
+    SubElement(textbox, "div", {"style": "text-align:left"})
+    client_data = SubElement(shape, "{%s}ClientData" % excelns,
+                             {"ObjectType": "Note"})
+    SubElement(client_data, "{%s}MoveWithCells" % excelns)
+    SubElement(client_data, "{%s}SizeWithCells" % excelns)
+    SubElement(client_data, "{%s}AutoFill" % excelns).text = "False"
+    SubElement(client_data, "{%s}Row" % excelns)
+    SubElement(client_data, "{%s}Column" % excelns)
+    return shape
