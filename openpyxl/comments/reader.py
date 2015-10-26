@@ -7,13 +7,11 @@ import os.path
 from openpyxl.comments import Comment
 from openpyxl.xml.constants import (
     PACKAGE_WORKSHEET_RELS,
-    SHEET_MAIN_NS,
     COMMENTS_NS,
     PACKAGE_XL,
     )
 from openpyxl.xml.functions import fromstring
 
-from .author import AuthorList
 from .properties import Comments
 
 

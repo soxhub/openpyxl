@@ -100,11 +100,12 @@ class Comment(Serialisable):
     tagname = "comment"
 
     ref = String()
-    authorId = Integer(0)
+    authorId = Integer()
     guid = Guid(allow_none=True)
     shapeId = Integer(allow_none=True)
     text = Typed(expected_type=Text)
     commentPr = Typed(expected_type=Properties, allow_none=True)
+    author = String(allow_none=True)
 
     __elements__ = ('text', 'commentPr')
 
@@ -115,6 +116,7 @@ class Comment(Serialisable):
                  shapeId=None,
                  text=None,
                  commentPr=None,
+                 author=None,
                 ):
         self.ref = ref
         self.authorId = authorId
@@ -124,6 +126,7 @@ class Comment(Serialisable):
             text = Text()
         self.text = text
         self.commentPr = commentPr
+        self.author = author
 
 
     @property
