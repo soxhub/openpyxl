@@ -12,13 +12,13 @@ from openpyxl.xml.constants import (
     )
 from openpyxl.xml.functions import fromstring
 
-from .properties import Comments
+from .properties import CommentSheet
 
 
 def read_comments(ws, xml_source):
     """Given a worksheet and the XML of its comments file, assigns comments to cells"""
     root = fromstring(xml_source)
-    comments = Comments.from_tree(root)
+    comments = CommentSheet.from_tree(root)
     authors = comments.authors.author
 
     for comment in comments.commentList:

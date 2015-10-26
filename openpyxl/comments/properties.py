@@ -15,6 +15,8 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import Guid, ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 
+from openpyxl.xml.constants import SHEET_MAIN_NS
+
 from .text import Text
 from .author import AuthorList
 
@@ -113,7 +115,7 @@ class Comment(Serialisable):
                  ref="",
                  authorId=0,
                  guid=None,
-                 shapeId=None,
+                 shapeId=0,
                  text=None,
                  commentPr=None,
                  author=None,
@@ -142,12 +144,12 @@ class Comment(Serialisable):
         return "".join(snippets)
 
 
-class Comments(Serialisable):
+class CommentSheet(Serialisable):
 
     tagname = "comments"
 
     authors = Typed(expected_type=AuthorList)
-    commentList = NestedSequence(expected_type=Comment)
+    commentList = NestedSequence(expected_type=Comment, count=0)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('authors', 'commentList')
@@ -159,3 +161,9 @@ class Comments(Serialisable):
                 ):
         self.authors = authors
         self.commentList = commentList
+
+
+    def to_tree(self):
+        tree = super(CommentSheet, self).to_tree()
+        tree.set("xmlns", SHEET_MAIN_NS)
+        return tree
