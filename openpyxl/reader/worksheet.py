@@ -247,7 +247,7 @@ class WorkSheetParser(object):
         self.ws.print_options = PrintOptions.from_tree(element)
 
     def parse_margins(self, element):
-        self.page_margins = PageMargins.from_tree(element)
+        self.ws.page_margins = PageMargins.from_tree(element)
 
     def parse_page_setup(self, element):
         self.ws.page_setup = PrintPageSetup.from_tree(element)

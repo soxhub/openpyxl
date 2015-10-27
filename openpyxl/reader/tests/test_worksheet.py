@@ -563,3 +563,18 @@ def test_shared_formulae(WorkSheetParser, datadir):
     assert ws.cell('C10').data_type == 'f'
     assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
     assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'
+
+
+def test_page_margins(WorkSheetParser, datadir):
+    datadir.chdir()
+    parser = WorkSheetParser
+    ws = parser.ws
+    ws.page_margins.left = 1
+
+    with open("header_footer.xml") as src:
+        sheet = fromstring(src.read())
+
+    el = sheet.find("{%s}pageMargins" % SHEET_MAIN_NS)
+
+    parser.parse_margins(el)
+    assert ws.page_margins.left == 0.7500000000000001
