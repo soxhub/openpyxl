@@ -132,7 +132,7 @@ class Comment(Serialisable):
 
 
     @property
-    def flattened_text(self):
+    def content(self):
         """
         Remove all inline formatting and stuff
         """
