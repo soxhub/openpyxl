@@ -24,7 +24,7 @@ def read_comments(ws, xml_source):
     for comment in comments.commentList:
         author = authors[comment.authorId]
         ref = comment.ref
-        comment = Comment(comment.flattened_text, author)
+        comment = Comment(comment.content, author)
 
         ws.cell(coordinate=ref).comment = comment
 
