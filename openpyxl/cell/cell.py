@@ -172,11 +172,6 @@ class Cell(StyleableObject):
         self.data_type = data_type
 
 
-    @deprecated("Method is private")
-    def bind_value(self, value):
-        self._bind_value(value)
-
-
     def _bind_value(self, value):
         """Given a value, infer the correct data type"""
 
@@ -209,11 +204,6 @@ class Cell(StyleableObject):
             raise ValueError("Cannot convert {0} to Excel".format(value))
 
         self._value = value
-
-
-    @deprecated("Method is private")
-    def infer_value(self, value):
-        return self._infer_value(value)
 
 
     def _infer_value(self, value):
