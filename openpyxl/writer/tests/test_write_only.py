@@ -168,7 +168,7 @@ def test_cell_comment(WriteOnlyWorksheet):
     comment = Comment('hello', 'me')
     cell.comment = comment
     ws.append([cell])
-    assert ws._comments == [comment]
+    assert len(ws._comments) == 1
     ws.close()
 
     with open(ws.filename) as src:

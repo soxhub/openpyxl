@@ -16,6 +16,7 @@ from openpyxl.worksheet.related import Related
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
 from openpyxl.writer.excel import ExcelWriter
 from openpyxl.comments.writer import CommentWriter
+from openpyxl.comments.properties import Comment
 from .relations import write_rels
 from .worksheet import (
     write_cell,
@@ -35,15 +36,6 @@ def _openpyxl_shutdown():
     for path in ALL_TEMP_FILES:
         if os.path.exists(path):
             os.remove(path)
-
-
-class CommentParentCell(object):
-    __slots__ = ('coordinate', 'row', 'column')
-
-    def __init__(self, cell):
-        self.coordinate = cell.coordinate
-        self.row = cell.row
-        self.column = cell.column
 
 
 def create_temporary_file(suffix=''):
@@ -77,8 +69,6 @@ class WriteOnlyWorksheet(Worksheet):
         self._parent = parent_workbook
 
         self._fileobj_name = create_temporary_file()
-
-        self._comments = []
 
 
     @property
@@ -176,10 +166,6 @@ class WriteOnlyWorksheet(Worksheet):
             except ValueError:
                 if isinstance(value, Cell):
                     cell = value
-                    if cell.comment is not None:
-                        comment = cell.comment
-                        comment._parent = CommentParentCell(cell)
-                        self._comments.append(comment)
                 else:
                     raise ValueError
 
