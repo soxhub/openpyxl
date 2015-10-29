@@ -7,6 +7,7 @@ Bug fixes
 
 * `#534 <https://bitbucket.org/openpyxl/openpyxl/issues/534>`_ Exception when using columns property in read-only mode.
 * `#536 <https://bitbucket.org/openpyxl/openpyxl/issues/536>`_ Incorrectly handle comments from Google Docs files.
+* `#539 <https://bitbucket.org/openpyxl/openpyxl/issues/539>`_ Flexible value types for conditional formatting.
 
 
 Minor changes
