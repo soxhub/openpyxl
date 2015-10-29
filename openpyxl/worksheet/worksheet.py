@@ -712,6 +712,8 @@ class Worksheet(_WorkbookChild):
             cols.append(tuple(col))
         return tuple(cols)
 
+
+    @deprecated("Charts and images should be positioned using anchor objects")
     def point_pos(self, left=0, top=0):
         """ tells which cell is under the given coordinates (in pixels)
         counting from the top-left corner of the sheet.

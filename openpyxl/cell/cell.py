@@ -341,6 +341,7 @@ class Cell(StyleableObject):
         return self.parent.cell(column=offset_column, row=offset_row)
 
     @property
+    @deprecated("Use anchor objects for positioning")
     def anchor(self):
         """ returns the expected position of a cell in pixels from the top-left
             of the sheet. For example, A1 anchor should be (0,0).
