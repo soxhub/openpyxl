@@ -52,6 +52,25 @@ def test_write_cell(worksheet, value, expected):
 
 
 @pytest.mark.lxml_required
+def test_write_comment(worksheet):
+
+    from ..lxml_worksheet import write_cell
+    from openpyxl.comments import Comment
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.comment = Comment("test comment", "test author")
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        cell = ws['A1']
+        write_cell(xf, ws, cell, False)
+
+    assert len(ws._comments) == 1
+
+
+
+@pytest.mark.lxml_required
 def test_write_cell_string(worksheet):
     from .. lxml_worksheet import write_cell
 

@@ -181,6 +181,19 @@ def test_write_cell(worksheet, value, expected):
     assert diff is None, diff
 
 
+def test_write_comment(worksheet):
+
+    from ..etree_worksheet import write_cell
+    from openpyxl.comments import Comment
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.comment = Comment("test comment", "test author")
+
+    el = write_cell(ws, cell, False)
+    assert len(ws._comments) == 1
+
+
 def test_write_formula(worksheet, write_rows):
     ws = worksheet
 
@@ -556,33 +569,6 @@ def test_vba_rels(datadir, write_worksheet):
         <Relationship Id="vbaControlId" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"/>
     </Relationships>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_write_comments(worksheet, write_worksheet):
-    ws = worksheet
-    worksheet._comment_count = 1
-    xml = write_worksheet(ws, None)
-    expected = """
-    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-      <sheetPr>
-        <outlinePr summaryBelow="1" summaryRight="1"/>
-        <pageSetUpPr/>
-      </sheetPr>
-      <dimension ref="A1:A1"/>
-      <sheetViews>
-        <sheetView workbookViewId="0">
-          <selection activeCell="A1" sqref="A1"/>
-        </sheetView>
-      </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
-      <sheetData/>
-      <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-      <legacyDrawing r:id="commentsvml"></legacyDrawing>
-    </worksheet>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
