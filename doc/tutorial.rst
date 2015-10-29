@@ -5,7 +5,7 @@ Create a workbook
 -----------------
 
 There is no need to create a file on the filesystem to get started with openpyxl.
-Just import the Worbook class and start using it ::
+Just import the Workbook class and start using it ::
 
     >>> from openpyxl import Workbook
     >>> wb = Workbook()
