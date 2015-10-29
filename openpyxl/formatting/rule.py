@@ -9,18 +9,12 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     Bool,
-    Float,
     NoneSet,
     Set,
     Integer,)
-from openpyxl.descriptors.excel import HexBinary
+from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.styles.colors import Color, ColorDescriptor
 from openpyxl.styles.differential import DifferentialStyle
-
-
-class ExtensionList(Serialisable):
-
-    pass
 
 
 class FormatObject(Serialisable):
@@ -32,6 +26,8 @@ class FormatObject(Serialisable):
     gte = Bool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
+    __elements__ = ("type", "val", "gte")
+
     def __init__(self,
                  type,
                  val=None,
@@ -41,7 +37,6 @@ class FormatObject(Serialisable):
         self.type = type
         self.val = val
         self.gte = gte
-        self.extLst = extLst
 
 
 class RuleType(Serialisable):
