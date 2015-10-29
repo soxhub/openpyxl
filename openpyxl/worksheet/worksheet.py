@@ -335,11 +335,6 @@ class Worksheet(_WorkbookChild):
         return self.iter_rows()
 
 
-    @deprecated("Use the max_row property")
-    def get_highest_row(self):
-        return self.max_row
-
-
     @property
     def min_row(self):
         min_row = 1
@@ -360,11 +355,6 @@ class Worksheet(_WorkbookChild):
             rows = set(c[0] for c in self._cells)
             max_row = max(rows)
         return max_row
-
-
-    @deprecated("Use the max_column propery.")
-    def get_highest_column(self):
-        return self.max_column
 
 
     @property
@@ -499,35 +489,6 @@ class Worksheet(_WorkbookChild):
                 result.extend(row)
 
         return tuple(result)
-
-
-    @deprecated("""
-    Use .iter_rows() working with coordinates 'A1:D4',
-    and .get_squared_range() when working with indices (1, 1, 4, 4)
-    and .get_named_range() for named ranges""")
-    def range(self, range_string, row=0, column=0):
-        """Returns a 2D array of cells, with optional row and column offsets.
-
-        :param range_string: cell range string or `named range` name
-        :type range_string: string
-
-        :param row: number of rows to offset
-        :type row: int
-
-        :param column: number of columns to offset
-        :type column: int
-
-        :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
-
-        """
-        _rs = range_string.upper()
-        m = ABSOLUTE_RE.match(_rs)
-         # R1C1 range
-        if m is not None:
-            rows = self.iter_rows(_rs, row_offset=row, column_offset=column)
-            return tuple(row for row in rows)
-        else:
-            return self.get_named_range(range_string)
 
 
     def set_printer_settings(self, paper_size, orientation):

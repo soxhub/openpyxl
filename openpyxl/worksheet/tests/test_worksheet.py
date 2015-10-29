@@ -122,13 +122,6 @@ class TestWorksheet:
             assert tuple(c.coordinate for c in row) == coord
 
 
-    def test_worksheet(self, Worksheet, recwarn):
-        ws = Worksheet(Workbook())
-        rows = ws.range("A1:D4")
-        w = recwarn.pop()
-        assert issubclass(w.category, UserWarning)
-
-
     def test_get_named_range(self, Worksheet):
         wb = Workbook()
         ws = Worksheet(wb)
