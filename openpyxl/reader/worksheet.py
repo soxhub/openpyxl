@@ -57,8 +57,6 @@ def _get_xml_iter(xml_source):
 
 class WorkSheetParser(object):
 
-    COL_TAG = '{%s}col' % SHEET_MAIN_NS
-    ROW_TAG = '{%s}row' % SHEET_MAIN_NS
     CELL_TAG = '{%s}c' % SHEET_MAIN_NS
     VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
     FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
