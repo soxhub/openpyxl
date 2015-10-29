@@ -9,18 +9,27 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     Bool,
-    Float,
     NoneSet,
     Set,
-    Integer,)
-from openpyxl.descriptors.excel import HexBinary
+    Integer,
+    Float,
+)
+from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.styles.colors import Color, ColorDescriptor
 from openpyxl.styles.differential import DifferentialStyle
 
 
-class ExtensionList(Serialisable):
+class ValueDescriptor(Float):
+    """
+    Expected type depends upon type attribue of parent :-(
+    """
 
-    pass
+    def __set__(self, instance, value):
+        if instance.type == "formula":
+            self.expected_type = basestring
+        else:
+            self.expected_type = float
+        super(ValueDescriptor, self).__set__(instance, value)
 
 
 class FormatObject(Serialisable):
@@ -28,9 +37,11 @@ class FormatObject(Serialisable):
     tagname = "cfvo"
 
     type = Set(values=(['num', 'percent', 'max', 'min', 'formula', 'percentile']))
-    val = Integer(allow_none=True)
+    val = ValueDescriptor(allow_none=True)
     gte = Bool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ()
 
     def __init__(self,
                  type,
@@ -41,7 +52,6 @@ class FormatObject(Serialisable):
         self.type = type
         self.val = val
         self.gte = gte
-        self.extLst = extLst
 
 
 class RuleType(Serialisable):
@@ -150,7 +160,7 @@ class Rule(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
     dxf = Typed(expected_type=DifferentialStyle, allow_none=True)
 
-    __elements__ = ('colorScale', 'dataBar', 'extLst', 'iconSet', 'formula')
+    __elements__ = ('colorScale', 'dataBar', 'iconSet', 'formula')
 
     def __init__(self,
                  type,
@@ -190,7 +200,6 @@ class Rule(Serialisable):
         self.colorScale = colorScale
         self.dataBar = dataBar
         self.iconSet = iconSet
-        self.extLst = extLst
         self.dxf = dxf
 
 

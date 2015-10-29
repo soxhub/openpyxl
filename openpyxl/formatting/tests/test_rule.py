@@ -36,6 +36,22 @@ class TestFormatObject:
         assert diff is None, diff
 
 
+    @pytest.mark.parametrize("typ, value, expected",
+                             [
+                                 ('num', '5', 5.0),
+                                 ('percent', '70', 70),
+                                 ('max', 10, 10),
+                                 ('min', '4.2', 4.2),
+                                 ('formula', "=A2*4", "=A2*4"),
+                                 ('percentile', 10, 10),
+                                 ('formula', None, None),
+                             ]
+                             )
+    def test_value_types(self, FormatObject, typ, value, expected):
+        cfvo = FormatObject(type=typ, val=value)
+        assert cfvo.val == expected
+
+
 @pytest.fixture
 def ColorScale():
     from ..rule import ColorScale
