@@ -23,31 +23,23 @@ class CommentWriter(object):
 
 
     def __init__(self, sheet):
-        self.sheet = sheet
-        self.comments = []
+        self.comments = sheet._comments
 
 
     def write_comments(self):
         """
         Create list of comments and authors
-        Sorted by row, col
         """
-        # produce xml
+
         authors = IndexedList()
 
-        for _coord, cell in sorted(self.sheet._cells.items()):
-            if cell.comment is not None:
-                comment = Comment(ref=cell.coordinate)
-                comment.authorId = authors.add(cell.comment.author)
-                comment.text.t = cell.comment.text
-                comment.height = cell.comment.height
-                comment.width = cell.comment.width
-                self.comments.append(comment)
+        # dedupe authors and get indexes
+        for comment in self.comments:
+            comment.authorId = authors.add(comment.author)
 
-        author_list = AuthorList(authors)
-        root = CommentSheet(authors=author_list, commentList=self.comments)
-
+        root = CommentSheet(authors=AuthorList(authors), commentList=self.comments)
         return tostring(root.to_tree())
+
 
     def write_comments_vml(self):
         root = Element("xml")
