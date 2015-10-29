@@ -55,7 +55,7 @@ class ExtensionList(Serialisable):
     ext = Sequence(expected_type=Extension)
 
     def __init__(self,
-                 ext=None,
+                 ext=(),
                 ):
         self.ext = ext
 
