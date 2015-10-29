@@ -10,6 +10,14 @@ Minor changes
 * Add support for SortState
 
 
+Deprecations
+------------
+
+Cell anchor method
+Worksheet point_pos method
+Comment text attribute
+
+
 2.3.1 (unreleased)
 ==================
 
