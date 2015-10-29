@@ -16,7 +16,7 @@ def write_rels(worksheet, comments_id=None, vba_controls_id=None):
         rels.append(rel)
 
     # Comments
-    if worksheet._comment_count > 0:
+    if worksheet._comments:
         rel = Relationship(type="comments", id="comments",
                            target='/xl/comments%s.xml' % comments_id)
         rels.append(rel)

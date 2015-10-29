@@ -109,7 +109,6 @@ class Worksheet(_WorkbookChild):
         self._images = []
         self._rels = []
         self._drawing = None
-        self._comment_count = 0
         self._comments = []
         self._merged_cells = []
         self.hyperlinks = set()

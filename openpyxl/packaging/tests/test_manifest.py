@@ -253,7 +253,7 @@ class TestContentTypes:
 
         wb = Workbook()
         ws = wb.active
-        ws._comment_count = 1
+        ws._comments = True
         manifest = write_content_types(wb)
         xml = tostring(manifest.to_tree())
         expected = """

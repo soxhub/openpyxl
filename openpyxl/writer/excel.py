@@ -171,7 +171,7 @@ class ExcelWriter(object):
                     if "drawing" in r.type:
                         r.target = "/" + drawingpath
 
-            if sheet._comment_count > 0:
+            if sheet._comments:
                 comments_id += 1
                 cw = self.comment_writer(sheet)
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
@@ -183,7 +183,7 @@ class ExcelWriter(object):
                 vba_controls_id += 1
 
             if (sheet._rels
-                or sheet._comment_count > 0
+                or sheet._comments
                 or sheet.vba_controls is not None):
                 rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)
                 archive.writestr(PACKAGE_WORKSHEETS +

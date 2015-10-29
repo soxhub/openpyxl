@@ -387,12 +387,6 @@ class Cell(StyleableObject):
     @comment.setter
     def comment(self, value):
 
-        # Ensure the number of comments for the parent worksheet is up-to-date
-        if value is None and self._comment is not None:
-            self.parent._comment_count -= 1
-        if value is not None and self._comment is None:
-            self.parent._comment_count += 1
-
         if value is not None:
             value.parent = self
         elif value is None and self._comment:

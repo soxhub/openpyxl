@@ -11,7 +11,7 @@ from openpyxl.packaging.relationship import Relationship
 
 class Worksheet:
 
-    _comment_count = 0
+    _comments = False
     vba_controls = None
 
     def __init__(self):
@@ -28,7 +28,7 @@ class TestRels:
 
     def test_comments(self, writer):
         ws = Worksheet()
-        ws._comment_count = 1
+        ws._comments = True
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
          <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
@@ -69,7 +69,7 @@ class TestRels:
     def test_vba_and_comments(self, writer):
         ws = Worksheet()
         ws.vba_controls = "vba"
-        ws._comment_count = 1
+        ws._comments = True
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
           <Relationship Id="vba" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>

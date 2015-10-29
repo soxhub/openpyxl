@@ -563,6 +563,7 @@ def test_vba_rels(datadir, write_worksheet):
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     ws = wb['Form Controls']
+    ws._comments = True
     xml = tostring(write_rels(ws, comments_id=1, vba_controls_id=1))
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">

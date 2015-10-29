@@ -166,6 +166,8 @@ def write_worksheet(worksheet, shared_strings):
             cols = write_cols(worksheet)
             if cols is not None:
                 xf.write(cols)
+
+            # write data
             write_rows(xf, worksheet)
 
             if worksheet.protection.sheet:
