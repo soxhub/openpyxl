@@ -89,7 +89,12 @@ class ExcelWriter(object):
         self._write_string_table(archive)
         self._write_external_links(archive)
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
-        manifest = write_content_types(self.workbook, as_template=as_template)
+
+        exts = []
+        for n in archive.namelist():
+            if "media" in n:
+                exts.append(n)
+        manifest = write_content_types(self.workbook, as_template=as_template, exts=exts)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
     def _write_string_table(self, archive):
