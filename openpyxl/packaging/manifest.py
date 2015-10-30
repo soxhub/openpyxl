@@ -132,10 +132,19 @@ class Manifest(Serialisable):
         return tree
 
 
-def write_content_types(workbook, as_template=False):
+def write_content_types(workbook, as_template=False, exts=None):
 
     seen = set()
     manifest = Manifest()
+
+    if exts is not None:
+        for ext in exts:
+            ext = os.path.splitext(ext)[-1]
+            mime = mimetypes.types_map[ext]
+            fe = FileExtension(ext[1:], mime)
+            if fe not in manifest.Default:
+                manifest.Default.append(fe)
+
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
         manifest = Manifest.from_tree(node)

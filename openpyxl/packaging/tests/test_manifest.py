@@ -273,3 +273,15 @@ class TestContentTypes:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_media(self):
+        from openpyxl import Workbook
+        from ..manifest import write_content_types
+        wb = Workbook()
+
+        manifest = write_content_types(wb, exts=['xl/media/image1.png'])
+        xml = tostring(manifest.Default[-1].to_tree())
+        expected = """<Default ContentType="image/png" Extension="png" />"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
