@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
+    Alias,
     Typed,
     String,
     Integer,
@@ -103,6 +104,7 @@ class WorkbookPackage(Serialisable):
     fileVersion = Typed(expected_type=FileVersion, allow_none=True)
     fileSharing = Typed(expected_type=FileSharing, allow_none=True)
     workbookPr = Typed(expected_type=WorkbookProperties, allow_none=True)
+    properties = Alias("workbookPr")
     workbookProtection = Typed(expected_type=WorkbookProtection, allow_none=True)
     bookViews = Typed(expected_type=BookViewList, allow_none=True)
     sheets = Sequence(expected_type=SheetList, )
