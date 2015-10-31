@@ -12,7 +12,7 @@ def WorkbookPackage():
     return WorkbookPackage
 
 
-class TestWorkbookCollection:
+class TestWorkbookPackage:
 
     def test_ctor(self, WorkbookPackage):
         parser = WorkbookPackage()
