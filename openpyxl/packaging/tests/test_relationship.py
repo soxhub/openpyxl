@@ -14,7 +14,8 @@ def Relationship():
 
 
 def test_ctor(Relationship):
-    rel = Relationship("drawing", "drawings.xml", "external", "4")
+    rel = Relationship(type="drawing", target="drawings.xml",
+                       targetMode="external", id="4")
 
     assert dict(rel) == {'Id': '4', 'Target': 'drawings.xml', 'TargetMode':
                          'external', 'Type':
@@ -31,8 +32,10 @@ def test_ctor(Relationship):
 def test_sequence(Relationship):
     from ..relationship import RelationshipList
     rels = RelationshipList()
-    rels.append(Relationship("drawing", "drawings.xml", "external", ""))
-    rels.append(Relationship("chart", "chart1.xml", "", "chart"))
+    rels.append(Relationship(type="drawing", target="drawings.xml",
+                             targetMode="external", id=""))
+    rels.append(Relationship(type="chart", target="chart1.xml",
+                             targetMode="", id="chart"))
     xml = tostring(rels.to_tree())
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">

@@ -31,11 +31,25 @@ class Relationship(Serialisable):
     id = Alias('Id')
 
 
-    def __init__(self, type, target=None, targetMode=None, id=None):
-        self.type = "%s/%s" % (REL_NS, type)
-        self.target = target
+    def __init__(self,
+                 type=None,
+                 target=None,
+                 targetMode=None,
+                 id=None,
+                 Id=None,
+                 Type=None,
+                 Target=None,
+                 ):
+        if type is not None:
+            Type = "%s/%s" % (REL_NS, type)
+        self.Type = Type
+        if target is not None:
+            Target = target
+        self.Target = Target
         self.targetMode = targetMode
-        self.id = id
+        if id is not None:
+            Id = id
+        self.Id = Id
 
 
 class RelationshipList(Serialisable):
