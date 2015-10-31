@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 import pytest
 from openpyxl.tests.helper import compare_xml
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring
 
 
 @pytest.fixture
@@ -45,3 +45,29 @@ def test_sequence(Relationship):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_read():
+    from ..relationship import RelationshipList
+    xml = """
+    <Relationships>
+      <Relationship Id="rId3"
+      Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+      Target="theme/theme1.xml"/>
+      <Relationship Id="rId2"
+      Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"
+      Target="worksheets/sheet1.xml"/>
+      <Relationship Id="rId1"
+      Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chartsheet"
+      Target="chartsheets/sheet1.xml"/>
+      <Relationship Id="rId5"
+      Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings"
+      Target="sharedStrings.xml"/>
+      <Relationship Id="rId4"
+      Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+      Target="styles.xml"/>
+    </Relationships>
+    """
+    node = fromstring(xml)
+    rels = RelationshipList.from_tree(node)
+    assert len(rels) == 5
