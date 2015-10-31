@@ -7,6 +7,7 @@ File manifest
 import mimetypes
 import os.path
 
+from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Sequence
 from openpyxl.xml.functions import fromstring
@@ -72,6 +73,10 @@ class Override(Serialisable):
         self.ContentType = ContentType
 
 
+    def __hash__(self):
+        return hash((self.PartName, self.ContentType))
+
+
 DEFAULT_TYPES = [
     FileExtension("rels", "application/vnd.openxmlformats-package.relationships+xml"),
     FileExtension("xml", "application/xml"),
@@ -97,15 +102,15 @@ class Manifest(Serialisable):
     __elements__ = ("Default", "Override")
 
     def __init__(self,
-                 Default=(),
-                 Override=()
+                 Default=None,
+                 Override=None,
                  ):
-        if not Default:
+        if Default is None:
             Default = DEFAULT_TYPES
-        self.Default = Default
-        if not Override:
+        self.Default = IndexedList(Default)
+        if Override is None:
             Override = DEFAULT_OVERRIDE
-        self.Override = Override
+        self.Override = IndexedList(Override)
 
 
     @property
@@ -143,8 +148,7 @@ def write_content_types(workbook, as_template=False, exts=None):
             ext = os.path.splitext(ext)[-1]
             mime = mimetypes.types_map[ext]
             fe = FileExtension(ext[1:], mime)
-            if fe not in manifest.Default:
-                manifest.Default.append(fe)
+            manifest.Default.append(fe)
 
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
