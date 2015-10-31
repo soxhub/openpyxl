@@ -12,7 +12,9 @@ from openpyxl.descriptors import (
     Set,
     Sequence,
 )
-from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.excel import ExtensionList, Relation
+from openpyxl.descriptors.sequence import NestedSequence
+
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from .defined_name import DefinedNameList
@@ -67,29 +69,18 @@ class Sheet(Serialisable):
     name = String()
     sheetId = Integer()
     state = Set(values=(['visible', 'hidden', 'veryHidden']))
+    id = Relation()
 
     def __init__(self,
                  name=None,
                  sheetId=None,
-                 state=None,
+                 state="visible",
+                 id=None,
                 ):
         self.name = name
         self.sheetId = sheetId
         self.state = state
-
-
-class SheetList(Serialisable):
-
-    tagname = "sheets"
-
-    sheet = Typed(expected_type=Sheet, )
-
-    __elements__ = ('sheet',)
-
-    def __init__(self,
-                 sheet=None,
-                ):
-        self.sheet = sheet
+        self.id = id
 
 
 class WorkbookPackage(Serialisable):
@@ -107,7 +98,7 @@ class WorkbookPackage(Serialisable):
     properties = Alias("workbookPr")
     workbookProtection = Typed(expected_type=WorkbookProtection, allow_none=True)
     bookViews = Typed(expected_type=BookViewList, allow_none=True)
-    sheets = Sequence(expected_type=SheetList, )
+    sheets = NestedSequence(expected_type=Sheet, counter=False)
     functionGroups = Typed(expected_type=FunctionGroupList, allow_none=True)
     externalReferences = Typed(expected_type=ExternalReferenceList, allow_none=True)
     definedNames = Typed(expected_type=DefinedNameList, allow_none=True)
