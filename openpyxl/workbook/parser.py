@@ -91,7 +91,7 @@ class SheetList(Serialisable):
         self.sheet = sheet
 
 
-class WorkbookCollection(Serialisable):
+class WorkbookPackage(Serialisable):
 
     """
     Represent the workbook file in the archive
@@ -170,6 +170,6 @@ class WorkbookCollection(Serialisable):
 
 
     def to_tree(self):
-        tree = super(WorkbookCollection, self).to_tree()
+        tree = super(WorkbookPackage, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree

@@ -7,15 +7,15 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def WorkbookCollection():
-    from ..parser import WorkbookCollection
-    return WorkbookCollection
+def WorkbookPackage():
+    from ..parser import WorkbookPackage
+    return WorkbookPackage
 
 
 class TestWorkbookCollection:
 
-    def test_ctor(self, WorkbookCollection):
-        parser = WorkbookCollection()
+    def test_ctor(self, WorkbookPackage):
+        parser = WorkbookPackage()
         xml = tostring(parser.to_tree())
         expected = """
         <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -25,10 +25,10 @@ class TestWorkbookCollection:
         assert diff is None, diff
 
 
-    def test_from_xml(self, WorkbookCollection):
+    def test_from_xml(self, WorkbookPackage):
         src = """
         <workbook />
         """
         node = fromstring(src)
-        parser = WorkbookCollection.from_tree(node)
-        assert parser == WorkbookCollection()
+        parser = WorkbookPackage.from_tree(node)
+        assert parser == WorkbookPackage()
