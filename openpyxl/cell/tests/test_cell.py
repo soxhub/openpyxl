@@ -300,7 +300,8 @@ class TestEncoding:
     def test_good_encoding(self):
         from openpyxl import Workbook
 
-        wb = Workbook(encoding='latin1')
+        wb = Workbook()
+        wb.encoding = 'latin1'
         ws = wb.active
         cell = ws['A1']
         cell.value = self.test_string

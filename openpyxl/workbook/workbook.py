@@ -26,19 +26,18 @@ class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
     def __init__(self,
-                 optimized_write=False,
-                 encoding='utf-8',
-                 guess_types=False,
-                 data_only=False,
                  read_only=False,
-                 write_only=False):
+                 write_only=False,
+                 data_only=False,
+                 guess_types=False,
+                 ):
         self._sheets = []
         self._active_sheet_index = 0
         self._named_ranges = []
         self._external_links = []
         self.properties = DocumentProperties()
         self.security = DocumentSecurity()
-        self.__write_only = write_only or optimized_write
+        self.__write_only = write_only
         self.__read_only = read_only
         self.shared_strings = IndexedList()
 
@@ -55,7 +54,7 @@ class Workbook(object):
         self._images = []
         self.code_name = None
         self.excel_base_date = CALENDAR_WINDOWS_1900
-        self.encoding = encoding
+        self.encoding = "utf-8"
 
         if not self.write_only:
             self._sheets.append(Worksheet(self))
