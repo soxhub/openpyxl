@@ -32,6 +32,8 @@ from openpyxl.workbook.names.named_range import (
     external_range,
     )
 
+from openpyxl.workbook.parser import WorkbookPackage
+
 import datetime
 import re
 
@@ -42,10 +44,8 @@ VALID_WORKSHEET = WORKSHEET_TYPE
 def read_excel_base_date(archive):
     src = archive.read(ARC_WORKBOOK)
     root = fromstring(src)
-    wbPr = root.find('{%s}workbookPr' % SHEET_MAIN_NS)
-    if wbPr is not None and wbPr.get('date1904') in ('1', 'true'):
-        return CALENDAR_MAC_1904
-    return CALENDAR_WINDOWS_1900
+    props = WorkbookPackage.from_tree(root).properties
+    return props.date1904 and CALENDAR_MAC_1904 or CALENDAR_WINDOWS_1900
 
 
 def read_content_types(archive):
@@ -124,7 +124,8 @@ def read_workbook_code_name(xml_source):
 
 def read_workbook_settings(xml_source):
     root = fromstring(xml_source)
-    view = root.find('*/' '{%s}workbookView' % SHEET_MAIN_NS)
-    if view is not None:
-        if 'activeTab' in view.attrib:
-            return int(view.attrib['activeTab'])
+    package = WorkbookPackage.from_tree(root)
+    for view in package.bookViews:
+        if view.activeTab is not None:
+            return view.activeTab
+    return 0
