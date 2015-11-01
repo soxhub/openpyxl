@@ -26,7 +26,5 @@ def reader(archive):
     src = archive.read(ARC_WORKBOOK_RELS)
     rels = RelationshipList.from_tree(fromstring(src))
 
-    rels = dict([(r.id, r) for r in rels.Relationship])
-
     for sheet in wb.sheets:
         yield sheet, rels[sheet.id]
