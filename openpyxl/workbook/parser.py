@@ -24,7 +24,7 @@ from .pivot import PivotCacheList
 from .properties import WorkbookProperties, CalcProperties, FileVersion
 from .protection import WorkbookProtection, FileSharing
 from .smart_tags import SmartTagList, SmartTagProperties
-from .views import CustomWorkbookViewList, BookViewList
+from .views import CustomWorkbookView, BookView
 from .web import WebPublishing, WebPublishObjectList
 
 
@@ -97,14 +97,14 @@ class WorkbookPackage(Serialisable):
     workbookPr = Typed(expected_type=WorkbookProperties, allow_none=True)
     properties = Alias("workbookPr")
     workbookProtection = Typed(expected_type=WorkbookProtection, allow_none=True)
-    bookViews = Typed(expected_type=BookViewList, allow_none=True)
+    bookViews = NestedSequence(expected_type=BookView, counter=False)
     sheets = NestedSequence(expected_type=Sheet, counter=False)
     functionGroups = Typed(expected_type=FunctionGroupList, allow_none=True)
     externalReferences = Typed(expected_type=ExternalReferenceList, allow_none=True)
     definedNames = Typed(expected_type=DefinedNameList, allow_none=True)
     calcPr = Typed(expected_type=CalcProperties, allow_none=True)
     oleSize = Typed(expected_type=OleSize, allow_none=True)
-    customWorkbookViews = Typed(expected_type=CustomWorkbookViewList, allow_none=True)
+    customWorkbookViews = NestedSequence(expected_type=CustomWorkbookView, counter=False)
     pivotCaches = Typed(expected_type=PivotCacheList, allow_none=True)
     smartTagPr = Typed(expected_type=SmartTagProperties, allow_none=True)
     smartTagTypes = Typed(expected_type=SmartTagList, allow_none=True)
@@ -125,14 +125,14 @@ class WorkbookPackage(Serialisable):
                  fileSharing=None,
                  workbookPr=None,
                  workbookProtection=None,
-                 bookViews=None,
+                 bookViews=(),
                  sheets=(),
                  functionGroups=None,
                  externalReferences=None,
                  definedNames=None,
                  calcPr=None,
                  oleSize=None,
-                 customWorkbookViews=None,
+                 customWorkbookViews=(),
                  pivotCaches=None,
                  smartTagPr=None,
                  smartTagTypes=None,
@@ -166,3 +166,11 @@ class WorkbookPackage(Serialisable):
         tree = super(WorkbookPackage, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
+
+
+    @property
+    def active(self):
+        for view in self.bookViews:
+            if view.activeTab is not None:
+                return view.activeTab
+        return 0

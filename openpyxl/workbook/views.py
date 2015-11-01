@@ -71,20 +71,6 @@ class BookView(Serialisable):
         self.extLst = extLst
 
 
-class BookViewList(Serialisable):
-
-    tagname = "bookViews"
-
-    workbookView = Sequence(expected_type=BookView, )
-
-    __elements__ = ('workbookView',)
-
-    def __init__(self,
-                 workbookView=(),
-                ):
-        self.workbookView = workbookView
-
-
 class CustomWorkbookView(Serialisable):
 
     tagname = "customWorkbookView"
@@ -169,17 +155,3 @@ class CustomWorkbookView(Serialisable):
         self.showStatusbar = showStatusbar
         self.showComments = showComments
         self.showObjects = showObjects
-
-
-class CustomWorkbookViewList(Serialisable):
-
-    tagname = "customWorkbookViews"
-
-    customWorkbookView = Sequence(expected_type=CustomWorkbookView, )
-
-    __elements__ = ('customWorkbookView',)
-
-    def __init__(self,
-                 customWorkbookView=(),
-                ):
-        self.customWorkbookView = customWorkbookView
