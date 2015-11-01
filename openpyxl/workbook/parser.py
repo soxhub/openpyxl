@@ -103,6 +103,7 @@ class WorkbookPackage(Serialisable):
     fileRecoveryPr = Typed(expected_type=FileRecoveryProperties, allow_none=True)
     webPublishObjects = Typed(expected_type=WebPublishObjectList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    Ignorable = NestedString(namespace="http://schemas.openxmlformats.org/markup-compatibility/2006", allow_none=True)
 
     __elements__ = ('fileVersion', 'fileSharing', 'workbookPr',
                     'workbookProtection', 'bookViews', 'sheets', 'functionGroups',
@@ -131,6 +132,7 @@ class WorkbookPackage(Serialisable):
                  fileRecoveryPr=None,
                  webPublishObjects=None,
                  extLst=None,
+                 Ignorable=None,
                 ):
         self.conformance = conformance
         self.fileVersion = fileVersion
