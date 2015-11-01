@@ -33,33 +33,6 @@ class TestBookView:
 
 
 @pytest.fixture
-def BookViewList():
-    from ..views import BookViewList
-    return BookViewList
-
-
-class TestBookViewList:
-
-    def test_ctor(self, BookViewList):
-        views = BookViewList()
-        xml = tostring(views.to_tree())
-        expected = """
-         <bookViews />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, BookViewList):
-        src = """
-        <bookViews />
-        """
-        node = fromstring(src)
-        views = BookViewList.from_tree(node)
-        assert views == BookViewList()
-
-
-@pytest.fixture
 def CustomWorkbookView():
     from ..views import CustomWorkbookView
     return CustomWorkbookView
@@ -108,30 +81,3 @@ class TestCustomWorkbookView:
             windowHeight=600,
             activeSheetId=1,
         )
-
-
-@pytest.fixture
-def CustomWorkbookViewList():
-    from ..views import CustomWorkbookViewList
-    return CustomWorkbookViewList
-
-
-class TestCustomBookViewList:
-
-    def test_ctor(self, CustomWorkbookViewList):
-        views = CustomWorkbookViewList()
-        xml = tostring(views.to_tree())
-        expected = """
-        <customWorkbookViews />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, CustomWorkbookViewList):
-        src = """
-        <customWorkbookViews />
-        """
-        node = fromstring(src)
-        views = CustomWorkbookViewList.from_tree(node)
-        assert views == CustomWorkbookViewList()
