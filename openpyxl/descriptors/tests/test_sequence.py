@@ -206,7 +206,7 @@ def ComplexObject(NestedSequence):
 
         tagname = "style"
 
-        fonts = NestedSequence(expected_type=Font)
+        fonts = NestedSequence(expected_type=Font, count=True)
 
         def __init__(self, fonts=()):
             self.fonts = fonts

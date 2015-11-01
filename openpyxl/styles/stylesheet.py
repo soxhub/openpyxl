@@ -36,13 +36,13 @@ class Stylesheet(Serialisable):
     tagname = "styleSheet"
 
     numFmts = Typed(expected_type=NumberFormatList)
-    fonts = NestedSequence(expected_type=Font)
-    fills = NestedSequence(expected_type=Fill)
-    borders = NestedSequence(expected_type=Border)
+    fonts = NestedSequence(expected_type=Font, count=True)
+    fills = NestedSequence(expected_type=Fill, count=True)
+    borders = NestedSequence(expected_type=Border, count=True)
     cellStyleXfs = Typed(expected_type=CellStyleList)
     cellXfs = Typed(expected_type=CellStyleList)
     cellStyles = Typed(expected_type=NamedCellStyleList)
-    dxfs = NestedSequence(expected_type=DifferentialStyle)
+    dxfs = NestedSequence(expected_type=DifferentialStyle, count=True)
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
