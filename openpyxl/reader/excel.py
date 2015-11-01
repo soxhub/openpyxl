@@ -179,7 +179,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
     except KeyError:
-        wb.properties = DocumentProperties()
+        pass
     wb.active = read_workbook_settings(archive.read(ARC_WORKBOOK)) or 0
 
     # what content types do we have?
