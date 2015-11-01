@@ -77,6 +77,13 @@ class RelationshipList(Serialisable):
         return bool(self.Relationship)
 
 
+    def __getitem__(self, key):
+        for r in self.Relationship:
+            if r.id == key:
+                return r
+        raise KeyError("Unknown relationship: {0}".format(key))
+
+
     def to_tree(self):
         tree = Element("Relationships", xmlns=PKG_REL_NS)
         for idx, rel in enumerate(self.Relationship, 1):
