@@ -14,6 +14,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList, Relation
 from openpyxl.descriptors.sequence import NestedSequence
+from openpyxl.descriptors.nested import NestedString
 
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
@@ -47,16 +48,6 @@ class FileRecoveryProperties(Serialisable):
         self.crashSave = crashSave
         self.dataExtractLoad = dataExtractLoad
         self.repairLoad = repairLoad
-
-
-class OleSize(Serialisable):
-
-    ref = String()
-
-    def __init__(self,
-                 ref=None,
-                ):
-        self.ref = ref
 
 
 class Sheet(Serialisable):
@@ -103,7 +94,7 @@ class WorkbookPackage(Serialisable):
     externalReferences = NestedSequence(expected_type=ExternalReference, counter=False)
     definedNames = NestedSequence(expected_type=DefinedName, counter=False)
     calcPr = Typed(expected_type=CalcProperties, allow_none=True)
-    oleSize = Typed(expected_type=OleSize, allow_none=True)
+    oleSize = NestedString(allow_none=True, attribute="ref")
     customWorkbookViews = NestedSequence(expected_type=CustomWorkbookView, counter=False)
     pivotCaches = Typed(expected_type=PivotCacheList, allow_none=True)
     smartTagPr = Typed(expected_type=SmartTagProperties, allow_none=True)
