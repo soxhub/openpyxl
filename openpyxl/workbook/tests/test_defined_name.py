@@ -30,30 +30,3 @@ class TestDefinedName:
         node = fromstring(src)
         defined_name = DefinedName.from_tree(node)
         assert defined_name == DefinedName(name="Northwind")
-
-
-@pytest.fixture
-def DefinedNameList():
-    from ..defined_name import DefinedNameList
-    return DefinedNameList
-
-
-class TestDefinedNameList:
-
-    def test_ctor(self, DefinedNameList):
-        names = DefinedNameList()
-        xml = tostring(names.to_tree())
-        expected = """
-        <definedNames />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, DefinedNameList):
-        src = """
-        <definedNames />
-        """
-        node = fromstring(src)
-        names = DefinedNameList.from_tree(node)
-        assert names == DefinedNameList()

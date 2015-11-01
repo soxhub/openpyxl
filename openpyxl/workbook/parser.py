@@ -17,8 +17,8 @@ from openpyxl.descriptors.sequence import NestedSequence
 
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
-from .defined_name import DefinedNameList
-from .external_reference import ExternalReferenceList
+from .defined_name import DefinedName
+from .external_reference import ExternalReference
 from .function_group import FunctionGroupList
 from .pivot import PivotCacheList
 from .properties import WorkbookProperties, CalcProperties, FileVersion
@@ -100,8 +100,8 @@ class WorkbookPackage(Serialisable):
     bookViews = NestedSequence(expected_type=BookView, counter=False)
     sheets = NestedSequence(expected_type=Sheet, counter=False)
     functionGroups = Typed(expected_type=FunctionGroupList, allow_none=True)
-    externalReferences = Typed(expected_type=ExternalReferenceList, allow_none=True)
-    definedNames = Typed(expected_type=DefinedNameList, allow_none=True)
+    externalReferences = NestedSequence(expected_type=ExternalReference, counter=False)
+    definedNames = NestedSequence(expected_type=DefinedName, counter=False)
     calcPr = Typed(expected_type=CalcProperties, allow_none=True)
     oleSize = Typed(expected_type=OleSize, allow_none=True)
     customWorkbookViews = NestedSequence(expected_type=CustomWorkbookView, counter=False)
@@ -128,8 +128,8 @@ class WorkbookPackage(Serialisable):
                  bookViews=(),
                  sheets=(),
                  functionGroups=None,
-                 externalReferences=None,
-                 definedNames=None,
+                 externalReferences=(),
+                 definedNames=(),
                  calcPr=None,
                  oleSize=None,
                  customWorkbookViews=(),

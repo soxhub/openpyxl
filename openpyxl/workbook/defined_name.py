@@ -65,32 +65,3 @@ class DefinedName(Serialisable):
         self.shortcutKey = shortcutKey
         self.publishToServer = publishToServer
         self.workbookParameter = workbookParameter
-
-
-class DefinedNameList(Serialisable):
-
-    tagname = "definedNames"
-
-    definedName = Sequence(expected_type=DefinedName, allow_none=True)
-
-    __elements__ = ('definedName',)
-
-    def __init__(self,
-                 definedName=(),
-                ):
-        self.definedName = definedName
-
-
-    def __contains__(self, value):
-        for dn in self.definedName:
-            if dn.name == value:
-                return True
-        return False
-
-
-    def append(self, value):
-        if value in self:
-            raise ValueError("Duplicate name {0}".format(value))
-        l = self.definedName[:]
-        l.append(value)
-        self.definedName = l

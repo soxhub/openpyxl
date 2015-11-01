@@ -17,17 +17,3 @@ class ExternalReference(Serialisable):
 
     def __init__(self, id):
         self.id = id
-
-
-class ExternalReferenceList(Serialisable):
-
-    tagname = "externalReferences"
-
-    externalReference = Sequence(expected_type=ExternalReference, )
-
-    __elements__ = ('externalReference',)
-
-    def __init__(self,
-                 externalReference=None,
-                ):
-        self.externalReference = externalReference
