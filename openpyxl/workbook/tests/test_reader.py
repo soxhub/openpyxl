@@ -6,6 +6,7 @@ from zipfile import ZipFile
 import pytest
 
 from ..reader import chart_type, worksheet_type
+from openpyxl.utils.datetime import CALENDAR_WINDOWS_1900
 
 
 @pytest.fixture
@@ -33,6 +34,7 @@ class TestWorkbookParser:
 
         parser.parse_wb()
         assert parser.wb.code_name is None
+        assert parser.wb.excel_base_date == CALENDAR_WINDOWS_1900
         assert len(parser.sheets) == 2
 
 
