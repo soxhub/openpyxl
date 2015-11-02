@@ -37,7 +37,7 @@ class BookView(Serialisable):
     autoFilterDateGrouping = Bool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
+    __elements__ = ()
 
     def __init__(self,
                  visibility="hidden",
@@ -68,7 +68,6 @@ class BookView(Serialisable):
         self.firstSheet = firstSheet
         self.activeTab = activeTab
         self.autoFilterDateGrouping = autoFilterDateGrouping
-        self.extLst = extLst
 
 
 class CustomWorkbookView(Serialisable):
