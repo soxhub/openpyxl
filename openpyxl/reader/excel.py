@@ -40,13 +40,11 @@ from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
 from .workbook import (
     read_content_types,
-    read_excel_base_date,
     detect_worksheets,
     read_rels,
-    read_workbook_code_name,
-    read_workbook_settings,
 )
 from openpyxl.packaging.core import DocumentProperties
+from openpyxl.packaging.workbook import WorkbookParser
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.xml.functions import fromstring
 from .worksheet import WorkSheetParser
@@ -147,10 +145,12 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     archive = _validate_archive(filename)
     read_only = read_only
 
-    wb = Workbook()
+    parser = WorkbookParser(archive)
+    wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only
     wb.guess_types = guess_types
+    wb._sheets = []
 
     if read_only and guess_types:
         warnings.warn('Data types are not guessed when using iterator reader')
@@ -179,11 +179,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
 
-    wb.active = read_workbook_settings(archive.read(ARC_WORKBOOK))
-    wb.code_name = read_workbook_code_name(archive.read(ARC_WORKBOOK))
-
     # what content types do we have?
     cts = dict(read_content_types(archive))
+    wb.is_template = XLTX in cts or XLTM in cts
 
     shared_strings = []
     strings_path = cts.get(SHARED_STRINGS)
@@ -192,21 +190,17 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             strings_path = strings_path[1:]
         shared_strings = read_string_table(archive.read(strings_path))
 
-    wb.is_template = XLTX in cts or XLTM in cts
 
     if ARC_THEME in valid_files:
-        # some writers don't output a theme, live with it (fixes #160)
         wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
 
-    wb.excel_base_date = read_excel_base_date(archive)
-
     # get worksheets
-    wb._sheets = []  # remove preset worksheet
     for sheet in detect_worksheets(archive):
         sheet_name = sheet['title']
         worksheet_path = sheet['path']
+
         if not worksheet_path in valid_files:
             continue
 
