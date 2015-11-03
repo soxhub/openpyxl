@@ -178,30 +178,28 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
         wb._archive = ZipFile(filename)
 
     # get workbook-level information
-    try:
+    if ARC_CORE in valid_files:
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
-    except KeyError:
-        pass
+
     wb.active = read_workbook_settings(archive.read(ARC_WORKBOOK))
+    wb.code_name = read_workbook_code_name(archive.read(ARC_WORKBOOK))
 
     # what content types do we have?
     cts = dict(read_content_types(archive))
 
+    shared_strings = []
     strings_path = cts.get(SHARED_STRINGS)
     if strings_path is not None:
         if strings_path.startswith("/"):
             strings_path = strings_path[1:]
         shared_strings = read_string_table(archive.read(strings_path))
-    else:
-        shared_strings = []
 
     wb.is_template = XLTX in cts or XLTM in cts
 
-    try:
-        wb.loaded_theme = archive.read(ARC_THEME)  # some writers don't output a theme, live with it (fixes #160)
-    except KeyError:
-        pass
+    if ARC_THEME in valid_files:
+        # some writers don't output a theme, live with it (fixes #160)
+        wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
 
@@ -234,8 +232,6 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
 
     wb._differential_styles = [] # reset
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
-
-    wb.code_name = read_workbook_code_name(archive.read(ARC_WORKBOOK))
 
     if EXTERNAL_LINK in cts:
         rels = read_rels(archive)
