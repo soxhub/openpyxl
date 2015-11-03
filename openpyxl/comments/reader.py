@@ -1,15 +1,14 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-
 import posixpath
 
-from openpyxl.comments import Comment
 from openpyxl.xml.constants import COMMENTS_NS
 from openpyxl.xml.functions import fromstring
 
-from openpyxl.workbook.reader import get_dependents
+from openpyxl.packaging.relationship import get_dependents
 
+from .comments import Comment
 from .properties import CommentSheet
 
 
