@@ -28,7 +28,7 @@ from openpyxl.workbook.names.named_range import (
 
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.relationship import RelationshipList
-from openpyxl.workbook.parser import WorkbookPackage
+from openpyxl.packaging.workbook import WorkbookPackage
 
 # constants
 VALID_WORKSHEET = WORKSHEET_TYPE

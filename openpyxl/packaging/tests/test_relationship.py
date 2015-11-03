@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+from zipfile import ZipFile
 
 import pytest
 from openpyxl.tests.helper import compare_xml
@@ -71,3 +72,30 @@ def test_read():
     node = fromstring(xml)
     rels = RelationshipList.from_tree(node)
     assert len(rels) == 5
+
+
+@pytest.mark.parametrize("filename, expected",
+                         [
+                             ("xl/_rels/workbook.xml.rels",
+                              [
+                                  'xl/theme/theme1.xml',
+                                  'xl/worksheets/sheet1.xml',
+                                  'xl/chartsheets/sheet1.xml',
+                                  'xl/sharedStrings.xml',
+                                  'xl/styles.xml',
+                              ]
+                              ),
+                             ("xl/chartsheets/_rels/sheet1.xml.rels",
+                              [
+                                  'xl/drawings/drawing1.xml',
+                              ]
+                              ),
+                         ]
+)
+def test_get_dependents(datadir, filename, expected):
+    datadir.chdir()
+    archive = ZipFile("bug137.xlsx")
+
+    from ..relationship import get_dependents
+    rels = get_dependents(archive, filename)
+    assert [r.Target for r in rels.Relationship] == expected

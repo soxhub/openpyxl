@@ -5,13 +5,13 @@ from zipfile import ZipFile
 
 import pytest
 
-from ..reader import chart_type, worksheet_type
+from ..workbook import chart_type, worksheet_type
 from openpyxl.utils.datetime import CALENDAR_WINDOWS_1900
 
 
 @pytest.fixture
 def WorkbookParser():
-    from .. reader import WorkbookParser
+    from .. workbook import WorkbookParser
     return WorkbookParser
 
 
@@ -54,30 +54,3 @@ class TestWorkbookParser:
             ['Chart1', 'visible', 'xl/chartsheets/sheet1.xml', chart_type],
             ['Sheet1', 'visible', 'xl/worksheets/sheet1.xml', worksheet_type],
         ]
-
-
-@pytest.mark.parametrize("filename, expected",
-                         [
-                             ("xl/_rels/workbook.xml.rels",
-                              [
-                                  'xl/theme/theme1.xml',
-                                  'xl/worksheets/sheet1.xml',
-                                  'xl/chartsheets/sheet1.xml',
-                                  'xl/sharedStrings.xml',
-                                  'xl/styles.xml',
-                              ]
-                              ),
-                             ("xl/chartsheets/_rels/sheet1.xml.rels",
-                              [
-                                  'xl/drawings/drawing1.xml',
-                              ]
-                             ),
-                         ]
-)
-def test_get_dependents(datadir, filename, expected):
-    datadir.chdir()
-    archive = ZipFile("bug137.xlsx")
-
-    from ..reader import get_dependents
-    rels = get_dependents(archive, filename)
-    assert [r.Target for r in rels.Relationship] == expected
