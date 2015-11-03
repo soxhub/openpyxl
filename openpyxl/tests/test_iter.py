@@ -287,8 +287,10 @@ def test_read_hyperlinks_read_only(datadir, Workbook, ReadOnlyWorksheet):
 
     datadir.join("reader").chdir()
     filename = 'bug328_hyperlinks.xml'
-    ws = ReadOnlyWorksheet(Workbook(data_only=True, read_only=True), "Sheet",
-                           "", filename, ['SOMETEXT'])
+    wb = Workbook()
+    wb._read_only = True
+    wb._data_only = True
+    ws = ReadOnlyWorksheet(wb, "Sheet", "", filename, ['SOMETEXT'])
     assert ws['F2'].value is None
 
 

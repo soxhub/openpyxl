@@ -127,8 +127,8 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     :param read_only: optimised for reading, content cannot be edited
     :type read_only: bool
 
-    :param use_iterators: use lazy load for cells
-    :type use_iterators: bool
+    :param read_only: use lazy load for cells
+    :type read_only: bool
 
     :param keep_vba: preseve vba content (this does NOT mean you can use it)
     :type keep_vba: bool
@@ -150,7 +150,10 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     archive = _validate_archive(filename)
     read_only = read_only or use_iterators
 
-    wb = Workbook(guess_types=guess_types, data_only=data_only, read_only=read_only)
+    wb = Workbook()
+    wb._data_only = data_only
+    wb._read_only = read_only
+    wb._guess_types = guess_types
 
     if read_only and guess_types:
         warnings.warn('Data types are not guessed when using iterator reader')

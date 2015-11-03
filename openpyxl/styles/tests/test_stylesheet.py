@@ -282,7 +282,8 @@ def test_simple_styles(datadir):
     from ..protection import Protection
     from .. import numbers
     from ..stylesheet import write_stylesheet
-    wb = Workbook(guess_types=True)
+    wb = Workbook()
+    wb._guess_types = True
     ws = wb.active
     now = datetime.date.today()
     for idx, v in enumerate(['12.34%', now, 'This is a test', '31.31415', None], 1):

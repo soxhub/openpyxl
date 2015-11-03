@@ -25,11 +25,12 @@ from .protection import DocumentSecurity
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
+    _read_only = False
+    _data_only = False
+    _guess_types = False
+
     def __init__(self,
-                 read_only=False,
                  write_only=False,
-                 data_only=False,
-                 guess_types=False,
                  ):
         self._sheets = []
         self._active_sheet_index = 0
@@ -38,7 +39,6 @@ class Workbook(object):
         self.properties = DocumentProperties()
         self.security = DocumentSecurity()
         self.__write_only = write_only
-        self.__read_only = read_only
         self.shared_strings = IndexedList()
 
         self._setup_styles()
@@ -47,8 +47,6 @@ class Workbook(object):
         self.vba_archive = None
         self.is_template = False
         self._differential_styles = []
-        self._guess_types = guess_types
-        self.data_only = data_only
         self._drawings = []
         self._charts = []
         self._images = []
@@ -92,11 +90,19 @@ class Workbook(object):
 
     @property
     def read_only(self):
-        return self.__read_only
+        return self._read_only
+
+    @property
+    def data_only(self):
+        return self._data_only
 
     @property
     def write_only(self):
         return self.__write_only
+
+    @property
+    def guess_types(self):
+        return self._guess_types
 
     @deprecated("Use the .active property")
     def get_active_sheet(self):

@@ -52,8 +52,8 @@ def test_add_sheet_from_other_workbook():
 
 
 def test_create_sheet_readonly():
-    wb = Workbook(read_only=True)
-    #wb._set_optimized_read()
+    wb = Workbook()
+    wb._read_only = True
     with pytest.raises(ReadOnlyWorkbookException):
         wb.create_sheet()
 
