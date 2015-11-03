@@ -103,20 +103,6 @@ def test_read_workbook_with_no_core_properties(datadir, Workbook):
     assert isinstance(wb.properties, DocumentProperties)
 
 
-@pytest.mark.parametrize("filename, epoch",
-                         [
-                             ("date_1900.xlsx", CALENDAR_WINDOWS_1900),
-                             ("date_1904.xlsx",  CALENDAR_MAC_1904),
-                         ]
-                         )
-def test_read_win_base_date(datadir, filename, epoch):
-    from .. workbook import read_excel_base_date
-    datadir.chdir()
-    archive = ZipFile(filename)
-    base_date = read_excel_base_date(archive)
-    assert base_date == epoch
-
-
 def test_missing_ids(datadir, DummyArchive):
     datadir.chdir()
     with open("workbook_missing_ids.xml") as src:

@@ -34,13 +34,6 @@ from openpyxl.packaging.workbook import WorkbookPackage
 VALID_WORKSHEET = WORKSHEET_TYPE
 
 
-def read_excel_base_date(archive):
-    src = archive.read(ARC_WORKBOOK)
-    root = fromstring(src)
-    props = WorkbookPackage.from_tree(root).properties
-    return props.date1904 and CALENDAR_MAC_1904 or CALENDAR_WINDOWS_1900
-
-
 def read_content_types(archive):
     """Read content types."""
     xml_source = archive.read(ARC_CONTENT_TYPES)
@@ -76,12 +69,3 @@ def read_sheets(archive):
         del attrib["{%s}id" % REL_NS]
         if attrib['id']:
             yield attrib
-
-
-def read_workbook_settings(xml_source):
-    root = fromstring(xml_source)
-    package = WorkbookPackage.from_tree(root)
-    for view in package.bookViews:
-        if view.activeTab is not None:
-            return view.activeTab
-    return 0
