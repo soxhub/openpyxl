@@ -78,36 +78,6 @@ def read_sheets(archive):
             yield attrib
 
 
-def detect_worksheets(archive):
-    """Return a list of worksheets"""
-    # content types has a list of paths but no titles
-    # workbook has a list of titles and relIds but no paths
-    # workbook_rels has a list of relIds and paths but no titles
-    # rels = {'id':{'title':'', 'path':''} }
-    content_types = read_content_types(archive)
-    valid_sheets = dict((path, ct) for ct, path in content_types if ct == VALID_WORKSHEET)
-    rels = dict(read_rels(archive))
-    for sheet in read_sheets(archive):
-        rel = rels[sheet['id']]
-        rel['title'] = sheet['name']
-        rel['sheet_id'] = sheet['sheetId']
-        rel['state'] = sheet.get('state', 'visible')
-        if ("/" + rel['path'] in valid_sheets
-            or "worksheets" in rel['path']): # fallback in case content type is missing
-            yield rel
-
-
-def read_workbook_code_name(xml_source):
-    tree = fromstring(xml_source)
-
-    pr = tree.find("{%s}workbookPr" % SHEET_MAIN_NS)
-
-    if pr is None:
-        pr = {}
-
-    return pr.get('codeName', 'ThisWorkbook')
-
-
 def read_workbook_settings(xml_source):
     root = fromstring(xml_source)
     package = WorkbookPackage.from_tree(root)

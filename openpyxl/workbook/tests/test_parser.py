@@ -32,3 +32,15 @@ class TestWorkbookPackage:
         node = fromstring(src)
         parser = WorkbookPackage.from_tree(node)
         assert parser == WorkbookPackage()
+
+
+def test_read_workbook_code_name(datadir, WorkbookPackage):
+    datadir.chdir()
+
+    with open("workbook_russian_code_name.xml", "rb") as src:
+        xml = src.read()
+
+    node = fromstring(xml)
+    parser = WorkbookPackage.from_tree(node)
+
+    assert parser.properties.codeName == u'\u042d\u0442\u0430\u041a\u043d\u0438\u0433\u0430'
