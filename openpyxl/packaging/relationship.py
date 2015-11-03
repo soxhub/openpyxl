@@ -114,6 +114,7 @@ def get_dependents(archive, filename):
     for r in rels.Relationship:
         if r.target.startswith("/"):
             r.target = r.target[1:]
+            continue
         pth = posixpath.join(parent, r.target)
         r.target = posixpath.normpath(pth)
     return rels
