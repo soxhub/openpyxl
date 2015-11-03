@@ -40,7 +40,6 @@ from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
 from .workbook import (
     read_content_types,
-    detect_worksheets,
     read_rels,
 )
 from openpyxl.packaging.core import DocumentProperties
@@ -146,6 +145,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     read_only = read_only
 
     parser = WorkbookParser(archive)
+    parser.parse_wb()
     wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only
@@ -197,9 +197,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     apply_stylesheet(archive, wb) # bind styles to workbook
 
     # get worksheets
-    for sheet in detect_worksheets(archive):
-        sheet_name = sheet['title']
-        worksheet_path = sheet['path']
+    for sheet, rel in parser.find_sheets():
+        sheet_name = sheet.name
+        worksheet_path = rel.target
 
         if not worksheet_path in valid_files:
             continue
@@ -213,7 +213,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
             parser.parse()
             new_ws = wb[sheet_name]
-        new_ws.sheet_state = sheet['state']
+        new_ws.sheet_state = sheet.state
 
         if not read_only:
         # load comments into the worksheet cells
