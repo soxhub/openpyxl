@@ -37,7 +37,8 @@ class WorkbookParser:
         package = WorkbookPackage.from_tree(node)
         if package.properties.date1904:
             wb.excel_base_date = CALENDAR_MAC_1904
-        self.wb.code_name = package.fileVersion.codeName
+        if package.fileVersion:
+            self.wb.code_name = package.fileVersion.codeName
         self.wb.active = package.active
         self.sheets = package.sheets
 
