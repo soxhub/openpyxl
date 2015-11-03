@@ -37,9 +37,9 @@ def test_get_comments_file(datadir):
     datadir.chdir()
     archive = ZipFile('comments.xlsx')
     valid_files = archive.namelist()
-    assert reader.get_comments_file('sheet1.xml', archive, valid_files) == 'xl/comments1.xml'
-    assert reader.get_comments_file('sheet3.xml', archive, valid_files) == 'xl/comments2.xml'
-    assert reader.get_comments_file('sheet2.xml', archive, valid_files) is None
+    assert reader.get_comments_file('xl/worksheets/sheet1.xml', archive, valid_files) == 'xl/comments1.xml'
+    assert reader.get_comments_file('xl/worksheets/sheet3.xml', archive, valid_files) == 'xl/comments2.xml'
+    assert reader.get_comments_file('xl/worksheets/sheet2.xml', archive, valid_files) is None
 
 
 def test_comments_cell_association(datadir):
