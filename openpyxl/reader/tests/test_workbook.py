@@ -118,32 +118,6 @@ def test_read_sheets(datadir, DummyArchive, workbook_file, expected):
     assert list(read_sheets(archive)) == expected
 
 
-def test_read_content_types(datadir, DummyArchive):
-    from openpyxl.reader.workbook import read_content_types
-
-    archive = DummyArchive
-    datadir.chdir()
-    with open("content_types.xml") as src:
-        archive.writestr(ARC_CONTENT_TYPES, src.read())
-
-    assert list(read_content_types(archive)) == [
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml', '/xl/workbook.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml', '/xl/worksheets/sheet1.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml', '/xl/chartsheets/sheet1.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml', '/xl/worksheets/sheet2.xml',),
-    ('application/vnd.openxmlformats-officedocument.theme+xml', '/xl/theme/theme1.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml', '/xl/styles.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml', '/xl/sharedStrings.xml'),
-    ('application/vnd.openxmlformats-officedocument.drawing+xml', '/xl/drawings/drawing1.xml'),
-    ('application/vnd.openxmlformats-officedocument.drawingml.chart+xml','/xl/charts/chart1.xml'),
-    ('application/vnd.openxmlformats-officedocument.drawing+xml', '/xl/drawings/drawing2.xml'),
-    ('application/vnd.openxmlformats-officedocument.drawingml.chart+xml', '/xl/charts/chart2.xml'),
-    ('application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml', '/xl/calcChain.xml'),
-    ('application/vnd.openxmlformats-package.core-properties+xml', '/docProps/core.xml'),
-    ('application/vnd.openxmlformats-officedocument.extended-properties+xml', '/docProps/app.xml')
-    ]
-
-
 def test_missing_content_type(datadir, DummyArchive):
     from .. workbook import detect_worksheets
 
