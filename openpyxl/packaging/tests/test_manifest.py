@@ -122,7 +122,35 @@ class TestManifest:
             node = fromstring(src.read())
         manifest = Manifest.from_tree(node)
         assert len(manifest.Default) == 2
-        assert len(manifest.Override) == 10
+        defaults = [
+            ("application/xml", 'xml'),
+            ("application/vnd.openxmlformats-package.relationships+xml", 'rels'),
+        ]
+        assert  [(ct.ContentType, ct.Extension) for ct in manifest.Default] == defaults
+
+        overrides = [
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml',
+             '/xl/workbook.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml',
+             '/xl/worksheets/sheet1.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml',
+             '/xl/chartsheets/sheet1.xml'),
+            ('application/vnd.openxmlformats-officedocument.theme+xml',
+             '/xl/theme/theme1.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml',
+             '/xl/styles.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml',
+             '/xl/sharedStrings.xml'),
+            ('application/vnd.openxmlformats-officedocument.drawing+xml',
+             '/xl/drawings/drawing1.xml'),
+            ('application/vnd.openxmlformats-officedocument.drawingml.chart+xml',
+             '/xl/charts/chart1.xml'),
+            ('application/vnd.openxmlformats-package.core-properties+xml',
+             '/docProps/core.xml'),
+            ('application/vnd.openxmlformats-officedocument.extended-properties+xml',
+             '/docProps/app.xml')
+        ]
+        assert [(ct.ContentType, ct.PartName) for ct in manifest.Override] == overrides
 
 
     def test_filenames(self, datadir, Manifest):
