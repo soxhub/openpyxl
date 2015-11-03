@@ -178,7 +178,7 @@ def test_write_regular_date(tmpdir):
 def test_write_regular_float(tmpdir):
     float_value = 1.0 / 3.0
     book = Workbook()
-    sheet = book.get_active_sheet()
+    sheet = book.active
     sheet.cell("A1").value = float_value
     dest_filename = 'float_read_write_issue.xlsx'
     book.save(dest_filename)
