@@ -5,6 +5,8 @@ from __future__ import absolute_import
 OO-based reader
 """
 
+import posixpath
+
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
@@ -41,9 +43,26 @@ class WorkbookParser:
 
 
     def find_sheets(self):
-        src = self.archive.read(ARC_WORKBOOK_RELS)
-        node = fromstring(src)
-        rels = RelationshipList.from_tree(node)
+        rels = get_dependents(self.archive, ARC_WORKBOOK_RELS)
 
         for sheet in self.sheets:
             yield sheet, rels[sheet.id]
+
+
+def get_dependents(archive, filename):
+    """
+    Normalise dependency file paths to absolute ones
+
+    Relative paths are relative to parent object
+    """
+    src = archive.read(filename)
+    node = fromstring(src)
+    rels = RelationshipList.from_tree(node)
+    folder = posixpath.dirname(filename)
+    parent = posixpath.split(folder)[0]
+    for r in rels.Relationship:
+        if r.target.startswith("/"):
+            r.target = r.target[1:]
+        pth = posixpath.join(parent, r.target)
+        r.target = posixpath.normpath(pth)
+    return rels

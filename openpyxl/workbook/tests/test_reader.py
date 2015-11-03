@@ -51,6 +51,33 @@ class TestWorkbookParser:
             output.append([sheet.name, sheet.state, rel.target, rel.type])
 
         assert output == [
-            ['Chart1', 'visible', 'chartsheets/sheet1.xml', chart_type],
-            ['Sheet1', 'visible', 'worksheets/sheet1.xml', worksheet_type],
+            ['Chart1', 'visible', 'xl/chartsheets/sheet1.xml', chart_type],
+            ['Sheet1', 'visible', 'xl/worksheets/sheet1.xml', worksheet_type],
         ]
+
+
+@pytest.mark.parametrize("filename, expected",
+                         [
+                             ("xl/_rels/workbook.xml.rels",
+                              [
+                                  'xl/theme/theme1.xml',
+                                  'xl/worksheets/sheet1.xml',
+                                  'xl/chartsheets/sheet1.xml',
+                                  'xl/sharedStrings.xml',
+                                  'xl/styles.xml',
+                              ]
+                              ),
+                             ("xl/chartsheets/_rels/sheet1.xml.rels",
+                              [
+                                  'xl/drawings/drawing1.xml',
+                              ]
+                             ),
+                         ]
+)
+def test_get_dependents(datadir, filename, expected):
+    datadir.chdir()
+    archive = ZipFile("bug137.xlsx")
+
+    from ..reader import get_dependents
+    rels = get_dependents(archive, filename)
+    assert [r.Target for r in rels.Relationship] == expected
