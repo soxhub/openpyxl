@@ -118,16 +118,13 @@ def _validate_archive(filename):
     return archive
 
 
-def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_VBA, guess_types=False, data_only=False):
+def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False, guess_types=False):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
     :type filename: string or a file-like object open in binary mode c.f., :class:`zipfile.ZipFile`
 
     :param read_only: optimised for reading, content cannot be edited
-    :type read_only: bool
-
-    :param read_only: use lazy load for cells
     :type read_only: bool
 
     :param keep_vba: preseve vba content (this does NOT mean you can use it)
@@ -148,7 +145,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
 
     """
     archive = _validate_archive(filename)
-    read_only = read_only or use_iterators
+    read_only = read_only
 
     wb = Workbook()
     wb._data_only = data_only
