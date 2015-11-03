@@ -27,7 +27,6 @@ class Workbook(object):
 
     _read_only = False
     _data_only = False
-    _guess_types = False
 
     def __init__(self,
                  write_only=False,
@@ -99,10 +98,6 @@ class Workbook(object):
     @property
     def write_only(self):
         return self.__write_only
-
-    @property
-    def guess_types(self):
-        return self._guess_types
 
     @deprecated("Use the .active property")
     def get_active_sheet(self):

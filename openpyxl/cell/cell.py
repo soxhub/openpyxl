@@ -135,7 +135,7 @@ class Cell(StyleableObject):
 
     @property
     def guess_types(self):
-        return getattr(self.parent.parent, '_guess_types', False)
+        return getattr(self.parent.parent, 'guess_types', False)
 
     def __repr__(self):
         return unicode("<Cell %s.%s>") % (self.parent.title, self.coordinate)

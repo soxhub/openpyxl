@@ -75,7 +75,7 @@ def Workbook():
 
     class DummyWorkbook:
 
-        _guess_types = False
+        guess_types = False
         data_only = False
         _colors = []
 

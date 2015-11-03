@@ -153,7 +153,7 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
     wb = Workbook()
     wb._data_only = data_only
     wb._read_only = read_only
-    wb._guess_types = guess_types
+    wb.guess_types = guess_types
 
     if read_only and guess_types:
         warnings.warn('Data types are not guessed when using iterator reader')
