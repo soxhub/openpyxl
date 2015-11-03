@@ -32,6 +32,7 @@ from openpyxl.workbook.names.named_range import (
     )
 
 from openpyxl.packaging.manifest import Manifest
+from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.parser import WorkbookPackage
 
 import datetime
@@ -61,16 +62,16 @@ def read_rels(archive):
     """Read relationships for a workbook"""
     xml_source = archive.read(ARC_WORKBOOK_RELS)
     tree = fromstring(xml_source)
-    for element in safe_iterator(tree, '{%s}Relationship' % PKG_REL_NS):
-        rId = element.get('Id')
-        pth = element.get("Target")
-        typ = element.get('Type')
+    rels = RelationshipList.from_tree(tree)
+    for r in rels.Relationship:
         # normalise path
+        pth = r.Target
         if pth.startswith("/xl"):
             pth = pth.replace("/xl", "xl")
         elif not pth.startswith("xl") and not pth.startswith(".."):
             pth = "xl/" + pth
-        yield rId, {'path':pth, 'type':typ}
+        r.Target = pth
+        yield r.Id, {'path':r.Target, 'type':r.Type}
 
 
 def read_sheets(archive):
