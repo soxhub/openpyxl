@@ -97,13 +97,6 @@ def detect_worksheets(archive):
             yield rel
 
 
-def detect_external_links(archive):
-    rels = read_rels(archive)
-    for rId, d in rels:
-        if d['type'] == EXTERNAL_LINK:
-            pth = d['path']
-
-
 def read_workbook_code_name(xml_source):
     tree = fromstring(xml_source)
 
