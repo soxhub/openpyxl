@@ -6,19 +6,14 @@ from __future__ import absolute_import
 # package imports
 from openpyxl.xml.functions import fromstring, safe_iterator
 from openpyxl.xml.constants import (
-    DCORE_NS,
-    COREPROPS_NS,
-    DCTERMS_NS,
-    SHEET_MAIN_NS,
-    PKG_REL_NS,
     REL_NS,
+    SHEET_MAIN_NS,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
     WORKSHEET_TYPE,
     EXTERNAL_LINK,
 )
-from openpyxl.workbook import DocumentProperties
 from openpyxl.utils.datetime  import (
     CALENDAR_WINDOWS_1900,
     CALENDAR_MAC_1904
