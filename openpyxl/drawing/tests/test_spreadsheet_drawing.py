@@ -280,6 +280,9 @@ class TestSpreadsheetDrawing:
           </nvPicPr>
           <blipFill>
             <a:blip cstate="print" r:embed="rId4" />
+            <a:stretch xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:fillRect/>
+            </a:stretch>
           </blipFill>
           <spPr>
             <a:prstGeom prst="rect" />

@@ -91,7 +91,7 @@ class StretchInfoProperties(Serialisable):
     fillRect = Typed(expected_type=RelativeRect, allow_none=True)
 
     def __init__(self,
-                 fillRect=None,
+                 fillRect=RelativeRect(),
                 ):
         self.fillRect = fillRect
 
@@ -336,7 +336,7 @@ class BlipFillProperties(Serialisable):
                  rotWithShape=None,
                  blip=None,
                  tile=None,
-                 stretch=None,
+                 stretch=StretchInfoProperties(),
                  srcRect=None,
                 ):
         self.dpi = dpi
