@@ -71,7 +71,9 @@ class TestStretchInfoProperties:
         fill = StretchInfoProperties()
         xml = tostring(fill.to_tree())
         expected = """
-        <stretch xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        <stretch xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <fillRect />
+        </stretch>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
