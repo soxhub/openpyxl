@@ -10,6 +10,7 @@ Bug fixes
 * `#539 <https://bitbucket.org/openpyxl/openpyxl/issues/539>`_ Flexible value types for conditional formatting.
 * `#542 <https://bitbucket.org/openpyxl/openpyxl/issues/542>`_ Missing content types for images.
 * `#543 <https://bitbucket.org/openpyxl/openpyxl/issues/543>`_ Make sure images fit containers on all OSes.
+* `#544 <https://bitbucket.org/openpyxl/openpyxl/issues/544>`_ Gracefully handle missing cell styles.
 
 
 Minor changes
