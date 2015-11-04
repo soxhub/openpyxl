@@ -336,7 +336,7 @@ class BlipFillProperties(Serialisable):
                  rotWithShape=None,
                  blip=None,
                  tile=None,
-                 stretch=None,
+                 stretch=StretchInfoProperties(),
                  srcRect=None,
                 ):
         self.dpi = dpi

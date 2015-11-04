@@ -215,7 +215,11 @@ class TestBlipFillProperties:
         fill = BlipFillProperties()
         xml = tostring(fill.to_tree())
         expected = """
-        <blipFill />
+        <blipFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:stretch >
+            <a:fillRect/>
+          </a:stretch>
+        </blipFill>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
