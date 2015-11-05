@@ -90,7 +90,8 @@ class TestText:
                                      <rPr />
                                      <t xml:space="preserve">11 de September de 2014</t>
                                    </r>
-                                 </is>""",
+                                 </is>
+                                 """,
                                   "11 de September de 2014"
                                   ),
                              ]
