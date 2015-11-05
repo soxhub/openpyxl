@@ -147,12 +147,7 @@ class Comment(Serialisable):
         """
         Remove all inline formatting and stuff
         """
-        snippets = []
-        if self.text.t is not None:
-            snippets.append(self.text.t)
-        for run in self.text.r:
-            snippets.append(run.t)
-        return "".join(snippets)
+        return self.text.content
 
 
 class CommentSheet(Serialisable):
