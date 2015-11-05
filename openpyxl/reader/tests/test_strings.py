@@ -12,14 +12,14 @@ def test_read_string_table(datadir):
     src = 'sharedStrings.xml'
     with open(src) as content:
         assert read_string_table(content.read()) == [
-                'This is cell A1 in Sheet 1', 'This is cell G5']
+                u'This is cell A1 in Sheet 1', u'This is cell G5']
 
 
 def test_empty_string(datadir):
     datadir.chdir()
     src = 'sharedStrings-emptystring.xml'
     with open(src) as content:
-        assert read_string_table(content.read()) == ['Testing empty cell', '']
+        assert read_string_table(content.read()) == [u'Testing empty cell', u'']
 
 
 def test_formatted_string_table(datadir):
@@ -27,6 +27,7 @@ def test_formatted_string_table(datadir):
     src = 'shared-strings-rich.xml'
     with open(src) as content:
         assert read_string_table(content.read()) == [
-            'Welcome', 'to the best shop in town', "     let's play "]
-
-
+            u'Welcome',
+            u'to the best shop in town',
+            u"     let's play "
+        ]
