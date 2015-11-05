@@ -145,8 +145,9 @@ class Text(Serialisable):
     tagname = "text"
 
     t = NestedText(allow_none=True, expected_type=unicode)
-    body = Alias("t")
+    plain = Alias("t")
     r = Sequence(expected_type=RichText, allow_none=True)
+    formatted = Alias("r")
     rPh = Sequence(expected_type=PhoneticText, allow_none=True)
     phonetic = Alias("rPh")
     phoneticPr = Typed(expected_type=PhoneticProperties, allow_none=True)
@@ -164,3 +165,16 @@ class Text(Serialisable):
         self.r = r
         self.rPh = rPh
         self.phoneticPr = phoneticPr
+
+
+    @property
+    def content(self):
+        """
+        Text stripped of all formatting
+        """
+        snippets = []
+        if self.plain is not None:
+            snippets.append(self.plain)
+        for block in self.formatted:
+            snippets.append(block.t)
+        return "".join(snippets)

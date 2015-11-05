@@ -70,7 +70,7 @@ class TestText:
 
     def test_ctor(self, Text):
         text = Text()
-        text.body = "comment"
+        text.plain = "comment"
         xml = tostring(text.to_tree())
         expected = """
         <text>
