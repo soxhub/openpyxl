@@ -36,7 +36,7 @@ Bug fixes
 Minor changes
 -------------
 
-* `PR 78 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/88/>`_ Fix page margins in parser.
+* `PR 88 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/88/>`_ Fix page margins in parser.
 
 
 2.3.0 (2015-10-20)
