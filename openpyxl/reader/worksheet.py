@@ -12,6 +12,7 @@ from openpyxl.xml.functions import iterparse
 from openpyxl.cell import Cell
 from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
+from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
@@ -61,8 +62,7 @@ class WorkSheetParser(object):
     VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
     FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
     MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
-    INLINE_STRING = "{%s}is/{%s}t" % (SHEET_MAIN_NS, SHEET_MAIN_NS)
-    INLINE_RICHTEXT = "{%s}is/{%s}r/{%s}t" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS)
+    INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
 
     def __init__(self, wb, title, xml_source, shared_strings):
         self.ws = wb.create_sheet(title=title)
@@ -193,12 +193,11 @@ class WorkSheetParser(object):
 
         else:
             if data_type == 'inlineStr':
-                data_type = 's'
                 child = element.find(self.INLINE_STRING)
-                if child is None:
-                    child = element.find(self.INLINE_RICHTEXT)
                 if child is not None:
-                    value = child.text
+                    data_type = 's'
+                    richtext = Text.from_tree(child)
+                    value = richtext.content
 
         if self.guess_types or value is None:
             cell.value = value
