@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 """Read the shared strings table."""
 
-
 from openpyxl.cell.text import Text
 
 from openpyxl.utils.indexed_list import IndexedList
