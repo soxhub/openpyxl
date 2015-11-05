@@ -17,7 +17,7 @@ from openpyxl.descriptors.sequence import NestedSequence
 
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
-from .text import Text
+from openpyxl.cell.text import Text
 from .author import AuthorList
 
 
