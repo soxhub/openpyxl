@@ -139,7 +139,6 @@ class Manifest(Serialisable):
 
 def write_content_types(workbook, as_template=False, exts=None):
 
-    seen = set()
     manifest = Manifest()
 
     if exts is not None:
@@ -154,7 +153,6 @@ def write_content_types(workbook, as_template=False, exts=None):
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
         manifest = Manifest.from_tree(node)
         del node
-        seen = set(manifest.filenames)
 
     # templates
     for part in manifest.Override:
@@ -173,21 +171,18 @@ def write_content_types(workbook, as_template=False, exts=None):
     # worksheets
     for sheet_id, sheet in enumerate(workbook.worksheets):
         name = '/xl/worksheets/sheet%d.xml' % (sheet_id + 1)
-        if name not in seen:
-            manifest.Override.append(Override(name, WORKSHEET_TYPE))
+        manifest.Override.append(Override(name, WORKSHEET_TYPE))
 
         if sheet._charts or sheet._images:
             drawing_id += 1
             name = '/xl/drawings/drawing%d.xml' % drawing_id
-            if name not in seen:
-                manifest.Override.append(Override(name, DRAWING_TYPE))
+            manifest.Override.append(Override(name, DRAWING_TYPE))
 
 
             for chart in sheet._charts:
                 chart_id += 1
                 name = '/xl/charts/chart%d.xml' % chart_id
-                if name not in seen:
-                    manifest.Override.append(Override(name, CHART_TYPE))
+                manifest.Override.append(Override(name, CHART_TYPE))
 
         if sheet._comment_count > 0:
             comments_id += 1
@@ -195,27 +190,23 @@ def write_content_types(workbook, as_template=False, exts=None):
             if vml not in manifest.Default:
                 manifest.Default.append(vml)
             name = '/xl/comments%d.xml' % comments_id
-            if name not in seen:
-                manifest.Override.append(Override(name, COMMENTS_TYPE))
+            manifest.Override.append(Override(name, COMMENTS_TYPE))
 
 
     # chartsheets
     for sheet_id, sheet in enumerate(workbook.chartsheets, sheet_id+1):
         name = '/xl/chartsheets/sheet%d.xml' % (sheet_id)
-        if name not in seen:
-            manifest.Override.append(Override(name, CHARTSHEET_TYPE))
+        manifest.Override.append(Override(name, CHARTSHEET_TYPE))
 
         if sheet._charts:
             drawing_id += 1
             name = '/xl/drawings/drawing%d.xml' % drawing_id
-            if name not in seen:
-                manifest.Override.append(Override(name, DRAWING_TYPE))
+            manifest.Override.append(Override(name, DRAWING_TYPE))
 
             for chart in sheet._charts:
                 chart_id += 1
                 name = '/xl/charts/chart%d.xml' % chart_id
-                if name not in seen:
-                    manifest.Override.append(Override(name, CHART_TYPE))
+                manifest.Override.append(Override(name, CHART_TYPE))
 
     #external links
     for idx, _ in enumerate(workbook._external_links, 1):
