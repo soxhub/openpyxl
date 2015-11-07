@@ -181,6 +181,21 @@ class TestManifest:
             ('xml', 'application/xml'),
         ]
 
+    def test_no_dupe_overrides(self, Manifest):
+        manifest = Manifest()
+        assert len(manifest.Override) == 6
+        manifest.Override.append("a")
+        manifest.Override.append("a")
+        assert len(manifest.Override) == 7
+
+
+    def test_no_dupe_types(self, Manifest):
+        manifest = Manifest()
+        assert len(manifest.Default) == 2
+        manifest.Default.append("a")
+        manifest.Default.append("a")
+        assert len(manifest.Default) == 3
+
 
 class TestContentTypes:
 

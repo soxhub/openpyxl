@@ -32,6 +32,7 @@ Bug fixes
 * `#542 <https://bitbucket.org/openpyxl/openpyxl/issues/542>`_ Missing content types for images.
 * `#543 <https://bitbucket.org/openpyxl/openpyxl/issues/543>`_ Make sure images fit containers on all OSes.
 * `#544 <https://bitbucket.org/openpyxl/openpyxl/issues/544>`_ Gracefully handle missing cell styles.
+* `#546 <https://bitbucket.org/openpyxl/openpyxl/issues/546>`_ ExternalLink duplicated when editing a file with macros.
 
 
 Minor changes
