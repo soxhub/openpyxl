@@ -156,12 +156,12 @@ class DataValidation(Serialisable):
 
 class DataValidationList(Serialisable):
 
-    tagname = "dataValidation"
+    tagname = "dataValidations"
 
     disablePrompts = Bool(allow_none=True)
     xWindow = Integer(allow_none=True)
     yWindow = Integer(allow_none=True)
-    dataValidation = Sequence(expected_type=DataValidation)
+    dataValidation = Sequence(expected_type=DataValidation, count=True)
 
     __elements__ = ('dataValidation',)
 
