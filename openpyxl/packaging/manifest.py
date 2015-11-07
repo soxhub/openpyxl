@@ -72,6 +72,10 @@ class Override(Serialisable):
         self.ContentType = ContentType
 
 
+    def __hash__(self):
+        return hash((self.PartName, self.ContentType))
+
+
 DEFAULT_TYPES = [
     FileExtension("rels", "application/vnd.openxmlformats-package.relationships+xml"),
     FileExtension("xml", "application/xml"),
@@ -91,14 +95,14 @@ class Manifest(Serialisable):
 
     tagname = "Types"
 
-    Default = Sequence(expected_type=FileExtension)
-    Override = Sequence(expected_type=Override)
+    Default = Sequence(expected_type=FileExtension, unique=True)
+    Override = Sequence(expected_type=Override, unique=True)
 
     __elements__ = ("Default", "Override")
 
     def __init__(self,
                  Default=(),
-                 Override=()
+                 Override=(),
                  ):
         if not Default:
             Default = DEFAULT_TYPES
