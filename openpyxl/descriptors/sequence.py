@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
+from openpyxl.utils.indexed_list import IndexedList
 
 from .base import Descriptor, _convert
 from .namespace import namespaced
@@ -17,12 +18,15 @@ class Sequence(Descriptor):
     expected_type = type(None)
     seq_types = (list, tuple)
     idx_base = 0
+    unique = False
 
 
     def __set__(self, instance, seq):
         if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
         seq = [_convert(self.expected_type, value) for value in seq]
+        if self.unique:
+            seq = IndexedList(seq)
 
         super(Sequence, self).__set__(instance, seq)
 
