@@ -164,7 +164,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             f = open(filename, 'rb')
             s = f.read()
             f.close()
-        except IOError:
+        except TypeError:
             pos = filename.tell()
             filename.seek(0)
             s = filename.read()
