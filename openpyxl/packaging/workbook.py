@@ -31,7 +31,7 @@ class WorkbookParser:
         self.sheets = []
 
 
-    def parse_wb(self):
+    def parse(self):
         src = self.archive.read(ARC_WORKBOOK)
         node = fromstring(src)
         package = WorkbookPackage.from_tree(node)

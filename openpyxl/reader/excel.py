@@ -145,7 +145,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     read_only = read_only
 
     parser = WorkbookParser(archive)
-    parser.parse_wb()
+    parser.parse()
     wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only

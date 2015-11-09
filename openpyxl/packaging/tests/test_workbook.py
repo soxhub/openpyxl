@@ -32,7 +32,7 @@ class TestWorkbookParser:
         archive = ZipFile("bug137.xlsx")
         parser = WorkbookParser(archive)
 
-        parser.parse_wb()
+        parser.parse()
         assert parser.wb.code_name is None
         assert parser.wb.excel_base_date == CALENDAR_WINDOWS_1900
         assert len(parser.sheets) == 2
@@ -43,7 +43,7 @@ class TestWorkbookParser:
         archive = ZipFile("bug137.xlsx")
         parser = WorkbookParser(archive)
 
-        parser.parse_wb()
+        parser.parse()
 
         output = []
 
