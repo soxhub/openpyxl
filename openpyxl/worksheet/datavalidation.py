@@ -161,9 +161,10 @@ class DataValidationList(Serialisable):
     disablePrompts = Bool(allow_none=True)
     xWindow = Integer(allow_none=True)
     yWindow = Integer(allow_none=True)
-    dataValidation = Sequence(expected_type=DataValidation, count=True)
+    dataValidation = Sequence(expected_type=DataValidation)
 
     __elements__ = ('dataValidation',)
+    __attrs__ = ('disablePrompts', 'xWindow', 'yWindow', 'count')
 
     def __init__(self,
                  disablePrompts=None,

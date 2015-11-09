@@ -114,7 +114,7 @@ class TestDataValidationList:
         dvs = DataValidationList()
         xml = tostring(dvs.to_tree())
         expected = """
-        <dataValidations />
+        <dataValidations count="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
