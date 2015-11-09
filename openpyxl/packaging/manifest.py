@@ -141,17 +141,17 @@ def write_content_types(workbook, as_template=False, exts=None):
 
     manifest = Manifest()
 
+    if workbook.vba_archive:
+        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+        manifest = Manifest.from_tree(node)
+        del node
+
     if exts is not None:
         for ext in exts:
             ext = os.path.splitext(ext)[-1]
             mime = mimetypes.types_map[ext]
             fe = FileExtension(ext[1:], mime)
             manifest.Default.append(fe)
-
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
 
     # templates
     for part in manifest.Override:
