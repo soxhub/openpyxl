@@ -179,5 +179,5 @@ def range_to_tuple(range_string):
 
 def quote_sheetname(sheetname):
     if " " in sheetname:
-        sheetname = "'{0}'".format(sheetname)
+        sheetname = u"'{0}'".format(sheetname)
     return sheetname
