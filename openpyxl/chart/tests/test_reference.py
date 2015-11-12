@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
+from openpyxl.compat import unicode
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
