@@ -157,7 +157,7 @@ class ChartBase(Serialisable):
             values = data.cols
 
         for v in values:
-            range_string = "{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
+            range_string = u"{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
             series = SeriesFactory(range_string, title_from_data=titles_from_data)
             self.ser.append(series)
 
