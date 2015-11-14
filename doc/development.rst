@@ -29,6 +29,23 @@ use Python data conventions (boolean, None, etc.) Note exceptions in
 docstrings.
 
 
+Getting the source
+------------------
+
+The source code is hosted on bitbucket.org. You can get it using a Mercurial
+client and the following URL.
+
+.. parsed-literal::
+
+    $ hg clone \https://bitbucket.org/openpyxl/openpyxl
+    $ hg up |version|
+    $ virtualenv openpyxl
+    $ cd openpyxl
+    $ source bin/activate
+    $ pip install -U -r requirements.txt
+    $ python setup.py develop
+
+
 Testing
 -------
 
@@ -50,9 +67,8 @@ Coverage information can be obtained using
 Organisation
 ++++++++++++
 
-Tests can be at library - openpyxl/tests or preferably for unit tests at
-package / module level e.g openpyxl/cell. This makes testing and getting
-statistics for code under development easier:
+Tests should be preferably at package / module level e.g openpyxl/cell. This
+makes testing and getting statistics for code under development easier:
 
  :code:`py.test --cov openpyxl/cell openpyxl/cell`
 
@@ -76,10 +92,11 @@ engineering!
 Microsoft Tools
 +++++++++++++++
 
-Along with the SDK, Microsoft also has a "Productivity Tool" for working with
-Office OpenXML. http://www.microsoft.com/en-us/download/details.aspx?id=30425
+Along with the SDK, Microsoft also has a `"Productivity Tool"
+<http://www.microsoft.com/en-us/download/details.aspx?id=30425>`_ for working
+with Office OpenXML.
 
-It allows you to quickly inspect a whole Excel file. Unfortunately,
+This allows you to quickly inspect or compare whole Excel files. Unfortunately,
 validation errors contain many false positives.
 
 Please see :doc:`windows-development` for additional information on setting up and testing on Windows.
@@ -95,11 +112,11 @@ to add yourself to the list of authors!
 Branch naming convention
 ------------------------
 
-We use a "major.minor.patch" numbering system, ie. 1.8.3 Development branches
-are named after "major.minor" releases. In general, API change will only
-happen major releases but there will be exceptions. Always communicate API
-changes to the mailing list before making them. If you are changing an API
-try and an implement a fallback (with deprecation warning) for the old
+We use a "major.minor.patch" numbering system, ie. |release|. Development
+branches are named after "major.minor" releases. In general, API change will
+only happen major releases but there will be exceptions. Always communicate
+API changes to the mailing list before making them. If you are changing an
+API try and an implement a fallback (with deprecation warning) for the old
 behaviour.
 
 The "default branch" is used for releases and always has changes from a
@@ -110,10 +127,10 @@ request.
 Pull Requests
 -------------
 
-In general, pull requests should be submitted to the current, unreleased
-development branch. Eg. if the current release is 1.8.x, pull requests should
-be made to the 1.9 branch. Exceptions are bug fixes to released versions
-which should be made to the relevant release branch and merged upstream into
+Pull requests should be submitted to the current, unreleased development
+branch. Eg. if the current release is |release|, pull requests should be made
+to the |version| branch. Exceptions are bug fixes to released versions which
+should be made to the relevant release branch and merged upstream into
 development.
 
 Please use tox to test code for different submissions **before** making a
@@ -125,7 +142,7 @@ Documentation
 +++++++++++++
 
 Remember to update the documentation when adding or changing features. Check
-that documentation is syntactically correct
+that documentation is syntactically correct.
 
 :code:`tox -e doc`
 
@@ -141,9 +158,9 @@ Memory Use
 ++++++++++
 
 There is a tox profile for long-running memory benchmarks using the
-`memory_utils` package
+`memory_utils` package.
 
- :code:`tox -e memory`
+:code:`tox -e memory`
 
 
 Pympler
