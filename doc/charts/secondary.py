@@ -19,7 +19,7 @@ for row in rows:
 
 c1 = BarChart()
 v1 = Reference(ws, min_col=1, min_row=1, max_col=7)
-c1.series = [Series(v1, title_from_data=True)]
+c1.add_data(v1, titles_from_data=True, from_rows=True)
 
 c1.x_axis.title = 'Days'
 c1.y_axis.title = 'Aliens'
@@ -30,11 +30,11 @@ c1.title = 'Survey results'
 # Create a second chart
 c2 = LineChart()
 v2 = Reference(ws, min_col=1, min_row=2, max_col=7)
-c2.series = [Series(v2, title_from_data=True)]
-c2.y_axis.axId = 20
+c2.add_data(v2, titles_from_data=True, from_rows=True)
+c2.y_axis.axId = 200
 c2.y_axis.title = "Humans"
-# Assign the y-axis of the second chart to the third axis of the first chart
-c1.z_axis = c2.y_axis
+
+# Display y-axis of the second chart on the right by setting it to cross the x-axis at its maximum
 c1.y_axis.crosses = "max"
 c1 += c2
 
