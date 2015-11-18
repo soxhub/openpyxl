@@ -29,6 +29,7 @@ Fill elements from drawing main schema
 class PatternFillProperties(Serialisable):
 
     tagname = "pattFill"
+    namespace = DRAWING_NS
 
     prst = NoneSet(values=(['pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40',
                         'pct50', 'pct60', 'pct70', 'pct75', 'pct80', 'pct90', 'horz', 'vert',

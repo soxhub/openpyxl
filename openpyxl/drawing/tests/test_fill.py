@@ -18,7 +18,7 @@ class TestPatternFillProperties:
         fill = PatternFillProperties(prst="cross",)
         xml = tostring(fill.to_tree())
         expected = """
-        <pattFill prst="cross"></pattFill>
+        <pattFill xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" prst="cross"></pattFill>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

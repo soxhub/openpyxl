@@ -64,6 +64,14 @@ Change the chart layout
     chart_layout
 
 
+Styling charts
+--------------
+
+.. toctree::
+
+    pattern
+
+
 Advanced charts
 ---------------
 
