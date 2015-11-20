@@ -19,7 +19,7 @@ Worksheet point_pos method
 Comment text attribute
 
 
-2.3.1 (unreleased)
+2.3.1 (2015-11-20)
 ==================
 
 
