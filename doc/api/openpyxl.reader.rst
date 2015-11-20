@@ -11,7 +11,6 @@ Submodules
 
 .. toctree::
 
-   openpyxl.reader.comments
    openpyxl.reader.excel
    openpyxl.reader.strings
    openpyxl.reader.style
