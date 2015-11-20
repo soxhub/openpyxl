@@ -14,4 +14,5 @@ Submodules
    openpyxl.cell.cell
    openpyxl.cell.interface
    openpyxl.cell.read_only
+   openpyxl.cell.text
 
