@@ -1,3 +1,27 @@
+2.3.1 (2015-11-20)
+==================
+
+
+Bug fixes
+---------
+
+* `#534 <https://bitbucket.org/openpyxl/openpyxl/issues/534>`_ Exception when using columns property in read-only mode.
+* `#536 <https://bitbucket.org/openpyxl/openpyxl/issues/536>`_ Incorrectly handle comments from Google Docs files.
+* `#539 <https://bitbucket.org/openpyxl/openpyxl/issues/539>`_ Flexible value types for conditional formatting.
+* `#542 <https://bitbucket.org/openpyxl/openpyxl/issues/542>`_ Missing content types for images.
+* `#543 <https://bitbucket.org/openpyxl/openpyxl/issues/543>`_ Make sure images fit containers on all OSes.
+* `#544 <https://bitbucket.org/openpyxl/openpyxl/issues/544>`_ Gracefully handle missing cell styles.
+* `#546 <https://bitbucket.org/openpyxl/openpyxl/issues/546>`_ ExternalLink duplicated when editing a file with macros.
+* `#548 <https://bitbucket.org/openpyxl/openpyxl/issues/548>`_ Exception with non-ASCII worksheet titles
+* `#551 <https://bitbucket.org/openpyxl/openpyxl/issues/551>`_ Combine multiple LineCharts
+
+
+Minor changes
+-------------
+
+* `PR 88 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/88/>`_ Fix page margins in parser.
+
+
 2.3.0 (2015-10-20)
 ==================
 

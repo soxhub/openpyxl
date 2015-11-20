@@ -70,8 +70,6 @@ def from_excel(value, offset=CALENDAR_WINDOWS_1900):
         return datetime.datetime(*parts[:3] + [0])
 
 
-UTC = tzinfo(timedelta(0), offset=0)
-
 class GMT(tzinfo):
 
     def utcoffset(self, dt):

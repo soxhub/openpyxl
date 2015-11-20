@@ -17,7 +17,7 @@ def SeriesFactory(values, xvalues=None, zvalues=None, title=None, title_from_dat
 
     if title_from_data:
         cell = values.pop()
-        title = "{0}!{1}".format(values.sheetname, cell)
+        title = u"{0}!{1}".format(values.sheetname, cell)
         title = SeriesLabel(strRef=StrRef(title))
     elif title is not None:
         title = SeriesLabel(v=title)

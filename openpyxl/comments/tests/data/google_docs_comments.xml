@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <authors>
+    <author/>
+  </authors>
+  <commentList>
+    <comment authorId="0" ref="A1">
+      <text>
+        <t xml:space="preserve">some comment
+	-Peter Lustig</t>
+      </text>
+    </comment>
+  </commentList>
+</comments>

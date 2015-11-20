@@ -15,6 +15,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * ccoacley
 * Maarten De Paepe
 * Etienne Desautels
+* Dmitriy Chernyshov
 * Eric Chlebek
 * Alexandre Fayolle
 * Eric Gazoni

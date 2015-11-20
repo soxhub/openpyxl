@@ -303,6 +303,11 @@ class TestWorksheet:
         assert last_row[-1].value == 'last'
 
 
+    def test_no_rows(self, Worksheet):
+        ws = Worksheet(Workbook())
+        assert ws.rows == ((),)
+
+
     def test_no_cols(self, Worksheet):
         ws = Worksheet(Workbook())
         assert ws.columns == ((),)

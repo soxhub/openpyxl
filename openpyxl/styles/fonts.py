@@ -35,8 +35,8 @@ class Font(HashableObject):
 
     name = NestedString()
     charset = NestedInteger(allow_none=True)
-    family = NestedMinMax(min=0, max=14)
-    sz = NestedFloat()
+    family = NestedMinMax(min=0, max=14, allow_none=True)
+    sz = NestedFloat(allow_none=True)
     size = Alias("sz")
     b = NestedBool(to_tree=_no_value)
     bold = Alias("b")
@@ -52,7 +52,7 @@ class Font(HashableObject):
                              'doubleAccounting'))
     underline = Alias("u")
     vertAlign = NestedNoneSet(values=('superscript', 'subscript', 'baseline'))
-    color = ColorDescriptor()
+    color = ColorDescriptor(allow_none=True)
     scheme = NestedNoneSet(values=("major", "minor"))
 
     tagname = "font"

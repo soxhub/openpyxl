@@ -1,0 +1,81 @@
+<?xml version="1.0" standalone="yes"?>
+<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <authors>
+    <author>Cuke</author>
+    <author>Not Cuke</author>
+  </authors>
+  <commentList>
+    <comment ref="A1" authorId="0" shapeId="0">
+      <text>
+        <r>
+          <rPr>
+            <b/>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t>Cuke:
+</t>
+        </r>
+        <r>
+          <rPr>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t xml:space="preserve">First Comment</t>
+        </r>
+      </text>
+    </comment>
+    <comment ref="D1" authorId="0" shapeId="0">
+      <text>
+        <r>
+          <rPr>
+            <b/>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t>Cuke:
+</t>
+        </r>
+        <r>
+          <rPr>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t xml:space="preserve">Second Comment</t>
+        </r>
+      </text>
+    </comment>
+    <comment ref="A2" authorId="1" shapeId="0">
+      <text>
+        <r>
+          <rPr>
+            <b/>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t>Not Cuke:
+</t>
+        </r>
+        <r>
+          <rPr>
+            <sz val="9"/>
+            <color indexed="81"/>
+            <rFont val="Tahoma"/>
+            <charset val="1"/>
+          </rPr>
+          <t xml:space="preserve">Third Comment</t>
+        </r>
+      </text>
+    </comment>
+  </commentList>
+</comments>

@@ -1,8 +1,8 @@
 Adding a second axis
 =====================
 
-Adding a second axis actually involves creating a second chart and assigning
-the numeric axis of it to the third axis of the first chart.
+Adding a second axis actually involves creating a second chart that shares a
+common x-axis with the first chart but has a separate y-axis.
 
 .. literalinclude:: secondary.py
 
