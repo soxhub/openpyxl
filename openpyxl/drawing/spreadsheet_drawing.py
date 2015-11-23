@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Integer,
     Sequence,
+    Alias,
 )
 from openpyxl.descriptors.nested import (
     NestedText,
@@ -33,9 +34,10 @@ from .fill import Blip
 from .graphic import (
     GroupShape,
     GraphicFrame,
-    Connector,
+    Shape,
     PictureFrame,
     ChartRelation,
+    Shape,
     )
 
 
@@ -76,10 +78,13 @@ class AnchorMarker(Serialisable):
 class _AnchorBase(Serialisable):
 
     #one of
-    sp = NestedNoneSet(values=(['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax']))
+    sp = Typed(expected_type=Shape, allow_none=True)
+    shape = Alias("sp")
     grpSp = Typed(expected_type=GroupShape, allow_none=True)
+    groupShape = Alias("grpSp")
     graphicFrame = Typed(expected_type=GraphicFrame, allow_none=True)
-    cxnSp = Typed(expected_type=Connector, allow_none=True)
+    cxnSp = Typed(expected_type=Shape, allow_none=True)
+    connectionShape = Alias("cxnSp")
     pic = Typed(expected_type=PictureFrame, allow_none=True)
     contentPart = Relation()
 

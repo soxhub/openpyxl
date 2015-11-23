@@ -117,7 +117,7 @@ class CharacterProperties(Serialisable):
     kumimoji = Bool(allow_none=True)
     lang = String(allow_none=True)
     altLang = String(allow_none=True)
-    sz = Integer()
+    sz = Integer(allow_none=True)
     b = Bool(allow_none=True)
     i = Bool(allow_none=True)
     u = NoneSet(values=(['words', 'sng', 'dbl', 'heavy', 'dotted',
