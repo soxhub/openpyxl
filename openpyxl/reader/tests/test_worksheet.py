@@ -383,11 +383,9 @@ def test_legacy_drawing(datadir):
     datadir.chdir()
     wb = load_workbook("legacy_drawing.xlsm", keep_vba=True)
     sheet1 = wb['Sheet1']
-    assert sheet1.legacy_drawing == '../drawings/vmlDrawing1.vml'
-    assert sheet1.legacy_drawing_zip == 'xl/drawings/vmlDrawing1.vml'
+    assert sheet1.legacy_drawing == 'xl/drawings/vmlDrawing1.vml'
     sheet2 = wb['Sheet2']
-    assert sheet2.legacy_drawing == '/xl/drawings/vmlDrawing2.vml'
-    assert sheet2.legacy_drawing_zip == 'xl/drawings/vmlDrawing2.vml'
+    assert sheet2.legacy_drawing == 'xl/drawings/vmlDrawing2.vml'
 
 
 def test_header_footer(WorkSheetParser, datadir):

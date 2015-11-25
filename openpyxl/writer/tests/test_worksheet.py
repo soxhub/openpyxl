@@ -634,7 +634,7 @@ def test_vba_rels(datadir, write_worksheet):
     xml = tostring(write_rels(ws, comments_id=1))
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-        <Relationship Id="anysvml" Target="../drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+        <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"/>
     </Relationships>
     """

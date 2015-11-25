@@ -42,10 +42,10 @@ class TestRels:
 
     def test_vba(self, writer):
         ws = Worksheet()
-        ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
+        ws.legacy_drawing = "xl/drawings/vmlDrawing1.vml"
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-          <Relationship Id="anysvml" Target="../drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+          <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         </Relationships>
             """
         xml = tostring(writer(ws))
@@ -68,11 +68,11 @@ class TestRels:
 
     def test_vba_and_comments(self, writer):
         ws = Worksheet()
-        ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
+        ws.legacy_drawing = "xl/drawings/vmlDrawing1.vml"
         ws._comment_count = 1
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-          <Relationship Id="anysvml" Target="../drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+          <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
           <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" />
         </Relationships>
             """

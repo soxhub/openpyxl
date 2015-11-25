@@ -37,6 +37,7 @@ from openpyxl.xml.constants import (
 from openpyxl.workbook import Workbook
 from openpyxl.workbook.names.external import detect_external_links
 from openpyxl.workbook.names.named_range import read_named_ranges
+from openpyxl.packaging.relationship import get_dependents
 from .strings import read_string_table
 from .style import read_style_table
 from .workbook import (
@@ -49,7 +50,7 @@ from .workbook import (
 )
 from openpyxl.workbook.properties import read_properties, DocumentProperties
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
-from .worksheet import WorkSheetParser, get_rels_map
+from .worksheet import WorkSheetParser
 from openpyxl.comments.reader import read_comments, get_comments_file
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
@@ -238,16 +239,8 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
             # We need to get the file name of the legacy drawing
             dirname, basename = worksheet_path.rsplit('/', 1)
             rels_path = '/'.join((dirname, '_rels', basename + '.rels'))
-            fh = archive.open(rels_path)
-            d = get_rels_map(fh)
-            new_ws.legacy_drawing = d[new_ws.legacy_drawing]
-            # We will also need a zipfile compatible version of the name
-            if new_ws.legacy_drawing.startswith('/'):
-                new_ws.legacy_drawing_zip = new_ws.legacy_drawing[1:]
-            elif new_ws.legacy_drawing.startswith('..'):
-                new_ws.legacy_drawing_zip = 'xl' + new_ws.legacy_drawing[2:]
-            else:
-                new_ws.legacy_drawing_zip = new_ws.legacy_drawing
+            rels = get_dependents(archive, rels_path)
+            new_ws.legacy_drawing = rels[new_ws.legacy_drawing].target
 
         if not read_only:
         # load comments into the worksheet cells

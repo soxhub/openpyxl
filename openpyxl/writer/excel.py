@@ -26,7 +26,7 @@ from openpyxl.xml.constants import (
     PACKAGE_XL
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import write_content_types
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
@@ -183,12 +183,14 @@ class ExcelWriter(object):
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
                     cw.write_comments())
                 if sheet.legacy_drawing is not None:
-                    archive.writestr(sheet.legacy_drawing_zip, cw.write_comments_vml())
+                    vmlroot = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
+                    archive.writestr(sheet.legacy_drawing, cw.write_comments_vml(vmlroot))
                     # Record this file so we don't write it again when we dump out vba_archive
-                    self.vba_modified.add(sheet.legacy_drawing_zip)
+                    self.vba_modified.add(sheet.legacy_drawing)
                 else:
+                    vmlroot = Element("xml")
                     archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
-                        cw.write_comments_vml())
+                        cw.write_comments_vml(vmlroot))
 
             if (sheet._rels
                 or sheet._comment_count > 0

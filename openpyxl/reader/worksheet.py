@@ -55,18 +55,6 @@ def _get_xml_iter(xml_source):
         return xml_source
 
 
-def get_rels_map(stream):
-    """The stream should be an open file of a worksheet rels file
-    Returns a dictionary mapping Ids to Targets"""
-    it = iterparse(stream)
-
-    d = {}
-    for _, element in it:
-        if element.tag == '{%s}Relationship' % PKG_REL_NS:
-            d[element.get('Id')] = element.get('Target')
-    return d
-                
-
 class WorkSheetParser(object):
 
     COL_TAG = '{%s}col' % SHEET_MAIN_NS

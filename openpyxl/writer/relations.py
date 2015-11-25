@@ -12,7 +12,7 @@ def write_rels(worksheet, comments_id=None):
     # If there is an existing vml file that is preserved or extended then
     # create its relation.
     if worksheet.legacy_drawing is not None:
-        rel = Relationship("vmlDrawing", id="anysvml", target=worksheet.legacy_drawing)
+        rel = Relationship("vmlDrawing", id="anysvml", target='/' + worksheet.legacy_drawing)
         rels.append(rel)
 
     # Comments
