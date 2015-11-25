@@ -11,7 +11,6 @@ Submodules
 
 .. toctree::
 
-   openpyxl.writer.comments
    openpyxl.writer.etree_worksheet
    openpyxl.writer.excel
    openpyxl.writer.lxml_worksheet

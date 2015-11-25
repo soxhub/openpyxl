@@ -49,7 +49,7 @@ from .workbook import (
 )
 from openpyxl.workbook.properties import read_properties, DocumentProperties
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
-from .worksheet import WorkSheetParser
+from .worksheet import WorkSheetParser, get_rels_map
 from openpyxl.comments.reader import read_comments, get_comments_file
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
@@ -233,6 +233,21 @@ def load_workbook(filename, read_only=False, use_iterators=False, keep_vba=KEEP_
             parser.parse()
             new_ws = wb[sheet_name]
         new_ws.sheet_state = sheet['state']
+
+        if wb.vba_archive is not None and new_ws.legacy_drawing is not None:
+            # We need to get the file name of the legacy drawing
+            dirname, basename = worksheet_path.rsplit('/', 1)
+            rels_path = '/'.join((dirname, '_rels', basename + '.rels'))
+            fh = archive.open(rels_path)
+            d = get_rels_map(fh)
+            new_ws.legacy_drawing = d[new_ws.legacy_drawing]
+            # We will also need a zipfile compatible version of the name
+            if new_ws.legacy_drawing.startswith('/'):
+                new_ws.legacy_drawing_zip = new_ws.legacy_drawing[1:]
+            elif new_ws.legacy_drawing.startswith('..'):
+                new_ws.legacy_drawing_zip = 'xl' + new_ws.legacy_drawing[2:]
+            else:
+                new_ws.legacy_drawing_zip = new_ws.legacy_drawing
 
         if not read_only:
         # load comments into the worksheet cells

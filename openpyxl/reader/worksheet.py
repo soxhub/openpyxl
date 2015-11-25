@@ -19,7 +19,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     REL_NS,
-    EXT_TYPES
+    EXT_TYPES,
+    PKG_REL_NS
 )
 from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
@@ -53,6 +54,18 @@ def _get_xml_iter(xml_source):
             pass
         return xml_source
 
+
+def get_rels_map(stream):
+    """The stream should be an open file of a worksheet rels file
+    Returns a dictionary mapping Ids to Targets"""
+    it = iterparse(stream)
+
+    d = {}
+    for _, element in it:
+        if element.tag == '{%s}Relationship' % PKG_REL_NS:
+            d[element.get('Id')] = element.get('Target')
+    return d
+                
 
 class WorkSheetParser(object):
 
@@ -300,9 +313,9 @@ class WorkSheetParser(object):
 
     def parse_legacy_drawing(self, element):
         if self.keep_vba:
-            # Create an id that will not clash with any other ids that will
-            # be generated.
-            self.ws.vba_controls = 'vbaControlId'
+            # For now just save the legacy drawing id.
+            # We will later look up the file name
+            self.ws.legacy_drawing = element.get('{%s}id' % REL_NS)
 
 
     def parse_sheet_views(self, element):

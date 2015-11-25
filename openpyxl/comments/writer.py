@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.compat import iteritems
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import Element, SubElement, tostring
+from openpyxl.xml.functions import Element, SubElement, tostring, fromstring
 from openpyxl.utils import (
     column_index_from_string,
     coordinate_from_string,
@@ -49,8 +49,7 @@ class CommentWriter(object):
 
         return tostring(root.to_tree())
 
-    def write_comments_vml(self):
-        root = Element("xml")
+    def add_shapetype_vml(self, root):
         shape_layout = SubElement(root, "{%s}shapelayout" % officens,
                                   {"{%s}ext" % vmlns: "edit"})
         SubElement(shape_layout,
@@ -67,19 +66,45 @@ class CommentWriter(object):
                    "{%s}path" % vmlns,
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
+        return root
 
+
+    def add_shape_vml(self, root, idx, comment):
+        shape = _shape_factory()
+        col, row = coordinate_from_string(comment.ref)
+        row -= 1
+        column = column_index_from_string(col) - 1
+    
+        shape.set('id',  "_x0000_s%04d" % idx)
+        client_data = shape.find("{%s}ClientData" % excelns)
+        client_data.find("{%s}Row" % excelns).text = str(row)
+        client_data.find("{%s}Column" % excelns).text = str(column)
+        root.append(shape)
+
+    def write_comments_vml(self):
+        sheet = self.sheet
+        wb = sheet.parent
+        if sheet.legacy_drawing is not None:
+            # There is a preserved vml file so we need to merge in the comments
+            root = fromstring(wb.vba_archive.read(sheet.legacy_drawing_zip))
+
+            # Remove any existing comment shapes
+            while True:
+                shape = root.find("{%s}shape[@type='#_x0000_t202']" % vmlns)
+                if shape is not None:
+                    root.remove(shape)
+                else:
+                    break
+            # Remove the comment shapetype if there is one
+            shapetype = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
+            if shapetype is not None:
+                root.remove(shapetype)
+        else:
+            root = Element("xml")
+
+        self.add_shapetype_vml(root)
         for idx, comment in enumerate(self.comments, 1026):
-
-            shape = _shape_factory()
-            col, row = coordinate_from_string(comment.ref)
-            row -= 1
-            column = column_index_from_string(col) - 1
-
-            shape.set('id',  "_x0000_s%04d" % idx)
-            client_data = shape.find("{%s}ClientData" % excelns)
-            client_data.find("{%s}Row" % excelns).text = str(row)
-            client_data.find("{%s}Column" % excelns).text = str(column)
-            root.append(shape)
+            self.add_shape_vml(root, idx, comment)
 
         return tostring(root)
 
