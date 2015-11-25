@@ -74,20 +74,28 @@ class CommentWriter(object):
         row -= 1
         column = column_index_from_string(col) - 1
         shape = _shape_factory(row, column)
-    
+
         shape.set('id',  "_x0000_s%04d" % idx)
         root.append(shape)
 
     def write_comments_vml(self, root):
         # Remove any existing comment shapes
-        while True:
-            shape = root.find("{%s}shape[@type='#_x0000_t202']" % vmlns)
-            if shape is not None:
-                root.remove(shape)
-            else:
+        comments = root.findall("{%s}shape" % vmlns)
+        for c in comments:
+            if c.get("type") == '#_x0000_t202':
+                root.remove(c)
+
+        # check whether comments shape type already exists
+        shape_types = root.findall("{%s}shapetype" % vmlns)
+        comments_type = False
+        for s in shape_types:
+            if s.get("id") == '_x0000_t202':
+                comments_type = True
                 break
-        if root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns) is None:
+
+        if not comments_type:
             self.add_shapetype_vml(root)
+
         for idx, comment in enumerate(self.comments, 1026):
             self.add_shape_vml(root, idx, comment)
 
