@@ -23,6 +23,18 @@ Comment text attribute
 ==================
 
 
+Bug fixes
+---------
+
+* `#554 <https://bitbucket.org/openpyxl/openpyxl/issues/554>`_ Cannot add comments to a worksheet when preserving VBA
+
+
+Minor changes
+-------------
+
+* `PR 97 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/97/>`_ One VML file per worksheet.
+
+
 2.3.1 (2015-11-20)
 ==================
 
