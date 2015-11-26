@@ -30,7 +30,7 @@ def write_rows(xf, worksheet):
 
                 for col, cell in sorted(row, key=itemgetter(0)):
                     if (
-                        cell.value is None
+                        cell._value is None
                         and not cell.has_style
                         and not cell._comment
                         ):
