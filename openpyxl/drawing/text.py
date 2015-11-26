@@ -41,6 +41,7 @@ from .shapes import (
 )
 
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
+from openpyxl.descriptors.nested import NestedBool
 
 
 class EmbeddedWAVAudioFile(Serialisable):
@@ -144,7 +145,7 @@ class CharacterProperties(Serialisable):
     sym = Typed(expected_type=Font, allow_none=True)
     hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
     hlinkMouseOver = Typed(expected_type=Hyperlink, allow_none=True)
-    rtl = Bool(nested=True, allow_none=True)
+    rtl = NestedBool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
     # uses element group EG_FillProperties
     noFill = EmptyTag(namespace=DRAWING_NS)
