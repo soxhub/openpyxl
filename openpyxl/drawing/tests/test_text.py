@@ -80,3 +80,30 @@ class TestTextBox:
         graphic = box.graphicalProperties
         text = box.txBody
         assert len(text.p) == 2
+
+
+@pytest.fixture
+def CharacterProperties():
+    from ..text import CharacterProperties
+    return CharacterProperties
+
+
+class TestCharacterProperties:
+
+    def test_ctor(self, CharacterProperties):
+        text = CharacterProperties(sz=10)
+        xml = tostring(text.to_tree())
+        expected = ('<defRPr xmlns="http://schemas.openxmlformats.org/'
+                    'drawingml/2006/main" sz="10"/>')
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, CharacterProperties):
+        src = """
+        <defRPr sz="10"/>
+        """
+        node = fromstring(src)
+        text = CharacterProperties.from_tree(node)
+        assert text == CharacterProperties(sz=10)
