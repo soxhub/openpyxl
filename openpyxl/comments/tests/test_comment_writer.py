@@ -1,15 +1,16 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
+
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet import Worksheet
 
 from openpyxl.tests.helper import compare_xml
-from openpyxl.xml.functions import fromstring, tostring
+
+from openpyxl.xml.functions import fromstring, tostring, Element
 
 from ..comments import Comment
 from ..properties import Comment as CommentXML
-
 from ..writer import (
     CommentWriter,
     vmlns,
@@ -54,12 +55,23 @@ def test_write_comments(datadir):
     assert diff is None, diff
 
 
+def test_merge_comments_vml(datadir):
+    datadir.chdir()
+    ws = _create_ws()
+    cw = CommentWriter(ws)
+    cw.write_comments()
+    with open('control+comments.vml') as existing:
+        content = fromstring(cw.write_comments_vml(fromstring(existing.read())))
+    assert len(content.findall('{%s}shape' % vmlns)) == 5
+    assert len(content.findall('{%s}shapetype' % vmlns)) == 2
+
+
 def test_write_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()
     cw = CommentWriter(ws)
     cw.write_comments()
-    content = cw.write_comments_vml()
+    content = cw.write_comments_vml(Element("xml"))
     with open('commentsDrawing1.vml') as expected:
         correct = fromstring(expected.read())
     check = fromstring(content)
@@ -98,7 +110,7 @@ def test_shape():
     from openpyxl.xml.functions import Element, tostring
     from ..writer import _shape_factory
 
-    shape = _shape_factory()
+    shape = _shape_factory(2,3)
     xml = tostring(shape)
     expected = """
     <v:shape
@@ -119,8 +131,8 @@ def test_shape():
         <x:MoveWithCells/>
         <x:SizeWithCells/>
         <x:AutoFill>False</x:AutoFill>
-        <x:Row />
-        <x:Column />
+        <x:Row>2</x:Row>
+        <x:Column>3</x:Column>
       </x:ClientData>
     </v:shape>
     """

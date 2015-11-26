@@ -141,7 +141,7 @@ def write_drawing(worksheet):
 def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
     worksheet._rels = []
-    worksheet._comments = []
+
     if LXML is True:
         from .lxml_worksheet import write_cell, write_rows
     else:
@@ -215,19 +215,11 @@ def write_worksheet(worksheet, shared_strings):
             if drawing is not None:
                 xf.write(drawing)
 
-            # If vba is being preserved then add a legacyDrawing element so
-            # that any controls can be drawn.
-            if worksheet.vba_controls is not None:
-                legacyDrawing = Related(id=worksheet.vba_controls)
-                xml = legacyDrawing.to_tree("legacyDrawing")
-                xf.write(xml)
-
-            elif worksheet._comments:
-                # add a legacyDrawing so that excel can draw comments
-                # If a legacyDrawing element has already been added then
-                # we have to hope it already contains the vml for
-                # comments because we cannot add another.
-                legacyDrawing = Related(id="commentsvml")
+            # if there is an existing vml file associated with this sheet or if there
+            # are any comments we need to add a legacyDrawing relation to the vml file.
+            if (worksheet.legacy_drawing is not None
+                or worksheet._comments):
+                legacyDrawing = Related(id="anysvml")
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
 

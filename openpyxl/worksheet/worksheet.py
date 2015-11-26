@@ -129,7 +129,7 @@ class Worksheet(_WorkbookChild):
         self.formula_attributes = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormatting()
-        self.vba_controls = None
+        self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
 
 
