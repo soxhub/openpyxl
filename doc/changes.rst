@@ -12,6 +12,7 @@ Minor changes
 -------------
 
 * `PR 97 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/97/>`_ One VML file per worksheet.
+* `PR 96 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/96/>`_ Correct descriptor for CharacterProperties.rtl
 
 
 2.3.1 (2015-11-20)
