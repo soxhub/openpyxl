@@ -16,7 +16,7 @@ The basic syntax for creating a formatting rule is:
 >>> from openpyxl.formatting import Rule
 >>> from openpyxl.styles import Font, PatternFill, Border
 >>> from openpyxl.styles.differential import DifferentialStyle
->>> dxf = DifferentialStyle(font=Font(bold=True), fill=PatternFill(start_color='FFEE1111', end_color='FFEE1111'))
+>>> dxf = DifferentialStyle(font=Font(bold=True), fill=PatternFill(start_color='EE1111', end_color='EE1111'))
 >>> rule = Rule(type='cellIs', dxf=dxf, formula=["10"])
 
 Because the signatures for some rules can be quite verbose there are also some convenience factories for creating them.
@@ -47,11 +47,11 @@ The full syntax for creating a ColorScale rule is:
 >>> first = FormatObject(type='min')
 >>> last = FormatObject(type='max')
 >>> # colors match the format objects:
->>> colors = [Color('FFAA0000'), Color('FF00AA00')]
+>>> colors = [Color('AA0000'), Color('00AA00')]
 >>> cs2 = ColorScale(cfvo=[first, last], color=colors)
 >>> # a three color scale would extend the sequences
 >>> mid = FormatObject(type='num', val=40)
->>> colors.insert(1, Color('FF00AA00'))
+>>> colors.insert(1, Color('00AA00'))
 >>> cs3 = ColorScale(cfvo=[first, mid, last], color=colors)
 >>> # create a rule with the color scale
 >>> from openpyxl.formatting.rule import Rule
@@ -105,7 +105,7 @@ The full syntax for creating a DataBar rule is:
 >>> from openpyxl.formatting.rule import DataBar, FormatObject
 >>> first = FormatObject(type='min')
 >>> second = FormatObject(type='max')
->>> data_bar = DataBar(cfvo=[first, second], color="FF638EC6", showValue=None, minLength=None, maxLength=None)
+>>> data_bar = DataBar(cfvo=[first, second], color="638EC6", showValue=None, minLength=None, maxLength=None)
 >>> # assign the data bar to a rule
 >>> from openpyxl.formatting.rule import Rule
 >>> rule = Rule(type='dataBar', dataBar=data_bar)
@@ -134,29 +134,29 @@ The standard conditional formats are:
 
 >>> from openpyxl import Workbook
 >>> from openpyxl.styles import Color, PatternFill, Font, Border
+>>> from openpyxl.styles.differential import DifferentialStyle
 >>> from openpyxl.formatting.rule import ColorScaleRule, CellIsRule, FormulaRule
 >>>
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
 >>> # Create fill
->>> redFill = PatternFill(start_color='FFEE1111',
-...                end_color='FFEE1111',
+>>> redFill = PatternFill(start_color='EE1111',
+...                end_color='EE1111',
 ...                fill_type='solid')
 >>>
 >>> # Add a two-color scale
->>> # add2ColorScale(range_string, start_type, start_value, start_color, end_type, end_value, end_color)
->>> # Takes colors in excel 'FFRRGGBB' style.
+>>> # Takes colors in excel 'RRGGBB' style.
 >>> ws.conditional_formatting.add('A1:A10',
-...             ColorScaleRule(start_type='min', start_color='FFAA0000',
-...                           end_type='max', end_color='FF00AA00')
+...             ColorScaleRule(start_type='min', start_color='AA0000',
+...                           end_type='max', end_color='00AA00')
 ...                           )
 >>>
 >>> # Add a three-color scale
 >>> ws.conditional_formatting.add('B1:B10',
-...                ColorScaleRule(start_type='percentile', start_value=10, start_color='FFAA0000',
-...                            mid_type='percentile', mid_value=50, mid_color='FF0000AA',
-...                            end_type='percentile', end_value=90, end_color='FF00AA00')
+...                ColorScaleRule(start_type='percentile', start_value=10, start_color='AA0000',
+...                            mid_type='percentile', mid_value=50, mid_color='0000AA',
+...                            end_type='percentile', end_value=90, end_color='00AA00')
 ...                              )
 >>>
 >>> # Add a conditional formatting based on a cell comparison
@@ -179,4 +179,11 @@ The standard conditional formats are:
 >>> ws.conditional_formatting.add('E1:E10',
 ...             FormulaRule(formula=['E1=0'], font=myFont, border=myBorder, fill=redFill))
 >>>
+>>> # Highlight cells that contain particular text by using a special formula
+>>> red_text = Font(color="9C0006")
+>>> red_fill = PatternFill(bgColor="FFC7CE")
+>>> dxf = DifferentialStyle(font=red_text, fill=red_fill)
+>>> rule = Rule(type="containsText", operator="containsText", text="highlight", dxf=dxf)
+>>> rule.formula = ['NOT(ISERROR(SEARCH("highlight",A1)))']
+>>> ws.conditional_formatting.add('A1:F40', rule)
 >>> wb.save("test.xlsx")
