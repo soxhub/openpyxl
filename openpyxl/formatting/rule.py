@@ -176,7 +176,7 @@ class Rule(Serialisable):
                  rank=None,
                  stdDev=None,
                  equalAverage=None,
-                 formula=[],
+                 formula=(),
                  colorScale=None,
                  dataBar=None,
                  iconSet=None,
