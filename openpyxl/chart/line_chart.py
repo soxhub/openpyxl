@@ -37,7 +37,7 @@ class _LineChartBase(ChartBase):
     def __init__(self,
                  grouping="standard",
                  varyColors=None,
-                 ser=[],
+                 ser=(),
                  dLbls=None,
                  dropLines=None,
                 ):
