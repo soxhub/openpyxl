@@ -51,6 +51,7 @@ def _get_xml_iter(xml_source):
         try:
             xml_source.seek(0)
         except:
+            # could be a zipfile
             pass
         return xml_source
 
