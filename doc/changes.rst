@@ -27,6 +27,7 @@ Bug fixes
 ---------
 
 * `#554 <https://bitbucket.org/openpyxl/openpyxl/issues/554>`_ Cannot add comments to a worksheet when preserving VBA
+* `#561 <https://bitbucket.org/openpyxl/openpyxl/issues/561>`_ Exception when reading phonetic text
 
 
 Minor changes
@@ -34,6 +35,7 @@ Minor changes
 
 * `PR 97 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/97/>`_ One VML file per worksheet.
 * `PR 96 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/96/>`_ Correct descriptor for CharacterProperties.rtl
+* `#498 <https://bitbucket.org/openpyxl/openpyxl/issues/498>`_ Metadata is not essential to use the package.
 
 
 2.3.1 (2015-11-20)
