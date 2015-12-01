@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+# coding=utf8
 # Copyright (c) 2010-2015 openpyxl
 import pytest
 
@@ -88,3 +89,61 @@ class TestText:
         node = fromstring(src)
         text = Text.from_tree(node)
         assert text == Text()
+
+
+@pytest.fixture
+def PhoneticText():
+    from ..text import PhoneticText
+    return PhoneticText
+
+
+class TestPhoneticText:
+
+    def test_ctor(self, PhoneticText):
+        text = PhoneticText(sb=9, eb=10, t=u"よ")
+        xml = tostring(text.to_tree())
+        expected = u"""
+        <rPh sb="9" eb="10">
+            <t>よ</t>
+        </rPh>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PhoneticText):
+        src = u"""
+        <rPh sb="9" eb="10">
+            <t>よ</t>
+        </rPh>
+        """
+        node = fromstring(src)
+        text = PhoneticText.from_tree(node)
+        assert text == PhoneticText(sb=9, eb=10, t=u"よ")
+
+
+@pytest.fixture
+def PhoneticProperties():
+    from ..text import PhoneticProperties
+    return PhoneticProperties
+
+
+class TestPhoneticProperties:
+
+    def test_ctor(self, PhoneticProperties):
+        props = PhoneticProperties(fontId=0, type="Hiragana")
+        xml = tostring(props.to_tree())
+        expected = """
+        <phoneticPr fontId="0" type="Hiragana"></phoneticPr>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PhoneticProperties):
+        src = """
+       <phoneticPr fontId="0" type="noConversion"/>
+        """
+        node = fromstring(src)
+        props = PhoneticProperties.from_tree(node)
+        assert props == PhoneticProperties(fontId=0, type="noConversion")

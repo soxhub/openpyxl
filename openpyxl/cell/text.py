@@ -12,6 +12,7 @@ from openpyxl.descriptors import (
     Typed,
     Integer,
     Set,
+    NoneSet,
     Bool,
     String,
     Sequence,
@@ -27,10 +28,12 @@ from openpyxl.styles.fonts import Font
 
 class PhoneticProperties(Serialisable):
 
+    tagname = "phoneticPr"
+
     fontId = Integer()
-    type = Set(values=(['halfwidthKatakana', 'fullwidthKatakana', 'Hiragana',
-                        'noConversion']))
-    alignment = Set(values=(['noControl', 'left', 'center', 'distributed']))
+    type = NoneSet(values=(['halfwidthKatakana', 'fullwidthKatakana',
+                            'Hiragana', 'noConversion']))
+    alignment = NoneSet(values=(['noControl', 'left', 'center', 'distributed']))
 
     def __init__(self,
                  fontId=None,
@@ -44,9 +47,11 @@ class PhoneticProperties(Serialisable):
 
 class PhoneticText(Serialisable):
 
+    tagname = "rPh"
+
     sb = Integer()
     eb = Integer()
-    t = Typed(expected_type=String())
+    t = NestedText(expected_type=unicode)
     text = Alias('t')
 
     def __init__(self,
