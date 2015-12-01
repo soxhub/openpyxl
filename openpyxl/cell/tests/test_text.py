@@ -102,9 +102,9 @@ class TestPhoneticText:
     def test_ctor(self, PhoneticText):
         text = PhoneticText(sb=9, eb=10, t=u"よ")
         xml = tostring(text.to_tree())
-        expected = u"""
+        expected = b"""
         <rPh sb="9" eb="10">
-            <t>よ</t>
+            <t>\xe3\x82\x88</t>
         </rPh>
         """
         diff = compare_xml(xml, expected)
@@ -112,9 +112,9 @@ class TestPhoneticText:
 
 
     def test_from_xml(self, PhoneticText):
-        src = u"""
+        src = b"""
         <rPh sb="9" eb="10">
-            <t>よ</t>
+            <t>\xe3\x82\x88</t>
         </rPh>
         """
         node = fromstring(src)
