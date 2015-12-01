@@ -159,4 +159,3 @@ class TestPhoneticProperties:
         node = fromstring(src)
         props = PhoneticProperties.from_tree(node)
         assert props == PhoneticProperties(fontId=0, type="noConversion")
->>>>>>> theirs
