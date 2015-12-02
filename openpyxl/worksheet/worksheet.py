@@ -297,6 +297,9 @@ class Worksheet(_WorkbookChild):
             coordinate = coordinate_to_tuple(coordinate)
             row, column = coordinate
 
+        if row < 1 or column < 1:
+            raise ValueError("Row or column values must be at least 1")
+
         cell = self._get_cell(row, column)
         if value is not None:
             cell.value = value

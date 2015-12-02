@@ -59,6 +59,13 @@ class TestWorksheet:
         assert cell.coordinate == 'A1'
 
 
+    def test_invalid_cell(self, Worksheet):
+        wb = Workbook()
+        ws = Worksheet(wb)
+        with pytest.raises(ValueError):
+            cell = ws.cell(row=0, column=0)
+
+
     def test_worksheet_dimension(self, Worksheet):
         ws = Worksheet(Workbook())
         assert 'A1:A1' == ws.calculate_dimension()

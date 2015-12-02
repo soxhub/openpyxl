@@ -8,6 +8,7 @@ Bug fixes
 * `#554 <https://bitbucket.org/openpyxl/openpyxl/issues/554>`_ Cannot add comments to a worksheet when preserving VBA
 * `#561 <https://bitbucket.org/openpyxl/openpyxl/issues/561>`_ Exception when reading phonetic text
 * `#562 <https://bitbucket.org/openpyxl/openpyxl/issues/562>`_ DARKBLUE is the same as RED
+* `#563 <https://bitbucket.org/openpyxl/openpyxl/issues/563>`_ Minimum for row and column indexes not enforced
 
 
 Minor changes
