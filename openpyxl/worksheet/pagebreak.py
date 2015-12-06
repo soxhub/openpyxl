@@ -46,7 +46,7 @@ class PageBreak(Serialisable):
     def __init__(self,
                  count=None,
                  manualBreakCount=None,
-                 brk=[],
+                 brk=(),
                 ):
         self.brk = brk
         self.__attrs__ = ("count", "manualBreakCount",)
