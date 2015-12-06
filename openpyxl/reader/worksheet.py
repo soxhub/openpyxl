@@ -19,7 +19,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     REL_NS,
-    EXT_TYPES
+    EXT_TYPES,
+    PKG_REL_NS
 )
 from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
@@ -50,6 +51,7 @@ def _get_xml_iter(xml_source):
         try:
             xml_source.seek(0)
         except:
+            # could be a zipfile
             pass
         return xml_source
 
@@ -300,9 +302,9 @@ class WorkSheetParser(object):
 
     def parse_legacy_drawing(self, element):
         if self.keep_vba:
-            # Create an id that will not clash with any other ids that will
-            # be generated.
-            self.ws.vba_controls = 'vbaControlId'
+            # For now just save the legacy drawing id.
+            # We will later look up the file name
+            self.ws.legacy_drawing = element.get('{%s}id' % REL_NS)
 
 
     def parse_sheet_views(self, element):

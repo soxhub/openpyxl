@@ -26,7 +26,7 @@ from openpyxl.xml.constants import (
     PACKAGE_XL
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import write_content_types
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
@@ -59,6 +59,7 @@ class ExcelWriter(object):
         self.workbook = workbook
         self.workbook._drawings = []
         self.style_writer = StyleWriter(workbook)
+        self.vba_modified = set()
 
     def write_data(self, archive, as_template=False):
         """Write the various xml files into the zip archive."""
@@ -74,14 +75,6 @@ class ExcelWriter(object):
             archive.writestr(ARC_THEME, write_theme())
         archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
 
-        if self.workbook.vba_archive:
-            vba_archive = self.workbook.vba_archive
-            for name in vba_archive.namelist():
-                for s in ARC_VBA:
-                    if match(s, name):
-                        archive.writestr(name, vba_archive.read(name))
-                        break
-
         self._write_charts(archive)
         self._write_images(archive)
         self._write_worksheets(archive)
@@ -89,6 +82,14 @@ class ExcelWriter(object):
         self._write_string_table(archive)
         self._write_external_links(archive)
         archive.writestr(ARC_STYLE, self.style_writer.write_table())
+
+        if self.workbook.vba_archive:
+            vba_archive = self.workbook.vba_archive
+            for name in set(vba_archive.namelist()) - self.vba_modified:
+                for s in ARC_VBA:
+                    if match(s, name):
+                        archive.writestr(name, vba_archive.read(name))
+                        break
 
         exts = []
         for n in archive.namelist():
@@ -157,7 +158,6 @@ class ExcelWriter(object):
 
     def _write_worksheets(self, archive):
         comments_id = 0
-        vba_controls_id = 0
 
         for i, sheet in enumerate(self.workbook.worksheets, 1):
             xml = sheet._write(self.workbook.shared_strings)
@@ -182,16 +182,20 @@ class ExcelWriter(object):
                 cw = self.comment_writer(sheet)
                 archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
                     cw.write_comments())
-                archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
-                    cw.write_comments_vml())
-
-            if sheet.vba_controls is not None:
-                vba_controls_id += 1
+                if sheet.legacy_drawing is not None:
+                    vmlroot = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
+                    archive.writestr(sheet.legacy_drawing, cw.write_comments_vml(vmlroot))
+                    # Record this file so we don't write it again when we dump out vba_archive
+                    self.vba_modified.add(sheet.legacy_drawing)
+                else:
+                    vmlroot = Element("xml")
+                    archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
+                        cw.write_comments_vml(vmlroot))
 
             if (sheet._rels
                 or sheet._comment_count > 0
-                or sheet.vba_controls is not None):
-                rels = write_rels(sheet, comments_id=comments_id, vba_controls_id=vba_controls_id)
+                or sheet.legacy_drawing is not None):
+                rels = write_rels(sheet, comments_id=comments_id)
                 archive.writestr(PACKAGE_WORKSHEETS +
                                  '/_rels/sheet%d.xml.rels' % i, tostring(rels))
 

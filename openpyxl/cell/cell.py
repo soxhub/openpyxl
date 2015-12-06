@@ -159,8 +159,8 @@ class Cell(StyleableObject):
         """Tries to convert Error" else N/A"""
         try:
             return unicode(value)
-        except:
-            return unicode('#N/A')
+        except UnicodeDecodeError:
+            return u'#N/A'
 
     def set_explicit_value(self, value=None, data_type=TYPE_STRING):
         """Coerce values according to their explicit type"""

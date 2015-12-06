@@ -127,7 +127,7 @@ class Worksheet(_WorkbookChild):
         self.formula_attributes = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormatting()
-        self.vba_controls = None
+        self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
 
 
@@ -296,6 +296,9 @@ class Worksheet(_WorkbookChild):
             coordinate = coordinate.upper().replace('$', '')
             coordinate = coordinate_to_tuple(coordinate)
             row, column = coordinate
+
+        if row < 1 or column < 1:
+            raise ValueError("Row or column values must be at least 1")
 
         cell = self._get_cell(row, column)
         if value is not None:

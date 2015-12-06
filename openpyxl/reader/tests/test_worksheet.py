@@ -379,6 +379,14 @@ def test_read_autofilter(datadir):
     ws = wb.active
     assert ws.auto_filter.ref == 'A1:B6'
 
+def test_legacy_drawing(datadir):
+    datadir.chdir()
+    wb = load_workbook("legacy_drawing.xlsm", keep_vba=True)
+    sheet1 = wb['Sheet1']
+    assert sheet1.legacy_drawing == 'xl/drawings/vmlDrawing1.vml'
+    sheet2 = wb['Sheet2']
+    assert sheet2.legacy_drawing == 'xl/drawings/vmlDrawing2.vml'
+
 
 def test_header_footer(WorkSheetParser, datadir):
     parser = WorkSheetParser
@@ -466,7 +474,7 @@ def test_legacy_document_keep(WorkSheetParserKeepVBA, datadir):
 
     element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
     parser.parse_legacy_drawing(element)
-    assert parser.ws.vba_controls == 'vbaControlId'
+    assert parser.ws.legacy_drawing == 'rId3'
 
 
 def test_legacy_document_no_keep(WorkSheetParser, datadir):
@@ -478,7 +486,7 @@ def test_legacy_document_no_keep(WorkSheetParser, datadir):
 
     element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
     parser.parse_legacy_drawing(element)
-    assert parser.ws.vba_controls is None
+    assert parser.ws.legacy_drawing is None
 
 
 @pytest.fixture
