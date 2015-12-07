@@ -23,6 +23,12 @@ Comment text attribute
 ==================
 
 
+Bug fixes
+---------
+
+* `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed.
+
+
 2.3.2 (2015-12-07)
 ==================
 
