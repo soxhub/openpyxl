@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from itertools import chain
 
+from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     MinMax,
@@ -62,18 +63,22 @@ class Reference(Strict):
 
 
     def __repr__(self):
-        fmt = "{0}!${1}${2}:${3}${4}"
+        return unicode(self)
+
+
+    def __str__(self):
+        fmt = u"{0}!${1}${2}:${3}${4}"
         if (self.min_col == self.max_col
             and self.min_row == self.max_row):
-            fmt = "{0}!${1}${2}"
+            fmt = u"{0}!${1}${2}"
         return fmt.format(self.sheetname,
                           get_column_letter(self.min_col), self.min_row,
                           get_column_letter(self.max_col), self.max_row
                           )
 
 
-    def __str__(self):
-        return repr(self)
+    __unicode__ = __str__
+
 
 
     def __len__(self):

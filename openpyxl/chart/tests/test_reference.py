@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
+from openpyxl.compat import unicode
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -95,3 +96,8 @@ class TestReference:
     def test_length(self, Reference, range_string, length):
         ref = Reference(range_string=range_string)
         assert len(ref) == length
+
+
+    def test_repr(self, Reference):
+        ref = Reference(range_string=b'D\xc3\xbcsseldorf!A1:A10'.decode("utf8"))
+        assert unicode(ref) == b'D\xc3\xbcsseldorf!$A$1:$A$10'.decode("utf8")

@@ -40,7 +40,7 @@ def write_rows(xf, worksheet):
 
             with xf.element("row", attrs):
                 for col, cell in sorted(row, key=itemgetter(0)):
-                    if cell.value is None and not cell.has_style:
+                    if cell._value is None and not cell.has_style:
                         continue
                     el = write_cell(worksheet, cell, cell.has_style)
                     xf.write(el)

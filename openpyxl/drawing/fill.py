@@ -29,6 +29,7 @@ Fill elements from drawing main schema
 class PatternFillProperties(Serialisable):
 
     tagname = "pattFill"
+    namespace = DRAWING_NS
 
     prst = NoneSet(values=(['pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40',
                         'pct50', 'pct60', 'pct70', 'pct75', 'pct80', 'pct90', 'horz', 'vert',
@@ -91,7 +92,7 @@ class StretchInfoProperties(Serialisable):
     fillRect = Typed(expected_type=RelativeRect, allow_none=True)
 
     def __init__(self,
-                 fillRect=None,
+                 fillRect=RelativeRect(),
                 ):
         self.fillRect = fillRect
 
@@ -336,7 +337,7 @@ class BlipFillProperties(Serialisable):
                  rotWithShape=None,
                  blip=None,
                  tile=None,
-                 stretch=None,
+                 stretch=StretchInfoProperties(),
                  srcRect=None,
                 ):
         self.dpi = dpi

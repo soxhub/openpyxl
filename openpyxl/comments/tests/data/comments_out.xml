@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <authors>
+    <author>author</author>
+    <author>author2</author>
+    <author>author3</author>
+  </authors>
+  <commentList>
+    <comment authorId="0" ref="B2" shapeId="0">
+      <text>
+        <t>text</t>
+      </text>
+    </comment>
+    <comment authorId="1" ref="C7" shapeId="0">
+      <text>
+        <t>text2</t>
+      </text>
+    </comment>
+    <comment authorId="2" ref="D9" shapeId="0">
+      <text>
+        <t>text3</t>
+      </text>
+    </comment>
+  </commentList>
+</comments>

@@ -4,15 +4,15 @@ from __future__ import absolute_import
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 
 
-def write_rels(worksheet, comments_id=None, vba_controls_id=None):
+def write_rels(worksheet, comments_id=None):
     """Write relationships for the worksheet to xml."""
 
     rels = RelationshipList(worksheet._rels)
 
-    # VBA
-    if worksheet.vba_controls is not None:
-        rel = Relationship("vmlDrawing", id=worksheet.vba_controls,
-                           target='/xl/drawings/vmlDrawing%s.vml' % vba_controls_id)
+    # If there is an existing vml file that is preserved or extended then
+    # create its relation.
+    if worksheet.legacy_drawing is not None:
+        rel = Relationship("vmlDrawing", id="anysvml", target='/' + worksheet.legacy_drawing)
         rels.append(rel)
 
     # Comments
@@ -21,8 +21,8 @@ def write_rels(worksheet, comments_id=None, vba_controls_id=None):
                            target='/xl/comments%s.xml' % comments_id)
         rels.append(rel)
 
-        if worksheet.vba_controls is None:
-            rel = Relationship(type="vmlDrawing", id="commentsvml",
+        if worksheet.legacy_drawing is None:
+            rel = Relationship(type="vmlDrawing", id="anysvml",
                            target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
             rels.append(rel)
 

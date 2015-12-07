@@ -34,6 +34,7 @@ are missing. But things don't have to stay that way. You can contribute the
 project :ref:`development` yourself or contract a developer for particular
 features.
 
+
 Professional support for openpyxl is available from
 `Clark Consulting & Research <http://www.clark-consulting.eu/>`_ and
 `Adimian <http://www.adimian.com>`_. Donations to the project to support further
@@ -58,37 +59,41 @@ User List
 
 Official user list can be found on http://groups.google.com/group/openpyxl-users
 
+
 How to Contribute Code
 ----------------------
 
 Any help will be greatly appreciated, just follow those steps:
 
-    1. Please start a new fork (https://bitbucket.org/openpyxl/openpyxl/fork)
+    1.
+    Please start a new fork (https://bitbucket.org/openpyxl/openpyxl/fork)
     for each independent feature, don't try to fix all problems at the same
     time, it's easier for those who will review and merge your changes ;-)
 
-    2. Hack hack hack
+    2.
+    Hack hack hack
 
-    3. Don't forget to add unit tests for your changes ! (YES, even if it's a
-    one-liner, or there is a high probability your work will not be taken
-    into consideration). There are plenty of examples in the /test directory
-    if you lack know-how or inspiration.
+    3.
+    Don't forget to add unit tests for your changes! (YES, even if it's a
+    one-liner, changes without tests will **not** be accepted.) There are plenty
+    of examples in the source if you lack know-how or inspiration.
 
-    4. If you added a whole new feature, or just improved something, you can
+    4.
+    If you added a whole new feature, or just improved something, you can
     be proud of it, so add yourself to the AUTHORS file :-)
 
-    5. Let people know about the shiny thing you just implemented, update the
-    docs !
+    5.
+    Let people know about the shiny thing you just implemented, update the
+    docs!
 
-    6. When it's done, just issue a pull request (click on the large "pull
+    6.
+    When it's done, just issue a pull request (click on the large "pull
     request" button on *your* repository) and wait for your code to be
     reviewed, and, if you followed all theses steps, merged into the main
     repository.
 
 
-For further information see :ref:`development`
-
-.. note:
+For further information see :doc:`development`
 
 
 Other ways to help
@@ -104,7 +109,7 @@ There are several ways to contribute, even if you can't code (or can't code well
       documentation, it's pretty hard to do anything with it
 
     * proposing compatibility fixes for different versions of Python: we support
-      2.6 to 3.4, so if it does not work on your environment, let us know :-)
+      2.6 to 3.5, so if it does not work on your environment, let us know :-)
 
 
 Installation
@@ -117,22 +122,14 @@ without system packages::
 
 .. note::
 
-    To install from sources (there is nothing to build, openpyxl is 100% pure
-    Python), you can download an archive from `bitbucket`_ (look in the
-    "tags" tab).
+    There is support for the popular `lxml`_ library which will be used if it
+    is installed. This is particular useful when creating large files.
 
-    There is support for the popular `lxml`_ library which will be used if it is installed.
-
-    After extracting the archive, you can do::
-
-    $ python setup.py develop
-
-.. _bitbucket: https://bitbucket.org/openpyxl/openpyxl/downloads
 .. _lxml: http://lxml.de
 
 .. warning::
 
-    To be able to include images (jpeg,png,bmp,...) into an openpyxl file,
+    To be able to include images (jpeg, png, bmp,...) into an openpyxl file,
     you will also need the "pillow" library that can be installed with::
 
     $ pip install pillow
@@ -141,16 +138,15 @@ without system packages::
     and head to the bottom of the page for Windows binaries.
 
 
-Getting the source
-------------------
+Working with a checkout
+-----------------------
 
-Source code is hosted on bitbucket.org. You can get it using a Mercurial client and the following URLs:
+Sometimes you might want to work with the checkout of a particular version.
+This may be the case if bugs have been fixed but a release has not yet been
+made.
 
-    * $ hg clone \https://bitbucket.org/openpyxl/openpyxl -r |release|
-
-or to get the latest development version:
-
-    * $ hg clone \https://bitbucket.org/openpyxl/openpyxl
+.. parsed-literal::
+    $ pip hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
 
 
 Usage examples

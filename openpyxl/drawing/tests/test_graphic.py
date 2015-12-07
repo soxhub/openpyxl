@@ -327,7 +327,11 @@ class TestPicture:
             <cNvPr descr="Name of file" id="0" name="Image 1" />
             <cNvPicPr />
           </nvPicPr>
-          <blipFill />
+          <blipFill>
+             <a:stretch >
+               <a:fillRect/>
+            </a:stretch>
+          </blipFill>
           <spPr>
             <a:ln>
               <a:prstDash val="solid" />

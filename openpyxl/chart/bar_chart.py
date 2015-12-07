@@ -50,7 +50,7 @@ class _BarChartBase(ChartBase):
                  barDir="col",
                  grouping="clustered",
                  varyColors=None,
-                 ser=[],
+                 ser=(),
                  dLbls=None,
                 ):
         self.barDir = barDir

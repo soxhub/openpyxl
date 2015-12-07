@@ -115,7 +115,8 @@ def test_invalid_range():
 
 def test_quote_sheetname():
     from .. import quote_sheetname
-    assert quote_sheetname("My Sheet") == "'My Sheet'"
+    title = b'In D\xc3\xbcsseldorf'.decode("utf-8")
+    assert quote_sheetname(title) == u"'{0}'".format(title)
 
 
 def test_rows_from_range():

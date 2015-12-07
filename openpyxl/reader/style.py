@@ -125,7 +125,7 @@ class SharedStylesParser(object):
         """
         node = self.root.find("{%s}cellStyles" % SHEET_MAIN_NS)
         names = {}
-        for _name in node:
+        for _name in safe_iterator(node, '{%s}cellStyle' % SHEET_MAIN_NS):
             name = _name.get("name")
             style = NamedStyle(name=name,
                                builtinId=_name.get("builtinId"),

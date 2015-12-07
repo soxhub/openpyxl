@@ -153,6 +153,21 @@ class TestManifest:
             ('xml', 'application/xml'),
         ]
 
+    def test_no_dupe_overrides(self, Manifest):
+        manifest = Manifest()
+        assert len(manifest.Override) == 6
+        manifest.Override.append("a")
+        manifest.Override.append("a")
+        assert len(manifest.Override) == 7
+
+
+    def test_no_dupe_types(self, Manifest):
+        manifest = Manifest()
+        assert len(manifest.Default) == 2
+        manifest.Default.append("a")
+        manifest.Default.append("a")
+        assert len(manifest.Default) == 3
+
 
 class TestContentTypes:
 
@@ -271,5 +286,17 @@ class TestContentTypes:
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments1.xml"/>
         </Types>
         """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_media(self):
+        from openpyxl import Workbook
+        from ..manifest import write_content_types
+        wb = Workbook()
+
+        manifest = write_content_types(wb, exts=['xl/media/image1.png'])
+        xml = tostring(manifest.Default[-1].to_tree())
+        expected = """<Default ContentType="image/png" Extension="png" />"""
         diff = compare_xml(xml, expected)
         assert diff is None, diff

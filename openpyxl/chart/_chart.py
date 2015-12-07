@@ -102,12 +102,16 @@ class ChartBase(Serialisable):
             self.plot_area._charts.append(chart)
             idx_base += len(chart.series)
 
-        for axis in ("x_axis", "y_axis", 'z_axis'):
-            axis = getattr(self, axis, None)
-            if axis is None:
-                continue
-            ax = getattr(self.plot_area, axis.tagname)
-            ax.append(axis)
+        axIds = []
+        for axId in ("x_axis", "y_axis", 'z_axis'):
+            for chart in self._charts:
+                axis = getattr(chart, axId, None)
+                if axis is None:
+                    continue
+                if axis.axId not in axIds:
+                    ax = getattr(self.plot_area, axis.tagname)
+                    ax.append(axis)
+                    axIds.append(axis.axId)
 
         container = ChartContainer(plotArea=self.plot_area, legend=self.legend, title=self.title)
         if isinstance(chart, _3DBase):
@@ -157,7 +161,7 @@ class ChartBase(Serialisable):
             values = data.cols
 
         for v in values:
-            range_string = "{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
+            range_string = u"{0}!{1}:{2}".format(data.sheetname, v[0], v[-1])
             series = SeriesFactory(range_string, title_from_data=titles_from_data)
             self.ser.append(series)
 

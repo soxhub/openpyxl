@@ -592,7 +592,7 @@ def test_write_empty(worksheet, write_worksheet):
 def test_vba(worksheet, write_worksheet):
     ws = worksheet
     ws.vba_code = {"codeName":"Sheet1"}
-    ws.vba_controls = "rId2"
+    ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
     xml = write_worksheet(ws, None)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -610,7 +610,7 @@ def test_vba(worksheet, write_worksheet):
       <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-      <legacyDrawing r:id="rId2"/>
+      <legacyDrawing r:id="anysvml"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -624,17 +624,17 @@ def test_vba_comments(datadir, write_worksheet):
     sheet = fromstring(write_worksheet(ws, None))
     els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
     assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
-    assert els[0].get('{%s}id' % REL_NS) == 'vbaControlId'
+    assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
 
 def test_vba_rels(datadir, write_worksheet):
     datadir.chdir()
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     ws = wb['Form Controls']
-    xml = tostring(write_rels(ws, comments_id=1, vba_controls_id=1))
+    xml = tostring(write_rels(ws, comments_id=1))
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-        <Relationship Id="vbaControlId" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
+        <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
         <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"/>
     </Relationships>
     """
@@ -662,7 +662,7 @@ def test_write_comments(worksheet, write_worksheet):
       <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-      <legacyDrawing r:id="commentsvml"></legacyDrawing>
+      <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
