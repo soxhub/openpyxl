@@ -91,6 +91,29 @@ class TestText:
         assert text == Text()
 
 
+    def test_empty_element(self, Text):
+        src = """
+        <si>
+          <r>
+             <t>Replaced Data</t>
+          </r>
+          <r>
+            <rPr>
+              <sz val="11"/>
+              <color rgb="FF008080"/>
+              <rFont val="Calibri"/>
+              <family val="2"/>
+              <scheme val="minor"/>
+            </rPr>
+            <t/>
+          </r>
+        </si>
+        """
+        node = fromstring(src)
+        text = Text.from_tree(node)
+        assert text.content == "Replaced Data"
+
+
 @pytest.fixture
 def PhoneticText():
     from ..text import PhoneticText
