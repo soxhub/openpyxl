@@ -161,16 +161,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     # If are going to preserve the vba then attach a copy of the archive to the
     # workbook so that is available for the save.
     if keep_vba:
-        try:
-            f = open(filename, 'rb')
-            s = f.read()
-            f.close()
-        except TypeError:
-            pos = filename.tell()
-            filename.seek(0)
-            s = filename.read()
-            filename.seek(pos)
-        wb.vba_archive = ZipFile(BytesIO(s), 'r')
+        wb.vba_archive = ZipFile(BytesIO(), 'a')
+        for name in archive.namelist():
+            wb.vba_archive.writestr(name, archive.read(name), ZIP_DEFLATED)
 
 
     if read_only:
