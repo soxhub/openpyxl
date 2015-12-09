@@ -72,7 +72,7 @@ def test_load_workbook_with_vba(datadir):
     from ..excel import load_workbook
 
     datadir.chdir()
-    test_file = 'legacy-drawing.xlsm'
+    test_file = 'legacy_drawing.xlsm'
     # open the workbook directly from the file
     wb1 = load_workbook(test_file, keep_vba=True)
     # open again from a BytesIO copy
