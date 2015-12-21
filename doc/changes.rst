@@ -6,6 +6,7 @@ Bug fixes
 ---------
 
 * `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed.
+* `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames.
 
 
 2.3.2 (2015-12-07)
