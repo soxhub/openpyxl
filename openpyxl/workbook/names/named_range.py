@@ -91,7 +91,8 @@ def split_named_range(range_string):
 
         match = NAMED_RANGE_RE.match(range_string)
         if match is None:
-            raise NamedRangeException('Invalid named range string: "%s"' % range_string)
+            msg = "Cannot parse range {0}. This will be removed from the file.".format(range_string)
+            warnings.warn(msg)
         else:
             match = match.groupdict()
             sheet_name = match['quoted'] or match['notquoted']
