@@ -183,4 +183,4 @@ class Text(Serialisable):
         for block in self.formatted:
             if block.t is not None:
                 snippets.append(block.t)
-        return "".join(snippets)
+        return u"".join(snippets)
