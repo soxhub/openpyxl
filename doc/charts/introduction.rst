@@ -53,6 +53,7 @@ Working with axes
 
 .. toctree::
 
+    limits_and_scaling
     secondary
 
 
