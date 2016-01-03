@@ -7,6 +7,13 @@ Bug fixes
 
 * `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed.
 * `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames.
+* `#575 <https://bitbucket.org/openpyxl/openpyxl/issues/575>`_ Cannot open workbooks with embdedded OLE files
+
+
+Minor changes
+-------------
+
+* `PR 103 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/103/>`_ Documentation about chart scaling and axis limits
 
 
 2.3.2 (2015-12-07)
