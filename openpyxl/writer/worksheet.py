@@ -118,7 +118,7 @@ def write_hyperlinks(worksheet):
     for cell in worksheet.hyperlinks:
         link = cell.hyperlink
         link.ref = cell.coordinate
-        rel = Relationship(type="hyperlink", targetMode="External", target=link.target)
+        rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
         worksheet._rels.append(rel)
         link.id = "rId{0}".format(len(worksheet._rels))
 
@@ -131,7 +131,7 @@ def write_drawing(worksheet):
     Add link to drawing if required
     """
     if worksheet._charts or worksheet._images:
-        rel = Relationship(type="drawing", target="")
+        rel = Relationship(type="drawing", Target="")
         worksheet._rels.append(rel)
         drawing = Related()
         drawing.id = "rId%s" % len(worksheet._rels)

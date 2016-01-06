@@ -364,7 +364,7 @@ def test_hyperlink(worksheet):
 
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1
-    assert worksheet._rels[0].target == "http://test.com"
+    assert worksheet._rels[0].Target == "http://test.com"
     xml = tostring(hyper)
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">

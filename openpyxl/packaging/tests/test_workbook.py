@@ -48,7 +48,7 @@ class TestWorkbookParser:
         output = []
 
         for sheet, rel in parser.find_sheets():
-            output.append([sheet.name, sheet.state, rel.target, rel.type])
+            output.append([sheet.name, sheet.state, rel.Target, rel.Type])
 
         assert output == [
             ['Chart1', 'visible', 'xl/chartsheets/sheet1.xml', chart_type],

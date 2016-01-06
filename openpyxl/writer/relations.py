@@ -12,18 +12,18 @@ def write_rels(worksheet, comments_id=None):
     # If there is an existing vml file that is preserved or extended then
     # create its relation.
     if worksheet.legacy_drawing is not None:
-        rel = Relationship("vmlDrawing", id="anysvml", target='/' + worksheet.legacy_drawing)
+        rel = Relationship(type="vmlDrawing", Id="anysvml", Target='/' + worksheet.legacy_drawing)
         rels.append(rel)
 
     # Comments
     if worksheet._comments:
-        rel = Relationship(type="comments", id="comments",
-                           target='/xl/comments%s.xml' % comments_id)
+        rel = Relationship(type="comments", Id="comments",
+                           Target='/xl/comments%s.xml' % comments_id)
         rels.append(rel)
 
         if worksheet.legacy_drawing is None:
-            rel = Relationship(type="vmlDrawing", id="anysvml",
-                           target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
+            rel = Relationship(type="vmlDrawing", Id="anysvml",
+                           Target='/xl/drawings/commentsDrawing%s.vml' % comments_id)
             rels.append(rel)
 
     return rels.to_tree()

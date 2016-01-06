@@ -247,7 +247,7 @@ class SpreadsheetDrawing(Serialisable):
         anchors = []
         for idx, obj in enumerate(self.charts + self.images, 1):
             if isinstance(obj, ChartBase):
-                rel = Relationship(type="chart", target='../charts/chart%s.xml' % obj._id)
+                rel = Relationship(type="chart", Target='../charts/chart%s.xml' % obj._id)
                 anchor = obj.anchor
                 if not isinstance(anchor, _AnchorBase):
                     row, col = coordinate_to_tuple(anchor)
@@ -258,7 +258,7 @@ class SpreadsheetDrawing(Serialisable):
                     anchor.ext.height = cm_to_EMU(obj.height)
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
-                rel = Relationship(type="image", target='../media/image%s.png' % obj._id)
+                rel = Relationship(type="image", Target='../media/image%s.png' % obj._id)
                 anchor = obj.drawing.anchor
                 anchor.pic = self._picture_frame(idx)
 

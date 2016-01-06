@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import os
 
 from openpyxl.descriptors import String, Strict
-from openpyxl.packaging.relationship import Relationship
+from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     REL_NS,
@@ -71,9 +71,10 @@ class ExternalRange(Strict):
 
 def parse_books(xml):
     tree = fromstring(xml)
-    rels = tree.findall('{%s}Relationship' % PKG_REL_NS)
-    for r in rels:
-        return ExternalBook(**r.attrib)
+
+    rels = RelationshipList.from_tree(tree)
+    for r in rels.Relationship:
+        return r
 
 
 def parse_ranges(xml):
@@ -114,7 +115,7 @@ def write_external_link(links):
 def write_external_book_rel(book):
     """Serialise link to external file"""
     root = Element("Relationships", xmlns=PKG_REL_NS)
-    rel = Relationship("", target=book.Target, targetMode=book.TargetMode, id="rId1")
-    rel.type = book.Type
+    rel = Relationship(Target=book.Target, TargetMode=book.TargetMode,
+                       Id="rId1", Type=book.Type)
     root.append(rel.to_tree())
     return root

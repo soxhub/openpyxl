@@ -55,7 +55,7 @@ class TestRels:
 
     def test_implicit(self, writer):
         ws = Worksheet()
-        ws._rels = [Relationship(type="drawing", target="/xl/drawings/drawing1.xml")]
+        ws._rels = [Relationship(type="drawing", Target="/xl/drawings/drawing1.xml")]
         expected = """
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
           <Relationship Id="rId1" Target="/xl/drawings/drawing1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
