@@ -8,7 +8,6 @@ from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     REL_NS,
-    PKG_REL_NS,
     EXTERNAL_LINK_NS,
 )
 from openpyxl.xml.functions import (
@@ -114,8 +113,8 @@ def write_external_link(links):
 
 def write_external_book_rel(book):
     """Serialise link to external file"""
-    root = Element("Relationships", xmlns=PKG_REL_NS)
+    root = RelationshipList()
     rel = Relationship(Target=book.Target, TargetMode=book.TargetMode,
                        Id="rId1", Type=book.Type)
-    root.append(rel.to_tree())
-    return root
+    root.append(rel)
+    return root.to_tree()
