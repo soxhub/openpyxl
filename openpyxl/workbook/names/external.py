@@ -21,28 +21,6 @@ from openpyxl.xml.functions import (
 """Manage links to external Workbooks"""
 
 
-class ExternalBook(Strict):
-
-    """
-    Map the relationship of one workbook to another
-    """
-
-    Id = String()
-    Type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLinkPath"
-    TargetMode = "External"
-    Target = String()
-
-    def __init__(self, Id, Target, TargetMode=None, Type=None):
-        self.Id = Id
-        self.Target = Target
-        links = []
-
-    def __iter__(self):
-        for attr in ('Id', 'Type', 'TargetMode', 'Target'):
-            value = getattr(self, attr)
-            yield attr, value
-
-
 class ExternalRange(Strict):
 
     """
@@ -114,7 +92,5 @@ def write_external_link(links):
 def write_external_book_rel(book):
     """Serialise link to external file"""
     root = RelationshipList()
-    rel = Relationship(Target=book.Target, TargetMode=book.TargetMode,
-                       Id="rId1", Type=book.Type)
-    root.append(rel)
+    root.append(book)
     return root.to_tree()

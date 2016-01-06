@@ -55,14 +55,6 @@ def test_read_ole_link(datadir):
     assert tuple(parse_ranges(xml)) == ()
 
 
-def test_dict_external_book():
-    from .. external import ExternalBook
-    book = ExternalBook('rId1', "book1.xlsx")
-    assert dict(book) == {'Id':'rId1', 'Target':'book1.xlsx',
-                          'TargetMode':'External',
-                          'Type':'http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLinkPath'}
-
-
 def test_dict_external_range():
     from .. external import ExternalRange
     rng = ExternalRange("something_special", "='Sheet1'!$A$1:$B$2")
@@ -87,22 +79,6 @@ def test_write_external_link():
       </externalBook>
     </externalLink>
     """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_write_external_book_rel():
-    from .. external import ExternalBook
-    from .. external import write_external_book_rel
-    book = ExternalBook("rId1", "book2.xlsx")
-    rel = write_external_book_rel(book)
-    xml = tostring(rel)
-    expected = """
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLinkPath" Target="book2.xlsx" TargetMode="External"/>
-</Relationships>
-
-"""
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
