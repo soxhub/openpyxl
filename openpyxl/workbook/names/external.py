@@ -191,7 +191,8 @@ class ExternalLink(Serialisable):
         """
         Strip custom namespaces
         """
-        for key in node.attrib:
+        attrs = node.attrib.copy()
+        for key in attrs:
             del node.attrib[key]
         return super(ExternalLink, cls).from_tree(node)
 
