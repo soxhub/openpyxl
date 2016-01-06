@@ -3,7 +3,8 @@ from __future__ import absolute_import
 
 import os
 
-from openpyxl.descriptors import String, Strict
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import String
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
@@ -21,7 +22,7 @@ from openpyxl.xml.functions import (
 """Manage links to external Workbooks"""
 
 
-class ExternalRange(Strict):
+class ExternalRange(Serialisable):
 
     """
     Map external named ranges
@@ -37,13 +38,6 @@ class ExternalRange(Strict):
         self.name = name
         self.refersTo = refersTo
         self.sheetId = sheetId
-
-
-    def __iter__(self):
-        for attr in ('name', 'refersTo', 'sheetId'):
-            value = getattr(self, attr, None)
-            if value is not None:
-                yield attr, value
 
 
 def parse_books(xml):
