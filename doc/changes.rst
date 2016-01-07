@@ -14,6 +14,7 @@ Minor changes
 -------------
 
 * `PR 103 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/103/>`_ Documentation about chart scaling and axis limits
+* Raise an exception when trying to copy cells from other workbooks.
 
 
 2.3.2 (2015-12-07)
