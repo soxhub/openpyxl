@@ -174,8 +174,8 @@ class ExcelWriter(object):
                 archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
                                                                         drawing_id), tostring(drawing._write_rels()))
                 for r in sheet._rels:
-                    if "drawing" in r.type:
-                        r.target = "/" + drawingpath
+                    if "drawing" in r.Type:
+                        r.Target = "/" + drawingpath
 
             if sheet._comments:
                 comments_id += 1
