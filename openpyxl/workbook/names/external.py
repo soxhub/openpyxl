@@ -186,17 +186,6 @@ class ExternalLink(Serialisable):
         # ignore other items for the moment.
 
 
-    @classmethod
-    def from_tree(cls, node):
-        """
-        Strip custom namespaces
-        """
-        keys = list(node.attrib.keys())
-        for key in keys:
-            del node.attrib[key]
-        return super(ExternalLink, cls).from_tree(node)
-
-
     def to_tree(self):
         node = super(ExternalLink, self).to_tree()
         node.set("xmlns", SHEET_MAIN_NS)

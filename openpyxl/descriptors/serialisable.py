@@ -43,11 +43,18 @@ class Serialisable(_Serialiasable):
         """
         Create object from XML
         """
+        # strip known namespaces from attributes
         attrib = dict(node.attrib)
         for key, ns in cls.__namespaced__:
             if ns in attrib:
                 attrib[key] = attrib[ns]
                 del attrib[ns]
+
+        # strip attributes with unknown namespaces
+        for key in list(attrib):
+            if key.startswith('{'):
+                del attrib[key]
+
         for el in node:
             tag = localname(el)
             if tag in KEYWORDS:
