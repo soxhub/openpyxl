@@ -18,12 +18,8 @@ from openpyxl.xml.functions import tostring
 
 def test_read_external_ref(datadir):
     datadir.chdir()
-    archive = ZipFile(BytesIO(), "w")
-    with open("[Content_Types].xml") as src:
-        archive.writestr(ARC_CONTENT_TYPES, src.read())
     with open("workbook.xml.rels") as src:
-        archive.writestr(ARC_WORKBOOK_RELS, src.read())
-    rels = read_rels(archive)
+        rels = read_rels(src.read())
     for _, pth in rels:
         if pth['type'] == '%s/externalLink' % REL_NS:
             assert pth['path'] == 'xl/externalLinks/externalLink1.xml'
@@ -88,7 +84,7 @@ def test_read_archive(datadir):
     from .. external import detect_external_links
     datadir.chdir()
     archive = ZipFile("book1.xlsx")
-    rels = read_rels(archive)
+    rels = read_rels(archive.read(ARC_WORKBOOK_RELS))
     books = detect_external_links(rels, archive)
     book = tuple(books)[0]
     assert book.Target == "book2.xlsx"

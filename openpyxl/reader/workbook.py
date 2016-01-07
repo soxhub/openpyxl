@@ -34,9 +34,8 @@ def read_content_types(archive):
         yield typ.ContentType, typ.PartName
 
 
-def read_rels(archive):
+def read_rels(xml_source):
     """Read relationships for a workbook"""
-    xml_source = archive.read(ARC_WORKBOOK_RELS)
     tree = fromstring(xml_source)
     rels = RelationshipList.from_tree(tree)
     for r in rels.Relationship:

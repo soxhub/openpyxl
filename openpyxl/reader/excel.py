@@ -26,6 +26,7 @@ from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
     ARC_CORE,
     ARC_WORKBOOK,
+    ARC_WORKBOOK_RELS,
     ARC_THEME,
     SHARED_STRINGS,
     EXTERNAL_LINK,
@@ -227,7 +228,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
 
     if EXTERNAL_LINK in cts:
-        rels = read_rels(archive)
+        rels = read_rels(archive.read(ARC_WORKBOOK_RELS))
         wb._external_links = list(detect_external_links(rels, archive))
 
 

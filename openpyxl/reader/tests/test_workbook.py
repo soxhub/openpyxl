@@ -65,7 +65,8 @@ def test_read_rels(datadir, excel_file, expected):
 
     datadir.chdir()
     archive = ZipFile(excel_file)
-    assert dict(read_rels(archive)) == expected
+    xml = archive.read(ARC_WORKBOOK_RELS)
+    assert dict(read_rels(xml)) == expected
 
 
 @pytest.mark.parametrize("workbook_file, expected", [
