@@ -11,13 +11,8 @@ from openpyxl.xml.constants import (
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
-    WORKSHEET_TYPE,
-    EXTERNAL_LINK,
 )
-from openpyxl.utils.datetime  import (
-    CALENDAR_WINDOWS_1900,
-    CALENDAR_MAC_1904
-    )
+
 from openpyxl.workbook.names.named_range import (
     NamedRange,
     NamedValue,
@@ -28,10 +23,6 @@ from openpyxl.workbook.names.named_range import (
 
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.relationship import RelationshipList
-from openpyxl.packaging.workbook import WorkbookPackage
-
-# constants
-VALID_WORKSHEET = WORKSHEET_TYPE
 
 
 def read_content_types(archive):
