@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
-import os
+import posixpath
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -210,18 +210,22 @@ def parse_ranges(xml):
 
     return book.definedNames.definedName
 
+from openpyxl.packaging.relationship import get_rels_path, get_dependents
+
 
 def detect_external_links(rels, archive):
-    for rId, d in rels:
-        if d['type'] == EXTERNAL_LINK_NS:
-            pth = os.path.split(d['path'])
-            f_name = pth[-1]
-            dir_name = "/".join(pth[:-1])
-            book_path = "{0}/_rels/{1}.rels".format (dir_name, f_name)
+    """
+    Given a workbooks rels, return the externalLink and the path of the linked workbook
+    """
+
+    for r in rels:
+
+        if r.Type == EXTERNAL_LINK_NS:
+            book_path = get_rels_path(r.Target)
             book_xml = archive.read(book_path)
             Book = parse_books(book_xml)
 
-            range_xml = archive.read(d['path'])
+            range_xml = archive.read(r.Target)
             Book.links = list(parse_ranges(range_xml))
             yield Book
 

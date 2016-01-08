@@ -10,6 +10,7 @@ from openpyxl.tests.helper import compare_xml
 from openpyxl.reader.workbook import read_rels
 from openpyxl.xml.constants import (
     ARC_CONTENT_TYPES,
+    ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
     PKG_REL_NS,
     REL_NS,
@@ -80,11 +81,11 @@ def test_write_external_link():
 
 
 def test_read_archive(datadir):
-    from openpyxl.reader.workbook import read_rels
+    from openpyxl.packaging.relationship import get_dependents
     from .. external import detect_external_links
     datadir.chdir()
     archive = ZipFile("book1.xlsx")
-    rels = read_rels(archive.read(ARC_WORKBOOK_RELS))
+    rels = get_dependents(archive, ARC_WORKBOOK_RELS)
     books = detect_external_links(rels, archive)
     book = tuple(books)[0]
     assert book.Target == "book2.xlsx"
