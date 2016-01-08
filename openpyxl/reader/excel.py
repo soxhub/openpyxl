@@ -220,7 +220,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
 
         if not read_only:
         # load comments into the worksheet cells
-            comments_file = get_comments_file(worksheet_path, archive, valid_files)
+            comments_file = get_comments_file(worksheet_path, archive)
             if comments_file is not None:
                 read_comments(new_ws, archive.read(comments_file))
 

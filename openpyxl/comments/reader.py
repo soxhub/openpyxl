@@ -6,7 +6,7 @@ import posixpath
 from openpyxl.xml.constants import COMMENTS_NS
 from openpyxl.xml.functions import fromstring
 
-from openpyxl.packaging.relationship import get_dependents
+from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from .comments import Comment
 from .properties import CommentSheet
@@ -26,15 +26,15 @@ def read_comments(ws, xml_source):
         ws.cell(coordinate=ref).comment = comment
 
 
-def get_comments_file(worksheet_path, archive, valid_files):
+def get_comments_file(worksheet_path, archive):
     """Returns the XML filename in the archive which contains the comments for
     the spreadsheet with codename sheet_codename."""
-    folder, sheetname = posixpath.split(worksheet_path)
-    filename = posixpath.join(folder, '_rels', sheetname + '.rels')
-    if filename not in valid_files:
+
+    filename = get_rels_path(worksheet_path)
+    if filename not in archive.namelist():
         return
 
     rels = get_dependents(archive, filename)
-    for r in rels.Relationship:
+    for r in rels:
         if r.Type == COMMENTS_NS:
             return r.Target
