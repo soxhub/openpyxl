@@ -76,6 +76,11 @@ class RelationshipList(Serialisable):
         return bool(self.Relationship)
 
 
+    def __iter__(self):
+        for r in self.Relationship:
+            yield r
+
+
     def __getitem__(self, key):
         for r in self.Relationship:
             if r.Id == key:
@@ -91,6 +96,18 @@ class RelationshipList(Serialisable):
             tree.append(rel.to_tree())
 
         return tree
+
+
+def get_rels_path(path):
+    """
+    Convert relative path to absolutes that can be loaded from a zip
+    archive.
+    The path to be passed in is that of containing object (workbook,
+    worksheet, etc.)
+    """
+    folder, obj = posixpath.split(path)
+    filename = posixpath.join(folder, '_rels', '{0}.rels'.format(obj))
+    return filename
 
 
 def get_dependents(archive, filename):
