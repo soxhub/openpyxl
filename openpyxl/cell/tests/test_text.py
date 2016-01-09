@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 # coding=utf8
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors import Bool, Integer, String, Set, Float, Typed, NoneSet, Sequence
 from openpyxl.descriptors.serialisable import Serialisable
