@@ -33,14 +33,6 @@ def test_read_comments(datadir, cell, author, text):
     assert comment.text == text
 
 
-def test_get_comments_file(datadir):
-    datadir.chdir()
-    archive = ZipFile('comments.xlsx')
-    assert reader.get_comments_file('xl/worksheets/sheet1.xml', archive) == 'xl/comments1.xml'
-    assert reader.get_comments_file('xl/worksheets/sheet3.xml', archive) == 'xl/comments2.xml'
-    assert reader.get_comments_file('xl/worksheets/sheet2.xml', archive) is None
-
-
 def test_comments_cell_association(datadir):
     datadir.chdir()
     wb = load_workbook('comments.xlsx')

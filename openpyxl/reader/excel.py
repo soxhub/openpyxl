@@ -29,6 +29,7 @@ from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
     ARC_THEME,
+    COMMENTS_NS,
     SHARED_STRINGS,
     EXTERNAL_LINK,
     XLTM,
@@ -50,7 +51,7 @@ from openpyxl.packaging.relationship import get_dependents, get_rels_path
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.xml.functions import fromstring
 from .worksheet import WorkSheetParser
-from openpyxl.comments.reader import read_comments, get_comments_file
+from openpyxl.comments.reader import read_comments
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
 
@@ -199,6 +200,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
         sheet_name = sheet.name
         worksheet_path = rel.target
         rels_path = get_rels_path(worksheet_path)
+        rels = []
         if rels_path in valid_files:
             rels = get_dependents(archive, rels_path)
 
@@ -208,22 +210,28 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
         if read_only:
             new_ws = ReadOnlyWorksheet(wb, sheet_name, worksheet_path, None,
                                        shared_strings)
+
             wb._add_sheet(new_ws)
         else:
             fh = archive.open(worksheet_path)
             parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
             parser.parse()
             new_ws = wb[sheet_name]
+
+            # load comments into the worksheet cells
+            if rels:
+                comments = list(rels.find(COMMENTS_NS))
+                if comments:
+                    comments_file = comments[0].Target
+                    read_comments(new_ws, archive.read(comments_file))
+
         new_ws.sheet_state = sheet.state
 
-        if wb.vba_archive is not None and new_ws.legacy_drawing is not None:
+        if (rels
+             and wb.vba_archive is not None
+             and new_ws.legacy_drawing is not None
+            ):
             new_ws.legacy_drawing = rels[new_ws.legacy_drawing].Target
-
-        if not read_only:
-        # load comments into the worksheet cells
-            comments_file = get_comments_file(worksheet_path, archive)
-            if comments_file is not None:
-                read_comments(new_ws, archive.read(comments_file))
 
     wb._differential_styles = [] # reset
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
