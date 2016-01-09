@@ -306,6 +306,6 @@ class SpreadsheetDrawing(Serialisable):
     def _write_rels(self):
         root = Element("Relationships", xmlns=PKG_REL_NS)
         for idx, rel in enumerate(self._rels, 1):
-            rel.id = "rId{0}".format(idx)
+            rel.Id = "rId{0}".format(idx)
             root.append(rel.to_tree())
         return root
