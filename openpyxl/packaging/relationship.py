@@ -76,9 +76,15 @@ class RelationshipList(Serialisable):
         return bool(self.Relationship)
 
 
-    def __iter__(self):
+    def find(self, content_type):
+        """
+        Find relationships by content-type
+        NB. these content-types namespaced objects and different to the MIME-types
+        in the package manifest :-(
+        """
         for r in self.Relationship:
-            yield r
+            if r.Type == content_type:
+                yield r
 
 
     def __getitem__(self, key):

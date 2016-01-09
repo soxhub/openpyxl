@@ -199,14 +199,13 @@ def detect_external_links(rels, archive):
     Find any external links in a workbook
     """
 
-    for r in rels:
-        if r.Type == EXTERNAL_LINK_NS:
-            src = archive.read(r.Target)
-            node = fromstring(src)
-            book = ExternalLink.from_tree(node)
+    for r in rels.find(EXTERNAL_LINK_NS):
+        src = archive.read(r.Target)
+        node = fromstring(src)
+        book = ExternalLink.from_tree(node)
 
-            path = get_rels_path(r.Target)
-            deps = get_dependents(archive, path)
-            book.file_link = deps.Relationship[0]
+        path = get_rels_path(r.Target)
+        deps = get_dependents(archive, path)
+        book.file_link = deps.Relationship[0]
 
-            yield book
+        yield book

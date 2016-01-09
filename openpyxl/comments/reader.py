@@ -35,6 +35,6 @@ def get_comments_file(worksheet_path, archive):
         return
 
     rels = get_dependents(archive, filename)
-    for r in rels:
-        if r.Type == COMMENTS_NS:
-            return r.Target
+    comments = list(rels.find(COMMENTS_NS))
+    if comments:
+        return comments[0].Target

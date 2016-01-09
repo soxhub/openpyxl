@@ -45,7 +45,7 @@ from openpyxl.styles.stylesheet import apply_stylesheet
 from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.workbook import WorkbookParser
-from openpyxl.packaging.relationship import get_dependents
+from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.xml.functions import fromstring
@@ -198,6 +198,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     for sheet, rel in parser.find_sheets():
         sheet_name = sheet.name
         worksheet_path = rel.target
+        rels_path = get_rels_path(worksheet_path)
+        if rels_path in valid_files:
+            rels = get_dependents(archive, rels_path)
 
         if not worksheet_path in valid_files:
             continue
@@ -214,11 +217,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
         new_ws.sheet_state = sheet.state
 
         if wb.vba_archive is not None and new_ws.legacy_drawing is not None:
-            # We need to get the file name of the legacy drawing
-            dirname, basename = worksheet_path.rsplit('/', 1)
-            rels_path = '/'.join((dirname, '_rels', basename + '.rels'))
-            rels = get_dependents(archive, rels_path)
-            new_ws.legacy_drawing = rels[new_ws.legacy_drawing].target
+            new_ws.legacy_drawing = rels[new_ws.legacy_drawing].Target
 
         if not read_only:
         # load comments into the worksheet cells
