@@ -6,14 +6,18 @@ from zipfile import ZipFile
 
 import pytest
 
-from openpyxl.reader.workbook import read_content_types
+from openpyxl.packaging.manifest import Manifest
 from openpyxl.writer.excel import save_virtual_workbook
 from openpyxl.reader.excel import load_workbook
-from openpyxl.xml.constants import XLTM, XLTX, XLSM, XLSX
+from openpyxl.xml.constants import ARC_CONTENT_TYPES, XLTM, XLTX, XLSM, XLSX
+from openpyxl.xml.functions import fromstring
 
 
 def check_content_type(workbook_type, archive):
-    assert workbook_type in dict(read_content_types(archive))
+    src = archive.read(ARC_CONTENT_TYPES)
+    node = fromstring(src)
+    package = Manifest.from_tree(node)
+    assert workbook_type in package
 
 
 @pytest.mark.parametrize('tmpl, is_template', [

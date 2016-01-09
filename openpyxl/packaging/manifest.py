@@ -137,6 +137,24 @@ class Manifest(Serialisable):
         return tree
 
 
+    def __contains__(self, content_type):
+        """
+        Check whether a particular content type is contained
+        """
+        for t in self.Override:
+            if t.ContentType == content_type:
+                return True
+
+
+    def find(self, content_type):
+        """
+        Find specific content-type
+        """
+        for t in self.Override:
+            if t.ContentType == content_type:
+                return t
+
+
 def write_content_types(workbook, as_template=False, exts=None):
 
     manifest = Manifest()
