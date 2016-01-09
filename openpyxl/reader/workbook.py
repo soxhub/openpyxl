@@ -10,7 +10,6 @@ from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
-    ARC_WORKBOOK_RELS,
 )
 
 from openpyxl.workbook.names.named_range import (
@@ -32,21 +31,6 @@ def read_content_types(archive):
     package = Manifest.from_tree(root)
     for typ in package.Override:
         yield typ.ContentType, typ.PartName
-
-
-def read_rels(xml_source):
-    """Read relationships for a workbook"""
-    tree = fromstring(xml_source)
-    rels = RelationshipList.from_tree(tree)
-    for r in rels.Relationship:
-        # normalise path
-        pth = r.Target
-        if pth.startswith("/xl"):
-            pth = pth.replace("/xl", "xl")
-        elif not pth.startswith("xl") and not pth.startswith(".."):
-            pth = "xl/" + pth
-        r.Target = pth
-        yield r.Id, {'path':r.Target, 'type':r.Type}
 
 
 def read_sheets(archive):

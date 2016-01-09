@@ -40,35 +40,6 @@ def test_hidden_sheets(datadir, DummyArchive):
                              ]
 
 
-@pytest.mark.parametrize("excel_file, expected", [
-    ("bug137.xlsx", {
-        "rId1": {'path': 'xl/chartsheets/sheet1.xml', 'type':'%s/chartsheet' % REL_NS, },
-        "rId2": {'path': 'xl/worksheets/sheet1.xml', 'type':'%s/worksheet' % REL_NS, },
-        "rId3": {'path': 'xl/theme/theme1.xml', 'type':'%s/theme' % REL_NS},
-        "rId4": {'path': 'xl/styles.xml', 'type':'%s/styles' % REL_NS},
-        "rId5": {'path': 'xl/sharedStrings.xml', 'type':'%s/sharedStrings' % REL_NS}
-    }),
-    ("bug304.xlsx", {
-        'rId1': {'path': 'xl/worksheets/sheet3.xml', 'type':'%s/worksheet' % REL_NS},
-        'rId2': {'path': 'xl/worksheets/sheet2.xml', 'type':'%s/worksheet' % REL_NS},
-        'rId3': {'path': 'xl/worksheets/sheet.xml', 'type':'%s/worksheet' % REL_NS},
-        'rId4': {'path': 'xl/theme/theme.xml', 'type':'%s/theme' % REL_NS},
-        'rId5': {'path': 'xl/styles.xml', 'type':'%s/styles' % REL_NS},
-        'rId6': {'path': '../customXml/item1.xml', 'type':'%s/customXml' % REL_NS},
-        'rId7': {'path': '../customXml/item2.xml', 'type':'%s/customXml' % REL_NS},
-        'rId8': {'path': '../customXml/item3.xml', 'type':'%s/customXml' % REL_NS}
-    }),
-]
-                         )
-def test_read_rels(datadir, excel_file, expected):
-    from openpyxl.reader.workbook import read_rels
-
-    datadir.chdir()
-    archive = ZipFile(excel_file)
-    xml = archive.read(ARC_WORKBOOK_RELS)
-    assert dict(read_rels(xml)) == expected
-
-
 @pytest.mark.parametrize("workbook_file, expected", [
     ("bug137_workbook.xml",
      [
