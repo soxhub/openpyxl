@@ -79,3 +79,10 @@ class deprecated(object):
         _code.co_filename = obj.__module__
         _code.co_firstlineno = 0
         return _code
+
+
+def removed_method(*args, **kw):
+    """
+    Disallow methods in inherited classes.
+    """
+    raise NotImplementedError
