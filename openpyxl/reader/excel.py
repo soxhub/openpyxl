@@ -220,11 +220,10 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             parser.parse()
             ws = wb[sheet_name]
 
-            # load comments into the worksheet cells
             if rels:
-                comments_path = list(rels.find(COMMENTS_NS))
-                if comments_path:
-                    src = archive.read(comments_path[0].Target)
+                # assign any comments to cells
+                for r in rels.find(COMMENTS_NS):
+                    src = archive.read(r.Target)
                     comment_sheet = CommentSheet.from_tree(fromstring(src))
                     for ref, comment in comment_sheet.comments:
                         ws.cell(coordinate=ref).comment = comment
