@@ -9,8 +9,8 @@ from __future__ import absolute_import
 from openpyxl.compat import range
 
 # package
-from openpyxl.xml.functions import iterparse
-from openpyxl.xml.functions import safe_iterator
+from openpyxl.compat import removed_method
+from openpyxl.xml.functions import iterparse, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.worksheet import Worksheet
@@ -250,3 +250,8 @@ class ReadOnlyWorksheet(Worksheet):
     @max_column.setter
     def max_column(self, value):
         self._max_column = value
+
+
+setattr(ReadOnlyWorksheet, '__setitem__', removed_method)
+setattr(ReadOnlyWorksheet, 'range', removed_method)
+setattr(ReadOnlyWorksheet, 'merge_cells', removed_method)
