@@ -24,14 +24,3 @@ def read_content_types(archive):
     for typ in package.Override:
         yield typ.ContentType, typ.PartName
 
-
-def read_sheets(archive):
-    """Read worksheet titles and ids for a workbook"""
-    xml_source = archive.read(ARC_WORKBOOK)
-    tree = fromstring(xml_source)
-    for element in safe_iterator(tree, '{%s}sheet' % SHEET_MAIN_NS):
-        attrib = element.attrib
-        attrib['id'] = attrib["{%s}id" % REL_NS]
-        del attrib["{%s}id" % REL_NS]
-        if attrib['id']:
-            yield attrib
