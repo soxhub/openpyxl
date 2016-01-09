@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from .area_chart import AreaChart, AreaChart3D
 from .bar_chart import BarChart, BarChart3D

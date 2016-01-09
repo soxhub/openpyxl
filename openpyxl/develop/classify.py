@@ -1,5 +1,5 @@
 from __future__ import absolute_import, print_function
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """
 Generate Python classes from XML Schema

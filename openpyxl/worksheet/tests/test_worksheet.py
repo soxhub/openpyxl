@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 # test imports
 import pytest
