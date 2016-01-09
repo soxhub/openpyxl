@@ -16,17 +16,18 @@ from openpyxl.descriptors.excel import Relation, ExtensionList
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.descriptors.sequence import NestedSequence
 
-from openpyxl.packaging.relationship import Relationship, RelationshipList
+from openpyxl.packaging.relationship import (
+    Relationship,
+    RelationshipList,
+    get_rels_path,
+    get_dependents
+    )
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
-    REL_NS,
     EXTERNAL_LINK_NS,
 )
 from openpyxl.xml.functions import (
     fromstring,
-    safe_iterator,
-    Element,
-    SubElement,
 )
 
 
@@ -173,6 +174,7 @@ class ExternalLink(Serialisable):
     tagname = "externalLink"
 
     externalBook = Typed(expected_type=ExternalBook, allow_none=True)
+    file_link = Typed(expected_type=Relationship, allow_none=True) # link to external file
 
     __elements__ = ('externalBook', )
 
@@ -192,55 +194,19 @@ class ExternalLink(Serialisable):
         return node
 
 
-def parse_books(xml):
-    tree = fromstring(xml)
-
-    rels = RelationshipList.from_tree(tree)
-    for r in rels.Relationship:
-        return r
-
-
-def parse_ranges(xml):
-    tree = fromstring(xml)
-    tree = ExternalLink.from_tree(tree)
-
-    book = tree.externalBook
-    if book is None:
-        return
-
-    return book.definedNames.definedName
-
-from openpyxl.packaging.relationship import get_rels_path, get_dependents
-
-
 def detect_external_links(rels, archive):
     """
-    Given a workbooks rels, return the externalLink and the path of the linked workbook
+    Find any external links in a workbook
     """
 
     for r in rels:
-
         if r.Type == EXTERNAL_LINK_NS:
-            book_path = get_rels_path(r.Target)
-            book_xml = archive.read(book_path)
-            Book = parse_books(book_xml)
+            src = archive.read(r.Target)
+            node = fromstring(src)
+            book = ExternalLink.from_tree(node)
 
-            range_xml = archive.read(r.Target)
-            Book.links = list(parse_ranges(range_xml))
-            yield Book
+            path = get_rels_path(r.Target)
+            deps = get_dependents(archive, path)
+            book.file_link = deps.Relationship[0]
 
-
-def write_external_link(links):
-    """Serialise links to ranges in a single external worbook"""
-    book = ExternalBook(id="rId1", definedNames=ExternalDefinedNames())
-    for l in links:
-        book.definedNames.definedName.append(l)
-    root = ExternalLink(externalBook=book)
-    return root.to_tree()
-
-
-def write_external_book_rel(book):
-    """Serialise link to external file"""
-    root = RelationshipList()
-    root.append(book)
-    return root.to_tree()
+            yield book

@@ -28,6 +28,8 @@ from openpyxl.xml.constants import (
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import write_content_types
+from openpyxl.packaging.relationship import get_rels_path
+
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_root_rels,
@@ -38,10 +40,6 @@ from openpyxl.writer.workbook import (
 from openpyxl.writer.theme import write_theme
 from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
-from openpyxl.workbook.names.external import (
-    write_external_link,
-    write_external_book_rel
-)
 from openpyxl.styles.stylesheet import write_stylesheet
 
 from openpyxl.comments.writer import CommentWriter
@@ -205,16 +203,12 @@ class ExcelWriter(object):
         """Write links to external workbooks"""
         wb = self.workbook
         for idx, book in enumerate(wb._external_links, 1):
-            el = write_external_link(book.links)
-            rel = write_external_book_rel(book)
-            archive.writestr(
-                "{0}/externalLinks/externalLink{1}.xml".format(PACKAGE_XL, idx),
-                 tostring(el)
-            )
-            archive.writestr(
-                "{0}/externalLinks/_rels/externalLink{1}.xml.rels".format(PACKAGE_XL, idx),
-                tostring(rel)
-            )
+
+            book_path = "{0}/externalLinks/externalLink{1}.xml".format(PACKAGE_XL, idx)
+            archive.writestr(book_path, tostring(book.to_tree()))
+
+            rels_path = get_rels_path(book_path)
+            archive.writestr(rels_path, tostring(book.file_link.to_tree()))
 
 
     def save(self, filename, as_template=False):

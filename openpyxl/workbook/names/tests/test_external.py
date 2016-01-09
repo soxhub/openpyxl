@@ -15,49 +15,32 @@ from openpyxl.xml.constants import (
     PKG_REL_NS,
     REL_NS,
 )
-from openpyxl.xml.functions import tostring
-
-def test_read_external_ref(datadir):
-    datadir.chdir()
-    with open("workbook.xml.rels") as src:
-        rels = read_rels(src.read())
-    for _, pth in rels:
-        if pth['type'] == '%s/externalLink' % REL_NS:
-            assert pth['path'] == 'xl/externalLinks/externalLink1.xml'
+from openpyxl.xml.functions import tostring, fromstring
 
 
 def test_read_external_link(datadir):
-    from .. external import parse_books
+    from .. external import ExternalLink
     datadir.chdir()
-    with open("externalLink1.xml.rels") as src:
-        xml = src.read()
-    book = parse_books(xml)
-    assert book.Id == 'rId1'
 
-
-def test_read_external_ranges(datadir):
-    from .. external import parse_ranges
-    datadir.chdir()
     with open("externalLink1.xml") as src:
-        xml = src.read()
-    names = parse_ranges(xml)
+        node = fromstring(src.read())
+    link = ExternalLink.from_tree(node)
+    names = link.externalBook.definedNames.definedName
     assert names[0].name == 'B2range'
     assert names[0].refersTo == "='Sheet1'!$A$1:$A$10"
 
 
 def test_read_ole_link(datadir):
-    from ..external import parse_ranges
+    from .. external import ExternalLink
+    datadir.chdir()
+
     with open("OLELink.xml") as src:
-        xml = src.read()
-    assert parse_ranges(xml) is None
+        node = fromstring(src.read())
+    link = ExternalLink.from_tree(node)
+    assert link.externalBook is None
 
 
-def test_dict_external_range():
-    from .. external import ExternalDefinedName
-    rng = ExternalDefinedName("something_special", "='Sheet1'!$A$1:$B$2")
-    assert dict(rng) == {'name':'something_special', 'refersTo':"='Sheet1'!$A$1:$B$2"}
-
-
+@pytest.mark.xfail
 def test_write_external_link():
     from .. external import ExternalDefinedName
     from .. external import write_external_link
@@ -80,7 +63,7 @@ def test_write_external_link():
     assert diff is None, diff
 
 
-def test_read_archive(datadir):
+def test_read_external_link(datadir):
     from openpyxl.packaging.relationship import get_dependents
     from .. external import detect_external_links
     datadir.chdir()
@@ -88,18 +71,7 @@ def test_read_archive(datadir):
     rels = get_dependents(archive, ARC_WORKBOOK_RELS)
     books = detect_external_links(rels, archive)
     book = tuple(books)[0]
-    assert book.Target == "book2.xlsx"
-
-    expected = ["='Sheet1'!$A$1:$A$10", ]
-    for link, exp in zip(book.links, expected):
-        assert link.refersTo == exp
-
-
-def test_load_workbook(datadir):
-    datadir.chdir()
-    from openpyxl import load_workbook
-    wb = load_workbook('book1.xlsx')
-    assert len(wb._external_links) == 1
+    assert book.file_link.Target == "xl/externalLinks/book2.xlsx"
 
 
 def test_write_workbook(datadir, tmpdir):
@@ -119,3 +91,5 @@ def test_write_workbook(datadir, tmpdir):
     # remove files from archive that the other can't have
     out_files.discard("xl/sharedStrings.xml")
     orig_files.discard("xl/calcChain.xml")
+
+    assert orig_files == out_files
