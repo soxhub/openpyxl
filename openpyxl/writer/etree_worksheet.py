@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from operator import itemgetter
 
 from openpyxl.compat import safe_string
-from openpyxl.comments.properties import Comment
+from openpyxl.comments.properties import CommentRecord
 from openpyxl.xml.functions import xmlfile, Element, SubElement
 
 
@@ -63,7 +63,7 @@ def write_cell(worksheet, cell, styled=None):
     value = cell._value
 
     if cell._comment is not None:
-        comment = Comment._adapted(cell.comment, cell.coordinate)
+        comment = CommentRecord._adapted(cell.comment, cell.coordinate)
         worksheet._comments.append(comment)
 
     el = Element("c", attributes)

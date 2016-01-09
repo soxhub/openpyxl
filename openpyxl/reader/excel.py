@@ -36,6 +36,7 @@ from openpyxl.xml.constants import (
     XLTX,
 )
 
+from openpyxl.comments.properties import CommentSheet
 from openpyxl.workbook import Workbook
 from openpyxl.workbook.names.external import detect_external_links
 from openpyxl.workbook.names.named_range import read_named_ranges
@@ -50,8 +51,9 @@ from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.xml.functions import fromstring
+
 from .worksheet import WorkSheetParser
-from openpyxl.comments.reader import read_comments
+
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
 
@@ -208,30 +210,32 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             continue
 
         if read_only:
-            new_ws = ReadOnlyWorksheet(wb, sheet_name, worksheet_path, None,
+            ws = ReadOnlyWorksheet(wb, sheet_name, worksheet_path, None,
                                        shared_strings)
 
-            wb._add_sheet(new_ws)
+            wb._add_sheet(ws)
         else:
             fh = archive.open(worksheet_path)
             parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
             parser.parse()
-            new_ws = wb[sheet_name]
+            ws = wb[sheet_name]
 
             # load comments into the worksheet cells
             if rels:
-                comments = list(rels.find(COMMENTS_NS))
-                if comments:
-                    comments_file = comments[0].Target
-                    read_comments(new_ws, archive.read(comments_file))
+                comments_path = list(rels.find(COMMENTS_NS))
+                if comments_path:
+                    src = archive.read(comments_path[0].Target)
+                    comment_sheet = CommentSheet.from_tree(fromstring(src))
+                    for ref, comment in comment_sheet.comments:
+                        ws.cell(coordinate=ref).comment = comment
 
-        new_ws.sheet_state = sheet.state
+        ws.sheet_state = sheet.state
 
         if (rels
              and wb.vba_archive is not None
-             and new_ws.legacy_drawing is not None
+             and ws.legacy_drawing is not None
             ):
-            new_ws.legacy_drawing = rels[new_ws.legacy_drawing].Target
+            ws.legacy_drawing = rels[ws.legacy_drawing].Target
 
     wb._differential_styles = [] # reset
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))

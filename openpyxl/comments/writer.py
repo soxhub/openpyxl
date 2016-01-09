@@ -12,7 +12,7 @@ from openpyxl.utils import (
 )
 
 from .author import AuthorList
-from .properties import CommentSheet, Comment
+from .properties import CommentSheet, CommentRecord
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"

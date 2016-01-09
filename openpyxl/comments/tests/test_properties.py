@@ -7,8 +7,8 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def Comment():
-    from ..properties import Comment
-    return Comment
+    from ..properties import CommentRecord
+    return CommentRecord
 
 
 class TestComment:

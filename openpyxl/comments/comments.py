@@ -18,6 +18,17 @@ class Comment(object):
     def parent(self):
         return self._parent
 
+
+    def __eq__(self, other):
+        return (
+            self.content == other.content
+            and self.author == other.author
+        )
+
+    def __repr__(self):
+        return "Comment: {0} by {1}".format(self.content, self.author)
+
+
     @parent.setter
     def parent(self, cell):
         if cell is not None and self._parent is not None and self._parent != cell:
@@ -26,7 +37,6 @@ class Comment(object):
 
 
     @property
-    @deprecated("Use the content attribute")
     def text(self):
         """
         Any comment text stripped of all formatting.
@@ -34,6 +44,5 @@ class Comment(object):
         return self.content
 
     @text.setter
-    @deprecated("Use the content attribute")
     def text(self, value):
         self.content = value

@@ -10,7 +10,7 @@ from openpyxl.tests.helper import compare_xml
 from openpyxl.xml.functions import fromstring, tostring, Element
 
 from ..comments import Comment
-from ..properties import Comment as CommentXML
+from ..properties import CommentRecord
 from ..writer import (
     CommentWriter,
     vmlns,
@@ -30,7 +30,7 @@ def _create_ws():
 
     for coord, cell in sorted(ws._cells.items()):
         if cell._comment is not None:
-            comment = CommentXML._adapted(cell._comment, cell.coordinate)
+            comment = CommentRecord._adapted(cell._comment, cell.coordinate)
             ws._comments.append(comment)
 
     return ws

@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from operator import itemgetter
 
 from openpyxl.compat import safe_string
-from openpyxl.comments.properties import Comment
+from openpyxl.comments.properties import CommentRecord
 
 from .etree_worksheet import get_rows_to_write
 from openpyxl.xml.functions import xmlfile
@@ -50,7 +50,7 @@ def write_cell(xf, worksheet, cell, styled=False):
     value = cell._value
 
     if cell._comment is not None:
-        comment = Comment._adapted(cell.comment, cell.coordinate)
+        comment = CommentRecord._adapted(cell.comment, cell.coordinate)
         worksheet._comments.append(comment)
 
     if value == '' or value is None:

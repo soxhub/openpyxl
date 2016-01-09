@@ -19,6 +19,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.cell.text import Text
 from .author import AuthorList
+from .comments import Comment
 
 
 class ObjectAnchor(Serialisable):
@@ -96,8 +97,7 @@ class Properties(Serialisable):
         self.anchor = anchor
 
 
-
-class Comment(Serialisable):
+class CommentRecord(Serialisable):
 
     tagname = "comment"
 
@@ -155,7 +155,7 @@ class CommentSheet(Serialisable):
     tagname = "comments"
 
     authors = Typed(expected_type=AuthorList)
-    commentList = NestedSequence(expected_type=Comment, count=0)
+    commentList = NestedSequence(expected_type=CommentRecord, count=0)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('authors', 'commentList')
@@ -173,3 +173,14 @@ class CommentSheet(Serialisable):
         tree = super(CommentSheet, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
+
+
+    @property
+    def comments(self):
+        """
+        Return a dictionary of comments keyed by coord
+        """
+        authors = self.authors.author
+
+        for c in self.commentList:
+            yield c.ref, Comment(c.content, authors[c.authorId])
