@@ -5,8 +5,9 @@
 Bug fixes
 ---------
 
-* `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed.
-* `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames.
+* `#540 <https://bitbucket.org/openpyxl/openpyxl/issues/540>`_ Cannot read merged cells in read-only mode
+* `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed
+* `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames
 * `#575 <https://bitbucket.org/openpyxl/openpyxl/issues/575>`_ Cannot open workbooks with embdedded OLE files
 
 
