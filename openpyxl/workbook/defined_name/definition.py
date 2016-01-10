@@ -13,7 +13,7 @@ from openpyxl.descriptors import (
     Sequence,
 )
 
-class DefinedName(Serialisable):
+class Definition(Serialisable):
 
     tagname = "definedName"
 

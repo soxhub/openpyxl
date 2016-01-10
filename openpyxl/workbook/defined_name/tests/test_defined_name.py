@@ -6,16 +6,16 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def DefinedName():
-    from ..defined_name import DefinedName
-    return DefinedName
+def Definition():
+    from ..definition import Definition
+    return Definition
 
 
 class TestDefinedName:
 
-    def test_ctor(self, DefinedName):
-        defined_name = DefinedName(name="my_constant")
-        xml = tostring(defined_name.to_tree())
+    def test_ctor(self, Definition):
+        defn = Definition(name="my_constant")
+        xml = tostring(defn.to_tree())
         expected = """
         <definedName name="my_constant"/>
         """
@@ -23,10 +23,10 @@ class TestDefinedName:
         assert diff is None, diff
 
 
-    def test_from_xml(self, DefinedName):
+    def test_from_xml(self, Definition):
         src = """
         <definedName name="Northwind"/>
         """
         node = fromstring(src)
-        defined_name = DefinedName.from_tree(node)
-        assert defined_name == DefinedName(name="Northwind")
+        defn = Definition.from_tree(node)
+        assert defn == Definition(name="Northwind")
