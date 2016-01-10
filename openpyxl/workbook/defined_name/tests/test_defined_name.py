@@ -11,7 +11,7 @@ def Definition():
     return Definition
 
 
-class TestDefinedName:
+class TestDefinition:
 
     def test_ctor(self, Definition):
         defn = Definition(name="my_constant")
