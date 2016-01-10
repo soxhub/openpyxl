@@ -201,11 +201,11 @@ def test_print_titles(Workbook):
     assert(actual_named_ranges == expected_named_ranges)
 
 
-@pytest.mark.usefixtures("datadir")
 class TestNameRefersToValue:
 
-    def __init__(self, datadir):
-        datadir.join("genuine").chdir()
+    @pytest.fixture(autouse=True)
+    def setup(self, datadir):
+        datadir.chdir()
         self.wb = load_workbook('NameWithValueBug.xlsx')
         self.ws = self.wb["Sheet1"]
 
