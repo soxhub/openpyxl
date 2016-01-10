@@ -60,3 +60,20 @@ class TestDefinition:
         assert defn.name == name
         assert defn.value == value
         assert defn.type == value_type
+
+
+    @pytest.mark.parametrize("name, reserved",
+                             [
+                                 ("􏰀Print_Area", True),
+                                 ("􏰀Print_Titles", True),
+                                 ("􏰀Criteria", True),
+                                 ("􏰀_FilterDatabase", True),
+                                 ("􏰀Extract", True),
+                                 ("􏰀􏰀Consolidate_Area", True),
+                                 ("􏰀Sheet_Title", True),
+                                 ("Pi", False),
+                             ]
+                             )
+    def test_reserved(self, Definition, name, reserved):
+        defn = Definition(name=name)
+        assert defn.is_reserved == reserved

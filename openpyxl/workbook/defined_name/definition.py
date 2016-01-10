@@ -18,9 +18,9 @@ from openpyxl.descriptors import (
 from openpyxl.formula import Tokenizer
 
 
-RESERVED = ["􏰀Print_Area", "􏰀Print_Titles", "􏰀Criteria",
-            "􏰀_FilterDatabase", "􏰀Extract", "􏰀􏰀Consolidate_Area",
-            "􏰀Sheet_Title"]
+RESERVED = frozenset(["􏰀Print_Area", "􏰀Print_Titles", "􏰀Criteria",
+                      "􏰀_FilterDatabase", "􏰀Extract", "􏰀􏰀Consolidate_Area",
+                      "􏰀Sheet_Title"])
 
 
 class Definition(Serialisable):
@@ -91,3 +91,7 @@ class Definition(Serialisable):
             return parsed.subtype
         return parsed.type
 
+
+    @property
+    def is_reserved(self):
+        return self.name in RESERVED
