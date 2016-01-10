@@ -12,7 +12,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Set,
     Sequence,
-    Text,
+    Descriptor,
 )
 
 from openpyxl.formula import Tokenizer
@@ -42,8 +42,9 @@ class Definition(Serialisable):
     shortcutKey = String(allow_none=True)
     publishToServer = Bool(allow_none=True)
     workbookParameter = Bool(allow_none=True)
-    attr_text = Text(allow_none=True)
+    attr_text = Descriptor()
     value = Alias("attr_text")
+
 
     def __init__(self,
                  name=None,
@@ -83,4 +84,10 @@ class Definition(Serialisable):
 
     @property
     def type(self):
-        pass
+        tok = Tokenizer("=" + self.value)
+        tok.parse()
+        parsed = tok.items[0]
+        if parsed.type == "OPERAND":
+            return parsed.subtype
+        return parsed.type
+
