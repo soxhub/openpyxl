@@ -108,7 +108,7 @@ class Serialisable(_Serialiasable):
 
         el = Element(tagname, attrs)
         if "attr_text" in self.__attrs__:
-            el.text = getattr(self, "attr_text")
+            el.text = safe_string(getattr(self, "attr_text"))
 
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
