@@ -51,6 +51,11 @@ class TestDefinition:
                  "pi",
                  "3.14",
                  "NUMBER"
+                 ),
+                ("""<definedName name="pi">3.14</definedName>""",
+                 "pi",
+                 "3.14",
+                 "NUMBER"
                  )
                              ]
                              )
@@ -64,13 +69,13 @@ class TestDefinition:
 
     @pytest.mark.parametrize("name, reserved",
                              [
-                                 ("􏰀Print_Area", True),
-                                 ("􏰀Print_Titles", True),
-                                 ("􏰀Criteria", True),
-                                 ("􏰀_FilterDatabase", True),
-                                 ("􏰀Extract", True),
-                                 ("􏰀􏰀Consolidate_Area", True),
-                                 ("􏰀Sheet_Title", True),
+                                 ("Print_Area", True),
+                                 ("Print_Titles", True),
+                                 ("Criteria", True),
+                                 ("_FilterDatabase", True),
+                                 ("Extract", True),
+                                 ("Consolidate_Area", True),
+                                 ("Sheet_Title", True),
                                  ("Pi", False),
                              ]
                              )
