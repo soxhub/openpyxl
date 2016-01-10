@@ -1,65 +1,111 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from io import BytesIO
 from zipfile import ZipFile
 
 import pytest
 from openpyxl.tests.helper import compare_xml
 
 from openpyxl.xml.constants import (
-    ARC_CONTENT_TYPES,
-    ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
-    PKG_REL_NS,
-    REL_NS,
 )
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.xml.functions import tostring, fromstring
 
 
-def test_read_external_link(datadir):
+@pytest.fixture
+def ExternalLink():
     from .. external import ExternalLink
-    datadir.chdir()
-
-    with open("externalLink1.xml") as src:
-        node = fromstring(src.read())
-    link = ExternalLink.from_tree(node)
-    names = link.externalBook.definedNames.definedName
-    assert names[0].name == 'B2range'
-    assert names[0].refersTo == "='Sheet1'!$A$1:$A$10"
+    return ExternalLink
 
 
-def test_read_ole_link(datadir):
-    from .. external import ExternalLink
+class TestExternalLink:
+
+
+    def test_ctor(self, ExternalLink):
+        src = """
+        <externalLink
+          xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <externalBook  r:id="rId1" />
+        </externalLink>
+         """
+        node = fromstring(src)
+        link = ExternalLink.from_tree(node)
+        assert link.externalBook.id == "rId1"
+
+
+    def test_ctor(self, ExternalLink):
+        expected  = """
+        <externalLink
+          xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        </externalLink>
+         """
+        link = ExternalLink()
+        link.file_link = Relationship(Target="somefile.xlsx", type="externalLink")
+        xml = tostring(link.to_tree())
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+@pytest.fixture
+def ExternalBook():
+    from .. external import ExternalBook
+    return ExternalBook
+
+
+class TestExternalBook:
+
+
+    def test_ctor(self, ExternalBook):
+        from ..external import ExternalDefinedName, ExternalSheetNames
+        book = ExternalBook()
+        book.sheetNames = ExternalSheetNames(sheetName=["Sheet1", "Sheet2", "Sheet3"])
+        df = ExternalDefinedName(name="B2range", refersTo="='Sheet1'!$A$1:$A$10")
+        book.definedNames = [df]
+        xml = tostring(book.to_tree())
+        expected = """
+        <externalBook>
+        <sheetNames>
+          <sheetName val="Sheet1"/>
+          <sheetName val="Sheet2"/>
+          <sheetName val="Sheet3"/>
+        </sheetNames>
+        <definedNames>
+          <definedName name="B2range" refersTo="='Sheet1'!$A$1:$A$10"/>
+        </definedNames>
+        </externalBook>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_read(self, ExternalBook):
+        src = """
+        <externalBook>
+        <sheetNames>
+          <sheetName val="Sheet1"/>
+          <sheetName val="Sheet2"/>
+          <sheetName val="Sheet3"/>
+        </sheetNames>
+        <definedNames>
+          <definedName name="B2range" refersTo="='Sheet1'!$A$1:$A$10"/>
+        </definedNames>
+        </externalBook>
+        """
+        node = fromstring(src)
+        book = ExternalBook.from_tree(node)
+        assert book.definedNames[0].name == 'B2range'
+        assert book.definedNames[0].refersTo == "='Sheet1'!$A$1:$A$10"
+
+
+def test_read_ole_link(datadir, ExternalLink):
     datadir.chdir()
 
     with open("OLELink.xml") as src:
         node = fromstring(src.read())
     link = ExternalLink.from_tree(node)
     assert link.externalBook is None
-
-
-@pytest.mark.xfail
-def test_write_external_link():
-    from .. external import ExternalDefinedName
-    from .. external import write_external_link
-    link1 = ExternalDefinedName('r1', 'over_there!$A$1:$B$2')
-    link2 = ExternalDefinedName('r2', 'somewhere_else!$C$10:$D$12')
-    links = [link1, link2]
-    el = write_external_link(links)
-    xml = tostring(el)
-    expected = """
-    <externalLink xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-      <externalBook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1">
-        <definedNames>
-          <definedName name="r1" refersTo="over_there!$A$1:$B$2"/>
-          <definedName name="r2" refersTo="somewhere_else!$C$10:$D$12"/>
-        </definedNames>
-      </externalBook>
-    </externalLink>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
 
 
 def test_read_external_link(datadir):

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-import posixpath
+from openpyxl.compat import basestring
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -13,8 +13,8 @@ from openpyxl.descriptors import (
     Sequence,
 )
 from openpyxl.descriptors.excel import Relation, ExtensionList
-from openpyxl.descriptors.nested import NestedText
-from openpyxl.descriptors.sequence import NestedSequence
+from openpyxl.descriptors.nested import NestedText, NestedValue
+from openpyxl.descriptors.sequence import NestedSequence, ValueSequence
 
 from openpyxl.packaging.relationship import (
     Relationship,
@@ -88,7 +88,7 @@ class ExternalSheetData(Serialisable):
 
 class ExternalSheetDataSet(Serialisable):
 
-    sheetData = Typed(expected_type=ExternalSheetData, )
+    sheetData = Sequence(expected_type=ExternalSheetData, )
 
     __elements__ = ('sheetData',)
 
@@ -98,7 +98,21 @@ class ExternalSheetDataSet(Serialisable):
         self.sheetData = sheetData
 
 
+class ExternalSheetNames(Serialisable):
+
+    sheetName = ValueSequence(expected_type=basestring)
+
+    __elements__ = ('sheetName',)
+
+    def __init__(self,
+                 sheetName=(),
+                ):
+        self.sheetName = sheetName
+
+
 class ExternalDefinedName(Serialisable):
+
+    tagname = "definedName"
 
     name = String()
     refersTo = String(allow_none=True)
@@ -114,44 +128,12 @@ class ExternalDefinedName(Serialisable):
         self.sheetId = sheetId
 
 
-class ExternalDefinedNames(Serialisable):
-
-    definedName = Sequence(expected_type=ExternalDefinedName, allow_none=True)
-
-    __elements__ = ('definedName',)
-
-    def __init__(self,
-                 definedName=(),
-                ):
-        self.definedName = definedName
-
-
-class ExternalSheetName(Serialisable):
-
-    val = String()
-
-    def __init__(self,
-                 val=None,
-                ):
-        self.val = val
-
-
-class ExternalSheetNames(Serialisable):
-
-    sheetName = Typed(expected_type=ExternalSheetName, )
-
-    __elements__ = ('sheetName',)
-
-    def __init__(self,
-                 sheetName=None,
-                ):
-        self.sheetName = sheetName
-
-
 class ExternalBook(Serialisable):
 
+    tagname = "externalBook"
+
     sheetNames = Typed(expected_type=ExternalSheetNames, allow_none=True)
-    definedNames = Typed(expected_type=ExternalDefinedNames, allow_none=True)
+    definedNames = NestedSequence(expected_type=ExternalDefinedName)
     sheetDataSet = Typed(expected_type=ExternalSheetDataSet, allow_none=True)
     id = Relation()
 
@@ -159,7 +141,7 @@ class ExternalBook(Serialisable):
 
     def __init__(self,
                  sheetNames=None,
-                 definedNames=None,
+                 definedNames=(),
                  sheetDataSet=None,
                  id=None,
                 ):
