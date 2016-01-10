@@ -203,6 +203,7 @@ def test_print_titles(Workbook):
 
 class TestNameRefersToValue:
 
+
     @pytest.fixture(autouse=True)
     def setup(self, datadir):
         datadir.chdir()
@@ -231,7 +232,7 @@ class TestNameRefersToValue:
 
     def test_worksheet_range(self):
         range = self.ws.get_named_range("MyRef")
-        assert range.coordinate == "A1"
+        assert range[0].coordinate == "A1"
 
 
     def test_worksheet_range_error_on_value_range(self):
@@ -246,7 +247,8 @@ class TestNameRefersToValue:
         ]
         no_scoped = ["MyRef", "MyValue"]
         ranges = self.wb.get_named_ranges()
-        assert [(r.name, r.scope.title) for r in ranges if r.scope is not None] == scoped
+        assert [(r.name, self.wb._sheets[int(r.scope)].title)
+                for r in ranges if r.scope is not None] == scoped
         assert [r.name for r in ranges if r.scope is None] == no_scoped
 
 
@@ -261,7 +263,7 @@ class TestNameRefersToValue:
         assert [r.name for r in ranges] == names
 
         values = ['3.33', '14.4', '9.99']
-        assert [r.value for r in ranges if hasattr(r, 'value')] == values
+        assert [r.value for r in ranges if not isinstance(r, NamedRange)] == values
 
 
 @pytest.mark.parametrize("value",
