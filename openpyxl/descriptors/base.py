@@ -171,6 +171,11 @@ class String(Typed):
     expected_type = basestring
 
 
+class Text(String, Convertible):
+
+    pass
+
+
 class ASCII(Typed):
 
     expected_type = bytes
