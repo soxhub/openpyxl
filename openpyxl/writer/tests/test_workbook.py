@@ -11,7 +11,7 @@ from openpyxl.tests.helper import compare_xml
 
 # package
 from openpyxl import Workbook, load_workbook
-from openpyxl.workbook.names.named_range import NamedRange
+from openpyxl.workbook.defined_name.named_range import NamedRange
 from openpyxl.xml.functions import Element, tostring, fromstring
 from openpyxl.xml.constants import XLTX, XLSX, XLSM, XLTM
 from .. excel import (
