@@ -55,6 +55,9 @@ class Serialisable(_Serialiasable):
             if key.startswith('{'):
                 del attrib[key]
 
+        if node.text and "attr_text" in cls.__attrs__:
+            attrib["attr_text"] = node.text
+
         for el in node:
             tag = localname(el)
             if tag in KEYWORDS:
@@ -104,6 +107,8 @@ class Serialisable(_Serialiasable):
                 del attrs[key]
 
         el = Element(tagname, attrs)
+        if "attr_text" in self.__attrs__:
+            el.text = getattr(self, "attr_text")
 
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
@@ -138,7 +143,7 @@ class Serialisable(_Serialiasable):
     def __iter__(self):
         for attr in self.__attrs__:
             value = getattr(self, attr)
-            if value is not None:
+            if attr != "attr_text" and value is not None:
                 yield attr, safe_string(value)
 
 
