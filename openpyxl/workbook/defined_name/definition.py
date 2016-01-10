@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
+    Alias,
     Typed,
     String,
     Float,
@@ -11,13 +12,22 @@ from openpyxl.descriptors import (
     NoneSet,
     Set,
     Sequence,
+    Text,
 )
+
+from openpyxl.formula import Tokenizer
+
+
+RESERVED = ["􏰀Print_Area", "􏰀Print_Titles", "􏰀Criteria",
+            "􏰀_FilterDatabase", "􏰀Extract", "􏰀􏰀Consolidate_Area",
+            "􏰀Sheet_Title"]
+
 
 class Definition(Serialisable):
 
     tagname = "definedName"
 
-    name = String()
+    name = String() # unique per workbook/worksheet
     comment = String(allow_none=True)
     customMenu = String(allow_none=True)
     description = String(allow_none=True)
@@ -32,6 +42,8 @@ class Definition(Serialisable):
     shortcutKey = String(allow_none=True)
     publishToServer = Bool(allow_none=True)
     workbookParameter = Bool(allow_none=True)
+    attr_text = Text(allow_none=True)
+    value = Alias("attr_text")
 
     def __init__(self,
                  name=None,
@@ -49,6 +61,7 @@ class Definition(Serialisable):
                  shortcutKey=None,
                  publishToServer=None,
                  workbookParameter=None,
+                 attr_text=None
                 ):
         self.name = name
         self.comment = comment
@@ -65,3 +78,9 @@ class Definition(Serialisable):
         self.shortcutKey = shortcutKey
         self.publishToServer = publishToServer
         self.workbookParameter = workbookParameter
+        self.attr_text = attr_text
+
+
+    @property
+    def type(self):
+        pass

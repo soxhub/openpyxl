@@ -13,20 +13,36 @@ def Definition():
 
 class TestDefinition:
 
-    def test_ctor(self, Definition):
-        defn = Definition(name="my_constant")
+
+    def test_write(self, Definition):
+        defn = Definition(name="pi",)
+        defn.value = 3.14
         xml = tostring(defn.to_tree())
         expected = """
-        <definedName name="my_constant"/>
+        <definedName name="pi">3.14</definedName>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def test_from_xml(self, Definition):
-        src = """
-        <definedName name="Northwind"/>
-        """
+    @pytest.mark.parametrize("src, name, value",
+                             [
+                ("""<definedName name="B1namedrange">Sheet1!$A$1</definedName>""",
+                 "B1namedrange",
+                 "Sheet1!$A$1"),
+                ("""<definedName name="references_external_workbook">[1]Sheet1!$A$1</definedName>""",
+                 "references_external_workbook",
+                 "[1]Sheet1!$A$1"),
+                ( """<definedName name="references_nr_in_ext_wb">[1]!B2range</definedName>""",
+                  "references_nr_in_ext_wb",
+                  "[1]!B2range"),
+                ( """<definedName name="references_other_named_range">B1namedrange</definedName>""",
+                  "references_other_named_range",
+                  "B1namedrange"),
+                             ]
+                             )
+    def test_from_xml(self, Definition, src, name, value):
         node = fromstring(src)
         defn = Definition.from_tree(node)
-        assert defn == Definition(name="Northwind")
+        assert defn.name == name
+        assert defn.value == value
