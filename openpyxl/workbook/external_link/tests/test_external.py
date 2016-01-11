@@ -110,12 +110,12 @@ def test_read_ole_link(datadir, ExternalLink):
 
 def test_read_external_link(datadir):
     from openpyxl.packaging.relationship import get_dependents
-    from .. external import detect_external_links
+    from .. external import read_external_link
     datadir.chdir()
     archive = ZipFile("book1.xlsx")
     rels = get_dependents(archive, ARC_WORKBOOK_RELS)
-    books = detect_external_links(rels, archive)
-    book = tuple(books)[0]
+    rel = rels["rId4"]
+    book = read_external_link(archive, rel.Target)
     assert book.file_link.Target == "xl/externalLinks/book2.xlsx"
 
 

@@ -17,6 +17,8 @@ from openpyxl.packaging.relationship import get_dependents
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.workbook.parser import WorkbookPackage
 from openpyxl.workbook.workbook import Workbook
+from openpyxl.workbook.external_link.external import read_external_link
+
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
 chart_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chartsheet"
@@ -29,6 +31,7 @@ class WorkbookParser:
         self.archive = archive
         self.wb = Workbook()
         self.sheets = []
+        self.rels = get_dependents(self.archive, ARC_WORKBOOK_RELS)
 
 
     def parse(self):
@@ -41,9 +44,13 @@ class WorkbookParser:
         self.wb.active = package.active
         self.sheets = package.sheets
 
+        for ext_ref in package.externalReferences:
+            rel = self.rels[ext_ref.id]
+            self.wb._external_links.append(read_external_link(self.archive,
+                                                              rel.Target))
+
 
     def find_sheets(self):
-        rels = get_dependents(self.archive, ARC_WORKBOOK_RELS)
 
         for sheet in self.sheets:
-            yield sheet, rels[sheet.id]
+            yield sheet, self.rels[sheet.id]

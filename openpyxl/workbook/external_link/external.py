@@ -186,13 +186,3 @@ def read_external_link(archive, book_path):
     book.file_link = deps.Relationship[0]
 
     return book
-
-
-def detect_external_links(rels, archive):
-    """
-    Find any external links in a workbook
-    """
-
-    for r in rels.find(EXTERNAL_LINK_NS):
-
-        yield read_external_link(archive, r.Target)

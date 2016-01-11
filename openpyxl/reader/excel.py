@@ -38,7 +38,6 @@ from openpyxl.xml.constants import (
 
 from openpyxl.comments.properties import CommentSheet
 from openpyxl.workbook import Workbook
-from openpyxl.workbook.external_link.external import detect_external_links
 from openpyxl.workbook.defined_name.named_range import read_named_ranges
 
 from .strings import read_string_table
@@ -239,11 +238,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
 
     wb._differential_styles = [] # reset
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
-
-    if EXTERNAL_LINK in package:
-        rels = get_dependents(archive, ARC_WORKBOOK_RELS)
-        wb._external_links = list(detect_external_links(rels, archive))
-
 
     archive.close()
     return wb
