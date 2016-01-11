@@ -176,18 +176,23 @@ class ExternalLink(Serialisable):
         return node
 
 
+def read_external_link(archive, book_path):
+    src = archive.read(book_path)
+    node = fromstring(src)
+    book = ExternalLink.from_tree(node)
+
+    link_path = get_rels_path(book_path)
+    deps = get_dependents(archive, link_path)
+    book.file_link = deps.Relationship[0]
+
+    return book
+
+
 def detect_external_links(rels, archive):
     """
     Find any external links in a workbook
     """
 
     for r in rels.find(EXTERNAL_LINK_NS):
-        src = archive.read(r.Target)
-        node = fromstring(src)
-        book = ExternalLink.from_tree(node)
 
-        path = get_rels_path(r.Target)
-        deps = get_dependents(archive, path)
-        book.file_link = deps.Relationship[0]
-
-        yield book
+        yield read_external_link(archive, r.Target)
