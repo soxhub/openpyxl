@@ -56,7 +56,12 @@ class TestDefinition:
                  "pi",
                  "3.14",
                  "NUMBER"
-                 )
+                 ),
+                ("""<definedName name="name">"charlie"</definedName>""",
+                 "name",
+                 '"charlie"',
+                 "TEXT"
+                 ),
                              ]
                              )
     def test_from_xml(self, Definition, src, name, value, value_type):
