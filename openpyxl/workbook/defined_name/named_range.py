@@ -13,6 +13,7 @@ from openpyxl.compat import unicode
 from openpyxl.utils.exceptions import NamedRangeException
 from openpyxl.xml.functions import fromstring, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.formula import Tokenizer
 
 # constants
 NAMED_RANGE_RE = re.compile("""
@@ -48,10 +49,6 @@ class NamedValue(object):
             value = getattr(self, attr, None)
             if value is not None:
                 yield attr, value
-
-
-#backwards compatibility
-NamedRangeContainingValue = NamedValue
 
 
 class NamedRange(NamedValue):
@@ -101,11 +98,10 @@ def split_named_range(range_string):
             yield sheet_name, xlrange
 
 
-def refers_to_range(range_string):
-    if FORMULA_REGEX.match(range_string):
-        return
-    if range_string:
-        return NAMED_RANGE_RE.match(range_string) is not None
+def refers_to_range(value):
+    tok = Tokenizer(u"=" + value)
+    tok.parse()
+    return tok.items[0].subtype == "RANGE" and NAMED_RANGE_RE.match(value) is not None
 
 
 def external_range(range_string):

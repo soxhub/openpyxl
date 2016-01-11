@@ -34,16 +34,19 @@ class DummyWB:
             return self.ws
 
 
-@pytest.mark.parametrize("range_string",
+@pytest.mark.parametrize("value, is_range",
                          [
-                             "'My Sheet'!$D$8",
-                             "Sheet1!$A$1",
-                             "[1]Sheet1!$A$1",
-                             "[1]!B2range",
-                         ])
-def test_check_range(range_string):
+                ("'My Sheet'!$D$8", True),
+                ("Sheet1!$A$1", True),
+                ("[1]Sheet1!$A$1", True),
+                ("[1]!B2range", True),
+                ("OFFSET(MODEL!$A$1,'Stock Graphs'!$D$3-1,'Stock Graphs'!$C$25+5,'Stock Graphs'!$D$6,1)/1.65", False),
+                ("B1namedrange", False),
+                         ]
+                         )
+def test_check_range(value, is_range):
     from .. named_range import refers_to_range
-    assert refers_to_range(range_string) is True
+    assert refers_to_range(value) is is_range
 
 
 @pytest.mark.parametrize("range_string, result",
@@ -156,7 +159,7 @@ def test_read_external_ranges(datadir):
         ("references_other_named_range", "B1namedrange"),
     ]
     for xlr, target in zip(named_ranges, expected):
-        assert xlr.name, xlr.value == target
+        assert xlr.name, xlr.name == target
 
 
 ranges_counts = (
@@ -283,7 +286,7 @@ def test_formula_names(value):
                          ])
 def test_formula_not_range(value):
     from .. named_range import refers_to_range
-    assert refers_to_range(value) is None
+    assert not refers_to_range(value)
 
 
 @pytest.mark.parametrize("value, result",
