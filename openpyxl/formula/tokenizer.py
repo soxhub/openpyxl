@@ -354,6 +354,9 @@ class Token(object):
     ERROR = 'ERROR'
     RANGE = 'RANGE'
 
+    def __repr__(self):
+        return u"{0} {1} {2}:".format(self.type, self.subtype, self.value)
+
     @classmethod
     def make_operand(cls, value):
         "Create an operand token."
