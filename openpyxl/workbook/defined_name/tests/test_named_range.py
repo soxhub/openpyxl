@@ -159,7 +159,7 @@ def test_read_external_ranges(datadir):
         ("references_other_named_range", "B1namedrange"),
     ]
     for xlr, target in zip(named_ranges, expected):
-        assert xlr.name, xlr.name == target
+        assert (xlr.name, xlr.value) == target
 
 
 ranges_counts = (
