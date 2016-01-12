@@ -418,15 +418,23 @@ class TestWorksheet:
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
 
 
-    def test_print_titles(self):
+    @pytest.mark.parametrize("value, result, rows_cols",
+                             [
+                                 (3, "1:3", None),
+                                 (4, "A:D", "cols")
+                             ])
+    def test_print_title_old(self, value, result, rows_cols):
         wb = Workbook()
         ws = wb.active
-        scope = wb._active_sheet_index
-        ws.add_print_title(1, rows_or_cols='rows')
-        print_titles = wb.get_named_range('_xlnm.Print_Titles')
-        assert print_titles.name == '_xlnm.Print_Titles'
-        assert str(print_titles.destinations) == """[(<Worksheet "Sheet">, '$1:$1')]"""
-        assert print_titles.scope == scope
+        ws.add_print_title(value, rows_cols)
+        assert ws.print_titles == result
+
+
+    def test_print_ares(self):
+        wb = Workbook()
+        ws = wb.active
+        ws.print_area = "A1:F5"
+        assert ws.print_area == "$A$1:$F$5"
 
 
 class TestPositioning(object):

@@ -30,6 +30,7 @@ from openpyxl.utils import (
     range_boundaries,
     rows_from_range,
     coordinate_to_tuple,
+    absolute_coordinate,
 )
 from openpyxl.cell import Cell
 from openpyxl.utils.exceptions import (
@@ -40,7 +41,7 @@ from openpyxl.utils.exceptions import (
 from openpyxl.utils.units import (
     points_to_pixels,
     DEFAULT_COLUMN_WIDTH,
-    DEFAULT_ROW_HEIGHT
+    DEFAULT_ROW_HEIGHT,
 )
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.defined_name.named_range import NamedRange
@@ -116,6 +117,9 @@ class Worksheet(_WorkbookChild):
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
+        self._print_rows = None
+        self._print_cols = None
+        self._print_area = None
         self.page_margins = PageMargins()
         self.header_footer = HeaderFooter()
         self.sheet_view = SheetView()
@@ -238,6 +242,8 @@ class Worksheet(_WorkbookChild):
             sel.insert(1, Selection(pane="bottomLeft", activeCell=None, sqref=None))
             view.selection = sel
 
+
+    @deprecated("Set print titles rows or columns directly")
     def add_print_title(self, n, rows_or_cols='rows'):
         """ Print Titles are rows or columns that are repeated on each printed sheet.
         This adds n rows or columns at the top or left of the sheet
@@ -246,11 +252,11 @@ class Worksheet(_WorkbookChild):
         scope = self.parent.get_index(self)
 
         if rows_or_cols == 'cols':
-            r = '$A:$%s' % get_column_letter(n)
-        else:
-            r = '$1:$%d' % n
+            self.print_title_cols = 'A:%s' % get_column_letter(n)
 
-        self.parent.create_named_range('_xlnm.Print_Titles', self, r, scope)
+        else:
+            self.print_title_rows = '1:%d' % n
+
 
     def cell(self, coordinate=None, row=None, column=None, value=None):
         """Returns a cell object based on the given coordinates.
@@ -730,3 +736,61 @@ class Worksheet(_WorkbookChild):
     def _write(self, shared_strings=None):
         from openpyxl.writer.worksheet import write_worksheet
         return write_worksheet(self, shared_strings)
+
+
+    @property
+    def print_titles(self):
+        """
+        Return the print titles for the worksheet as rows and columns,
+        if set.
+        """
+        if self.print_title_rows and self.print_title_cols:
+            return ",".join(self.print_title_rows, self.print_title_cols)
+        elif self.print_title_rows:
+            return self.print_title_rows
+        elif self.print_title_cols:
+            return self.print_title_cols
+
+
+    @property
+    def print_title_rows(self):
+        return self._print_rows
+
+
+    @print_title_rows.setter
+    def print_title_rows(self, rows):
+        """
+        Set rows to be printed on the top of every page
+        format `A:B
+        """
+        self._print_rows = rows
+
+
+    @property
+    def print_title_cols(self):
+        return self._print_cols
+
+
+    @print_title_cols.setter
+    def print_title_cols(self, cols):
+        """
+        Set cols to be printed on the left of every page
+        format ``1:3`
+        """
+        self._print_cols = cols
+
+
+    @property
+    def print_area(self):
+        """
+        Return the print area for the worksheet, if set
+        """
+        return self._print_area
+
+
+    @print_area.setter
+    def print_area(self, value):
+        """
+        Range of cells in the form A1:D4
+        """
+        self._print_area = absolute_coordinate(value)
