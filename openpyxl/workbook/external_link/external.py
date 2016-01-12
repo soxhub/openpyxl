@@ -13,22 +13,16 @@ from openpyxl.descriptors import (
     Sequence,
 )
 from openpyxl.descriptors.excel import Relation, ExtensionList
-from openpyxl.descriptors.nested import NestedText, NestedValue
+from openpyxl.descriptors.nested import NestedText
 from openpyxl.descriptors.sequence import NestedSequence, ValueSequence
 
 from openpyxl.packaging.relationship import (
     Relationship,
-    RelationshipList,
     get_rels_path,
     get_dependents
     )
-from openpyxl.xml.constants import (
-    SHEET_MAIN_NS,
-    EXTERNAL_LINK_NS,
-)
-from openpyxl.xml.functions import (
-    fromstring,
-)
+from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import fromstring
 
 
 """Manage links to external Workbooks"""
