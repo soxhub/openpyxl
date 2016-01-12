@@ -87,3 +87,18 @@ class TestDefinition:
     def test_reserved(self, Definition, name, reserved):
         defn = Definition(name=name)
         assert defn.is_reserved == reserved
+
+
+    def test_destinations(self, Definition):
+        defn = Definition(name="some")
+        defn.value = "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7,Sheet1!$E$9:$E$11,Sheet1!$D$8"
+
+        assert defn.type == "RANGE"
+        des = tuple(defn.destinations)
+        assert des == (
+            ("Sheet1", '$C$5:$C$7'),
+            ("Sheet1", '$C$9:$C$11'),
+            ("Sheet1", '$E$5:$E$7'),
+            ("Sheet1", '$E$9:$E$11'),
+            ("Sheet1", '$D$8'),
+        )

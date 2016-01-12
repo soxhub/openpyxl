@@ -16,7 +16,7 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.formula import Tokenizer
-
+from openpyxl.utils import SHEETRANGE_RE
 
 RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
@@ -95,3 +95,15 @@ class Definition(Serialisable):
     @property
     def is_reserved(self):
         return self.name in RESERVED
+
+
+    @property
+    def destinations(self):
+        if self.type == "RANGE":
+            tok = Tokenizer("=" + self.value)
+            tok.parse()
+            for part in tok.items:
+                if part.subtype == "RANGE":
+                    m = SHEETRANGE_RE.match(part.value)
+                    yield m.group('notquoted'), m.group('cells')
+
