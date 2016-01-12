@@ -224,7 +224,7 @@ class Workbook(object):
     def create_named_range(self, name, worksheet, range, scope=None):
         """Create a new named_range on a worksheet"""
         named_range = NamedRange(name, [(worksheet, range)], scope)
-        self.add_named_range(named_range)
+        self._named_ranges.append(named_range)
 
     def get_named_ranges(self):
         """Return all named ranges"""
@@ -236,12 +236,10 @@ class Workbook(object):
 
     def get_named_range(self, name):
         """Return the range specified by name."""
-        requested_range = None
         for named_range in self._named_ranges:
             if named_range.name == name:
-                requested_range = named_range
-                break
-        return requested_range
+                return named_range
+
 
     def remove_named_range(self, named_range):
         """Remove a named_range from this workbook."""
