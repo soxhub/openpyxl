@@ -420,8 +420,8 @@ class TestWorksheet:
 
     @pytest.mark.parametrize("value, result, rows_cols",
                              [
-                                 (3, "1:3", None),
-                                 (4, "A:D", "cols")
+                                 (3, "Sheet!1:3", None),
+                                 (4, "Sheet!A:D", "cols")
                              ])
     def test_print_title_old(self, value, result, rows_cols):
         wb = Workbook()
@@ -430,7 +430,22 @@ class TestWorksheet:
         assert ws.print_titles == result
 
 
-    def test_print_ares(self):
+    @pytest.mark.parametrize("rows, cols, titles",
+                             [
+                                ("1:4", None, "Sheet!1:4"),
+                                (None, "A:F", "Sheet!A:F"),
+                                ("1:2", "C:D", "Sheet!1:2,Sheet!C:D"),
+                             ]
+                             )
+    def test_print_titles_new(self, rows, cols, titles):
+        wb = Workbook()
+        ws = wb.active
+        ws.print_title_rows = rows
+        ws.print_title_cols = cols
+        assert ws.print_titles == titles
+
+
+    def test_print_area(self):
         wb = Workbook()
         ws = wb.active
         ws.print_area = "A1:F5"

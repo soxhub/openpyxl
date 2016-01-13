@@ -103,17 +103,15 @@ def test_write_workbook(datadir):
 
 
 def test_write_named_range():
-    from openpyxl.writer.workbook import _write_defined_names
     wb = Workbook()
     ws = wb.active
     wb.create_named_range("test_range", ws, value="A1:B5")
-    root = Element("root")
-    _write_defined_names(wb, root)
-    xml = tostring(root)
+
+    xml = tostring(wb.defined_names.to_tree())
     expected = """
-    <root>
+    <definedNames>
      <definedName name="test_range">Sheet!A1:B5</definedName>
-    </root>
+    </definedNames>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff

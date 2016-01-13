@@ -139,30 +139,34 @@ def write_workbook(workbook):
             external_references.append(ext)
 
     # Defined names
-    defined_names = SubElement(root, 'definedNames')
-    _write_defined_names(workbook, defined_names)
+    defined_names = workbook.defined_names
 
     # Defined names -> autoFilter
-    for i, sheet in enumerate(workbook.worksheets):
+    for idx, sheet in enumerate(workbook.worksheets):
         auto_filter = sheet.auto_filter.ref
-        if not auto_filter:
-            continue
-        name = Definition(name='_xlnm._FilterDatabase', localSheetId=i, hidden=True)
-        name.value = "'%s'!%s" % (sheet.title.replace("'", "''"),
+        if auto_filter:
+            name = Definition(name='_xlnm._FilterDatabase', localSheetId=idx, hidden=True)
+            name.value = "'%s'!%s" % (sheet.title.replace("'", "''"),
                                  absolute_coordinate(auto_filter))
-        defined_names.append(name.to_tree())
+            defined_names.append(name)
+
+        # print titles
+        if sheet.print_titles:
+            name = Definition(name="_xlnm._PrintTitles", localSheetId=idx)
+            name.value = sheet.print_titles
+            defined_names.append(name)
+
+        # print areas
+        if sheet.print_area:
+            name = Definition(name="_xlnm._PrintAreas", localSheetId=idx)
+            name.value = sheet.print_area
+            defined_names.append(name)
+
+    root.append(defined_names.to_tree())
 
     SubElement(root, 'calcPr',
                {'calcId': '124519', 'fullCalcOnLoad': '1'})
     return tostring(root)
-
-
-def _write_defined_names(workbook, names):
-    """
-    Append definedName elements to the definedNames node.
-    """
-    for name in workbook.defined_names.definedName:
-        names.append(name.to_tree())
 
 
 def write_workbook_rels(workbook):

@@ -753,7 +753,8 @@ class Worksheet(_WorkbookChild):
 
     @property
     def print_title_rows(self):
-        return self._print_rows
+        if self._print_rows:
+            return "{0}!{1}".format(self.title, self._print_rows)
 
 
     @print_title_rows.setter
@@ -767,7 +768,8 @@ class Worksheet(_WorkbookChild):
 
     @property
     def print_title_cols(self):
-        return self._print_cols
+        if self._print_cols:
+            return "{0}!{1}".format(self.title, self._print_cols)
 
 
     @print_title_cols.setter
@@ -777,6 +779,16 @@ class Worksheet(_WorkbookChild):
         format ``1:3`
         """
         self._print_cols = cols
+
+
+    @property
+    def print_titles(self):
+        if self.print_title_cols and self.print_title_rows:
+            return ",".join([self.print_title_rows, self.print_title_cols])
+        elif self.print_title_rows:
+            return self.print_title_rows
+        elif self.print_title_cols:
+            return self.print_title_cols
 
 
     @property
