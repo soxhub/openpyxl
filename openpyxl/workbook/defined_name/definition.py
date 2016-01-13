@@ -106,4 +106,3 @@ class Definition(Serialisable):
                 if part.subtype == "RANGE":
                     m = SHEETRANGE_RE.match(part.value)
                     yield m.group('notquoted'), m.group('cells')
-

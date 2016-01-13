@@ -113,7 +113,7 @@ def test_write_named_range():
     xml = tostring(root)
     expected = """
     <root>
-     <s:definedName xmlns:s="http://schemas.openxmlformats.org/spreadsheetml/2006/main" name="test_range">'Sheet'!$A$1:$B$5</s:definedName>
+     <definedName name="test_range">'Sheet'!$A$1:$B$5</definedName>
     </root>
     """
     diff = compare_xml(xml, expected)
