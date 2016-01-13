@@ -107,7 +107,7 @@ def test_write_named_range():
     wb = Workbook()
     ws = wb.active
     xlrange = NamedRange('test_range', [(ws, "A1:B5")])
-    wb._named_ranges.append(xlrange)
+    wb.defined_names.append(xlrange)
     root = Element("root")
     _write_defined_names(wb, root)
     xml = tostring(root)

@@ -118,7 +118,7 @@ def test_get_sheet_names():
 
 def test_get_named_ranges():
     wb = Workbook()
-    assert wb.get_named_ranges() == wb._named_ranges
+    assert wb.get_named_ranges() == wb.defined_names
 
 
 def test_add_named_range():

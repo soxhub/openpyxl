@@ -237,7 +237,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
         ws.sheet_state = sheet.state
 
     wb._differential_styles = [] # reset
-    wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
+    wb.defined_names = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
 
     archive.close()
     return wb

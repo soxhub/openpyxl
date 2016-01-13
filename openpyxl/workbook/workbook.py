@@ -33,7 +33,7 @@ class Workbook(object):
                  ):
         self._sheets = []
         self._active_sheet_index = 0
-        self._named_ranges = []
+        self.defined_names = []
         self._external_links = []
         self.properties = DocumentProperties()
         self.security = DocumentSecurity()
@@ -224,26 +224,26 @@ class Workbook(object):
     def create_named_range(self, name, worksheet, range, scope=None):
         """Create a new named_range on a worksheet"""
         named_range = NamedRange(name, [(worksheet, range)], scope)
-        self._named_ranges.append(named_range)
+        self.defined_names.append(named_range)
 
     def get_named_ranges(self):
         """Return all named ranges"""
-        return self._named_ranges
+        return self.defined_names
 
     def add_named_range(self, named_range):
         """Add an existing named_range to the list of named_ranges."""
-        self._named_ranges.append(named_range)
+        self.defined_names.append(named_range)
 
     def get_named_range(self, name):
         """Return the range specified by name."""
-        for named_range in self._named_ranges:
+        for named_range in self.defined_names:
             if named_range.name == name:
                 return named_range
 
 
     def remove_named_range(self, named_range):
         """Remove a named_range from this workbook."""
-        self._named_ranges.remove(named_range)
+        self.defined_names.remove(named_range)
 
     def save(self, filename):
         """Save the current workbook under the given `filename`.
