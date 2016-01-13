@@ -138,4 +138,7 @@ class DefinitionList(Serialisable):
 
 
     def __delitem__(self, name):
-        del self.definedName[name]
+        for idx, defn in enumerate(self.definedName):
+            if defn.name == name:
+                del self.definedName[idx]
+                break

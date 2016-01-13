@@ -245,15 +245,17 @@ class Workbook(object):
         self.defined_names.append(named_range)
 
 
-    @deprecated("User workbook.defined_names[name]")
+    @deprecated("Use workbook.defined_names[name]")
     def get_named_range(self, name):
         """Return the range specified by name."""
         return self.defined_names[name]
 
 
+    @deprecated("Use del workbook.defined_names[name]")
     def remove_named_range(self, named_range):
         """Remove a named_range from this workbook."""
-        self.defined_names.remove(named_range)
+        del self.defined_names[named_range]
+
 
     def save(self, filename):
         """Save the current workbook under the given `filename`.
