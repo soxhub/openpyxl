@@ -106,3 +106,36 @@ class Definition(Serialisable):
                 if part.subtype == "RANGE":
                     m = SHEETRANGE_RE.match(part.value)
                     yield m.group('notquoted'), m.group('cells')
+
+
+
+class DefinitionList(Serialisable):
+
+    tagname = "definedNames"
+
+    definedName = Sequence(expected_type=Definition)
+
+
+    def __init__(self, definedName=()):
+        self.definedName = definedName
+
+
+    def append(self, defn):
+        self.definedName.append(defn)
+
+
+    def __contains__(self, name):
+        for defn in self.definedName:
+            if defn.name == name:
+                return True
+
+
+    def __getitem__(self, name):
+        for defn in self.definedName:
+            if defn.name == name:
+                return defn
+        raise KeyError("No definition called {0}".format(name))
+
+
+    def __delitem__(self, name):
+        del self.definedName[name]

@@ -18,7 +18,7 @@ from openpyxl.styles.named_styles import NamedStyle
 
 from openpyxl.chartsheet import Chartsheet
 from . defined_name.named_range import NamedRange
-from .defined_name.definition import Definition
+from .defined_name.definition import Definition, DefinitionList
 from openpyxl.packaging.core import DocumentProperties
 from .protection import DocumentSecurity
 
@@ -34,7 +34,7 @@ class Workbook(object):
                  ):
         self._sheets = []
         self._active_sheet_index = 0
-        self.defined_names = []
+        self.defined_names = DefinitionList()
         self._external_links = []
         self.properties = DocumentProperties()
         self.security = DocumentSecurity()
@@ -222,27 +222,33 @@ class Workbook(object):
         """
         return [s.title for s in self._sheets]
 
-    def create_named_range(self, name, worksheet, range, scope=None):
+    def create_named_range(self, name, worksheet=None, value=None, scope=None):
         """Create a new named_range on a worksheet"""
         defn = Definition(name=name, localSheetId=scope)
         if worksheet is not None:
-            defn.value = "'{0}'!{1}".format(worksheet.title, range)
+            defn.value = "{0}!{1}".format(worksheet.title, value)
+        else:
+            defn.value = value
 
-        self.defined_names.append(named_range)
+        self.defined_names.append(defn)
 
+
+    @deprecated("Use workbook.defined_names")
     def get_named_ranges(self):
         """Return all named ranges"""
         return self.defined_names
 
+
+    @deprecated("Use workbook.defined_names.append")
     def add_named_range(self, named_range):
         """Add an existing named_range to the list of named_ranges."""
         self.defined_names.append(named_range)
 
+
+    @deprecated("User workbook.defined_names[name]")
     def get_named_range(self, name):
         """Return the range specified by name."""
-        for named_range in self.defined_names:
-            if named_range.name == name:
-                return named_range
+        return self.defined_names[name]
 
 
     def remove_named_range(self, named_range):

@@ -131,8 +131,8 @@ class TestWorksheet:
 
     def test_get_named_range(self, Worksheet):
         wb = Workbook()
-        ws = Worksheet(wb)
-        wb.create_named_range('test_range', ws, 'C5')
+        ws = wb.active
+        wb.create_named_range('test_range', ws, value='C5')
         xlrange = tuple(ws.get_named_range('test_range'))
         cell = xlrange[0]
         assert isinstance(cell, Cell)
@@ -141,14 +141,14 @@ class TestWorksheet:
 
     def test_get_bad_named_range(self, Worksheet):
         ws = Worksheet(Workbook())
-        with pytest.raises(NamedRangeException):
+        with pytest.raises(KeyError):
             ws.get_named_range('bad_range')
 
 
     def test_get_named_range_wrong_sheet(self, Worksheet):
         wb = Workbook()
-        ws1 = Worksheet(wb)
-        ws2 = Worksheet(wb)
+        ws1 = wb.create_sheet("Sheet1")
+        ws2 = wb.create_sheet("Sheet2")
         wb.create_named_range('wrong_sheet_range', ws1, 'C5')
         with pytest.raises(NamedRangeException):
             ws2.get_named_range('wrong_sheet_range')
@@ -166,7 +166,7 @@ class TestWorksheet:
 
     def test_cell_range_name(self, Worksheet):
         wb = Workbook()
-        ws = Worksheet(wb)
+        ws = wb.active
         wb.create_named_range('test_range_single', ws, 'B12')
         c_range_name = ws.get_named_range('test_range_single')
         c_range_coord = tuple(tuple(ws.iter_rows('B12'))[0])

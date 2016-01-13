@@ -468,7 +468,7 @@ class Worksheet(_WorkbookChild):
                         for column in range(min_col, max_col + 1))
 
 
-    def get_named_range(self, range_string):
+    def get_named_range(self, range_name):
         """
         Returns a 2D array of cells, with optional row and column offsets.
 
@@ -477,24 +477,23 @@ class Worksheet(_WorkbookChild):
 
         :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
         """
-        named_range = self.parent.get_named_range(range_string)
-        if named_range is None:
-            msg = '%s is not a valid range name' % range_string
-            raise NamedRangeException(msg)
-        if not isinstance(named_range, NamedRange):
+        defn = self.parent.defined_names[range_name]
+        if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
+            msg = "{0} not available in this worksheet".format(range_name)
+            raise KeyError(msg)
+
+        if defn.type != "RANGE":
             msg = '%s refers to a value, not a range' % range_string
             raise NamedRangeException(msg)
 
         result = []
-        for destination in named_range.destinations:
-            worksheet, cells_range = destination
+        for title, cells_range in defn.destinations:
+            ws = self.parent[title]
+            if ws != self:
+                raise NamedRangeException("Range includes cells from another worksheet")
+            iterator = getattr(ws, "iter_rows")
 
-            if worksheet is not self:
-                msg = 'Range %s is not defined on worksheet %s' % \
-                    (cells_range, self.title)
-                raise NamedRangeException(msg)
-
-            for row in self.iter_rows(cells_range):
+            for row in iterator(cells_range):
                 result.extend(row)
 
         return tuple(result)
