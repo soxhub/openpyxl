@@ -101,27 +101,25 @@ def write_root_rels(workbook):
 def write_workbook(workbook):
     """Write the core workbook xml."""
 
-    root = Element('{%s}workbook' % SHEET_MAIN_NS)
-    if LXML:
-        _nsmap = {'r':REL_NS}
-        root = Element('{%s}workbook' % SHEET_MAIN_NS, nsmap=_nsmap)
+    root = Element('workbook')
+    root.set("xmlns", SHEET_MAIN_NS)
 
     wb_props = {}
     if workbook.code_name is not None:
         wb_props['codeName'] = workbook.code_name
-    SubElement(root, '{%s}workbookPr' % SHEET_MAIN_NS, wb_props)
+    SubElement(root, 'workbookPr', wb_props)
 
     # book views
-    book_views = SubElement(root, '{%s}bookViews' % SHEET_MAIN_NS)
-    SubElement(book_views, '{%s}workbookView' % SHEET_MAIN_NS,
+    book_views = SubElement(root, 'bookViews')
+    SubElement(book_views, 'workbookView',
                {'activeTab': '%d' % workbook._active_sheet_index}
                )
 
     # worksheets
-    sheets = SubElement(root, '{%s}sheets' % SHEET_MAIN_NS)
+    sheets = SubElement(root, 'sheets')
     for i, sheet in enumerate(workbook._sheets, 1):
         sheet_node = SubElement(
-            sheets, '{%s}sheet' % SHEET_MAIN_NS,
+            sheets, 'sheet',
             {'name': sheet.title, 'sheetId': '%d' % i,
              '{%s}id' % REL_NS: 'rId%d' % i })
         if not sheet.sheet_state == 'visible':
@@ -131,17 +129,17 @@ def write_workbook(workbook):
 
     # external references
     if getattr(workbook, '_external_links', []):
-        external_references = SubElement(root, '{%s}externalReferences' % SHEET_MAIN_NS)
+        external_references = SubElement(root, 'externalReferences')
         # need to match a counter with a workbook's relations
         counter = len(workbook.worksheets) + 3 # strings, styles, theme
         if workbook.vba_archive:
             counter += 1
         for idx, _ in enumerate(workbook._external_links, counter+1):
-            ext = Element("{%s}externalReference" % SHEET_MAIN_NS, {"{%s}id" % REL_NS:"rId%d" % idx})
+            ext = Element("externalReference", {"{%s}id" % REL_NS:"rId%d" % idx})
             external_references.append(ext)
 
     # Defined names
-    defined_names = SubElement(root, '{%s}definedNames' % SHEET_MAIN_NS)
+    defined_names = SubElement(root, 'definedNames')
     _write_defined_names(workbook, defined_names)
 
     # Defined names -> autoFilter
@@ -149,13 +147,12 @@ def write_workbook(workbook):
         auto_filter = sheet.auto_filter.ref
         if not auto_filter:
             continue
-        name = SubElement(
-            defined_names, '{%s}definedName' % SHEET_MAIN_NS,
-            dict(name='_xlnm._FilterDatabase', localSheetId=str(i), hidden='1'))
-        name.text = "'%s'!%s" % (sheet.title.replace("'", "''"),
+        name = Definition(name='_xlnm._FilterDatabase', localSheetId=i, hidden=True)
+        name.value = "'%s'!%s" % (sheet.title.replace("'", "''"),
                                  absolute_coordinate(auto_filter))
+        defined_names.append(name.to_tree())
 
-    SubElement(root, '{%s}calcPr' % SHEET_MAIN_NS,
+    SubElement(root, 'calcPr',
                {'calcId': '124519', 'fullCalcOnLoad': '1'})
     return tostring(root)
 
