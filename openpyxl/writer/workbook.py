@@ -152,14 +152,14 @@ def write_workbook(workbook):
 
         # print titles
         if sheet.print_titles:
-            name = Definition(name="_xlnm._PrintTitles", localSheetId=idx)
+            name = Definition(name="_xlnm.PrintTitles", localSheetId=idx)
             name.value = sheet.print_titles
             defined_names.append(name)
 
         # print areas
         if sheet.print_area:
-            name = Definition(name="_xlnm._PrintAreas", localSheetId=idx)
-            name.value = sheet.print_area
+            name = Definition(name="_xlnm.PrintArea", localSheetId=idx)
+            name.value = "{0}!{1}".format(sheet.title, sheet.print_area)
             defined_names.append(name)
 
     root.append(defined_names.to_tree())
