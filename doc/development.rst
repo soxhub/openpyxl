@@ -46,6 +46,13 @@ client and the following URL.
     $ python setup.py develop
 
 
+Specification
+-------------
+
+The file specification for OOXML was released jointly as `ECMA 476
+<http://www.ecma-international.org/publications/standards/Ecma-376.htm>`_ and
+`ISO 29500 <http://standards.iso.org/ittf/PubliclyAvailableStandards/index.html>`_.
+
 Testing
 -------
 
@@ -96,8 +103,9 @@ Along with the SDK, Microsoft also has a `"Productivity Tool"
 <http://www.microsoft.com/en-us/download/details.aspx?id=30425>`_ for working
 with Office OpenXML.
 
-This allows you to quickly inspect or compare whole Excel files. Unfortunately,
-validation errors contain many false positives.
+This allows you to quickly inspect or compare whole Excel files.
+Unfortunately, validation errors contain many false positives. The tool also
+contain links to the specification and implementers' notes.
 
 Please see :doc:`windows-development` for additional information on setting up and testing on Windows.
 
