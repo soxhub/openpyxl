@@ -11,7 +11,7 @@ from openpyxl.tests.helper import compare_xml
 
 # package
 from openpyxl import Workbook, load_workbook
-from openpyxl.workbook.defined_name.named_range import NamedRange
+from openpyxl.workbook.defined_name.definition import Definition
 from openpyxl.xml.functions import Element, tostring, fromstring
 from openpyxl.xml.constants import XLTX, XLSX, XLSM, XLTM
 from .. excel import (
@@ -106,14 +106,13 @@ def test_write_named_range():
     from openpyxl.writer.workbook import _write_defined_names
     wb = Workbook()
     ws = wb.active
-    xlrange = NamedRange('test_range', [(ws, "A1:B5")])
-    wb.defined_names.append(xlrange)
+    wb.create_named_range("test_range", ws, value="A1:B5")
     root = Element("root")
     _write_defined_names(wb, root)
     xml = tostring(root)
     expected = """
     <root>
-     <definedName name="test_range">'Sheet'!$A$1:$B$5</definedName>
+     <definedName name="test_range">Sheet!A1:B5</definedName>
     </root>
     """
     diff = compare_xml(xml, expected)

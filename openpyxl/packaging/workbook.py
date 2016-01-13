@@ -49,7 +49,8 @@ class WorkbookParser:
             self.wb._external_links.append(read_external_link(self.archive,
                                                               rel.Target))
 
-        self.wb.defined_names = package.definedNames
+        if package.definedNames:
+            self.wb.defined_names = package.definedNames
 
 
     def find_sheets(self):

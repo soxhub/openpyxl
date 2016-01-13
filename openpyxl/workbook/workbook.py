@@ -236,7 +236,7 @@ class Workbook(object):
     @deprecated("Use workbook.defined_names")
     def get_named_ranges(self):
         """Return all named ranges"""
-        return self.defined_names
+        return self.defined_names.definedName
 
 
     @deprecated("Use workbook.defined_names.append")

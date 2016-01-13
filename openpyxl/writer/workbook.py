@@ -161,13 +161,7 @@ def _write_defined_names(workbook, names):
     """
     Append definedName elements to the definedNames node.
     """
-    for named_range in workbook.get_named_ranges():
-        attrs = dict(named_range)
-        if named_range.scope is not None:
-            attrs['localSheetId'] = named_range.scope
-
-        name = Definition(**attrs)
-        name.value = named_range.value
+    for name in workbook.defined_names.definedName:
         names.append(name.to_tree())
 
 
