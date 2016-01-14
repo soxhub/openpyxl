@@ -38,7 +38,6 @@ from openpyxl.xml.constants import (
 
 from openpyxl.comments.properties import CommentSheet
 from openpyxl.workbook import Workbook
-from openpyxl.workbook.defined_name.named_range import read_named_ranges
 
 from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
