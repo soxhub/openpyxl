@@ -54,10 +54,13 @@ class TestBorder:
         bd = Border(left=medium_blue,
                              right=medium_blue,
                              top=medium_blue,
-                             bottom=medium_blue)
+                             bottom=medium_blue,
+                             outline=False,
+                             diagonalDown=True,
+                             )
         xml = tostring(bd.to_tree())
         expected = """
-        <border>
+        <border diagonalDown="1" outline="0">
           <left style="medium">
             <color rgb="000000FF"></color>
           </left>
