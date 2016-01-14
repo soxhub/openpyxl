@@ -24,7 +24,9 @@ RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
                       "Sheet_Title"])
 
-RESERVED.REGEX = ""
+_names = "|".join(RESERVED)
+RESERVED_REGEX = re.compile(r"^_xlnm\.(?P<name>{0})".format(_names))
+
 
 class Definition(Serialisable):
 
@@ -93,11 +95,6 @@ class Definition(Serialisable):
         if parsed.type == "OPERAND":
             return parsed.subtype
         return parsed.type
-
-
-    @property
-    def is_reserved(self):
-        return self.name in RESERVED
 
 
     @property

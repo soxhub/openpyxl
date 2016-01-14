@@ -11,6 +11,25 @@ def Definition():
     return Definition
 
 
+@pytest.mark.parametrize("value, reserved",
+                         [
+                             ("_xlnm.Print_Area", True),
+                             ("_xlnm.Print_Titles", True),
+                             ("_xlnm.Criteria", True),
+                             ("_xlnm._FilterDatabase", True),
+                             ("_xlnm.Extract", True),
+                             ("_xlnm.Consolidate_Area", True),
+                             ("_xlnm.Sheet_Title", True),
+                             ("_xlnm.Pi", False),
+                             ("Pi", False),
+                         ]
+                         )
+def test_reserved(value, reserved):
+    from ..definition import RESERVED_REGEX
+    match = RESERVED_REGEX.match(value) is not None
+    assert match == reserved
+
+
 class TestDefinition:
 
 
@@ -70,23 +89,6 @@ class TestDefinition:
         assert defn.name == name
         assert defn.value == value
         assert defn.type == value_type
-
-
-    @pytest.mark.parametrize("name, reserved",
-                             [
-                                 ("Print_Area", True),
-                                 ("Print_Titles", True),
-                                 ("Criteria", True),
-                                 ("_FilterDatabase", True),
-                                 ("Extract", True),
-                                 ("Consolidate_Area", True),
-                                 ("Sheet_Title", True),
-                                 ("Pi", False),
-                             ]
-                             )
-    def test_reserved(self, Definition, name, reserved):
-        defn = Definition(name=name)
-        assert defn.is_reserved == reserved
 
 
     def test_destinations(self, Definition):
