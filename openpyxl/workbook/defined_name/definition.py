@@ -121,7 +121,9 @@ class DefinitionList(Serialisable):
 
 
     def append(self, defn):
-        self.definedName.append(defn)
+        names = self.definedName[:]
+        names.append(defn)
+        self.definedName = names
 
 
     def __contains__(self, name):
