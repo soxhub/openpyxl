@@ -1,5 +1,7 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
+
+import re
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -22,6 +24,7 @@ RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
                       "Sheet_Title"])
 
+RESERVED.REGEX = ""
 
 class Definition(Serialisable):
 
