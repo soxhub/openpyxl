@@ -108,8 +108,8 @@ class Border(HashableObject):
         for attr in self.__attrs__:
             value = getattr(self, attr)
             if value and attr != "outline":
-                yield attr, value
+                yield attr, safe_string(value)
             elif attr == "outline" and not value:
-                yield attr, value
+                yield attr, safe_string(value)
 
 DEFAULT_BORDER = Border()
