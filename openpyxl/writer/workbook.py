@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 """Write the workbook global settings to the archive."""
 
-# package imports
+from copy import copy
 
 from openpyxl import LXML
 from openpyxl.compat import safe_string
@@ -139,7 +139,7 @@ def write_workbook(workbook):
             external_references.append(ext)
 
     # Defined names
-    defined_names = workbook.defined_names
+    defined_names = copy(workbook.defined_names) # don't add special defns to workbook itself.
 
     # Defined names -> autoFilter
     for idx, sheet in enumerate(workbook.worksheets):
