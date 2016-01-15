@@ -18,7 +18,7 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.formula import Tokenizer
-from openpyxl.utils import SHEETRANGE_RE
+from openpyxl.utils import SHEETRANGE_RE, SHEET_TITLE
 
 RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
@@ -26,7 +26,12 @@ RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
 
 _names = "|".join(RESERVED)
 RESERVED_REGEX = re.compile(r"^_xlnm\.(?P<name>{0})".format(_names))
-
+COL_RANGE = r"""(?P<cols>[$]?[a-zA-Z]{1,3}:[$]?[a-zA-Z]{1,3})"""
+COL_RANGE_RE = re.compile(COL_RANGE)
+ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
+ROW_RANGE_RE = re.compile(ROW_RANGE)
+TITLES_REGEX = re.compile("""^{0}{1}?,?{2}?$""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
+                          re.VERBOSE)
 
 class Definition(Serialisable):
 

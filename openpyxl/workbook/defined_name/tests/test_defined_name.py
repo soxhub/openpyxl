@@ -30,6 +30,49 @@ def test_reserved(value, reserved):
     assert match == reserved
 
 
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("CD:DE", "CD:DE"),
+                             ("$CD:$DE", "$CD:$DE"),
+                         ]
+                         )
+def test_print_rows(value, expected):
+    from ..definition import COL_RANGE_RE
+    match = COL_RANGE_RE.match(value)
+    assert match.group("cols") == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("1:1", "1:1"),
+                             ("$2:$5", "$2:$5"),
+                         ]
+                         )
+def test_print_cols(value, expected):
+    from ..definition import ROW_RANGE_RE
+    match = ROW_RANGE_RE.match(value)
+    assert match.group("rows") == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("Sheet!$1:$1",
+                              {'cols': None, 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              ),
+                             ("Sheet!$1:$1,C:D",
+                              {'cols': 'C:D', 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              ),
+                            ("'Blatt5'!$C:$D",
+                             {'cols': '$C:$D', 'notquoted': None, 'quoted': 'Blatt5', 'rows': None}
+                             )
+                         ]
+                         )
+def test_print_titles(value, expected):
+    from ..definition import TITLES_REGEX
+    match = TITLES_REGEX.match(value)
+    assert match.groupdict() == expected
+
+
 class TestDefinition:
 
 
