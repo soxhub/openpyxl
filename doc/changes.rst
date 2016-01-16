@@ -25,6 +25,8 @@ Bug fixes
 ---------
 
 * `#574 <https://bitbucket.org/openpyxl/openpyxl/issues/574>`_ Exception raised when using the class method to parse Relationships
+* `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
+* `#579  <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
 
 
 2.3.3 (unreleased)
