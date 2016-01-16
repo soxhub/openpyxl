@@ -16,7 +16,7 @@ from openpyxl.descriptors import (
     Sequence,
     Descriptor,
 )
-
+from openpyxl.compat import safe_string
 from openpyxl.formula import Tokenizer
 from openpyxl.utils import SHEETRANGE_RE, SHEET_TITLE
 
@@ -32,6 +32,26 @@ ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
 ROW_RANGE_RE = re.compile(ROW_RANGE)
 TITLES_REGEX = re.compile("""^{0}{1}?,?{2}?$""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
                           re.VERBOSE)
+
+
+### utilities
+
+def _unpack_print_titles(defn):
+    """
+    Extract rows and or columns from print titles so that they can be
+    assigned to a worksheet
+    """
+    m = TITLES_REGEX.match(defn.value)
+    return m.group('rows'), m.group('cols')
+
+
+def _unpack_print_area(defn):
+    """
+    Extracr print area
+    """
+    m = SHEETRANGE_RE.match(defn.value)
+    return m.group("cells")
+
 
 class Definition(Serialisable):
 
@@ -112,6 +132,16 @@ class Definition(Serialisable):
                     m = SHEETRANGE_RE.match(part.value)
                     yield m.group('notquoted'), m.group('cells')
 
+
+    def __iter__(self):
+        for key in self.__attrs__:
+            if key == "attr_text":
+                continue
+            v = getattr(self, key)
+            if v is not None:
+                if key in RESERVED:
+                    key = "_xlnm." + key
+                yield key, safe_string(v)
 
 
 class DefinitionList(Serialisable):

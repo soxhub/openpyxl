@@ -73,6 +73,32 @@ def test_print_titles(value, expected):
     assert match.groupdict() == expected
 
 
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("Sheet1!$1:$2,$A:$A",
+                              ("$1:$2", "$A:$A")
+                              ),
+                         ]
+                         )
+def test_unpack_print_titles(Definition, value, expected):
+    from ..definition import _unpack_print_titles
+    defn = Definition(name="Print_Titles")
+    defn.value = value
+    assert _unpack_print_titles(defn) == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("Sheet1!$A$1:$E$15", "$A$1:$E$15"),
+                         ]
+                         )
+def test_unpack_print_area(Definition, value, expected):
+    from ..definition import _unpack_print_area
+    defn = Definition(name="Print_Area")
+    defn.value = value
+    assert _unpack_print_area(defn) == expected
+
+
 class TestDefinition:
 
 
