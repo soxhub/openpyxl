@@ -54,3 +54,20 @@ class TestWorkbookParser:
             ['Chart1', 'visible', 'xl/chartsheets/sheet1.xml', chart_type],
             ['Sheet1', 'visible', 'xl/worksheets/sheet1.xml', worksheet_type],
         ]
+
+
+    def test_assign_names(self, datadir, WorkbookParser):
+        datadir.chdir()
+        archive = ZipFile("print_settings.xlsx")
+        parser = WorkbookParser(archive)
+        parser.parse()
+
+        wb = parser.wb
+        assert len(wb.defined_names.definedName) == 4
+
+        parser.assign_names()
+        assert len(wb.defined_names.definedName) == 2
+        ws = wb['Sheet']
+        assert ws.print_title_rows == "Sheet!$1:$1"
+        assert ws.print_titles == "Sheet!$1:$1"
+        assert ws.print_area == "$A$1:$D$5"

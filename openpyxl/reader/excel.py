@@ -214,8 +214,8 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             wb._add_sheet(ws)
         else:
             fh = archive.open(worksheet_path)
-            parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
-            parser.parse()
+            ws_parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
+            ws_parser.parse()
             ws = wb[sheet_name]
 
             if rels:
@@ -234,6 +234,8 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
                     ws.legacy_drawing = rels[ws.legacy_drawing].target
 
         ws.sheet_state = sheet.state
+
+    parser.assign_names()
 
     wb._differential_styles = [] # reset
 

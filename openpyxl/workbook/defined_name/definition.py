@@ -133,6 +133,13 @@ class Definition(Serialisable):
                     yield m.group('notquoted'), m.group('cells')
 
 
+    @property
+    def is_reserved(self):
+        m = RESERVED_REGEX.match(self.name)
+        if m:
+            return m.group("name")
+
+
     def __iter__(self):
         for key in self.__attrs__:
             if key == "attr_text":

@@ -790,10 +790,8 @@ class Worksheet(_WorkbookChild):
     def print_titles(self):
         if self.print_title_cols and self.print_title_rows:
             return ",".join([self.print_title_rows, self.print_title_cols])
-        elif self.print_title_rows:
-            return self.print_title_rows
-        elif self.print_title_cols:
-            return self.print_title_cols
+        else:
+            return self.print_title_rows or self.print_title_cols
 
 
     @property
