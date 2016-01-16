@@ -173,3 +173,14 @@ class TestDefinition:
             ("Sheet1", '$E$9:$E$11'),
             ("Sheet1", '$D$8'),
         )
+
+
+    @pytest.mark.parametrize("name, expected",
+                             [
+                                 ("some_range", {'name':'some_range'}),
+                                 ("Print_Titles", {'name':'_xlnm.Print_Titles'}),
+                             ]
+                             )
+    def test_dict(self, Definition, name, expected):
+        defn = Definition(name)
+        assert dict(defn) == expected

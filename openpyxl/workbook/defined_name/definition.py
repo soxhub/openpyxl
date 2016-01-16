@@ -139,8 +139,8 @@ class Definition(Serialisable):
                 continue
             v = getattr(self, key)
             if v is not None:
-                if key in RESERVED:
-                    key = "_xlnm." + key
+                if v in RESERVED:
+                    v = "_xlnm." + v
                 yield key, safe_string(v)
 
 

@@ -145,20 +145,20 @@ def write_workbook(workbook):
     for idx, sheet in enumerate(workbook.worksheets):
         auto_filter = sheet.auto_filter.ref
         if auto_filter:
-            name = Definition(name='_xlnm._FilterDatabase', localSheetId=idx, hidden=True)
+            name = Definition(name='_FilterDatabase', localSheetId=idx, hidden=True)
             name.value = "'%s'!%s" % (sheet.title.replace("'", "''"),
                                  absolute_coordinate(auto_filter))
             defined_names.append(name)
 
         # print titles
         if sheet.print_titles:
-            name = Definition(name="_xlnm.PrintTitles", localSheetId=idx)
+            name = Definition(name="PrintTitles", localSheetId=idx)
             name.value = sheet.print_titles
             defined_names.append(name)
 
         # print areas
         if sheet.print_area:
-            name = Definition(name="_xlnm.PrintArea", localSheetId=idx)
+            name = Definition(name="PrintArea", localSheetId=idx)
             name.value = "{0}!{1}".format(sheet.title, sheet.print_area)
             defined_names.append(name)
 
