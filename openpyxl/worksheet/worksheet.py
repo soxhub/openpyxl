@@ -461,7 +461,7 @@ class Worksheet(_WorkbookChild):
 
         :rtype: generator
         """
-        # Column name cache is very important in large files.
+
         for row in range(min_row, max_row + 1):
             yield tuple(self.cell(row=row, column=column)
                         for column in range(min_col, max_col + 1))
