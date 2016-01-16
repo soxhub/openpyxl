@@ -16,6 +16,8 @@ Deprecations
 
 Cell anchor method
 Worksheet point_pos method
+Worksheet add_print_title method
+Workbook get_named_range, add_named_range, remove_named_range
 Comment text attribute
 
 
