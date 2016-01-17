@@ -8,7 +8,7 @@ import datetime
 # package imports
 from openpyxl.workbook import Workbook
 from openpyxl.reader.excel import load_workbook
-from openpyxl.workbook.defined_name.definition import Definition
+from openpyxl.workbook.defined_name.definition import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 
 # test imports
@@ -124,7 +124,7 @@ def test_get_named_ranges():
 def test_add_named_range():
     wb = Workbook()
     new_sheet = wb.create_sheet()
-    named_range = Definition('test_nr')
+    named_range = DefinedName('test_nr')
     named_range.value = "Sheet!A1"
     wb.add_named_range(named_range)
     named_ranges_list = wb.get_named_ranges()

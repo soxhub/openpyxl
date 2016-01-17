@@ -18,7 +18,7 @@ from openpyxl.descriptors.nested import NestedString
 
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
-from .defined_name.definition import Definition, DefinitionList
+from .defined_name.definition import DefinedName, DefinedNameList
 from .external_reference import ExternalReference
 from .function_group import FunctionGroupList
 from .pivot import PivotCacheList
@@ -92,7 +92,7 @@ class WorkbookPackage(Serialisable):
     sheets = NestedSequence(expected_type=Sheet)
     functionGroups = Typed(expected_type=FunctionGroupList, allow_none=True)
     externalReferences = NestedSequence(expected_type=ExternalReference)
-    definedNames = Typed(expected_type=DefinitionList, allow_none=True)
+    definedNames = Typed(expected_type=DefinedNameList, allow_none=True)
     calcPr = Typed(expected_type=CalcProperties, allow_none=True)
     oleSize = NestedString(allow_none=True, attribute="ref")
     customWorkbookViews = NestedSequence(expected_type=CustomWorkbookView)

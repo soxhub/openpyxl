@@ -53,7 +53,7 @@ def _unpack_print_area(defn):
     return m.group("cells")
 
 
-class Definition(Serialisable):
+class DefinedName(Serialisable):
 
     tagname = "definedName"
 
@@ -156,11 +156,11 @@ class Definition(Serialisable):
                 yield key, safe_string(v)
 
 
-class DefinitionList(Serialisable):
+class DefinedNameList(Serialisable):
 
     tagname = "definedNames"
 
-    definedName = Sequence(expected_type=Definition)
+    definedName = Sequence(expected_type=DefinedName)
 
 
     def __init__(self, definedName=()):
@@ -178,7 +178,7 @@ class DefinitionList(Serialisable):
 
 
     def append(self, defn):
-        if not isinstance(defn, Definition):
+        if not isinstance(defn, DefinedName):
             raise TypeError("""You can only append DefinedNames""")
         if self._duplicate(defn):
             raise ValueError("""DefinedName with the same name and scope already exists""")

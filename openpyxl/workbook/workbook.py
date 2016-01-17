@@ -17,7 +17,7 @@ from openpyxl.styles.cell_style import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
 
 from openpyxl.chartsheet import Chartsheet
-from .defined_name.definition import Definition, DefinitionList
+from .defined_name.definition import DefinedName, DefinedNameList
 from openpyxl.packaging.core import DocumentProperties
 from .protection import DocumentSecurity
 
@@ -33,7 +33,7 @@ class Workbook(object):
                  ):
         self._sheets = []
         self._active_sheet_index = 0
-        self.defined_names = DefinitionList()
+        self.defined_names = DefinedNameList()
         self._external_links = []
         self.properties = DocumentProperties()
         self.security = DocumentSecurity()
@@ -223,7 +223,7 @@ class Workbook(object):
 
     def create_named_range(self, name, worksheet=None, value=None, scope=None):
         """Create a new named_range on a worksheet"""
-        defn = Definition(name=name, localSheetId=scope)
+        defn = DefinedName(name=name, localSheetId=scope)
         if worksheet is not None:
             defn.value = "{0}!{1}".format(worksheet.title, value)
         else:

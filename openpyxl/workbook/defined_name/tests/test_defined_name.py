@@ -6,9 +6,9 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def Definition():
-    from ..definition import Definition
-    return Definition
+def DefinedName():
+    from ..definition import DefinedName
+    return DefinedName
 
 
 @pytest.mark.parametrize("value, reserved",
@@ -80,9 +80,9 @@ def test_print_titles(value, expected):
                               ),
                          ]
                          )
-def test_unpack_print_titles(Definition, value, expected):
+def test_unpack_print_titles(DefinedName, value, expected):
     from ..definition import _unpack_print_titles
-    defn = Definition(name="Print_Titles")
+    defn = DefinedName(name="Print_Titles")
     defn.value = value
     assert _unpack_print_titles(defn) == expected
 
@@ -92,9 +92,9 @@ def test_unpack_print_titles(Definition, value, expected):
                              ("Sheet1!$A$1:$E$15", "$A$1:$E$15"),
                          ]
                          )
-def test_unpack_print_area(Definition, value, expected):
+def test_unpack_print_area(DefinedName, value, expected):
     from ..definition import _unpack_print_area
-    defn = Definition(name="Print_Area")
+    defn = DefinedName(name="Print_Area")
     defn.value = value
     assert _unpack_print_area(defn) == expected
 
@@ -102,8 +102,8 @@ def test_unpack_print_area(Definition, value, expected):
 class TestDefinition:
 
 
-    def test_write(self, Definition):
-        defn = Definition(name="pi",)
+    def test_write(self, DefinedName):
+        defn = DefinedName(name="pi",)
         defn.value = 3.14
         xml = tostring(defn.to_tree())
         expected = """
@@ -158,16 +158,16 @@ class TestDefinition:
                 ),
                              ]
                              )
-    def test_from_xml(self, Definition, src, name, value, value_type):
+    def test_from_xml(self, DefinedName, src, name, value, value_type):
         node = fromstring(src)
-        defn = Definition.from_tree(node)
+        defn = DefinedName.from_tree(node)
         assert defn.name == name
         assert defn.value == value
         assert defn.type == value_type
 
 
-    def test_destinations(self, Definition):
-        defn = Definition(name="some")
+    def test_destinations(self, DefinedName):
+        defn = DefinedName(name="some")
         defn.value = "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7,Sheet1!$E$9:$E$11,Sheet1!$D$8"
 
         assert defn.type == "RANGE"
@@ -187,8 +187,8 @@ class TestDefinition:
                                  ("Print_Titles", {'name':'_xlnm.Print_Titles'}),
                              ]
                              )
-    def test_dict(self, Definition, name, expected):
-        defn = Definition(name)
+    def test_dict(self, DefinedName, name, expected):
+        defn = DefinedName(name)
         assert dict(defn) == expected
 
 
@@ -202,8 +202,8 @@ class TestDefinition:
                                  ("B1namedrange", 'RANGE'), # this should not be a range
                              ]
                              )
-    def test_check_type(self, Definition, value, expected):
-        defn = Definition(name="test")
+    def test_check_type(self, DefinedName, value, expected):
+        defn = DefinedName(name="test")
         defn.value = value
         assert defn.type == expected
 
@@ -215,47 +215,47 @@ class TestDefinition:
                                  ("[1]Sheet1!$A$1", True),
                                  ("[1]!B2range", True),
                              ])
-    def test_external_range(self, Definition, value, expected):
-        defn = Definition(name="test")
+    def test_external_range(self, DefinedName, value, expected):
+        defn = DefinedName(name="test")
         defn.value = value
         assert defn.is_external is expected
 
 
 
 @pytest.fixture
-def DefinitionList():
-    from ..definition import DefinitionList
-    return DefinitionList
+def DefinedNameList():
+    from ..definition import DefinedNameList
+    return DefinedNameList
 
 
 class TestDefinitionList:
 
 
-    def test_read(self, DefinitionList, datadir):
+    def test_read(self, DefinedNameList, datadir):
         datadir.chdir()
         with open("workbook.xml") as src:
             xml = src.read()
         node = fromstring(xml)
-        dl = DefinitionList.from_tree(node)
+        dl = DefinedNameList.from_tree(node)
         assert len(dl) == 6
 
 
-    def test_append(self, DefinitionList, Definition):
-        dl = DefinitionList()
-        defn = Definition("test")
+    def test_append(self, DefinedNameList, DefinedName):
+        dl = DefinedNameList()
+        defn = DefinedName("test")
         dl.append(defn)
         assert len(dl) == 1
 
 
-    def test_append_only(self, DefinitionList):
-        dl = DefinitionList(definedName=("test",))
+    def test_append_only(self, DefinedNameList):
+        dl = DefinedNameList(definedName=("test",))
         with pytest.raises(TypeError):
             dl.append("test")
 
 
-    def test_contains(self, DefinitionList, Definition):
-        dl = DefinitionList()
-        defn = Definition("test")
+    def test_contains(self, DefinedNameList, DefinedName):
+        dl = DefinedNameList()
+        defn = DefinedName("test")
         dl.append(defn)
         assert "test" in dl
 
@@ -266,9 +266,9 @@ class TestDefinitionList:
                                  0,
                              ]
                              )
-    def test_duplicate(self, DefinitionList, Definition, scope):
-        dl = DefinitionList()
-        defn = Definition("test", localSheetId=scope)
+    def test_duplicate(self, DefinedNameList, DefinedName, scope):
+        dl = DefinedNameList()
+        defn = DefinedName("test", localSheetId=scope)
         assert not dl._duplicate(defn)
         dl.append(defn)
         assert dl._duplicate(defn)
