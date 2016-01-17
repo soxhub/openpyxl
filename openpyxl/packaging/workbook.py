@@ -17,7 +17,7 @@ from openpyxl.packaging.relationship import get_dependents
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.workbook.parser import WorkbookPackage
 from openpyxl.workbook.workbook import Workbook
-from openpyxl.workbook.defined_name.defined_name import (
+from openpyxl.workbook.defined_name import (
     _unpack_print_area,
     _unpack_print_titles,
 )
