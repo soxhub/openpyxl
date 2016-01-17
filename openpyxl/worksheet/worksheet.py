@@ -8,6 +8,7 @@ from __future__ import absolute_import
 from itertools import islice, chain
 import re
 from inspect import isgenerator
+from weakref import ref
 
 # compatibility imports
 from openpyxl.compat import (
