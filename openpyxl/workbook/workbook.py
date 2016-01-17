@@ -17,7 +17,7 @@ from openpyxl.styles.cell_style import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
 
 from openpyxl.chartsheet import Chartsheet
-from .defined_name.definition import DefinedName, DefinedNameList
+from .defined_name import DefinedName, DefinedNameList
 from openpyxl.packaging.core import DocumentProperties
 from .protection import DocumentSecurity
 

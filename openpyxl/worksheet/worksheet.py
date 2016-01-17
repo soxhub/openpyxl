@@ -44,7 +44,7 @@ from openpyxl.utils.units import (
 )
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.child import _WorkbookChild
-from openpyxl.workbook.defined_name.definition import COL_RANGE_RE, ROW_RANGE_RE
+from openpyxl.workbook.defined_name.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .datavalidation import DataValidationList

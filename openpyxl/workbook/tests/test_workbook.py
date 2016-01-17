@@ -8,7 +8,7 @@ import datetime
 # package imports
 from openpyxl.workbook import Workbook
 from openpyxl.reader.excel import load_workbook
-from openpyxl.workbook.defined_name.definition import DefinedName
+from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 
 # test imports
