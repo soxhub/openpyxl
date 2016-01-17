@@ -150,6 +150,12 @@ class TestDefinition:
                  '"charlie"',
                  "TEXT"
                  ),
+                (
+                """<definedName name="THE_GREAT_ANSWER">'My Sheeet with a , and '''!$U$16:$U$24,'My Sheeet with a , and '''!$V$28:$V$36</definedName>""",
+                "THE_GREAT_ANSWER",
+                "'My Sheeet with a , and '''!$U$16:$U$24,'My Sheeet with a , and '''!$V$28:$V$36",
+                "RANGE"
+                ),
                              ]
                              )
     def test_from_xml(self, Definition, src, name, value, value_type):
@@ -184,3 +190,86 @@ class TestDefinition:
     def test_dict(self, Definition, name, expected):
         defn = Definition(name)
         assert dict(defn) == expected
+
+
+    @pytest.mark.parametrize("value, expected",
+                             [
+                                 ("'My Sheet'!$D$8", 'RANGE'),
+                                 ("Sheet1!$A$1", 'RANGE'),
+                                 ("[1]Sheet1!$A$1", 'RANGE'),
+                                 ("[1]!B2range", 'RANGE'),
+                                 ("OFFSET(MODEL!$A$1,'Stock Graphs'!$D$3-1,'Stock Graphs'!$C$25+5,'Stock Graphs'!$D$6,1)/1.65", 'FUNC'),
+                                 ("B1namedrange", 'RANGE'), # this should not be a range
+                             ]
+                             )
+    def test_check_type(self, Definition, value, expected):
+        defn = Definition(name="test")
+        defn.value = value
+        assert defn.type == expected
+
+
+    @pytest.mark.parametrize("value, expected",
+                             [
+                                 ("'My Sheet'!$D$8", False),
+                                 ("Sheet1!$A$1", False),
+                                 ("[1]Sheet1!$A$1", True),
+                                 ("[1]!B2range", True),
+                             ])
+    def test_external_range(self, Definition, value, expected):
+        defn = Definition(name="test")
+        defn.value = value
+        assert defn.is_external is expected
+
+
+
+@pytest.fixture
+def DefinitionList():
+    from ..definition import DefinitionList
+    return DefinitionList
+
+
+class TestDefinitionList:
+
+
+    def test_read(self, DefinitionList, datadir):
+        datadir.chdir()
+        with open("workbook.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinitionList.from_tree(node)
+        assert len(dl) == 6
+
+
+    def test_append(self, DefinitionList, Definition):
+        dl = DefinitionList()
+        defn = Definition("test")
+        dl.append(defn)
+        assert len(dl) == 1
+
+
+    def test_append_only(self, DefinitionList):
+        dl = DefinitionList(definedName=("test",))
+        with pytest.raises(TypeError):
+            dl.append("test")
+
+
+    def test_contains(self, DefinitionList, Definition):
+        dl = DefinitionList()
+        defn = Definition("test")
+        dl.append(defn)
+        assert "test" in dl
+
+
+    @pytest.mark.parametrize("scope,",
+                             [
+                                 None,
+                                 0,
+                             ]
+                             )
+    def test_duplicate(self, DefinitionList, Definition, scope):
+        dl = DefinitionList()
+        defn = Definition("test", localSheetId=scope)
+        assert not dl._duplicate(defn)
+        dl.append(defn)
+        assert dl._duplicate(defn)
+

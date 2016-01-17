@@ -140,6 +140,11 @@ class Definition(Serialisable):
             return m.group("name")
 
 
+    @property
+    def is_external(self):
+        return re.compile(r"^\[\d+\].*").match(self.value) is not None
+
+
     def __iter__(self):
         for key in self.__attrs__:
             if key == "attr_text":
@@ -162,10 +167,28 @@ class DefinitionList(Serialisable):
         self.definedName = definedName
 
 
+    def _duplicate(self, defn):
+        """
+        Check for whether DefinedName with the same name and scope already
+        exists
+        """
+        for d in self.definedName:
+            if d.name == defn.name and d.localSheetId == d.localSheetId:
+                return True
+
+
     def append(self, defn):
+        if not isinstance(defn, Definition):
+            raise TypeError("""You can only append DefinedNames""")
+        if self._duplicate(defn):
+            raise ValueError("""DefinedName with the same name and scope already exists""")
         names = self.definedName[:]
         names.append(defn)
         self.definedName = names
+
+
+    def __len__(self):
+        return len(self.definedName)
 
 
     def __contains__(self, name):
