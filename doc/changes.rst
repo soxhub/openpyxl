@@ -30,7 +30,12 @@ Bug fixes
 * `#579  <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
 
 
-2.3.3 (unreleased)
+2.3.4 (unreleased)
+==================
+
+
+
+2.3.3 (2016-01-18)
 ==================
 
 
