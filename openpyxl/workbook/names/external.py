@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import os
 
@@ -79,6 +79,8 @@ def parse_books(xml):
 def parse_ranges(xml):
     tree = fromstring(xml)
     book = tree.find('{%s}externalBook' % SHEET_MAIN_NS)
+    if book is None:
+        return
     names = book.find('{%s}definedNames' % SHEET_MAIN_NS)
     for n in safe_iterator(names, '{%s}definedName' % SHEET_MAIN_NS):
         yield ExternalRange(**n.attrib)

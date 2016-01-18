@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """Track named groups of cells in a worksheet"""
 
@@ -91,7 +91,8 @@ def split_named_range(range_string):
 
         match = NAMED_RANGE_RE.match(range_string)
         if match is None:
-            raise NamedRangeException('Invalid named range string: "%s"' % range_string)
+            msg = "Cannot parse range {0}. This will be removed from the file.".format(range_string)
+            warnings.warn(msg)
         else:
             match = match.groupdict()
             sheet_name = match['quoted'] or match['notquoted']

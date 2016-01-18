@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 # Python stdlib imports
 
@@ -103,9 +103,10 @@ def test_split_no_quotes():
     assert [('HYPOTHESES', '$B$3:$L$3'), ] == list(split_named_range('HYPOTHESES!$B$3:$L$3'))
 
 
-def test_bad_range_name():
-    with pytest.raises(NamedRangeException):
-        list(split_named_range('HYPOTHESES$B$3'))
+def test_unknown_range_name(recwarn):
+    list(split_named_range('HYPOTHESES$B$3'))
+    w = recwarn.pop()
+    assert issubclass(w.category, UserWarning)
 
 
 def test_range_name_worksheet_special_chars(datadir):

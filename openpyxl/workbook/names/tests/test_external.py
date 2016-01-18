@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -46,6 +46,13 @@ def test_read_external_ranges(datadir):
     names = tuple(parse_ranges(xml))
     assert names[0].name == 'B2range'
     assert names[0].refersTo == "='Sheet1'!$A$1:$A$10"
+
+
+def test_read_ole_link(datadir):
+    from ..external import parse_ranges
+    with open("OLELink.xml") as src:
+        xml = src.read()
+    assert tuple(parse_ranges(xml)) == ()
 
 
 def test_dict_external_book():
@@ -139,4 +146,3 @@ def test_write_workbook(datadir, tmpdir):
     # remove files from archive that the other can't have
     out_files.discard("xl/sharedStrings.xml")
     orig_files.discard("xl/calcChain.xml")
-

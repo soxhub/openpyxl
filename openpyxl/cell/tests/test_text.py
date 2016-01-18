@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 # coding=utf8
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -91,6 +91,29 @@ class TestText:
         assert text == Text()
 
 
+    def test_empty_element(self, Text):
+        src = """
+        <si>
+          <r>
+             <t>Replaced Data</t>
+          </r>
+          <r>
+            <rPr>
+              <sz val="11"/>
+              <color rgb="FF008080"/>
+              <rFont val="Calibri"/>
+              <family val="2"/>
+              <scheme val="minor"/>
+            </rPr>
+            <t/>
+          </r>
+        </si>
+        """
+        node = fromstring(src)
+        text = Text.from_tree(node)
+        assert text.content == "Replaced Data"
+
+
 @pytest.fixture
 def PhoneticText():
     from ..text import PhoneticText
@@ -104,7 +127,7 @@ class TestPhoneticText:
         xml = tostring(text.to_tree())
         expected = b"""
         <rPh sb="9" eb="10">
-            <t>\xe3\x82\x88</t>
+            <t>&#12424;</t>
         </rPh>
         """
         diff = compare_xml(xml, expected)
@@ -114,7 +137,7 @@ class TestPhoneticText:
     def test_from_xml(self, PhoneticText):
         src = b"""
         <rPh sb="9" eb="10">
-            <t>\xe3\x82\x88</t>
+            <t>&#12424;</t>
         </rPh>
         """
         node = fromstring(src)

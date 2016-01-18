@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.descriptors import NoneSet, Typed, Bool, Alias
@@ -100,8 +100,8 @@ class Border(HashableObject):
         for attr in self.__attrs__:
             value = getattr(self, attr)
             if value and attr != "outline":
-                yield attr, value
+                yield attr, safe_string(value)
             elif attr == "outline" and not value:
-                yield attr, value
+                yield attr, safe_string(value)
 
 DEFAULT_BORDER = Border()

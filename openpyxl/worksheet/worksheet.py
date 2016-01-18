@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
@@ -679,6 +679,8 @@ class Worksheet(_WorkbookChild):
                 if isinstance(content, Cell):
                     # compatible with write-only mode
                     cell = content
+                    if cell.parent and cell.parent.parent != self.parent:
+                        raise ValueError("Cells cannot be copied from other workbooks")
                     cell.parent = self
                     cell.col_idx = col_idx
                     cell.row = row_idx
