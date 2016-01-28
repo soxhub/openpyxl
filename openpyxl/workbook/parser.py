@@ -85,7 +85,7 @@ class WorkbookPackage(Serialisable):
 
     tagname = "workbook"
 
-    conformance = Set(values=['strict', 'transitional'])
+    conformance = NoneSet(values=['strict', 'transitional'])
     fileVersion = Typed(expected_type=FileVersion, allow_none=True)
     fileSharing = Typed(expected_type=FileSharing, allow_none=True)
     workbookPr = Typed(expected_type=WorkbookProperties, allow_none=True)
@@ -115,7 +115,7 @@ class WorkbookPackage(Serialisable):
                     'webPublishing', 'fileRecoveryPr', 'webPublishObjects')
 
     def __init__(self,
-                 conformance='strict',
+                 conformance=None,
                  fileVersion=None,
                  fileSharing=None,
                  workbookPr=None,

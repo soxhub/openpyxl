@@ -17,9 +17,8 @@ class TestWorkbookPackage:
     def test_ctor(self, WorkbookPackage):
         parser = WorkbookPackage()
         xml = tostring(parser.to_tree())
-        expected = """
-        <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-           conformance="strict"/>
+        expected = """ <workbook
+          xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

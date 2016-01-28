@@ -105,39 +105,35 @@ def write_root_rels(workbook):
 def write_workbook(workbook):
     """Write the core workbook xml."""
 
-    root = Element('workbook')
-
+    root = WorkbookPackage()
 
     props = WorkbookProperties()
     if workbook.code_name is not None:
         props.codeName = workbook.code_name
-    root.append(props.to_tree())
+    root.workbookPr = props
 
     # book views
-    book_views = SubElement(root, 'bookViews')
     view = BookView(activeTab=workbook._active_sheet_index)
-    book_views.append(view.to_tree())
+    root.bookViews =[view]
 
     # worksheets
-    sheets = SubElement(root, 'sheets')
     for idx, sheet in enumerate(workbook.worksheets + workbook.chartsheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
         if not sheet.sheet_state == 'visible':
             if len(workbook._sheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
             sheet_node.state = sheet.sheet_state
-        sheets.append(sheet_node.to_tree())
+        root.sheets.append(sheet_node)
 
     # external references
     if getattr(workbook, '_external_links'):
-        external_references = SubElement(root, 'externalReferences')
         # need to match a counter with a workbook's relations
-        counter = len(workbook.worksheets) + 3 # strings, styles, theme
+        counter = len(workbook._sheets) + 3 # strings, styles, theme
         if workbook.vba_archive:
             counter += 1
         for idx, _ in enumerate(workbook._external_links, counter+1):
             ext = ExternalReference(id="rId{0}".format(idx))
-            external_references.append(ext.to_tree())
+            root.externalReferences.append(ext)
 
     # Defined names
     defined_names = copy(workbook.defined_names) # don't add special defns to workbook itself.
@@ -163,14 +159,11 @@ def write_workbook(workbook):
             name.value = "{0}!{1}".format(sheet.title, sheet.print_area)
             defined_names.append(name)
 
-    root.append(defined_names.to_tree())
+    root.definedNames = defined_names
 
-    calc = CalcProperties(calcId=124519, fullCalcOnLoad=True)
-    root.append(calc.to_tree())
+    root.calcPr = CalcProperties(calcId=124519, fullCalcOnLoad=True)
 
-    root.set("xmlns", SHEET_MAIN_NS)
-
-    return tostring(root)
+    return tostring(root.to_tree())
 
 
 def write_workbook_rels(workbook):
