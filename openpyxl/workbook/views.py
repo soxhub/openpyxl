@@ -20,9 +20,9 @@ from openpyxl.descriptors.excel import (
 
 class BookView(Serialisable):
 
-    tagname = "bookView"
+    tagname = "workbookView"
 
-    visibility = Set(values=(['visible', 'hidden', 'veryHidden']))
+    visibility = NoneSet(values=(['visible', 'hidden', 'veryHidden']))
     minimized = Bool(allow_none=True)
     showHorizontalScroll = Bool(allow_none=True)
     showVerticalScroll = Bool(allow_none=True)
@@ -40,7 +40,7 @@ class BookView(Serialisable):
     __elements__ = ()
 
     def __init__(self,
-                 visibility="hidden",
+                 visibility=None,
                  minimized=None,
                  showHorizontalScroll=None,
                  showVerticalScroll=None,

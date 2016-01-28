@@ -17,7 +17,7 @@ class TestBookView:
         view = BookView()
         xml = tostring(view.to_tree())
         expected = """
-        <bookView visibility="hidden" />
+        <workbookView />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -25,7 +25,7 @@ class TestBookView:
 
     def test_from_xml(self, BookView):
         src = """
-        <bookView />
+        <workbookView />
         """
         node = fromstring(src)
         view = BookView.from_tree(node)
