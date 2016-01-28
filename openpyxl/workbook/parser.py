@@ -50,9 +50,12 @@ class FileRecoveryProperties(Serialisable):
         self.repairLoad = repairLoad
 
 
-class Sheet(Serialisable):
+class ChildSheet(Serialisable):
     """
-    Represents a reference to a worksheet
+    Represents a reference to a worksheet or chartsheet in workbook.xml
+
+    It contains the title, order and state but only an indirect reference to
+    the objects themselves.
     """
 
     tagname = "sheet"
@@ -89,7 +92,7 @@ class WorkbookPackage(Serialisable):
     properties = Alias("workbookPr")
     workbookProtection = Typed(expected_type=WorkbookProtection, allow_none=True)
     bookViews = NestedSequence(expected_type=BookView)
-    sheets = NestedSequence(expected_type=Sheet)
+    sheets = NestedSequence(expected_type=ChildSheet)
     functionGroups = Typed(expected_type=FunctionGroupList, allow_none=True)
     externalReferences = NestedSequence(expected_type=ExternalReference)
     definedNames = Typed(expected_type=DefinedNameList, allow_none=True)
