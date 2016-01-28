@@ -6,6 +6,7 @@ Minor changes
 -------------
 
 * Remove deprecated methods from DataValidation
+* Remove deprecated methods from PrintPageSetup
 * Convert AutoFilter to Serialisable and extend support for filters
 * Add support for SortState
 * Removed `use_iterators` keyword when loading workbooks. Use `read_only` instead.
