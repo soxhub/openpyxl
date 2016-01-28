@@ -126,7 +126,7 @@ def write_workbook(workbook):
         root.sheets.append(sheet_node)
 
     # external references
-    if getattr(workbook, '_external_links'):
+    if workbook._external_links:
         # need to match a counter with a workbook's relations
         counter = len(workbook._sheets) + 3 # strings, styles, theme
         if workbook.vba_archive:
