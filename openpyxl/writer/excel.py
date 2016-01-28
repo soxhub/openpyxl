@@ -139,7 +139,7 @@ class ExcelWriter(object):
                     tostring(drawing._write_rels())
                 )
 
-                rel = Relationship(type="drawing", target="/" + drawingpath)
+                rel = Relationship(type="drawing", Target="/" + drawingpath)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
