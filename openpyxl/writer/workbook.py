@@ -35,6 +35,7 @@ from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.workbook.parser import ChildSheet, WorkbookPackage
+from openpyxl.workbook.properties import CalcProperties, WorkbookProperties
 from openpyxl.workbook.views import BookView
 
 
@@ -106,10 +107,10 @@ def write_workbook(workbook):
     root = Element('workbook')
     root.set("xmlns", SHEET_MAIN_NS)
 
-    wb_props = {}
+    props = WorkbookProperties()
     if workbook.code_name is not None:
-        wb_props['codeName'] = workbook.code_name
-    SubElement(root, 'workbookPr', wb_props)
+        props.codeName = workbook.code_name
+    root.append(props.to_tree())
 
     # book views
     book_views = SubElement(root, 'bookViews')

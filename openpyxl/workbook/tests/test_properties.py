@@ -17,7 +17,7 @@ class TestWorkbookProperties:
         props = WorkbookProperties()
         xml = tostring(props.to_tree())
         expected = """
-        <workbookPr showPivotChartFilter="0" updateLinks="userSet" />
+        <workbookPr />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

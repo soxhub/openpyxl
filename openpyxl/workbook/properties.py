@@ -30,7 +30,7 @@ class WorkbookProperties(Serialisable):
     updateLinks = NoneSet(values=(['userSet', 'never', 'always']))
     codeName = String(allow_none=True)
     hidePivotFieldList = Bool(allow_none=True)
-    showPivotChartFilter = Bool()
+    showPivotChartFilter = Bool(allow_none=True)
     allowRefreshQuery = Bool(allow_none=True)
     publishItems = Bool(allow_none=True)
     checkCompatibility = Bool(allow_none=True)
@@ -48,7 +48,7 @@ class WorkbookProperties(Serialisable):
                  showInkAnnotation=None,
                  backupFile=None,
                  saveExternalLinkValues=None,
-                 updateLinks="userSet",
+                 updateLinks=None,
                  codeName=None,
                  hidePivotFieldList=None,
                  showPivotChartFilter=None,
