@@ -44,9 +44,8 @@ class TestCalcProperties:
         calc = CalcProperties()
         xml = tostring(calc.to_tree())
         expected = """
-        <calcPr calcCompleted="1" calcId="122211"
-            calcMode="auto" calcOnSave="1" concurrentCalc="1" fullCalcOnLoad="1"
-            iterate="0" refMode="A1" />"""
+           <calcPr calcId="124519" fullCalcOnLoad="1" />
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 

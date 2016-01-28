@@ -85,9 +85,9 @@ class CalcProperties(Serialisable):
     tagname = "calcPr"
 
     calcId = Integer()
-    calcMode = Set(values=(['manual', 'auto', 'autoNoTable']))
+    calcMode = NoneSet(values=(['manual', 'auto', 'autoNoTable']))
     fullCalcOnLoad = Bool(allow_none=True)
-    refMode = Set(values=(['A1', 'R1C1']))
+    refMode = NoneSet(values=(['A1', 'R1C1']))
     iterate = Bool(allow_none=True)
     iterateCount = Integer(allow_none=True)
     iterateDelta = Float(allow_none=True)
@@ -99,17 +99,17 @@ class CalcProperties(Serialisable):
     forceFullCalc = Bool(allow_none=True)
 
     def __init__(self,
-                 calcId=122211,
-                 calcMode="auto",
+                 calcId=124519,
+                 calcMode=None,
                  fullCalcOnLoad=True,
-                 refMode="A1",
-                 iterate=False,
+                 refMode=None,
+                 iterate=None,
                  iterateCount=None,
                  iterateDelta=None,
                  fullPrecision=None,
-                 calcCompleted=True,
-                 calcOnSave=True,
-                 concurrentCalc=True,
+                 calcCompleted=None,
+                 calcOnSave=None,
+                 concurrentCalc=None,
                  concurrentManualCount=None,
                  forceFullCalc=None,
                 ):

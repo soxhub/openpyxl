@@ -105,7 +105,7 @@ def write_workbook(workbook):
     """Write the core workbook xml."""
 
     root = Element('workbook')
-    root.set("xmlns", SHEET_MAIN_NS)
+
 
     props = WorkbookProperties()
     if workbook.code_name is not None:
@@ -164,8 +164,11 @@ def write_workbook(workbook):
 
     root.append(defined_names.to_tree())
 
-    SubElement(root, 'calcPr',
-               {'calcId': '124519', 'fullCalcOnLoad': '1'})
+    calc = CalcProperties(calcId=124519, fullCalcOnLoad=True)
+    root.append(calc.to_tree())
+
+    root.set("xmlns", SHEET_MAIN_NS)
+
     return tostring(root)
 
 
