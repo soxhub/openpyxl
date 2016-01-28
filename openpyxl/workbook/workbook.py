@@ -160,7 +160,7 @@ class Workbook(object):
             raise ReadOnlyWorkbookException("Cannot create new sheet in a read-only workbook")
         cs = Chartsheet(parent=self, title=title)
 
-        self._add_sheet(cs, index=None)
+        self._add_sheet(cs, index)
         return cs
 
 
