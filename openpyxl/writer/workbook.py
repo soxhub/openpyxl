@@ -34,6 +34,7 @@ from openpyxl.worksheet import Worksheet
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.workbook.external_reference import ExternalReference
 from openpyxl.workbook.parser import ChildSheet, WorkbookPackage
 from openpyxl.workbook.properties import CalcProperties, WorkbookProperties
 from openpyxl.workbook.views import BookView
@@ -128,15 +129,15 @@ def write_workbook(workbook):
         sheets.append(sheet_node.to_tree())
 
     # external references
-    if getattr(workbook, '_external_links', []):
+    if getattr(workbook, '_external_links'):
         external_references = SubElement(root, 'externalReferences')
         # need to match a counter with a workbook's relations
         counter = len(workbook.worksheets) + 3 # strings, styles, theme
         if workbook.vba_archive:
             counter += 1
         for idx, _ in enumerate(workbook._external_links, counter+1):
-            ext = Element("externalReference", {"{%s}id" % REL_NS:"rId%d" % idx})
-            external_references.append(ext)
+            ext = ExternalReference(id="rId{0}".format(idx))
+            external_references.append(ext.to_tree())
 
     # Defined names
     defined_names = copy(workbook.defined_names) # don't add special defns to workbook itself.
