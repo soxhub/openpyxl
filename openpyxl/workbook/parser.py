@@ -62,13 +62,13 @@ class ChildSheet(Serialisable):
 
     name = String()
     sheetId = Integer()
-    state = Set(values=(['visible', 'hidden', 'veryHidden']))
+    state = NoneSet(values=(['visible', 'hidden', 'veryHidden']))
     id = Relation()
 
     def __init__(self,
                  name=None,
                  sheetId=None,
-                 state="visible",
+                 state=None,
                  id=None,
                 ):
         self.name = name

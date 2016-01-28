@@ -34,6 +34,7 @@ from openpyxl.worksheet import Worksheet
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.workbook.parser import ChildSheet, WorkbookPackage
 
 
 def write_properties_app(workbook):
@@ -118,15 +119,12 @@ def write_workbook(workbook):
     # worksheets
     sheets = SubElement(root, 'sheets')
     for idx, sheet in enumerate(workbook.worksheets + workbook.chartsheets, 1):
-        sheet_node = SubElement(
-            sheets, 'sheet',
-            {'name': sheet.title, 'sheetId': '%d' % idx,
-             '{%s}id' % REL_NS: 'rId%d' % idx})
-
+        sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
         if not sheet.sheet_state == 'visible':
             if len(workbook._sheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
-            sheet_node.set('state', sheet.sheet_state)
+            sheet_node.state = sheet.sheet_state
+        sheets.append(sheet_node.to_tree())
 
     # external references
     if getattr(workbook, '_external_links', []):
