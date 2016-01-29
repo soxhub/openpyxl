@@ -7,7 +7,7 @@ from copy import copy
 
 from openpyxl import LXML
 from openpyxl.compat import safe_string
-from openpyxl.utils import absolute_coordinate
+from openpyxl.utils import absolute_coordinate, quote_sheetname
 from openpyxl.xml.functions import Element, SubElement
 from openpyxl.xml.constants import (
     ARC_CORE,
@@ -143,8 +143,9 @@ def write_workbook(workbook):
         auto_filter = sheet.auto_filter.ref
         if auto_filter:
             name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
-            name.value = "'%s'!%s" % (sheet.title.replace("'", "''"),
-                                 absolute_coordinate(auto_filter))
+            name.value = "{0}!{1}".format(quote_sheetname(sheet.title),
+                                          absolute_coordinate(auto_filter)
+                                          )
             defined_names.append(name)
 
         # print titles
