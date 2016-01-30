@@ -63,14 +63,12 @@ class ExcelWriter(object):
         # cleanup all worksheets
 
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
-        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
         archive.writestr(ARC_APP, write_properties_app(self.workbook))
         archive.writestr(ARC_CORE, tostring(self.workbook.properties.to_tree()))
         if self.workbook.loaded_theme:
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)
         else:
             archive.writestr(ARC_THEME, write_theme())
-        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
 
         self._write_charts(archive)
         self._write_images(archive)
@@ -80,6 +78,10 @@ class ExcelWriter(object):
         self._write_external_links(archive)
         stylesheet = write_stylesheet(self.workbook)
         archive.writestr(ARC_STYLE, tostring(stylesheet))
+
+        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
+        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
+
 
         if self.workbook.vba_archive:
             vba_archive = self.workbook.vba_archive
