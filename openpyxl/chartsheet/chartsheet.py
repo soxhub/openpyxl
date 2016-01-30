@@ -30,7 +30,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
     tagname = "chartsheet"
     _default_title = "Chart"
     _rel_type = "chartsheet"
-    _path = "chart"
+    _path = "chart1.xml"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
     sheetViews = Typed(expected_type=ChartsheetViewList)

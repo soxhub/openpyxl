@@ -82,7 +82,6 @@ class ExcelWriter(object):
         archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
         archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
 
-
         if self.workbook.vba_archive:
             vba_archive = self.workbook.vba_archive
             for name in set(vba_archive.namelist()) - self.vba_modified:
@@ -128,6 +127,8 @@ class ExcelWriter(object):
         from openpyxl.worksheet.drawing import Drawing
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
+            sheet._path = "chart{0}.xml".format(idx)
+
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
@@ -149,19 +150,20 @@ class ExcelWriter(object):
                 sheet.drawing.id = "rId{0}".format(len(rels))
 
                 archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/chart%d.xml.rels' % idx, tostring(tree)
+                                 '/_rels/{0}.rels'.format(sheet._path), tostring(tree)
                                  )
 
             xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + '/chart%d.xml' % idx, xml)
+            archive.writestr(PACKAGE_CHARTSHEETS + sheet._path, xml)
 
 
     def _write_worksheets(self, archive):
         comments_id = 0
 
-        for i, sheet in enumerate(self.workbook.worksheets, 1):
+        for idx, sheet in enumerate(self.workbook.worksheets, 1):
             xml = sheet._write(self.workbook.shared_strings)
-            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % i , xml)
+            sheet._path = "sheet{0}.xml".format(idx)
+            archive.writestr(PACKAGE_WORKSHEETS + sheet._path, xml)
 
             if sheet._charts or sheet._images:
                 drawing = SpreadsheetDrawing()
@@ -198,7 +200,7 @@ class ExcelWriter(object):
                 rels = write_rels(sheet, comments_id=comments_id)
 
                 archive.writestr(PACKAGE_WORKSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels))
+                                 '/_rels/{0}.rels'.format(sheet._path), tostring(rels))
 
 
     def _write_external_links(self, archive):

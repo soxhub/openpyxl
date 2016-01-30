@@ -175,14 +175,19 @@ def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     rels = RelationshipList()
 
-    for idx, s in enumerate(workbook.worksheets, 1):
-        rel = Relationship(type=s._rel_type, Target='{0}s/{1}{2}.xml'.format(s._rel_type, s._path, idx))
+    for chart in workbook.worksheets:
+        rel = Relationship(
+            type=chart._rel_type,
+            Target='{0}s/{1}'.format(chart._rel_type, chart._path))
         rels.append(rel)
 
 
-    for idx, s in enumerate(workbook.chartsheets, 1):
-        rel = Relationship(type=s._rel_type, Target='{0}s/{1}{2}.xml'.format(s._rel_type, s._path, idx))
+    for sheet in workbook.chartsheets:
+        rel = Relationship(
+            type=sheet._rel_type,
+            Target='{0}s/{1}'.format(sheet._rel_type, sheet._path))
         rels.append(rel)
+
 
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
     rels.append(strings)
