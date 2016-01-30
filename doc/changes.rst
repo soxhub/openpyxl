@@ -2,6 +2,11 @@
 ==================
 
 
+Bug fixes
+---------
+
+* `#594 <https://bitbucket.org/openpyxl/openpyxl/issues/594>`_ Content types might be missing when keeping VBA
+
 
 2.3.3 (2016-01-18)
 ==================
