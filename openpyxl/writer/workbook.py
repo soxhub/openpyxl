@@ -106,6 +106,7 @@ def write_workbook(workbook):
     """Write the core workbook xml."""
 
     root = WorkbookPackage()
+    root.rels = RelationshipList()
 
     props = WorkbookProperties()
     if workbook.code_name is not None:
@@ -175,30 +176,30 @@ def write_workbook_rels(workbook):
 
     for idx, _ in enumerate(workbook.worksheets, 1):
         rId += 1
-        rel = Relationship(type='worksheet', Target='worksheets/sheet%s.xml' % idx, Id='rId%d' % rId)
+        rel = Relationship(type='worksheet', Target='worksheets/sheet%s.xml' % idx)
         rels.append(rel)
 
 
     for idx, _ in enumerate(workbook.chartsheets, 1):
         rId += 1
-        rel = Relationship(type='chartsheet', Target='chartsheets/sheet%s.xml' % idx, Id='rId%d' % rId)
+        rel = Relationship(type='chartsheet', Target='chartsheets/sheet%s.xml' % idx)
         rels.append(rel)
 
     rId += 1
-    strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml', Id='rId%d' % rId)
+    strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
     rels.append(strings)
 
     rId += 1
-    styles =  Relationship(type='styles', Target='styles.xml', Id='rId%d' % rId)
+    styles =  Relationship(type='styles', Target='styles.xml')
     rels.append(styles)
 
     rId += 1
-    theme =  Relationship(type='theme', Target='theme/theme1.xml', Id='rId%d' % rId)
+    theme =  Relationship(type='theme', Target='theme/theme1.xml')
     rels.append(theme)
 
     if workbook.vba_archive:
         rId += 1
-        vba =  Relationship(type='vbaProject', Target='vbaProject.bin', Id='rId%d' % rId)
+        vba =  Relationship(type='vbaProject', Target='vbaProject.bin')
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         rels.append(vba)
 
@@ -206,8 +207,8 @@ def write_workbook_rels(workbook):
     if external_links:
         for idx, link in enumerate(external_links, 1):
             ext =  Relationship(type='externalLink',
-                                Target='externalLinks/externalLink%d.xml' % idx,
-                                Id='rId%d' % (rId +idx))
+                                Target='externalLinks/externalLink%d.xml' % idx
+                                )
             rels.append(ext)
 
     return tostring(rels.to_tree())
