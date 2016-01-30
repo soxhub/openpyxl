@@ -47,7 +47,7 @@ def test_write_hidden_worksheet():
     <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" conformance="strict">
     <workbookPr/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="1"/>
     </bookViews>
     <sheets>
       <sheet name="Sheet" sheetId="1" state="hidden" r:id="rId1"/>
@@ -64,9 +64,10 @@ def test_write_hidden_worksheet():
 def test_write_hidden_single_worksheet():
     wb = Workbook()
     ws = wb.active
-    ws.sheet_state = ws.SHEETSTATE_HIDDEN
-    with pytest.raises(ValueError):
-        write_workbook(wb)
+    ws.sheet_state = "hidden"
+    from ..workbook import get_active_sheet
+    with pytest.raises(IndexError):
+        get_active_sheet(wb)
 
 
 def test_write_empty_workbook(tmpdir):

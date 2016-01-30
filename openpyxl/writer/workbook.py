@@ -117,8 +117,7 @@ def get_active_sheet(wb):
             wb.active = idx
             return idx
 
-    raise ValueError("At least one sheet must be visible")
-
+    raise IndexError("At least one sheet must be visible")
 
 
 def write_workbook(workbook):
@@ -220,6 +219,6 @@ def write_workbook_rels(workbook):
             ext =  Relationship(type='externalLink',
                                 Target='externalLinks/externalLink{0}.xml'.format(idx)
                                 )
-            rels.append(ext)
+            wb.rels.append(ext)
 
     return tostring(wb.rels.to_tree())
