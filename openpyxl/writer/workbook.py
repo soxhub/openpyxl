@@ -105,42 +105,44 @@ def write_root_rels(workbook):
 def write_workbook(workbook):
     """Write the core workbook xml."""
 
+    wb = workbook
+    wb.rels = RelationshipList()
+
     root = WorkbookPackage()
-    root.rels = RelationshipList()
 
     props = WorkbookProperties()
-    if workbook.code_name is not None:
-        props.codeName = workbook.code_name
+    if wb.code_name is not None:
+        props.codeName = wb.code_name
     root.workbookPr = props
 
     # book views
-    view = BookView(activeTab=workbook._active_sheet_index)
+    view = BookView(activeTab=wb._active_sheet_index)
     root.bookViews =[view]
 
     # worksheets
-    for idx, sheet in enumerate(workbook.worksheets + workbook.chartsheets, 1):
+    for idx, sheet in enumerate(wb.worksheets + wb.chartsheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
         if not sheet.sheet_state == 'visible':
-            if len(workbook._sheets) == 1:
+            if len(wb._sheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
             sheet_node.state = sheet.sheet_state
         root.sheets.append(sheet_node)
 
     # external references
-    if workbook._external_links:
+    if wb._external_links:
         # need to match a counter with a workbook's relations
-        counter = len(workbook._sheets) + 3 # strings, styles, theme
-        if workbook.vba_archive:
+        counter = len(wb._sheets) + 3 # strings, styles, theme
+        if wb.vba_archive:
             counter += 1
-        for idx, _ in enumerate(workbook._external_links, counter+1):
+        for idx, _ in enumerate(wb._external_links, counter+1):
             ext = ExternalReference(id="rId{0}".format(idx))
             root.externalReferences.append(ext)
 
     # Defined names
-    defined_names = copy(workbook.defined_names) # don't add special defns to workbook itself.
+    defined_names = copy(wb.defined_names) # don't add special defns to workbook itself.
 
     # Defined names -> autoFilter
-    for idx, sheet in enumerate(workbook.worksheets):
+    for idx, sheet in enumerate(wb.worksheets):
         auto_filter = sheet.auto_filter.ref
         if auto_filter:
             name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
