@@ -174,33 +174,25 @@ def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     rels = RelationshipList()
 
-    rId = 0
-
-    for idx, _ in enumerate(workbook.worksheets, 1):
-        rId += 1
-        rel = Relationship(type='worksheet', Target='worksheets/sheet%s.xml' % idx)
+    for idx, s in enumerate(workbook.worksheets, 1):
+        rel = Relationship(type=s._rel_type, Target='{0}s/sheet{1}.xml'.format(s._rel_type, idx))
         rels.append(rel)
 
 
-    for idx, _ in enumerate(workbook.chartsheets, 1):
-        rId += 1
-        rel = Relationship(type='chartsheet', Target='chartsheets/sheet%s.xml' % idx)
+    for idx, s in enumerate(workbook.chartsheets, 1):
+        rel = Relationship(type=s._rel_type, Target='{0}s/chart{1}.xml'.format(s._rel_type, idx))
         rels.append(rel)
 
-    rId += 1
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
     rels.append(strings)
 
-    rId += 1
     styles =  Relationship(type='styles', Target='styles.xml')
     rels.append(styles)
 
-    rId += 1
     theme =  Relationship(type='theme', Target='theme/theme1.xml')
     rels.append(theme)
 
     if workbook.vba_archive:
-        rId += 1
         vba =  Relationship(type='vbaProject', Target='vbaProject.bin')
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         rels.append(vba)
@@ -209,7 +201,7 @@ def write_workbook_rels(workbook):
     if external_links:
         for idx, link in enumerate(external_links, 1):
             ext =  Relationship(type='externalLink',
-                                Target='externalLinks/externalLink%d.xml' % idx
+                                Target='externalLinks/externalLink{0}.xml'.format(idx)
                                 )
             rels.append(ext)
 
