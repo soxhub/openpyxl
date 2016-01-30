@@ -154,7 +154,7 @@ class ExcelWriter(object):
                                  )
 
             xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + sheet._path, xml)
+            archive.writestr("{0}/{1}".format(PACKAGE_CHARTSHEETS, sheet._path), xml)
 
 
     def _write_worksheets(self, archive):
@@ -163,7 +163,7 @@ class ExcelWriter(object):
         for idx, sheet in enumerate(self.workbook.worksheets, 1):
             xml = sheet._write(self.workbook.shared_strings)
             sheet._path = "sheet{0}.xml".format(idx)
-            archive.writestr(PACKAGE_WORKSHEETS + sheet._path, xml)
+            archive.writestr("{0}/{1}".format(PACKAGE_WORKSHEETS, sheet._path), xml)
 
             if sheet._charts or sheet._images:
                 drawing = SpreadsheetDrawing()
