@@ -45,7 +45,7 @@ class Relationship(Serialisable):
         otherwise the `Type` must be a fully qualified URL
         """
         if type is not None:
-            Type = "%s/%s" % (REL_NS, type)
+            Type = "{0}/{1}".format(REL_NS, type)
         self.Type = Type
         self.Target = Target
         self.TargetMode = TargetMode
