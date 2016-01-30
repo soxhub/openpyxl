@@ -68,7 +68,7 @@ class ChildSheet(Serialisable):
     def __init__(self,
                  name=None,
                  sheetId=None,
-                 state=None,
+                 state="visible",
                  id=None,
                 ):
         self.name = name
