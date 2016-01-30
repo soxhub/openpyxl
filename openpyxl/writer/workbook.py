@@ -102,6 +102,25 @@ def write_root_rels(workbook):
     return tostring(rels.to_tree())
 
 
+def get_active_sheet(wb):
+    """
+    Return the index of the active sheet.
+    If the sheet set to active is hidden return the next visible sheet
+    """
+    idx = wb._active_sheet_index
+    sheet = wb.active
+    if sheet.sheet_state == "visible":
+        return idx
+
+    for idx, sheet in enumerate(wb._sheets[idx:], idx):
+        if sheet.sheet_state == "visible":
+            wb.active = idx
+            return idx
+
+    raise ValueError("At least one sheet must be visible")
+
+
+
 def write_workbook(workbook):
     """Write the core workbook xml."""
 
@@ -116,7 +135,8 @@ def write_workbook(workbook):
     root.workbookPr = props
 
     # book views
-    view = BookView(activeTab=wb._active_sheet_index)
+    active = get_active_sheet(wb)
+    view = BookView(activeTab=active)
     root.bookViews =[view]
 
     # worksheets
