@@ -147,11 +147,11 @@ class ExcelWriter(object):
                 sheet.drawing.id = "rId{0}".format(len(rels))
 
                 archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % idx, tostring(tree)
+                                 '/_rels/chart%d.xml.rels' % idx, tostring(tree)
                                  )
 
             xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' % idx, xml)
+            archive.writestr(PACKAGE_CHARTSHEETS + '/chart%d.xml' % idx, xml)
 
 
     def _write_worksheets(self, archive):
