@@ -76,6 +76,7 @@ class Worksheet(_WorkbookChild):
     """
 
     _rel_type = "worksheet"
+    _path = "sheet"
 
     BREAK_NONE = 0
     BREAK_ROW = 1

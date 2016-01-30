@@ -122,6 +122,7 @@ def write_workbook(workbook):
     # worksheets
     for idx, sheet in enumerate(wb.worksheets + wb.chartsheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
+
         if not sheet.sheet_state == 'visible':
             if len(wb._sheets) == 1:
                 raise ValueError("The only worksheet of a workbook cannot be hidden")
@@ -175,12 +176,12 @@ def write_workbook_rels(workbook):
     rels = RelationshipList()
 
     for idx, s in enumerate(workbook.worksheets, 1):
-        rel = Relationship(type=s._rel_type, Target='{0}s/sheet{1}.xml'.format(s._rel_type, idx))
+        rel = Relationship(type=s._rel_type, Target='{0}s/{1}{2}.xml'.format(s._rel_type, s._path, idx))
         rels.append(rel)
 
 
     for idx, s in enumerate(workbook.chartsheets, 1):
-        rel = Relationship(type=s._rel_type, Target='{0}s/chart{1}.xml'.format(s._rel_type, idx))
+        rel = Relationship(type=s._rel_type, Target='{0}s/{1}{2}.xml'.format(s._rel_type, s._path, idx))
         rels.append(rel)
 
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
