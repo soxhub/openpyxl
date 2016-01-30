@@ -47,6 +47,7 @@ from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.xml.constants import REL_NS
 
 from .datavalidation import DataValidationList
 from .header_footer import HeaderFooter
@@ -73,6 +74,8 @@ class Worksheet(_WorkbookChild):
     use :func:`openpyxl.workbook.Workbook.create_sheet` instead
 
     """
+
+    _rel_type = "worksheet"
 
     BREAK_NONE = 0
     BREAK_ROW = 1
