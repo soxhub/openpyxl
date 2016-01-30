@@ -120,8 +120,13 @@ def write_workbook(workbook):
     root.bookViews =[view]
 
     # worksheets
-    for idx, sheet in enumerate(wb.worksheets + wb.chartsheets, 1):
+    for idx, sheet in enumerate(wb._sheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
+        rel = Relationship(
+            type=sheet._rel_type,
+            Target='{0}s/{1}'.format(sheet._rel_type, sheet._path)
+        )
+        wb.rels.append(rel)
 
         if not sheet.sheet_state == 'visible':
             if len(wb._sheets) == 1:
@@ -173,35 +178,21 @@ def write_workbook(workbook):
 
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
-    rels = RelationshipList()
-
-    for chart in workbook.worksheets:
-        rel = Relationship(
-            type=chart._rel_type,
-            Target='{0}s/{1}'.format(chart._rel_type, chart._path))
-        rels.append(rel)
-
-
-    for sheet in workbook.chartsheets:
-        rel = Relationship(
-            type=sheet._rel_type,
-            Target='{0}s/{1}'.format(sheet._rel_type, sheet._path))
-        rels.append(rel)
-
+    wb = workbook
 
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
-    rels.append(strings)
+    wb.rels.append(strings)
 
     styles =  Relationship(type='styles', Target='styles.xml')
-    rels.append(styles)
+    wb.rels.append(styles)
 
     theme =  Relationship(type='theme', Target='theme/theme1.xml')
-    rels.append(theme)
+    wb.rels.append(theme)
 
     if workbook.vba_archive:
         vba =  Relationship(type='vbaProject', Target='vbaProject.bin')
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
-        rels.append(vba)
+        wb.rels.append(vba)
 
     external_links = workbook._external_links
     if external_links:
@@ -211,4 +202,4 @@ def write_workbook_rels(workbook):
                                 )
             rels.append(ext)
 
-    return tostring(rels.to_tree())
+    return tostring(wb.rels.to_tree())

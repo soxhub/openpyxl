@@ -97,6 +97,7 @@ def test_write_workbook(datadir):
     datadir.chdir()
     wb = Workbook()
     content = write_workbook(wb)
+    assert len(wb.rels) == 1
     with open('workbook.xml') as expected:
         diff = compare_xml(content, expected.read())
         assert diff is None, diff
