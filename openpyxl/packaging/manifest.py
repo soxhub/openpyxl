@@ -171,6 +171,17 @@ def write_content_types(workbook, as_template=False, exts=None):
             fe = FileExtension(ext[1:], mime)
             manifest.Default.append(fe)
 
+
+    if workbook.vba_archive:
+        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+        manifest = Manifest.from_tree(node)
+        del node
+        partnames = [t.PartName for t in manifest.Override]
+        for override in DEFAULT_OVERRIDE:
+            if override.PartName not in partnames:
+                manifest.Override.append(override)
+
+
     # templates
     for part in manifest.Override:
         if part.PartName == "/" + ARC_WORKBOOK:
