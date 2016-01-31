@@ -29,12 +29,12 @@ from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import write_content_types
 from openpyxl.packaging.relationship import get_rels_path
+from openpyxl.packaging.extended import ExtendedProperties
 
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_root_rels,
     write_workbook_rels,
-    write_properties_app,
     write_workbook
     )
 from openpyxl.writer.theme import write_theme
@@ -46,6 +46,7 @@ from openpyxl.comments.writer import CommentWriter
 
 ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
            'xl/activeX', r'xl/media/.*\.emf')
+
 
 class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
@@ -63,7 +64,9 @@ class ExcelWriter(object):
         # cleanup all worksheets
 
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
-        archive.writestr(ARC_APP, write_properties_app(self.workbook))
+        props = ExtendedProperties()
+        archive.writestr(ARC_APP, tostring(props.to_tree()))
+
         archive.writestr(ARC_CORE, tostring(self.workbook.properties.to_tree()))
         if self.workbook.loaded_theme:
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)

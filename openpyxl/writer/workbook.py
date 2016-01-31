@@ -5,31 +5,18 @@ from __future__ import absolute_import
 
 from copy import copy
 
-from openpyxl import LXML
-from openpyxl.compat import safe_string
 from openpyxl.utils import absolute_coordinate, quote_sheetname
-from openpyxl.xml.functions import Element, SubElement
 from openpyxl.xml.constants import (
+    ARC_APP,
     ARC_CORE,
     ARC_WORKBOOK,
-    ARC_APP,
-    COREPROPS_NS,
-    VTYPES_NS,
-    XPROPS_NS,
-    DCORE_NS,
-    DCTERMS_NS,
-    DCTERMS_PREFIX,
-    XSI_NS,
-    SHEET_MAIN_NS,
-    CONTYPES_NS,
     PKG_REL_NS,
     CUSTOMUI_NS,
-    REL_NS,
     ARC_CUSTOM_UI,
     ARC_ROOT_RELS,
 )
 from openpyxl.xml.functions import tostring, fromstring
-from openpyxl.utils.datetime  import datetime_to_W3CDTF
+
 from openpyxl.worksheet import Worksheet
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
@@ -38,37 +25,6 @@ from openpyxl.workbook.external_reference import ExternalReference
 from openpyxl.workbook.parser import ChildSheet, WorkbookPackage
 from openpyxl.workbook.properties import CalcProperties, WorkbookProperties
 from openpyxl.workbook.views import BookView
-
-
-def write_properties_app(workbook):
-    """Write the properties xml."""
-    worksheets_count = len(workbook.worksheets)
-    root = Element('{%s}Properties' % XPROPS_NS)
-    SubElement(root, '{%s}Application' % XPROPS_NS).text = 'Microsoft Excel'
-    SubElement(root, '{%s}DocSecurity' % XPROPS_NS).text = '0'
-    SubElement(root, '{%s}ScaleCrop' % XPROPS_NS).text = 'false'
-    SubElement(root, '{%s}Company' % XPROPS_NS)
-    SubElement(root, '{%s}LinksUpToDate' % XPROPS_NS).text = 'false'
-    SubElement(root, '{%s}SharedDoc' % XPROPS_NS).text = 'false'
-    SubElement(root, '{%s}HyperlinksChanged' % XPROPS_NS).text = 'false'
-    SubElement(root, '{%s}AppVersion' % XPROPS_NS).text = '12.0000'
-
-    # heading pairs part
-    heading_pairs = SubElement(root, '{%s}HeadingPairs' % XPROPS_NS)
-    vector = SubElement(heading_pairs, '{%s}vector' % VTYPES_NS,
-            {'size': '2', 'baseType': 'variant'})
-    variant = SubElement(vector, '{%s}variant' % VTYPES_NS)
-    SubElement(variant, '{%s}lpstr' % VTYPES_NS).text = 'Worksheets'
-    variant = SubElement(vector, '{%s}variant' % VTYPES_NS)
-    SubElement(variant, '{%s}i4' % VTYPES_NS).text = '%d' % worksheets_count
-
-    # title of parts
-    title_of_parts = SubElement(root, '{%s}TitlesOfParts' % XPROPS_NS)
-    vector = SubElement(title_of_parts, '{%s}vector' % VTYPES_NS,
-            {'size': '%d' % worksheets_count, 'baseType': 'lpstr'})
-    for ws in workbook.worksheets:
-        SubElement(vector, '{%s}lpstr' % VTYPES_NS).text = '%s' % ws.title
-    return tostring(root)
 
 
 def write_root_rels(workbook):
@@ -179,13 +135,13 @@ def write_workbook(workbook):
         # print titles
         if sheet.print_titles:
             name = DefinedName(name="PrintTitles", localSheetId=idx)
-            name.value = sheet.print_titles
+            name.value = quote_sheetname(sheet.print_titles)
             defined_names.append(name)
 
         # print areas
         if sheet.print_area:
             name = DefinedName(name="PrintArea", localSheetId=idx)
-            name.value = "{0}!{1}".format(sheet.title, sheet.print_area)
+            name.value = "{0}!{1}".format(quote_sheetname(sheet.title), sheet.print_area)
             defined_names.append(name)
 
     root.definedNames = defined_names
