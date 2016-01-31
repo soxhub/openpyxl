@@ -12,7 +12,6 @@ from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     PKG_REL_NS,
     CUSTOMUI_NS,
-    ARC_CUSTOM_UI,
     ARC_ROOT_RELS,
 )
 from openpyxl.xml.functions import tostring, fromstring
@@ -42,18 +41,12 @@ def write_root_rels(workbook):
     rels.append(rel)
 
     if workbook.vba_archive is not None:
-        relation_tag = '{%s}Relationship' % PKG_REL_NS
-        # See if there was a customUI relation and reuse its id
-        arc = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
-        rel_tags = arc.findall(relation_tag)
-        rId = None
-        for rel in rel_tags:
-                if rel.get('Target') == ARC_CUSTOM_UI:
-                        rId = rel.get('Id')
-                        break
-        if rId is not None:
-            vba = Relationship(Target=ARC_CUSTOM_UI, Id=rId, Type=CUSTOMUI_NS)
-            rels.append(vba)
+        # See if there was a customUI relation and reuse it
+        xml = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
+        root_rels = RelationshipList.from_tree(xml)
+        custom_ui = list(root_rels.find(CUSTOMUI_NS))
+        if custom_ui:
+            rels.append(custom_ui[0])
 
     return tostring(rels.to_tree())
 
