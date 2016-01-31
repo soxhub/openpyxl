@@ -34,7 +34,7 @@ class VectorVariant(Serialisable):
 class ExtendedProperties(Serialisable):
 
     """
-    See §22.2
+    See 22.2
 
     Most of this is irrelevant
     """
