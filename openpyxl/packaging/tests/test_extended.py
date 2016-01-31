@@ -37,7 +37,7 @@ class TestExtendedProperties:
         <HeadingPairs>
           <vt:vector size="2" baseType="variant">
             <vt:variant>
-              <vt:lpstr>Arbeitsblätter</vt:lpstr>
+              <vt:lpstr>Worksheets</vt:lpstr>
             </vt:variant>
             <vt:variant>
               <vt:i4>1</vt:i4>
