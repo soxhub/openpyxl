@@ -31,13 +31,13 @@ def write_root_rels(workbook):
 
     rels = RelationshipList()
 
-    rel = Relationship(type="officeDocument", Target=ARC_WORKBOOK, Id="rId1")
+    rel = Relationship(type="officeDocument", Target=ARC_WORKBOOK)
     rels.append(rel)
 
-    rel = Relationship(Target=ARC_CORE, Id='rId2', Type="%s/metadata/core-properties" % PKG_REL_NS)
+    rel = Relationship(Target=ARC_CORE, Type="%s/metadata/core-properties" % PKG_REL_NS)
     rels.append(rel)
 
-    rel = Relationship(type="extended-properties", Target=ARC_APP, Id='rId3')
+    rel = Relationship(type="extended-properties", Target=ARC_APP)
     rels.append(rel)
 
     if workbook.vba_archive is not None:
