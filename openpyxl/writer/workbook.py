@@ -199,6 +199,14 @@ def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     wb = workbook
 
+    external_links = workbook._external_links
+    if external_links:
+        for idx, link in enumerate(external_links, 1):
+            ext =  Relationship(type='externalLink',
+                                Target='externalLinks/externalLink{0}.xml'.format(idx)
+                                )
+            wb.rels.append(ext)
+
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
     wb.rels.append(strings)
 
@@ -212,13 +220,5 @@ def write_workbook_rels(workbook):
         vba =  Relationship(type='vbaProject', Target='vbaProject.bin')
         vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         wb.rels.append(vba)
-
-    external_links = workbook._external_links
-    if external_links:
-        for idx, link in enumerate(external_links, 1):
-            ext =  Relationship(type='externalLink',
-                                Target='externalLinks/externalLink{0}.xml'.format(idx)
-                                )
-            wb.rels.append(ext)
 
     return tostring(wb.rels.to_tree())
