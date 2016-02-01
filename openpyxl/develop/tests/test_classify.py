@@ -130,3 +130,9 @@ class DefinedName(Serialisable):
         self.publishToServer = publishToServer
         self.workbookParameter = workbookParameter
 """
+
+
+def test_simpleType(schema):
+    from ..classify import simple
+    typ = simple("ST_FontCollectionIndex", schema)
+    assert typ == "NoneSet(values=(['major', 'minor']))"

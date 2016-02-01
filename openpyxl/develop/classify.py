@@ -204,6 +204,7 @@ def simple(tagname, schema, use=""):
     constraint = node.find("{%s}restriction" % XSD)
     if constraint is None:
         return "unknown defintion for {0}".format(tagname)
+
     typ = constraint.get("base")
     typ = "{0}()".format(simple_mapping.get(typ, typ))
     values = constraint.findall("{%s}enumeration" % XSD)
