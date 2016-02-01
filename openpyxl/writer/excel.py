@@ -209,13 +209,16 @@ class ExcelWriter(object):
     def _write_external_links(self, archive):
         """Write links to external workbooks"""
         wb = self.workbook
-        for idx, book in enumerate(wb._external_links, 1):
+        for idx, link in enumerate(wb._external_links, 1):
 
-            book_path = "{0}/externalLinks/externalLink{1}.xml".format(PACKAGE_XL, idx)
-            archive.writestr(book_path, tostring(book.to_tree()))
+            link._path = "{0}{1}.xml".format(link._rel_type, idx)
 
-            rels_path = get_rels_path(book_path)
-            archive.writestr(rels_path, tostring(book.file_link.to_tree()))
+            arc_path = "{0}/{1}s/{2}".format(PACKAGE_XL, link._rel_type, link._path)
+            rels_path = get_rels_path(arc_path)
+
+            xml = link.to_tree()
+            archive.writestr(arc_path, tostring(xml))
+            archive.writestr(rels_path, tostring(link.file_link.to_tree()))
 
 
     def save(self, filename, as_template=False):

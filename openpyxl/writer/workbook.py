@@ -105,11 +105,11 @@ def write_workbook(workbook):
     if wb._external_links:
         # need to match a counter with a workbook's relations
         rId = len(wb.rels)
-        for idx, _ in enumerate(wb._external_links, 1):
+        for idx, link in enumerate(wb._external_links, 1):
             ext = ExternalReference(id="rId{0}".format(rId + idx))
-            rel =  Relationship(type='externalLink',
-                                Target='externalLinks/externalLink{0}.xml'.format(idx)
-                                )
+            rel = Relationship(type=link._rel_type,
+                               Target='{1}s/{0}'.format(link._rel_type, link._path)
+                               )
             root.externalReferences.append(ext)
 
     # Defined names
