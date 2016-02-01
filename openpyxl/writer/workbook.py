@@ -44,9 +44,8 @@ def write_root_rels(workbook):
         # See if there was a customUI relation and reuse it
         xml = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
         root_rels = RelationshipList.from_tree(xml)
-        custom_ui = list(root_rels.find(CUSTOMUI_NS))
-        if custom_ui:
-            rels.append(custom_ui[0])
+        for rel in root_rels.find(CUSTOMUI_NS):
+            rels.append(rel)
 
     return tostring(rels.to_tree())
 
