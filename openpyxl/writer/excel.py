@@ -130,7 +130,12 @@ class ExcelWriter(object):
         from openpyxl.worksheet.drawing import Drawing
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
-            sheet._path = "chart{0}.xml".format(idx)
+            sheet._path = "sheet{0}.xml".format(idx)
+            arc_path = "{0}/{1}".format(PACKAGE_CHARTSHEETS, sheet._path)
+            rels_path = get_rels_path(arc_path)
+            xml = tostring(sheet.to_tree())
+
+            archive.writestr(arc_path, xml)
 
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
@@ -150,23 +155,21 @@ class ExcelWriter(object):
                 rels.append(rel)
                 tree = rels.to_tree()
 
-                sheet.drawing.id = "rId{0}".format(len(rels))
-
-                archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/{0}.rels'.format(sheet._path), tostring(tree)
+                archive.writestr(rels_path, tostring(tree)
                                  )
-
-            xml = tostring(sheet.to_tree())
-            archive.writestr("{0}/{1}".format(PACKAGE_CHARTSHEETS, sheet._path), xml)
 
 
     def _write_worksheets(self, archive):
         comments_id = 0
 
         for idx, sheet in enumerate(self.workbook.worksheets, 1):
+
             xml = sheet._write(self.workbook.shared_strings)
             sheet._path = "sheet{0}.xml".format(idx)
-            archive.writestr("{0}/{1}".format(PACKAGE_WORKSHEETS, sheet._path), xml)
+            arc_path = "{0}/{1}".format(PACKAGE_WORKSHEETS, sheet._path)
+            rels_path = get_rels_path(arc_path)
+
+            archive.writestr(arc_path, xml)
 
             if sheet._charts or sheet._images:
                 drawing = SpreadsheetDrawing()
@@ -202,8 +205,7 @@ class ExcelWriter(object):
                 or sheet.legacy_drawing is not None):
                 rels = write_rels(sheet, comments_id=comments_id)
 
-                archive.writestr(PACKAGE_WORKSHEETS +
-                                 '/_rels/{0}.rels'.format(sheet._path), tostring(rels))
+                archive.writestr(rels_path, tostring(rels))
 
 
     def _write_external_links(self, archive):
