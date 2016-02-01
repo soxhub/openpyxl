@@ -63,20 +63,14 @@ ST_REGEX = re.compile("(?P<schema>[a-z]:)?(?P<typename>ST_[A-Za-z]+)")
 
 
 def get_attribute_group(schema, tagname):
-    for node in schema.iterfind("{%s}attributeGroup" % XSD):
-        if node.get("ref") == tagname:
-            break
+    node = schema.find("{%s}attributeGroup[@name='%s']" % (XSD, tagname))
     attrs = node.findall("{%s}attribute" % XSD)
     return attrs
 
 
 def get_element_group(schema, tagname):
-    for node in schema.iterfind("{%s}group" % XSD):
-        if node.get("name") == tagname:
-            break
-    seq = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
-    return seq + choice
+    node = schema.find("{%s}group[@name='%s']" % (XSD, tagname))
+    return node.findall(".//{%s}element" % XSD)
 
 
 def classify(tagname, src=sheet_src, schema=None):
@@ -128,11 +122,11 @@ def classify(tagname, src=sheet_src, schema=None):
 
     children = []
     element_names =[]
-    elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
+    elements = node.findall(".//{%s}element" % XSD)
+    choice = node.findall("{%s}choice" % XSD)
     if choice:
         s += """    # some elements are choice\n"""
-        elements.extend(choice)
+
     groups = node.findall("{%s}sequence/{%s}group" % (XSD, XSD))
     for group in groups:
         ref = group.get("ref")
