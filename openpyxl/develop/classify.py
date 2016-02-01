@@ -85,13 +85,8 @@ def classify(tagname, src=sheet_src, schema=None):
     """
     if schema is None:
         schema = parse(src)
-    nodes = schema.iterfind("{%s}complexType" % XSD)
-    tag = None
-    for node in nodes:
-        if node.get('name') == tagname:
-            tag = tagname
-            break
-    if tag is None:
+    node = schema.find("{%s}complexType[@name='%s']" % (XSD, tagname))
+    if node is None:
         pass
         raise ValueError("Tag {0} not found".format(tagname))
 
@@ -211,9 +206,7 @@ def extends(node):
 
 def simple(tagname, schema, use=""):
 
-    for node in schema.iterfind("{%s}simpleType" % XSD):
-        if node.get("name") == tagname:
-            break
+    node = schema.find("{%s}simpleType[@name='%s']" % (XSD, tagname))
     constraint = node.find("{%s}restriction" % XSD)
     if constraint is None:
         return "unknown defintion for {0}".format(tagname)
