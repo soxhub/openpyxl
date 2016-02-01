@@ -104,11 +104,12 @@ def write_workbook(workbook):
     # external references
     if wb._external_links:
         # need to match a counter with a workbook's relations
-        counter = len(wb._sheets) + 3 # strings, styles, theme
-        if wb.vba_archive:
-            counter += 1
-        for idx, _ in enumerate(wb._external_links, counter+1):
-            ext = ExternalReference(id="rId{0}".format(idx))
+        rId = len(wb.rels)
+        for idx, _ in enumerate(wb._external_links, 1):
+            ext = ExternalReference(id="rId{0}".format(rId + idx))
+            rel =  Relationship(type='externalLink',
+                                Target='externalLinks/externalLink{0}.xml'.format(idx)
+                                )
             root.externalReferences.append(ext)
 
     # Defined names
@@ -146,14 +147,6 @@ def write_workbook(workbook):
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     wb = workbook
-
-    external_links = workbook._external_links
-    if external_links:
-        for idx, link in enumerate(external_links, 1):
-            ext =  Relationship(type='externalLink',
-                                Target='externalLinks/externalLink{0}.xml'.format(idx)
-                                )
-            wb.rels.append(ext)
 
     strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
     wb.rels.append(strings)

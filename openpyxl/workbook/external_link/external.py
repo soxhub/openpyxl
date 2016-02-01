@@ -149,6 +149,9 @@ class ExternalLink(Serialisable):
 
     tagname = "externalLink"
 
+    _id = ""
+    _path = ""
+
     externalBook = Typed(expected_type=ExternalBook, allow_none=True)
     file_link = Typed(expected_type=Relationship, allow_none=True) # link to external file
 
