@@ -22,10 +22,12 @@ from .filters import (
     Filters,
     IconFilter,
     ColorFilter,
+    DateGroupItem,
     DynamicFilter,
     FilterColumn,
     SortCondition,
-    SortState
+    SortState,
+    Top10,
 )
 
 
@@ -159,54 +161,6 @@ class TableColumns(Serialisable):
                 ):
         self.count = count
         self.tableColumn = tableColumn
-
-
-class Top10(Serialisable):
-
-    top = Bool(allow_none=True)
-    percent = Bool(allow_none=True)
-    val = Float()
-    filterVal = Float(allow_none=True)
-
-    def __init__(self,
-                 top=None,
-                 percent=None,
-                 val=None,
-                 filterVal=None,
-                ):
-        self.top = top
-        self.percent = percent
-        self.val = val
-        self.filterVal = filterVal
-
-
-class DateGroupItem(Serialisable):
-
-    year = Integer()
-    month = Integer(allow_none=True)
-    day = Integer(allow_none=True)
-    hour = Integer(allow_none=True)
-    minute = Integer(allow_none=True)
-    second = Integer(allow_none=True)
-    dateTimeGrouping = Set(values=(['year', 'month', 'day', 'hour', 'minute',
-                                    'second']))
-
-    def __init__(self,
-                 year=None,
-                 month=None,
-                 day=None,
-                 hour=None,
-                 minute=None,
-                 second=None,
-                 dateTimeGrouping=None,
-                ):
-        self.year = year
-        self.month = month
-        self.day = day
-        self.hour = hour
-        self.minute = minute
-        self.second = second
-        self.dateTimeGrouping = dateTimeGrouping
 
 
 class Table(Serialisable):

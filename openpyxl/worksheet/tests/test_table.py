@@ -41,12 +41,15 @@ def Table():
 
 class TestTable:
 
-    def test_ctor(self, Table):
+    def test_ctor(self, Table, TableColumn):
         table = Table(id=1, displayName="A Sample Table", ref="A1:F10",
                       )
+        table.tableColumns.append(TableColumn(id=1, name="Column1"))
         xml = tostring(table.to_tree())
         expected = """
-        <table displayName="A Sample Table" id="1" ref="A1:F10" />
+        <table displayName="A Sample Table" id="1" ref="A1:F10">
+         <tableColumn id="1" name="Column1">
+        </table>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -55,10 +58,10 @@ class TestTable:
     def test_from_xml(self, Table):
         src = """
         <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-            id="1" name="Column1" displayName="Column1" ref="A1:AA27">
+            id="1" name="Table1" displayName="Table1" ref="A1:AA27">
         </table>
         """
         node = fromstring(src)
         table = Table.from_tree(node)
-        assert table == Table(id=1, displayName="Column1", name="Column1",
+        assert table == Table(id=1, displayName="Table1", name="Table1",
                               ref="A1:AA27")
