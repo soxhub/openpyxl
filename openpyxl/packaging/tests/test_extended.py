@@ -20,7 +20,7 @@ class TestExtendedProperties:
         xml = tostring(props.to_tree())
         expected = """
         <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
-        <Application>openpyxl</Application>
+        <Application>Microsoft Excel</Application>
         <AppVersion>{0}</AppVersion>
         </Properties>
         """.format(__version__)
