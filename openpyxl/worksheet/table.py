@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
+    Descriptor,
+    Alias,
     Typed,
     Set,
     Float,
@@ -79,12 +81,21 @@ class XmlColumnPr(Serialisable):
 
 class TableFormula(Serialisable):
 
-    array = Bool()
+    tagname = "tableFormula"
+
+    ## Note formula is stored as the text value
+
+    array = Bool(allow_none=True)
+    attr_text = Descriptor()
+    text = Alias('attr_text')
+
 
     def __init__(self,
                  array=None,
+                 attr_text=None,
                 ):
         self.array = array
+        self.attr_text = attr_text
 
 
 class TableColumn(Serialisable):
