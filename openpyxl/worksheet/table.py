@@ -16,6 +16,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from .filters import (
     AutoFilter,
@@ -264,3 +265,9 @@ class Table(Serialisable):
         self.sortState = sortState
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
+
+
+    def to_tree(self):
+        tree = super(Table, self).to_tree()
+        tree.set("xmlns", SHEET_MAIN_NS)
+        return tree

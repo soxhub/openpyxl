@@ -47,7 +47,8 @@ class TestTable:
         table.tableColumns.append(TableColumn(id=1, name="Column1"))
         xml = tostring(table.to_tree())
         expected = """
-        <table displayName="A Sample Table" id="1" ref="A1:F10">
+        <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           displayName="A Sample Table" id="1" ref="A1:F10">
         <tableColumns count="1">
           <tableColumn id="1" name="Column1" />
         </tableColumns>
