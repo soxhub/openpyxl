@@ -197,8 +197,8 @@ def write_content_types(workbook, as_template=False, exts=None):
 
     # ugh! can't we get this from the zip archive?
     # worksheets
-    for sheet_id, sheet in enumerate(workbook.worksheets):
-        name = '/xl/worksheets/sheet%d.xml' % (sheet_id + 1)
+    for sheet_id, sheet in enumerate(workbook.worksheets, 1):
+        name = '/xl/worksheets/sheet%d.xml' % (sheet_id)
         manifest.Override.append(Override(name, WORKSHEET_TYPE))
 
         if sheet._charts or sheet._images:
@@ -222,7 +222,7 @@ def write_content_types(workbook, as_template=False, exts=None):
 
 
     # chartsheets
-    for sheet_id, sheet in enumerate(workbook.chartsheets, sheet_id+1):
+    for sheet_id, sheet in enumerate(workbook.chartsheets, 1):
         name = '/xl/chartsheets/sheet%d.xml' % (sheet_id)
         manifest.Override.append(Override(name, CHARTSHEET_TYPE))
 
