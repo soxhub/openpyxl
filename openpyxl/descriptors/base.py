@@ -246,6 +246,9 @@ class MatchPattern(Descriptor):
 
     def __set__(self, instance, value):
 
+        if value is None and not self.allow_none:
+            raise ValueError("Value must not be none")
+
         if ((self.allow_none and value is not None)
             or not self.allow_none):
             if not self.test_pattern.match(value):
