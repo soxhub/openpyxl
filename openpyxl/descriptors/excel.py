@@ -8,7 +8,7 @@ Excel specific descriptors
 from openpyxl.xml.constants import REL_NS
 from . import MatchPattern, MinMax, Integer, String, Typed, Sequence
 from .serialisable import Serialisable
-
+from openpyxl.utils import RANGE_EXPR
 
 class HexBinary(MatchPattern):
 
@@ -73,3 +73,15 @@ class Base64Binary(MatchPattern):
 class Guid(MatchPattern):
     # https://msdn.microsoft.com/en-us/library/dd946381(v=office.12).aspx
     pattern = "{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}"
+
+
+class CellRange(MatchPattern):
+
+    pattern = "^{0}$".format(RANGE_EXPR)
+    allow_none = True
+
+    def __set__(self, instance, value):
+
+        if value is not None:
+            value = value.upper()
+        super(CellRange, self).__set__(instance, value)
