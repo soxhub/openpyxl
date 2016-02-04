@@ -55,13 +55,13 @@ def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
     m = ABSOLUTE_RE.match(coord_string.upper())
     if m:
-        parts = m.groups()
-        if all(parts[-2:]):
-            return '$%s$%s:$%s$%s' % (parts[0], parts[1], parts[3], parts[4])
+        if all(m.groups()[-2:]):
+            fmt =  "${min_col}${min_row}:${max_col}${max_row}"
         else:
-            return '$%s$%s' % (parts[0], parts[1])
-    else:
-        return coord_string
+            fmt = "${min_col}${min_row}"
+        return fmt.format_map(m.groupdict())
+    raise ValueError("Value is not a valid coordinate range")
+
 
 def _get_column_letter(col_idx):
     """Convert a column number into a column letter (3 -> 'C')
