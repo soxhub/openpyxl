@@ -174,21 +174,6 @@ class TableColumn(Serialisable):
         self.extLst = extLst
 
 
-class TableColumns(Serialisable):
-
-    count = Integer(allow_none=True)
-    tableColumn = Typed(expected_type=TableColumn, )
-
-    __elements__ = ('tableColumn',)
-
-    def __init__(self,
-                 count=None,
-                 tableColumn=None,
-                ):
-        self.count = count
-        self.tableColumn = tableColumn
-
-
 class Table(Serialisable):
 
     tagname = "table"
