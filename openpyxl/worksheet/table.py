@@ -70,7 +70,9 @@ class TableStyleInfo(Serialisable):
         self.showColumnStripes = showColumnStripes
 
 
-class XmlColumnPr(Serialisable):
+class XMLColumnProps(Serialisable):
+
+    tagname = "xmlColumnPr"
 
     mapId = Integer()
     xpath = String()
@@ -78,7 +80,7 @@ class XmlColumnPr(Serialisable):
     xmlDataType = String()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
+    __elements__ = ()
 
     def __init__(self,
                  mapId=None,
@@ -91,7 +93,6 @@ class XmlColumnPr(Serialisable):
         self.xpath = xpath
         self.denormalized = denormalized
         self.xmlDataType = xmlDataType
-        self.extLst = extLst
 
 
 class TableFormula(Serialisable):
@@ -132,7 +133,7 @@ class TableColumn(Serialisable):
     totalsRowCellStyle = String(allow_none=True)
     calculatedColumnFormula = Typed(expected_type=TableFormula, allow_none=True)
     totalsRowFormula = Typed(expected_type=TableFormula, allow_none=True)
-    xmlColumnPr = Typed(expected_type=XmlColumnPr, allow_none=True)
+    xmlColumnPr = Typed(expected_type=XMLColumnProps, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('calculatedColumnFormula', 'totalsRowFormula',

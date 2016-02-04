@@ -123,3 +123,30 @@ class TestTableInfo:
         node = fromstring(src)
         info = TableStyleInfo.from_tree(node)
         assert info == TableStyleInfo(name="TableStyleLight1", showRowStripes=True)
+
+
+@pytest.fixture
+def XMLColumnProps():
+    from ..table import XMLColumnProps
+    return XMLColumnProps
+
+
+class TestXMLColumnPr:
+
+    def test_ctor(self, XMLColumnProps):
+        col = XMLColumnProps(mapId="1", xpath="/xml/foo/element", xmlDataType="string")
+        xml = tostring(col.to_tree())
+        expected = """
+        <xmlColumnPr mapId="1" xpath="/xml/foo/element" xmlDataType="string"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, XMLColumnProps):
+        src = """
+        <xmlColumnPr mapId="1" xpath="/xml/foo/element" xmlDataType="string"/>
+        """
+        node = fromstring(src)
+        col = XMLColumnProps.from_tree(node)
+        assert col == XMLColumnProps(mapId="1", xpath="/xml/foo/element", xmlDataType="string")
