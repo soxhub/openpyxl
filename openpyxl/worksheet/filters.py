@@ -18,6 +18,7 @@ from openpyxl.descriptors import (
     MatchPattern,
     Sequence,
     Convertible,
+    MinMax,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import ValueSequence
@@ -106,6 +107,8 @@ class SortState(Serialisable):
 
 class IconFilter(Serialisable):
 
+    tagname = "iconFilter"
+
     iconSet = Set(values=(['3Arrows', '3ArrowsGray', '3Flags',
                            '3TrafficLights1', '3TrafficLights2', '3Signs', '3Symbols', '3Symbols2',
                            '4Arrows', '4ArrowsGray', '4RedToBlack', '4Rating', '4TrafficLights',
@@ -122,7 +125,9 @@ class IconFilter(Serialisable):
 
 class ColorFilter(Serialisable):
 
-    dxfId = Integer()
+    tagname = "colorFilter"
+
+    dxfId = Integer(allow_none=True)
     cellColor = Bool(allow_none=True)
 
     def __init__(self,
@@ -134,6 +139,8 @@ class ColorFilter(Serialisable):
 
 
 class DynamicFilter(Serialisable):
+
+    tagname = "dynamicFilter"
 
     type = Set(values=(['null', 'aboveAverage', 'belowAverage', 'tomorrow',
                         'today', 'yesterday', 'nextWeek', 'thisWeek', 'lastWeek', 'nextMonth',
@@ -162,6 +169,8 @@ class DynamicFilter(Serialisable):
 
 class CustomFilter(Serialisable):
 
+    tagname = "customFilter"
+
     operator = Set(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
     val = String()
@@ -176,20 +185,24 @@ class CustomFilter(Serialisable):
 
 class CustomFilters(Serialisable):
 
+    tagname = "customFilters"
+
     _and = Bool(allow_none=True)
-    customFilter = Typed(expected_type=CustomFilter)
+    customFilter = Sequence(expected_type=CustomFilter) # min 1, max 2
 
     __elements__ = ('customFilter',)
 
     def __init__(self,
                  _and=None,
-                 customFilter=None,
+                 customFilter=(),
                 ):
         self._and = _and
         self.customFilter = customFilter
 
 
 class Top10(Serialisable):
+
+    tagname = "top10"
 
     top = Bool(allow_none=True)
     percent = Bool(allow_none=True)
@@ -210,12 +223,14 @@ class Top10(Serialisable):
 
 class DateGroupItem(Serialisable):
 
+    tagname = "dateGroupItem"
+
     year = Integer()
-    month = Integer(allow_none=True)
-    day = Integer(allow_none=True)
-    hour = Integer(allow_none=True)
-    minute = Integer(allow_none=True)
-    second = Integer(allow_none=True)
+    month = MinMax(min=1, max=12, allow_none=True)
+    day = MinMax(min=1, max=31, allow_none=True)
+    hour = MinMax(min=0, max=23, allow_none=True)
+    minute = MinMax(min=0, max=59, allow_none=True)
+    second = Integer(min=0, max=59, allow_none=True)
     dateTimeGrouping = Set(values=(['year', 'month', 'day', 'hour', 'minute',
                                     'second']))
 
@@ -238,6 +253,8 @@ class DateGroupItem(Serialisable):
 
 
 class Filters(Serialisable):
+
+    tagname = "filters"
 
     blank = Bool(allow_none=True)
     calendarType = NoneSet(values=["gregorian","gregorianUs",
