@@ -33,10 +33,24 @@ from .filters import (
     Top10,
 )
 
+TABLESTYLES = tuple(
+    ["TableStyleMedium{0}".format(i) for i in range(1, 29)]
+    + ["TableStyleLight{0}".format(i) for i in range(1, 22)]
+    + ["TableStyleDark{0}".format(i) for i in range(1, 12)]
+)
+
+PIVOTSTYLES = tuple(
+    ["PivotStyleMedium{0}".format(i) for i in range(1, 29)]
+    + ["PivotStyleLight{0}".format(i) for i in range(1, 29)]
+    + ["PivotStyleDark{0}".format(i) for i in range(1, 29)]
+)
+
 
 class TableStyleInfo(Serialisable):
 
-    name = String(allow_none=True)
+    tagname = "tableStyleInfo"
+
+    name = NoneSet(values=TABLESTYLES + PIVOTSTYLES)
     showFirstColumn = Bool(allow_none=True)
     showLastColumn = Bool(allow_none=True)
     showRowStripes = Bool(allow_none=True)

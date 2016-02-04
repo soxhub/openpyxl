@@ -96,3 +96,30 @@ class TestTableFormula:
         node = fromstring(src)
         formula = TableFormula.from_tree(node)
         assert formula.text == "=A1*4"
+
+
+@pytest.fixture
+def TableStyleInfo():
+    from ..table import TableStyleInfo
+    return TableStyleInfo
+
+
+class TestTableInfo:
+
+    def test_ctor(self, TableStyleInfo):
+        info = TableStyleInfo(name="TableStyleMedium12")
+        xml = tostring(info.to_tree())
+        expected = """
+        <tableStyleInfo name="TableStyleMedium12" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, TableStyleInfo):
+        src = """
+        <tableStyleInfo name="TableStyleLight1" showRowStripes="1" />
+        """
+        node = fromstring(src)
+        info = TableStyleInfo.from_tree(node)
+        assert info == TableStyleInfo(name="TableStyleLight1", showRowStripes=True)
