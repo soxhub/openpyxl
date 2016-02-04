@@ -17,9 +17,9 @@ COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
 ROW_RANGE = """\d{1,3}:\d{1,3}:"""
 RANGE_EXPR = """
-[$]?(?P<min_col>[A-Z]+)
+[$]?(?P<min_col>[A-Z]{1,3})
 [$]?(?P<min_row>\d+)
-(:[$]?(?P<max_col>[A-Z]+)
+(:[$]?(?P<max_col>[A-Z]{1,3})
 [$]?(?P<max_row>\d+))?
 """
 ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
