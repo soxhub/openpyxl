@@ -56,10 +56,10 @@ def absolute_coordinate(coord_string):
     m = ABSOLUTE_RE.match(coord_string.upper())
     if m:
         if all(m.groups()[-2:]):
-            fmt =  "${min_col}${min_row}:${max_col}${max_row}"
+            fmt =  "${0}${1}:${3}${4}"
         else:
-            fmt = "${min_col}${min_row}"
-        return fmt.format_map(m.groupdict())
+            fmt = "${0}${1}"
+        return fmt.format(*m.groups())
     raise ValueError("Value is not a valid coordinate range")
 
 
