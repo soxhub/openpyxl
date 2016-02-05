@@ -57,21 +57,3 @@ def test_has_style(StyleableObject):
     assert not so.has_style
     so.number_format= 'dd'
     assert so.has_style
-
-
-def test_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
-    so.font = Font(bold=True)
-    so.fill = PatternFill()
-    so.border = Border()
-    so.protection = Protection()
-    so.alignment = Alignment()
-    so.number_format = "not general"
-    assert so.style == Style(font=Font(bold=True), number_format="not general")
-
-
-def test_assign_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
-    style = Style(font=Font(underline="single"))
-    so.style = style
-    assert style.font == Font(underline="single")

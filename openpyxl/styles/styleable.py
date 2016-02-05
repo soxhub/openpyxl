@@ -89,29 +89,6 @@ class StyleableObject(object):
             return False
         return any(self._style)
 
-    #legacy
-    @property
-    def style(self):
-        warn("Use formatting objects such as font directly")
-        return Style(
-            font=self.font.copy(),
-            fill=self.fill.copy(),
-            border=self.border.copy(),
-            alignment=self.alignment.copy(),
-            number_format=self.number_format,
-            protection=self.protection.copy()
-        )
-
-    #legacy
-    @style.setter
-    def style(self, value):
-        warn("Use formatting objects such as font directly")
-        self.font = value.font.copy()
-        self.fill = value.fill.copy()
-        self.border = value.border.copy()
-        self.protection = value.protection.copy()
-        self.alignment = value.alignment.copy()
-        self.number_format = value.number_format
 
     @property
     def pivotButton(self):
