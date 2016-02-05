@@ -158,3 +158,16 @@ class Serialisable(_Serialiasable):
 
     def __ne__(self, other):
         return not self == other
+
+
+    def __repr__(self):
+        s = u"<{0}.{1} object>\nParameters:".format(
+            self.__module__,
+            self.__class__.__qualname__
+        )
+        attrs = u",\n".join(u"{0}:{1}".format(a, getattr(self, a))
+                            for a in self.__attrs__)
+        elements = u",\n".join(u"{0}:{1}".format(e, repr(getattr(self, e)))
+                               for e in self.__elements__)
+
+        return u"\n".join([s, attrs, elements])
