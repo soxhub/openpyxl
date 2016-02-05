@@ -2,17 +2,14 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors import Bool
+from openpyxl.descriptors.serialisable import Serialisable
 
-from .hashable import HashableObject
 
-
-class Protection(HashableObject):
+class Protection(Serialisable):
     """Protection options for use in styles."""
 
     tagname = "protection"
 
-    __fields__ = ('locked',
-                  'hidden')
     locked = Bool()
     hidden = Bool()
 

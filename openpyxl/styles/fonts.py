@@ -18,7 +18,6 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedFloat,
 )
-from .hashable import HashableObject
 from .colors import ColorDescriptor, Color, BLACK
 
 from openpyxl.compat import safe_string
@@ -30,7 +29,7 @@ def _no_value(tagname, value, namespace=None):
         return Element(tagname, val=safe_string(value))
 
 
-class Font(HashableObject):
+class Font(Serialisable):
     """Font options used in styles."""
 
     UNDERLINE_DOUBLE = 'double'
@@ -65,8 +64,6 @@ class Font(HashableObject):
     __elements__ = ('name', 'charset', 'family', 'b', 'i', 'strike', 'outline',
                   'shadow', 'condense', 'color', 'extend', 'sz', 'u', 'vertAlign',
                   'scheme')
-
-    __fields__ = __elements__
 
 
     def __init__(self, name=None, sz=None, b=None, i=None, charset=None,

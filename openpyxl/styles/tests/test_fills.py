@@ -91,11 +91,6 @@ class TestGradientFill:
         assert fill.stop == [Color(theme=0), Color(theme=4)]
 
 
-    def test_hashable(self, GradientFill):
-        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[BLACK, WHITE])
-        assert hash(gf) == hash(('linear', 90, 1.0, 2.0, 3.0, 4.0, ( Color(BLACK), Color(WHITE) )))
-
-
 @pytest.fixture
 def PatternFill():
     from ..fills import PatternFill

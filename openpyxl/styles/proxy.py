@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 from copy import copy
 
-from openpyxl.compat import deprecated
-
 
 class StyleProxy(object):
     """
@@ -14,8 +12,6 @@ class StyleProxy(object):
     __slots__ = ('__target')
 
     def __init__(self, target):
-        if not hasattr(target, 'copy'):
-            raise TypeError("Proxied objects must have a copy method.")
         self.__target = target
 
 
@@ -34,7 +30,6 @@ class StyleProxy(object):
         super(StyleProxy, self).__setattr__(attr, value)
 
 
-    @deprecated("Use copy()")
     def copy(self, **kw):
         """Return a copy of the proxied object. Keyword args will be passed through"""
         cp = copy(self.__target)

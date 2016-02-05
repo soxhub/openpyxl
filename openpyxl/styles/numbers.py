@@ -10,7 +10,6 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.serialisable import Serialisable
 
-from .hashable import HashableObject
 
 BUILTIN_FORMATS = {
     0: 'General',
@@ -126,7 +125,7 @@ class NumberFormatDescriptor(String):
         super(NumberFormatDescriptor, self).__set__(instance, value)
 
 
-class NumberFormat(HashableObject):
+class NumberFormat(Serialisable):
 
     numFmtId = Integer()
     formatCode = String()

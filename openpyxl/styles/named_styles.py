@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from openpyxl.compat import safe_string
 
 from openpyxl.descriptors import (
-    Strict,
     Typed,
     Integer,
     Bool,
@@ -20,10 +19,9 @@ from .borders import Border
 from .alignment import Alignment
 from .numbers import NumberFormatDescriptor
 from .protection import Protection
-from .hashable import HashableObject
 
 
-class NamedStyle(HashableObject):
+class NamedStyle(Serialisable):
 
     """
     Named and editable styles
@@ -38,8 +36,6 @@ class NamedStyle(HashableObject):
     builtinId = Integer(allow_none=True)
     hidden = Bool(allow_none=True)
 
-    __fields__ = ("name", "font", "fill", "border", "number_format",
-                  "alignment", "protection")
 
     def __init__(self,
                  name="Normal",

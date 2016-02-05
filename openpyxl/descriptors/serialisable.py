@@ -148,7 +148,9 @@ class Serialisable(_Serialiasable):
 
 
     def __eq__(self, other):
-        if not dict(self) == dict(other):
+        if not self.__class__ == other.__class__:
+            return False
+        elif not dict(self) == dict(other):
             return False
         for el in self.__elements__:
             if getattr(self, el) != getattr(other, el):
@@ -171,3 +173,21 @@ class Serialisable(_Serialiasable):
                                for e in self.__elements__)
 
         return u"\n".join([s, attrs, elements])
+
+
+    def __hash__(self):
+        fields = []
+        for attr in self.__attrs__ + self.__elements__:
+            val = getattr(self, attr)
+            if isinstance(val, list):
+                val = tuple(val)
+            fields.append(val)
+
+        return hash(tuple(fields))
+
+
+    def __add__(self, other):
+        vals = {}
+        for attr in self.__attrs__ + self.__elements__:
+            vals[attr] = getattr(self, attr) or getattr(other, attr)
+        return self.__class__(**vals)

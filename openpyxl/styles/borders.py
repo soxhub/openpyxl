@@ -13,7 +13,6 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.serialisable import Serialisable
 
 from .colors import ColorDescriptor
-from .hashable import HashableObject
 
 
 BORDER_NONE = None
@@ -32,7 +31,7 @@ BORDER_THICK = 'thick'
 BORDER_THIN = 'thin'
 
 
-class Side(HashableObject):
+class Side(Serialisable):
 
     """Border options for use in styles.
     Caution: if you do not specify a border_style, other attributes will
@@ -55,7 +54,7 @@ class Side(HashableObject):
         self.color = color
 
 
-class Border(HashableObject):
+class Border(Serialisable):
     """Border positioning for use in styles."""
 
     tagname = "border"

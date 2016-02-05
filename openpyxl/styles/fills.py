@@ -14,7 +14,6 @@ from openpyxl.descriptors.sequence import ValueSequence
 from openpyxl.compat import safe_string
 
 from .colors import ColorDescriptor, Color
-from .hashable import HashableObject
 
 from openpyxl.xml.functions import Element, localname, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -49,7 +48,7 @@ fills = (FILL_SOLID, FILL_PATTERN_DARKDOWN, FILL_PATTERN_DARKGRAY,
          FILL_PATTERN_MEDIUMGRAY)
 
 
-class Fill(HashableObject):
+class Fill(Serialisable):
 
     """Base class"""
 
@@ -73,10 +72,6 @@ class PatternFill(Fill):
     no effect !"""
 
     tagname = "patternFill"
-
-    __fields__ = ('patternType',
-                  'fgColor',
-                  'bgColor')
 
     __elements__ = ('fgColor', 'bgColor')
 
@@ -136,8 +131,6 @@ class GradientFill(Fill):
 
     tagname = "gradientFill"
 
-
-    __fields__ = ('type', 'degree', 'left', 'right', 'top', 'bottom', 'stop')
     type = Set(values=('linear', 'path'))
     fill_type = Alias("type")
     degree = Float()
@@ -174,6 +167,7 @@ class GradientFill(Fill):
         for color in safe_iterator(node, "{%s}color" % SHEET_MAIN_NS):
             colors.append(Color.from_tree(color))
         return cls(stop=colors, **node.attrib)
+
 
     def to_tree(self, tagname=None, namespace=None, idx=None):
         parent = Element("fill")

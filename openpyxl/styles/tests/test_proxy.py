@@ -16,11 +16,6 @@ def dummy_object():
         def __repr__(self):
             return "dummy object"
 
-        def copy(self, **kw):
-            items = self.__dict__
-            items.update(kw)
-            return self.__class__(**items)
-
     return Dummy(a=1, b=2, c=3)
 
 
@@ -47,22 +42,7 @@ def test_repr(proxy):
 
 def test_copy(proxy):
     cp = proxy.copy(a='a')
+    assert cp is not proxy
     assert cp.a == 'a'
     assert cp.b == 2
     assert cp.c == 3
-
-
-def test_invalid_proxy():
-    from .. proxy import StyleProxy
-
-    class Dummy:
-
-        def __init__(self, a, b, c):
-            self.a = a
-            self.b = b
-            self.c = c
-
-    dummy = Dummy(1, 2, 3)
-
-    with pytest.raises(TypeError):
-        sp = StyleProxy(dummy)

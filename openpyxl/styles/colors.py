@@ -15,8 +15,6 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
-from .hashable import HashableObject
-
 # Default Color Index as per 18.8.27 of ECMA Part 4
 COLOR_INDEX = (
     '00000000', '00FFFFFF', '00FF0000', '0000FF00', '000000FF', #0-4
@@ -67,7 +65,7 @@ class RGB(Typed):
         super(RGB, self).__set__(instance, value)
 
 
-class Color(HashableObject):
+class Color(Serialisable):
     """Named colors for use in styles."""
 
     tagname = "color"
@@ -79,7 +77,6 @@ class Color(HashableObject):
     tint = MinMax(min=-1, max=1, expected_type=float)
     type = String()
 
-    __fields__ = ('rgb', 'indexed', 'auto', 'theme', 'tint', 'type')
 
     def __init__(self, rgb=BLACK, indexed=None, auto=None, theme=None, tint=0.0, index=None, type='rgb'):
         if index is not None:
