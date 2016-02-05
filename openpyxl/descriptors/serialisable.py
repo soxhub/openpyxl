@@ -163,7 +163,7 @@ class Serialisable(_Serialiasable):
     def __repr__(self):
         s = u"<{0}.{1} object>\nParameters:".format(
             self.__module__,
-            self.__class__.__qualname__
+            self.__class__.__name__
         )
         attrs = u",\n".join(u"{0}:{1}".format(a, getattr(self, a))
                             for a in self.__attrs__)
