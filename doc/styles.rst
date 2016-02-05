@@ -95,9 +95,11 @@ Styles can also be copied
 .. :: doctest
 
 >>> from openpyxl.styles import Font
+>>> from copy import copy
 >>>
 >>> ft1 = Font(name='Arial', size=14)
->>> ft2 = ft1.copy(name="Tahoma")
+>>> ft2 = copy(ft1)
+>>> ft2.name = "Tahoma"
 >>> ft1.name
 'Arial'
 >>> ft2.name
