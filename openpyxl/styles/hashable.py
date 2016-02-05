@@ -1,23 +1,24 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from copy import copy
 
-from openpyxl.compat import unicode, basestring, zip
+from openpyxl.compat import deprecated
 from openpyxl.descriptors import Descriptor
 from openpyxl.descriptors.serialisable import Serialisable
 
 
 class HashableObject(Serialisable):
     """Define how to hash property classes."""
+
     __fields__ = ()
     _key = None
 
 
+    @deprecated("Use copy()")
     def copy(self, **kwargs):
+        return copy(self)
 
-        current = dict([(x, getattr(self, x)) for x in self.__fields__])
-        current.update(kwargs)
-        return self.__class__(**current)
 
     @property
     def key(self):

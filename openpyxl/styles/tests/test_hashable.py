@@ -27,7 +27,7 @@ class TestHashable:
         d = Immutable()
         d.value = 1
         c = d.copy()
-        assert c == d
+        assert c == d and c is not d
 
 
     def test_hash(self, Immutable):
