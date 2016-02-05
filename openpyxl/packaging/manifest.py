@@ -56,10 +56,6 @@ class FileExtension(Serialisable):
         self.ContentType = ContentType
 
 
-    def __hash__(self):
-        return hash((self.Extension, self.ContentType))
-
-
 class Override(Serialisable):
 
     tagname = "Override"
@@ -70,10 +66,6 @@ class Override(Serialisable):
     def __init__(self, PartName, ContentType):
         self.PartName = PartName
         self.ContentType = ContentType
-
-
-    def __hash__(self):
-        return hash((self.PartName, self.ContentType))
 
 
 DEFAULT_TYPES = [
