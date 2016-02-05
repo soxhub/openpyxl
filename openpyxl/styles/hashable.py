@@ -2,7 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 
-import inspect
 from openpyxl.compat import unicode, basestring, zip
 from openpyxl.descriptors import Descriptor
 from openpyxl.descriptors.serialisable import Serialisable
@@ -11,15 +10,11 @@ from openpyxl.descriptors.serialisable import Serialisable
 class HashableObject(Serialisable):
     """Define how to hash property classes."""
     __fields__ = ()
-    __base__ = False
     _key = None
 
-    @property
-    def __defaults__(self):
-        spec = inspect.getargspec(self.__class__.__init__)
-        return dict(zip(spec.args[1:], spec.defaults))
 
     def copy(self, **kwargs):
+
         current = dict([(x, getattr(self, x)) for x in self.__fields__])
         current.update(kwargs)
         return self.__class__(**current)
