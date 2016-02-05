@@ -7,7 +7,7 @@ from .alignment import Alignment
 from .borders import Border, Side
 from .colors import Color
 from .fills import PatternFill, GradientFill, Fill
-from .fonts import Font
+from .fonts import Font, DEFAULT_FONT
 from .hashable import HashableObject
 from .numbers import NumberFormatDescriptor, is_date_format, is_builtin
 from .protection import Protection
@@ -46,4 +46,4 @@ class Style(HashableObject):
         self.number_format = number_format
         self.protection = protection
 
-DEFAULTS = Style()
+DEFAULTS = Style(font=DEFAULT_FONT)
