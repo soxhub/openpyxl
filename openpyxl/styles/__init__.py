@@ -2,7 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors import Typed
-from openpyxl.compat import deprecated
 
 from .alignment import Alignment
 from .borders import Border, Side
@@ -46,18 +45,5 @@ class Style(HashableObject):
         self.alignment = alignment
         self.number_format = number_format
         self.protection = protection
-
-
-    @deprecated("Copy formatting objects like font directly")
-    def copy(self):
-        cls = self.__class__
-        return cls(font=self.font.copy(),
-                   fill=self.fill.copy(),
-                   border=self.border.copy(),
-                   alignment=self.alignment.copy(),
-                   number_format=self.number_format,
-                   protection=self.protection.copy()
-                   )
-
 
 DEFAULTS = Style()
