@@ -3,12 +3,9 @@ from __future__ import absolute_import
 
 
 import inspect
-from openpyxl.compat import unicode, basestring, safe_string, zip
+from openpyxl.compat import unicode, basestring, zip
 from openpyxl.descriptors import Descriptor
 from openpyxl.descriptors.serialisable import Serialisable
-
-
-BASE_TYPES = (str, unicode, float, int)
 
 
 class HashableObject(Serialisable):
@@ -26,31 +23,6 @@ class HashableObject(Serialisable):
         current = dict([(x, getattr(self, x)) for x in self.__fields__])
         current.update(kwargs)
         return self.__class__(**current)
-
-    def __print__(self, defaults=False):
-        if defaults:
-            print_func = str
-        else:
-            print_func = repr
-        pieces = []
-        default_values = self.__defaults__
-        for k in self.__fields__:
-            value = getattr(self, k)
-            if not defaults and value == default_values[k]:
-                continue
-            if isinstance(value, basestring):
-                print_func = repr  # keep quotes around strings
-            pieces.append('%s=%s' % (k, print_func(value)))
-        if pieces or self.__base__:
-            return '%s(%s)' % (self.__class__.__name__, ', '.join(pieces))
-        else:
-            return ''
-
-    def __repr__(self):
-        return self.__print__(defaults=False)
-
-    def __str__(self):
-        return self.__print__(defaults=True)
 
     @property
     def key(self):
