@@ -14,7 +14,6 @@ from openpyxl.compat import unicode
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.cell import Cell
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.styles import Style
 from openpyxl.worksheet import Worksheet
 
 

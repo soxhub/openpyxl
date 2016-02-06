@@ -6,7 +6,6 @@ from warnings import warn
 from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
 from .proxy import StyleProxy
 from .cell_style import StyleArray
-from . import Style
 
 
 class StyleDescriptor(object):
