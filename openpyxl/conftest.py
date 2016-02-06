@@ -18,12 +18,6 @@ def Worksheet():
 
 # Global fixtures
 
-@pytest.fixture
-def root_xml():
-    """Root XML element <test>"""
-    from openpyxl.xml.functions import Element
-    return Element("test")
-
 
 ### Markers ###
 
