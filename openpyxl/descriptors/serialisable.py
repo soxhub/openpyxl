@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
+from . import Descriptor
 from . import _Serialiasable
 from .sequence import Sequence, NestedSequence
 from .namespace import namespaced
@@ -167,12 +168,15 @@ class Serialisable(_Serialiasable):
             self.__module__,
             self.__class__.__name__
         )
-        attrs = u",\n".join(u"{0}:{1}".format(a, getattr(self, a))
-                            for a in self.__attrs__)
-        elements = u",\n".join(u"{0}:{1}".format(e, repr(getattr(self, e)))
-                               for e in self.__elements__)
+        args = []
+        for k in self.__attrs__ + self.__elements__:
+            v = getattr(self, k)
+            if isinstance(v, Descriptor):
+                v = None
+            args.append(u"{0}={1}".format(k, repr(v)))
+        args = u", ".join(args)
 
-        return u"\n".join([s, attrs, elements])
+        return u"\n".join([s, args])
 
 
     def __hash__(self):

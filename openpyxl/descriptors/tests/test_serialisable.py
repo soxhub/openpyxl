@@ -40,14 +40,12 @@ class TestSerialisable:
         d = Immutable()
         assert str(d) == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
 Parameters:
-
-value:None"""
+value=None"""
 
         d2 = Immutable("hello")
         assert str(d2) == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
 Parameters:
-
-value:'hello'"""
+value='hello'"""
 
 
     def test_eq(self, Immutable):
