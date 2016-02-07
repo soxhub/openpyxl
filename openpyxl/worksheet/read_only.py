@@ -19,7 +19,7 @@ from openpyxl.utils import (
     get_column_letter,
     coordinate_to_tuple,
 )
-from openpyxl.utils.cell import ABSOLUTE_RE
+from openpyxl.utils.cell import range_boundaries
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 
 
@@ -33,22 +33,10 @@ def read_dimension(source):
     for _event, element in it:
         if element.tag == DIMENSION_TAG:
             dim = element.get("ref")
-            m = ABSOLUTE_RE.match(dim.upper())
-            if m is None:
+            try:
+                return range_boundaries(dim)
+            except AttributeError:
                 return
-            min_col, min_row, sep, max_col, max_row = m.groups()
-            min_row = int(min_row)
-            if max_col is None or max_row is None:
-                max_col = min_col
-                max_row = min_row
-            else:
-                max_row = int(max_row)
-            return (
-                column_index_from_string(min_col),
-                min_row,
-                column_index_from_string(max_col),
-                max_row
-                )
 
         elif element.tag == DATA_TAG:
             # Dimensions missing
