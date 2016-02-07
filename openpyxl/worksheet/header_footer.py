@@ -60,7 +60,7 @@ class HeaderFooterItem(object):
         self.text = None
 
     def has(self):
-        return True if self.text else False
+        return self.text is not None
 
     def get(self):
         t = []
@@ -114,10 +114,12 @@ class HeaderFooter(object):
         self.right_footer = HeaderFooterItem(HeaderFooterItem.RIGHT)
 
     def hasHeader(self):
-        return True if self.left_header.has() or self.center_header.has() or self.right_header.has() else False
+        return any((self.left_header.has(), self.center_header.has(),
+                    self.right_header.has()))
 
     def hasFooter(self):
-        return True if self.left_footer.has() or self.center_footer.has() or self.right_footer.has() else False
+        return any((self.left_footer.has(), self.center_footer.has(),
+                    self.right_footer.has()))
 
     def getHeader(self):
         t = []
