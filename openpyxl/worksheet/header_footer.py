@@ -1,6 +1,14 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+import re
+from warnings import warn
+
+HEADER_REGEX = re.compile(r"(&[ABDEGHINOPSTUXYZ\+\-])") # split part into commands
+FONT_REGEX = re.compile('&"(?P<font>.+)"')
+COLOR_REGEX = re.compile("&K(?P<color>[A-F0-9]{6})")
+SIZE_REGEX = re.compile(r"&(?P<size>\d+)")
+
 
 class HeaderFooterItem(object):
     """Individual left/center/right header/footer items
@@ -43,12 +51,6 @@ class HeaderFooterItem(object):
         ('&[Tab]', '&A'),
         ('&[Picture]', '&G')
         )
-
-    __slots__ = ('type',
-                 'font_name',
-                 'font_size',
-                 'font_color',
-                 'text')
 
     def __init__(self, type):
         self.type = type
@@ -102,12 +104,6 @@ class HeaderFooterItem(object):
 class HeaderFooter(object):
     """Information about the header/footer for this sheet.
     """
-    __slots__ = ('left_header',
-                 'center_header',
-                 'right_header',
-                 'left_footer',
-                 'center_footer',
-                 'right_footer')
 
     def __init__(self):
         self.left_header = HeaderFooterItem(HeaderFooterItem.LEFT)
@@ -167,8 +163,6 @@ class HeaderFooter(object):
 
 
 # See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
-import re
-
 ITEM_REGEX = re.compile("""
 (&L(?P<left>.+?))?
 (&C(?P<center>.+?))?
@@ -176,8 +170,6 @@ ITEM_REGEX = re.compile("""
 $""", re.VERBOSE | re.DOTALL)
 
 # add support for multiline strings (how do re.flags combine?)
-
-from warnings import warn
 
 def _split_string(text):
     """Split the combined (decoded) string into left, center and right parts"""
@@ -188,8 +180,3 @@ def _split_string(text):
         warn("""Cannot parse header or footer so it will be ignored""")
         parts = {'left':'', 'right':'', 'center':''}
     return parts
-
-HEADER_REGEX = re.compile(r"(&[ABDEGHINOPSTUXYZ\+\-])") # split part into commands
-FONT_REGEX = re.compile('&"(?P<font>.+)"')
-COLOR_REGEX = re.compile("&K(?P<color>[A-F0-9]{6})")
-SIZE_REGEX = re.compile(r"&(?P<size>\d+)")
