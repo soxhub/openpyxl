@@ -15,11 +15,11 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.worksheet import Worksheet
 from openpyxl.utils import (
-    ABSOLUTE_RE,
     column_index_from_string,
     get_column_letter,
     coordinate_to_tuple,
 )
+from openpyxl.utils.cell import ABSOLUTE_RE
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 
 

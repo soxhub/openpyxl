@@ -23,8 +23,6 @@ from openpyxl.compat import (
 # package imports
 from openpyxl.utils import (
     coordinate_from_string,
-    COORD_RE,
-    ABSOLUTE_RE,
     column_index_from_string,
     get_column_letter,
     range_boundaries,
@@ -32,6 +30,11 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     absolute_coordinate,
 )
+from openpyxl.utils.cell import(
+    COORD_RE,
+    ABSOLUTE_RE,
+)
+
 from openpyxl.cell import Cell
 from openpyxl.utils.exceptions import (
     SheetTitleException,
