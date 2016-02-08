@@ -148,7 +148,7 @@ class HeaderFooter(Serialisable):
         txt = []
         for key, part in zip(
             self.__keys, [self.left, self.center, self.right]):
-            if part:
+            if part.text is not None:
                 txt.append("&{0}{1}".format(key, str(part)))
         txt = "".join(txt)
         return SUBS_REGEX.sub(replace, txt)

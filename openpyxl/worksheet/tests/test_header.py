@@ -3,7 +3,8 @@
 import pytest
 import re
 
-from openpyxl.xml.functions import fromstring
+from openpyxl.xml.functions import fromstring, tostring
+from openpyxl.tests.helper import compare_xml
 
 
 def test_split_into_parts():
@@ -56,17 +57,31 @@ class TestHeaderFooterPart:
         assert hf.size == 12
 
 
-    def test_header_footer_ctor(self, HeaderFooterPart):
-        from ..header_footer import HeaderFooter
+    def test_subs(self):
+        from ..header_footer import SUBS_REGEX, replace
+        s = "MyName&[Tab]&[Page]&[Path]"
+        t = SUBS_REGEX.sub(replace, s)
+        assert t == "MyName&A&P&Z"
+
+
+@pytest.fixture
+def HeaderFooter():
+    from ..header_footer import HeaderFooter
+    return HeaderFooter
+
+
+class TestHeaderFooter:
+
+
+    def test_ctor(self, HeaderFooterPart, HeaderFooter):
         hf = HeaderFooter()
-        hf.left = HeaderFooterPart("yes")
-        hf.center = HeaderFooterPart("no")
-        hf.right = HeaderFooterPart("maybe")
+        hf.left.text = "yes"
+        hf.center.text ="no"
+        hf.right.text = "maybe"
         assert str(hf) == "&Lyes&Cno&Rmaybe"
 
 
-    def test_header_footer_read(self, HeaderFooterPart):
-        from ..header_footer import HeaderFooter
+    def test_read(self, HeaderFooter):
         xml = """
         <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
         """
@@ -77,8 +92,13 @@ class TestHeaderFooterPart:
         assert hf.right.text == "Right top"
 
 
-    def test_subs(self):
-        from ..header_footer import SUBS_REGEX, replace
-        s = "MyName&[Tab]&[Page]&[Path]"
-        t = SUBS_REGEX.sub(replace, s)
-        assert t == "MyName&A&P&Z"
+    def test_write(self, HeaderFooter):
+        hf = HeaderFooter()
+        hf.left.text = "A secret message"
+        hf.left.size = 12
+        xml = tostring(hf.to_tree("header_or_footer"))
+        expected = """
+        <header_or_footer>&amp;L&amp;12A secret message</header_or_footer>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
