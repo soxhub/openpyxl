@@ -143,8 +143,8 @@ class Worksheet(_WorkbookChild):
         self.sheet_properties = WorksheetProperties()
 
 
-    @deprecated("Use ws.oddHeader, ws.oddFooter, ws.evenHeader or ws.evenHeader")
     @property
+    @deprecated("Use ws.oddHeader, ws.oddFooter, ws.evenHeader or ws.evenHeader")
     def HeaderFooter(self):
         pass
 
