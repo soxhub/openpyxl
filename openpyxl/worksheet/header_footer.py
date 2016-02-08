@@ -74,6 +74,8 @@ class HeaderFooterPart(Strict):
     * &&   Escapes the ampersand character
     * &"fontname"   Selects the named font
     * &nn   Selects the specified 2-digit font point size
+
+    Colours are in RGB Hex
     """
 
     text = String(allow_none=True)
@@ -122,9 +124,9 @@ class HeaderFooter(Serialisable):
     Header or footer item
     """
 
-    left = Typed(expected_type=HeaderFooterPart, allow_none=True)
-    center = Typed(expected_type=HeaderFooterPart, allow_none=True)
-    right = Typed(expected_type=HeaderFooterPart, allow_none=True)
+    left = Typed(expected_type=HeaderFooterPart)
+    center = Typed(expected_type=HeaderFooterPart)
+    right = Typed(expected_type=HeaderFooterPart)
 
     __keys = ('L', 'C', 'R')
 
