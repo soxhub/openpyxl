@@ -39,10 +39,10 @@ class _WorkbookChild(object):
     def __init__(self, parent=None, title=None):
         self.__parent = parent
         self.title = title or self._default_title
-        self.odd_header = None
-        self.even_header = None
-        self.odd_footer = None
-        self.even_footer = None
+        self.oddHeader = None
+        self.evenHeader = None
+        self.oddFooter = None
+        self.evenFooter = None
 
 
     def __repr__(self):

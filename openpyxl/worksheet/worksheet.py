@@ -128,7 +128,6 @@ class Worksheet(_WorkbookChild):
         self._print_cols = None
         self._print_area = None
         self.page_margins = PageMargins()
-        self.header_footer = HeaderFooter()
         self.sheet_view = SheetView()
         self.protection = SheetProtection()
 
@@ -142,6 +141,12 @@ class Worksheet(_WorkbookChild):
         self.conditional_formatting = ConditionalFormatting()
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
+
+
+    @deprecated("Use ws.oddHeader, ws.oddFooter, ws.evenHeader or ws.evenHeader")
+    @property
+    def HeaderFooter(self):
+        pass
 
 
     @property
