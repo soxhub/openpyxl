@@ -312,7 +312,7 @@ def test_no_merge(worksheet):
 
 
 def test_header_footer(worksheet):
-    from openpyxl.worksheet.header import HeaderFooter
+    from openpyxl.worksheet.header_footer import HeaderFooter
     ws = worksheet
     ws.oddHeader = HeaderFooter()
     ws.oddFooter = HeaderFooter()

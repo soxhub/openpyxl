@@ -14,7 +14,7 @@ from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
-from openpyxl.worksheet.header import HeaderFooter
+from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
 from openpyxl.worksheet.views import SheetView

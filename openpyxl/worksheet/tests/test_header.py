@@ -1,51 +1,9 @@
 # Copyright (c) 2010-2016 openpyxl
 
 import pytest
+import re
 
 from openpyxl.xml.functions import fromstring
-
-
-@pytest.fixture
-def HeaderFooterItem():
-    from .. header_footer import HeaderFooterItem
-    return HeaderFooterItem
-
-
-@pytest.fixture
-def HeaderFooter():
-    from .. header_footer import HeaderFooter
-    return HeaderFooter
-
-
-def test_ctor_item(HeaderFooterItem):
-    hf = HeaderFooterItem("L")
-    assert hf.font_size == None
-    assert hf.font_name == "Calibri,Regular"
-    assert hf.font_color == "000000"
-    assert hf.type == "L"
-
-
-def test_ctor_header(HeaderFooter):
-    header = HeaderFooter()
-    assert header.hasHeader() is False
-    assert header.hasFooter() is False
-
-
-def test_set_header(HeaderFooter):
-    header = HeaderFooter()
-    header.setHeader('&L&"Lucida Grande,Standard"&K000000Left top')
-    assert header.hasHeader() is True
-    hf = header.left_header
-    assert hf.text == "Left top"
-
-
-def test_set_item(HeaderFooterItem):
-    hf = HeaderFooterItem('L')
-    hf.set('&"Lucida Grande,Standard"&K000000Left top')
-
-    assert hf.text == "Left top"
-    assert hf.font_name == "Lucida Grande,Standard"
-    assert hf.font_color == "000000"
 
 
 def test_split_into_parts():
@@ -72,13 +30,13 @@ def test_multiline_string():
 def test_font_size():
     from .. header_footer import SIZE_REGEX
     s = "&9"
-    match = SIZE_REGEX.search(s)
+    match = re.search(SIZE_REGEX, s)
     assert match.group('size') == "9"
 
 
 @pytest.fixture
 def HeaderFooterPart():
-    from ..header import HeaderFooterPart
+    from ..header_footer import HeaderFooterPart
     return HeaderFooterPart
 
 
@@ -99,7 +57,7 @@ class TestHeaderFooterPart:
 
 
     def test_header_footer_ctor(self, HeaderFooterPart):
-        from ..header import HeaderFooter
+        from ..header_footer import HeaderFooter
         hf = HeaderFooter()
         hf.left = HeaderFooterPart("yes")
         hf.center = HeaderFooterPart("no")
@@ -108,7 +66,7 @@ class TestHeaderFooterPart:
 
 
     def test_header_footer_read(self, HeaderFooterPart):
-        from ..header import HeaderFooter
+        from ..header_footer import HeaderFooter
         xml = """
         <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
         """
@@ -120,7 +78,7 @@ class TestHeaderFooterPart:
 
 
     def test_subs(self):
-        from ..header import SUBS_REGEX, replace
+        from ..header_footer import SUBS_REGEX, replace
         s = "MyName&[Tab]&[Page]&[Path]"
         t = SUBS_REGEX.sub(replace, s)
         assert t == "MyName&A&P&Z"
