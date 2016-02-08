@@ -72,3 +72,27 @@ def test_font_size():
     s = "&9"
     match = SIZE_REGEX.search(s)
     assert match.group('size') == "9"
+
+
+
+@pytest.fixture
+def HeaderFooterPart():
+    from ..header import HeaderFooterPart
+    return HeaderFooterPart
+
+
+class TestHeaderFooterPart:
+
+
+    def test_ctor(self, HeaderFooterPart):
+        hf = HeaderFooterPart(text="secret message", font="Calibri,Regular", color="000000")
+        assert str(hf) == """&"Calibri,Regular"&K000000secret message"""
+
+
+    def test_read(self, HeaderFooterPart):
+        hf = HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
+        assert hf.text == "Left top"
+        assert hf.font == "Lucida Grande,Standard"
+        assert hf.color == "22BBDD"
+        assert hf.size == 12
+
