@@ -10,7 +10,10 @@ from openpyxl.descriptors import (
     String,
     Integer,
     MatchPattern,
+    Typed,
 )
+from openpyxl.descriptors.serialisable import Serialisable
+
 
 from .header_footer import _split_string, FONT_REGEX, COLOR_REGEX, SIZE_REGEX
 
@@ -62,14 +65,10 @@ class HeaderFooterPart(Strict):
         """
         Convert from miniformat to object
         """
-        kw =  {}
-        m = FORMAT_REGEX.finditer(text)
-        for match in m:
-            for k, v in match.groupdict().items():
-                if v:
-                    kw[k] = v
+        keys = ('font', 'color', 'size')
+        kw = dict((k, v) for match in FORMAT_REGEX.findall(text)
+                  for k, v in zip(keys, match) if v)
 
         kw['text'] = FORMAT_REGEX.sub('', text)
 
         return cls(**kw)
-
