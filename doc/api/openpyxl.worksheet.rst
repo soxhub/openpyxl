@@ -23,6 +23,7 @@ Submodules
    openpyxl.worksheet.protection
    openpyxl.worksheet.read_only
    openpyxl.worksheet.related
+   openpyxl.worksheet.table
    openpyxl.worksheet.views
    openpyxl.worksheet.worksheet
 
