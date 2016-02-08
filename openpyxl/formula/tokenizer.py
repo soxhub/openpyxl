@@ -28,7 +28,7 @@ class Tokenizer(object):
 
     """
 
-    SN_RE = re.compile("^[1-9](\\.[0-9]+)?E$")  # Scientific notation
+    SN_RE = re.compile("^[1-9](\\.[0-9]+)?[Ee]$")  # Scientific notation
     WSPACE_RE = re.compile(" +")
     STRING_REGEXES = {
         # Inside a string, all characters are treated as literals, except for
@@ -39,7 +39,7 @@ class Tokenizer(object):
         "'": re.compile("'(?:[^']*'')*[^']*'(?!')"),
     }
     ERROR_CODES = ("#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?",
-                   "#NUM!", "#N/A")
+                   "#NUM!", "#N/A", "#GETTING_DATA")
     TOKEN_ENDERS = ',;}) +-*/^&=><%'  # Each of these characters, marks the
                                        # end of an operand token
 
@@ -50,9 +50,12 @@ class Tokenizer(object):
                                # parentheses
         self.offset = 0  # How many chars have we read
         self.token = []  # Used to build up token values char by char
+        self.parse()
 
     def parse(self):
         "Populate self.items with the tokens from the formula."
+        if self.offset:
+            return  # Already parsed!
         if not self.formula:
             return
         elif self.formula[0] == '=':

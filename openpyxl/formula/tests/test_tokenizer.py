@@ -101,9 +101,9 @@ class TestTokenizer(object):
 
     def test_init(self, tokenizer):
         tok = tokenizer.Tokenizer("abcdefg")
-        assert tok.offset == 0
+        assert tok.formula == "abcdefg"
         tok = tokenizer.Tokenizer("=abcdefg")
-        assert tok.offset == 0
+        assert tok.formula == "=abcdefg"
 
     @pytest.mark.parametrize('formula, tokens', [
         ('=IF(A$3<40%,"",INDEX(Pipeline!B$4:B$138,#REF!))',
@@ -293,7 +293,8 @@ class TestTokenizer(object):
         "#REF!",
         "#NAME?",
         "#NUM!",
-        "#N/A"
+        "#N/A",
+        "#GETTING_DATA",
     ])
     def test_parse_error(self, tokenizer, error):
         tok = tokenizer.Tokenizer(error)
@@ -434,6 +435,16 @@ class TestTokenizer(object):
         ('0E+7', 2, ['0', 'E'], False),
         ('12+', 2, ['1', '2'], False),
         ('13-E+', 4, ['E'], False),
+        ('+', 0, [], False),
+        ('1.0e-5', 4, ['1', '.', '0', 'e'], True),
+        ('1.53321e+3', 8, ['1.53321', 'e'], True),
+        ('9.9e+12', 4, ['9.', '9e'], True),
+        ('3e+155', 2, ['9.', '9', 'e'], True),
+        ('12e+15', 3, ['12', 'e'], False),
+        ('0.1e-5', 4, ['0', '.1', 'e'], False),
+        ('0e+7', 2, ['0', 'e'], False),
+        ('12+', 2, ['1', '2'], False),
+        ('13-e+', 4, ['e'], False),
         ('+', 0, [], False),
     ])
     def test_check_scientific_notation(self, tokenizer, formula, offset, token, ret):
