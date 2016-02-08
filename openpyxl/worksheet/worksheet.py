@@ -773,7 +773,7 @@ class Worksheet(_WorkbookChild):
     def print_title_rows(self, rows):
         """
         Set rows to be printed on the top of every page
-        format `A:B
+        format `1:3`
         """
         if rows is not None:
             if not ROW_RANGE_RE.match(rows):
@@ -791,7 +791,7 @@ class Worksheet(_WorkbookChild):
     def print_title_cols(self, cols):
         """
         Set cols to be printed on the left of every page
-        format ``1:3`
+        format ``A:C`
         """
         if cols is not None:
             if not COL_RANGE_RE.match(cols):
