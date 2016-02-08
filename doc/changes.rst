@@ -10,17 +10,22 @@ Minor changes
 * Convert AutoFilter to Serialisable and extend support for filters
 * Add support for SortState
 * Removed `use_iterators` keyword when loading workbooks. Use `read_only` instead.
+* Removed `optimized_write` keyword for new workbooks. Use `write_only` instead.
+* Improve print title support
+* Add print area support
+* New implementation of defined names
+* New implementation of page headers and footers
 
 
 Deprecations
 ------------
 
-Cell anchor method
-Worksheet point_pos method
-Worksheet add_print_title method
-Worksheet HeaderFooter attribute, replaced by individual ones
-Workbook get_named_range, add_named_range, remove_named_range
-Comment text attribute
+* Cell anchor method
+* Worksheet point_pos method
+* Worksheet add_print_title method
+* Worksheet HeaderFooter attribute, replaced by individual ones
+* Workbook get_named_range, add_named_range, remove_named_range
+* Comment text attribute
 
 
 Bug fixes
