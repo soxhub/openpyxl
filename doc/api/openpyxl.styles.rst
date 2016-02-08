@@ -18,7 +18,6 @@ Submodules
    openpyxl.styles.differential
    openpyxl.styles.fills
    openpyxl.styles.fonts
-   openpyxl.styles.hashable
    openpyxl.styles.named_styles
    openpyxl.styles.numbers
    openpyxl.styles.protection

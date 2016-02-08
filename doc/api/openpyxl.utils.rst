@@ -12,6 +12,7 @@ Submodules
 .. toctree::
 
    openpyxl.utils.bound_dictionary
+   openpyxl.utils.cell
    openpyxl.utils.datetime
    openpyxl.utils.exceptions
    openpyxl.utils.indexed_list
