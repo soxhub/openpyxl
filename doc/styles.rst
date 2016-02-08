@@ -165,44 +165,6 @@ Edit Page Setup
 >>> ws.page_setup.fitToWidth = 1
 
 
-Edit Print Options
--------------------
-.. :: doctest
-
->>> from openpyxl.workbook import Workbook
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>>
->>> ws.print_options.horizontalCentered = True
->>> ws.print_options.verticalCentered = True
-
-
-
-Header / Footer
----------------
-
-Headers and footers use their own formatting language. This is fully
-supported when writing them but, due to the complexity and the possibility of
-nesting, only partially when reading them.
-
-
-.. :: doctest
-
->>> from openpyxl.workbook import Workbook
->>>
->>> wb = Workbook()
->>> ws = wb.worksheets[0]
->>>
->>> ws.header_footer.center_header.text = 'My Excel Page'
->>> ws.header_footer.center_header.font_size = 14
->>> ws.header_footer.center_header.font_name = "Tahoma,Bold"
->>> ws.header_footer.center_header.font_color = "CC3366"
-
-# Or just
->>> ws.header_footer.right_footer.text = 'My Right Footer'
-
-
 Worksheet Additional Properties
 -------------------------------
 
@@ -210,7 +172,7 @@ These are advanced properties for particular behaviours, the most used ones
 are the "fitTopage" page setup property and the tabColor that define the
 background color of the worksheet tab.
 
-Available properties for worksheet: "codeName",
+Available properties for worksheet:
 "enableFormatConditionsCalculation", "filterMode", "published",
 "syncHorizontal", "syncRef", "syncVertical", "transitionEvaluation",
 "transitionEntry", "tabColor". Available fields for page setup properties:

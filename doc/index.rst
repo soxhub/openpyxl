@@ -206,6 +206,14 @@ Conditional Formatting
     formatting
 
 
+Print Settings
+++++++++++++++++++++++
+
+.. toctree::
+
+    print_settings
+
+
 Filtering and Sorting
 +++++++++++++++++++++
 
