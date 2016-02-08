@@ -13,7 +13,7 @@ from openpyxl.descriptors import (
     Typed,
 )
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.xml.functions import Element
+from openpyxl.xml.functions import Element, localname
 
 from .header_footer import (
     _split_string,
@@ -78,8 +78,6 @@ class HeaderFooterPart(Strict):
 
 class HeaderFooter(Serialisable):
 
-    tagname = "oddHeader"
-
     left = Typed(expected_type=HeaderFooterPart, allow_none=True)
     center = Typed(expected_type=HeaderFooterPart, allow_none=True)
     right = Typed(expected_type=HeaderFooterPart, allow_none=True)
@@ -88,8 +86,14 @@ class HeaderFooter(Serialisable):
 
 
     def __init__(self, left=None, right=None, center=None):
+        if left is None:
+            left = HeaderFooterPart()
         self.left = left
+        if center is None:
+            center = HeaderFooterPart()
         self.center = center
+        if right is None:
+            right = HeaderFooterPart()
         self.right = right
 
 
@@ -102,10 +106,11 @@ class HeaderFooter(Serialisable):
             self.__keys, [self.left, self.center, self.right]):
             if part:
                 txt.append("&{0}{1}".format(key, str(part)))
-        return "".join(txt)
+        txt = "".join(txt)
+        return SUBS_REGEX.sub(replace, txt)
 
 
-    def to_tree(self, tagname=None):
+    def to_tree(self, tagname):
         """
         Return as XML node
         """
@@ -119,9 +124,9 @@ class HeaderFooter(Serialisable):
         if node.text:
             parts = _split_string(node.text)
             for k, v in parts.items():
-                parts[k] = HeaderFooterPart.from_str(v)
+                if v is not None:
+                    parts[k] = HeaderFooterPart.from_str(v)
             self = cls(**parts)
-            self.tagname = node.tag
             return self
 
 

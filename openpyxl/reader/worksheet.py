@@ -14,6 +14,7 @@ from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
+from openpyxl.worksheet.header import HeaderFooter
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
 from openpyxl.worksheet.views import SheetView
@@ -24,7 +25,7 @@ from openpyxl.xml.constants import (
     EXT_TYPES,
     PKG_REL_NS
 )
-from openpyxl.xml.functions import safe_iterator
+from openpyxl.xml.functions import safe_iterator, localname
 from openpyxl.styles import Color
 from openpyxl.formatting import ConditionalFormatting, Rule
 from openpyxl.formula.translate import Translator
@@ -251,13 +252,11 @@ class WorkSheetParser(object):
     def parse_page_setup(self, element):
         self.ws.page_setup = PrintPageSetup.from_tree(element)
 
+
     def parse_header_footer(self, element):
-        oddHeader = element.find('{%s}oddHeader' % SHEET_MAIN_NS)
-        if oddHeader is not None and oddHeader.text is not None:
-            self.ws.header_footer.setHeader(oddHeader.text)
-        oddFooter = element.find('{%s}oddFooter' % SHEET_MAIN_NS)
-        if oddFooter is not None and oddFooter.text is not None:
-            self.ws.header_footer.setFooter(oddFooter.text)
+        for node in safe_iterator(element):
+            hf = HeaderFooter.from_tree(node)
+            setattr(self.ws, localname(node), hf)
 
 
     def parser_conditional_formatting(self, element):

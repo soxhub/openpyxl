@@ -411,17 +411,15 @@ def test_header_footer(WorkSheetParser, datadir):
     element = sheet.find("{%s}headerFooter" % SHEET_MAIN_NS)
     parser.parse_header_footer(element)
 
-    assert ws.header_footer.hasHeader()
-    assert ws.header_footer.left_header.font_name == "Lucida Grande,Standard"
-    assert ws.header_footer.left_header.font_color == "000000"
-    assert ws.header_footer.left_header.text == "Left top"
-    assert ws.header_footer.center_header.text== "Middle top"
-    assert ws.header_footer.right_header.text == "Right top"
+    assert ws.oddHeader.left.font == "Lucida Grande,Standard"
+    assert ws.oddHeader.left.color == "000000"
+    assert ws.oddHeader.left.text == "Left top"
+    assert ws.oddHeader.center.text== "Middle top"
+    assert ws.oddHeader.right.text == "Right top"
 
-    assert ws.header_footer.hasFooter()
-    assert ws.header_footer.left_footer.text == "Left footer"
-    assert ws.header_footer.center_footer.text == "Middle Footer"
-    assert ws.header_footer.right_footer.text == "Right Footer"
+    assert ws.oddFooter.left.text == "Left footer"
+    assert ws.oddFooter.center.text == "Middle Footer"
+    assert ws.oddFooter.right.text == "Right Footer"
 
 
 def test_cell_style(WorkSheetParser, datadir):

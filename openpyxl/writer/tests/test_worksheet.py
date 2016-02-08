@@ -312,28 +312,33 @@ def test_no_merge(worksheet):
 
 
 def test_header_footer(worksheet):
+    from openpyxl.worksheet.header import HeaderFooter
     ws = worksheet
-    ws.header_footer.left_header.text = "Left Header Text"
-    ws.header_footer.center_header.text = "Center Header Text"
-    ws.header_footer.center_header.font_name = "Arial,Regular"
-    ws.header_footer.center_header.font_size = 6
-    ws.header_footer.center_header.font_color = "445566"
-    ws.header_footer.right_header.text = "Right Header Text"
-    ws.header_footer.right_header.font_name = "Arial,Bold"
-    ws.header_footer.right_header.font_size = 8
-    ws.header_footer.right_header.font_color = "112233"
-    ws.header_footer.left_footer.text = "Left Footer Text\nAnd &[Date] and &[Time]"
-    ws.header_footer.left_footer.font_name = "Times New Roman,Regular"
-    ws.header_footer.left_footer.font_size = 10
-    ws.header_footer.left_footer.font_color = "445566"
-    ws.header_footer.center_footer.text = "Center Footer Text &[Path]&[File] on &[Tab]"
-    ws.header_footer.center_footer.font_name = "Times New Roman,Bold"
-    ws.header_footer.center_footer.font_size = 12
-    ws.header_footer.center_footer.font_color = "778899"
-    ws.header_footer.right_footer.text = "Right Footer Text &[Page] of &[Pages]"
-    ws.header_footer.right_footer.font_name = "Times New Roman,Italic"
-    ws.header_footer.right_footer.font_size = 14
-    ws.header_footer.right_footer.font_color = "AABBCC"
+    ws.oddHeader = HeaderFooter()
+    ws.oddFooter = HeaderFooter()
+    ws.oddHeader.left.text = "Left Header Text"
+    ws.oddHeader.left.font = "Calibri,Regular"
+    ws.oddHeader.left.color = "000000"
+    ws.oddHeader.center.text = "Center Header Text"
+    ws.oddHeader.center.font = "Arial,Regular"
+    ws.oddHeader.center.size = 6
+    ws.oddHeader.center.color = "445566"
+    ws.oddHeader.right.text = "Right Header Text"
+    ws.oddHeader.right.font = "Arial,Bold"
+    ws.oddHeader.right.size = 8
+    ws.oddHeader.right.color = "112233"
+    ws.oddFooter.left.text = "Left Footer Text\nAnd &[Date] and &[Time]"
+    ws.oddFooter.left.font = "Times New Roman,Regular"
+    ws.oddFooter.left.size = 10
+    ws.oddFooter.left.color = "445566"
+    ws.oddFooter.center.text = "Center Footer Text &[Path]&[File] on &[Tab]"
+    ws.oddFooter.center.font = "Times New Roman,Bold"
+    ws.oddFooter.center.size = 12
+    ws.oddFooter.center.color = "778899"
+    ws.oddFooter.right.text = "Right Footer Text &[Page] of &[Pages]"
+    ws.oddFooter.right.font = "Times New Roman,Italic"
+    ws.oddFooter.right.size = 14
+    ws.oddFooter.right.color = "AABBCC"
 
     from .. worksheet import write_header_footer
     hf = write_header_footer(ws)

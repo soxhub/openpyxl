@@ -99,14 +99,14 @@ def write_conditional_formatting(worksheet):
 
 
 def write_header_footer(worksheet):
-    header = worksheet.header_footer.getHeader()
-    footer = worksheet.header_footer.getFooter()
-    if header or footer:
+    ws = worksheet
+    keys = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
+    parts = [getattr(ws, key) for key in keys]
+    if any(parts):
         tag = Element('headerFooter')
-        if header:
-            SubElement(tag, 'oddHeader').text = header
-        if footer:
-            SubElement(tag, 'oddFooter').text = footer
+        for key, part in zip(keys, parts):
+            if part:
+                tag.append(part.to_tree(key))
         return tag
 
 
