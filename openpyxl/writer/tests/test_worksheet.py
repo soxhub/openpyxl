@@ -315,7 +315,7 @@ def test_header_footer(worksheet):
     from openpyxl.worksheet.header_footer import HeaderFooter
     ws = worksheet
     ws.oddHeader = HeaderFooter()
-    ws.oddFooter = HeaderFooter()
+
     ws.oddHeader.left.text = "Left Header Text"
     ws.oddHeader.left.font = "Calibri,Regular"
     ws.oddHeader.left.color = "000000"
@@ -327,18 +327,6 @@ def test_header_footer(worksheet):
     ws.oddHeader.right.font = "Arial,Bold"
     ws.oddHeader.right.size = 8
     ws.oddHeader.right.color = "112233"
-    ws.oddFooter.left.text = "Left Footer Text\nAnd &[Date] and &[Time]"
-    ws.oddFooter.left.font = "Times New Roman,Regular"
-    ws.oddFooter.left.size = 10
-    ws.oddFooter.left.color = "445566"
-    ws.oddFooter.center.text = "Center Footer Text &[Path]&[File] on &[Tab]"
-    ws.oddFooter.center.font = "Times New Roman,Bold"
-    ws.oddFooter.center.size = 12
-    ws.oddFooter.center.color = "778899"
-    ws.oddFooter.right.text = "Right Footer Text &[Page] of &[Pages]"
-    ws.oddFooter.right.font = "Times New Roman,Italic"
-    ws.oddFooter.right.size = 14
-    ws.oddFooter.right.color = "AABBCC"
 
     from .. worksheet import write_header_footer
     hf = write_header_footer(ws)
@@ -346,7 +334,6 @@ def test_header_footer(worksheet):
     expected = """
     <headerFooter>
       <oddHeader>&amp;L&amp;"Calibri,Regular"&amp;K000000Left Header Text&amp;C&amp;"Arial,Regular"&amp;6&amp;K445566Center Header Text&amp;R&amp;"Arial,Bold"&amp;8&amp;K112233Right Header Text</oddHeader>
-      <oddFooter>&amp;L&amp;"Times New Roman,Regular"&amp;10&amp;K445566Left Footer Text_x000D_And &amp;D and &amp;T&amp;C&amp;"Times New Roman,Bold"&amp;12&amp;K778899Center Footer Text &amp;Z&amp;F on &amp;A&amp;R&amp;"Times New Roman,Italic"&amp;14&amp;KAABBCCRight Footer Text &amp;P of &amp;N</oddFooter>
     </headerFooter>
     """
     diff = compare_xml(xml, expected)
