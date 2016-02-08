@@ -2,6 +2,8 @@
 
 import pytest
 
+from openpyxl.xml.functions import fromstring
+
 
 @pytest.fixture
 def HeaderFooterItem():
@@ -74,7 +76,6 @@ def test_font_size():
     assert match.group('size') == "9"
 
 
-
 @pytest.fixture
 def HeaderFooterPart():
     from ..header import HeaderFooterPart
@@ -96,3 +97,30 @@ class TestHeaderFooterPart:
         assert hf.color == "22BBDD"
         assert hf.size == 12
 
+
+    def test_header_footer_ctor(self, HeaderFooterPart):
+        from ..header import HeaderFooter
+        hf = HeaderFooter()
+        hf.left = HeaderFooterPart("yes")
+        hf.center = HeaderFooterPart("no")
+        hf.right = HeaderFooterPart("maybe")
+        assert str(hf) == "&Lyes&Cno&Rmaybe"
+
+
+    def test_header_footer_read(self, HeaderFooterPart):
+        from ..header import HeaderFooter
+        xml = """
+        <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
+        """
+        node = fromstring(xml)
+        hf = HeaderFooter.from_tree(node)
+        assert hf.left.text == "Left top"
+        assert hf.center.text == "Middle top"
+        assert hf.right.text == "Right top"
+
+
+    def test_subs(self):
+        from ..header import SUBS_REGEX, replace
+        s = "MyName&[Tab]&[Page]&[Path]"
+        t = SUBS_REGEX.sub(replace, s)
+        assert t == "MyName&A&P&Z"

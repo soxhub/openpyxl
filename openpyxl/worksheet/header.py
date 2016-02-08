@@ -13,9 +13,11 @@ from openpyxl.descriptors import (
     Typed,
 )
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.xml.functions import Element
 
-
-from .header_footer import _split_string, FONT_REGEX, COLOR_REGEX, SIZE_REGEX
+from .header_footer import (
+    _split_string,
+    )
 
 RGB = ("^[A-Fa-f0-9]{6}$")
 
@@ -72,3 +74,72 @@ class HeaderFooterPart(Strict):
         kw['text'] = FORMAT_REGEX.sub('', text)
 
         return cls(**kw)
+
+
+class HeaderFooter(Serialisable):
+
+    tagname = "oddHeader"
+
+    left = Typed(expected_type=HeaderFooterPart, allow_none=True)
+    center = Typed(expected_type=HeaderFooterPart, allow_none=True)
+    right = Typed(expected_type=HeaderFooterPart, allow_none=True)
+
+    __keys = ('L', 'C', 'R')
+
+
+    def __init__(self, left=None, right=None, center=None):
+        self.left = left
+        self.center = center
+        self.right = right
+
+
+    def __str__(self):
+        """
+        Pack parts into a single string
+        """
+        txt = []
+        for key, part in zip(
+            self.__keys, [self.left, self.center, self.right]):
+            if part:
+                txt.append("&{0}{1}".format(key, str(part)))
+        return "".join(txt)
+
+
+    def to_tree(self, tagname=None):
+        """
+        Return as XML node
+        """
+        el = Element(tagname)
+        el.text = str(self)
+        return el
+
+
+    @classmethod
+    def from_tree(cls, node):
+        if node.text:
+            parts = _split_string(node.text)
+            for k, v in parts.items():
+                parts[k] = HeaderFooterPart.from_str(v)
+            self = cls(**parts)
+            self.tagname = node.tag
+            return self
+
+
+
+TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D', '\n': '_x000D_',
+        '&[Path]': '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F',
+        '&[Picture]': '&G'}
+
+
+# escape keys and create regex
+SUBS_REGEX = re.compile("|".join(["({0})".format(re.escape(k))
+                                  for k in TRANSFORM]))
+
+
+def replace(match):
+    """
+    Callback for re.sub
+    Replace expanded control with mini-format equivalent
+    """
+    sub = match.group(0)
+    return TRANSFORM[sub]
