@@ -13,11 +13,7 @@ from openpyxl.descriptors import (
     Typed,
 )
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.xml.functions import Element, localname
-
-from .header_footer import (
-    _split_string,
-    )
+from openpyxl.xml.functions import Element
 
 RGB = ("^[A-Fa-f0-9]{6}$")
 
@@ -28,11 +24,55 @@ FORMAT_REGEX = re.compile("{0}|{1}|{2}".format(FONT_PATTERN, COLOR_PATTERN,
                                                SIZE_REGEX)
                           )
 
+# See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
+ITEM_REGEX = re.compile("""
+(&L(?P<left>.+?))?
+(&C(?P<center>.+?))?
+(&R(?P<right>.+?))?
+$""", re.VERBOSE | re.DOTALL)
+
+# add support for multiline strings (how do re.flags combine?)
+
+def _split_string(text):
+    """
+    Split the combined (decoded) string into left, center and right parts
+    """
+    m = ITEM_REGEX.match(text)
+    try:
+        parts = m.groupdict()
+    except AttributeError:
+        warn("""Cannot parse header or footer so it will be ignored""")
+        parts = {'left':'', 'right':'', 'center':''}
+    return parts
+
 
 class HeaderFooterPart(Strict):
 
     """
-    Represents the relevant part of a header or a footer
+    Individual left/center/right header/footer items
+
+    Header & Footer ampersand codes:
+
+    * &A   Inserts the worksheet name
+    * &B   Toggles bold
+    * &D or &[Date]   Inserts the current date
+    * &E   Toggles double-underline
+    * &F or &[File]   Inserts the workbook name
+    * &I   Toggles italic
+    * &N or &[Pages]   Inserts the total page count
+    * &S   Toggles strikethrough
+    * &T   Inserts the current time
+    * &[Tab]   Inserts the worksheet name
+    * &U   Toggles underline
+    * &X   Toggles superscript
+    * &Y   Toggles subscript
+    * &P or &[Page]   Inserts the current page number
+    * &P+n   Inserts the page number incremented by n
+    * &P-n   Inserts the page number decremented by n
+    * &[Path]   Inserts the workbook path
+    * &&   Escapes the ampersand character
+    * &"fontname"   Selects the named font
+    * &nn   Selects the specified 2-digit font point size
     """
 
     text = String(allow_none=True)
@@ -77,6 +117,9 @@ class HeaderFooterPart(Strict):
 
 
 class HeaderFooter(Serialisable):
+    """
+    Header or footer item
+    """
 
     left = Typed(expected_type=HeaderFooterPart, allow_none=True)
     center = Typed(expected_type=HeaderFooterPart, allow_none=True)
