@@ -135,7 +135,7 @@ def PhoneticText():
 class TestPhoneticText:
 
     def test_ctor(self, PhoneticText):
-        text = PhoneticText(sb=9, eb=10, t=u"よ")
+        text = PhoneticText(sb=9, eb=10, t=u'\u3088')
         xml = tostring(text.to_tree())
         expected = b"""
         <rPh sb="9" eb="10">
@@ -154,7 +154,7 @@ class TestPhoneticText:
         """
         node = fromstring(src)
         text = PhoneticText.from_tree(node)
-        assert text == PhoneticText(sb=9, eb=10, t=u"よ")
+        assert text == PhoneticText(sb=9, eb=10, t=u'\u3088')
 
 
 @pytest.fixture
