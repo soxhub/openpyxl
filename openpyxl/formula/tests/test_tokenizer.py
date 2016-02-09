@@ -229,7 +229,6 @@ class TestTokenizer(object):
     ])
     def test_parse(self, tokenizer, formula, tokens):
         tok = tokenizer.Tokenizer(formula)
-        tok.parse()
         result = [(token.value, token.type, token.subtype)
                   for token in tok.items]
         assert result == tokens
@@ -249,12 +248,13 @@ class TestTokenizer(object):
     ])
     def test_parse_string(self, tokenizer, formula, offset, result):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
         if result is None:
             with pytest.raises(tokenizer.TokenizerError):
-                tok.parse_string()
+                tok._parse_string()
             return
-        assert tok.parse_string() == len(result)
+        assert tok._parse_string() == len(result)
         if formula[offset] == '"':
             token = tok.items[0]
             assert token.value == result
@@ -275,8 +275,9 @@ class TestTokenizer(object):
     ])
     def test_parse_brackets(self, tokenizer, formula, offset, result):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
-        assert tok.parse_brackets() == len(result)
+        assert tok._parse_brackets() == len(result)
         assert not tok.items
         assert tok.token[0] == result
         assert len(tok.token) == 1
@@ -284,7 +285,7 @@ class TestTokenizer(object):
     def test_parse_brackets_error(self, tokenizer):
         tok = tokenizer.Tokenizer('[unfinished business')
         with pytest.raises(tokenizer.TokenizerError):
-            tok.parse_brackets()
+            tok._parse_brackets()
 
     @pytest.mark.parametrize('error', [
         "#NULL!",
@@ -298,7 +299,9 @@ class TestTokenizer(object):
     ])
     def test_parse_error(self, tokenizer, error):
         tok = tokenizer.Tokenizer(error)
-        assert tok.parse_error() == len(error)
+        tok.offset = 0
+        del tok.items[:]
+        assert tok._parse_error() == len(error)
         assert len(tok.items) == 1
         assert not tok.token
         token = tok.items[0]
@@ -308,13 +311,17 @@ class TestTokenizer(object):
 
     def test_parse_error_error(self, tokenizer):
         tok = tokenizer.Tokenizer("#NotAnError")
+        tok.offset = 0
+        del tok.items[:]
         with pytest.raises(tokenizer.TokenizerError):
-            tok.parse_error()
+            tok._parse_error()
 
     @pytest.mark.parametrize('formula', [' ' * i for i in range(1, 10)])
     def test_parse_whitespace(self, tokenizer, formula):
         tok = tokenizer.Tokenizer(formula)
-        assert tok.parse_whitespace() == len(formula)
+        tok.offset = 0
+        del tok.items[:]
+        assert tok._parse_whitespace() == len(formula)
         assert len(tok.items) == 1
         token = tok.items[0]
         assert token.value == " "
@@ -343,7 +350,9 @@ class TestTokenizer(object):
     ])
     def test_parse_operator(self, tokenizer, formula, result, type_):
         tok = tokenizer.Tokenizer(formula)
-        assert tok.parse_operator() == len(result)
+        tok.offset = 0
+        del tok.items[:]
+        assert tok._parse_operator() == len(result)
         assert len(tok.items) == 1
         assert not tok.token
         token = tok.items[0]
@@ -358,10 +367,11 @@ class TestTokenizer(object):
     ])
     def test_parse_opener(self, tokenizer, prefix, char, type_):
         tok = tokenizer.Tokenizer(prefix + char)
+        del tok.items[:]
         tok.offset = len(prefix)
         if prefix:
             tok.token.append(prefix)
-        assert tok.parse_opener() == 1
+        assert tok._parse_opener() == 1
         assert not tok.token
         assert len(tok.items) == 1
         token = tok.items[0]
@@ -374,9 +384,9 @@ class TestTokenizer(object):
     def test_parse_opener_error(self, tokenizer):
         tok = tokenizer.Tokenizer('name{')
         tok.offset = 4
-        tok.token.append('name')
+        tok.token[:] = ('name',)
         with pytest.raises(tokenizer.TokenizerError):
-            tok.parse_opener()
+            tok._parse_opener()
 
     @pytest.mark.parametrize('formula, offset, opener', [
         ('func(a)', 6, ('func(', FUNC, OPEN)),
@@ -385,9 +395,10 @@ class TestTokenizer(object):
     ])
     def test_parse_closer(self, tokenizer, formula, offset, opener):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
         tok.token_stack.append(tokenizer.Token(*opener))
-        assert tok.parse_closer() == 1
+        assert tok._parse_closer() == 1
         assert len(tok.items) == 1
         token = tok.items[0]
         assert token.value == formula[offset]
@@ -401,10 +412,11 @@ class TestTokenizer(object):
     ])
     def test_parse_closer_error(self, tokenizer, formula, offset, opener):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
         tok.token_stack.append(tokenizer.Token(*opener))
         with pytest.raises(tokenizer.TokenizerError):
-            tok.parse_closer()
+            tok._parse_closer()
 
     @pytest.mark.parametrize('formula, offset, opener, type_, subtype', [
         ("{a;b}", 2, ('{', ARRAY, OPEN), SEP, ROW),
@@ -415,10 +427,11 @@ class TestTokenizer(object):
     ])
     def test_parse_separator(self, tokenizer, formula, offset, opener, type_, subtype):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
         if opener:
             tok.token_stack.append(tokenizer.Token(*opener))
-        assert tok.parse_separator() == 1
+        assert tok._parse_separator() == 1
         assert len(tok.items) == 1
         token = tok.items[0]
         assert token.value == formula[offset]
@@ -449,6 +462,7 @@ class TestTokenizer(object):
     ])
     def test_check_scientific_notation(self, tokenizer, formula, offset, token, ret):
         tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
         tok.offset = offset
         tok.token[:] = token
         assert ret is tok.check_scientific_notation()
@@ -499,7 +513,6 @@ class TestTokenizer(object):
     ])
     def test_render(self, tokenizer, formula):
         tok = tokenizer.Tokenizer(formula)
-        tok.parse()
         assert tok.render() == formula
 
 

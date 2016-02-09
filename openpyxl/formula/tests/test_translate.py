@@ -50,7 +50,6 @@ class TestTranslator(object):
     def test_get_tokens(self, Translator, Tokenizer, formula):
         trans = Translator(formula, "A1")
         tok = Tokenizer(formula)
-        tok.parse()
         for t1, t2 in zip(tok.items, trans.get_tokens()):
             assert t1.value == t2.value
             assert t1.type == t2.type
