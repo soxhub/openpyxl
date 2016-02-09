@@ -118,7 +118,6 @@ class DefinedName(Serialisable):
     @property
     def type(self):
         tok = Tokenizer("=" + self.value)
-        tok.parse()
         parsed = tok.items[0]
         if parsed.type == "OPERAND":
             return parsed.subtype
@@ -129,7 +128,6 @@ class DefinedName(Serialisable):
     def destinations(self):
         if self.type == "RANGE":
             tok = Tokenizer("=" + self.value)
-            tok.parse()
             for part in tok.items:
                 if part.subtype == "RANGE":
                     m = SHEETRANGE_RE.match(part.value)
