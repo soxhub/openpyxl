@@ -254,7 +254,9 @@ class WorkSheetParser(object):
 
 
     def parse_header_footer(self, element):
-        for node in safe_iterator(element):
+        tags = ["{%s}%s" % (SHEET_MAIN_NS, t)
+                for t in ["oddHeader", "oddFooter", "evenHeader", "evenFooter"]]
+        for node in safe_iterator(element, tags):
             hf = HeaderFooter.from_tree(node)
             setattr(self.ws, localname(node), hf)
 
