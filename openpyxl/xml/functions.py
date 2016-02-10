@@ -35,7 +35,8 @@ else:
         fromstring,
         tostring,
         iterparse,
-        QName
+        QName,
+        register_namespace
         )
     except ImportError:
         from xml.etree.ElementTree import (
@@ -45,9 +46,9 @@ else:
         fromstring,
         tostring,
         iterparse,
-        QName
+        QName,
+        register_namespace
         )
-    from .namespace import register_namespace
     from et_xmlfile import xmlfile
 
 
