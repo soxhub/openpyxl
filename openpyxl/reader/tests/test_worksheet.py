@@ -583,3 +583,20 @@ def test_page_margins(WorkSheetParser, datadir):
 
     parser.parse_margins(el)
     assert ws.page_margins.left == 0.7500000000000001
+
+
+def test_cell_without_coordinates(WorkSheetParser, datadir):
+    datadir.chdir()
+    with open("worksheet_without_coordinates.xml") as src:
+        xml = src.read()
+
+    sheet = fromstring(xml)
+
+    el = sheet.find(".//{%s}row" % SHEET_MAIN_NS)
+
+    parser = WorkSheetParser
+    parser.shared_strings = ["Whatever"] * 10
+    parser.parse_row_dimensions(el)
+
+    assert parser.ws.max_row == 1
+    assert parser.ws.max_column == 5

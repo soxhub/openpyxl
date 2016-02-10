@@ -330,7 +330,7 @@ def test_read_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
     </sheetData>
     """
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "bug393-worksheet.xml", [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
 
     xml = fromstring(src)
     row = tuple(ws._get_row(xml, 11, 11))
@@ -360,3 +360,31 @@ def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7
+
+
+def test_read_without_coordinates(DummyWorkbook, ReadOnlyWorksheet):
+
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", ["Whatever"]*10)
+    src = """
+    <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <c t="s">
+        <v>2</v>
+      </c>
+      <c t="s">
+        <v>4</v>
+      </c>
+      <c t="s">
+        <v>3</v>
+      </c>
+      <c t="s">
+        <v>6</v>
+      </c>
+      <c t="s">
+        <v>9</v>
+      </c>
+    </row>
+    """
+
+    element = fromstring(src)
+    row = tuple(ws._get_row(element, min_col=1, max_col=None, row_counter=1))
+    assert row[0].value == "Whatever"

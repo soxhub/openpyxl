@@ -97,7 +97,7 @@ class ReadOnlyWorksheet(Worksheet):
         p = iterparse(self.xml_source, tag=[ROW_TAG], remove_blank_text=True)
         for _event, element in p:
             if element.tag == ROW_TAG:
-                row_id = int(element.get("r"))
+                row_id = int(element.get("r", row_counter))
 
                 # got all the rows we need
                 if max_row is not None and row_id > max_row:
@@ -110,7 +110,7 @@ class ReadOnlyWorksheet(Worksheet):
 
                 # return cells from a row
                 if min_row <= row_id:
-                    yield tuple(self._get_row(element, min_col, max_col))
+                    yield tuple(self._get_row(element, min_col, max_col, row_counter=row_counter))
                     row_counter += 1
 
             if element.tag in CELL_TAGS:
@@ -119,14 +119,17 @@ class ReadOnlyWorksheet(Worksheet):
             element.clear()
 
 
-    def _get_row(self, element, min_col=1, max_col=None):
+    def _get_row(self, element, min_col=1, max_col=None, row_counter=None):
         """Return cells from a particular row"""
         col_counter = min_col
         data_only = getattr(self.parent, 'data_only', False)
 
         for cell in safe_iterator(element, CELL_TAG):
             coordinate = cell.get('r')
-            row, column = coordinate_to_tuple(coordinate)
+            if coordinate:
+                row, column = coordinate_to_tuple(coordinate)
+            else:
+                row, column = row_counter, col_counter
 
             if max_col is not None and column > max_col:
                 break
