@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from itertools import groupby, chain
+from collections import OrderedDict
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -13,8 +14,14 @@ from openpyxl.descriptors import (
     Integer,
 )
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import OrderedDict, safe_string, unicode
-from openpyxl.utils import coordinate_from_string, rows_from_range
+from openpyxl.compat import (
+    safe_string,
+    unicode,
+)
+from openpyxl.utils import (
+    coordinate_from_string,
+    rows_from_range,
+)
 
 
 def collapse_cell_addresses(cells, input_ranges=()):

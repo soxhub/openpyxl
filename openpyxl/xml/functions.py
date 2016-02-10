@@ -88,13 +88,11 @@ tostring = partial(tostring, encoding="utf-8")
 
 
 def safe_iterator(node, tag=None):
-    """Return an iterator that is compatible with Python 2.6"""
+    """Return an iterator or an empty list"""
     if node is None:
         return []
-    if hasattr(node, "iter"):
-        return node.iter(tag)
-    else:
-        return node.getiterator(tag)
+    return node.iter(tag)
+
 
 
 def ConditionalElement(node, tag, condition, attr=None):

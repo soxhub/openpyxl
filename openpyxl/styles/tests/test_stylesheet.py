@@ -147,7 +147,7 @@ class TestStylesheet:
         datadir.chdir()
         import codecs
         with codecs.open("styles_number_formats.xml", encoding="utf-8") as src:
-            xml = src.read().encode("utf8") # Python 2.6, Windows
+            xml = src.read()
 
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)

@@ -1,8 +1,8 @@
 {
     "__author__": "See AUTHORS",
-    "__author_email__": "eric.gazoni@gmail.com",
+    "__author_email__": "charlie.clark@clark-consulting.eu",
     "__license__": "MIT/Expat",
     "__maintainer_email__": "openpyxl-users@googlegroups.com",
     "__url__": "http://openpyxl.readthedocs.org",
-    "__version__": "2.4.0"
+    "__version__": "2.5.0"
 }

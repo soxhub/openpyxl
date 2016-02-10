@@ -1,8 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-# compatibility imports
-from openpyxl.compat import OrderedDict
+from collections import OrderedDict
 
 # package imports
 from openpyxl.reader.excel import load_workbook

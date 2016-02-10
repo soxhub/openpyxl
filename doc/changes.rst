@@ -1,3 +1,13 @@
+2.5.0 (unreleased)
+==================
+
+
+Compatibility
+-------------
+
+* Dropped support for Python 2.6 and 3.3. openpyxl will not run with Python 2.6
+
+
 2.4.0 (unreleased)
 ==================
 
