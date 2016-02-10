@@ -97,22 +97,6 @@ def safe_iterator(node, tag=None):
         return node.getiterator(tag)
 
 
-def ConditionalElement(node, tag, condition, attr=None):
-    """
-    Utility function for adding nodes if certain criteria are fulfilled
-    An optional attribute can be passed in which will always be serialised as '1'
-    """
-    sub = partial(SubElement, node, tag)
-    if bool(condition):
-        if isinstance(attr, str):
-            elem = sub({attr:'1'})
-        elif isinstance(attr, dict):
-            elem = sub(attr)
-        else:
-            elem = sub()
-        return elem
-
-
 NS_REGEX = re.compile("({(?P<namespace>.*)})?(?P<localname>.*)")
 
 def localname(node):
