@@ -90,41 +90,6 @@ def test_unpack_rules(rules):
     ]
 
 
-def test_fix_priorities(rules):
-    from ..formatting import unpack_rules, ConditionalFormatting
-    cf = ConditionalFormatting()
-    cf.cf_rules = rules
-    cf._fix_priorities()
-    assert cf.max_priority == 25
-    assert list(unpack_rules(cf.cf_rules)) == [
-        ('H1:H10', 0, 18),
-        ('Q1:Q10', 0, 12),
-        ('G1:G10', 0, 19),
-        ('F1:F10', 0, 20),
-        ('O1:O10', 0, 14),
-        ('T1:T10', 0, 9),
-        ('X1:X10', 0, 6),
-        ('R1:R10', 0, 11),
-        ('C1:C10', 0, 23),
-        ('J1:J10', 0, 16),
-        ('E1:E10', 0, 21),
-        ('I1:I10', 0, 17),
-        ('Z1:Z10', 0, 4),
-        ('V1:V10', 0, 8),
-        ('AC1:AC10', 0, 1),
-        ('N1:N10', 0, 15),
-        ('AA1:AA10', 0, 3),
-        ('Y1:Y10', 0, 5),
-        ('B1:B10', 0, 24),
-        ('P1:P10', 0, 13),
-        ('W1:W10', 0, 7),
-        ('AB1:AB10', 0, 2),
-        ('A1:A1048576', 0, 25),
-        ('S1:S10', 0, 10),
-        ('D1:D10', 0, 22),
-    ]
-
-
 class DummyWorkbook():
 
     def __init__(self):
