@@ -145,10 +145,8 @@ class TestStylesheet:
 
     def test_custom_number_formats(self, Stylesheet, datadir):
         datadir.chdir()
-        import codecs
-        with codecs.open("styles_number_formats.xml", encoding="utf-8") as src:
+        with open("styles_number_formats.xml", "rb") as src:
             xml = src.read()
-
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
