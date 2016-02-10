@@ -77,6 +77,7 @@ class WorkSheetParser(object):
         self.differential_styles = wb._differential_styles
         self.keep_vba = wb.vba_archive is not None
         self.shared_formula_masters = {}  # {si_str: Translator()}
+        self._row_count = self._col_count = 0
 
     def parse(self):
         dispatcher = {
@@ -107,7 +108,6 @@ class WorkSheetParser(object):
                 dispatcher[tag_name](element)
                 element.clear()
 
-        self.ws._current_row = self.ws.max_row
 
     def parse_cell(self, element):
         value = element.find(self.VALUE_TAG)
@@ -116,6 +116,7 @@ class WorkSheetParser(object):
         formula = element.find(self.FORMULA_TAG)
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
+        self._col_count += 1
         style_id = element.get('s')
 
         # assign formula to cell value unless only the data is desired
@@ -180,7 +181,11 @@ class WorkSheetParser(object):
             style_id = int(style_id)
             style_array = self.styles[style_id]
 
-        row, column = coordinate_to_tuple(coordinate)
+        if coordinate:
+            row, column = coordinate_to_tuple(coordinate)
+        else:
+            row, column = self._row_count, self._col_count
+
         cell = Cell(self.ws, row=row, col_idx=column, style_array=style_array)
         self.ws._cells[(row, column)] = cell
 
@@ -225,6 +230,12 @@ class WorkSheetParser(object):
 
     def parse_row_dimensions(self, row):
         attrs = dict(row.attrib)
+
+        if "r" in attrs:
+            self._row_count = int(attrs['r'])
+        else:
+            self._row_count += 1
+        self._col_count = 0
         keys = set(attrs)
         for key in keys:
             if key == "s":

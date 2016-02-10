@@ -42,9 +42,10 @@ Bug fixes
 ---------
 
 * `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
-* `#501  <https://bitbucket.org/openpyxl/openpyxl/issues/501 >`_ Discarding named ranges can lead to corrupt files
+* `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501 >`_ Discarding named ranges can lead to corrupt files
 * `#574 <https://bitbucket.org/openpyxl/openpyxl/issues/574>`_ Exception raised when using the class method to parse Relationships
-* `#579  <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
+* `#579 <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
+* `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597 >`_ Cannot read worksheets without coordinates
 
 
 2.3.4 (unreleased)
