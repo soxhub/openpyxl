@@ -13,7 +13,6 @@ from openpyxl.descriptors import (
     MatchPattern,
     Typed,
 )
-from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.functions import Element
 
 RGB = ("^[A-Fa-f0-9]{6}$")
@@ -105,6 +104,12 @@ class HeaderFooterPart(Strict):
         return u"".join(fmt + [self.text])
 
 
+    def __bool__(self):
+        return bool(self.text)
+
+    __nonzero__ = __bool__
+
+
     @classmethod
     def from_str(cls, text):
         """
@@ -119,7 +124,7 @@ class HeaderFooterPart(Strict):
         return cls(**kw)
 
 
-class HeaderFooter(Serialisable):
+class HeaderFooter(Strict):
     """
     Header or footer item
     """
@@ -154,6 +159,12 @@ class HeaderFooter(Serialisable):
                 txt.append("&{0}{1}".format(key, str(part)))
         txt = "".join(txt)
         return SUBS_REGEX.sub(replace, txt)
+
+
+    def __bool__(self):
+        return any([self.left, self.center, self.right])
+
+    __nonzero__ = __bool__
 
 
     def to_tree(self, tagname):

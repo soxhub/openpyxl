@@ -17,6 +17,13 @@ def test_split_into_parts():
     assert m.group('right') == '&"Lucida Grande,Standard"&K000000Right top'
 
 
+def test_cannot_split():
+    from ..header_footer import _split_string
+    s = """\n """
+    parts = _split_string(s)
+    assert parts == {'left':'', 'right':'', 'center':''}
+
+
 def test_multiline_string():
     from .. header_footer import ITEM_REGEX
     s = """&L141023 V1&CRoute - Malls\nSchedules R1201 v R1301&RClient-internal use only"""
@@ -57,11 +64,18 @@ class TestHeaderFooterPart:
         assert hf.size == 12
 
 
-    def test_subs(self):
-        from ..header_footer import SUBS_REGEX, replace
-        s = "MyName&[Tab]&[Page]&[Path]"
-        t = SUBS_REGEX.sub(replace, s)
-        assert t == "MyName&A&P&Z"
+    def test_bool(self, HeaderFooterPart):
+        hf = HeaderFooterPart()
+        assert bool(hf) is False
+        hf.text = "Title"
+        assert bool(hf) is True
+
+
+def test_subs():
+    from ..header_footer import SUBS_REGEX, replace
+    s = "MyName&[Tab]&[Page]&[Path]"
+    t = SUBS_REGEX.sub(replace, s)
+    assert t == "MyName&A&P&Z"
 
 
 @pytest.fixture
@@ -102,3 +116,10 @@ class TestHeaderFooter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_bool(self, HeaderFooter):
+        hf = HeaderFooter()
+        assert bool(hf) is False
+        hf.left.text = "Title"
+        assert bool(hf) is True
