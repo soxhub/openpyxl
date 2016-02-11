@@ -84,20 +84,24 @@ class WorkSheetParser(object):
             '{%s}mergeCells' % SHEET_MAIN_NS: self.parse_merge,
             '{%s}col' % SHEET_MAIN_NS: self.parse_column_dimensions,
             '{%s}row' % SHEET_MAIN_NS: self.parse_row_dimensions,
-            '{%s}printOptions' % SHEET_MAIN_NS: self.parse_print_options,
-            '{%s}pageMargins' % SHEET_MAIN_NS: self.parse_margins,
-            '{%s}pageSetup' % SHEET_MAIN_NS: self.parse_page_setup,
-            '{%s}headerFooter' % SHEET_MAIN_NS: self.parse_header_footer,
             '{%s}conditionalFormatting' % SHEET_MAIN_NS: self.parser_conditional_formatting,
-            '{%s}autoFilter' % SHEET_MAIN_NS: self.parse_auto_filter,
-            '{%s}sheetProtection' % SHEET_MAIN_NS: self.parse_sheet_protection,
-            '{%s}dataValidations' % SHEET_MAIN_NS: self.parse_data_validation,
-            '{%s}sheetPr' % SHEET_MAIN_NS: self.parse_properties,
             '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
+            '{%s}sheetProtection' % SHEET_MAIN_NS: ('she', SortState),
             '{%s}sheetViews' % SHEET_MAIN_NS: self.parse_sheet_views,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
-            '{%s}sortState' % SHEET_MAIN_NS: self.parse_sort,
                       }
+
+        properties = {
+            '{%s}printOptions' % SHEET_MAIN_NS: ('print_options', PrintOptions),
+            '{%s}pageMargins' % SHEET_MAIN_NS: ('page_margins', PageMargins),
+            '{%s}pageSetup' % SHEET_MAIN_NS: ('page_setup', PrintPageSetup),
+            '{%s}headerFooter' % SHEET_MAIN_NS: ('HeaderFooter', HeaderFooter),
+            '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
+            '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
+            '{%s}sortState' % SHEET_MAIN_NS:  ('sort_state', SortState),
+            '{%s}sheetPr' % SHEET_MAIN_NS:  ('worksheet_properties', WorksheetProperties),
+        }
+
         tags = dispatcher.keys()
         stream = _get_xml_iter(self.source)
         it = iterparse(stream, tag=tags)
@@ -106,6 +110,10 @@ class WorkSheetParser(object):
             tag_name = element.tag
             if tag_name in dispatcher:
                 dispatcher[tag_name](element)
+                element.clear()
+            elif tag_name in properties:
+                prop = properties[tag_name]
+                setattr(self.ws, prop[0], prop[1].from_tree(element))
                 element.clear()
 
 
@@ -254,20 +262,6 @@ class WorkSheetParser(object):
             self.parse_cell(cell)
 
 
-    def parse_print_options(self, element):
-        self.ws.print_options = PrintOptions.from_tree(element)
-
-    def parse_margins(self, element):
-        self.ws.page_margins = PageMargins.from_tree(element)
-
-    def parse_page_setup(self, element):
-        self.ws.page_setup = PrintPageSetup.from_tree(element)
-
-
-    def parse_header_footer(self, element):
-        self.ws.HeaderFooter = HeaderFooter.from_tree(element)
-
-
     def parser_conditional_formatting(self, element):
         range_string = element.get('sqref')
         cfRules = element.findall('{%s}cfRule' % SHEET_MAIN_NS)
@@ -279,26 +273,11 @@ class WorkSheetParser(object):
             self.ws.conditional_formatting.cf_rules[range_string].append(rule)
 
 
-    def parse_auto_filter(self, element):
-        self.ws.auto_filter = AutoFilter.from_tree(element)
-
-
-    def parse_sort(self, element):
-        self.ws.sort_state = SortState.from_tree(element)
-
-
     def parse_sheet_protection(self, element):
         self.ws.protection = SheetProtection.from_tree(element)
         password = element.get("password")
         if password is not None:
             self.ws.protection.set_password(password, True)
-
-    def parse_data_validation(self, element):
-        self.ws.data_validations = DataValidationList.from_tree(element)
-
-
-    def parse_properties(self, element):
-        self.ws.sheet_properties = WorksheetProperties.from_tree(element)
 
 
     def parse_legacy_drawing(self, element):
