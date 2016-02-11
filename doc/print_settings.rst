@@ -43,7 +43,7 @@ manually.
 # Or just
 >>> ws.oddFooter.right.text = 'My Right Footer'
 
-Also supported are evenHeader and evenFooter as well as firstHeader and firstFooter
+Also supported are `evenHeader` and `evenFooter` as well as `firstHeader` and `firstFooter`.
 
 
 Add Print Titles
