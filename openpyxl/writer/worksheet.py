@@ -99,15 +99,6 @@ def write_conditional_formatting(worksheet):
         yield cf
 
 
-def write_header_footer(worksheet):
-    ws = worksheet
-
-    if any([ws.oddHeader, ws.oddFooter, ws.evenFooter, ws.evenHeader]):
-        hf = HeaderFooter(oddHeader=ws.oddHeader, oddFooter=ws.oddFooter,
-                          evenFooter=ws.evenFooter, evenHeader=ws.evenHeader)
-        return hf.to_tree()
-
-
 def write_hyperlinks(worksheet):
     """Write worksheet hyperlinks to xml."""
     if not worksheet.hyperlinks:
@@ -205,9 +196,9 @@ def write_worksheet(worksheet, shared_strings):
                 new_element = setup.to_tree()
                 xf.write(new_element)
 
-            hf = write_header_footer(worksheet)
-            if hf is not None:
-                xf.write(hf)
+
+            if bool(worksheet.HeaderFooter):
+                xf.write(worksheet.HeaderFooter.to_tree())
 
             drawing = write_drawing(worksheet)
             if drawing is not None:

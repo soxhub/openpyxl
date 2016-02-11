@@ -138,12 +138,6 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    @deprecated("Use ws.oddHeader, ws.oddFooter, ws.evenHeader or ws.evenHeader")
-    def HeaderFooter(self):
-        pass
-
-
-    @property
     def selected_cell(self):
         return self.sheet_view.selection.sqref
 

@@ -265,11 +265,7 @@ class WorkSheetParser(object):
 
 
     def parse_header_footer(self, element):
-        hf = HeaderFooter.from_tree(element)
-        self.ws.oddHeader = hf.oddHeader
-        self.ws.oddFooter = hf.oddFooter
-        self.ws.evenHeader = hf.evenHeader
-        self.ws.evenFooter = hf.evenFooter
+        self.ws.HeaderFooter = HeaderFooter.from_tree(element)
 
 
     def parser_conditional_formatting(self, element):

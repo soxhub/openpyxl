@@ -250,3 +250,10 @@ class HeaderFooter(Serialisable):
         self.evenFooter = evenFooter
         self.firstHeader = firstHeader
         self.firstFooter = firstFooter
+
+
+    def __bool__(self):
+        parts = [getattr(self, attr) for attr in self.__attrs__ + self.__elements__]
+        return any(parts)
+
+    __nonzero__ = __bool__

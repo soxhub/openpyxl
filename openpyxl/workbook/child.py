@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import re
 from openpyxl.compat import unicode
 
+from openpyxl.worksheet.header_footer import HeaderFooter
+
 """
 Base class for worksheets, chartsheets, etc. that can be added to workbooks
 """
@@ -39,11 +41,7 @@ class _WorkbookChild(object):
     def __init__(self, parent=None, title=None):
         self.__parent = parent
         self.title = title or self._default_title
-        self.oddHeader = None
-        self.evenHeader = None
-        self.oddFooter = None
-        self.evenFooter = None
-
+        self.HeaderFooter = HeaderFooter()
 
     def __repr__(self):
         return u'<{0} "{1}">'.format(self.__class__.__name__, self.title)
