@@ -83,7 +83,7 @@ class WorkSheetParser(object):
         dispatcher = {
             '{%s}mergeCells' % SHEET_MAIN_NS: self.parse_merge,
             '{%s}col' % SHEET_MAIN_NS: self.parse_column_dimensions,
-            '{%s}row' % SHEET_MAIN_NS: self.parse_row_dimensions,
+            '{%s}row' % SHEET_MAIN_NS: self.parse_row_row,
             '{%s}conditionalFormatting' % SHEET_MAIN_NS: self.parser_conditional_formatting,
             '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
             '{%s}sheetProtection' % SHEET_MAIN_NS: ('she', SortState),
@@ -236,7 +236,7 @@ class WorkSheetParser(object):
         self.ws.column_dimensions[column] = dim
 
 
-    def parse_row_dimensions(self, row):
+    def parse_row_row(self, row):
         attrs = dict(row.attrib)
 
         if "r" in attrs:

@@ -171,7 +171,7 @@ def test_hidden_row(datadir, WorkSheetParser):
     with open("hidden_rows_cols.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
-            parser.parse_row_dimensions(row)
+            parser.parse_row_row(row)
     assert 2 in ws.row_dimensions
     assert dict(ws.row_dimensions[2]) == {'hidden': '1'}
 
@@ -185,7 +185,7 @@ def test_styled_row(datadir, WorkSheetParser):
     with open("complex-styles-worksheet.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
-            parser.parse_row_dimensions(row)
+            parser.parse_row_row(row)
     assert 23 in ws.row_dimensions
     rd = ws.row_dimensions[23]
     assert rd.style_id == 28
@@ -491,7 +491,7 @@ def test_row_dimensions(WorkSheetParser):
     element = fromstring(src)
 
     parser = WorkSheetParser
-    parser.parse_row_dimensions(element)
+    parser.parse_row_row(element)
 
     assert 2 not in parser.ws.row_dimensions
 
@@ -533,7 +533,7 @@ def test_cell_without_coordinates(WorkSheetParser, datadir):
 
     parser = WorkSheetParser
     parser.shared_strings = ["Whatever"] * 10
-    parser.parse_row_dimensions(el)
+    parser.parse_row_row(el)
 
     assert parser.ws.max_row == 1
     assert parser.ws.max_column == 5
