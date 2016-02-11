@@ -115,7 +115,7 @@ class WorkbookPackage(Serialisable):
                     'webPublishing', 'fileRecoveryPr', 'webPublishObjects')
 
     def __init__(self,
-                 conformance="strict",
+                 conformance=None,
                  fileVersion=None,
                  fileSharing=None,
                  workbookPr=None,

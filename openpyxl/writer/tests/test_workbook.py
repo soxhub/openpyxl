@@ -44,7 +44,7 @@ def test_write_hidden_worksheet():
     wb.create_sheet()
     xml = write_workbook(wb)
     expected = """
-    <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" conformance="strict">
+    <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
     <workbookPr/>
     <bookViews>
       <workbookView activeTab="1"/>
@@ -125,7 +125,7 @@ def test_write_workbook_code_name():
 
     content = write_workbook(wb)
     expected = """
-    <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" conformance="strict">
+    <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
     <workbookPr codeName="MyWB"/>
     <bookViews>
       <workbookView activeTab="0"/>
