@@ -79,35 +79,35 @@ def test_subs():
 
 
 @pytest.fixture
-def HeaderFooter():
-    from ..header_footer import HeaderFooter
-    return HeaderFooter
+def HeaderFooterItem():
+    from ..header_footer import HeaderFooterItem
+    return HeaderFooterItem
 
 
 class TestHeaderFooter:
 
 
-    def test_ctor(self, HeaderFooterPart, HeaderFooter):
-        hf = HeaderFooter()
+    def test_ctor(self, HeaderFooterPart, HeaderFooterItem):
+        hf = HeaderFooterItem()
         hf.left.text = "yes"
         hf.center.text ="no"
         hf.right.text = "maybe"
         assert str(hf) == "&Lyes&Cno&Rmaybe"
 
 
-    def test_read(self, HeaderFooter):
+    def test_read(self, HeaderFooterItem):
         xml = """
         <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
         """
         node = fromstring(xml)
-        hf = HeaderFooter.from_tree(node)
+        hf = HeaderFooterItem.from_tree(node)
         assert hf.left.text == "Left top"
         assert hf.center.text == "Middle top"
         assert hf.right.text == "Right top"
 
 
-    def test_write(self, HeaderFooter):
-        hf = HeaderFooter()
+    def test_write(self, HeaderFooterItem):
+        hf = HeaderFooterItem()
         hf.left.text = "A secret message"
         hf.left.size = 12
         xml = tostring(hf.to_tree("header_or_footer"))
@@ -118,8 +118,8 @@ class TestHeaderFooter:
         assert diff is None, diff
 
 
-    def test_bool(self, HeaderFooter):
-        hf = HeaderFooter()
+    def test_bool(self, HeaderFooterItem):
+        hf = HeaderFooterItem()
         assert bool(hf) is False
         hf.left.text = "Title"
         assert bool(hf) is True

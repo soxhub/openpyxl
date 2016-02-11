@@ -175,16 +175,6 @@ class TestWorksheet:
         assert c_range_name == (c_cell,)
 
 
-    def test_garbage_collect(self, Worksheet):
-        ws = Worksheet(Workbook())
-        ws.cell('A1').value = ''
-        ws.cell('B2').value = '0'
-        ws.cell('C4').value = 0
-        ws.cell('D1').comment = Comment('Comment', 'Comment')
-        ws._garbage_collect()
-        assert set(ws.get_cell_collection()), set([ws.cell('B2'), ws.cell('C4') == ws.cell('D1')])
-
-
     def test_hyperlink_value(self, Worksheet):
         ws = Worksheet(Workbook())
         ws.cell('A1').hyperlink = "http://test.com"

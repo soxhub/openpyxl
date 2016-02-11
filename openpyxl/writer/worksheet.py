@@ -85,7 +85,7 @@ def write_mergecells(worksheet):
 def write_conditional_formatting(worksheet):
     """Write conditional formatting to xml."""
     wb = worksheet.parent
-    for range_string, rules in iteritems(worksheet.conditional_formatting.cf_rules):
+    for range_string, rules in worksheet.conditional_formatting.cf_rules.items():
         cf = Element('conditionalFormatting', {'sqref': range_string})
 
         for rule in rules:

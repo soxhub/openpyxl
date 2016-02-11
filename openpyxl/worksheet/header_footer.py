@@ -13,6 +13,8 @@ from openpyxl.descriptors import (
     MatchPattern,
     Typed,
 )
+from openpyxl.descriptors.serialisable import Serialisable
+
 from openpyxl.xml.functions import Element
 
 RGB = ("^[A-Fa-f0-9]{6}$")
@@ -49,7 +51,7 @@ def _split_string(text):
 class HeaderFooterPart(Strict):
 
     """
-    Individual left/center/right header/footer items
+    Individual left/center/right header/footer part
 
     Header & Footer ampersand codes:
 
@@ -57,7 +59,8 @@ class HeaderFooterPart(Strict):
     * &B   Toggles bold
     * &D or &[Date]   Inserts the current date
     * &E   Toggles double-underline
-    * &F or &[File]   Inserts the workbook name
+    * &F or &[File]   Inserts the workbook name    oddHeader = Typed(expected_type=HeaderFooterItem)
+    oddFooter = Typed(expected_type=HeaderFooterItem)
     * &I   Toggles italic
     * &N or &[Pages]   Inserts the total page count
     * &S   Toggles strikethrough
@@ -124,7 +127,7 @@ class HeaderFooterPart(Strict):
         return cls(**kw)
 
 
-class HeaderFooter(Strict):
+class HeaderFooterItem(Strict):
     """
     Header or footer item
     """
@@ -205,3 +208,30 @@ def replace(match):
     """
     sub = match.group(0)
     return TRANSFORM[sub]
+
+
+class HeaderFooterContainer(Serialisable):
+
+    """
+    Container for headers and footers
+    """
+
+    tagname = "headerFooter"
+
+    oddHeader = Typed(expected_type=HeaderFooterItem)
+    oddFooter = Typed(expected_type=HeaderFooterItem)
+    evenHeader = Typed(expected_type=HeaderFooterItem)
+    evenFooter = Typed(expected_type=HeaderFooterItem)
+
+    __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
+
+    def __init__(self,
+                 oddHeader=None,
+                 oddFooter=None,
+                 evenFooter=None,
+                 evenHeader=None
+                 ):
+        pass
+
+
+

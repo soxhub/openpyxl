@@ -14,7 +14,7 @@ from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
-from openpyxl.worksheet.header_footer import HeaderFooter
+from openpyxl.worksheet.header_footer import HeaderFooterItem
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
 from openpyxl.worksheet.views import SheetView
@@ -268,7 +268,7 @@ class WorkSheetParser(object):
         tags = ["{%s}%s" % (SHEET_MAIN_NS, t)
                 for t in ["oddHeader", "oddFooter", "evenHeader", "evenFooter"]]
         for node in safe_iterator(element, tags):
-            hf = HeaderFooter.from_tree(node)
+            hf = HeaderFooterItem.from_tree(node)
             setattr(self.ws, localname(node), hf)
 
 
