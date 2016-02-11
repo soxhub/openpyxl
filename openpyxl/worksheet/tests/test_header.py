@@ -43,29 +43,29 @@ def test_font_size():
 
 
 @pytest.fixture
-def HeaderFooterPart():
-    from ..header_footer import HeaderFooterPart
-    return HeaderFooterPart
+def _HeaderFooterPart():
+    from ..header_footer import _HeaderFooterPart
+    return _HeaderFooterPart
 
 
 class TestHeaderFooterPart:
 
 
-    def test_ctor(self, HeaderFooterPart):
-        hf = HeaderFooterPart(text="secret message", font="Calibri,Regular", color="000000")
+    def test_ctor(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart(text="secret message", font="Calibri,Regular", color="000000")
         assert str(hf) == """&"Calibri,Regular"&K000000secret message"""
 
 
-    def test_read(self, HeaderFooterPart):
-        hf = HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
+    def test_read(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
         assert hf.text == "Left top"
         assert hf.font == "Lucida Grande,Standard"
         assert hf.color == "22BBDD"
         assert hf.size == 12
 
 
-    def test_bool(self, HeaderFooterPart):
-        hf = HeaderFooterPart()
+    def test_bool(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart()
         assert bool(hf) is False
         hf.text = "Title"
         assert bool(hf) is True
@@ -87,7 +87,7 @@ def HeaderFooterItem():
 class TestHeaderFooterItem:
 
 
-    def test_ctor(self, HeaderFooterPart, HeaderFooterItem):
+    def test_ctor(self, HeaderFooterItem):
         hf = HeaderFooterItem()
         hf.left.text = "yes"
         hf.center.text ="no"
@@ -137,7 +137,12 @@ class TestHeaderFooter:
         hf = HeaderFooter()
         xml = tostring(hf.to_tree())
         expected = """
-        <headerFooter />
+        <headerFooter>
+          <oddHeader />
+          <oddFooter />
+          <evenHeader />
+          <evenFooter />
+        </headerFooter>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

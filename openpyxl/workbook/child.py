@@ -91,3 +91,63 @@ class _WorkbookChild(object):
             raise ValueError('Maximum 31 characters allowed in sheet title')
 
         self.__title = value
+
+
+    @property
+    def oddHeader(self):
+        return self.HeaderFooter.oddHeader
+
+
+    @oddHeader.setter
+    def oddHeader(self, value):
+        self.HeaderFooter.oddHeader = value
+
+
+    @property
+    def oddFooter(self):
+        return self.HeaderFooter.oddFooter
+
+
+    @oddFooter.setter
+    def oddFooter(self, value):
+        self.HeaderFooter.oddFooter = value
+
+
+    @property
+    def evenHeader(self):
+        return self.HeaderFooter.evenHeader
+
+
+    @evenHeader.setter
+    def evenHeader(self, value):
+        self.HeaderFooter.evenHeader = value
+
+
+    @property
+    def evenFooter(self):
+        return self.HeaderFooter.evenFooter
+
+
+    @evenFooter.setter
+    def evenFooter(self, value):
+        self.HeaderFooter.evenFooter = value
+
+
+    @property
+    def firstHeader(self):
+        return self.HeaderFooter.firstHeader
+
+
+    @firstHeader.setter
+    def firstHeader(self, value):
+        self.HeaderFooter.firstHeader = value
+
+
+    @property
+    def firstFooter(self):
+        return self.HeaderFooter.firstFooter
+
+
+    @firstFooter.setter
+    def firstFooter(self, value):
+        self.HeaderFooter.firstFooter = value

@@ -49,10 +49,12 @@ def _split_string(text):
     return parts
 
 
-class HeaderFooterPart(Strict):
+class _HeaderFooterPart(Strict):
 
     """
     Individual left/center/right header/footer part
+
+    Do not use directly.
 
     Header & Footer ampersand codes:
 
@@ -131,24 +133,25 @@ class HeaderFooterPart(Strict):
 class HeaderFooterItem(Strict):
     """
     Header or footer item
+
     """
 
-    left = Typed(expected_type=HeaderFooterPart)
-    center = Typed(expected_type=HeaderFooterPart)
-    right = Typed(expected_type=HeaderFooterPart)
+    left = Typed(expected_type=_HeaderFooterPart)
+    center = Typed(expected_type=_HeaderFooterPart)
+    right = Typed(expected_type=_HeaderFooterPart)
 
     __keys = ('L', 'C', 'R')
 
 
     def __init__(self, left=None, right=None, center=None):
         if left is None:
-            left = HeaderFooterPart()
+            left = _HeaderFooterPart()
         self.left = left
         if center is None:
-            center = HeaderFooterPart()
+            center = _HeaderFooterPart()
         self.center = center
         if right is None:
-            right = HeaderFooterPart()
+            right = _HeaderFooterPart()
         self.right = right
 
 
@@ -186,7 +189,7 @@ class HeaderFooterItem(Strict):
             parts = _split_string(node.text)
             for k, v in parts.items():
                 if v is not None:
-                    parts[k] = HeaderFooterPart.from_str(v)
+                    parts[k] = _HeaderFooterPart.from_str(v)
             self = cls(**parts)
             return self
 
@@ -244,11 +247,23 @@ class HeaderFooter(Serialisable):
         self.differentFirst = differentFirst
         self.scaleWithDoc = scaleWithDoc
         self.alignWithMargins = alignWithMargins
+        if oddHeader is None:
+            oddHeader = HeaderFooterItem()
         self.oddHeader = oddHeader
+        if oddFooter is None:
+            oddFooter = HeaderFooterItem()
         self.oddFooter = oddFooter
+        if evenHeader is None:
+            evenHeader = HeaderFooterItem()
         self.evenHeader = evenHeader
+        if evenFooter is None:
+            evenFooter = HeaderFooterItem()
         self.evenFooter = evenFooter
+        if firstHeader is None:
+            firstHeader = HeaderFooterItem()
         self.firstHeader = firstHeader
+        if firstFooter is None:
+            firstFooter = HeaderFooterItem()
         self.firstFooter = firstFooter
 
 
