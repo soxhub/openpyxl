@@ -8,6 +8,13 @@ Compatibility
 * Dropped support for Python 2.6 and 3.3. openpyxl will not run with Python 2.6
 
 
+Minor changes
+-------------
+
+* Remove deprecated methods from Cell
+* Remove deprecated methods from Worksheet
+
+
 2.4.0 (unreleased)
 ==================
 

@@ -340,41 +340,6 @@ class Cell(StyleableObject):
         offset_row = self.row + row
         return self.parent.cell(column=offset_column, row=offset_row)
 
-    @property
-    @deprecated("Use anchor objects for positioning")
-    def anchor(self):
-        """ returns the expected position of a cell in pixels from the top-left
-            of the sheet. For example, A1 anchor should be (0,0).
-
-            :rtype: tuple(int, int)
-        """
-        left_columns = (column_index_from_string(self.column) - 1)
-        column_dimensions = self.parent.column_dimensions
-        left_anchor = 0
-        default_width = points_to_pixels(DEFAULT_COLUMN_WIDTH)
-
-        for col_idx in range(left_columns):
-            letter = get_column_letter(col_idx + 1)
-            if letter in column_dimensions:
-                cdw = column_dimensions.get(letter).width or default_width
-                if cdw > 0:
-                    left_anchor += points_to_pixels(cdw)
-                    continue
-            left_anchor += default_width
-
-        row_dimensions = self.parent.row_dimensions
-        top_anchor = 0
-        top_rows = (self.row - 1)
-        default_height = points_to_pixels(DEFAULT_ROW_HEIGHT)
-        for row_idx in range(1, top_rows + 1):
-            if row_idx in row_dimensions:
-                rdh = row_dimensions[row_idx].height or default_height
-                if rdh > 0:
-                    top_anchor += points_to_pixels(rdh)
-                    continue
-            top_anchor += default_height
-
-        return (left_anchor, top_anchor)
 
     @property
     def comment(self):

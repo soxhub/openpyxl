@@ -672,43 +672,6 @@ class Worksheet(_WorkbookChild):
         return tuple(cols)
 
 
-    @deprecated("Charts and images should be positioned using anchor objects")
-    def point_pos(self, left=0, top=0):
-        """ tells which cell is under the given coordinates (in pixels)
-        counting from the top-left corner of the sheet.
-        Can be used to locate images and charts on the worksheet """
-        current_col = 1
-        current_row = 1
-        column_dimensions = self.column_dimensions
-        row_dimensions = self.row_dimensions
-        default_width = points_to_pixels(DEFAULT_COLUMN_WIDTH)
-        default_height = points_to_pixels(DEFAULT_ROW_HEIGHT)
-        left_pos = 0
-        top_pos = 0
-
-        while left_pos <= left:
-            letter = get_column_letter(current_col)
-            current_col += 1
-            if letter in column_dimensions:
-                cdw = column_dimensions[letter].width
-                if cdw is not None:
-                    left_pos += points_to_pixels(cdw)
-                    continue
-            left_pos += default_width
-
-        while top_pos <= top:
-            row = current_row
-            current_row += 1
-            if row in row_dimensions:
-                rdh = row_dimensions[row].height
-                if rdh is not None:
-                    top_pos += points_to_pixels(rdh)
-                    continue
-            top_pos += default_height
-
-        return (letter, row)
-
-
     def _add_column(self):
         """Dimension factory for column information"""
 
