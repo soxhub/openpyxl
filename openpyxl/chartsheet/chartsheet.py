@@ -38,7 +38,6 @@ class Chartsheet(_WorkbookChild, Serialisable):
     customSheetViews = Typed(expected_type=CustomChartsheetViews, allow_none=True)
     pageMargins = Typed(expected_type=PageMargins, allow_none=True)
     pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
-    headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
     drawing = Typed(expected_type=Drawing, allow_none=True)
     drawingHF = Typed(expected_type=DrawingHF, allow_none=True)
     picture = Typed(expected_type=SheetBackgroundPicture, allow_none=True)
