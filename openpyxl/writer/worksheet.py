@@ -6,7 +6,7 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-from openpyxl.compat import safe_string, itervalues, iteritems
+from openpyxl.compat import safe_string
 from openpyxl import LXML
 
 # package imports
@@ -29,6 +29,7 @@ from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
+from openpyxl.worksheet.header_footer import HeaderFooter
 
 from .etree_worksheet import write_cell
 
@@ -36,7 +37,7 @@ from .etree_worksheet import write_cell
 def write_format(worksheet):
     attrs = {'defaultRowHeight': '15', 'baseColWidth': '10'}
     dimensions_outline = [dim.outline_level
-                          for dim in itervalues(worksheet.column_dimensions)]
+                          for dim in worksheet.column_dimensions.values()]
     if dimensions_outline:
         outline_level = max(dimensions_outline)
         if outline_level:
@@ -85,7 +86,7 @@ def write_mergecells(worksheet):
 def write_conditional_formatting(worksheet):
     """Write conditional formatting to xml."""
     wb = worksheet.parent
-    for range_string, rules in iteritems(worksheet.conditional_formatting.cf_rules):
+    for range_string, rules in worksheet.conditional_formatting.cf_rules.items():
         cf = Element('conditionalFormatting', {'sqref': range_string})
 
         for rule in rules:
@@ -96,18 +97,6 @@ def write_conditional_formatting(worksheet):
             cf.append(rule.to_tree())
 
         yield cf
-
-
-def write_header_footer(worksheet):
-    ws = worksheet
-    keys = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
-    parts = [getattr(ws, key) for key in keys]
-    if any(parts):
-        tag = Element('headerFooter')
-        for key, part in zip(keys, parts):
-            if part:
-                tag.append(part.to_tree(key))
-        return tag
 
 
 def write_hyperlinks(worksheet):
@@ -207,9 +196,9 @@ def write_worksheet(worksheet, shared_strings):
                 new_element = setup.to_tree()
                 xf.write(new_element)
 
-            hf = write_header_footer(worksheet)
-            if hf is not None:
-                xf.write(hf)
+
+            if bool(worksheet.HeaderFooter):
+                xf.write(worksheet.HeaderFooter.to_tree())
 
             drawing = write_drawing(worksheet)
             if drawing is not None:

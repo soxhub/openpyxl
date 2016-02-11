@@ -7,12 +7,15 @@ import re
 from warnings import warn
 
 from openpyxl.descriptors import (
+    Bool,
     Strict,
     String,
     Integer,
     MatchPattern,
     Typed,
 )
+from openpyxl.descriptors.serialisable import Serialisable
+
 from openpyxl.xml.functions import Element
 
 RGB = ("^[A-Fa-f0-9]{6}$")
@@ -46,10 +49,12 @@ def _split_string(text):
     return parts
 
 
-class HeaderFooterPart(Strict):
+class _HeaderFooterPart(Strict):
 
     """
-    Individual left/center/right header/footer items
+    Individual left/center/right header/footer part
+
+    Do not use directly.
 
     Header & Footer ampersand codes:
 
@@ -57,7 +62,8 @@ class HeaderFooterPart(Strict):
     * &B   Toggles bold
     * &D or &[Date]   Inserts the current date
     * &E   Toggles double-underline
-    * &F or &[File]   Inserts the workbook name
+    * &F or &[File]   Inserts the workbook name    oddHeader = Typed(expected_type=HeaderFooterItem)
+    oddFooter = Typed(expected_type=HeaderFooterItem)
     * &I   Toggles italic
     * &N or &[Pages]   Inserts the total page count
     * &S   Toggles strikethrough
@@ -124,27 +130,28 @@ class HeaderFooterPart(Strict):
         return cls(**kw)
 
 
-class HeaderFooter(Strict):
+class HeaderFooterItem(Strict):
     """
     Header or footer item
+
     """
 
-    left = Typed(expected_type=HeaderFooterPart)
-    center = Typed(expected_type=HeaderFooterPart)
-    right = Typed(expected_type=HeaderFooterPart)
+    left = Typed(expected_type=_HeaderFooterPart)
+    center = Typed(expected_type=_HeaderFooterPart)
+    right = Typed(expected_type=_HeaderFooterPart)
 
     __keys = ('L', 'C', 'R')
 
 
     def __init__(self, left=None, right=None, center=None):
         if left is None:
-            left = HeaderFooterPart()
+            left = _HeaderFooterPart()
         self.left = left
         if center is None:
-            center = HeaderFooterPart()
+            center = _HeaderFooterPart()
         self.center = center
         if right is None:
-            right = HeaderFooterPart()
+            right = _HeaderFooterPart()
         self.right = right
 
 
@@ -182,7 +189,7 @@ class HeaderFooter(Strict):
             parts = _split_string(node.text)
             for k, v in parts.items():
                 if v is not None:
-                    parts[k] = HeaderFooterPart.from_str(v)
+                    parts[k] = _HeaderFooterPart.from_str(v)
             self = cls(**parts)
             return self
 
@@ -205,3 +212,63 @@ def replace(match):
     """
     sub = match.group(0)
     return TRANSFORM[sub]
+
+
+class HeaderFooter(Serialisable):
+
+    tagname = "headerFooter"
+
+    differentOddEven = Bool(allow_none=True)
+    differentFirst = Bool(allow_none=True)
+    scaleWithDoc = Bool(allow_none=True)
+    alignWithMargins = Bool(allow_none=True)
+    oddHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    oddFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+
+    __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
+
+    def __init__(self,
+                 differentOddEven=None,
+                 differentFirst=None,
+                 scaleWithDoc=None,
+                 alignWithMargins=None,
+                 oddHeader=None,
+                 oddFooter=None,
+                 evenHeader=None,
+                 evenFooter=None,
+                 firstHeader=None,
+                 firstFooter=None,
+                ):
+        self.differentOddEven = differentOddEven
+        self.differentFirst = differentFirst
+        self.scaleWithDoc = scaleWithDoc
+        self.alignWithMargins = alignWithMargins
+        if oddHeader is None:
+            oddHeader = HeaderFooterItem()
+        self.oddHeader = oddHeader
+        if oddFooter is None:
+            oddFooter = HeaderFooterItem()
+        self.oddFooter = oddFooter
+        if evenHeader is None:
+            evenHeader = HeaderFooterItem()
+        self.evenHeader = evenHeader
+        if evenFooter is None:
+            evenFooter = HeaderFooterItem()
+        self.evenFooter = evenFooter
+        if firstHeader is None:
+            firstHeader = HeaderFooterItem()
+        self.firstHeader = firstHeader
+        if firstFooter is None:
+            firstFooter = HeaderFooterItem()
+        self.firstFooter = firstFooter
+
+
+    def __bool__(self):
+        parts = [getattr(self, attr) for attr in self.__attrs__ + self.__elements__]
+        return any(parts)
+
+    __nonzero__ = __bool__

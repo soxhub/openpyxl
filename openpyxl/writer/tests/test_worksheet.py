@@ -311,42 +311,6 @@ def test_no_merge(worksheet):
     assert merge is None
 
 
-def test_header_footer(worksheet):
-    from openpyxl.worksheet.header_footer import HeaderFooter
-    ws = worksheet
-    ws.oddHeader = HeaderFooter()
-
-    ws.oddHeader.left.text = "Left Header Text"
-    ws.oddHeader.left.font = "Calibri,Regular"
-    ws.oddHeader.left.color = "000000"
-    ws.oddHeader.center.text = "Center Header Text"
-    ws.oddHeader.center.font = "Arial,Regular"
-    ws.oddHeader.center.size = 6
-    ws.oddHeader.center.color = "445566"
-    ws.oddHeader.right.text = "Right Header Text"
-    ws.oddHeader.right.font = "Arial,Bold"
-    ws.oddHeader.right.size = 8
-    ws.oddHeader.right.color = "112233"
-
-    from .. worksheet import write_header_footer
-    hf = write_header_footer(ws)
-    xml = tostring(hf)
-    expected = """
-    <headerFooter>
-      <oddHeader>&amp;L&amp;"Calibri,Regular"&amp;K000000Left Header Text&amp;C&amp;"Arial,Regular"&amp;6&amp;K445566Center Header Text&amp;R&amp;"Arial,Bold"&amp;8&amp;K112233Right Header Text</oddHeader>
-    </headerFooter>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_no_header(worksheet):
-    from .. worksheet import write_header_footer
-
-    hf = write_header_footer(worksheet)
-    assert hf is None
-
-
 def test_hyperlink(worksheet):
     from .. worksheet import write_hyperlinks
 

@@ -22,25 +22,6 @@ def test_safe_string(value, result):
 def dictionary():
     return {'1':1, 'a':'b', 3:'d'}
 
-
-def test_iterkeys(dictionary):
-    from openpyxl.compat import iterkeys
-    d = dictionary
-    assert set(iterkeys(d)) == set(['1', 'a', 3])
-
-
-def test_iteritems(dictionary):
-    from openpyxl.compat import iteritems
-    d = dictionary
-    assert set(iteritems(d)) == set([(3, 'd'), ('1', 1), ('a', 'b')])
-
-
-def test_itervalues(dictionary):
-    from openpyxl.compat import itervalues
-    d = dictionary
-    assert set(itervalues(d)) == set([1, 'b', 'd'])
-
-
 from .. import deprecated
 
 def test_deprecated_function(recwarn):

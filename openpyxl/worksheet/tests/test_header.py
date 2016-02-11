@@ -43,29 +43,29 @@ def test_font_size():
 
 
 @pytest.fixture
-def HeaderFooterPart():
-    from ..header_footer import HeaderFooterPart
-    return HeaderFooterPart
+def _HeaderFooterPart():
+    from ..header_footer import _HeaderFooterPart
+    return _HeaderFooterPart
 
 
 class TestHeaderFooterPart:
 
 
-    def test_ctor(self, HeaderFooterPart):
-        hf = HeaderFooterPart(text="secret message", font="Calibri,Regular", color="000000")
+    def test_ctor(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart(text="secret message", font="Calibri,Regular", color="000000")
         assert str(hf) == """&"Calibri,Regular"&K000000secret message"""
 
 
-    def test_read(self, HeaderFooterPart):
-        hf = HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
+    def test_read(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
         assert hf.text == "Left top"
         assert hf.font == "Lucida Grande,Standard"
         assert hf.color == "22BBDD"
         assert hf.size == 12
 
 
-    def test_bool(self, HeaderFooterPart):
-        hf = HeaderFooterPart()
+    def test_bool(self, _HeaderFooterPart):
+        hf = _HeaderFooterPart()
         assert bool(hf) is False
         hf.text = "Title"
         assert bool(hf) is True
@@ -79,35 +79,35 @@ def test_subs():
 
 
 @pytest.fixture
-def HeaderFooter():
-    from ..header_footer import HeaderFooter
-    return HeaderFooter
+def HeaderFooterItem():
+    from ..header_footer import HeaderFooterItem
+    return HeaderFooterItem
 
 
-class TestHeaderFooter:
+class TestHeaderFooterItem:
 
 
-    def test_ctor(self, HeaderFooterPart, HeaderFooter):
-        hf = HeaderFooter()
+    def test_ctor(self, HeaderFooterItem):
+        hf = HeaderFooterItem()
         hf.left.text = "yes"
         hf.center.text ="no"
         hf.right.text = "maybe"
         assert str(hf) == "&Lyes&Cno&Rmaybe"
 
 
-    def test_read(self, HeaderFooter):
+    def test_read(self, HeaderFooterItem):
         xml = """
         <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
         """
         node = fromstring(xml)
-        hf = HeaderFooter.from_tree(node)
+        hf = HeaderFooterItem.from_tree(node)
         assert hf.left.text == "Left top"
         assert hf.center.text == "Middle top"
         assert hf.right.text == "Right top"
 
 
-    def test_write(self, HeaderFooter):
-        hf = HeaderFooter()
+    def test_write(self, HeaderFooterItem):
+        hf = HeaderFooterItem()
         hf.left.text = "A secret message"
         hf.left.size = 12
         xml = tostring(hf.to_tree("header_or_footer"))
@@ -118,8 +118,52 @@ class TestHeaderFooter:
         assert diff is None, diff
 
 
-    def test_bool(self, HeaderFooter):
-        hf = HeaderFooter()
+    def test_bool(self, HeaderFooterItem):
+        hf = HeaderFooterItem()
         assert bool(hf) is False
         hf.left.text = "Title"
+        assert bool(hf) is True
+
+
+@pytest.fixture
+def HeaderFooter():
+    from ..header_footer import HeaderFooter
+    return HeaderFooter
+
+
+class TestHeaderFooter:
+
+    def test_ctor(self, HeaderFooter):
+        hf = HeaderFooter()
+        xml = tostring(hf.to_tree())
+        expected = """
+        <headerFooter>
+          <oddHeader />
+          <oddFooter />
+          <evenHeader />
+          <evenFooter />
+        </headerFooter>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, HeaderFooter):
+        src = """
+         <headerFooter>
+           <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
+           <oddFooter>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left footer&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle Footer&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right Footer</oddFooter>
+        </headerFooter>
+        """
+        node = fromstring(src)
+        hf = HeaderFooter.from_tree(node)
+        assert hf.oddHeader.left.text == "Left top"
+
+
+    def test_bool(self, HeaderFooter, HeaderFooterItem):
+        hf = HeaderFooter()
+        assert bool(hf) is False
+
+        hf.oddHeader = HeaderFooterItem()
+        hf.oddHeader.left.text = "Title"
         assert bool(hf) is True

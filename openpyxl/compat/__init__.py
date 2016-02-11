@@ -2,8 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 
-from tempfile import NamedTemporaryFile
-
 from .strings import (
     basestring,
     unicode,
@@ -13,18 +11,17 @@ from .strings import (
     safe_string
     )
 from .numbers import long, NUMERIC_TYPES
-from .itertools import (
-    range,
-    iteritems,
-    iterkeys,
-    itervalues,
-    zip,
-)
+
 try:
     from functools import lru_cache
 except ImportError:
     from .functools import lru_cache
 
+
+try:
+    range = xrange
+except NameError:
+    range = range
 
 import warnings
 from functools import wraps

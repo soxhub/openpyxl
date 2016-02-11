@@ -168,7 +168,7 @@ def test_hidden_row(datadir, WorkSheetParser):
     with open("hidden_rows_cols.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
-            parser.parse_row_dimensions(row)
+            parser.parse_row_row(row)
     assert 2 in ws.row_dimensions
     assert dict(ws.row_dimensions[2]) == {'hidden': '1'}
 
@@ -182,7 +182,7 @@ def test_styled_row(datadir, WorkSheetParser):
     with open("complex-styles-worksheet.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
-            parser.parse_row_dimensions(row)
+            parser.parse_row_row(row)
     assert 23 in ws.row_dimensions
     rd = ws.row_dimensions[23]
     assert rd.style_id == 28
@@ -355,24 +355,12 @@ def test_inline_richtext(WorkSheetParser, datadir):
     assert cell.value == "11 de September de 2014"
 
 
-def test_data_validation(WorkSheetParser, datadir):
-    parser = WorkSheetParser
-    ws = parser.ws
-    datadir.chdir()
-
-    with open("worksheet_data_validation.xml") as src:
-        sheet = fromstring(src.read())
-
-    element = sheet.find("{%s}dataValidations" % SHEET_MAIN_NS)
-    parser.parse_data_validation(element)
-    assert ws.data_validations.count == 1
-
-
 def test_read_autofilter(datadir):
     datadir.chdir()
     wb = load_workbook("bug275.xlsx")
     ws = wb.active
     assert ws.auto_filter.ref == 'A1:B6'
+
 
 def test_legacy_drawing(datadir):
     datadir.chdir()
@@ -381,42 +369,6 @@ def test_legacy_drawing(datadir):
     assert sheet1.legacy_drawing == 'xl/drawings/vmlDrawing1.vml'
     sheet2 = wb['Sheet2']
     assert sheet2.legacy_drawing == 'xl/drawings/vmlDrawing2.vml'
-
-
-def test_sort_state(WorkSheetParser, datadir):
-    datadir.chdir()
-
-    with open("sort_worksheet.xml") as src:
-        xml = fromstring(src.read())
-    element = xml.find("{%s}sortState" % SHEET_MAIN_NS)
-
-    parser = WorkSheetParser
-    parser.parse_sort(element)
-    sort = parser.ws.sort_state
-    assert sort.ref == "B1:B3"
-    assert len(sort.sortCondition) == 1
-
-
-def test_header_footer(WorkSheetParser, datadir):
-    parser = WorkSheetParser
-    ws = parser.ws
-    datadir.chdir()
-
-    with open("header_footer.xml") as src:
-        sheet = fromstring(src.read())
-
-    element = sheet.find("{%s}headerFooter" % SHEET_MAIN_NS)
-    parser.parse_header_footer(element)
-
-    assert ws.oddHeader.left.font == "Lucida Grande,Standard"
-    assert ws.oddHeader.left.color == "000000"
-    assert ws.oddHeader.left.text == "Left top"
-    assert ws.oddHeader.center.text== "Middle top"
-    assert ws.oddHeader.right.text == "Right top"
-
-    assert ws.oddFooter.left.text == "Left footer"
-    assert ws.oddFooter.center.text == "Middle Footer"
-    assert ws.oddFooter.right.text == "Right Footer"
 
 
 def test_cell_style(WorkSheetParser, datadir):
@@ -536,7 +488,7 @@ def test_row_dimensions(WorkSheetParser):
     element = fromstring(src)
 
     parser = WorkSheetParser
-    parser.parse_row_dimensions(element)
+    parser.parse_row_row(element)
 
     assert 2 not in parser.ws.row_dimensions
 
@@ -567,21 +519,6 @@ def test_shared_formulae(WorkSheetParser, datadir):
     assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'
 
 
-def test_page_margins(WorkSheetParser, datadir):
-    datadir.chdir()
-    parser = WorkSheetParser
-    ws = parser.ws
-    ws.page_margins.left = 1
-
-    with open("header_footer.xml") as src:
-        sheet = fromstring(src.read())
-
-    el = sheet.find("{%s}pageMargins" % SHEET_MAIN_NS)
-
-    parser.parse_margins(el)
-    assert ws.page_margins.left == 0.7500000000000001
-
-
 def test_cell_without_coordinates(WorkSheetParser, datadir):
     datadir.chdir()
     with open("worksheet_without_coordinates.xml") as src:
@@ -593,7 +530,7 @@ def test_cell_without_coordinates(WorkSheetParser, datadir):
 
     parser = WorkSheetParser
     parser.shared_strings = ["Whatever"] * 10
-    parser.parse_row_dimensions(el)
+    parser.parse_row_row(el)
 
     assert parser.ws.max_row == 1
     assert parser.ws.max_column == 5
