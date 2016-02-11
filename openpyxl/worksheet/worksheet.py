@@ -15,7 +15,6 @@ from openpyxl.compat import (
     unicode,
     range,
     basestring,
-    iteritems,
     deprecated,
     safe_string
 )
@@ -30,10 +29,7 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     absolute_coordinate,
 )
-from openpyxl.utils.cell import(
-    COORD_RE,
-    ABSOLUTE_RE,
-)
+from openpyxl.utils.cell import COORD_RE
 
 from openpyxl.cell import Cell
 from openpyxl.utils.exceptions import (
@@ -50,10 +46,8 @@ from openpyxl.formatting import ConditionalFormatting
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
-from openpyxl.xml.constants import REL_NS
 
 from .datavalidation import DataValidationList
-from .header_footer import HeaderFooter
 from .page import PrintPageSetup, PageMargins, PrintOptions
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
@@ -189,18 +183,6 @@ class Worksheet(_WorkbookChild):
                 setattr(self.sheet_properties, k, v)
 
     """ End To keep compatibility with previous versions"""
-
-
-    def _garbage_collect(self):
-        """Delete cells that are not storing a value."""
-        delete_list = []
-        for coordinate, cell in iteritems(self._cells):
-            if (cell.value in ('', None)
-            and cell.comment is None
-            and (cell.style_id == 0)):
-                delete_list.append(coordinate)
-        for coordinate in delete_list:
-            del self._cells[coordinate]
 
 
     def get_cell_collection(self):
@@ -658,7 +640,7 @@ class Worksheet(_WorkbookChild):
                 self._cells[(row_idx, col_idx)] = cell
 
         elif isinstance(iterable, dict):
-            for col_idx, content in iteritems(iterable):
+            for col_idx, content in iterable.items():
                 if isinstance(col_idx, basestring):
                     col_idx = column_index_from_string(col_idx)
                 cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)

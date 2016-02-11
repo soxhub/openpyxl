@@ -5,9 +5,6 @@ import pytest
 
 from itertools import islice
 
-# compatibility imports
-from openpyxl.compat import zip
-
 # package imports
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet import flatten

@@ -6,7 +6,7 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-from openpyxl.compat import safe_string, itervalues, iteritems
+from openpyxl.compat import safe_string
 from openpyxl import LXML
 
 # package imports
@@ -36,7 +36,7 @@ from .etree_worksheet import write_cell
 def write_format(worksheet):
     attrs = {'defaultRowHeight': '15', 'baseColWidth': '10'}
     dimensions_outline = [dim.outline_level
-                          for dim in itervalues(worksheet.column_dimensions)]
+                          for dim in worksheet.column_dimensions.values()]
     if dimensions_outline:
         outline_level = max(dimensions_outline)
         if outline_level:

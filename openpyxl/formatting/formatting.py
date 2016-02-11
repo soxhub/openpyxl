@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.compat import iteritems, OrderedDict, deprecated
+from openpyxl.compat import OrderedDict, deprecated
 from openpyxl.styles.differential import DifferentialStyle
 from .rule import Rule
 
 
 def unpack_rules(cfRules):
-    for key, rules in iteritems(cfRules):
+    for key, rules in cfRules.items():
         for idx,rule in enumerate(rules):
             yield (key, idx, rule.priority)
 
