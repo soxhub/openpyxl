@@ -35,8 +35,6 @@ manually.
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
->>> from openpyxl.worksheet.header_footer import HeaderFooter
->>> ws.oddHeader = HeaderFooter()
 >>> ws.oddHeader.text = "Page &[Page] of &N"
 >>> ws.oddHeader.size = 14
 >>> ws.oddHeader.font = "Tahoma,Bold"
@@ -44,6 +42,8 @@ manually.
 
 # Or just
 >>> ws.oddFooter.right.text = 'My Right Footer'
+
+Also supported are evenHeader and evenFooter as well as firstHeader and firstFooter
 
 
 Add Print Titles
