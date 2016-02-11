@@ -7,6 +7,7 @@ import re
 from warnings import warn
 
 from openpyxl.descriptors import (
+    Bool,
     Strict,
     String,
     Integer,
@@ -210,28 +211,42 @@ def replace(match):
     return TRANSFORM[sub]
 
 
-class HeaderFooterContainer(Serialisable):
-
-    """
-    Container for headers and footers
-    """
+class HeaderFooter(Serialisable):
 
     tagname = "headerFooter"
 
-    oddHeader = Typed(expected_type=HeaderFooterItem)
-    oddFooter = Typed(expected_type=HeaderFooterItem)
-    evenHeader = Typed(expected_type=HeaderFooterItem)
-    evenFooter = Typed(expected_type=HeaderFooterItem)
+    differentOddEven = Bool(allow_none=True)
+    differentFirst = Bool(allow_none=True)
+    scaleWithDoc = Bool(allow_none=True)
+    alignWithMargins = Bool(allow_none=True)
+    oddHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    oddFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
 
     __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
 
     def __init__(self,
+                 differentOddEven=None,
+                 differentFirst=None,
+                 scaleWithDoc=None,
+                 alignWithMargins=None,
                  oddHeader=None,
                  oddFooter=None,
+                 evenHeader=None,
                  evenFooter=None,
-                 evenHeader=None
-                 ):
-        pass
-
-
-
+                 firstHeader=None,
+                 firstFooter=None,
+                ):
+        self.differentOddEven = differentOddEven
+        self.differentFirst = differentFirst
+        self.scaleWithDoc = scaleWithDoc
+        self.alignWithMargins = alignWithMargins
+        self.oddHeader = oddHeader
+        self.oddFooter = oddFooter
+        self.evenHeader = evenHeader
+        self.evenFooter = evenFooter
+        self.firstHeader = firstHeader
+        self.firstFooter = firstFooter

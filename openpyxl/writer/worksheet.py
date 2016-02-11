@@ -29,6 +29,7 @@ from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
+from openpyxl.worksheet.header_footer import HeaderFooter
 
 from .etree_worksheet import write_cell
 
@@ -100,14 +101,11 @@ def write_conditional_formatting(worksheet):
 
 def write_header_footer(worksheet):
     ws = worksheet
-    keys = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
-    parts = [getattr(ws, key) for key in keys]
-    if any(parts):
-        tag = Element('headerFooter')
-        for key, part in zip(keys, parts):
-            if part:
-                tag.append(part.to_tree(key))
-        return tag
+
+    if any([ws.oddHeader, ws.oddFooter, ws.evenFooter, ws.evenHeader]):
+        hf = HeaderFooter(oddHeader=ws.oddHeader, oddFooter=ws.oddFooter,
+                          evenFooter=ws.evenFooter, evenHeader=ws.evenHeader)
+        return hf.to_tree()
 
 
 def write_hyperlinks(worksheet):
