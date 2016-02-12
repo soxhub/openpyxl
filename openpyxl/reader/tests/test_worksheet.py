@@ -358,13 +358,6 @@ def test_inline_richtext(WorkSheetParser, datadir):
     assert cell.value == "11 de September de 2014"
 
 
-def test_read_autofilter(datadir):
-    datadir.chdir()
-    wb = load_workbook("bug275.xlsx")
-    ws = wb.active
-    assert ws.auto_filter.ref == 'A1:B6'
-
-
 def test_legacy_drawing(datadir):
     datadir.chdir()
     wb = load_workbook("legacy_drawing.xlsm", keep_vba=True)
