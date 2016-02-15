@@ -116,6 +116,8 @@ class WorkSheetParser(object):
                 setattr(self.ws, prop[0], prop[1].from_tree(element))
                 element.clear()
 
+        self.ws._current_row = self.ws.max_row
+
 
     def parse_cell(self, element):
         value = element.find(self.VALUE_TAG)

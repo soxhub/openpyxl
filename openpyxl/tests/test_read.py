@@ -13,17 +13,6 @@ from openpyxl.styles import numbers
 from openpyxl.reader.excel import load_workbook
 
 
-def test_read_worksheet(datadir):
-    datadir.join("genuine").chdir()
-    wb = load_workbook("empty.xlsx")
-    sheet2 = wb['Sheet2 - Numbers']
-    assert isinstance(sheet2, Worksheet)
-    assert 'This is cell G5' == sheet2['G5'].value
-    assert 18 == sheet2['D18'].value
-    assert sheet2['G9'].value is True
-    assert sheet2['G10'].value is False
-
-
 @pytest.mark.parametrize("cell, number_format",
                     [
                         ('A1', numbers.FORMAT_GENERAL),
