@@ -312,12 +312,18 @@ class TestWorksheet:
 
     def test_no_rows(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.rows == ((),)
+        assert ws.rows == ()
 
 
     def test_no_cols(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.columns == ((),)
+        assert ws.columns == ()
+
+
+    def test_one_cell(self, Worksheet):
+        ws = Worksheet(Workbook())
+        c = ws['A1']
+        assert ws.rows == ws.columns == ((c,),)
 
 
     def test_cols(self, Worksheet):
