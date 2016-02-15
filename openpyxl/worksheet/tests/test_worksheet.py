@@ -91,7 +91,7 @@ class TestWorksheet:
                                  (1, 0, 'A1'),
                                  (9, 2, 'C9'),
                              ])
-    def test_iter_rows_1(self, Worksheet, row, column, coordinate):
+    def test_fill_rows(self, Worksheet, row, column, coordinate):
         ws = Worksheet(Workbook())
         ws.cell('A1').value = 'first'
         ws.cell('C9').value = 'last'
@@ -101,7 +101,7 @@ class TestWorksheet:
         assert first_row[column].coordinate == coordinate
 
 
-    def test_iter_rows_2(self, Worksheet):
+    def test_iter_rows(self, Worksheet):
         ws = Worksheet(Workbook())
         expected = [
             ('A1', 'B1', 'C1'),
