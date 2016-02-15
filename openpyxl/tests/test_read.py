@@ -60,7 +60,7 @@ def test_read_standalone_worksheet(datadir):
 @pytest.fixture
 def standard_workbook(datadir):
     datadir.join("genuine").chdir()
-    return load_workbook("empty.xlsx")
+    return load_workbook("sample.xlsx")
 
 
 def test_read_worksheet(standard_workbook):
