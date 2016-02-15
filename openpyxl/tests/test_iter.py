@@ -358,3 +358,11 @@ def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7
+
+
+@pytest.mark.parametrize("read_only", [False, True])
+def test_read_empty_sheet(datadir, read_only):
+    datadir.join("genuine").chdir()
+    wb = load_workbook("empty.xlsx", read_only=read_only)
+    ws = wb.active
+    assert tuple(ws.rows) == tuple(ws.iter_rows())
