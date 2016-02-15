@@ -57,22 +57,6 @@ def test_read_standalone_worksheet(datadir):
         assert ws.cell('K9').value == 0.09
 
 
-@pytest.fixture
-def standard_workbook(datadir):
-    datadir.join("genuine").chdir()
-    return load_workbook("sample.xlsx")
-
-
-def test_read_worksheet(standard_workbook):
-    wb = standard_workbook
-    sheet2 = wb['Sheet2 - Numbers']
-    assert isinstance(sheet2, Worksheet)
-    assert 'This is cell G5' == sheet2['G5'].value
-    assert 18 == sheet2['D18'].value
-    assert sheet2['G9'].value is True
-    assert sheet2['G10'].value is False
-
-
 @pytest.mark.parametrize("cell, number_format",
                     [
                         ('A1', numbers.FORMAT_GENERAL),
