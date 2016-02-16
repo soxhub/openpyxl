@@ -15,6 +15,7 @@ Minor changes
 * Add print area support
 * New implementation of defined names
 * New implementation of page headers and footers
+* Add support for Python's NaN
 
 
 Deprecations
