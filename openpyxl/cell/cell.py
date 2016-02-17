@@ -311,7 +311,6 @@ class Cell(StyleableObject):
         but you can modify it afterwards by setting the `value`
         property, and the hyperlink will remain."""
         self._hyperlink = Hyperlink(ref=self.coordinate, target=val)
-        self.parent.hyperlinks.add(self)
         if self._value is None:
             self.value = val
 

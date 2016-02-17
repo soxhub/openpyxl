@@ -113,8 +113,8 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comments = []
         self._merged_cells = []
-        self.hyperlinks = set()
         self.data_validations = DataValidationList()
+        self._hyperlinks = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
@@ -556,8 +556,6 @@ class Worksheet(_WorkbookChild):
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
-            if c in self.hyperlinks:
-                del self._hyperlinks[c]
 
 
     @property
