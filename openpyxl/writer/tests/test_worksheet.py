@@ -427,8 +427,10 @@ def test_hyperlink(worksheet):
     from .. worksheet import write_hyperlinks
 
     ws = worksheet
-    ws.cell('A1').value = "test"
-    ws.cell('A1').hyperlink = "http://test.com"
+    cell = ws['A1']
+    cell.value = "test"
+    cell.hyperlink = "http://test.com"
+    ws._hyperlinks.add(cell.hyperlink)
 
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1

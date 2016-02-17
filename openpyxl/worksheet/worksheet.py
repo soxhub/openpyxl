@@ -611,8 +611,6 @@ class Worksheet(_WorkbookChild):
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
-            if c in self._hyperlinks:
-                del self._hyperlinks[c]
 
 
     @property

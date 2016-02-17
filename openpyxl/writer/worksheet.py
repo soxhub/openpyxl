@@ -156,9 +156,7 @@ def write_hyperlinks(worksheet):
     if not worksheet._hyperlinks:
         return
     tag = Element('hyperlinks')
-    for cell in worksheet._hyperlinks:
-        link = cell.hyperlink
-        link.ref = cell.coordinate
+    for link in worksheet._hyperlinks:
         rel = Relationship(type="hyperlink", targetMode="External", target=link.target)
         worksheet._rels.append(rel)
         link.id = "rId{0}".format(len(worksheet._rels))
@@ -181,7 +179,9 @@ def write_drawing(worksheet):
 
 def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
-    worksheet._rels = []
+    ws = worksheet
+    ws._rels = []
+    ws._hyperlinks = set()
     if LXML is True:
         from .lxml_worksheet import write_cell, write_rows
     else:

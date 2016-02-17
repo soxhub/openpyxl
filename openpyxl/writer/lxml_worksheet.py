@@ -61,3 +61,6 @@ def write_cell(xf, worksheet, cell, styled=False):
         with xf.element("v"):
             if value is not None:
                 xf.write(safe_string(value))
+
+        if cell.hyperlink:
+            worksheet._hyperlinks.add(cell.hyperlink)
