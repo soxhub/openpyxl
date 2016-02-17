@@ -82,4 +82,8 @@ def write_cell(worksheet, cell, styled=None):
     cell_content = SubElement(el, 'v')
     if value is not None:
         cell_content.text = safe_string(value)
+
+    if cell.hyperlink:
+        worksheet._hyperlinks.append(cell.hyperlink)
+
     return el
