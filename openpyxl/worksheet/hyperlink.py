@@ -33,7 +33,3 @@ class Hyperlink(Serialisable):
         self.id = id
         self.target = target
         self.__attrs__ = ("ref", "location", "tooltip", "display", "id")
-
-
-    def __hash__(self):
-        return hash(tuple(dict(self).items()))

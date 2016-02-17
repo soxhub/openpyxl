@@ -181,7 +181,7 @@ def write_worksheet(worksheet, shared_strings):
     """Write a worksheet to an xml file."""
     ws = worksheet
     ws._rels = []
-    ws._hyperlinks = set()
+    ws._hyperlinks = []
     if LXML is True:
         from .lxml_worksheet import write_cell, write_rows
     else:

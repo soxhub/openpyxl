@@ -430,7 +430,7 @@ def test_hyperlink(worksheet):
     cell = ws['A1']
     cell.value = "test"
     cell.hyperlink = "http://test.com"
-    ws._hyperlinks.add(cell.hyperlink)
+    ws._hyperlinks.append(cell.hyperlink)
 
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1

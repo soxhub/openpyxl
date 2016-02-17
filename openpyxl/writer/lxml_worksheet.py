@@ -63,4 +63,4 @@ def write_cell(xf, worksheet, cell, styled=False):
                 xf.write(safe_string(value))
 
         if cell.hyperlink:
-            worksheet._hyperlinks.add(cell.hyperlink)
+            worksheet._hyperlinks.append(cell.hyperlink)

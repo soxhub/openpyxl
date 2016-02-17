@@ -110,7 +110,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comment_count = 0
         self._merged_cells = []
-        self._hyperlinks = set()
+        self._hyperlinks = []
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
