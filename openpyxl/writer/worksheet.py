@@ -153,10 +153,10 @@ def write_header_footer(worksheet):
 
 def write_hyperlinks(worksheet):
     """Write worksheet hyperlinks to xml."""
-    if not worksheet.hyperlinks:
+    if not worksheet._hyperlinks:
         return
     tag = Element('hyperlinks')
-    for cell in worksheet.hyperlinks:
+    for cell in worksheet._hyperlinks:
         link = cell.hyperlink
         link.ref = cell.coordinate
         rel = Relationship(type="hyperlink", targetMode="External", target=link.target)
