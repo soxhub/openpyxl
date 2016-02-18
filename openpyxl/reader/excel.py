@@ -214,9 +214,10 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
             wb._add_sheet(ws)
         else:
             fh = archive.open(worksheet_path)
-            ws_parser = WorkSheetParser(wb, sheet_name, fh, shared_strings)
+            ws = wb.create_sheet(sheet_name)
+            ws._rels = rels
+            ws_parser = WorkSheetParser(ws, fh, shared_strings)
             ws_parser.parse()
-            ws = wb[sheet_name]
 
             if rels:
                 # assign any comments to cells
@@ -234,6 +235,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
                     ws.legacy_drawing = rels[ws.legacy_drawing].target
 
         ws.sheet_state = sheet.state
+        ws._rels = [] # reset
 
     parser.assign_names()
 
