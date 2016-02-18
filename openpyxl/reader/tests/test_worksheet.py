@@ -104,7 +104,8 @@ def Workbook():
 def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
     from .. worksheet import WorkSheetParser
-    return WorkSheetParser(Workbook, 'sheet', None, {0:'a'})
+    ws = Workbook.create_sheet('sheet')
+    return WorkSheetParser(ws, None, {0:'a'})
 
 
 @pytest.fixture
@@ -112,7 +113,8 @@ def WorkSheetParserKeepVBA(Workbook):
     """Setup a parser instance with an empty source"""
     Workbook.vba_archive=True
     from .. worksheet import WorkSheetParser
-    return WorkSheetParser(Workbook, "sheet", {0:'a'}, {})
+    ws = Workbook.create_sheet('sheet')
+    return WorkSheetParser(ws, {0:'a'}, {})
 
 
 def test_col_width(datadir, WorkSheetParser):

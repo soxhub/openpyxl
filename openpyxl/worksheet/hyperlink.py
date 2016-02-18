@@ -18,6 +18,8 @@ class Hyperlink(Serialisable):
     id = Relation()
     target = String(allow_none=True)
 
+    __attrs__ = ("ref", "location", "tooltip", "display", "id")
+
     def __init__(self,
                  ref=None,
                  location=None,
@@ -32,4 +34,3 @@ class Hyperlink(Serialisable):
         self.display = display
         self.id = id
         self.target = target
-        self.__attrs__ = ("ref", "location", "tooltip", "display", "id")

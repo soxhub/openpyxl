@@ -15,6 +15,7 @@ from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
 from openpyxl.worksheet.header_footer import HeaderFooter
+from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
 from openpyxl.worksheet.views import SheetView
@@ -67,15 +68,15 @@ class WorkSheetParser(object):
     MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
     INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
 
-    def __init__(self, wb, title, xml_source, shared_strings):
-        self.ws = wb.create_sheet(title=title)
+    def __init__(self, ws, xml_source, shared_strings):
+        self.ws = ws
         self.source = xml_source
         self.shared_strings = shared_strings
-        self.guess_types = wb.guess_types
-        self.data_only = wb.data_only
-        self.styles = self.ws.parent._cell_styles
-        self.differential_styles = wb._differential_styles
-        self.keep_vba = wb.vba_archive is not None
+        self.guess_types = ws.parent.guess_types
+        self.data_only = ws.parent.data_only
+        self.styles = ws.parent._cell_styles
+        self.differential_styles = ws.parent._differential_styles
+        self.keep_vba = ws.parent.vba_archive is not None
         self.shared_formula_masters = {}  # {si_str: Translator()}
         self._row_count = self._col_count = 0
 
@@ -89,6 +90,7 @@ class WorkSheetParser(object):
             '{%s}sheetProtection' % SHEET_MAIN_NS: ('she', SortState),
             '{%s}sheetViews' % SHEET_MAIN_NS: self.parse_sheet_views,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
+            '{%s}hyperlink' % SHEET_MAIN_NS: self.parse_hyperlinks,
                       }
 
         properties = {
@@ -302,3 +304,10 @@ class WorkSheetParser(object):
             ext_type = EXT_TYPES.get(e.uri.upper(), "Unknown")
             msg = "{0} extension is not supported and will be removed".format(ext_type)
             warn(msg)
+
+
+    def parse_hyperlinks(self, element):
+        link = Hyperlink.from_tree(element)
+        rel = self.ws._rels[link.id]
+        link.target = rel.Target
+        self.ws[link.ref]._hyperlink = link
