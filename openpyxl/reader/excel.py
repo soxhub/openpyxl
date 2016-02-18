@@ -86,7 +86,7 @@ def _validate_archive(filename):
     is_file_like = hasattr(filename, 'read')
 
     if not is_file_like and os.path.isfile(filename):
-        file_format = os.path.splitext(filename)[-1]
+        file_format = os.path.splitext(filename)[-1].lower()
         if file_format not in SUPPORTED_FORMATS:
             if file_format == '.xls':
                 msg = ('openpyxl does not support the old .xls file format, '
