@@ -12,3 +12,14 @@ from decimal import Decimal
 
 NUMERIC_TYPES = (int, float, long, Decimal)
 
+def numpy_available():
+    try:
+        import numpy
+        return True
+    except ImportError:
+        return False
+
+NUMPY = numpy_available()
+
+if NUMPY:
+    NUMERIC_TYPES = NUMERIC_TYPES + (numpy.bool_, numpy.floating, numpy.integer)
