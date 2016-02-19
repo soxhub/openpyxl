@@ -9,6 +9,7 @@ from __future__ import absolute_import
 from openpyxl.compat import range
 
 # package
+from openpyxl.cell.text import Text
 from openpyxl.compat import removed_method
 from openpyxl.xml.functions import iterparse, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -48,9 +49,9 @@ ROW_TAG = '{%s}row' % SHEET_MAIN_NS
 CELL_TAG = '{%s}c' % SHEET_MAIN_NS
 VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
 FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
+INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
-CELL_TAGS = (CELL_TAG, VALUE_TAG, FORMULA_TAG)
 
 class ReadOnlyWorksheet(Worksheet):
 
@@ -115,10 +116,7 @@ class ReadOnlyWorksheet(Worksheet):
                     yield tuple(self._get_row(element, min_col, max_col, row_counter=row_counter))
                     row_counter += 1
 
-            if element.tag in CELL_TAGS:
-                # sub-elements of rows should be skipped as handled within a cell
-                continue
-            element.clear()
+                element.clear()
 
 
     def _get_row(self, element, min_col=1, max_col=None, row_counter=None):
@@ -150,6 +148,12 @@ class ReadOnlyWorksheet(Worksheet):
                 if formula is not None and not data_only:
                     data_type = 'f'
                     value = "=%s" % formula
+
+                elif data_type == 'inlineStr':
+                    child = cell.find(INLINE_TAG)
+                    if child is not None:
+                        richtext = Text.from_tree(child)
+                        value = richtext.content
 
                 else:
                     value = cell.findtext(VALUE_TAG) or None
