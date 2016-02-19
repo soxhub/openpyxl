@@ -33,6 +33,7 @@ Bug fixes
 ---------
 
 * `#152 <https://bitbucket.org/openpyxl/openpyxl/issues/152>`_ Hyperlinks lost when reading files
+* `#386 <https://bitbucket.org/openpyxl/openpyxl/issues/386>`_ Cells with inline strings considered empty
 * `#446 <https://bitbucket.org/openpyxl/openpyxl/issues/446>`_ Workbook with definedNames corrupted by openpyxl
 * `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
 * `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501 >`_ Discarding named ranges can lead to corrupt files
