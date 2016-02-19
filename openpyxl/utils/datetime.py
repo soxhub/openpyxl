@@ -7,6 +7,7 @@ from __future__ import division
 # Python stdlib imports
 import datetime
 from datetime import timedelta, tzinfo
+from math import isnan
 import re
 
 from jdcal import (
@@ -43,6 +44,8 @@ def W3CDTF_to_datetime(formatted_string):
 
 @lru_cache()
 def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
+    if isnan(dt.year): # Pandas supports Not a Date
+        return
     jul = sum(gcal2jd(dt.year, dt.month, dt.day)) - offset
     if jul <= 60 and offset == CALENDAR_WINDOWS_1900:
         jul -= 1
