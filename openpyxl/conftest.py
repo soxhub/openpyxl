@@ -41,4 +41,11 @@ def pytest_runtest_setup(item):
             from lxml.etree import LIBXML_VERSION
             if LIBXML_VERSION < (3, 4, 0, 0):
                 pytest.skip("LXML >= 3.4 is required")
-
+        elif item.get_marker("numpy_required"):
+            from openpyxl import NUMPY
+            if not NUMPY:
+                pytest.skip("Numpy must be installed")
+        elif item.get_marker("pandas_required"):
+            from openpyxl import PANDAS
+            if not PANDAS:
+                pytest.skip("Pandas must be installed")
