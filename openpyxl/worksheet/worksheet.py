@@ -250,16 +250,10 @@ class Worksheet(_WorkbookChild):
     def cell(self, coordinate=None, row=None, column=None, value=None):
         """Returns a cell object based on the given coordinates.
 
-        Usage: cell(coodinate='A15') **or** cell(row=15, column=1)
+        Usage: cell(row=15, column=1, value=5)
 
-        If `coordinates` are not given, then row *and* column must be given.
-
-        Cells are kept in a dictionary which is empty at the worksheet
-        creation.  Calling `cell` creates the cell in memory when they
-        are first accessed, to reduce memory usage.
-
-        :param coordinate: coordinates of the cell (e.g. 'B12')
-        :type coordinate: string
+        Calling `cell` creates cells in memory when they
+        are first accessed.
 
         :param row: row index of the cell (e.g. 4)
         :type row: int
@@ -267,22 +261,23 @@ class Worksheet(_WorkbookChild):
         :param column: column index of the cell (e.g. 3)
         :type column: int
 
-        :raise: InsufficientCoordinatesException when coordinate or (row and column) are not given
+        :param coordinate: coordinates of the cell (e.g. 'B12')
+        :type coordinate: string
+
+        :raise: InsufficientCoordinatesException when neither row nor column are not given
 
         :rtype: :class:openpyxl.cell.Cell
 
         """
-        if coordinate is None:
-            if (row is None or column is None):
-                msg = "You have to provide a value either for " \
-                    "'coordinate' or for 'row' *and* 'column'"
-                raise InsufficientCoordinatesException(msg)
-            coordinate = (row, column)
 
-        else:
-            coordinate = coordinate.upper().replace('$', '')
-            coordinate = coordinate_to_tuple(coordinate)
-            row, column = coordinate
+        if (row is None or column is None) and coordinate is None:
+            msg = "You have to provide a value either for " \
+                   "'coordinate' or for 'row' *and* 'column'"
+            raise InsufficientCoordinatesException(msg)
+
+        if coordinate is not None:
+            warn("Using a coordinate with ws.cell is deprecated. Use ws[coordinate] instead")
+            row, column = coordinate_to_tuple(coordinate)
 
         if row < 1 or column < 1:
             raise ValueError("Row or column values must be at least 1")
