@@ -141,3 +141,17 @@ def test_cols_from_range():
        ['C1', 'C2', 'C3', 'C4'],
        ['D1', 'D2', 'D3', 'D4'],
                            ]
+
+
+@pytest.mark.parametrize('range_string, coords',
+                         [
+                             ('C1:C4', (3, 1, 3, 4)),
+                             ('C1', (3, 1, 3, 1)),
+                             ('D:F', (4, None, 6, None)),
+                             ('A', (1, None, 1, None)),
+                             ('1:10',(None, 1, None, 10)),
+                             ('1', (None, 1, None, 1)),
+                         ])
+def test_bounds(range_string, coords):
+    from ..cell import range_boundaries
+    assert range_boundaries(range_string) == coords

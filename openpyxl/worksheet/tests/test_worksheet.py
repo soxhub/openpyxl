@@ -32,16 +32,6 @@ def Worksheet():
     return Worksheet
 
 
-@pytest.mark.parametrize('range_string, coords',
-                         [
-                             ('C1:C4', (3, 1, 3, 4)),
-                             ('C1', (3, 1, 3, 1)),
-                         ])
-def test_bounds(range_string, coords):
-    from .. worksheet import range_boundaries
-    assert range_boundaries(range_string) == coords
-
-
 class TestWorksheet:
 
     def test_new_worksheet(self, Worksheet):
@@ -269,7 +259,7 @@ class TestWorksheet:
         ws.cell('A1').value = 'first'
         ws.cell('C9').value = 'last'
 
-        rows = ws.rows
+        rows = tuple(ws.rows)
 
         assert len(rows) == 9
         first_row = rows[0]
@@ -286,13 +276,13 @@ class TestWorksheet:
 
     def test_no_cols(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.columns == ()
+        assert tuple(ws.columns) == ()
 
 
     def test_one_cell(self, Worksheet):
         ws = Worksheet(Workbook())
         c = ws['A1']
-        assert ws.rows == ws.columns == ((c,),)
+        assert tuple(ws.rows) == tuple(ws.columns) == ((c,),)
 
 
     def test_cols(self, Worksheet):
@@ -307,7 +297,7 @@ class TestWorksheet:
 
         ]
 
-        cols = ws.columns
+        cols = tuple(ws.columns)
         for col, coord in zip(cols, expected):
             assert tuple(c.coordinate for c in col) == coord
 
@@ -336,11 +326,33 @@ class TestWorksheet:
 
     def test_getslice(self, Worksheet):
         ws = Worksheet(Workbook())
+        ws['B2'] = "cell"
         cell_range = ws['A1':'B2']
         assert tuple(cell_range) == (
             (ws['A1'], ws['B1']),
             (ws['A2'], ws['B2'])
         )
+
+    @pytest.mark.parametrize("key", ["C", "C:C"])
+    def test_get_column(self, Worksheet, key):
+        ws = Worksheet(Workbook())
+        c1 = ws.cell(row=1, column=1, value=3)
+        c2 = ws.cell(row=1, column=2, value=4)
+        c3 = ws.cell(row=2, column=3, value=5)
+        cols = tuple(ws[key])[0]
+        assert len(cols) == 2
+        assert cols[-1] == c3
+
+
+    @pytest.mark.parametrize("key", ["2", "2:2"])
+    def test_get_row(self, Worksheet, key):
+        ws = Worksheet(Workbook())
+        c1 = ws.cell(row=1, column=1, value=3)
+        c2 = ws.cell(row=1, column=2, value=4)
+        c3 = ws.cell(row=2, column=3, value=5)
+        rows = tuple(ws[key])[0]
+        assert len(rows) == 3
+        assert rows[-1] == c3
 
 
     def test_freeze(self, Worksheet):

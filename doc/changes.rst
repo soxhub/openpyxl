@@ -33,6 +33,8 @@ Minor changes
 * New implementation of defined names
 * New implementation of page headers and footers
 * Add support for Python's NaN
+* Added iter_cols method for worksheets
+* ws.rows and ws.columns now always return generators and start at the top of the worksheet
 
 
 Deprecations
@@ -44,6 +46,8 @@ Deprecations
 * Worksheet HeaderFooter attribute, replaced by individual ones
 * Workbook get_named_range, add_named_range, remove_named_range
 * Comment text attribute
+* Use of range strings deprecated for ws.iter_rows()
+* Use of coordinates deprecated for ws.cell()
 
 
 Bug fixes
@@ -51,6 +55,7 @@ Bug fixes
 
 * `#152 <https://bitbucket.org/openpyxl/openpyxl/issues/152>`_ Hyperlinks lost when reading files
 * `#386 <https://bitbucket.org/openpyxl/openpyxl/issues/386>`_ Cells with inline strings considered empty
+* `#397 <https://bitbucket.org/openpyxl/openpyxl/issues/397>`_ Add support for ranges of rows and columns
 * `#446 <https://bitbucket.org/openpyxl/openpyxl/issues/446>`_ Workbook with definedNames corrupted by openpyxl
 * `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
 * `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501 >`_ Discarding named ranges can lead to corrupt files

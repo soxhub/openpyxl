@@ -24,9 +24,9 @@ using the :func:`openpyxl.workbook.Workbook.active` property ::
 You can also create new worksheets by using the
 :func:`openpyxl.workbook.Workbook.create_sheet` method ::
 
-    >>> ws1 = wb.create_sheet() # insert at the end (default)
+    >>> ws1 = wb.create_sheet("Mysheet") # insert at the end (default)
     # or
-    >>> ws2 = wb.create_sheet(0) # insert at first position
+    >>> ws2 = wb.create_sheet("Mysheet", 0) # insert at first position
 
 Sheets are given a name automatically when they are created.
 They are numbered in sequence (Sheet, Sheet1, Sheet2, ...).
@@ -50,7 +50,7 @@ using the :func:`openpyxl.workbook.Workbook.get_sheet_by_name` method ::
 You can review the names of all worksheets of the workbook with the
 :func:`openpyxl.workbook.Workbook.get_sheet_names` method ::
 
-    >>> print(wb.get_sheet_names())
+    >>> print(wb.sheetnames)
     ['Sheet2', 'New Title', 'Sheet1']
 
 You can loop through worksheets ::
@@ -78,17 +78,14 @@ Values can be directly assigned ::
 
 There is also the :func:`openpyxl.worksheet.Worksheet.cell` method::
 
-    >>> c = ws.cell('A4')
+This provides access to cells using row and column notation::
 
-You can also access a cell using row and column notation::
-
-    >>> d = ws.cell(row = 4, column = 2)
+    >>> d = ws.cell(row=4, column=2, value=10)
 
 .. note::
 
     When a worksheet is created in memory, it contains no `cells`. They are
-    created when first accessed. This way we don't create objects that would never
-    be accessed, thus reducing the memory footprint.
+    created when first accessed.
 
 .. warning::
 
@@ -99,11 +96,10 @@ You can also access a cell using row and column notation::
 
         >>> for i in range(1,101):
         ...        for j in range(1,101):
-        ...            ws.cell(row = i, column = j)
+        ...            ws.cell(row=i, column=j)
 
     will create 100x100 cells in memory, for nothing.
 
-    However, there is a way to clean all those unwanted cells, we'll see that later.
 
 
 Accessing many cells
@@ -113,15 +109,19 @@ Ranges of cells can be accessed using slicing ::
 
     >>> cell_range = ws['A1':'C2']
 
+
+Ranges of rows or columns can be obtained similarly::
+
+    >>> colC = ws['C']
+    >>> col_range = ws['C:D']
+    >>> row10 = ws[10]
+    >>> row_range = ws[5:10]
+
 You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
 
-    >>> tuple(ws.iter_rows('A1:C2'))
-    ((<Cell Sheet1.A1>, <Cell Sheet1.B1>, <Cell Sheet1.C1>),
-     (<Cell Sheet1.A2>, <Cell Sheet1.B2>, <Cell Sheet1.C2>))
-
-    >>> for row in ws.iter_rows('A1:C2'):
-    ...        for cell in row:
-    ...            print cell
+    >>> for row in ws.iter_rows(min_row=1, max_col=3, max_row=2):
+    ...    for cell in row:
+    ...        print(cell)
     <Cell Sheet1.A1>
     <Cell Sheet1.B1>
     <Cell Sheet1.C1>
@@ -129,12 +129,25 @@ You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
     <Cell Sheet1.B2>
     <Cell Sheet1.C2>
 
+Likewise the :func:`openpyxl.worksheet.Worksheet.iter_cols` method will return columns::
+
+    >>> for col in ws.iter_cols(min_row=1, max_col=3, max_row=2):
+    ...     for cell in col:
+    ...         print(cell)
+    <Cell Sheet1.A1>
+    <Cell Sheet1.A2>
+    <Cell Sheet1.B1>
+    <Cell Sheet1.B2>
+    <Cell Sheet1.C1>
+    <Cell Sheet1.C2>
+
+
 If you need to iterate through all the rows or columns of a file, you can instead use the
 :func:`openpyxl.worksheet.Worksheet.rows` property::
 
     >>> ws = wb.active
     >>> ws['C9'] = 'hello world'
-    >>> ws.rows
+    >>> tuple(ws.rows)
     ((<Cell Sheet.A1>, <Cell Sheet.B1>, <Cell Sheet.C1>),
     (<Cell Sheet.A2>, <Cell Sheet.B2>, <Cell Sheet.C2>),
     (<Cell Sheet.A3>, <Cell Sheet.B3>, <Cell Sheet.C3>),
@@ -147,7 +160,7 @@ If you need to iterate through all the rows or columns of a file, you can instea
 
 or the :func:`openpyxl.worksheet.Worksheet.columns` property::
 
-    >>> ws.columns
+    >>> tuple(ws.columns)
     ((<Cell Sheet.A1>,
     <Cell Sheet.A2>,
     <Cell Sheet.A3>,
