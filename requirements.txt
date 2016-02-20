@@ -3,3 +3,4 @@ lxml>=3.3.4
 pytest
 pillow
 tox
+pandas
