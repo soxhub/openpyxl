@@ -19,6 +19,22 @@ def test_safe_string(value, result):
     assert v == 's'
 
 
+@pytest.mark.numpy_required
+def test_numeric_types():
+    from ..numbers import NUMERIC_TYPES, numpy, Decimal, long
+    assert NUMERIC_TYPES == (int, float, long, Decimal, numpy.bool_,
+                             numpy.floating, numpy.integer)
+
+
+@pytest.mark.numpy_required
+def test_numpy_tostring():
+    from numpy import float_, int_, bool_
+    from .. import safe_string
+    assert safe_string(float_(5.1)) == "5.1"
+    assert safe_string(int(5)) == "5"
+    assert safe_string(bool_(True)) == "1"
+
+
 @pytest.fixture
 def dictionary():
     return {'1':1, 'a':'b', 3:'d'}
