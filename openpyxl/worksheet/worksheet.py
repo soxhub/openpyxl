@@ -9,6 +9,7 @@ from itertools import islice, chain
 import re
 from inspect import isgenerator
 from weakref import ref
+from warnings import warn
 
 # compatibility imports
 from openpyxl.compat import (
@@ -326,7 +327,7 @@ class Worksheet(_WorkbookChild):
             return self.get_squared_range(1, min_row, self.max_column, max_row)
         if ":" not in key:
             return self._get_cell(min_row, min_col)
-        return self.iter_rows(key)
+        return self.iter_rows(min_row=min_row, min_col=min_col, max_row=max_row, max_col=max_col)
 
 
     def __setitem__(self, key, value):
@@ -407,14 +408,27 @@ class Worksheet(_WorkbookChild):
         return self.calculate_dimension()
 
 
-    def iter_rows(self, range_string=None, row_offset=0, column_offset=0):
+    def iter_rows(self, range_string=None, min_row=1, max_row=None, min_col=None, max_col=None,
+                  row_offset=0, column_offset=0):
         """
-        Returns a squared range based on the `range_string` parameter,
-        using generators.
-        If no range is passed, will iterate over all cells in the worksheet
+        Return cells from the worksheet as rows. Boundaries for the cells can
+        be passed in either as indices of rows and columns.
 
-        :param range_string: range of cells (e.g. 'A1:C4')
-        :type range_string: string
+        If no boundaries are passed in the cells will start at A1
+
+        Additional rows and columns can be created using offsets.
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: smallest row index (1-based index)
+        :type max_row: int
 
         :param row_offset: additional rows (e.g. 4)
         :type row: int
@@ -426,10 +440,16 @@ class Worksheet(_WorkbookChild):
         """
         if self._current_row == 0:
             return ()
+
         if range_string is not None:
+            warn("Using a range string is deprecated. Use ws[range_string]")
             min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
-        else:
-            min_col, min_row, max_col, max_row = (1, 1, self.max_column, self.max_row)
+
+        min_col = min_col or 1
+        min_row = min_row or 1
+        max_col = max_col or self.max_column
+        max_row = max_row or self.max_row
+
         if max_col is not None:
             max_col += column_offset
         if max_row is not None:
@@ -440,8 +460,50 @@ class Worksheet(_WorkbookChild):
                                       max_row)
 
 
+    @property
+    def rows(self):
+        """Iterate over all rows in the worksheet"""
+        return self.iter_rows()
+
+
+    def iter_cols(self, min_col=1, max_col=None, min_row=1, max_row=None):
+        """
+        Returns all cells in the worksheet from the first row as columns
+
+        If no boundaries are passed in the cells will start at A1
+
+        :param min_col: smallest column index (1-based index)
+        :type min_col: int
+
+        :param min_row: smallest row index (1-based index)
+        :type min_row: int
+
+        :param max_col: largest column index (1-based index)
+        :type max_col: int
+
+        :param max_row: smallest row index (1-based index)
+        :type max_row: int
+
+        :rtype: generator
+        """
+        if self._current_row == 0:
+            return ()
+        max_col = max_col or self.max_column
+        max_row = max_row or self.max_row
+        for col_idx in range(min_col, max_col+1):
+            cells = self.get_squared_range(col_idx, 1, col_idx, max_row)
+            yield tuple(chain.from_iterable(cells))
+
+
+    @property
+    def columns(self):
+        """Iterate over all columns in the worksheet"""
+        return self.iter_cols()
+
+
     def get_squared_range(self, min_col, min_row, max_col, max_row):
-        """Returns a 2D array of cells
+        """Returns a 2D array of cells. Will create any cells within the
+        boundaries that do not already exist
 
         :param min_col: smallest column index (1-based index)
         :type min_col: int
@@ -658,30 +720,6 @@ class Worksheet(_WorkbookChild):
         raise TypeError('Value must be a list, tuple, range or generator, or a dict. Supplied value is {0}'.format(
             type(iterable))
                         )
-
-    @property
-    def rows(self):
-        """Iterate over all rows in the worksheet"""
-        return self.iter_rows()
-
-
-    def iter_cols(self, min_col=1, max_col=None):
-        """
-        Returns all cells in the worksheet from the first row as columns
-        """
-        if self._current_row == 0:
-            return ()
-        max_col = max_col or self.max_column
-        max_row = self.max_row
-        for col_idx in range(min_col, max_col+1):
-            cells = self.get_squared_range(col_idx, 1, col_idx, max_row)
-            yield tuple(chain.from_iterable(cells))
-
-
-    @property
-    def columns(self):
-        """Iterate over all columns in the worksheet"""
-        return self.iter_cols()
 
 
     @deprecated("Charts and images should be positioned using anchor objects")
