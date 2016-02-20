@@ -32,16 +32,6 @@ def Worksheet():
     return Worksheet
 
 
-@pytest.mark.parametrize('range_string, coords',
-                         [
-                             ('C1:C4', (3, 1, 3, 4)),
-                             ('C1', (3, 1, 3, 1)),
-                         ])
-def test_bounds(range_string, coords):
-    from .. worksheet import range_boundaries
-    assert range_boundaries(range_string) == coords
-
-
 class TestWorksheet:
 
     def test_new_worksheet(self, Worksheet):

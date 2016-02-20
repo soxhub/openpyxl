@@ -14,10 +14,10 @@ COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
 ROW_RANGE = """\d+:\d+:"""
 RANGE_EXPR = """
-[$]?(?P<min_col>[A-Z]{1,3})
-[$]?(?P<min_row>\d+)
-(:[$]?(?P<max_col>[A-Z]{1,3})
-[$]?(?P<max_row>\d+))?
+[$]?(?P<min_col>[A-Za-z]{1,3})?
+[$]?(?P<min_row>\d+)?
+(:[$]?(?P<max_col>[A-Za-z]{1,3})?
+[$]?(?P<max_row>\d+)?)?
 """
 ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
 SHEET_TITLE = """
@@ -126,8 +126,11 @@ def range_boundaries(range_string):
     """
     m = ABSOLUTE_RE.match(range_string)
     min_col, min_row, sep, max_col, max_row = m.groups()
-    min_col = column_index_from_string(min_col)
-    min_row = int(min_row)
+    if min_col is not None:
+        min_col = column_index_from_string(min_col)
+
+    if min_row is not None:
+        min_row = int(min_row)
 
     if max_col is None or max_row is None:
         max_col = min_col
