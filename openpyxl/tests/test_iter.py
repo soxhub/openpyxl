@@ -41,7 +41,7 @@ def test_open_many_sheets(datadir):
                              ("sheet2.xml", (4, 1, 27, 30)),
                              ("sheet2_no_dimension.xml", None),
                              ("sheet2_no_span.xml", None),
-                             ("sheet2_invalid_dimension.xml", None),
+                             ("sheet2_invalid_dimension.xml", (None, 1, None, 113)),
                           ]
                          )
 def test_read_dimension(datadir, filename, expected):
@@ -217,7 +217,7 @@ class TestRead:
     def test_read_cols(self, sample_workbook):
         wb = sample_workbook
         ws = wb["Sheet2 - Numbers"]
-        cols = ws.columns
+        cols = tuple(ws.columns)
         first = cols[0][0]
         last = cols[-1][-1]
 
