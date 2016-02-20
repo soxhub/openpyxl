@@ -319,10 +319,11 @@ class Worksheet(_WorkbookChild):
         """Convenience access by Excel style address"""
         if isinstance(key, slice):
             return self.iter_rows("{0}:{1}".format(key.start, key.stop))
-        if ":" in key:
-            return self.iter_rows(key)
-        row, column = coordinate_to_tuple(key)
-        return self._get_cell(row, column)
+        min_col, min_row, max_col, max_row = range_boundaries(key)
+        if ":" not in key:
+            return self._get_cell(min_row, min_col)
+        return self.iter_rows(key)
+
 
     def __setitem__(self, key, value):
         self[key].value = value
@@ -657,17 +658,23 @@ class Worksheet(_WorkbookChild):
         return tuple(self.iter_rows())
 
 
+    def iter_cols(self, min_col=1, max_col=None):
+        """
+        Returns all cells in the worksheet from the first row as columns
+        """
+        if self._current_row == 0:
+            return ()
+        max_col = max_col or self.max_column
+        max_row = self.max_row
+        for col_idx in range(min_col, max_col+1):
+            cells = self.get_squared_range(col_idx, 1, col_idx, max_row)
+            yield tuple(chain.from_iterable(cells))
+
+
     @property
     def columns(self):
         """Iterate over all columns in the worksheet"""
-        if self._current_row == 0:
-            return ()
-        cols = []
-        for col_idx in range(1, self.max_column+1):
-            cells = self.get_squared_range(col_idx, self.min_row, col_idx, self.max_row)
-            col = chain.from_iterable(cells)
-            cols.append(tuple(col))
-        return tuple(cols)
+        return tuple(self.iter_cols())
 
 
     @deprecated("Charts and images should be positioned using anchor objects")
