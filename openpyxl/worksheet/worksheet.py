@@ -424,6 +424,8 @@ class Worksheet(_WorkbookChild):
 
         :rtype: generator
         """
+        if self._current_row == 0:
+            return ()
         if range_string is not None:
             min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
         else:
@@ -484,9 +486,12 @@ class Worksheet(_WorkbookChild):
             ws = self.parent[title]
             if ws != self:
                 raise NamedRangeException("Range includes cells from another worksheet")
-            iterator = getattr(ws, "iter_rows")
 
-            for row in iterator(cells_range):
+            rows = ws[cells_range]
+            if isinstance(rows, Cell):
+                rows = [(rows, )]
+
+            for row in rows:
                 result.extend(row)
 
         return tuple(result)
@@ -657,9 +662,7 @@ class Worksheet(_WorkbookChild):
     @property
     def rows(self):
         """Iterate over all rows in the worksheet"""
-        if self._current_row == 0:
-            return ()
-        return tuple(self.iter_rows())
+        return self.iter_rows()
 
 
     def iter_cols(self, min_col=1, max_col=None):
@@ -678,7 +681,7 @@ class Worksheet(_WorkbookChild):
     @property
     def columns(self):
         """Iterate over all columns in the worksheet"""
-        return tuple(self.iter_cols())
+        return self.iter_cols()
 
 
     @deprecated("Charts and images should be positioned using anchor objects")
