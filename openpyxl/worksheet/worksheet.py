@@ -409,7 +409,10 @@ class Worksheet(_WorkbookChild):
         Return cells from the worksheet as rows. Boundaries for the cells can
         be passed in either as indices of rows and columns.
 
-        If no boundaries are passed in the cells will start at A1
+        If no boundaries are passed in the cells will start at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
+
 
         Additional rows and columns can be created using offsets.
 
@@ -463,9 +466,11 @@ class Worksheet(_WorkbookChild):
 
     def iter_cols(self, min_col=1, max_col=None, min_row=1, max_row=None):
         """
-        Returns all cells in the worksheet from the first row as columns
+        Returns all cells in the worksheet from the first row as columns.
 
-        If no boundaries are passed in the cells will start at A1
+        If no boundaries are passed in the cells will start at A1.
+
+        If no cells are in the worksheet an empty tuple will be returned.
 
         :param min_col: smallest column index (1-based index)
         :type min_col: int
