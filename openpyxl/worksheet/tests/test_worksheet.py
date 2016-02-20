@@ -332,6 +332,27 @@ class TestWorksheet:
             (ws['A2'], ws['B2'])
         )
 
+    @pytest.mark.parametrize("key", ["C", "C:C"])
+    def test_get_column(self, Worksheet, key):
+        ws = Worksheet(Workbook())
+        ws.cell(row=1, column=1, value=3)
+        ws.cell(row=1, column=2, value=4)
+        ws.cell(row=2, column=3, value=5)
+        cols = tuple(ws[key])[0]
+        assert len(cols) == 2
+        assert cols[-1].value == 5
+
+
+    @pytest.mark.parametrize("key", ["2", "2:2"])
+    def test_get_row(self, Worksheet, key):
+        ws = Worksheet(Workbook())
+        ws.cell(row=1, column=1, value=3)
+        ws.cell(row=1, column=2, value=4)
+        ws.cell(row=2, column=3, value=5)
+        rows = tuple(ws[key])[0]
+        assert len(rows) == 3
+        assert rows[-1].value == 5
+
 
     def test_freeze(self, Worksheet):
         ws = Worksheet(Workbook())

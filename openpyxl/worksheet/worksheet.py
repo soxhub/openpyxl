@@ -318,8 +318,12 @@ class Worksheet(_WorkbookChild):
     def __getitem__(self, key):
         """Convenience access by Excel style address"""
         if isinstance(key, slice):
-            return self.iter_rows("{0}:{1}".format(key.start, key.stop))
+            key = "{0}:{1}".format(key.start, key.stop)
         min_col, min_row, max_col, max_row = range_boundaries(key)
+        if not min_row:
+            return self.iter_cols(min_col, max_col)
+        if not min_col:
+            return self.get_squared_range(1, min_row, self.max_column, max_row)
         if ":" not in key:
             return self._get_cell(min_row, min_col)
         return self.iter_rows(key)
