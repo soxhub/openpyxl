@@ -183,11 +183,7 @@ class Cell(StyleableObject):
         elif isinstance(value, NUMERIC_TYPES):
             pass
 
-        elif isinstance(value, NUMERIC_TYPES):
-            self.data_type = self.TYPE_NUMERIC
-
         elif isinstance(value, TIME_TYPES):
-            self.data_type = self.TYPE_NUMERIC
             value = self._cast_datetime(value)
 
         elif isinstance(value, STRING_TYPES):
