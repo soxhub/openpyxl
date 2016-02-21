@@ -22,8 +22,9 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import (
     Percentage,
-    ExtensionList
-    )
+    ExtensionList,
+    Relation
+)
 
 from openpyxl.descriptors.nested import (
     NestedBool,
@@ -364,9 +365,26 @@ class ExternalData(Serialisable):
         self.id = id
 
 
-class RelId(Serialisable):
+class PageMargins(Serialisable):
+    """
+    Identical to openpyxl.worksheet.page.Pagemargins but element names are different :-/
+    """
+    tagname = "pageMargins"
 
-    pass # todo
+    l = Float()
+    r = Float()
+    t = Float()
+    b = Float()
+    header = Float()
+    footer = Float()
+
+    def __init__(self, l=0.75, r=0.75, t=1, b=1, header=0.5, footer=0.5):
+        self.l = l
+        self.r = r
+        self.t = t
+        self.b = b
+        self.header = header
+        self.footer = footer
 
 
 class PrintSettings(Serialisable):
@@ -407,7 +425,7 @@ class ChartSpace(Serialisable):
     textProperties = Alias("txPr")
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)
-    userShapes = Typed(expected_type=RelId, allow_none=True)
+    userShapes = Relation()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('date1904', 'lang', 'roundedCorners', 'style',

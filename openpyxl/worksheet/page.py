@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
     Integer,
     String,
     NoneSet,
+    Alias,
     )
 from openpyxl.descriptors.excel import UniversalMeasure, Relation
 
