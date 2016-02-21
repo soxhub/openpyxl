@@ -83,7 +83,7 @@ class TestStrVal:
         xml = tostring(val.to_tree())
         expected = """
         <strVal idx="0">
-          <v val="something"></v>
+          <v>something</v>
         </strVal>
           """
         diff = compare_xml(xml, expected)
@@ -92,9 +92,9 @@ class TestStrVal:
 
     def test_from_xml(self, StrVal):
         src = """
-        <strVal idx="4">
-          <v val="else"></v>
-        </strVal>
+        <pt idx="4">
+          <v>else</v>
+        </pt>
         """
         node = fromstring(src)
         val = StrVal.from_tree(node)
