@@ -56,10 +56,9 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 
 from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
 from .title import Title
+from .print import PrintSettings
 
 from openpyxl.xml.functions import Element
-from openpyxl.worksheet.page import PageMargins, PrintPageSetup
-from openpyxl.worksheet.header_footer import HeaderFooter
 
 
 class PivotFormat(Serialisable):
@@ -363,48 +362,6 @@ class ExternalData(Serialisable):
                 ):
         self.autoUpdate = autoUpdate
         self.id = id
-
-
-class PageMargins(Serialisable):
-    """
-    Identical to openpyxl.worksheet.page.Pagemargins but element names are different :-/
-    """
-    tagname = "pageMargins"
-
-    l = Float()
-    r = Float()
-    t = Float()
-    b = Float()
-    header = Float()
-    footer = Float()
-
-    def __init__(self, l=0.75, r=0.75, t=1, b=1, header=0.5, footer=0.5):
-        self.l = l
-        self.r = r
-        self.t = t
-        self.b = b
-        self.header = header
-        self.footer = footer
-
-
-class PrintSettings(Serialisable):
-
-    tagname = "printSettings"
-
-    headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
-    pageMargins = Typed(expected_type=PageMargins, allow_none=True)
-    pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
-
-    __elements__ = ("headerFooter", "pageMargins", "pageMargins")
-
-    def __init__(self,
-                 headerFooter=None,
-                 pageMargins=None,
-                 pageSetup=None,
-                ):
-        self.headerFooter = headerFooter
-        self.pageMargins = pageMargins
-        self.pageSetup = pageSetup
 
 
 class ChartSpace(Serialisable):
