@@ -334,7 +334,7 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws['B2'] = "cell"
         cell_range = ws['A1':'B2']
-        assert tuple(cell_range) == (
+        assert cell_range == (
             (ws['A1'], ws['B1']),
             (ws['A2'], ws['B2'])
         )
@@ -342,23 +342,22 @@ class TestWorksheet:
     @pytest.mark.parametrize("key", ["C", "C:C"])
     def test_get_column(self, Worksheet, key):
         ws = Worksheet(Workbook())
-        c1 = ws.cell(row=1, column=1, value=3)
-        c2 = ws.cell(row=1, column=2, value=4)
-        c3 = ws.cell(row=2, column=3, value=5)
-        cols = tuple(ws[key])[0]
-        assert len(cols) == 2
-        assert cols[-1] == c3
+        c1 = ws.cell(row=1, column=3)
+        c2 = ws.cell(row=2, column=3, value=5)
+        cols = ws[key]
+        assert len(cols) == 1
+        assert cols[-1] == (c1, c2)
 
 
     @pytest.mark.parametrize("key", ["2", "2:2"])
     def test_get_row(self, Worksheet, key):
         ws = Worksheet(Workbook())
-        c1 = ws.cell(row=1, column=1, value=3)
-        c2 = ws.cell(row=1, column=2, value=4)
-        c3 = ws.cell(row=2, column=3, value=5)
-        rows = tuple(ws[key])[0]
-        assert len(rows) == 3
-        assert rows[-1] == c3
+        a2 = ws.cell(row=2, column=1)
+        b2 = ws.cell(row=2, column=2)
+        c2 = ws.cell(row=2, column=3, value=5)
+        rows = ws[key]
+        assert len(rows) == 1
+        assert rows[-1] == (a2, b2, c2)
 
 
     def test_freeze(self, Worksheet):
