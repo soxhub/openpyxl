@@ -56,7 +56,7 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 
 from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
 from .title import Title
-from .print import PrintSettings
+from .print_settings import PrintSettings
 
 from openpyxl.xml.functions import Element
 
