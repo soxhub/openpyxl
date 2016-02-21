@@ -312,17 +312,28 @@ class Worksheet(_WorkbookChild):
 
 
     def __getitem__(self, key):
-        """Convenience access by Excel style address"""
+        """Convenience access by Excel style coordinates
+
+        The key can be a single cell coordinate 'A1', a range of cells 'A1:D25',
+        individual rows or columns 'A', 4 or ranges of rows or columns 'A:D',
+        4:10.
+
+        Single cells will always be created if they do not exist.
+
+        Returns either a single cell or a tuple of rows or columns.
+        """
         if isinstance(key, slice):
             key = "{0}:{1}".format(key.start, key.stop)
         min_col, min_row, max_col, max_row = range_boundaries(key)
         if not min_row:
-            return self.iter_cols(min_col, max_col)
+            return tuple(self.iter_cols(min_col, max_col))
         if not min_col:
-            return self.get_squared_range(1, min_row, self.max_column, max_row)
+            return tuple(self.iter_rows(min_col=min_col, min_row=min_row,
+                                  max_col=self.max_column, max_row=max_row))
         if ":" not in key:
             return self._get_cell(min_row, min_col)
-        return self.iter_rows(min_row=min_row, min_col=min_col, max_row=max_row, max_col=max_col)
+        return tuple(self.iter_rows(min_row=min_row, min_col=min_col,
+                              max_row=max_row, max_col=max_col))
 
 
     def __setitem__(self, key, value):
@@ -488,11 +499,22 @@ class Worksheet(_WorkbookChild):
         """
         if self._current_row == 0:
             return ()
+
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
-        for col_idx in range(min_col, max_col+1):
-            cells = self.get_squared_range(col_idx, 1, col_idx, max_row)
-            yield tuple(chain.from_iterable(cells))
+
+        return self._cells_by_col(
+            min_col, min_row, max_col, max_row
+        )
+
+
+    def _cells_by_col(self, min_col, min_row, max_col, max_row):
+        """
+        Get cells by column
+        """
+        for column in range(min_col, max_col+1):
+            yield tuple(self.cell(row=row, column=column)
+                        for row in range(min_row, max_row+1))
 
 
     @property

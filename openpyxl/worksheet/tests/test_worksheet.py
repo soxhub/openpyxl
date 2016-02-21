@@ -56,7 +56,7 @@ class TestWorksheet:
     def test_worksheet_dimension(self, Worksheet):
         ws = Worksheet(Workbook())
         assert 'A1:A1' == ws.calculate_dimension()
-        ws.cell('B12').value = 'AAA'
+        ws['B12'].value = 'AAA'
         assert 'B12:B12' == ws.calculate_dimension()
 
 
@@ -80,11 +80,11 @@ class TestWorksheet:
                              ])
     def test_fill_rows(self, Worksheet, row, column, coordinate):
         ws = Worksheet(Workbook())
-        ws.cell('A1').value = 'first'
-        ws.cell('C9').value = 'last'
+        ws['A1'] = 'first'
+        ws['C9'] = 'last'
         assert ws.calculate_dimension() == 'A1:C9'
         rows = ws.iter_rows()
-        first_row = tuple(next(islice(rows, row - 1, row)))
+        first_row = next(islice(rows, row - 1, row))
         assert first_row[column].coordinate == coordinate
 
 
@@ -97,14 +97,15 @@ class TestWorksheet:
             ('A4', 'B4', 'C4'),
         ]
 
-        rows = ws.iter_rows('A1:C4')
+        rows = ws.iter_rows(min_row=1, min_col=1, max_row=4, max_col=3)
         for row, coord in zip(rows, expected):
             assert tuple(c.coordinate for c in row) == coord
 
 
     def test_iter_rows_offset(self, Worksheet):
         ws = Worksheet(Workbook())
-        rows = ws.iter_rows('A1:C4', 1, 3)
+        rows = ws.iter_rows(min_row=1, min_col=1, max_row=4, max_col=3,
+                            row_offset=1, column_offset=3)
         expected = [
             ('D2', 'E2', 'F2'),
             ('D3', 'E3', 'F3'),
@@ -156,18 +157,16 @@ class TestWorksheet:
         ws = wb.active
         wb.create_named_range('test_range_single', ws, 'B12')
         c_range_name = ws.get_named_range('test_range_single')
-        c_range_coord = tuple(tuple(ws.iter_rows('B12'))[0])
-        c_cell = ws.cell('B12')
-        assert c_range_coord == (c_cell,)
+        c_cell = ws['B12']
         assert c_range_name == (c_cell,)
 
 
     def test_hyperlink_value(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws.cell('A1').hyperlink = "http://test.com"
-        assert "http://test.com" == ws.cell('A1').value
-        ws.cell('A1').value = "test"
-        assert "test" == ws.cell('A1').value
+        ws['A1'].hyperlink = "http://test.com"
+        assert "http://test.com" == ws['A1'].value
+        ws['A1'].value = "test"
+        assert "test" == ws['A1'].value
 
 
     def test_append(self, Worksheet):
@@ -181,24 +180,24 @@ class TestWorksheet:
 
         ws.append(['This is A1', 'This is B1'])
 
-        assert 'This is A1' == ws.cell('A1').value
-        assert 'This is B1' == ws.cell('B1').value
+        assert 'This is A1' == ws['A1'].value
+        assert 'This is B1' == ws['B1'].value
 
     def test_append_dict_letter(self, Worksheet):
         ws = Worksheet(Workbook())
 
         ws.append({'A' : 'This is A1', 'C' : 'This is C1'})
 
-        assert 'This is A1' == ws.cell('A1').value
-        assert 'This is C1' == ws.cell('C1').value
+        assert 'This is A1' == ws['A1'].value
+        assert 'This is C1' == ws['C1'].value
 
     def test_append_dict_index(self, Worksheet):
         ws = Worksheet(Workbook())
 
         ws.append({1 : 'This is A1', 3 : 'This is C1'})
 
-        assert 'This is A1' == ws.cell('A1').value
-        assert 'This is C1' == ws.cell('C1').value
+        assert 'This is A1' == ws['A1'].value
+        assert 'This is C1' == ws['C1'].value
 
     def test_bad_append(self, Worksheet):
         ws = Worksheet(Workbook())
@@ -230,7 +229,7 @@ class TestWorksheet:
         ws.append(['This is A1', 'This is B1'])
         ws.append(['This is A2', 'This is B2'])
 
-        vals = ws.iter_rows('A1:B2')
+        vals = ws.iter_rows(min_row=1, min_col=1, max_row=2, max_col=2)
         expected = (
             ('This is A1', 'This is B1'),
             ('This is A2', 'This is B2'),
@@ -256,8 +255,8 @@ class TestWorksheet:
 
         ws = Worksheet(Workbook())
 
-        ws.cell('A1').value = 'first'
-        ws.cell('C9').value = 'last'
+        ws['A1'] = 'first'
+        ws['C9'] = 'last'
 
         rows = tuple(ws.rows)
 
@@ -285,11 +284,18 @@ class TestWorksheet:
         assert tuple(ws.rows) == tuple(ws.columns) == ((c,),)
 
 
+    def test_by_col(self, Worksheet):
+        ws = Worksheet(Workbook())
+        c = ws['A1']
+        cols = ws._cells_by_col(1, 1, 1, 1)
+        assert tuple(cols) == ((c,),)
+
+
     def test_cols(self, Worksheet):
         ws = Worksheet(Workbook())
 
-        ws.cell('A1').value = 'first'
-        ws.cell('C9').value = 'last'
+        ws['A1'] = 'first'
+        ws['C9'] = 'last'
         expected = [
             ('A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'),
             ('B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9'),
@@ -328,7 +334,7 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws['B2'] = "cell"
         cell_range = ws['A1':'B2']
-        assert tuple(cell_range) == (
+        assert cell_range == (
             (ws['A1'], ws['B1']),
             (ws['A2'], ws['B2'])
         )
@@ -336,28 +342,27 @@ class TestWorksheet:
     @pytest.mark.parametrize("key", ["C", "C:C"])
     def test_get_column(self, Worksheet, key):
         ws = Worksheet(Workbook())
-        c1 = ws.cell(row=1, column=1, value=3)
-        c2 = ws.cell(row=1, column=2, value=4)
-        c3 = ws.cell(row=2, column=3, value=5)
-        cols = tuple(ws[key])[0]
-        assert len(cols) == 2
-        assert cols[-1] == c3
+        c1 = ws.cell(row=1, column=3)
+        c2 = ws.cell(row=2, column=3, value=5)
+        cols = ws[key]
+        assert len(cols) == 1
+        assert cols[-1] == (c1, c2)
 
 
     @pytest.mark.parametrize("key", ["2", "2:2"])
     def test_get_row(self, Worksheet, key):
         ws = Worksheet(Workbook())
-        c1 = ws.cell(row=1, column=1, value=3)
-        c2 = ws.cell(row=1, column=2, value=4)
-        c3 = ws.cell(row=2, column=3, value=5)
-        rows = tuple(ws[key])[0]
-        assert len(rows) == 3
-        assert rows[-1] == c3
+        a2 = ws.cell(row=2, column=1)
+        b2 = ws.cell(row=2, column=2)
+        c2 = ws.cell(row=2, column=3, value=5)
+        rows = ws[key]
+        assert len(rows) == 1
+        assert rows[-1] == (a2, b2, c2)
 
 
     def test_freeze(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws.freeze_panes = ws.cell('b2')
+        ws.freeze_panes = ws['b2']
         assert ws.freeze_panes == 'B2'
 
         ws.freeze_panes = ''
@@ -366,7 +371,7 @@ class TestWorksheet:
         ws.freeze_panes = 'c5'
         assert ws.freeze_panes == 'C5'
 
-        ws.freeze_panes = ws.cell('A1')
+        ws.freeze_panes = ws['A1']
         assert ws.freeze_panes is None
 
 
