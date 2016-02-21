@@ -303,3 +303,19 @@ class TestSpreadsheetDrawing:
         anchor = drawing.oneCellAnchor[0]
         assert anchor._from.row == 28
         assert anchor._from.col == 1
+
+
+    def test_write_rels(self, SpreadsheetDrawing):
+        from openpyxl.packaging.relationship import Relationship
+        rel = Relationship(type="drawing", Target="../file.xml")
+        drawing = SpreadsheetDrawing()
+        drawing._rels.append(rel)
+        xml = tostring(drawing._write_rels())
+        expected = """
+        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+        <Relationship Id="rId1" Target="../file.xml"
+           Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
+        </Relationships>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

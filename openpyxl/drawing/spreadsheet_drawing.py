@@ -16,13 +16,15 @@ from openpyxl.descriptors.nested import (
 )
 from openpyxl.descriptors.excel import Relation
 
-from openpyxl.packaging.relationship import Relationship
+from openpyxl.packaging.relationship import (
+    Relationship,
+    RelationshipList,
+)
 from openpyxl.utils import coordinate_to_tuple
 from openpyxl.utils.units import cm_to_EMU
 from openpyxl.drawing.image import Image
 
-from openpyxl.xml.constants import SHEET_DRAWING_NS, PKG_REL_NS
-from openpyxl.xml.functions import Element
+from openpyxl.xml.constants import SHEET_DRAWING_NS
 
 from openpyxl.chart._chart import ChartBase
 from .shapes import (
@@ -304,8 +306,6 @@ class SpreadsheetDrawing(Serialisable):
 
 
     def _write_rels(self):
-        root = Element("Relationships", xmlns=PKG_REL_NS)
-        for idx, rel in enumerate(self._rels, 1):
-            rel.Id = "rId{0}".format(idx)
-            root.append(rel.to_tree())
-        return root
+        rels = RelationshipList()
+        rels.Relationship = self._rels
+        return rels.to_tree()
