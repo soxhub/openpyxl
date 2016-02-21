@@ -181,6 +181,9 @@ class ReadOnlyWorksheet(Worksheet):
 
     @property
     def columns(self):
+        """
+        Returning cells by column from a read-only worksheet can be very inefficient.
+        """
         if self.max_column is None:
             self.calculate_dimension()
         return super(ReadOnlyWorksheet, self).columns
