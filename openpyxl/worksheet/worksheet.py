@@ -488,11 +488,22 @@ class Worksheet(_WorkbookChild):
         """
         if self._current_row == 0:
             return ()
+
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
-        for col_idx in range(min_col, max_col+1):
-            cells = self.get_squared_range(col_idx, 1, col_idx, max_row)
-            yield tuple(chain.from_iterable(cells))
+
+        return self._cells_by_col(
+            min_col, min_row, max_col, max_row
+        )
+
+
+    def _cells_by_col(self, min_col, min_row, max_col, max_row):
+        """
+        Get cells by column
+        """
+        for column in range(min_col, max_col+1):
+            yield tuple(self.cell(row=row, column=column)
+                        for row in range(min_row, max_row+1))
 
 
     @property
