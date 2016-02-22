@@ -421,7 +421,7 @@ class Worksheet(_WorkbookChild):
         return self.calculate_dimension()
 
 
-    def iter_rows(self, range_string=None, min_row=1, max_row=None, min_col=None, max_col=None,
+    def iter_rows(self, range_string=None, min_row=None, max_row=None, min_col=None, max_col=None,
                   row_offset=0, column_offset=0):
         """
         Return cells from the worksheet as rows. Boundaries for the cells can
@@ -454,12 +454,13 @@ class Worksheet(_WorkbookChild):
 
         :rtype: generator
         """
-        if self._current_row == 0:
-            return ()
 
         if range_string is not None:
             warn("Using a range string is deprecated. Use ws[range_string]")
             min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
+
+        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
+            return ()
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -482,7 +483,7 @@ class Worksheet(_WorkbookChild):
         return self.iter_rows()
 
 
-    def iter_cols(self, min_col=1, max_col=None, min_row=1, max_row=None):
+    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None):
         """
         Returns all cells in the worksheet from the first row as columns.
 
@@ -504,9 +505,12 @@ class Worksheet(_WorkbookChild):
 
         :rtype: generator
         """
-        if self._current_row == 0:
+
+        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
             return ()
 
+        min_col = min_col or 1
+        min_row = min_row or 1
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
