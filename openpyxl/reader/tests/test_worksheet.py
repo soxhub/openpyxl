@@ -532,3 +532,25 @@ def test_cell_without_coordinates(WorkSheetParser, datadir):
 
     assert parser.ws.max_row == 1
     assert parser.ws.max_column == 5
+
+
+def test_hyperlinks(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <hyperlink xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+       display="http://test.com" r:id="rId1" ref="A1"/>
+    </sheet>
+    """
+    from openpyxl.packaging.relationship import Relationship, RelationshipList
+
+    r = Relationship(type="hyperlink", Id="rId1", Target="../")
+    rels = RelationshipList()
+    rels.append(r)
+
+    parser = WorkSheetParser
+    parser.source = src
+    parser.ws._rels = rels
+
+    parser.parse()
+
+    assert parser.ws['A1'].hyperlink.target == "../"
