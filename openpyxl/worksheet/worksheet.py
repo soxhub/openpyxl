@@ -815,7 +815,7 @@ class Worksheet(_WorkbookChild):
         if set.
         """
         if self.print_title_rows and self.print_title_cols:
-            return ",".join(self.print_title_rows, self.print_title_cols)
+            return ",".join([self.print_title_rows, self.print_title_cols])
         elif self.print_title_rows:
             return self.print_title_rows
         elif self.print_title_cols:
