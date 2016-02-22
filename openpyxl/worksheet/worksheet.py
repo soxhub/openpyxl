@@ -562,8 +562,8 @@ class Worksheet(_WorkbookChild):
         """
         Returns a 2D array of cells, with optional row and column offsets.
 
-        :param range_string: `named range` name
-        :type range_string: string
+        :param range_name: `named range` name
+        :type range_name: string
 
         :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
         """
@@ -573,8 +573,8 @@ class Worksheet(_WorkbookChild):
             raise KeyError(msg)
 
         if defn.type != "RANGE":
-            msg = '%s refers to a value, not a range' % range_string
-            raise NamedRangeException(msg)
+            msg = '{0} refers to a value, not a range'.format(range_name)
+            raise NameError(msg)
 
         result = []
         for title, cells_range in defn.destinations:
