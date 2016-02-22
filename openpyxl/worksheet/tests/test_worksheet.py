@@ -325,6 +325,19 @@ class TestWorksheet:
         assert c.coordinate == "A1"
         assert ws['A1'].value is None
 
+
+    @pytest.mark.parametrize("key", [
+        slice(None, None),
+        slice(None, -1),
+        ":",
+        ]
+    )
+    def test_getitem_invalid(self, Worksheet, key):
+        ws = Worksheet(Workbook())
+        with pytest.raises(IndexError):
+            c = ws[key]
+
+
     def test_setitem(self, Worksheet):
         ws = Worksheet(Workbook())
         ws['A12'] = 5

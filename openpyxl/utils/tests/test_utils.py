@@ -155,3 +155,9 @@ def test_cols_from_range():
 def test_bounds(range_string, coords):
     from ..cell import range_boundaries
     assert range_boundaries(range_string) == coords
+
+
+def test_invalid_bounds():
+    from ..cell import range_boundaries
+    with pytest.raises(ValueError):
+        r = range_boundaries(":-1")

@@ -125,6 +125,8 @@ def range_boundaries(range_string):
     Cell coordinates will be converted into a range with the cell at both end
     """
     m = ABSOLUTE_RE.match(range_string)
+    if not m:
+        raise ValueError("{0} is not a valid coordinate or range")
     min_col, min_row, sep, max_col, max_row = m.groups()
 
     if min_col is not None:
