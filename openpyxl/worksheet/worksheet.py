@@ -323,8 +323,15 @@ class Worksheet(_WorkbookChild):
         Returns either a single cell or a tuple of rows or columns.
         """
         if isinstance(key, slice):
+            if not all([key.start, key.stop]):
+                raise IndexError("{0} is not a valid coordinate or range".format(key))
             key = "{0}:{1}".format(key.start, key.stop)
+
         min_col, min_row, max_col, max_row = range_boundaries(key)
+
+        if not any([min_col, min_row, max_col, max_row]):
+            raise IndexError("{0} is not a valid coordinate or range".format(key))
+
         if not min_row:
             return tuple(self.iter_cols(min_col, max_col))
         if not min_col:
