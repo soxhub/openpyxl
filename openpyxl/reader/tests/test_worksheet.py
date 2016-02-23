@@ -554,3 +554,22 @@ def test_hyperlinks(WorkSheetParser):
     parser.parse()
 
     assert parser.ws['A1'].hyperlink.target == "../"
+
+
+def test_merge_cells(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <mergeCells>
+        <mergeCell ref="C2:F2"/>
+        <mergeCell ref="B19:C20"/>
+        <mergeCell ref="E19:G19"/>
+      </mergeCells>
+    </sheet>
+    """
+
+    parser = WorkSheetParser
+    parser.source = src
+
+    parser.parse()
+
+    assert parser.ws._merged_cells == ["C2:F2", "B19:C20", "E19:G19"]
