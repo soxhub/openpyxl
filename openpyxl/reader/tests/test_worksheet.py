@@ -573,3 +573,26 @@ def test_merge_cells(WorkSheetParser):
     parser.parse()
 
     assert parser.ws._merged_cells == ["C2:F2", "B19:C20", "E19:G19"]
+
+
+def test_conditonal_formatting(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <conditionalFormatting sqref="S1:S10">
+        <cfRule type="top10" dxfId="25" priority="12" percent="1" rank="10"/>
+    </conditionalFormatting>
+    <conditionalFormatting sqref="T1:T10">
+      <cfRule type="top10" dxfId="24" priority="11" bottom="1" rank="4"/>
+    </conditionalFormatting>
+    </sheet>
+    """
+    from openpyxl.styles.differential import DifferentialStyle
+
+    parser = WorkSheetParser
+    dxf = DifferentialStyle()
+    parser.differential_styles = [dxf] * 30
+    parser.source = src
+
+    parser.parse()
+
+    assert parser.ws.conditional_formatting.cf_rules['T1:T10'][-1].dxf == dxf
