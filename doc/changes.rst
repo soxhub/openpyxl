@@ -7,6 +7,7 @@ Bug fixes
 
 * `#594 <https://bitbucket.org/openpyxl/openpyxl/issues/594>`_ Content types might be missing when keeping VBA
 * `#599 <https://bitbucket.org/openpyxl/openpyxl/issues/599>`_ Cells with only one cell look empty
+* `#607 <https://bitbucket.org/openpyxl/openpyxl/issues/607>`_ Serialise NaN as ''
 
 
 2.3.3 (2016-01-18)
