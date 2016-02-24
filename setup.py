@@ -2,20 +2,15 @@
 
 """Setup script for packaging openpyxl.
 
-Requires setuptools.
-
-To build the setuptools egg use
-    python setup.py bdist_egg
-and either upload it to the PyPI with:
+To build a package for distribution:
+    python setup.py sdist
+and upload it to the PyPI with:
     python setup.py upload
-or upload to your own server and register the release with PyPI:
-    python setup.py register
 
-A source distribution (.zip) can be built with
-    python setup.py sdist --format=zip
+Install a link for development work:
+    pip install -e .
 
-That uses the manifest.in file for data files rather than searching for
-them here.
+Thee manifest.in file is used for data files.
 
 """
 
@@ -27,7 +22,8 @@ if sys.version_info < (2, 7):
 elif sys.version_info[:2] == (3, 3):
     warnings.warn("Python 3.2 is no longer officially supported")
 
-from setuptools import setup, Extension, find_packages
+from distutils.core import setup
+
 import re
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -51,7 +47,7 @@ with open(src_file) as src:
 
 
 setup(name='openpyxl',
-    packages=find_packages(),
+    packages=['openpyxl'],
     # metadata
     version=__version__,
     description="A Python library to read/write Excel 2010 xlsx/xlsm files",
