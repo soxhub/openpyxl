@@ -9,7 +9,7 @@ import pytest
                           (2.0/3, '0.6666666666666666'),
                           (1, '1'),
                           (None, 'none'),
-                          (float('NaN'), '')
+                          (float('NaN'), ''),
                          ]
                          )
 def test_safe_string(value, result):
