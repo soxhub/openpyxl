@@ -5,6 +5,7 @@ import sys
 
 VER = sys.version_info
 
+from math import isnan
 from .numbers import NUMERIC_TYPES
 
 if VER[0] == 3:
@@ -26,7 +27,10 @@ else:
 def safe_string(value):
     """Safely and consistently format numeric values"""
     if isinstance(value, NUMERIC_TYPES):
-        value = "%.16g" % value
+        if isnan(value):
+            value = ""
+        else:
+            value = "%.16g" % value
     elif value is None:
         value = "none"
     elif not isinstance(value, basestring):
