@@ -229,7 +229,7 @@ class HeaderFooter(Serialisable):
     firstHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
     firstFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
 
-    __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter")
+    __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter", "firstHeader", "firstFooter")
 
     def __init__(self,
                  differentOddEven=None,

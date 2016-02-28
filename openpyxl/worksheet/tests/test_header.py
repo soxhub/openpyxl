@@ -142,6 +142,8 @@ class TestHeaderFooter:
           <oddFooter />
           <evenHeader />
           <evenFooter />
+          <firstHeader />
+          <firstFooter />
         </headerFooter>
         """
         diff = compare_xml(xml, expected)
