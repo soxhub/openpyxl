@@ -116,7 +116,7 @@ def test_read_external_link(datadir):
     rels = get_dependents(archive, ARC_WORKBOOK_RELS)
     rel = rels["rId4"]
     book = read_external_link(archive, rel.Target)
-    assert book.file_link.Target == "xl/externalLinks/book2.xlsx"
+    assert book.file_link.Target == "book2.xlsx"
 
 
 def test_write_workbook(datadir, tmpdir):
