@@ -129,9 +129,11 @@ def get_dependents(archive, filename):
     folder = posixpath.dirname(filename)
     parent = posixpath.split(folder)[0]
     for r in rels.Relationship:
-        if r.target.startswith("/"):
-            r.target = r.target[1:]
+        if r.TargetMode == "External":
             continue
-        pth = posixpath.join(parent, r.target)
-        r.target = posixpath.normpath(pth)
+        elif r.target.startswith("/"):
+            r.target = r.target[1:]
+        else:
+            pth = posixpath.join(parent, r.target)
+            r.target = posixpath.normpath(pth)
     return rels
