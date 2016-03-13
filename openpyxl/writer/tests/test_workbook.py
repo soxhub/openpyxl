@@ -84,11 +84,19 @@ def test_write_virtual_workbook():
     assert new_wb
 
 
-def test_write_workbook_rels(datadir):
+@pytest.mark.parametrize("vba, filename",
+                         [
+                             (None, 'workbook.xml.rels',),
+                             (True, 'workbook_vba.xml.rels'),
+
+                         ]
+                         )
+def test_write_workbook_rels(datadir, vba, filename):
     datadir.chdir()
     wb = Workbook()
+    wb.vba_archive = vba
     content = write_workbook_rels(wb)
-    with open('workbook.xml.rels') as expected:
+    with open(filename) as expected:
         diff = compare_xml(content, expected.read())
         assert diff is None, diff
 
