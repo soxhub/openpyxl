@@ -101,7 +101,7 @@ class WorkSheetParser(object):
             '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
             '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
             '{%s}sortState' % SHEET_MAIN_NS:  ('sort_state', SortState),
-            '{%s}sheetPr' % SHEET_MAIN_NS:  ('worksheet_properties', WorksheetProperties),
+            '{%s}sheetPr' % SHEET_MAIN_NS:  ('sheet_properties', WorksheetProperties),
         }
 
         tags = dispatcher.keys()
@@ -115,7 +115,8 @@ class WorkSheetParser(object):
                 element.clear()
             elif tag_name in properties:
                 prop = properties[tag_name]
-                setattr(self.ws, prop[0], prop[1].from_tree(element))
+                obj = prop[1].from_tree(element)
+                setattr(self.ws, prop[0], obj)
                 element.clear()
 
         self.ws._current_row = self.ws.max_row
