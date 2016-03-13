@@ -159,8 +159,8 @@ def write_workbook_rels(workbook):
     wb.rels.append(theme)
 
     if workbook.vba_archive:
-        vba =  Relationship(type='vbaProject', Target='vbaProject.bin')
-        vba.type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
+        vba =  Relationship(type='', Target='vbaProject.bin')
+        vba.Type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
         wb.rels.append(vba)
 
     return tostring(wb.rels.to_tree())
