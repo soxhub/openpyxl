@@ -596,3 +596,21 @@ def test_conditonal_formatting(WorkSheetParser):
     parser.parse()
 
     assert parser.ws.conditional_formatting.cf_rules['T1:T10'][-1].dxf == dxf
+
+
+def test_sheet_properties(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr codeName="Sheet3">
+      <tabColor rgb="FF92D050"/>
+      <outlinePr summaryBelow="1" summaryRight="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    </sheet>
+    """
+    parser = WorkSheetParser
+    parser.source = src
+    parser.parse()
+
+    assert parser.ws.sheet_properties.tabColor.rgb == "FF92D050"
+    assert parser.ws.sheet_properties.codeName == "Sheet3"
