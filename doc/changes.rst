@@ -59,6 +59,12 @@ Bug fixes
 * `#607 <https://bitbucket.org/openpyxl/openpyxl/issues/607>`_ Serialise NaN as ''
 
 
+Minor changes
+-------------
+
+* Preserve the order of external references because formualae use numerical indices.
+
+
 2.3.3 (2016-01-18)
 ==================
 
