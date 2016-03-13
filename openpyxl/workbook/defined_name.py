@@ -174,7 +174,7 @@ class DefinedNameList(Serialisable):
         exists
         """
         for d in self.definedName:
-            if d.name == defn.name and d.localSheetId == d.localSheetId:
+            if d.name == defn.name and d.localSheetId == defn.localSheetId:
                 return True
 
 

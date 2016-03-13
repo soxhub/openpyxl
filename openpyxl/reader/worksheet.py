@@ -87,7 +87,7 @@ class WorkSheetParser(object):
             '{%s}row' % SHEET_MAIN_NS: self.parse_row_row,
             '{%s}conditionalFormatting' % SHEET_MAIN_NS: self.parser_conditional_formatting,
             '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
-            '{%s}sheetProtection' % SHEET_MAIN_NS: ('she', SortState),
+            '{%s}sheetProtection' % SHEET_MAIN_NS: self.parse_sheet_protection,
             '{%s}sheetViews' % SHEET_MAIN_NS: self.parse_sheet_views,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
             '{%s}hyperlink' % SHEET_MAIN_NS: self.parse_hyperlinks,

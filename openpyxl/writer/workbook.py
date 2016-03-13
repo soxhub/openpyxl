@@ -108,9 +108,10 @@ def write_workbook(workbook):
         for idx, link in enumerate(wb._external_links, 1):
             ext = ExternalReference(id="rId{0}".format(rId + idx))
             rel = Relationship(type=link._rel_type,
-                               Target='{1}s/{0}'.format(link._rel_type, link._path)
+                               Target='{0}s/{1}'.format(link._rel_type, link._path)
                                )
             root.externalReferences.append(ext)
+            wb.rels.append(rel)
 
     # Defined names
     defined_names = copy(wb.defined_names) # don't add special defns to workbook itself.
