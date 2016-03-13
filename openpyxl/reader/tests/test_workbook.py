@@ -201,3 +201,22 @@ def test_missing_ids(datadir, DummyArchive):
         {'sheetId': '16', 'id': 'rId6', 'name': 'Chart1'},
         {'sheetId': '21', 'id': 'rId7', 'name': 'Sheet1'}
     ]
+
+
+def test_read_extenal_refs():
+    from ..workbook import find_external_refs
+    xml = """
+    <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+    <workbookPr codeName="ThisWorkbook"/>
+    <externalReferences>
+      <externalReference r:id="rId15"/>
+      <externalReference r:id="rId16"/>
+    </externalReferences>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    archive = ZipFile(BytesIO(), mode="w")
+    archive.writestr(ARC_WORKBOOK, xml)
+    ids = list(find_external_refs(archive))
+    assert ids == ["rId15", "rId16"]
+
