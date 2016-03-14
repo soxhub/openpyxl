@@ -14,6 +14,7 @@ Minor changes
 -------------
 
 * Preserve the order of external references because formualae use numerical indices.
+* Typo corrected in cell unit tests (PR 118)
 
 
 2.3.3 (2016-01-18)
