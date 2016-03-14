@@ -727,8 +727,8 @@ class Worksheet(_WorkbookChild):
                 if isinstance(content, Cell):
                     # compatible with write-only mode
                     cell = content
-                    if cell.parent and cell.parent.parent != self.parent:
-                        raise ValueError("Cells cannot be copied from other workbooks")
+                    if cell.parent and cell.parent != self:
+                        raise ValueError("Cells cannot be copied from other worksheets")
                     cell.parent = self
                     cell.col_idx = col_idx
                     cell.row = row_idx
