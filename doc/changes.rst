@@ -64,7 +64,7 @@ Bug fixes
 * `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597 >`_ Cannot read worksheets without coordinates
 
 
-2.3.4 (unreleased)
+2.3.4 (2016-03-16)
 ==================
 
 
