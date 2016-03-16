@@ -80,7 +80,7 @@ def test_calculate_dimension(datadir):
     Behaviour differs between implementations
     """
     datadir.join("genuine").chdir()
-    wb = load_workbook(filename="empty.xlsx", read_only=True)
+    wb = load_workbook(filename="sample.xlsx", read_only=True)
     sheet2 = wb['Sheet2 - Numbers']
     assert sheet2.calculate_dimension() == 'D1:AA30'
 
@@ -102,7 +102,7 @@ def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
 def sample_workbook(request, datadir):
     """Standard and read-only workbook"""
     datadir.join("genuine").chdir()
-    wb = load_workbook(filename="empty.xlsx", read_only=request.param, data_only=True)
+    wb = load_workbook(filename="sample.xlsx", read_only=request.param, data_only=True)
     return wb
 
 
@@ -248,7 +248,7 @@ class TestRead:
     )
 def test_read_single_cell_formula(datadir, data_only, expected):
     datadir.join("genuine").chdir()
-    wb = load_workbook("empty.xlsx", read_only=True, data_only=data_only)
+    wb = load_workbook("sample.xlsx", read_only=True, data_only=data_only)
     ws = wb["Sheet3 - Formulas"]
     rows = ws.iter_rows("D2")
     cell = list(rows)[0][0]
@@ -358,3 +358,11 @@ def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7
+
+
+@pytest.mark.parametrize("read_only", [False, True])
+def test_read_empty_sheet(datadir, read_only):
+    datadir.join("genuine").chdir()
+    wb = load_workbook("empty.xlsx", read_only=read_only)
+    ws = wb.active
+    assert tuple(ws.rows) == tuple(ws.iter_rows())

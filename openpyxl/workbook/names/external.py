@@ -10,6 +10,7 @@ from openpyxl.xml.constants import (
     REL_NS,
     PKG_REL_NS,
     EXTERNAL_LINK_NS,
+    ARC_WORKBOOK,
 )
 from openpyxl.xml.functions import (
     fromstring,
@@ -87,18 +88,21 @@ def parse_ranges(xml):
 
 
 def detect_external_links(rels, archive):
-    for rId, d in rels:
-        if d['type'] == EXTERNAL_LINK_NS:
-            pth = os.path.split(d['path'])
-            f_name = pth[-1]
-            dir_name = "/".join(pth[:-1])
-            book_path = "{0}/_rels/{1}.rels".format (dir_name, f_name)
-            book_xml = archive.read(book_path)
-            Book = parse_books(book_xml)
+    from openpyxl.reader.workbook import find_external_refs
+    rels = dict(rels)
 
-            range_xml = archive.read(d['path'])
-            Book.links = list(parse_ranges(range_xml))
-            yield Book
+    for rId in find_external_refs(archive):
+        rel = rels[rId]
+        pth = os.path.split(rel['path'])
+        f_name = pth[-1]
+        dir_name = "/".join(pth[:-1])
+        book_path = "{0}/_rels/{1}.rels".format (dir_name, f_name)
+        book_xml = archive.read(book_path)
+        Book = parse_books(book_xml)
+
+        range_xml = archive.read(rel['path'])
+        Book.links = list(parse_ranges(range_xml))
+        yield Book
 
 
 def write_external_link(links):

@@ -91,7 +91,7 @@ class TestWorksheet:
                                  (1, 0, 'A1'),
                                  (9, 2, 'C9'),
                              ])
-    def test_iter_rows_1(self, Worksheet, row, column, coordinate):
+    def test_fill_rows(self, Worksheet, row, column, coordinate):
         ws = Worksheet(Workbook())
         ws.cell('A1').value = 'first'
         ws.cell('C9').value = 'last'
@@ -101,7 +101,7 @@ class TestWorksheet:
         assert first_row[column].coordinate == coordinate
 
 
-    def test_iter_rows_2(self, Worksheet):
+    def test_iter_rows(self, Worksheet):
         ws = Worksheet(Workbook())
         expected = [
             ('A1', 'B1', 'C1'),
@@ -198,17 +198,6 @@ class TestWorksheet:
         assert "http://test.com" == ws.cell('A1').value
         ws.cell('A1').value = "test"
         assert "test" == ws.cell('A1').value
-
-
-    def test_hyperlink_relationships(self, Worksheet):
-        ws = Worksheet(Workbook())
-        assert len(ws.hyperlinks) == 0
-
-        ws.cell('A1').hyperlink = "http://test.com"
-        assert len(ws.hyperlinks) == 1
-
-        ws.cell('A2').hyperlink = "http://test2.com"
-        assert len(ws.hyperlinks) == 2
 
 
     def test_append(self, Worksheet):
@@ -312,12 +301,18 @@ class TestWorksheet:
 
     def test_no_rows(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.rows == ((),)
+        assert ws.rows == ()
 
 
     def test_no_cols(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.columns == ((),)
+        assert ws.columns == ()
+
+
+    def test_one_cell(self, Worksheet):
+        ws = Worksheet(Workbook())
+        c = ws['A1']
+        assert ws.rows == ws.columns == ((c,),)
 
 
     def test_cols(self, Worksheet):

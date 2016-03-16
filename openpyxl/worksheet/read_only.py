@@ -74,6 +74,8 @@ class ReadOnlyWorksheet(Worksheet):
     def __init__(self, parent_workbook, title, worksheet_path,
                  xml_source, shared_strings):
         Worksheet.__init__(self, parent_workbook, title)
+        self._cells = None
+        self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
         self.base_date = parent_workbook.excel_base_date

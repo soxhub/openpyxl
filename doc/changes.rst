@@ -1,3 +1,22 @@
+2.3.4 (2016-03-16)
+==================
+
+
+Bug fixes
+---------
+
+* `#594 <https://bitbucket.org/openpyxl/openpyxl/issues/594>`_ Content types might be missing when keeping VBA
+* `#599 <https://bitbucket.org/openpyxl/openpyxl/issues/599>`_ Cells with only one cell look empty
+* `#607 <https://bitbucket.org/openpyxl/openpyxl/issues/607>`_ Serialise NaN as ''
+
+
+Minor changes
+-------------
+
+* Preserve the order of external references because formualae use numerical indices.
+* Typo corrected in cell unit tests (PR 118)
+
+
 2.3.3 (2016-01-18)
 ==================
 
@@ -9,7 +28,7 @@ Bug fixes
 * `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed
 * `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames
 * `#575 <https://bitbucket.org/openpyxl/openpyxl/issues/575>`_ Cannot open workbooks with embdedded OLE files
-* `#584 <https://bitbucket.org/openpyxl/openpyxl/issues/584>`_ Exception when saving borders with attribues
+* `#584 <https://bitbucket.org/openpyxl/openpyxl/issues/584>`_ Exception when saving borders with attributes
 
 
 Minor changes

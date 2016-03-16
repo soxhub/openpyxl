@@ -110,7 +110,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comment_count = 0
         self._merged_cells = []
-        self.hyperlinks = set()
+        self._hyperlinks = []
         self._data_validations = []
         self.sheet_state = self.SHEETSTATE_VISIBLE
         self.page_setup = PrintPageSetup(worksheet=self)
@@ -611,8 +611,6 @@ class Worksheet(_WorkbookChild):
         for c in islice(chain.from_iterable(cells), 1, None):
             if c in self._cells:
                 del self._cells[c]
-            if c in self.hyperlinks:
-                del self._hyperlinks[c]
 
 
     @property
@@ -679,8 +677,8 @@ class Worksheet(_WorkbookChild):
                 if isinstance(content, Cell):
                     # compatible with write-only mode
                     cell = content
-                    if cell.parent and cell.parent.parent != self.parent:
-                        raise ValueError("Cells cannot be copied from other workbooks")
+                    if cell.parent and cell.parent != self:
+                        raise ValueError("Cells cannot be copied from other worksheets")
                     cell.parent = self
                     cell.col_idx = col_idx
                     cell.row = row_idx
@@ -709,19 +707,19 @@ class Worksheet(_WorkbookChild):
     @property
     def rows(self):
         """Iterate over all rows in the worksheet"""
-        if self.min_row == self.max_row == self.min_column == self.max_column:
-            return ((),)
+        if self._current_row == 0:
+            return ()
         return tuple(self.iter_rows())
 
 
     @property
     def columns(self):
         """Iterate over all columns in the worksheet"""
-        if self.min_row == self.max_row == self.min_column == self.max_column:
-            return ((),)
+        if self._current_row == 0:
+            return ()
         cols = []
-        for col_idx in range(self.max_column):
-            cells = self.get_squared_range(col_idx + 1, self.min_row, col_idx + 1, self.max_row)
+        for col_idx in range(1, self.max_column+1):
+            cells = self.get_squared_range(col_idx, self.min_row, col_idx, self.max_row)
             col = chain.from_iterable(cells)
             cols.append(tuple(col))
         return tuple(cols)

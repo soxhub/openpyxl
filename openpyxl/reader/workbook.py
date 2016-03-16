@@ -104,11 +104,13 @@ def detect_worksheets(archive):
             yield rel
 
 
-def detect_external_links(archive):
-    rels = read_rels(archive)
-    for rId, d in rels:
-        if d['type'] == EXTERNAL_LINK:
-            pth = d['path']
+def find_external_refs(archive):
+    xml = archive.read(ARC_WORKBOOK)
+    tree = fromstring(xml)
+    ext = tree.findall(".//{%s}externalReference" % SHEET_MAIN_NS)
+    for ref in ext:
+        id = ref.attrib["{%s}id" % REL_NS]
+        yield id
 
 
 def read_workbook_code_name(xml_source):

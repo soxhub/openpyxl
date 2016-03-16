@@ -173,12 +173,14 @@ Charts
 
     charts/introduction
 
+
 Comments
 ++++++++
 
 .. toctree::
 
     comments
+
 
 Read/write large files
 ++++++++++++++++++++++
@@ -187,12 +189,14 @@ Read/write large files
 
     optimized
 
+
 Working with styles
 +++++++++++++++++++
 
 .. toctree::
 
     styles
+
 
 Conditional Formatting
 ++++++++++++++++++++++
@@ -201,12 +205,22 @@ Conditional Formatting
 
     formatting
 
+
+Filtering and Sorting
++++++++++++++++++++++
+
+.. toctree::
+
+    filters
+
+
 Data Validation
 +++++++++++++++
 
 .. toctree::
 
     validation
+
 
 Parsing Formulas
 ++++++++++++++++
@@ -223,6 +237,7 @@ Information for Developers
 
     development
     windows-development
+
 
 API Documentation
 ------------------
