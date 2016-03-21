@@ -50,12 +50,12 @@ class ExternalCell(Serialisable):
 class ExternalRow(Serialisable):
 
     r = Integer()
-    cell = Typed(expected_type=ExternalCell, allow_none=True)
+    cell = Sequence(expected_type=ExternalCell)
 
     __elements__ = ('cell',)
 
     def __init__(self,
-                 r=None,
+                 r=(),
                  cell=None,
                 ):
         self.r = r
@@ -66,14 +66,14 @@ class ExternalSheetData(Serialisable):
 
     sheetId = Integer()
     refreshError = Bool(allow_none=True)
-    row = Typed(expected_type=ExternalRow, allow_none=True)
+    row = Sequence(expected_type=ExternalRow)
 
     __elements__ = ('row',)
 
     def __init__(self,
                  sheetId=None,
                  refreshError=None,
-                 row=None,
+                 row=(),
                 ):
         self.sheetId = sheetId
         self.refreshError = refreshError
