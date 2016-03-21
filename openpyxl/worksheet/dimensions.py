@@ -92,6 +92,8 @@ class RowDimension(Dimension):
             hidden = not visible
         if outline_level is not None:
             outlineLevel = outlineLevel
+        self.thickBot = thickBot
+        self.thickTop = thickTop
         super(RowDimension, self).__init__(index, hidden, outlineLevel,
                                            collapsed, worksheet, style=s)
 
