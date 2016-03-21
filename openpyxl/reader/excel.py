@@ -225,7 +225,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
                     src = archive.read(r.target)
                     comment_sheet = CommentSheet.from_tree(fromstring(src))
                     for ref, comment in comment_sheet.comments:
-                        ws.cell(coordinate=ref).comment = comment
+                        ws[ref].comment = comment
 
                 # preserve link to VML file if VBA
                 if (
