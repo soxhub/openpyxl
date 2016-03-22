@@ -49,11 +49,6 @@ class Dimension(Strict, StyleableObject):
             if value:
                 yield key, safe_string(value)
 
-    @property
-    @deprecated("Use `hidden` instead")
-    def visible(self):
-        return not self.hidden
-
 
 class RowDimension(Dimension):
     """Information about the display properties of a row."""
