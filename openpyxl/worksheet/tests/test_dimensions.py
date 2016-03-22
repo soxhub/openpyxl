@@ -40,6 +40,8 @@ def test_invalid_dimension_ctor():
                          [
                              ('ht', 1, {'ht':'1', 'customHeight':'1'}),
                              ('_font_id', 10, {'s':'1', 'customFormat':'1'}),
+                             ('thickBot', True, {'thickBot':'1'}),
+                             ('thickTop', True, {'thickTop':'1'}),
                          ]
                          )
 def test_row_dimension(key, value, expected):
