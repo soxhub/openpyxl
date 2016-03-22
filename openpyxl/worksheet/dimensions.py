@@ -43,7 +43,9 @@ class Dimension(Strict, StyleableObject):
 
     def __iter__(self):
         for key in self.__fields__:
-            value = getattr(self, key)
+            value = getattr(self, key, None)
+            if key in ('style', 's'):
+                value = self.style_id
             if value:
                 yield key, safe_string(value)
 
@@ -56,7 +58,8 @@ class Dimension(Strict, StyleableObject):
 class RowDimension(Dimension):
     """Information about the display properties of a row."""
 
-    __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's')
+    __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's',
+                                         'thickBot', 'thickTop')
     r = Alias('index')
     s = Alias('style_id')
     ht = Float(allow_none=True)
@@ -155,15 +158,6 @@ class ColumnDimension(Dimension):
     def customWidth(self):
         """Always true if there is a width for the column"""
         return self.width is not None
-
-    def __iter__(self):
-        for key in self.__fields__:
-            if key == 'style':
-                value = self.style_id
-            else:
-                value = getattr(self, key)
-            if value:
-                yield key, safe_string(value)
 
 
 class DimensionHolder(BoundDictionary):
