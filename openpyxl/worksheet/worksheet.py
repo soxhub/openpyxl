@@ -339,14 +339,14 @@ class Worksheet(_WorkbookChild):
             return cols
         if not min_col:
             rows = tuple(self.iter_rows(min_col=min_col, min_row=min_row,
-                                  max_col=self.max_column, max_row=max_row))
+                                        max_col=self.max_column, max_row=max_row))
             if min_row == max_row:
                 rows = rows[0]
             return rows
         if ":" not in key:
             return self._get_cell(min_row, min_col)
         return tuple(self.iter_rows(min_row=min_row, min_col=min_col,
-                              max_row=max_row, max_col=max_col))
+                                    max_row=max_row, max_col=max_col))
 
 
     def __setitem__(self, key, value):
