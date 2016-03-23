@@ -407,9 +407,11 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws['A1'] = 1
         ws['D4'] = 16
+        assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
         assert ws._merged_cells == ["A1:D4"]
-        assert 'D4' not in ws._cells
+        assert (4, 4) not in ws._cells
+        assert (1, 1) in ws._cells
 
 
     def test_merge_coordinate(self, Worksheet):

@@ -5,7 +5,6 @@ import sys
 
 VER = sys.version_info
 
-from math import isnan
 from .numbers import NUMERIC_TYPES
 
 if VER[0] == 3:
