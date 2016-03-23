@@ -154,9 +154,10 @@ def rows_from_range(range_string):
     Yields one row at a time.
     """
     min_col, min_row, max_col, max_row = range_boundaries(range_string)
-    for row in range(min_row, max_row+1):
-        yield tuple('%s%d' % (get_column_letter(col), row)
-                    for col in range(min_col, max_col+1))
+    rows = range(min_row, max_row+1)
+    cols = [get_column_letter(col) for col in range(min_col, max_col+1)]
+    for row in rows:
+        yield tuple('{0}{1}'.format(col, row) for col in cols)
 
 
 def cols_from_range(range_string):
@@ -165,9 +166,10 @@ def cols_from_range(range_string):
     Yields one row at a time.
     """
     min_col, min_row, max_col, max_row = range_boundaries(range_string)
-    for col in range(min_col, max_col+1):
-        yield tuple('%s%d' % (get_column_letter(col), row)
-                    for row in range(min_row, max_row+1))
+    rows = range(min_row, max_row+1)
+    cols = (get_column_letter(col) for col in range(min_col, max_col+1))
+    for col in cols:
+        yield tuple('{0}{1}'.format(col, row) for row in rows)
 
 
 def coordinate_to_tuple(coordinate):
