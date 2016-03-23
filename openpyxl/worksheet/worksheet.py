@@ -333,10 +333,16 @@ class Worksheet(_WorkbookChild):
             raise IndexError("{0} is not a valid coordinate or range".format(key))
 
         if not min_row:
-            return tuple(self.iter_cols(min_col, max_col))
+            cols = tuple(self.iter_cols(min_col, max_col))
+            if min_col == max_col:
+                cols = cols[0]
+            return cols
         if not min_col:
-            return tuple(self.iter_rows(min_col=min_col, min_row=min_row,
+            rows = tuple(self.iter_rows(min_col=min_col, min_row=min_row,
                                   max_col=self.max_column, max_row=max_row))
+            if min_row == max_row:
+                rows = rows[0]
+            return rows
         if ":" not in key:
             return self._get_cell(min_row, min_col)
         return tuple(self.iter_rows(min_row=min_row, min_col=min_col,
