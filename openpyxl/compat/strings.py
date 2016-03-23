@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from math import isnan
 import sys
 
 VER = sys.version_info
