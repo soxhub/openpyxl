@@ -45,6 +45,7 @@ Bug fixes
 * `#574 <https://bitbucket.org/openpyxl/openpyxl/issues/574>`_ Exception raised when using the class method to parse Relationships
 * `#579 <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
 * `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597 >`_ Cannot read worksheets without coordinates
+* `#617 <https://bitbucket.org/openpyxl/openpyxl/issues/617 >`_ Customised named styles not correctly preserved
 
 
 2.3.4 (2016-03-16)
