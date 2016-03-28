@@ -128,7 +128,12 @@ class Stylesheet(Serialisable):
         """
         names = []
         xfs = []
-        for idx, style in enumerate(wb._named_styles.values()):
+
+        def sort_fn(v):
+            return v.xfId
+
+        styles = sorted(wb._named_styles.values(), key=sort_fn)
+        for idx, style in enumerate(styles):
             name = NamedCellStyle(
                 name=style.name,
                 builtinId=style.builtinId,
