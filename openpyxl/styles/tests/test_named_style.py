@@ -39,33 +39,6 @@ class TestNamedStyle:
 
 @pytest.fixture
 def NamedCellStyle():
-    from ..named_style import NamedCellStyle
-    return NamedCellStyle
-
-
-class TestNamedCellStyle:
-
-    def test_ctor(self, NamedCellStyle):
-        named_style = NamedCellStyle()
-        xml = tostring(named_style.to_tree())
-        expected = """
-        <root />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, NamedCellStyle):
-        src = """
-        <root />
-        """
-        node = fromstring(src)
-        named_style = NamedCellStyle.from_tree(node)
-        assert named_style == NamedCellStyle()
-
-
-@pytest.fixture
-def NamedCellStyle():
     from ..named_styles import NamedCellStyle
     return NamedCellStyle
 
