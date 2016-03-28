@@ -34,7 +34,7 @@ class TestNamedStyle:
 
     def test_dict(self, NamedStyle):
         style = NamedStyle()
-        assert dict(style) == {'builtinId':'0', 'name':'Normal', 'hidden':'0'}
+        assert dict(style) == {'name':'Normal', 'hidden':'0'}
 
 
 @pytest.fixture

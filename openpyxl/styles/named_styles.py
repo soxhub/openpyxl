@@ -45,7 +45,7 @@ class NamedStyle(Serialisable):
                  alignment=Alignment(),
                  number_format=None,
                  protection=Protection(),
-                 builtinId=0,
+                 builtinId=None,
                  hidden=False,
                  ):
         self.name = name
@@ -134,6 +134,7 @@ class NamedCellStyleList(Serialisable):
             style = NamedStyle(name=ns.name,
                                 hidden=ns.hidden
                                 )
+            style.builtinId = ns.builtinId
             style.xfId = ns.xfId
             styles[ns.name] = style
         return styles
