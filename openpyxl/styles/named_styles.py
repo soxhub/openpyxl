@@ -35,6 +35,7 @@ class NamedStyle(Serialisable):
     protection = Typed(expected_type=Protection)
     builtinId = Integer(allow_none=True)
     hidden = Bool(allow_none=True)
+    xfIf = Integer(allow_none=True)
 
 
     def __init__(self,
@@ -47,6 +48,7 @@ class NamedStyle(Serialisable):
                  protection=Protection(),
                  builtinId=None,
                  hidden=False,
+                 xfId=None,
                  ):
         self.name = name
         self.font = font
@@ -57,6 +59,7 @@ class NamedStyle(Serialisable):
         self.protection = protection
         self.builtinId = builtinId
         self.hidden = hidden
+        self.xfId = xfId
 
 
     def __iter__(self):
