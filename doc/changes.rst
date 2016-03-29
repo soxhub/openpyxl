@@ -18,6 +18,7 @@ Minor changes
 * Add support for Python's NaN
 * Added iter_cols method for worksheets
 * ws.rows and ws.columns now always return generators and start at the top of the worksheet
+* Add a `values` property for worksheets
 
 
 Deprecations

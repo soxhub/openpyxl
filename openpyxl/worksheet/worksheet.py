@@ -489,6 +489,15 @@ class Worksheet(_WorkbookChild):
         return self.iter_rows()
 
 
+    @property
+    def values(self):
+        """
+        Return the values of all the cells, row by row
+        """
+        for row in self.iter_rows():
+            yield tuple(c.value for c in row)
+
+
     def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None):
         """
         Returns all cells in the worksheet from the first row as columns.

@@ -312,6 +312,16 @@ class TestWorksheet:
         assert cols[0][0].value == 'first'
         assert cols[-1][-1].value == 'last'
 
+
+    def test_values(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.append([1, 2, 3])
+        ws.append([4, 5, 6])
+        vals = ws.values
+        assert next(vals) == (1, 2, 3)
+        assert next(vals) == (4, 5, 6)
+
+
     def test_auto_filter(self, Worksheet):
         ws = Worksheet(Workbook())
 
