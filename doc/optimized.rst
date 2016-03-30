@@ -58,7 +58,7 @@ If you want to have cells with styles or comments then use a :func:`openpyxl.wri
 >>> cell.font = Font(name='Courier', size=36)
 >>> cell.comment = Comment(text="A comment", author="Author's Name")
 >>> ws.append([cell, 3.14, None])
->>> wb.save('write_only_file.xlsx') # doctest: +SKIP
+>>> wb.save('write_only_file.xlsx')
 
 
 This will create a write-only workbook with a single sheet, and append
@@ -69,12 +69,12 @@ anyway).
 .. warning::
 
     * Unlike a normal workbook, a newly-created write-only workbook
-      does not contain a worksheets; a worksheet must be specifically
+      does not contain any worksheets; a worksheet must be specifically
       created with the :func:`create_sheet()` method.
 
     * In a write-only workbook, rows can only be added with
       :func:`append()`. It is not possible to write (or read) cells at
-      arbitrary locations with :func:`cell()` or :func:`range()`.
+      arbitrary locations with :func:`cell()` or :func:`iter_rows()`.
 
     * It is able to export unlimited amount of data (even more than Excel can
       handle actually), while keeping memory usage under 10Mb.
