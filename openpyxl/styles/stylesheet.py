@@ -106,7 +106,7 @@ class Stylesheet(Serialisable):
         named_styles = self.cellStyles.names
         custom = self.custom_formats
         formats = self.number_formats
-        for style in named_styles.values():
+        for style in named_styles:
             xf = self.cellStyleXfs[style.xfId]
             style.font = self.fonts[xf.fontId]
             style.fill = self.fills[xf.fillId]
@@ -128,7 +128,7 @@ class Stylesheet(Serialisable):
         names = []
         xfs = []
 
-        for idx, style in enumerate(wb._named_styles.values()):
+        for idx, style in enumerate(wb._named_styles):
             name = NamedCellStyle(
                 name=style.name,
                 builtinId=style.builtinId,

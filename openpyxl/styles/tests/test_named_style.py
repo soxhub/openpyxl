@@ -114,4 +114,60 @@ class TestNamedCellStyleList:
         """
         node = fromstring(src)
         styles = NamedCellStyleList.from_tree(node)
-        assert list(styles.names) == ['Normal', 'Hyperlink', 'Followed Hyperlink']
+        assert [s.name for s in styles.names] == ['Normal', 'Hyperlink', 'Followed Hyperlink']
+
+
+@pytest.fixture
+def NamedStyles():
+    from ..named_styles import NamedStyles
+    return NamedStyles
+
+
+class TestNamedStyles:
+
+    def test_append_valid(self, NamedStyle, NamedStyles):
+        styles = NamedStyles()
+        style = NamedStyle(name="special")
+        styles.append(style)
+        assert style in styles
+
+
+    def test_append_invalid(self, NamedStyles):
+        styles = NamedStyles()
+        with pytest.raises(TypeError):
+            styles.append(1)
+
+
+    def test_duplicate(self, NamedStyles, NamedStyle):
+        styles = NamedStyles()
+        style = NamedStyle(name="special")
+        styles.append(style)
+        with pytest.raises(ValueError):
+            styles.append(style)
+
+
+    def test_names(self, NamedStyles, NamedStyle):
+        styles = NamedStyles()
+        style = NamedStyle(name="special")
+        styles.append(style)
+        assert styles.names == ['special']
+
+
+    def test_idx(self, NamedStyles, NamedStyle):
+        styles = NamedStyles()
+        style = NamedStyle(name="special")
+        styles.append(style)
+        assert styles[0] == style
+
+
+    def test_key(self, NamedStyles, NamedStyle):
+        styles = NamedStyles()
+        style = NamedStyle(name="special")
+        styles.append(style)
+        assert styles['special'] == style
+
+
+    def test_key_error(self, NamedStyles):
+        styles = NamedStyles()
+        with pytest.raises(KeyError):
+            styles['special']
