@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import safe_string
+from openpyxl.compat import OrderedDict
 
 from openpyxl.descriptors import (
     Typed,
@@ -132,11 +133,16 @@ class NamedCellStyleList(Serialisable):
         """
         Convert to NamedStyle objects and remove duplicates
         """
-        styles = {}
-        for ns in self.cellStyle:
-            style = NamedStyle(name=ns.name,
-                                hidden=ns.hidden
-                                )
+
+        def sort_fn(v):
+            return v.xfId
+
+        styles = OrderedDict()
+        for ns in sorted(self.cellStyle, key=sort_fn):
+            style = NamedStyle(
+                name=ns.name,
+                hidden=ns.hidden
+            )
             style.builtinId = ns.builtinId
             style.xfId = ns.xfId
             styles[ns.name] = style

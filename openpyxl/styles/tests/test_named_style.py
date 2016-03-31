@@ -114,4 +114,4 @@ class TestNamedCellStyleList:
         """
         node = fromstring(src)
         styles = NamedCellStyleList.from_tree(node)
-        assert set(styles.names) == set(['Normal', 'Hyperlink', 'Followed Hyperlink'])
+        assert list(styles.names) == ['Normal', 'Hyperlink', 'Followed Hyperlink']

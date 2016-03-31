@@ -103,10 +103,10 @@ class Stylesheet(Serialisable):
         """
         Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
         """
-        named_styles = {}
+        named_styles = self.cellStyles.names
         custom = self.custom_formats
         formats = self.number_formats
-        for name, style in self.cellStyles.names.items():
+        for style in named_styles.values():
             xf = self.cellStyleXfs[style.xfId]
             style.font = self.fonts[xf.fontId]
             style.fill = self.fills[xf.fillId]
@@ -118,7 +118,6 @@ class Stylesheet(Serialisable):
                 style.alignment = xf.alignment
             if xf.protection:
                 style.protection = xf.protection
-            named_styles[name] = style
         return named_styles
 
 
@@ -129,11 +128,7 @@ class Stylesheet(Serialisable):
         names = []
         xfs = []
 
-        def sort_fn(v):
-            return v.xfId
-
-        styles = sorted(wb._named_styles.values(), key=sort_fn)
-        for idx, style in enumerate(styles):
+        for idx, style in enumerate(wb._named_styles.values()):
             name = NamedCellStyle(
                 name=style.name,
                 builtinId=style.builtinId,
