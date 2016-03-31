@@ -168,6 +168,7 @@ class Workbook(object):
         return cs
 
 
+    @deprecated("Use wb[sheetname]")
     def get_sheet_by_name(self, name):
         """Returns a worksheet by its name.
 
@@ -203,6 +204,8 @@ class Workbook(object):
     def __iter__(self):
         return iter(self.worksheets)
 
+
+    @deprecated("Use wb.sheetnames")
     def get_sheet_names(self):
         return self.sheetnames
 
