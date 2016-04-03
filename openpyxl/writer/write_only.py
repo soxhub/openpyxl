@@ -228,11 +228,16 @@ setattr(WriteOnlyWorksheet, 'merge_cells', removed_method)
 
 
 class DumpCommentWriter(CommentWriter):
-    def extract_comments(self):
+
+    def _extract_comments(self):
+        from openpyxl.comments.properties import Comment
         for comment in self.sheet._comments:
-            if comment is not None:
-                self.authors.add(comment.author)
-                self.comments.append(comment)
+            new_comment = Comment(ref=comment.parent.coordinate)
+            new_comment.text.t = comment.text
+            new_comment.author = comment.author
+            new_comment.height = comment.height
+            new_comment.width = comment.width
+            self.comments.append(new_comment)
 
 
 def save_dump(workbook, filename):

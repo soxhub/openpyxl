@@ -31,7 +31,7 @@ def _create_ws():
 def test_comment_writer_init():
     ws, comment1, comment2, comment3 = _create_ws()
     cw = CommentWriter(ws)
-    assert cw.comments == []
+    assert len(cw.comments) == 3
     assert cw.sheet == ws
 
 

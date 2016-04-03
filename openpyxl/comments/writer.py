@@ -21,10 +21,20 @@ excelns = "urn:schemas-microsoft-com:office:excel"
 
 class CommentWriter(object):
 
-
     def __init__(self, sheet):
         self.sheet = sheet
         self.comments = []
+        self._extract_comments()
+
+    def _extract_comments(self):
+        for _coord, cell in sorted(self.sheet._cells.items()):
+            if cell.comment is not None:
+                comment = Comment(ref=cell.coordinate)
+                comment.author = cell.comment.author
+                comment.text.t = cell.comment.text
+                comment.height = cell.comment.height
+                comment.width = cell.comment.width
+                self.comments.append(comment)
 
 
     def write_comments(self):
@@ -35,19 +45,14 @@ class CommentWriter(object):
         # produce xml
         authors = IndexedList()
 
-        for _coord, cell in sorted(self.sheet._cells.items()):
-            if cell.comment is not None:
-                comment = Comment(ref=cell.coordinate)
-                comment.authorId = authors.add(cell.comment.author)
-                comment.text.t = cell.comment.text
-                comment.height = cell.comment.height
-                comment.width = cell.comment.width
-                self.comments.append(comment)
+        for comment in self.comments:
+            comment.authorId = authors.add(comment.author)
 
         author_list = AuthorList(authors)
         root = CommentSheet(authors=author_list, commentList=self.comments)
 
         return tostring(root.to_tree())
+
 
     def add_shapetype_vml(self, root):
         shape_layout = SubElement(root, "{%s}shapelayout" % officens,
