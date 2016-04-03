@@ -24,8 +24,6 @@ elif sys.version_info[:2] == (3, 2):
 
 from distutils.core import setup
 
-import re
-
 here = os.path.abspath(os.path.dirname(__file__))
 try:
     with open(os.path.join(here, 'README.rst')) as f:
