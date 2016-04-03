@@ -134,7 +134,7 @@ class WriteOnlyWorksheet(Worksheet):
                     xf.write(drawing)
 
                 if self._comments:
-                    legacyDrawing = Related(id="commentsvml")
+                    legacyDrawing = Related(id="anysvml")
                     xml = legacyDrawing.to_tree("legacyDrawing")
                     xf.write(xml)
 
