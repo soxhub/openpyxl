@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.cell import column_index_from_string
+from openpyxl.utils import column_index_from_string
 from openpyxl.xml.constants import PACKAGE_IMAGES
 
 from .drawing import Drawing
