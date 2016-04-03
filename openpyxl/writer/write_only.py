@@ -10,7 +10,7 @@ import os
 from tempfile import NamedTemporaryFile
 
 from openpyxl.compat import removed_method
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.related import Related
 
@@ -44,10 +44,6 @@ def create_temporary_file(suffix=''):
     filename = fobj.name
     ALL_TEMP_FILES.append(filename)
     return filename
-
-
-def WriteOnlyCell(ws=None, value=None):
-    return Cell(worksheet=ws, column='A', row=1, value=value)
 
 
 class WriteOnlyWorksheet(Worksheet):
