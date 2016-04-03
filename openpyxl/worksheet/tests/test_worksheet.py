@@ -370,7 +370,7 @@ class TestWorksheet:
         assert ws["C"] == (c1, c2)
 
 
-    @pytest.mark.parametrize("key", ["2", "2:2"])
+    @pytest.mark.parametrize("key", [2, "2", "2:2"])
     def test_get_row(self, Worksheet, key):
         ws = Worksheet(Workbook())
         a2 = ws.cell(row=2, column=1)
