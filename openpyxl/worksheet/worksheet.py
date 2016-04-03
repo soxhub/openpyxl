@@ -327,6 +327,9 @@ class Worksheet(_WorkbookChild):
                 raise IndexError("{0} is not a valid coordinate or range".format(key))
             key = "{0}:{1}".format(key.start, key.stop)
 
+        if isinstance(key, int):
+            key = str(key
+                      )
         min_col, min_row, max_col, max_row = range_boundaries(key)
 
         if not any([min_col, min_row, max_col, max_row]):
