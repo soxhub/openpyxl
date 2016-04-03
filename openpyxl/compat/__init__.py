@@ -12,11 +12,6 @@ from .strings import (
     )
 from .numbers import long, NUMERIC_TYPES
 
-try:
-    from functools import lru_cache
-except ImportError:
-    from .functools import lru_cache
-
 # Python 2.6
 try:
     from collections import OrderedDict
