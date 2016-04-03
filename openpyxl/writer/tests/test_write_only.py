@@ -187,7 +187,7 @@ def test_cell_comment(WriteOnlyWorksheet):
     <sheetData>
     <row r="1" spans="1:1"><c r="A1" t="n"><v>1</v></c></row>
     </sheetData>
-    <legacyDrawing r:id="commentsvml"></legacyDrawing>
+    <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
     """
     diff = compare_xml(xml, expected)

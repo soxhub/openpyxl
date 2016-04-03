@@ -16,7 +16,6 @@ from jdcal import (
     MJD_0
 )
 
-from openpyxl.compat import lru_cache
 
 # constants
 MAC_EPOCH = datetime.date(1904, 1, 1)
@@ -42,7 +41,6 @@ def W3CDTF_to_datetime(formatted_string):
     return datetime.datetime(*dt)
 
 
-@lru_cache()
 def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
     if isnan(dt.year): # Pandas supports Not a Date
         return
@@ -54,7 +52,6 @@ def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
     return jul
 
 
-@lru_cache()
 def from_excel(value, offset=CALENDAR_WINDOWS_1900):
     if value is None:
         return
@@ -92,7 +89,6 @@ except ImportError:
     UTC = GMT()
 
 
-@lru_cache()
 def time_to_days(value):
     """Convert a time value to fractions of day"""
     if value.tzinfo is not None:
@@ -105,7 +101,6 @@ def time_to_days(value):
         ) / SECS_PER_DAY
 
 
-@lru_cache()
 def timedelta_to_days(value):
     """Convert a timedelta value to fractions of a day"""
     if not hasattr(value, 'total_seconds'):
@@ -116,7 +111,6 @@ def timedelta_to_days(value):
     return secs / SECS_PER_DAY
 
 
-@lru_cache()
 def days_to_time(value):
     mins, seconds = divmod(value.seconds, 60)
     hours, mins = divmod(mins, 60)

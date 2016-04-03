@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import safe_string
+from openpyxl.compat import OrderedDict
 
 from openpyxl.descriptors import (
     Typed,
@@ -132,12 +133,46 @@ class NamedCellStyleList(Serialisable):
         """
         Convert to NamedStyle objects and remove duplicates
         """
-        styles = {}
-        for ns in self.cellStyle:
-            style = NamedStyle(name=ns.name,
-                                hidden=ns.hidden
-                                )
+
+        def sort_fn(v):
+            return v.xfId
+
+        styles = OrderedDict()
+        for ns in sorted(self.cellStyle, key=sort_fn):
+            style = NamedStyle(
+                name=ns.name,
+                hidden=ns.hidden
+            )
             style.builtinId = ns.builtinId
             style.xfId = ns.xfId
             styles[ns.name] = style
-        return styles
+        return NamedStyles(styles.values())
+
+
+class NamedStyles(list):
+    """
+    Named styles are editable and can be applied to multiple objects
+    """
+
+    @property
+    def names(self):
+        return [s.name for s in self]
+
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return super(NamedStyles, self).__getitem__(key)
+        names = self.names
+        if key not in names:
+            raise KeyError("No named style with the name{0} exists".format(key))
+        for idx, name in enumerate(names):
+            if name == key:
+                return self[idx]
+
+
+    def append(self, object):
+        if not isinstance(object, NamedStyle):
+            raise TypeError("""Only NamedStyle instances can be added""")
+        elif object.name in self.names:
+            raise ValueError("""Style {0} exists already""".format(object.name))
+        super(NamedStyles, self).append(object)
