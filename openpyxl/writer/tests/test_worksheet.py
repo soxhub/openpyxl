@@ -83,7 +83,7 @@ def test_col_style(write_cols, ColumnDimension, DummyWorksheet):
 def test_lots_cols(write_cols, ColumnDimension, DummyWorksheet):
     from openpyxl.styles import Font
     ws = DummyWorksheet
-    from openpyxl.cell import get_column_letter
+    from openpyxl.utils import get_column_letter
     for i in range(1, 15):
         label = get_column_letter(i)
         cd = ColumnDimension(worksheet=ws)

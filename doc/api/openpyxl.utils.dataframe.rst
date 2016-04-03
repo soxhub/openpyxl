@@ -1,7 +1,7 @@
-openpyxl.styles.hashable module
+openpyxl.utils.dataframe module
 ===============================
 
-.. automodule:: openpyxl.styles.hashable
+.. automodule:: openpyxl.utils.dataframe
     :members:
     :undoc-members:
     :show-inheritance:

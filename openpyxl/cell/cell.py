@@ -352,3 +352,7 @@ class Cell(StyleableObject):
         elif value is None and self._comment:
             self._comment.parent = None
         self._comment = value
+
+
+def WriteOnlyCell(ws=None, value=None):
+    return Cell(worksheet=ws, column='A', row=1, value=value)

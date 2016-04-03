@@ -45,7 +45,7 @@ Deprecations
 * Worksheet point_pos method
 * Worksheet add_print_title method
 * Worksheet HeaderFooter attribute, replaced by individual ones
-* Workbook get_named_range, add_named_range, remove_named_range
+* Workbook get_named_range, add_named_range, remove_named_range, get_sheet_names, get_sheet_by_name
 * Comment text attribute
 * Use of range strings deprecated for ws.iter_rows()
 * Use of coordinates deprecated for ws.cell()
@@ -59,11 +59,11 @@ Bug fixes
 * `#397 <https://bitbucket.org/openpyxl/openpyxl/issues/397>`_ Add support for ranges of rows and columns
 * `#446 <https://bitbucket.org/openpyxl/openpyxl/issues/446>`_ Workbook with definedNames corrupted by openpyxl
 * `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
-* `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501 >`_ Discarding named ranges can lead to corrupt files
+* `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501>`_ Discarding named ranges can lead to corrupt files
 * `#574 <https://bitbucket.org/openpyxl/openpyxl/issues/574>`_ Exception raised when using the class method to parse Relationships
-* `#579 <https://bitbucket.org/openpyxl/openpyxl/issues/579 >`_ Crashes when reading defined names with no content
-* `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597 >`_ Cannot read worksheets without coordinates
-* `#617 <https://bitbucket.org/openpyxl/openpyxl/issues/617 >`_ Customised named styles not correctly preserved
+* `#579 <https://bitbucket.org/openpyxl/openpyxl/issues/579>`_ Crashes when reading defined names with no content
+* `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597>`_ Cannot read worksheets without coordinates
+* `#617 <https://bitbucket.org/openpyxl/openpyxl/issues/617>`_ Customised named styles not correctly preserved
 
 
 2.3.5 (unreleased)
