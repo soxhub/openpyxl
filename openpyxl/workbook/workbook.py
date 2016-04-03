@@ -4,7 +4,6 @@ from __future__ import absolute_import
 """Workbook is the top-level container for all document information."""
 
 from openpyxl.compat import deprecated
-from openpyxl.compat import OrderedDict
 from openpyxl.worksheet import Worksheet
 
 from openpyxl.utils.indexed_list import IndexedList
