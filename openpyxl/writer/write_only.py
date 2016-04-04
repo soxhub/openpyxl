@@ -13,6 +13,7 @@ from openpyxl.compat import removed_method
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.related import Related
+from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
 
@@ -21,7 +22,6 @@ from .relations import write_rels
 from .worksheet import (
     write_cell,
     write_drawing,
-    write_format,
 )
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element
@@ -83,11 +83,14 @@ class WriteOnlyWorksheet(Worksheet):
                     pr = self.sheet_properties.to_tree()
 
                 xf.write(pr)
-
                 xf.write(self.views.to_tree())
-                xf.write(write_format(self))
 
                 cols = self.column_dimensions.to_tree()
+
+                sheet_format = SheetFormatProperties()
+                sheet_format.outlineLevelCol = self.column_dimensions.max_outline
+                xf.write(sheet_format.to_tree())
+
                 if cols is not None:
                     xf.write(cols)
 

@@ -30,17 +30,9 @@ from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
 from openpyxl.worksheet.header_footer import HeaderFooter
+from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from .etree_worksheet import write_cell
-
-
-def write_format(worksheet):
-    attrs = {'defaultRowHeight': '15', 'baseColWidth': '10'}
-    max_outline = worksheet.column_dimensions.max_outline
-    if max_outline:
-        attrs['outlineLevelCol'] = str(max_outline)
-
-    return Element('sheetFormatPr', attrs)
 
 
 def write_mergecells(worksheet):
@@ -123,9 +115,11 @@ def write_worksheet(worksheet, shared_strings):
 
             xf.write(ws.views.to_tree())
 
-            xf.write(write_format(worksheet))
-
             cols = worksheet.column_dimensions.to_tree()
+            sheet_format = SheetFormatProperties()
+            sheet_format.outlineLevelCol = worksheet.column_dimensions.max_outline
+            xf.write(sheet_format.to_tree())
+
             if cols is not None:
                 xf.write(cols)
 

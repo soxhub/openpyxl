@@ -47,31 +47,6 @@ def ColumnDimension():
 
 
 @pytest.fixture
-def write_format():
-    from .. worksheet import write_format
-    return write_format
-
-
-def test_sheet_format(write_format, ColumnDimension, DummyWorksheet):
-    fmt = write_format(DummyWorksheet)
-    xml = tostring(fmt)
-    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10"/>"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
-def test_outline_format(write_format, ColumnDimension, DummyWorksheet):
-    worksheet = DummyWorksheet
-    worksheet.column_dimensions['A'] = ColumnDimension(worksheet=worksheet,
-                                                       outline_level=1)
-    fmt = write_format(worksheet)
-    xml = tostring(fmt)
-    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10" outlineLevelCol="1" />"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
-@pytest.fixture
 def write_rows():
     from .. etree_worksheet import write_rows
     return write_rows

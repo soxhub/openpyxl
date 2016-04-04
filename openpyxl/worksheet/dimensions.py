@@ -14,6 +14,7 @@ from openpyxl.descriptors import (
     String,
     Alias,
 )
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.styles.cell_style import StyleArray
 
@@ -176,6 +177,7 @@ class DimensionHolder(BoundDictionary):
 
     def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
+        self.max_outline = None
         super(DimensionHolder, self).__init__(reference, default_factory)
 
 
@@ -201,13 +203,6 @@ class DimensionHolder(BoundDictionary):
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
 
 
-    @property
-    def max_outline(self):
-        dimensions_outline = set((dim.outline_level for dim in self.values()))
-        if dimensions_outline:
-            return max(dimensions_outline)
-
-
     def to_tree(self):
 
         def sorter(value):
@@ -215,11 +210,52 @@ class DimensionHolder(BoundDictionary):
 
         el = Element('cols')
         obj = None
+        outlines = set()
 
         for col in sorted(self.values(), key=sorter):
             obj = col.to_tree()
+            outlines.add(col.outlineLevel)
             if obj is not None:
                 el.append(obj)
 
+        if outlines:
+            self.max_outline = max(outlines)
+
         if obj is not None:
             return el
+
+
+class SheetFormatProperties(Serialisable):
+
+    tagname = "sheetFormatPr"
+
+    baseColWidth = Integer(allow_none=True)
+    defaultColWidth = Float(allow_none=True)
+    defaultRowHeight = Float()
+    customHeight = Bool(allow_none=True)
+    zeroHeight = Bool(allow_none=True)
+    thickTop = Bool(allow_none=True)
+    thickBottom = Bool(allow_none=True)
+    outlineLevelRow = Integer(allow_none=True)
+    outlineLevelCol = Integer(allow_none=True)
+
+    def __init__(self,
+                 baseColWidth=10,
+                 defaultColWidth=None,
+                 defaultRowHeight=15,
+                 customHeight=None,
+                 zeroHeight=None,
+                 thickTop=None,
+                 thickBottom=None,
+                 outlineLevelRow=None,
+                 outlineLevelCol=None,
+                ):
+        self.baseColWidth = baseColWidth
+        self.defaultColWidth = defaultColWidth
+        self.defaultRowHeight = defaultRowHeight
+        self.customHeight = customHeight
+        self.zeroHeight = zeroHeight
+        self.thickTop = thickTop
+        self.thickBottom = thickBottom
+        self.outlineLevelRow = outlineLevelRow
+        self.outlineLevelCol = outlineLevelCol
