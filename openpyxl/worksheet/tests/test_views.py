@@ -16,7 +16,7 @@ def SheetView():
 
 @pytest.mark.parametrize("value, result",
                          [
-                             (True, {'workbookViewId': '0'}),
+                             (True, {'workbookViewId': '0', 'showGridLines':'1'}),
                              (False, {'workbookViewId': '0', 'showGridLines':'0'})
                          ]
                          )

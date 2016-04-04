@@ -76,7 +76,7 @@ class SheetView(Serialisable):
         self,
         windowProtection=None,
         showFormulas=None,
-        showGridLines=True,
+        showGridLines=None,
         showRowColHeaders=None,
         showZeros=None,
         rightToLeft=None,
@@ -119,12 +119,3 @@ class SheetView(Serialisable):
         if selection is None:
             selection = (Selection(), )
         self.selection = selection
-
-    def __iter__(self):
-
-        for attr in self.__attrs__:
-            value = getattr(self, attr)
-            if attr == 'showGridLines' and value:
-                continue
-            if value is not None:
-                yield attr, safe_string(value)
