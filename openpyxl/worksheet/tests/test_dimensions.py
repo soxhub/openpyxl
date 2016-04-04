@@ -98,3 +98,46 @@ def test_row_dimension():
     ws = Worksheet(DummyWorkbook())
     row_info = ws.row_dimensions
     assert isinstance(row_info[1], RowDimension)
+
+
+def test_no_cols(write_cols, DummyWorksheet):
+
+    cols = write_cols(DummyWorksheet)
+    assert cols is None
+
+
+@pytest.mark.xfail
+def test_col_widths(write_cols, ColumnDimension, DummyWorksheet):
+    ws = DummyWorksheet
+    ws.column_dimensions['A'] = ColumnDimension(worksheet=ws, width=4)
+    cols = write_cols(ws)
+    xml = tostring(cols)
+    expected = """<cols><col width="4" min="1" max="1" customWidth="1"></col></cols>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+@pytest.mark.xfail
+def test_col_style(write_cols, ColumnDimension, DummyWorksheet):
+    from openpyxl.styles import Font
+    ws = DummyWorksheet
+    cd = ColumnDimension(worksheet=ws)
+    ws.column_dimensions['A'] = cd
+    cd.font = Font(color="FF0000")
+    cols = write_cols(ws)
+    xml = tostring(cols)
+    expected = """<cols><col max="1" min="1" style="1"></col></cols>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+@pytest.mark.xfail
+def test_outline_cols(write_cols, ColumnDimension, DummyWorksheet):
+    worksheet = DummyWorksheet
+    worksheet.column_dimensions['A'] = ColumnDimension(worksheet=worksheet,
+                                                       outline_level=1)
+    cols = write_cols(worksheet)
+    xml = tostring(cols)
+    expected = """<cols><col max="1" min="1" outlineLevel="1"/></cols>"""
+    diff = compare_xml(expected, xml)
+    assert diff is None, diff

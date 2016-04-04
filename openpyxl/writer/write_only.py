@@ -20,7 +20,6 @@ from .excel import ExcelWriter
 from .relations import write_rels
 from .worksheet import (
     write_cell,
-    write_cols,
     write_drawing,
     write_format,
 )
@@ -88,7 +87,7 @@ class WriteOnlyWorksheet(Worksheet):
                 xf.write(self.views.to_tree())
                 xf.write(write_format(self))
 
-                cols = write_cols(self)
+                cols = self.column_dimensions.to_tree()
                 if cols is not None:
                     xf.write(cols)
 

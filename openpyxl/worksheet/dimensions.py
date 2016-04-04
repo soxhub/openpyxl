@@ -18,6 +18,7 @@ from openpyxl.styles.styleable import StyleableObject
 from openpyxl.styles.cell_style import StyleArray
 
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.xml.functions import Element
 
 
 class Dimension(Strict, StyleableObject):
@@ -149,10 +150,23 @@ class ColumnDimension(Dimension):
         super(ColumnDimension, self).__init__(index, hidden, outlineLevel,
                                               collapsed, worksheet, style=style)
 
+
     @property
     def customWidth(self):
         """Always true if there is a width for the column"""
         return self.width is not None
+
+
+    def to_tree(self):
+        attrs = dict(self)
+        if not attrs:
+            return
+        if not all([self.min, self.max]):
+            idx = column_index_from_string(self.index)
+            self.min = self.max = idx
+            attrs['min'] = safe_string(self.min)
+            attrs['max'] = safe_string(self.max)
+        return Element("col", **attrs)
 
 
 class DimensionHolder(BoundDictionary):
@@ -185,3 +199,27 @@ class DimensionHolder(BoundDictionary):
             if column_letter in self:
                 del self[column_letter]
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
+
+
+    @property
+    def max_outline(self):
+        dimensions_outline = set((dim.outline_level for dim in self.values()))
+        if dimensions_outline:
+            return max(dimensions_outline)
+
+
+    def to_tree(self):
+
+        def sorter(value):
+            return column_index_from_string(value.index)
+
+        el = Element('cols')
+        obj = None
+
+        for col in sorted(self.values(), key=sorter):
+            obj = col.to_tree()
+            if obj is not None:
+                el.append(obj)
+
+        if obj is not None:
+            return el

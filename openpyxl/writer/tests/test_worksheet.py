@@ -16,6 +16,7 @@ from .. relations import write_rels
 
 from openpyxl.tests.helper import compare_xml
 from openpyxl.worksheet.properties import PageSetupProperties
+from openpyxl.worksheet.dimensions import DimensionHolder
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 
 
@@ -33,84 +34,16 @@ def DummyWorksheet():
 
         def __init__(self):
             self._styles = {}
-            self.column_dimensions = {}
+            self.column_dimensions = DimensionHolder(self)
             self.parent = Workbook()
 
     return DummyWorksheet()
 
 
 @pytest.fixture
-def write_cols():
-    from .. worksheet import write_cols
-    return write_cols
-
-
-@pytest.fixture
 def ColumnDimension():
     from openpyxl.worksheet.dimensions import ColumnDimension
     return ColumnDimension
-
-
-def test_no_cols(write_cols, DummyWorksheet):
-
-    cols = write_cols(DummyWorksheet)
-    assert cols is None
-
-
-def test_col_widths(write_cols, ColumnDimension, DummyWorksheet):
-    ws = DummyWorksheet
-    ws.column_dimensions['A'] = ColumnDimension(worksheet=ws, width=4)
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols><col width="4" min="1" max="1" customWidth="1"></col></cols>"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_col_style(write_cols, ColumnDimension, DummyWorksheet):
-    from openpyxl.styles import Font
-    ws = DummyWorksheet
-    cd = ColumnDimension(worksheet=ws)
-    ws.column_dimensions['A'] = cd
-    cd.font = Font(color="FF0000")
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols><col max="1" min="1" style="1"></col></cols>"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_lots_cols(write_cols, ColumnDimension, DummyWorksheet):
-    from openpyxl.styles import Font
-    ws = DummyWorksheet
-    from openpyxl.utils import get_column_letter
-    for i in range(1, 15):
-        label = get_column_letter(i)
-        cd = ColumnDimension(worksheet=ws)
-        cd.font = Font(name=label)
-        dict(cd)  # create style_id in order for test
-        ws.column_dimensions[label] = cd
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols>
-   <col max="1" min="1" style="1"></col>
-   <col max="2" min="2" style="2"></col>
-   <col max="3" min="3" style="3"></col>
-   <col max="4" min="4" style="4"></col>
-   <col max="5" min="5" style="5"></col>
-   <col max="6" min="6" style="6"></col>
-   <col max="7" min="7" style="7"></col>
-   <col max="8" min="8" style="8"></col>
-   <col max="9" min="9" style="9"></col>
-   <col max="10" min="10" style="10"></col>
-   <col max="11" min="11" style="11"></col>
-   <col max="12" min="12" style="12"></col>
-   <col max="13" min="13" style="13"></col>
-   <col max="14" min="14" style="14"></col>
- </cols>
-"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
 
 
 @pytest.fixture
@@ -134,17 +67,6 @@ def test_outline_format(write_format, ColumnDimension, DummyWorksheet):
     fmt = write_format(worksheet)
     xml = tostring(fmt)
     expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10" outlineLevelCol="1" />"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
-def test_outline_cols(write_cols, ColumnDimension, DummyWorksheet):
-    worksheet = DummyWorksheet
-    worksheet.column_dimensions['A'] = ColumnDimension(worksheet=worksheet,
-                                                       outline_level=1)
-    cols = write_cols(worksheet)
-    xml = tostring(cols)
-    expected = """<cols><col max="1" min="1" outlineLevel="1"/></cols>"""
     diff = compare_xml(expected, xml)
     assert diff is None, diff
 
