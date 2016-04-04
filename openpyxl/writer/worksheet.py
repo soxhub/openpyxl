@@ -30,45 +30,9 @@ from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
 from openpyxl.worksheet.header_footer import HeaderFooter
+from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from .etree_worksheet import write_cell
-
-
-def write_format(worksheet):
-    attrs = {'defaultRowHeight': '15', 'baseColWidth': '10'}
-    dimensions_outline = [dim.outline_level
-                          for dim in worksheet.column_dimensions.values()]
-    if dimensions_outline:
-        outline_level = max(dimensions_outline)
-        if outline_level:
-            attrs['outlineLevelCol'] = str(outline_level)
-    return Element('sheetFormatPr', attrs)
-
-
-def write_cols(worksheet):
-    """Write worksheet columns to xml.
-
-    <cols> may never be empty -
-    spec says must contain at least one child
-    """
-
-    def sorter(value):
-        return column_index_from_string(value[0])
-
-    el = Element('cols')
-    obj = None
-
-    for idx, col in sorted(worksheet.column_dimensions.items(), key=sorter):
-        if dict(col) == {}:
-            continue
-        idx = column_index_from_string(idx)
-        obj = Element('col', dict(col))
-        obj.set('min', '%d' % (col.min or idx))
-        obj.set('max', '%d' % (col.max or idx))
-        el.append(obj)
-
-    if obj is not None:
-        return el
 
 
 def write_mergecells(worksheet):
@@ -151,8 +115,11 @@ def write_worksheet(worksheet, shared_strings):
 
             xf.write(ws.views.to_tree())
 
-            xf.write(write_format(worksheet))
-            cols = write_cols(worksheet)
+            cols = worksheet.column_dimensions.to_tree()
+            sheet_format = SheetFormatProperties()
+            sheet_format.outlineLevelCol = worksheet.column_dimensions.max_outline
+            xf.write(sheet_format.to_tree())
+
             if cols is not None:
                 xf.write(cols)
 

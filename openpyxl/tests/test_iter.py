@@ -213,18 +213,6 @@ class TestRead:
         cell = list(rows)[0][0]
         assert cell.value == value
 
-
-    def test_read_cols(self, sample_workbook):
-        wb = sample_workbook
-        ws = wb["Sheet2 - Numbers"]
-        cols = tuple(ws.columns)
-        first = cols[0][0]
-        last = cols[-1][-1]
-
-        assert first.value is None
-        assert last.coordinate, last.value == ("K30", 30)
-
-
     @pytest.mark.parametrize("cell, expected",
         [
         ("G9", True),

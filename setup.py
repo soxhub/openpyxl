@@ -17,12 +17,13 @@ Thee manifest.in file is used for data files.
 import sys
 import os
 import warnings
+
 if sys.version_info < (2, 7):
     raise Exception("Python >= 2.7 is required.")
 elif sys.version_info[:2] == (3, 3):
-    warnings.warn("Python 3.2 is no longer officially supported")
+    warnings.warn("Python 3.2 is not supported")
 
-from distutils.core import setup
+from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:

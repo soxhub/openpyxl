@@ -14,10 +14,12 @@ from openpyxl.descriptors import (
     String,
     Alias,
 )
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.styles.cell_style import StyleArray
 
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.xml.functions import Element
 
 
 class Dimension(Strict, StyleableObject):
@@ -149,10 +151,23 @@ class ColumnDimension(Dimension):
         super(ColumnDimension, self).__init__(index, hidden, outlineLevel,
                                               collapsed, worksheet, style=style)
 
+
     @property
     def customWidth(self):
         """Always true if there is a width for the column"""
         return self.width is not None
+
+
+    def to_tree(self):
+        attrs = dict(self)
+        if not attrs:
+            return
+        if not all([self.min, self.max]):
+            idx = column_index_from_string(self.index)
+            self.min = self.max = idx
+            attrs['min'] = safe_string(self.min)
+            attrs['max'] = safe_string(self.max)
+        return Element("col", **attrs)
 
 
 class DimensionHolder(BoundDictionary):
@@ -162,6 +177,7 @@ class DimensionHolder(BoundDictionary):
 
     def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
+        self.max_outline = None
         super(DimensionHolder, self).__init__(reference, default_factory)
 
 
@@ -185,3 +201,61 @@ class DimensionHolder(BoundDictionary):
             if column_letter in self:
                 del self[column_letter]
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
+
+
+    def to_tree(self):
+
+        def sorter(value):
+            return column_index_from_string(value.index)
+
+        el = Element('cols')
+        obj = None
+        outlines = set()
+
+        for col in sorted(self.values(), key=sorter):
+            obj = col.to_tree()
+            outlines.add(col.outlineLevel)
+            if obj is not None:
+                el.append(obj)
+
+        if outlines:
+            self.max_outline = max(outlines)
+
+        if obj is not None:
+            return el
+
+
+class SheetFormatProperties(Serialisable):
+
+    tagname = "sheetFormatPr"
+
+    baseColWidth = Integer(allow_none=True)
+    defaultColWidth = Float(allow_none=True)
+    defaultRowHeight = Float()
+    customHeight = Bool(allow_none=True)
+    zeroHeight = Bool(allow_none=True)
+    thickTop = Bool(allow_none=True)
+    thickBottom = Bool(allow_none=True)
+    outlineLevelRow = Integer(allow_none=True)
+    outlineLevelCol = Integer(allow_none=True)
+
+    def __init__(self,
+                 baseColWidth=10,
+                 defaultColWidth=None,
+                 defaultRowHeight=15,
+                 customHeight=None,
+                 zeroHeight=None,
+                 thickTop=None,
+                 thickBottom=None,
+                 outlineLevelRow=None,
+                 outlineLevelCol=None,
+                ):
+        self.baseColWidth = baseColWidth
+        self.defaultColWidth = defaultColWidth
+        self.defaultRowHeight = defaultRowHeight
+        self.customHeight = customHeight
+        self.zeroHeight = zeroHeight
+        self.thickTop = thickTop
+        self.thickBottom = thickBottom
+        self.outlineLevelRow = outlineLevelRow
+        self.outlineLevelCol = outlineLevelCol
