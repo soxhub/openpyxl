@@ -7,7 +7,6 @@ from itertools import islice
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import flatten
 from openpyxl.cell import Cell
 from openpyxl.utils import coordinate_from_string
 from openpyxl.comments import Comment
@@ -234,7 +233,7 @@ class TestWorksheet:
             ('This is A1', 'This is B1'),
             ('This is A2', 'This is B2'),
         )
-        for e, v in zip(expected, flatten(vals)):
+        for e, v in zip(expected, ws.values):
             assert e == tuple(v)
 
 

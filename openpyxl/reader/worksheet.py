@@ -13,7 +13,8 @@ from openpyxl.cell import Cell
 from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
-from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
+from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.dimensions import ColumnDimension, RowDimension
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
