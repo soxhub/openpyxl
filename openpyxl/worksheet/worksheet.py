@@ -58,6 +58,7 @@ from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
 
+@deprecated("Use the worksheet.values property")
 def flatten(results):
     """Return cell values row-by-row"""
 
@@ -191,10 +192,8 @@ class Worksheet(_WorkbookChild):
             return self.sheet_view.pane.topLeftCell
 
     @freeze_panes.setter
-    def freeze_panes(self, topLeftCell):
-        if not topLeftCell:
-            topLeftCell = None
-        elif isinstance(topLeftCell, str):
+    def freeze_panes(self, topLeftCell=None):
+        if isinstance(topLeftCell, str):
             topLeftCell = topLeftCell.upper()
         else:  # Assume a cell
             topLeftCell = topLeftCell.coordinate
