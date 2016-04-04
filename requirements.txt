@@ -1,8 +1,7 @@
 pip>=6.0
 lxml>=3.3.4
-jdcal
-et-xmlfile
 pytest
+pytest-cov
 pillow
 tox
 pandas
