@@ -134,7 +134,6 @@ class Worksheet(_WorkbookChild):
         self._print_area = None
         self.page_margins = PageMargins()
         self.views = SheetViewList()
-        self.sheet_view = self.views.sheetView[0]
         self.protection = SheetProtection()
 
         self._current_row = 0
@@ -149,8 +148,14 @@ class Worksheet(_WorkbookChild):
 
 
     @property
+    def sheet_view(self):
+        return self.views.sheetView[0]
+
+
+    @property
     def selected_cell(self):
         return self.sheet_view.selection.sqref
+
 
     @property
     def active_cell(self):
