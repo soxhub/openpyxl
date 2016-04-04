@@ -193,9 +193,7 @@ class Worksheet(_WorkbookChild):
 
     @freeze_panes.setter
     def freeze_panes(self, topLeftCell=None):
-        if isinstance(topLeftCell, str):
-            topLeftCell = topLeftCell.upper()
-        else:  # Assume a cell
+        if isinstance(topLeftCell, Cell):
             topLeftCell = topLeftCell.coordinate
         if topLeftCell == 'A1':
             topLeftCell = None
@@ -204,9 +202,7 @@ class Worksheet(_WorkbookChild):
             self.sheet_view.pane = None
             return
 
-        if topLeftCell is not None:
-            colName, row = coordinate_from_string(topLeftCell)
-            column = column_index_from_string(colName)
+        row, column = coordinate_to_tuple(topLeftCell)
 
         view = self.sheet_view
         view.pane = Pane(topLeftCell=topLeftCell,

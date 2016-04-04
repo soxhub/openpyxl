@@ -386,7 +386,7 @@ class TestWorksheet:
         ws.freeze_panes = ''
         assert ws.freeze_panes is None
 
-        ws.freeze_panes = 'c5'
+        ws.freeze_panes = 'C5'
         assert ws.freeze_panes == 'C5'
 
         ws.freeze_panes = ws['A1']
