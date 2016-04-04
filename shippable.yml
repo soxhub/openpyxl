@@ -7,15 +7,12 @@ python:
   - "3.5"
 # command to run tests
 
-install:
-  - pip install -e .
-  - pip install -r requirements.txt
-
-before_script:
-  mkdir -p shippable/codecoverage shippable/testresults
-
-script:
-  py.test --cov-report xml --cov openpyxl --junit-xml=shippable/testresults/results.xml
+build:
+  ci:
+    - mkdir -p shippable/codecoverage shippable/testresults
+    - pip install -e .
+    - pip install -r requirements.txt
+    - py.test --cov-report xml --cov openpyxl --junit-xml=shippable/testresults/results.xml
 
 notifications:
   email:
