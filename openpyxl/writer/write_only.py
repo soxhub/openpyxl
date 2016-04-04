@@ -84,9 +84,8 @@ class WriteOnlyWorksheet(Worksheet):
                     pr = self.sheet_properties.to_tree()
 
                 xf.write(pr)
-                views = Element('sheetViews')
-                views.append(self.sheet_view.to_tree())
-                xf.write(views)
+
+                xf.write(self.views.to_tree())
                 xf.write(write_format(self))
 
                 cols = write_cols(self)
