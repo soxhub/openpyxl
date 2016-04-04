@@ -49,11 +49,20 @@ from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .datavalidation import DataValidationList
-from .page import PrintPageSetup, PageMargins, PrintOptions
+from .page import (
+    PrintPageSetup,
+    PageMargins,
+    PrintOptions,
+)
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
 from .filters import AutoFilter, SortState
-from .views import SheetView, Pane, Selection
+from .views import (
+    SheetView,
+    Pane,
+    Selection,
+    SheetViewList,
+)
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
@@ -124,7 +133,8 @@ class Worksheet(_WorkbookChild):
         self._print_cols = None
         self._print_area = None
         self.page_margins = PageMargins()
-        self.sheet_view = SheetView()
+        self.views = SheetViewList()
+        self.sheet_view = self.views.sheetView[0]
         self.protection = SheetProtection()
 
         self._current_row = 0

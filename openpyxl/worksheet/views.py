@@ -1,10 +1,18 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.descriptors import Bool, Integer, String, Set, Float, Typed, NoneSet, Sequence
+from openpyxl.descriptors import (
+    Bool,
+    Integer,
+    String,
+    Set,
+    Float,
+    Typed,
+    NoneSet,
+    Sequence,
+)
+from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
-
-from openpyxl.compat import safe_string
 
 
 class Pane(Serialisable):
@@ -119,3 +127,21 @@ class SheetView(Serialisable):
         if selection is None:
             selection = (Selection(), )
         self.selection = selection
+
+
+class SheetViewList(Serialisable):
+
+    tagname = "sheetViews"
+
+    sheetView = Sequence(expected_type=SheetView, )
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('sheetView',)
+
+    def __init__(self,
+                 sheetView=None,
+                 extLst=None,
+                ):
+        if sheetView is None:
+            sheetView = [SheetView()]
+        self.sheetView = sheetView

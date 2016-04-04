@@ -52,3 +52,34 @@ def test_serialise(SheetView):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+@pytest.fixture
+def SheetViewList():
+    from ..views import SheetViewList
+    return SheetViewList
+
+
+class TestSheetViews:
+
+    def test_ctor(self, SheetViewList):
+        views = SheetViewList()
+        xml = tostring(views.to_tree())
+        expected = """
+        <sheetViews >
+           <sheetView workbookViewId="0">
+             <selection activeCell="A1" sqref="A1"></selection>
+           </sheetView>
+       </sheetViews>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SheetViewList):
+        src = """
+        <sheetViews />
+        """
+        node = fromstring(src)
+        views = SheetViewList.from_tree(node)
+        assert views == SheetViewList()
