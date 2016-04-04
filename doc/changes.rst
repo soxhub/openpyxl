@@ -45,6 +45,7 @@ Deprecations
 * Worksheet point_pos method
 * Worksheet add_print_title method
 * Worksheet HeaderFooter attribute, replaced by individual ones
+* Flatten function for cells
 * Workbook get_named_range, add_named_range, remove_named_range, get_sheet_names, get_sheet_by_name
 * Comment text attribute
 * Use of range strings deprecated for ws.iter_rows()

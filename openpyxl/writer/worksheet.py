@@ -149,9 +149,7 @@ def write_worksheet(worksheet, shared_strings):
             dim = Element('dimension', {'ref': '%s' % worksheet.calculate_dimension()})
             xf.write(dim)
 
-            views = Element('sheetViews')
-            views.append(worksheet.sheet_view.to_tree())
-            xf.write(views)
+            xf.write(ws.views.to_tree())
 
             xf.write(write_format(worksheet))
             cols = write_cols(worksheet)

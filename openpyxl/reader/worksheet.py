@@ -13,12 +13,13 @@ from openpyxl.cell import Cell
 from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
-from openpyxl.worksheet import Worksheet, ColumnDimension, RowDimension
+from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.dimensions import ColumnDimension, RowDimension
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.protection import SheetProtection
-from openpyxl.worksheet.views import SheetView
+from openpyxl.worksheet.views import SheetViewList
 from openpyxl.worksheet.datavalidation import DataValidationList
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
@@ -84,11 +85,10 @@ class WorkSheetParser(object):
         dispatcher = {
             '{%s}mergeCells' % SHEET_MAIN_NS: self.parse_merge,
             '{%s}col' % SHEET_MAIN_NS: self.parse_column_dimensions,
-            '{%s}row' % SHEET_MAIN_NS: self.parse_row_row,
+            '{%s}row' % SHEET_MAIN_NS: self.parse_row,
             '{%s}conditionalFormatting' % SHEET_MAIN_NS: self.parser_conditional_formatting,
             '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
             '{%s}sheetProtection' % SHEET_MAIN_NS: self.parse_sheet_protection,
-            '{%s}sheetViews' % SHEET_MAIN_NS: self.parse_sheet_views,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
             '{%s}hyperlink' % SHEET_MAIN_NS: self.parse_hyperlinks,
                       }
@@ -100,8 +100,9 @@ class WorkSheetParser(object):
             '{%s}headerFooter' % SHEET_MAIN_NS: ('HeaderFooter', HeaderFooter),
             '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
             '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
-            '{%s}sortState' % SHEET_MAIN_NS:  ('sort_state', SortState),
-            '{%s}sheetPr' % SHEET_MAIN_NS:  ('sheet_properties', WorksheetProperties),
+            '{%s}sortState' % SHEET_MAIN_NS: ('sort_state', SortState),
+            '{%s}sheetPr' % SHEET_MAIN_NS: ('sheet_properties', WorksheetProperties),
+            '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
         }
 
         tags = dispatcher.keys()
@@ -241,7 +242,7 @@ class WorkSheetParser(object):
         self.ws.column_dimensions[column] = dim
 
 
-    def parse_row_row(self, row):
+    def parse_row(self, row):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
@@ -290,13 +291,6 @@ class WorkSheetParser(object):
             # For now just save the legacy drawing id.
             # We will later look up the file name
             self.ws.legacy_drawing = element.get('{%s}id' % REL_NS)
-
-
-    def parse_sheet_views(self, element):
-        for el in element.findall("{%s}sheetView" % SHEET_MAIN_NS):
-            # according to the specification the last view wins
-            pass
-        self.ws.sheet_view = SheetView.from_tree(el)
 
 
     def parse_extensions(self, element):

@@ -49,15 +49,25 @@ from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
 
 from .datavalidation import DataValidationList
-from .page import PrintPageSetup, PageMargins, PrintOptions
+from .page import (
+    PrintPageSetup,
+    PageMargins,
+    PrintOptions,
+)
 from .dimensions import ColumnDimension, RowDimension, DimensionHolder
 from .protection import SheetProtection
 from .filters import AutoFilter, SortState
-from .views import SheetView, Pane, Selection
+from .views import (
+    SheetView,
+    Pane,
+    Selection,
+    SheetViewList,
+)
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
 
+@deprecated("Use the worksheet.values property")
 def flatten(results):
     """Return cell values row-by-row"""
 
@@ -123,13 +133,12 @@ class Worksheet(_WorkbookChild):
         self._print_cols = None
         self._print_area = None
         self.page_margins = PageMargins()
-        self.sheet_view = SheetView()
+        self.views = SheetViewList()
         self.protection = SheetProtection()
 
         self._current_row = 0
         self.auto_filter = AutoFilter()
         self.sort_state = SortState()
-        self._freeze_panes = None
         self.paper_size = None
         self.formula_attributes = {}
         self.orientation = None
@@ -139,8 +148,14 @@ class Worksheet(_WorkbookChild):
 
 
     @property
+    def sheet_view(self):
+        return self.views.sheetView[0]
+
+
+    @property
     def selected_cell(self):
         return self.sheet_view.selection.sqref
+
 
     @property
     def active_cell(self):
@@ -191,12 +206,8 @@ class Worksheet(_WorkbookChild):
             return self.sheet_view.pane.topLeftCell
 
     @freeze_panes.setter
-    def freeze_panes(self, topLeftCell):
-        if not topLeftCell:
-            topLeftCell = None
-        elif isinstance(topLeftCell, str):
-            topLeftCell = topLeftCell.upper()
-        else:  # Assume a cell
+    def freeze_panes(self, topLeftCell=None):
+        if isinstance(topLeftCell, Cell):
             topLeftCell = topLeftCell.coordinate
         if topLeftCell == 'A1':
             topLeftCell = None
@@ -205,9 +216,7 @@ class Worksheet(_WorkbookChild):
             self.sheet_view.pane = None
             return
 
-        if topLeftCell is not None:
-            colName, row = coordinate_from_string(topLeftCell)
-            column = column_index_from_string(colName)
+        row, column = coordinate_to_tuple(topLeftCell)
 
         view = self.sheet_view
         view.pane = Pane(topLeftCell=topLeftCell,
