@@ -158,15 +158,16 @@ class ColumnDimension(Dimension):
         return self.width is not None
 
 
+    def reindex(self):
+        """
+        Set boundaries for column definition
+        """
+        if not all([self.min, self.max]):
+            self.min = self.max = column_index_from_string(self.index)
+
+
     def to_tree(self):
         attrs = dict(self)
-        if not attrs:
-            return
-        if not all([self.min, self.max]):
-            idx = column_index_from_string(self.index)
-            self.min = self.max = idx
-            attrs['min'] = safe_string(self.min)
-            attrs['max'] = safe_string(self.max)
         return Element("col", **attrs)
 
 
@@ -206,7 +207,8 @@ class DimensionHolder(BoundDictionary):
     def to_tree(self):
 
         def sorter(value):
-            return column_index_from_string(value.index)
+            value.reindex()
+            return value.min
 
         el = Element('cols')
         obj = None

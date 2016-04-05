@@ -109,8 +109,16 @@ def ColumnDimension():
     return ColumnDimension
 
 
+def test_col_reindex(ColumnDimension):
+    cd = ColumnDimension(DummyWorksheet(), index="D")
+    assert dict(cd) == {}
+    cd.reindex()
+    assert dict(cd) == {'max': '4', 'min': '4'}
+
+
 def test_col_width(ColumnDimension):
     cd = ColumnDimension(DummyWorksheet(), index="A", width=4)
+    cd.reindex()
     col = cd.to_tree()
     xml = tostring(col)
     expected = """<col width="4" min="1" max="1" customWidth="1" />"""
@@ -126,6 +134,7 @@ def test_col_style(ColumnDimension):
     ws = Worksheet(Workbook())
     cd = ColumnDimension(ws, index="A")
     cd.font = Font(color="FF0000")
+    cd.reindex()
     col = cd.to_tree()
     xml = tostring(col)
     expected = """<col max="1" min="1" style="1" />"""
@@ -136,6 +145,7 @@ def test_col_style(ColumnDimension):
 def test_outline_cols(ColumnDimension):
     ws = DummyWorksheet()
     cd = ColumnDimension(ws, index="B", outline_level=1)
+    cd.reindex()
     col = cd.to_tree()
     xml = tostring(col)
     expected = """<col max="2" min="2" outlineLevel="1"/>"""
