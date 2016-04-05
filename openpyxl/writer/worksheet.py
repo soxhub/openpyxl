@@ -171,7 +171,7 @@ def write_worksheet(worksheet, shared_strings):
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
 
-            if len(ws.page_breaks):
+            if ws.page_breaks:
                 xf.write(ws.page_breaks.to_tree())
 
 
