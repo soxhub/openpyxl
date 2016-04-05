@@ -17,6 +17,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
+from openpyxl.worksheet.merge import MergeCells, MergeCell
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
@@ -31,14 +32,13 @@ from .etree_worksheet import write_cell
 
 def write_mergecells(worksheet):
     """Write merged cells to xml."""
-    cells = worksheet._merged_cells
-    if not cells:
+
+    merged = [MergeCell(ref) for ref in worksheet._merged_cells]
+
+    if not merged:
         return
 
-    merge = Element('mergeCells', count='%d' % len(cells))
-    for range_string in cells:
-        merge.append(Element('mergeCell', ref=range_string))
-    return merge
+    return MergeCells(mergeCell=merged).to_tree()
 
 
 def write_conditional_formatting(worksheet):
