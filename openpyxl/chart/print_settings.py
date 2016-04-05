@@ -1,11 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-"""
-Enclosing chart object. The various chart types are actually child objects.
-Will probably need to call this indirectly
-"""
-
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Float,
