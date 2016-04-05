@@ -6,23 +6,14 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-from openpyxl.compat import safe_string
 from openpyxl import LXML
 
 # package imports
-from openpyxl.utils import (
-    coordinate_from_string,
-    column_index_from_string,
-)
 from openpyxl.xml.functions import (
     Element,
-    SubElement,
     xmlfile,
 )
-from openpyxl.xml.constants import (
-    SHEET_MAIN_NS,
-    REL_NS,
-)
+from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
