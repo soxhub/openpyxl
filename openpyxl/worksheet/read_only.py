@@ -1,8 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-""" Iterators-based worksheet reader
-*Still very raw*
+""" Read worksheets on-demand
 """
 
 # compatibility
@@ -20,24 +19,23 @@ from openpyxl.utils import (
     get_column_letter,
     coordinate_to_tuple,
 )
-from openpyxl.utils.cell import range_boundaries
+from openpyxl.worksheet.dimensions import SheetDimension
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 
 
 def read_dimension(source):
     if hasattr(source, "encode"):
         return
+
     min_row = min_col =  max_row = max_col = None
     DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
     DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
     it = iterparse(source, tag=[DIMENSION_TAG, DATA_TAG])
+
     for _event, element in it:
         if element.tag == DIMENSION_TAG:
-            dim = element.get("ref")
-            try:
-                return range_boundaries(dim)
-            except AttributeError:
-                return
+            dim = SheetDimension.from_tree(element)
+            return dim.boundaries
 
         elif element.tag == DATA_TAG:
             # Dimensions missing

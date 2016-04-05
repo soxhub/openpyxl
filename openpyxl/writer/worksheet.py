@@ -6,45 +6,39 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 
-from openpyxl.compat import safe_string
 from openpyxl import LXML
 
 # package imports
-from openpyxl.utils import (
-    coordinate_from_string,
-    column_index_from_string,
-)
 from openpyxl.xml.functions import (
     Element,
-    SubElement,
     xmlfile,
 )
-from openpyxl.xml.constants import (
-    SHEET_MAIN_NS,
-    REL_NS,
-)
+from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.formatting import ConditionalFormatting
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
+from openpyxl.worksheet.merge import MergeCells, MergeCell
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.related import Related
 from openpyxl.worksheet.header_footer import HeaderFooter
-from openpyxl.worksheet.dimensions import SheetFormatProperties
+from openpyxl.worksheet.dimensions import (
+    SheetFormatProperties,
+    SheetDimension,
+)
 
 from .etree_worksheet import write_cell
 
 
 def write_mergecells(worksheet):
     """Write merged cells to xml."""
-    cells = worksheet._merged_cells
-    if not cells:
+
+    merged = [MergeCell(ref) for ref in worksheet._merged_cells]
+
+    if not merged:
         return
 
-    merge = Element('mergeCells', count='%d' % len(cells))
-    for range_string in cells:
-        merge.append(Element('mergeCell', ref=range_string))
-    return merge
+    return MergeCells(mergeCell=merged).to_tree()
 
 
 def write_conditional_formatting(worksheet):
@@ -107,80 +101,78 @@ def write_worksheet(worksheet, shared_strings):
     with xmlfile(out) as xf:
         with xf.element('worksheet', xmlns=SHEET_MAIN_NS):
 
-            props = worksheet.sheet_properties.to_tree()
+            props = ws.sheet_properties.to_tree()
             xf.write(props)
 
-            dim = Element('dimension', {'ref': '%s' % worksheet.calculate_dimension()})
-            xf.write(dim)
+            dim = SheetDimension(ref=ws.calculate_dimension())
+            xf.write(dim.to_tree())
 
             xf.write(ws.views.to_tree())
 
-            cols = worksheet.column_dimensions.to_tree()
+            cols = ws.column_dimensions.to_tree()
             sheet_format = SheetFormatProperties()
-            sheet_format.outlineLevelCol = worksheet.column_dimensions.max_outline
+            sheet_format.outlineLevelCol = ws.column_dimensions.max_outline
             xf.write(sheet_format.to_tree())
 
             if cols is not None:
                 xf.write(cols)
 
             # write data
-            write_rows(xf, worksheet)
+            write_rows(xf, ws)
 
-            if worksheet.protection.sheet:
-                xf.write(worksheet.protection.to_tree())
+            if ws.protection.sheet:
+                xf.write(ws.protection.to_tree())
 
-            if worksheet.auto_filter:
-                xf.write(worksheet.auto_filter.to_tree())
+            if ws.auto_filter:
+                xf.write(ws.auto_filter.to_tree())
 
-            if worksheet.sort_state:
-                xf.write(worksheet.sort_state.to_tree())
+            if ws.sort_state:
+                xf.write(ws.sort_state.to_tree())
 
-            merge = write_mergecells(worksheet)
+            merge = write_mergecells(ws)
             if merge is not None:
                 xf.write(merge)
 
-            cfs = write_conditional_formatting(worksheet)
+            cfs = write_conditional_formatting(ws)
             for cf in cfs:
                 xf.write(cf)
 
-            if worksheet.data_validations:
-                xf.write(worksheet.data_validations.to_tree())
+            if ws.data_validations:
+                xf.write(ws.data_validations.to_tree())
 
-            hyper = write_hyperlinks(worksheet)
+            hyper = write_hyperlinks(ws)
             if hyper is not None:
                 xf.write(hyper)
 
-            options = worksheet.print_options
+            options = ws.print_options
             if dict(options):
                 new_element = options.to_tree()
                 xf.write(new_element)
 
-            margins = worksheet.page_margins.to_tree()
+            margins = ws.page_margins.to_tree()
             xf.write(margins)
 
-            setup = worksheet.page_setup
+            setup = ws.page_setup
             if dict(setup):
                 new_element = setup.to_tree()
                 xf.write(new_element)
 
+            if bool(ws.HeaderFooter):
+                xf.write(ws.HeaderFooter.to_tree())
 
-            if bool(worksheet.HeaderFooter):
-                xf.write(worksheet.HeaderFooter.to_tree())
-
-            drawing = write_drawing(worksheet)
+            drawing = write_drawing(ws)
             if drawing is not None:
                 xf.write(drawing)
 
             # if there is an existing vml file associated with this sheet or if there
             # are any comments we need to add a legacyDrawing relation to the vml file.
-            if (worksheet.legacy_drawing is not None
-                or worksheet._comments):
+            if (ws.legacy_drawing is not None or ws._comments):
                 legacyDrawing = Related(id="anysvml")
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
 
-            if len(worksheet.page_breaks):
-                xf.write(worksheet.page_breaks.to_tree())
+            if len(ws.page_breaks):
+                xf.write(ws.page_breaks.to_tree())
 
 
     xml = out.getvalue()
