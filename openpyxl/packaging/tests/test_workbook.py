@@ -70,4 +70,19 @@ class TestWorkbookParser:
         ws = wb['Sheet']
         assert ws.print_title_rows == "Sheet!$1:$1"
         assert ws.print_titles == "Sheet!$1:$1"
-        assert ws.print_area == "$A$1:$D$5"
+        assert ws.print_area == ["$A$1:$D$5"]
+
+
+    def test_multiple_print_areas(self, datadir, WorkbookParser):
+        datadir.chdir()
+        archive = ZipFile("print.xlsx")
+        parser = WorkbookParser(archive)
+        parser.parse()
+
+        wb = parser.wb
+        assert len(wb.defined_names.definedName) == 1
+
+        parser.assign_names()
+        assert len(wb.defined_names.definedName) == 0
+        ws = wb['Sheet']
+        assert ws.print_area == ['$A$1:$F$14', '$H$10:$I$17', '$I$16:$K$25', '$C$15:$G$30', '$D$10:$E$18']

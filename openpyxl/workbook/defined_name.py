@@ -50,10 +50,14 @@ def _unpack_print_titles(defn):
 
 def _unpack_print_area(defn):
     """
-    Extracr print area
+    Extract print area
     """
-    m = SHEETRANGE_RE.match(defn.value)
-    return m.group("cells")
+    ranges = defn.value.split(",") # can be multiple
+    new = []
+    for r in ranges:
+        m = SHEETRANGE_RE.match(r)
+        new.append(m.group('cells'))
+    return new
 
 
 class DefinedName(Serialisable):

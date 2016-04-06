@@ -89,7 +89,9 @@ def test_unpack_print_titles(DefinedName, value, expected):
 
 @pytest.mark.parametrize("value, expected",
                          [
-                             ("Sheet1!$A$1:$E$15", "$A$1:$E$15"),
+                             ("Sheet1!$A$1:$E$15", ["$A$1:$E$15"]),
+                             ("'Blatt1'!$A$1:$F$14,'Blatt1'!$H$10:$I$17,Blatt1!$I$16:$K$25",
+                              ["$A$1:$F$14","$H$10:$I$17","$I$16:$K$25"])
                          ]
                          )
 def test_unpack_print_area(DefinedName, value, expected):
