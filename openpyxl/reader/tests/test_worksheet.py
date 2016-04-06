@@ -534,7 +534,7 @@ def test_cell_without_coordinates(WorkSheetParser, datadir):
     assert parser.ws.max_column == 5
 
 
-def test_hyperlinks(WorkSheetParser):
+def test_external_hyperlinks(WorkSheetParser):
     src = """
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
       <hyperlink xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -554,6 +554,21 @@ def test_hyperlinks(WorkSheetParser):
     parser.parse()
 
     assert parser.ws['A1'].hyperlink.target == "../"
+
+
+def test_local_hyperlinks(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
+      <hyperlinks>
+        <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
+      </hyperlinks>
+    </sheet>
+    """
+    parser = WorkSheetParser
+    parser.source = src
+    parser.parse()
+
+    assert parser.ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
 
 
 def test_merge_cells(WorkSheetParser):

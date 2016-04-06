@@ -208,7 +208,7 @@ def test_no_merge(worksheet):
     assert merge is None
 
 
-def test_hyperlink(worksheet):
+def test_external_hyperlink(worksheet):
     from .. worksheet import write_hyperlinks
 
     ws = worksheet
@@ -224,6 +224,27 @@ def test_hyperlink(worksheet):
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <hyperlink r:id="rId1" ref="A1"/>
+    </hyperlinks>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_internal_hyperlink(worksheet):
+    from .. worksheet import write_hyperlinks
+    from openpyxl.worksheet.hyperlink import Hyperlink
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.hyperlink = Hyperlink(ref="", location="'STP nn000TL-10, PKG 2.52'!A1")
+
+    ws._hyperlinks.append(cell.hyperlink)
+
+    hyper = write_hyperlinks(ws)
+    xml = tostring(hyper)
+    expected = """
+    <hyperlinks>
+      <hyperlink location="'STP nn000TL-10, PKG 2.52'!A1" ref="A1"/>
     </hyperlinks>
     """
     diff = compare_xml(xml, expected)
