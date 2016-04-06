@@ -865,6 +865,9 @@ class Worksheet(_WorkbookChild):
     @print_area.setter
     def print_area(self, value):
         """
-        Range of cells in the form A1:D4
+        Range of cells in the form A1:D4 or list of ranges
         """
-        self._print_area = absolute_coordinate(value)
+        if isinstance(value, basestring):
+            value = [value]
+
+        self._print_area = [absolute_coordinate(v) for v in value]

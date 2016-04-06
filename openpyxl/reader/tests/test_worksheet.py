@@ -74,6 +74,7 @@ def Workbook():
         guess_types = False
         data_only = False
         _colors = []
+        encoding = "utf8"
 
         def __init__(self):
             self._differential_styles = []

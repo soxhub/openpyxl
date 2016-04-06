@@ -135,7 +135,8 @@ def write_workbook(workbook):
         # print areas
         if sheet.print_area:
             name = DefinedName(name="PrintArea", localSheetId=idx)
-            name.value = "{0}!{1}".format(quote_sheetname(sheet.title), sheet.print_area)
+            name.value = ",".join(["{0}!{1}".format(quote_sheetname(sheet.title), r)
+                                  for r in sheet.print_area])
             defined_names.append(name)
 
     root.definedNames = defined_names

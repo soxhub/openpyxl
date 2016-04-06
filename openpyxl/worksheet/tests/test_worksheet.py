@@ -464,11 +464,17 @@ class TestWorksheet:
         assert ws.print_titles == titles
 
 
-    def test_print_area(self):
+    @pytest.mark.parametrize("cell_range, result",
+                             [
+                                 ("A1:F5",  ["$A$1:$F$5"]),
+                                 (["$A$1:$F$5"],  ["$A$1:$F$5"]),
+                             ]
+                             )
+    def test_print_area(self, cell_range, result):
         wb = Workbook()
         ws = wb.active
-        ws.print_area = "A1:F5"
-        assert ws.print_area == "$A$1:$F$5"
+        ws.print_area = cell_range
+        assert ws.print_area == result
 
 
 def test_freeze_panes_horiz(Worksheet):
