@@ -54,7 +54,12 @@ from .page import (
     PageMargins,
     PrintOptions,
 )
-from .dimensions import ColumnDimension, RowDimension, DimensionHolder
+from .dimensions import (
+    ColumnDimension,
+    RowDimension,
+    DimensionHolder,
+    SheetFormatProperties,
+)
 from .protection import SheetProtection
 from .filters import AutoFilter, SortState
 from .views import (
@@ -145,6 +150,7 @@ class Worksheet(_WorkbookChild):
         self.conditional_formatting = ConditionalFormatting()
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
+        self.sheet_format = SheetFormatProperties()
 
 
     @property

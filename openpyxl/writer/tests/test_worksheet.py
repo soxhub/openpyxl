@@ -388,7 +388,7 @@ def test_write_empty(worksheet, write_worksheet):
           <selection sqref="A1" activeCell="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
     </worksheet>
@@ -415,7 +415,7 @@ def test_vba(worksheet, write_worksheet):
           <selection activeCell="A1" sqref="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
       <legacyDrawing r:id="anysvml"/>
@@ -468,7 +468,7 @@ def test_write_comments(worksheet, write_worksheet):
           <selection activeCell="A1" sqref="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
       <legacyDrawing r:id="anysvml"></legacyDrawing>

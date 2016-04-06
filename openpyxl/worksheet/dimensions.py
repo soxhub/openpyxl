@@ -243,7 +243,7 @@ class SheetFormatProperties(Serialisable):
     outlineLevelCol = Integer(allow_none=True)
 
     def __init__(self,
-                 baseColWidth=10,
+                 baseColWidth=8, #according to spec
                  defaultColWidth=None,
                  defaultRowHeight=15,
                  customHeight=None,

@@ -57,7 +57,7 @@ def test_write_header(WriteOnlyWorksheet):
         <selection sqref="A1" activeCell="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
     </worksheet>
     """
@@ -183,7 +183,7 @@ def test_cell_comment(WriteOnlyWorksheet):
         <selection sqref="A1" activeCell="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
     <row r="1" spans="1:1"><c r="A1" t="n"><v>1</v></c></row>
     </sheetData>
@@ -223,7 +223,7 @@ def test_close(WriteOnlyWorksheet):
         <selection sqref="A1" activeCell="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
     </worksheet>
     """
@@ -249,7 +249,7 @@ def test_auto_filter(WriteOnlyWorksheet):
         <selection sqref="A1" activeCell="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
     <autoFilter ref="A1:F1"/>
     </worksheet>
@@ -279,7 +279,7 @@ def test_frozen_panes(WriteOnlyWorksheet):
         <selection pane="bottomRight" activeCell="A1" sqref="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
     </worksheet>
     """
@@ -308,7 +308,7 @@ def test_write_empty_row(WriteOnlyWorksheet):
         <selection sqref="A1" activeCell="A1"/>
       </sheetView>
     </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
     <row r="1" spans="1:3">
       <c r="A1" t="s">

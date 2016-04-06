@@ -14,7 +14,11 @@ from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet
-from openpyxl.worksheet.dimensions import ColumnDimension, RowDimension
+from openpyxl.worksheet.dimensions import (
+    ColumnDimension,
+    RowDimension,
+    SheetFormatProperties,
+)
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.merge import MergeCells
@@ -104,6 +108,7 @@ class WorkSheetParser(object):
             '{%s}sortState' % SHEET_MAIN_NS: ('sort_state', SortState),
             '{%s}sheetPr' % SHEET_MAIN_NS: ('sheet_properties', WorksheetProperties),
             '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
+            '{%s}sheetFormatPr' % SHEET_MAIN_NS: ('sheet_format', SheetFormatProperties)
         }
 
         tags = dispatcher.keys()
