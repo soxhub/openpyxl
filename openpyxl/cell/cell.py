@@ -300,15 +300,20 @@ class Cell(StyleableObject):
         """Return the hyperlink target or an empty string"""
         return self._hyperlink
 
+
     @hyperlink.setter
     def hyperlink(self, val):
         """Set value and display for hyperlinks in a cell.
         Automatically sets the `value` of the cell with link text,
         but you can modify it afterwards by setting the `value`
         property, and the hyperlink will remain."""
-        self._hyperlink = Hyperlink(ref=self.coordinate, target=val)
+        if not isinstance(val, Hyperlink):
+            val = Hyperlink(ref="", target=val)
+        val.ref = self.coordinate
+        self._hyperlink = val
         if self._value is None:
-            self.value = val
+            self.value = val.target or val.location
+
 
     @property
     def is_date(self):

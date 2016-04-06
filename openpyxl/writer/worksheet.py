@@ -64,9 +64,10 @@ def write_hyperlinks(worksheet):
     tag = Element('hyperlinks')
 
     for link in worksheet._hyperlinks:
-        rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
-        worksheet._rels.append(rel)
-        link.id = "rId{0}".format(len(worksheet._rels))
+        if link.target:
+            rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
+            worksheet._rels.append(rel)
+            link.id = "rId{0}".format(len(worksheet._rels))
 
         tag.append(link.to_tree())
     return tag

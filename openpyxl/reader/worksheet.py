@@ -306,6 +306,13 @@ class WorkSheetParser(object):
 
     def parse_hyperlinks(self, element):
         link = Hyperlink.from_tree(element)
-        rel = self.ws._rels[link.id]
-        link.target = rel.Target
-        self.ws[link.ref]._hyperlink = link
+        if link.id:
+            rel = self.ws._rels[link.id]
+            link.target = rel.Target
+        if ":" in link.ref:
+            # range of cells
+            for row in self.ws[link.ref]:
+                for cell in row:
+                    cell.hyperlink = link
+        else:
+            self.ws[link.ref].hyperlink = link
