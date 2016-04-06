@@ -630,3 +630,18 @@ def test_sheet_properties(WorkSheetParser):
 
     assert parser.ws.sheet_properties.tabColor.rgb == "FF92D050"
     assert parser.ws.sheet_properties.codeName == "Sheet3"
+
+
+def test_sheet_format(WorkSheetParser):
+
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <sheetFormatPr defaultRowHeight="14.25" baseColWidth="15"/>
+    </sheet>
+    """
+    parser = WorkSheetParser
+    parser.source = src
+    parser.parse()
+
+    assert parser.ws.sheet_format.defaultRowHeight == 14.25
+    assert parser.ws.sheet_format.baseColWidth == 15

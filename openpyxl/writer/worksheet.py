@@ -111,9 +111,8 @@ def write_worksheet(worksheet, shared_strings):
             xf.write(ws.views.to_tree())
 
             cols = ws.column_dimensions.to_tree()
-            sheet_format = SheetFormatProperties()
-            sheet_format.outlineLevelCol = ws.column_dimensions.max_outline
-            xf.write(sheet_format.to_tree())
+            ws.sheet_format.outlineLevelCol = ws.column_dimensions.max_outline
+            xf.write(ws.sheet_format.to_tree())
 
             if cols is not None:
                 xf.write(cols)

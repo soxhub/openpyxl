@@ -87,9 +87,8 @@ class WriteOnlyWorksheet(Worksheet):
 
                 cols = self.column_dimensions.to_tree()
 
-                sheet_format = SheetFormatProperties()
-                sheet_format.outlineLevelCol = self.column_dimensions.max_outline
-                xf.write(sheet_format.to_tree())
+                self.sheet_format.outlineLevelCol = self.column_dimensions.max_outline
+                xf.write(self.sheet_format.to_tree())
 
                 if cols is not None:
                     xf.write(cols)

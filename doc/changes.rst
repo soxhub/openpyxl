@@ -19,6 +19,7 @@ Minor changes
 * Added iter_cols method for worksheets
 * ws.rows and ws.columns now always return generators and start at the top of the worksheet
 * Add a `values` property for worksheets
+* Default column width changed to 8 as per the specification
 
 
 Deprecations

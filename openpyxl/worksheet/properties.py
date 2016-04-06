@@ -94,6 +94,5 @@ class WorksheetProperties(Serialisable):
             self.outlinePr = outlinePr
 
         if pageSetUpPr is None:
-            self.pageSetUpPr = PageSetupProperties()
-        else:
-            self.pageSetUpPr = pageSetUpPr
+            pageSetUpPr = PageSetupProperties()
+        self.pageSetUpPr = pageSetUpPr
