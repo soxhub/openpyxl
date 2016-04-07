@@ -146,7 +146,7 @@ This may be the case if bugs have been fixed but a release has not yet been
 made.
 
 .. parsed-literal::
-    $ pip install hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
+    $ pip install -e hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
 
 
 Usage examples
