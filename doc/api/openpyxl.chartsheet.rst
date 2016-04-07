@@ -6,13 +6,6 @@ openpyxl.chartsheet package
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-
-    openpyxl.chartsheet.tests
-
 Submodules
 ----------
 

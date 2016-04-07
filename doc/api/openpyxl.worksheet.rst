@@ -17,6 +17,7 @@ Submodules
    openpyxl.worksheet.filters
    openpyxl.worksheet.header_footer
    openpyxl.worksheet.hyperlink
+   openpyxl.worksheet.merge
    openpyxl.worksheet.page
    openpyxl.worksheet.pagebreak
    openpyxl.worksheet.properties
