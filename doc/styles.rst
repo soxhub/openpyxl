@@ -149,6 +149,18 @@ yourself. This is a restriction of the file format::
 >>> row = ws.row_dimensions[1]
 >>> row.font = Font(underline="single")
 
+.. _styling-merged-cells:
+
+Styling Merged Cells
+--------------------
+
+Sometimes you want to format a range of cells as if they were a single
+object. Excel pretends that this is possible by merging cells (deleting all
+but the top-left cell) and then recreating them in order to apply
+pseudo-styles.
+
+.. literalinclude:: format_merged_cells.py
+
 
 Edit Page Setup
 -------------------
