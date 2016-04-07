@@ -1,7 +1,12 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from __future__ import absolute_import
+# Copyright (c) 2010-2016 openpyxl
+
 from copy import copy
+
+from openpyxl.compat import deprecated
 
 
 class StyleProxy(object):
@@ -30,6 +35,21 @@ class StyleProxy(object):
         super(StyleProxy, self).__setattr__(attr, value)
 
 
+    def __copy__(self):
+        """
+        Return a copy of the proxied object.
+        """
+        return copy(self.__target)
+
+
+    def __add__(self, other):
+        """
+        Add proxied object to another instance and return the combined object
+        """
+        return self.__target + other
+
+
+    @deprecated("Use copy(obj) or cell.obj = cell.obj + other")
     def copy(self, **kw):
         """Return a copy of the proxied object. Keyword args will be passed through"""
         cp = copy(self.__target)

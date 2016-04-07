@@ -34,6 +34,7 @@ Deprecations
 * Comment text attribute
 * Use of range strings deprecated for ws.iter_rows()
 * Use of coordinates deprecated for ws.cell()
+* Deprecate .copy() method for StyleProxy objects
 
 
 Bug fixes

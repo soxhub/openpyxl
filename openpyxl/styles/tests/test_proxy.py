@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from copy import copy
+
 import pytest
 
 
@@ -15,6 +17,11 @@ def dummy_object():
 
         def __repr__(self):
             return "dummy object"
+
+        def __add__(self, other):
+            if self.a is None:
+                self.a = other.a
+            return self
 
     return Dummy(a=1, b=2, c=3)
 
@@ -41,8 +48,20 @@ def test_repr(proxy):
 
 
 def test_copy(proxy):
-    cp = proxy.copy(a='a')
+    cp = copy(proxy)
     assert cp is not proxy
-    assert cp.a == 'a'
+    assert cp.a == 1
     assert cp.b == 2
     assert cp.c == 3
+
+
+def test_add(dummy_object):
+    from ..proxy import StyleProxy
+
+    o1 = dummy_object
+    o2 = copy(dummy_object)
+    o1.a = None
+    o1 = StyleProxy(dummy_object)
+
+    combined = o1 + o2
+    assert combined.a == 1
