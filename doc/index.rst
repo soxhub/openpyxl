@@ -31,7 +31,7 @@ Support
 This is an open source project, maintained by volunteers in their spare time.
 This may well mean that particular features or functions that you would like
 are missing. But things don't have to stay that way. You can contribute the
-project :ref:`development` yourself or contract a developer for particular
+project :doc:`/development` yourself or contract a developer for particular
 features.
 
 
