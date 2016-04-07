@@ -22,7 +22,7 @@ if sys.version_info < (2, 6):
 elif sys.version_info[:2] == (3, 2):
     warnings.warn("Python 3.2 is not supported")
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -45,7 +45,7 @@ with open(src_file) as src:
 
 
 setup(name='openpyxl',
-    packages=['openpyxl'],
+    packages=find_packages(),
     # metadata
     version=__version__,
     description="A Python library to read/write Excel 2010 xlsx/xlsm files",
