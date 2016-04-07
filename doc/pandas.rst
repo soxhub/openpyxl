@@ -13,7 +13,7 @@ DateTimes are supported using the Pandas' Timestamp type.
 
 
 Working with Pandas Dataframes
------------------------
+------------------------------
 
 The :func:`openpyxl.utils.dataframe.dataframe_to_rows` function provides a
 simple way to work with Pandas Dataframes::
