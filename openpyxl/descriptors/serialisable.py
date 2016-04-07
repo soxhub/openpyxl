@@ -191,7 +191,16 @@ class Serialisable(_Serialiasable):
 
 
     def __add__(self, other):
+        if type(self) != type(other):
+            raise TypeError("Cannot combine instances of different types")
         vals = {}
-        for attr in self.__attrs__ + self.__elements__:
+        for attr in self.__attrs__:
             vals[attr] = getattr(self, attr) or getattr(other, attr)
+        for el in self.__elements__:
+            a = getattr(self, el)
+            b = getattr(other, el)
+            if a and b:
+                vals[el] = a + b
+            else:
+                vals[el] = a or b
         return self.__class__(**vals)

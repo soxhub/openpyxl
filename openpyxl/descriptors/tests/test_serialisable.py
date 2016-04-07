@@ -31,10 +31,11 @@ class TestSerialisable:
         assert hash(d1) == hash(d2)
 
 
-    def test_add(self, Immutable):
-        d1 = Immutable(value=1)
-        d2 = Immutable()
-        assert d1 + d2 == d1
+    def test_add_attrs(self, Immutable):
+        d1 = Immutable()
+        d2 = Immutable(value=2)
+        assert d1 + d2 == d2
+
 
     def test_str(self, Immutable):
         d = Immutable()

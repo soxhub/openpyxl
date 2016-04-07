@@ -35,7 +35,7 @@ class WorkbookProtection(Serialisable):
     lockWindows = Bool(allow_none=True)
     lock_windows = Alias("lockWindows")
     lockRevision = Bool(allow_none=True)
-    lock_revision = Alias("")
+    lock_revision = Alias("lockRevision")
     revisionsAlgorithmName = String(allow_none=True)
     revisionsHashValue = HexBinary(allow_none=True)
     revisionsSaltValue = HexBinary(allow_none=True)

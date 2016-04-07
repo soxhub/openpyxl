@@ -24,9 +24,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(up(HERE), '.')))
 
 import openpyxl
 
-
-from openpyxl.descriptors import Alias
-
 def AliasProxyGet(self, instance, cls):
     return getattr(cls, self.alias)
 
@@ -41,6 +38,7 @@ def StyleDescriptorGet(self, instance, cls):
     return self.key
 
 if os.environ.get("APIDOC") == "True":
+    from openpyxl.descriptors import Alias
     Alias.__get__ = AliasProxyGet
     NumberFormatDescriptor.__get__ = NumberFormatGet
 

@@ -149,6 +149,10 @@ If you're trying to use a formula that isn't known this could be because you're 
 
 Merge / Unmerge cells
 ---------------------
+
+When you merge cells all cells but the top-left one are **removed** from the
+worksheet. See :ref:`styling-merged-cells` for information on formatting merged cells.
+
 .. :: doctest
 
 >>> from openpyxl.workbook import Workbook

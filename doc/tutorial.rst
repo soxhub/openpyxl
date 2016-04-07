@@ -76,7 +76,7 @@ Values can be directly assigned ::
 
     >>> ws['A4'] = 4
 
-There is also the :func:`openpyxl.worksheet.Worksheet.cell` method::
+There is also the :func:`openpyxl.worksheet.Worksheet.cell` method.
 
 This provides access to cells using row and column notation::
 

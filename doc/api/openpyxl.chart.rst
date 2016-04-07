@@ -26,7 +26,9 @@ Submodules
    openpyxl.chart.marker
    openpyxl.chart.picture
    openpyxl.chart.pie_chart
+   openpyxl.chart.print_settings
    openpyxl.chart.radar_chart
+   openpyxl.chart.reader
    openpyxl.chart.reference
    openpyxl.chart.scatter_chart
    openpyxl.chart.series

@@ -15,8 +15,8 @@ Minor changes
 * Remove deprecated methods from Worksheet
 
 
-2.4.0 (unreleased)
-==================
+2.4.0-a1 (unreleased)
+=====================
 
 
 Minor changes
@@ -51,6 +51,7 @@ Deprecations
 * Comment text attribute
 * Use of range strings deprecated for ws.iter_rows()
 * Use of coordinates deprecated for ws.cell()
+* Deprecate .copy() method for StyleProxy objects
 
 
 Bug fixes
