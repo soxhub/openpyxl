@@ -110,6 +110,7 @@ class Comment(Serialisable):
     author = String(allow_none=True)
 
     __elements__ = ('text', 'commentPr')
+    __attrs__ = ('ref', 'authorId', 'guid', 'commentPr', 'shapeId')
 
     def __init__(self,
                  ref="",

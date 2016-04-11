@@ -1,3 +1,13 @@
+2.3.5 (2016-04-11)
+==================
+
+
+Bug fixes
+---------
+
+* `#618 <https://bitbucket.org/openpyxl/openpyxl/issues/618>`_ Comments not written in write-only mode
+
+
 2.3.4 (2016-03-16)
 ==================
 
