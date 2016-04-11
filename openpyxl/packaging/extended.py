@@ -99,7 +99,7 @@ class ExtendedProperties(Serialisable):
                  HLinks=None,
                  HyperlinksChanged=None,
                  DigSig=None,
-                 Application="openpyxl",
+                 Application="Microsoft Excel",
                  AppVersion=VERSION,
                  DocSecurity=None,
                 ):
