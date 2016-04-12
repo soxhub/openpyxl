@@ -27,8 +27,6 @@ from openpyxl.worksheet.dimensions import (
     SheetDimension,
 )
 
-from .etree_worksheet import write_cell
-
 
 def write_mergecells(worksheet):
     """Write merged cells to xml."""

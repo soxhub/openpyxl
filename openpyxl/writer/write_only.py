@@ -9,6 +9,7 @@ from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
 
+from openpyxl import LXML
 from openpyxl.compat import removed_method
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
@@ -17,12 +18,10 @@ from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
 
+from .etree_worksheet import write_cell
 from .excel import ExcelWriter
 from .relations import write_rels
-from .worksheet import (
-    write_cell,
-    write_drawing,
-)
+from .worksheet import write_drawing
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element
 
@@ -139,6 +138,7 @@ class WriteOnlyWorksheet(Worksheet):
         :param row: iterable containing values to append
         :type row: iterable
         """
+
         if (not isgenerator(row) and
             not isinstance(row, (list, tuple, range))
             ):
