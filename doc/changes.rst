@@ -52,7 +52,7 @@ Bug fixes
 * `#617 <https://bitbucket.org/openpyxl/openpyxl/issues/617>`_ Customised named styles not correctly preserved
 
 
-2.3.5 (unreleased)
+2.3.5 (2016-04-11)
 ==================
 
 
