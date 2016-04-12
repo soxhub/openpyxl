@@ -267,8 +267,8 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
 
 @pytest.fixture
 def worksheet_with_cf(worksheet):
-    from openpyxl.formatting import ConditionalFormatting
-    worksheet.conditional_formating = ConditionalFormatting()
+    from openpyxl.formatting import ConditionalFormattingList
+    worksheet.conditional_formating = ConditionalFormattingList()
     return worksheet
 
 

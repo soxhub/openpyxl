@@ -5,7 +5,7 @@ from openpyxl.compat import OrderedDict
 from .rule import Rule
 
 
-class ConditionalFormatting(object):
+class ConditionalFormattingList(object):
     """Conditional formatting rules."""
 
     def __init__(self):
