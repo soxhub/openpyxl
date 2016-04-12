@@ -26,8 +26,11 @@ def get_rows_to_write(worksheet):
 
 def write_rows(xf, worksheet):
     """Write worksheet data to xml."""
+
     if LXML:
         from .lxml_worksheet import write_row
+    else:
+        from .etree_worksheet import write_row
 
     all_rows = get_rows_to_write(worksheet)
     max_column = worksheet.max_column
