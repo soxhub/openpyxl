@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.compat import OrderedDict, deprecated
+from openpyxl.compat import OrderedDict
 from .rule import Rule
 
 
@@ -24,12 +24,3 @@ class ConditionalFormatting(object):
         rule.priority = self.max_priority
 
         self.cf_rules.setdefault(range_string, []).append(rule)
-
-
-    @deprecated("Always use Rule objects")
-    def update(self, cfRules):
-        pass
-
-    @deprecated("Conditionl Formats are saved automatically")
-    def setDxfStyles(self, wb):
-        pass
