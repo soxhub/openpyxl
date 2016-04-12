@@ -6,6 +6,7 @@ from openpyxl.descriptors import (
     String,
     Typed,
     Sequence,
+    Alias,
 )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.styles import (
@@ -49,3 +50,32 @@ class DifferentialStyle(Serialisable):
         self.border = border
         self.protection = protection
         self.extLst = extLst
+
+
+class DifferentialStyleList(Serialisable):
+
+    tagname = "dxfs"
+
+    dxf = Sequence(expected_type=DifferentialStyle)
+    styles = Alias("dxf")
+
+
+    def __init__(self, dxf=()):
+        self.dxf = dxf
+
+
+    def append(self, dxf):
+        styles = self.styles
+        styles.append(dxf)
+        self.styles = styles
+
+
+    def add(self, dxf):
+        self.append(dxf)
+        return len(self.styles) - 1
+
+
+    def __bool__(self):
+        return bool(self.styles)
+
+    __nonzero__ = __bool__

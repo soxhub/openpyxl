@@ -239,7 +239,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
 
     parser.assign_names()
 
-    wb._differential_styles = [] # reset
+    wb._differential_styles.styles =  []
 
     archive.close()
     return wb

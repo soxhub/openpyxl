@@ -15,6 +15,7 @@ from openpyxl.writer.excel import save_workbook
 
 from openpyxl.styles.cell_style import StyleArray
 from openpyxl.styles.named_styles import NamedStyle
+from openpyxl.styles.differential import DifferentialStyleList
 
 from openpyxl.chartsheet import Chartsheet
 from .defined_name import DefinedName, DefinedNameList
@@ -46,7 +47,7 @@ class Workbook(object):
         self.loaded_theme = None
         self.vba_archive = None
         self.is_template = False
-        self._differential_styles = []
+        self._differential_styles = DifferentialStyleList()
         self._drawings = []
         self._charts = []
         self._images = []

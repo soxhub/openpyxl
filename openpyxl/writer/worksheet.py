@@ -9,17 +9,17 @@ from io import BytesIO
 from openpyxl import LXML
 
 # package imports
-from openpyxl.xml.functions import (
-    Element,
-    xmlfile,
-)
+from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.formatting import ConditionalFormatting
+
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.merge import MergeCells, MergeCell
 from openpyxl.worksheet.properties import WorksheetProperties
-from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.hyperlink import (
+    Hyperlink,
+    HyperlinkList,
+)
 from openpyxl.worksheet.related import Related
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.dimensions import (
@@ -35,42 +35,32 @@ def write_mergecells(worksheet):
 
     merged = [MergeCell(ref) for ref in worksheet._merged_cells]
 
-    if not merged:
-        return
-
-    return MergeCells(mergeCell=merged).to_tree()
+    if merged:
+        return MergeCells(mergeCell=merged).to_tree()
 
 
 def write_conditional_formatting(worksheet):
     """Write conditional formatting to xml."""
     wb = worksheet.parent
-    for range_string, rules in worksheet.conditional_formatting.cf_rules.items():
-        cf = Element('conditionalFormatting', {'sqref': range_string})
-
-        for rule in rules:
-            if rule.dxf is not None:
-                if rule.dxf != DifferentialStyle():
-                    rule.dxfId = len(wb._differential_styles)
-                    wb._differential_styles.append(rule.dxf)
-            cf.append(rule.to_tree())
-
-        yield cf
+    for cf in worksheet.conditional_formatting:
+        for rule in cf.rules:
+            if rule.dxf and rule.dxf != DifferentialStyle():
+                rule.dxfId = wb._differential_styles.add(rule.dxf)
+        yield cf.to_tree()
 
 
 def write_hyperlinks(worksheet):
     """Write worksheet hyperlinks to xml."""
-    if not worksheet._hyperlinks:
-        return
-    tag = Element('hyperlinks')
+    links = HyperlinkList()
 
     for link in worksheet._hyperlinks:
         if link.target:
             rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
             worksheet._rels.append(rel)
             link.id = "rId{0}".format(len(worksheet._rels))
+        links.hyperlink.append(link)
 
-        tag.append(link.to_tree())
-    return tag
+    return links
 
 
 def write_drawing(worksheet):
@@ -141,8 +131,8 @@ def write_worksheet(worksheet, shared_strings):
                 xf.write(ws.data_validations.to_tree())
 
             hyper = write_hyperlinks(ws)
-            if hyper is not None:
-                xf.write(hyper)
+            if hyper:
+                xf.write(hyper.to_tree())
 
             options = ws.print_options
             if dict(options):
