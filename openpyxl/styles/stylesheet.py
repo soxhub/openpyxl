@@ -205,7 +205,7 @@ def write_stylesheet(wb):
     stylesheet.fonts = wb._fonts
     stylesheet.fills = wb._fills
     stylesheet.borders = wb._borders
-    stylesheet.dxfs = wb._differential_styles
+    stylesheet.dxfs = wb._differential_styles.styles
 
     from .numbers import NumberFormat
     fmts = []

@@ -9,7 +9,7 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.functions import tostring
 from openpyxl.writer.worksheet import write_conditional_formatting
 from openpyxl.styles import Border, Side, PatternFill, Color, Font, fills, borders, colors
-from openpyxl.styles.differential import DifferentialStyle
+from openpyxl.styles.differential import DifferentialStyle, DifferentialStyleList
 from openpyxl.formatting.formatting import ConditionalFormattingList
 from openpyxl.formatting.rule import ColorScaleRule, CellIsRule, FormulaRule, Rule
 
@@ -21,7 +21,7 @@ from openpyxl.tests.helper import compare_xml
 class DummyWorkbook():
 
     def __init__(self):
-        self._differential_styles = []
+        self._differential_styles = DifferentialStyleList()
         self.worksheets = []
 
 class DummyWorksheet():
@@ -80,8 +80,8 @@ class TestConditionalFormatting(object):
             pass # exhaust generator
 
         wb = ws.parent
-        assert len(wb._differential_styles) == 2
-        ft1, ft2 = wb._differential_styles
+        assert len(wb._differential_styles.styles) == 2
+        ft1, ft2 = wb._differential_styles.styles
         assert ft1.font == font
         assert ft1.border == border
         assert ft1.fill == fill

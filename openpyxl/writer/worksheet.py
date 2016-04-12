@@ -45,8 +45,7 @@ def write_conditional_formatting(worksheet):
     for cf in worksheet.conditional_formatting:
         for rule in cf.rules:
             if rule.dxf and rule.dxf != DifferentialStyle():
-                rule.dxfId = len(wb._differential_styles)
-                wb._differential_styles.append(rule.dxf)
+                rule.dxfId = wb._differential_styles.add(rule.dxf)
         yield cf.to_tree()
 
 
