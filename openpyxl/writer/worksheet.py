@@ -35,10 +35,8 @@ def write_mergecells(worksheet):
 
     merged = [MergeCell(ref) for ref in worksheet._merged_cells]
 
-    if not merged:
-        return
-
-    return MergeCells(mergeCell=merged).to_tree()
+    if merged:
+        return MergeCells(mergeCell=merged).to_tree()
 
 
 def write_conditional_formatting(worksheet):
