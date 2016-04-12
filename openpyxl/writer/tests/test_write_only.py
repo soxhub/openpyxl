@@ -73,8 +73,10 @@ def test_append(WriteOnlyWorksheet):
             with xf.element('sheetData'):
                 try:
                     while True:
-                        body = (yield)
-                        xf.write(body)
+                        row = (yield)
+                        for cell in row:
+                            xf.element("c", v=str(cell))
+
                 except GeneratorExit:
                     pass
 

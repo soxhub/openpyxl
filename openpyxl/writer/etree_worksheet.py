@@ -5,7 +5,8 @@ from operator import itemgetter
 
 from openpyxl.compat import safe_string
 from openpyxl.comments.properties import CommentRecord
-from openpyxl.xml.functions import xmlfile, Element, SubElement
+from openpyxl.xml.functions import Element, SubElement
+from openpyxl import LXML
 
 
 def get_rows_to_write(worksheet):
@@ -25,30 +26,37 @@ def get_rows_to_write(worksheet):
 
 def write_rows(xf, worksheet):
     """Write worksheet data to xml."""
+    if LXML:
+        from .lxml_worksheet import write_row
 
     all_rows = get_rows_to_write(worksheet)
-
-    dims = worksheet.row_dimensions
     max_column = worksheet.max_column
 
     with xf.element("sheetData"):
-        for row_idx, row in all_rows:
+        for row_idx, row in sorted(all_rows):
+            row = sorted(row, key=itemgetter(0))
+            write_row(xf, worksheet, row, row_idx, max_column)
 
-            attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
-            if row_idx in dims:
-                row_dimension = dims[row_idx]
-                attrs.update(dict(row_dimension))
 
-            with xf.element("row", attrs):
-                for col, cell in sorted(row, key=itemgetter(0)):
-                    if (
-                        cell._value is None
-                        and not cell.has_style
-                        and not cell._comment
-                        ):
-                        continue
-                    el = write_cell(worksheet, cell, cell.has_style)
-                    xf.write(el)
+def write_row(xf, worksheet, row, row_idx, max_column):
+
+    attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
+    dims = worksheet.row_dimensions
+    if row_idx in dims:
+        row_dimension = dims[row_idx]
+        attrs.update(dict(row_dimension))
+
+    with xf.element("row", attrs):
+
+        for col, cell in row:
+            if (
+                cell._value is None
+                and not cell.has_style
+                and not cell._comment
+                ):
+                continue
+            el = write_cell(worksheet, cell, cell.has_style)
+            xf.write(el)
 
 
 def write_cell(worksheet, cell, styled=None):

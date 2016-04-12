@@ -6,36 +6,30 @@ from operator import itemgetter
 from openpyxl.compat import safe_string
 from openpyxl.comments.properties import CommentRecord
 
-from .etree_worksheet import get_rows_to_write
-from openpyxl.xml.functions import xmlfile
+from .etree_worksheet import (
+    get_rows_to_write
+)
 
 ### LXML optimisation using xf.element to reduce instance creation
 
-def write_rows(xf, worksheet):
-    """Write worksheet data to xml."""
+def write_row(xf, worksheet, row, row_idx, max_column):
 
-    all_rows = get_rows_to_write(worksheet)
-
+    attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
     dims = worksheet.row_dimensions
-    max_column = worksheet.max_column
+    if row_idx in dims:
+        row_dimension = dims[row_idx]
+        attrs.update(dict(row_dimension))
 
-    with xf.element("sheetData"):
-        for row_idx, row in sorted(all_rows):
+    with xf.element("row", attrs):
 
-            attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
-            if row_idx in dims:
-                row_dimension = dims[row_idx]
-                attrs.update(dict(row_dimension))
-            with xf.element("row", attrs):
-
-                for col, cell in sorted(row, key=itemgetter(0)):
-                    if (
-                        cell._value is None
-                        and not cell.has_style
-                        and not cell._comment
-                        ):
-                        continue
-                    write_cell(xf, worksheet, cell, cell.has_style)
+        for col, cell in row:
+            if (
+                cell._value is None
+                and not cell.has_style
+                and not cell._comment
+                ):
+                continue
+            write_cell(xf, worksheet, cell, cell.has_style)
 
 
 def write_cell(xf, worksheet, cell, styled=False):

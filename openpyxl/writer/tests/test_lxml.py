@@ -85,7 +85,7 @@ def test_write_cell_string(worksheet):
 
 @pytest.fixture
 def write_rows():
-    from .. lxml_worksheet import write_rows
+    from .. etree_worksheet import write_rows
     return write_rows
 
 
