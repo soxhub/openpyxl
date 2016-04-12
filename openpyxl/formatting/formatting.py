@@ -5,12 +5,6 @@ from openpyxl.compat import OrderedDict, deprecated
 from .rule import Rule
 
 
-def unpack_rules(cfRules):
-    for key, rules in cfRules.items():
-        for idx,rule in enumerate(rules):
-            yield (key, idx, rule.priority)
-
-
 class ConditionalFormatting(object):
     """Conditional formatting rules."""
 
@@ -30,14 +24,6 @@ class ConditionalFormatting(object):
         rule.priority = self.max_priority
 
         self.cf_rules.setdefault(range_string, []).append(rule)
-
-
-    def _fix_priorities(self):
-        rules = unpack_rules(self.cf_rules)
-        rules = sorted(rules, key=lambda x: x[2])
-        for idx, (key, rule_no, prio) in enumerate(rules, 1):
-            self.cf_rules[key][rule_no].priority = idx
-        self.max_priority = len(rules)
 
 
     @deprecated("Always use Rule objects")
