@@ -283,9 +283,7 @@ def test_conditional_formatting_customRule(worksheet_with_cf, write_conditional_
     from openpyxl.formatting.rule import Rule
 
     ws.conditional_formatting.add('C1:C10',
-                                  Rule(**{'type': 'expression',
-                                          'formula': ['ISBLANK(C1)'], 'stopIfTrue': '1'}
-                                       )
+                                  Rule(type='expression',formula=['ISBLANK(C1)'], stopIfTrue='1')
                                   )
     cfs = write_conditional_formatting(ws)
     xml = b""
