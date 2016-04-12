@@ -220,7 +220,7 @@ def test_external_hyperlink(worksheet):
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1
     assert worksheet._rels[0].Target == "http://test.com"
-    xml = tostring(hyper)
+    xml = tostring(hyper.to_tree())
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <hyperlink r:id="rId1" ref="A1"/>
@@ -241,7 +241,7 @@ def test_internal_hyperlink(worksheet):
     ws._hyperlinks.append(cell.hyperlink)
 
     hyper = write_hyperlinks(ws)
-    xml = tostring(hyper)
+    xml = tostring(hyper.to_tree())
     expected = """
     <hyperlinks>
       <hyperlink location="'STP nn000TL-10, PKG 2.52'!A1" ref="A1"/>
@@ -249,13 +249,6 @@ def test_internal_hyperlink(worksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
-
-
-def test_no_hyperlink(worksheet):
-    from .. worksheet import write_hyperlinks
-
-    l = write_hyperlinks(worksheet)
-    assert l is None
 
 
 @pytest.mark.xfail
