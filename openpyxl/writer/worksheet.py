@@ -9,12 +9,9 @@ from io import BytesIO
 from openpyxl import LXML
 
 # package imports
-from openpyxl.xml.functions import (
-    Element,
-    xmlfile,
-)
+from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.formatting import ConditionalFormattingList
+
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship
 from openpyxl.worksheet.merge import MergeCells, MergeCell
@@ -45,17 +42,12 @@ def write_mergecells(worksheet):
 def write_conditional_formatting(worksheet):
     """Write conditional formatting to xml."""
     wb = worksheet.parent
-    for range_string, rules in worksheet.conditional_formatting.cf_rules.items():
-        cf = Element('conditionalFormatting', {'sqref': range_string})
-
-        for rule in rules:
-            if rule.dxf is not None:
-                if rule.dxf != DifferentialStyle():
-                    rule.dxfId = len(wb._differential_styles)
-                    wb._differential_styles.append(rule.dxf)
-            cf.append(rule.to_tree())
-
-        yield cf
+    for cf in worksheet.conditional_formatting:
+        for rule in cf.rules:
+            if rule.dxf and rule.dxf != DifferentialStyle():
+                rule.dxfId = len(wb._differential_styles)
+                wb._differential_styles.append(rule.dxf)
+        yield cf.to_tree()
 
 
 def write_hyperlinks(worksheet):
