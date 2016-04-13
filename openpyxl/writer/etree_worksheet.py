@@ -38,11 +38,6 @@ def write_rows(xf, worksheet):
 
 def write_row(xf, worksheet, row, row_idx, max_column):
 
-    if LXML:
-        from .lxml_worksheet import write_cell
-    else:
-        from .etree_worksheet import write_cell
-
     attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
     dims = worksheet.row_dimensions
     if row_idx in dims:
@@ -61,7 +56,7 @@ def write_row(xf, worksheet, row, row_idx, max_column):
             el = write_cell(xf, worksheet, cell, cell.has_style)
 
 
-def write_cell(xf, worksheet, cell, styled=None):
+def etree_write_cell(xf, worksheet, cell, styled=None):
 
     coordinate = cell.coordinate
     attributes = {'r': coordinate}
@@ -99,3 +94,46 @@ def write_cell(xf, worksheet, cell, styled=None):
         worksheet._hyperlinks.append(cell.hyperlink)
 
     xf.write(el)
+
+
+def lxml_write_cell(xf, worksheet, cell, styled=False):
+    coordinate = cell.coordinate
+    attributes = {'r': coordinate}
+    if styled:
+        attributes['s'] = '%d' % cell.style_id
+
+    if cell.data_type != 'f':
+        attributes['t'] = cell.data_type
+
+    value = cell._value
+
+    if cell._comment is not None:
+        comment = CommentRecord._adapted(cell.comment, cell.coordinate)
+        worksheet._comments.append(comment)
+
+    if value == '' or value is None:
+        with xf.element("c", attributes):
+            return
+
+    with xf.element('c', attributes):
+        if cell.data_type == 'f':
+            shared_formula = worksheet.formula_attributes.get(coordinate, {})
+            with xf.element('f', shared_formula):
+                if value is not None:
+                    xf.write(value[1:])
+                    value = None
+
+        if cell.data_type == 's':
+            value = worksheet.parent.shared_strings.add(value)
+        with xf.element("v"):
+            if value is not None:
+                xf.write(safe_string(value))
+
+        if cell.hyperlink:
+            worksheet._hyperlinks.append(cell.hyperlink)
+
+
+if LXML:
+    write_cell = lxml_write_cell
+else:
+    write_cell = etree_write_cell

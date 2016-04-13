@@ -75,11 +75,6 @@ class WriteOnlyWorksheet(Worksheet):
         Generator that creates the XML file and the sheet header
         """
 
-        if LXML is True:
-            from .lxml_worksheet import write_cell
-        else:
-            from .etree_worksheet import write_cell
-
         with xmlfile(self.filename) as xf:
             with xf.element("worksheet", xmlns=SHEET_MAIN_NS):
 

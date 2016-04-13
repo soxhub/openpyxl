@@ -54,14 +54,14 @@ def write_rows():
 
 @pytest.fixture
 def etree_write_cell():
-    from ..etree_worksheet import write_cell
-    return write_cell
+    from ..etree_worksheet import etree_write_cell
+    return etree_write_cell
 
 
 @pytest.fixture
 def lxml_write_cell():
-    from ..lxml_worksheet import write_cell
-    return write_cell
+    from ..etree_worksheet import lxml_write_cell
+    return lxml_write_cell
 
 
 @pytest.fixture(params=['etree', 'lxml'])
