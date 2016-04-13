@@ -9,6 +9,7 @@ from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
 
+from openpyxl import LXML
 from openpyxl.compat import removed_method
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
@@ -17,12 +18,10 @@ from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
 
+from .etree_worksheet import write_cell
 from .excel import ExcelWriter
 from .relations import write_rels
-from .worksheet import (
-    write_cell,
-    write_drawing,
-)
+from .worksheet import write_drawing
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element
 
@@ -94,10 +93,33 @@ class WriteOnlyWorksheet(Worksheet):
                     xf.write(cols)
 
                 with xf.element("sheetData"):
+                    cell = WriteOnlyCell(self)
                     try:
                         while True:
-                            r = (yield)
-                            xf.write(r)
+                            row = (yield)
+                            row_idx = self._max_row
+                            with xf.element("row", r="%d" % row_idx):
+
+                                for col_idx, value in enumerate(row, 1):
+                                    if value is None:
+                                        continue
+                                    try:
+                                        cell.value = value
+                                    except ValueError:
+                                        if isinstance(value, Cell):
+                                            cell = value
+                                        else:
+                                            raise ValueError
+
+                                    cell.col_idx = col_idx
+                                    cell.row = row_idx
+
+                                    styled = cell.has_style
+                                    write_cell(xf, self, cell, styled)
+
+                                    if styled: # styled cell or datetime
+                                        cell = WriteOnlyCell(self)
+
                     except GeneratorExit:
                         pass
 
@@ -139,46 +161,20 @@ class WriteOnlyWorksheet(Worksheet):
         :param row: iterable containing values to append
         :type row: iterable
         """
+
         if (not isgenerator(row) and
             not isinstance(row, (list, tuple, range))
             ):
             self._invalid_row(row)
-        cell = WriteOnlyCell(self)  # singleton
 
         self._max_row += 1
-        row_idx = self._max_row
+
         if self.writer is None:
             self.writer = self._write_header()
             next(self.writer)
 
-        el = Element("row", r='%d' % self._max_row)
-
-        col_idx = None
-        for col_idx, value in enumerate(row, 1):
-            if value is None:
-                continue
-            try:
-                cell.value = value
-            except ValueError:
-                if isinstance(value, Cell):
-                    cell = value
-                else:
-                    raise ValueError
-
-            cell.col_idx = col_idx
-            cell.row = row_idx
-
-            styled = cell.has_style
-            tree = write_cell(self, cell, styled)
-            el.append(tree)
-            if styled: # styled cell or datetime
-                cell = WriteOnlyCell(self)
-
-        if col_idx:
-            self._max_col = max(self._max_col, col_idx)
-            el.set('spans', '1:%d' % col_idx)
         try:
-            self.writer.send(el)
+            self.writer.send(row)
         except StopIteration:
             self._already_saved()
 

@@ -65,21 +65,35 @@ def test_write_header(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-def test_append(WriteOnlyWorksheet):
-    ws = WriteOnlyWorksheet
+@pytest.fixture
+def doc():
+    return BytesIO()
+
+
+@pytest.fixture
+def _writer(doc):
 
     def _writer(doc):
         with xmlfile(doc) as xf:
             with xf.element('sheetData'):
                 try:
                     while True:
-                        body = (yield)
-                        xf.write(body)
+                        row = (yield)
+                        with xf.element("row"):
+                            for cell in row:
+                                with xf.element("v"):
+                                    xf.write(str(cell))
+
                 except GeneratorExit:
                     pass
 
-    doc = BytesIO()
-    ws.writer = _writer(doc)
+    return _writer(doc)
+
+
+def test_append(WriteOnlyWorksheet, _writer, doc):
+    ws = WriteOnlyWorksheet
+
+    ws.writer = _writer
     next(ws.writer)
 
     ws.append([1, "s"])
@@ -89,29 +103,17 @@ def test_append(WriteOnlyWorksheet):
     xml = doc.getvalue()
     expected = """
     <sheetData>
-      <row r="1" spans="1:2">
-        <c r="A1" t="n">
+      <row>
           <v>1</v>
-        </c>
-        <c r="B1" t="s">
-          <v>0</v>
-        </c>
+          <v>s</v>
       </row>
-      <row r="2" spans="1:2">
-        <c r="A2" t="s">
-          <v>1</v>
-        </c>
-        <c r="B2" t="n">
-          <v>3</v>
-        </c>
-      </row>
-      <row r="3" spans="1:2">
-        <c r="A3" t="n">
-          <v>1</v>
-        </c>
-        <c r="B3" t="n">
+      <row>
           <v>2</v>
-        </c>
+          <v>3</v>
+      </row>
+      <row>
+          <v>1</v>
+          <v>2</v>
       </row>
     </sheetData>
     """
@@ -119,21 +121,10 @@ def test_append(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-def test_dirty_cell(WriteOnlyWorksheet):
+def test_dirty_cell(WriteOnlyWorksheet,_writer, doc):
     ws = WriteOnlyWorksheet
 
-    def _writer(doc):
-        with xmlfile(doc) as xf:
-            with xf.element('sheetData'):
-                try:
-                    while True:
-                        body = (yield)
-                        xf.write(body)
-                except GeneratorExit:
-                    pass
-
-    doc = BytesIO()
-    ws.writer = _writer(doc)
+    ws.writer = _writer
     next(ws.writer)
 
     ws.append((datetime.date(2001, 1, 1), 1))
@@ -141,10 +132,10 @@ def test_dirty_cell(WriteOnlyWorksheet):
     xml = doc.getvalue()
     expected = """
     <sheetData>
-    <row r="1" spans="1:2">
-      <c r="A1" t="n" s="1"><v>36892</v></c>
-      <c r="B1" t="n"><v>1</v></c>
-      </row>
+    <row>
+      <v>2001-01-01</v>
+      <v>1</v>
+    </row>
     </sheetData>
     """
     diff = compare_xml(xml, expected)
@@ -185,7 +176,7 @@ def test_cell_comment(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
-    <row r="1" spans="1:1"><c r="A1" t="n"><v>1</v></c></row>
+    <row r="1"><c r="A1" t="n"><v>1</v></c></row>
     </sheetData>
     <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
@@ -310,7 +301,7 @@ def test_write_empty_row(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
-    <row r="1" spans="1:3">
+    <row r="1">
       <c r="A1" t="s">
         <v>0</v>
       </c>

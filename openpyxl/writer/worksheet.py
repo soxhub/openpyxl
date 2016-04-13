@@ -27,7 +27,7 @@ from openpyxl.worksheet.dimensions import (
     SheetDimension,
 )
 
-from .etree_worksheet import write_cell
+from .etree_worksheet import write_rows
 
 
 def write_mergecells(worksheet):
@@ -81,11 +81,6 @@ def write_worksheet(worksheet, shared_strings):
     ws = worksheet
     ws._rels = []
     ws._hyperlinks = []
-
-    if LXML is True:
-        from .lxml_worksheet import write_cell, write_rows
-    else:
-        from .etree_worksheet import write_cell, write_rows
 
     out = BytesIO()
 
