@@ -52,6 +52,25 @@ def write_rows():
     return write_rows
 
 
+@pytest.fixture
+def etree_write_cell():
+    from ..etree_worksheet import write_cell
+    return write_cell
+
+
+@pytest.fixture
+def lxml_write_cell():
+    from ..lxml_worksheet import write_cell
+    return write_cell
+
+
+@pytest.fixture(params=['etree', 'lxml'])
+def write_cell_implementation(request, etree_write_cell, lxml_write_cell):
+    if request.param == "etree":
+        return etree_write_cell
+    return lxml_write_cell
+
+
 @pytest.mark.parametrize("value, expected",
                          [
                              (9781231231230, """<c t="n" r="A1"><v>9781231231230</v></c>"""),
@@ -64,9 +83,10 @@ def write_rows():
                              (None, """<c r="A1" t="n"></c>"""),
                              (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>40902</v></c>"""),
                          ])
-def test_write_cell(worksheet, value, expected):
+def test_write_cell(worksheet, write_cell_implementation, value, expected):
     from openpyxl.cell import Cell
-    from .. etree_worksheet import write_cell
+    write_cell = write_cell_implementation
+
     ws = worksheet
     cell = ws['A1']
     cell.value = value
@@ -80,9 +100,9 @@ def test_write_cell(worksheet, value, expected):
     assert diff is None, diff
 
 
-def test_write_comment(worksheet):
+def test_write_comment(worksheet, write_cell_implementation):
 
-    from ..etree_worksheet import write_cell
+    write_cell = write_cell_implementation
     from openpyxl.comments import Comment
 
     ws = worksheet
