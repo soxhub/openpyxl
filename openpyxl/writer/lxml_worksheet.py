@@ -1,36 +1,10 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from operator import itemgetter
-
 from openpyxl.compat import safe_string
 from openpyxl.comments.properties import CommentRecord
 
-from .etree_worksheet import (
-    get_rows_to_write
-)
-
 ### LXML optimisation using xf.element to reduce instance creation
-
-def write_row(xf, worksheet, row, row_idx, max_column):
-
-    attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
-    dims = worksheet.row_dimensions
-    if row_idx in dims:
-        row_dimension = dims[row_idx]
-        attrs.update(dict(row_dimension))
-
-    with xf.element("row", attrs):
-
-        for col, cell in row:
-            if (
-                cell._value is None
-                and not cell.has_style
-                and not cell._comment
-                ):
-                continue
-            write_cell(xf, worksheet, cell, cell.has_style)
-
 
 def write_cell(xf, worksheet, cell, styled=False):
     coordinate = cell.coordinate
