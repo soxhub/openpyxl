@@ -49,7 +49,7 @@ def test_deprecated_function(recwarn):
 
     fn()
     w = recwarn.pop()
-    assert issubclass(w.category, UserWarning)
+    assert issubclass(w.category, DeprecationWarning)
     assert w.filename
     assert w.lineno
     assert "no way" in str(w.message)
@@ -63,7 +63,7 @@ def test_deprecated_class(recwarn):
         pass
     s = Simple()
     w = recwarn.pop()
-    assert issubclass(w.category, UserWarning)
+    assert issubclass(w.category, DeprecationWarning)
     assert w.filename
     assert w.lineno
 
@@ -79,7 +79,7 @@ def test_deprecated_method(recwarn):
     s = Simple()
     s.do()
     w = recwarn.pop()
-    assert issubclass(w.category, UserWarning)
+    assert issubclass(w.category, DeprecationWarning)
     assert w.filename
     assert w.lineno
 

@@ -47,7 +47,7 @@ class deprecated(object):
 
             warnings.warn_explicit(
                 '{0}.'.format(msg),
-                category=UserWarning,
+                category=DeprecationWarning,
                 filename=_code.co_filename,
                 lineno=_code.co_firstlineno + 1
             )
