@@ -120,11 +120,7 @@ class WriteOnlyWorksheet(Worksheet):
                                     cell.row = row_idx
 
                                     styled = cell.has_style
-                                    if LXML:
-                                        write_cell(xf, self, cell, styled)
-                                    else:
-                                        el = write_cell(self, cell, styled)
-                                        xf.write(el)
+                                    write_cell(xf, self, cell, styled)
 
                                     if styled: # styled cell or datetime
                                         cell = WriteOnlyCell(self)

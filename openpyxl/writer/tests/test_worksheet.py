@@ -52,7 +52,6 @@ def write_rows():
     return write_rows
 
 
-
 @pytest.mark.parametrize("value, expected",
                          [
                              (9781231231230, """<c t="n" r="A1"><v>9781231231230</v></c>"""),
@@ -72,8 +71,11 @@ def test_write_cell(worksheet, value, expected):
     cell = ws['A1']
     cell.value = value
 
-    el = write_cell(ws, cell, cell.has_style)
-    xml = tostring(el)
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, cell.has_style)
+
+    xml = out.getvalue()
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
@@ -87,7 +89,9 @@ def test_write_comment(worksheet):
     cell = ws['A1']
     cell.comment = Comment("test comment", "test author")
 
-    el = write_cell(ws, cell, False)
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, False)
     assert len(ws._comments) == 1
 
 

@@ -49,7 +49,7 @@ def write_row(xf, worksheet, row, row_idx, max_column):
         row_dimension = dims[row_idx]
         attrs.update(dict(row_dimension))
 
-    with xf.element("row", attrs):
+    with xf.element("row", attrs) as mm:
 
         for col, cell in row:
             if (
@@ -58,11 +58,11 @@ def write_row(xf, worksheet, row, row_idx, max_column):
                 and not cell._comment
                 ):
                 continue
-            el = write_cell(worksheet, cell, cell.has_style)
-            xf.write(el)
+            el = write_cell(xf, worksheet, cell, cell.has_style)
 
 
-def write_cell(worksheet, cell, styled=None):
+def write_cell(xf, worksheet, cell, styled=None):
+
     coordinate = cell.coordinate
     attributes = {'r': coordinate}
     if styled:
@@ -79,7 +79,8 @@ def write_cell(worksheet, cell, styled=None):
 
     el = Element("c", attributes)
     if value is None or value == "":
-        return el
+        xf.write(el)
+        return
 
     if cell.data_type == 'f':
         shared_formula = worksheet.formula_attributes.get(coordinate, {})
@@ -97,4 +98,4 @@ def write_cell(worksheet, cell, styled=None):
     if cell.hyperlink:
         worksheet._hyperlinks.append(cell.hyperlink)
 
-    return el
+    xf.write(el)
