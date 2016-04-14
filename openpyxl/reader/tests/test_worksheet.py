@@ -517,7 +517,7 @@ def test_shared_formulae(WorkSheetParser, datadir):
 
 def test_cell_without_coordinates(WorkSheetParser, datadir):
     datadir.chdir()
-    with open("worksheet_without_coordinates.xml") as src:
+    with open("worksheet_without_coordinates.xml", "rb") as src:
         xml = src.read()
 
     sheet = fromstring(xml)
