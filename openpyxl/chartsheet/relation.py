@@ -54,7 +54,7 @@ class DrawingHF(Serialisable):
     rfe = Integer(allow_none=True)
     rightFooterEvenPages = Alias('rfe')
     rff = Integer(allow_none=True)
-    rightFooterFirstPage = Alias('eff')
+    rightFooterFirstPage = Alias('rff')
 
     def __init__(self,
                  id=None,
