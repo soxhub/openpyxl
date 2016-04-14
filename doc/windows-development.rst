@@ -65,7 +65,7 @@ openpyxl needs `lxml` in order to run the tests. Unfortunately, automatic instal
 
 #. Install the project requirements::
 
-    pip install --download downloads -r requirements.txt
+    pip download -r requirements.txt -d downloads
     pip install --no-index --find-links downloads -r requirements.txt
 
 To run tests for the virtualenv::
