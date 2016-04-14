@@ -19,6 +19,7 @@ from openpyxl.worksheet.properties import PageSetupProperties
 from openpyxl.worksheet.dimensions import DimensionHolder
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 
+from openpyxl import LXML
 
 @pytest.fixture
 def worksheet():
@@ -66,9 +67,9 @@ def lxml_write_cell():
 
 @pytest.fixture(params=['etree', 'lxml'])
 def write_cell_implementation(request, etree_write_cell, lxml_write_cell):
-    if request.param == "etree":
-        return etree_write_cell
-    return lxml_write_cell
+    if request.param == "lxml" and LXML:
+        return lxml_write_cell
+    return etree_write_cell
 
 
 @pytest.mark.parametrize("value, expected",
