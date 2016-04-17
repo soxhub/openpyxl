@@ -74,7 +74,7 @@ class TestWorksheetCopy:
         ws1 = copier.source_worksheet
         ws2 = copier.target_worksheet
         ws1['A1'] = 4
-        copier.copy_cells()
+        copier._copy_cells()
         assert ws2['A1'].value == 4
 
 
@@ -83,7 +83,7 @@ class TestWorksheetCopy:
         ws2 = copier.target_worksheet
         c1 = ws1['A1']
         c1.font = Font(bold=True)
-        copier.copy_cells()
+        copier._copy_cells()
         assert ws2['A1'].font == Font(bold=True)
 
 
@@ -92,7 +92,7 @@ class TestWorksheetCopy:
         ws2 = copier.target_worksheet
         c1 = ws1['A1']
         c1.comment = Comment("A Comment", "Nobody")
-        copier.copy_cells()
+        copier._copy_cells()
         assert ws2['A1'].comment == Comment("A Comment", "Nobody")
 
 
@@ -101,7 +101,7 @@ class TestWorksheetCopy:
         ws2 = copier.target_worksheet
         c1 = ws1['A1']
         c1.hyperlink = "http://www.example.com"
-        copier.copy_cells()
+        copier._copy_cells()
         assert ws2['A1'].hyperlink.target == "http://www.example.com"
 
 
@@ -110,7 +110,7 @@ class TestWorksheetCopy:
         ws2 = copier.target_worksheet
         rd1 = ws1.row_dimensions[4]
         rd1.height = 25
-        copier.copy_row_dimensions()
+        copier._copy_row_dimensions()
         rd2 = ws2.row_dimensions[4]
         assert rd2.height == 25
 
@@ -120,7 +120,7 @@ class TestWorksheetCopy:
         ws2 = copier.target_worksheet
         cd1 = ws1.column_dimensions['D']
         cd1.width = 25
-        copier.copy_column_dimensions()
+        copier._copy_column_dimensions()
         cd2 = ws2.column_dimensions['D']
         assert cd2.width == 25
 

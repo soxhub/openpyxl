@@ -31,41 +31,38 @@ class WorksheetCopy(object):
 
 
     def copy_worksheet(self):
-        self.copy_cells()
-        self.copy_row_dimensions()
-        self.copy_column_dimensions()
+        self._copy_cells()
+        self._copy_row_dimensions()
+        self._copy_column_dimensions()
 
         self.target_worksheet._merged_cells = copy(self.source_worksheet._merged_cells)
 
-    def copy_cells(self):
+
+    def _copy_cells(self):
         for (row, col), source_cell  in self.source_worksheet._cells.items():
             target_cell = self.target_worksheet.cell(column=col, row=row)
-            self._copy_cell(source_cell, target_cell)
+
+            target_cell._value = source_cell._value
+            target_cell.data_type = source_cell.data_type
+
+            if source_cell.has_style:
+                target_cell._style = copy(source_cell._style)
+
+            if source_cell.hyperlink is not None:
+                target_cell._hyperlink = copy(source_cell.hyperlink)
+
+            if source_cell.comment is not None:
+                target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
 
 
-    def _copy_cell(self, source_cell, target_cell):
-
-        target_cell._value = source_cell._value
-        target_cell.data_type = source_cell.data_type
-
-        if source_cell.has_style:
-            target_cell._style = copy(source_cell._style)
-
-        if source_cell.hyperlink is not None:
-            target_cell._hyperlink = copy(source_cell.hyperlink)
-
-        if source_cell.comment is not None:
-            target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
-
-
-    def copy_row_dimensions(self):
+    def _copy_row_dimensions(self):
         for key, source_dim in self.source_worksheet.row_dimensions.items():
             target_dim = copy(source_dim)
             target_dim.worksheet = self.target_worksheet
             self.target_worksheet.row_dimensions[key] = target_dim
 
 
-    def copy_column_dimensions(self):
+    def _copy_column_dimensions(self):
         for key, source_dim in self.source_worksheet.column_dimensions.items():
             target_dim = copy(source_dim)
             target_dim.worksheet = self.target_worksheet
