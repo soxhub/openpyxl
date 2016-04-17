@@ -69,4 +69,4 @@ class WorksheetCopy(object):
         for key, source_dim in self.source_worksheet.column_dimensions.items():
             target_dim = copy(source_dim)
             target_dim.worksheet = self.target_worksheet
-            self.target_worksheet.column_dimensions[key] =target_dim
+            self.target_worksheet.column_dimensions[key] = target_dim
