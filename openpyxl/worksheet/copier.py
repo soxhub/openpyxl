@@ -13,7 +13,10 @@ from openpyxl.worksheet import Worksheet
 
 
 class WorksheetCopy(object):
-    """ this class includes functions specific for copying worksheets and parts of worksheets"""
+    """
+    Copy the values, styles, dimensions and merged cells from one worksheet
+    to another within the same workbook.
+    """
 
     def __init__(self, source_worksheet, target_worksheet):
         self.source_worksheet = source_worksheet
@@ -72,7 +75,6 @@ class WorksheetCopy(object):
 
     def copy_column_dimensions(self):
         for key, source_column_dimension in self.source_worksheet.column_dimensions.values():
-            source_column_dimension = self.source_worksheet.column_dimensions[key]
             target_column_dimension = self.target_worksheet.column_dimensions[key]
             self._copy_column_dimension(source_column_dimension, target_column_dimension)
 
