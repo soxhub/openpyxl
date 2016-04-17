@@ -61,6 +61,11 @@ class TestWorksheetCopy:
             WorksheetCopy(ws1, ws1)
 
 
+    def test_cannot_copy_junk(self, WorksheetCopy):
+        with pytest.raises(TypeError):
+            WorksheetCopy("Test", None)
+
+
     def test_merged_cell_copy(self, copier):
         ws1 = copier.source_worksheet
         ws2 = copier.target_worksheet

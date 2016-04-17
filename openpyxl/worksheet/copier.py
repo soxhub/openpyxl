@@ -23,6 +23,10 @@ class WorksheetCopy(object):
 
     def _verify_resources(self):
 
+        if (not isinstance(self.source_worksheet, Worksheet)
+            and not isinstance(self.target_worksheet, Worksheet)):
+            raise TypeError("Can only copy worksheets")
+
         if self.source_worksheet is self.target_worksheet:
             raise ValueError("Cannot copy a worksheet to itself")
 
