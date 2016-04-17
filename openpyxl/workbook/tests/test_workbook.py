@@ -191,3 +191,20 @@ def test_add_invalid_worksheet_class_instance():
     ws = AlternativeWorksheet(parent_workbook=wb)
     with pytest.raises(TypeError):
         wb._add_sheet(worksheet=ws)
+
+
+def test_worksheet_copy_1():
+    wb = Workbook()
+    ws1 = wb.active
+    ws2 = wb.copy_worksheet(ws1)
+    assert ws2 is not None
+
+
+def test_worksheet_copy_name():
+    wb = Workbook()
+    ws1 = wb.active
+    ws1.title = "TestSheet"
+    ws2 = wb.copy_worksheet(ws1)
+    ws3 = wb.copy_worksheet(ws1)
+    assert ws2.title == 'TestSheet Copy'
+    assert ws3.title == 'TestSheet Copy1'
