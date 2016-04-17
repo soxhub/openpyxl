@@ -125,12 +125,12 @@ class TestWorksheetCopy:
         assert cd2.width == 25
 
 
-@pytest.fixture()
-def load_copy_worksheets(datadir, WorksheetCopy):
+def test_copy_worksheet(datadir, WorksheetCopy):
     datadir.chdir()
     wb = load_workbook('copy_test.xlsx')
     ws1 = wb['original_sheet']
     ws2 = wb.create_sheet('copy_sheet')
     cp = WorksheetCopy(ws1, ws2)
     cp.copy_worksheet()
-    return ws1, ws2
+    for c1, c2 in zip(ws1['A'], ws2['a']):
+        assert compare_cells(c1, c2) is True
