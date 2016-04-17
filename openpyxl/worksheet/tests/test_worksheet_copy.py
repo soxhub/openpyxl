@@ -38,6 +38,7 @@ def load_copy_worksheets(datadir):
     cp.copy_worksheet()
     return ws1, ws2
 
+
 @pytest.fixture()
 def copy_worksheets():
     wb = Workbook()
@@ -54,15 +55,11 @@ def test_copy_between_workbooks():
     with pytest.raises(ValueError):
         WorksheetCopy(ws1, ws2)
 
-def test_copy_not_worksheet1(copy_worksheets):
-    ws1, ws2 = copy_worksheets
-    with pytest.raises(TypeError):
-        WorksheetCopy(ws1, 'test')
 
-def test_copy_not_worksheet2(copy_worksheets):
+def test_cannot_copy_to_self(copy_worksheets):
     ws1, ws2 = copy_worksheets
-    with pytest.raises(TypeError):
-        WorksheetCopy('test', ws1)
+    with pytest.raises(ValueError):
+        WorksheetCopy(ws1, ws1)
 
 
 def test_merged_cell_copy(copy_worksheets):
@@ -71,6 +68,7 @@ def test_merged_cell_copy(copy_worksheets):
     ws1.merge_cells('F20:J23')
     WorksheetCopy(ws1, ws2).copy_worksheet()
     assert ws1.merged_cell_ranges == ws2.merged_cell_ranges
+
 
 def test_merged_cell_copy_change(copy_worksheets):
     ws1, ws2 = copy_worksheets

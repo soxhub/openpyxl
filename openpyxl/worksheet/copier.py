@@ -35,8 +35,7 @@ class WorksheetCopy(object):
         self.target_worksheet._merged_cells = copy(self.source_worksheet._merged_cells)
 
     def copy_cells(self):
-        for (row, col)  in iter(self.source_worksheet._cells):
-            source_cell = self.source_worksheet.cell(column=col, row=row)
+        for (row, col), source_cell  in self.source_worksheet._cells.values():
             target_cell = self.target_worksheet.cell(column=col, row=row)
             self._copy_cell(source_cell, target_cell)
 
@@ -56,8 +55,7 @@ class WorksheetCopy(object):
 
 
     def copy_row_dimensions(self):
-        for key in iter(self.source_worksheet.row_dimensions):
-            source_row_dimension = self.source_worksheet.row_dimensions[key]
+        for key, source_row_dimension in self.source_worksheet.row_dimensions.values():
             target_row_dimension = self.target_worksheet.row_dimensions[key]
             self._copy_row_dimension(source_row_dimension, target_row_dimension)
 
@@ -71,8 +69,9 @@ class WorksheetCopy(object):
                 source_attr = getattr(source_row_dimension, attr)
                 setattr(target_row_dimension, attr, source_attr)
 
+
     def copy_column_dimensions(self):
-        for key in iter(self.source_worksheet.column_dimensions):
+        for key, source_column_dimension in self.source_worksheet.column_dimensions.values():
             source_column_dimension = self.source_worksheet.column_dimensions[key]
             target_column_dimension = self.target_worksheet.column_dimensions[key]
             self._copy_column_dimension(source_column_dimension, target_column_dimension)
