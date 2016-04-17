@@ -58,6 +58,9 @@ class StyleArray(array):
         return hash(tuple(self))
 
 
+    def __copy__(self):
+        return StyleArray((self))
+
 
 class CellStyle(Serialisable):
 

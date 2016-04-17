@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from openpyxl.compat import deprecated
 from openpyxl.compat import OrderedDict
 from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
@@ -288,3 +289,21 @@ class Workbook(object):
         List of named styles
         """
         return [s.name for s in self._named_styles]
+
+
+    def copy_worksheet(self, from_worksheet):
+        """Copy an existing worksheet in the current workbook
+        :warning: This function cannot copy worksheets between workbooks.
+        worksheets can only be copied within the workbook that they belong
+
+        :param from_worksheet: the worksheet to be copied from
+        :return: copy of the initial worksheet
+        """
+        if self.__write_only or self._read_only:
+            raise ValueError("Cannot copy worksheets in read-only or write-only mode")
+
+        new_title = "{0} Copy".format(from_worksheet.title)
+        to_worksheet = self.create_sheet(title=new_title)
+        cp = WorksheetCopy(source_worksheet=from_worksheet, target_worksheet=to_worksheet)
+        cp.copy_worksheet()
+        return to_worksheet

@@ -179,15 +179,51 @@ def test_write_regular_float(tmpdir):
     assert test_sheet.cell("A1").value == float_value
 
 
-class AlternativeWorksheet(object):
-    def __init__(self, parent_workbook, title=None):
-        self.parent_workbook = parent_workbook
-        if not title:
-            title = 'AlternativeSheet'
-        self.title = title
-
 def test_add_invalid_worksheet_class_instance():
+
+    class AlternativeWorksheet(object):
+        def __init__(self, parent_workbook, title=None):
+            self.parent_workbook = parent_workbook
+            if not title:
+                title = 'AlternativeSheet'
+            self.title = title
+
     wb = Workbook()
     ws = AlternativeWorksheet(parent_workbook=wb)
     with pytest.raises(TypeError):
         wb._add_sheet(worksheet=ws)
+
+
+class TestCopy:
+
+
+    def test_worksheet_copy(self):
+        wb = Workbook()
+        ws1 = wb.active
+        ws2 = wb.copy_worksheet(ws1)
+        assert ws2 is not None
+
+
+    def test_worksheet_copy_name(self):
+        wb = Workbook()
+        ws1 = wb.active
+        ws1.title = "TestSheet"
+        ws2 = wb.copy_worksheet(ws1)
+        ws3 = wb.copy_worksheet(ws1)
+        assert ws2.title == 'TestSheet Copy'
+        assert ws3.title == 'TestSheet Copy1'
+
+
+    def test_cannot_copy_readonly(self):
+        wb = Workbook()
+        ws = wb.active
+        wb._read_only = True
+        with pytest.raises(ValueError):
+            wb.copy_worksheet(ws)
+
+
+    def test_cannot_copy_writeonly(self):
+        wb = Workbook(write_only=True)
+        ws = wb.create_sheet()
+        with pytest.raises(ValueError):
+            wb.copy_worksheet(ws)
