@@ -18,6 +18,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Dmitriy Chernyshov
 * Eric Chlebek
 * Alexandre Fayolle
+* Don Freeman
 * Eric Gazoni
 * Brice Gelineau
 * Alex Gronholm

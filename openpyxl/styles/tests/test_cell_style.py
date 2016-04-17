@@ -2,6 +2,8 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 import pytest
 
+from copy import copy
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -27,6 +29,12 @@ class TestStyleArray:
         s2 = StyleArray((range(9)))
         assert hash(s1) == hash(s2)
 
+
+    def test_copy(self, StyleArray):
+        s1 = StyleArray((range(9)))
+        s2 = copy(s1)
+        assert type(s1) == type(s2)
+        assert s1 == s2
 
 
 @pytest.fixture

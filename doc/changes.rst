@@ -58,6 +58,7 @@ Bug fixes
 ---------
 
 * `#152 <https://bitbucket.org/openpyxl/openpyxl/issues/152>`_ Hyperlinks lost when reading files
+* `#171 <https://bitbucket.org/openpyxl/openpyxl/issues/171>`_ Add function for copying worksheets
 * `#386 <https://bitbucket.org/openpyxl/openpyxl/issues/386>`_ Cells with inline strings considered empty
 * `#397 <https://bitbucket.org/openpyxl/openpyxl/issues/397>`_ Add support for ranges of rows and columns
 * `#446 <https://bitbucket.org/openpyxl/openpyxl/issues/446>`_ Workbook with definedNames corrupted by openpyxl
