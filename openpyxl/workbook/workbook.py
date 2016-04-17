@@ -299,6 +299,8 @@ class Workbook(object):
         :param from_worksheet: the worksheet to be copied from
         :return: copy of the initial worksheet
         """
+        if self.__write_only or self._read_only:
+            raise ValueError("Cannot copy worksheets in read-only or write-only mode")
 
         new_title = "{0} Copy".format(from_worksheet.title)
         to_worksheet = self.create_sheet(title=new_title)
