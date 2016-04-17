@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from array import array
-from datetime import datetime, date, time, timedelta
 import pytest
 
 from openpyxl import Workbook, load_workbook
@@ -14,11 +12,8 @@ from openpyxl.worksheet.copier import WorksheetCopy
 
 
 def compare_cells(source_cell, target_cell):
-    attrs = ('_value', 'data_type', 'value', 'row', 'col_idx', '_comment', '_hyperlink', '_style')
-
-    if not source_cell.__class__.__name__ == 'Cell' or not target_cell.__class__.__name__ == 'Cell':
-        raise TypeError('''source_cell of type {0} and target_cell of type {1} must both
-                            be of type Cell'''.format(source_cell.__class__.__name__, target_cell.__class__.__name__))
+    attrs = ('_value', 'data_type', 'value', 'row', 'col_idx', '_comment',
+             '_hyperlink', '_style')
 
     for attr in attrs:
         s_attr = getattr(source_cell, attr)

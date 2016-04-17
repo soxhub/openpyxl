@@ -22,12 +22,6 @@ class WorksheetCopy(object):
 
     def _verify_resources(self):
 
-        if (not isinstance(self.source_worksheet, Worksheet)
-            or not isinstance(self.target_worksheet, Worksheet)):
-            raise TypeError('''source_worksheet is of type {0} and target_worksheet of type {1}'
-                            they should both be of type Worksheet'''.format(self.source_worksheet.__class__.__name__,
-                                                                            self.target_worksheet.__class__.__name__))
-
         if self.source_worksheet.parent != self.target_worksheet.parent:
             raise ValueError('Cannot copy between worksheets from different workbooks')
 
