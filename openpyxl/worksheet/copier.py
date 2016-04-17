@@ -20,6 +20,7 @@ class WorksheetCopy(object):
         self.target_worksheet = target_worksheet
         self._verify_resources()
 
+
     def _verify_resources(self):
 
         if self.source_worksheet is self.target_worksheet:
@@ -28,10 +29,11 @@ class WorksheetCopy(object):
         if self.source_worksheet.parent != self.target_worksheet.parent:
             raise ValueError('Cannot copy between worksheets from different workbooks')
 
+
     def copy_worksheet(self):
+        self.copy_cells()
         self.copy_row_dimensions()
         self.copy_column_dimensions()
-        self.copy_cells()
 
         self.target_worksheet._merged_cells = copy(self.source_worksheet._merged_cells)
 
@@ -39,6 +41,7 @@ class WorksheetCopy(object):
         for (row, col), source_cell  in self.source_worksheet._cells.values():
             target_cell = self.target_worksheet.cell(column=col, row=row)
             self._copy_cell(source_cell, target_cell)
+
 
     def _copy_cell(self, source_cell, target_cell):
 
