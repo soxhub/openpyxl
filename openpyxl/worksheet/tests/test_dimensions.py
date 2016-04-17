@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 import pytest
 
+from copy import copy
+
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.styles.styleable import StyleArray
 
@@ -66,6 +68,12 @@ class TestRowDimension:
         ws = Worksheet(DummyWorkbook())
         row_info = ws.row_dimensions
         assert isinstance(row_info[1], RowDimension)
+
+
+    def test_copy(self, RowDimension):
+        rd1 = RowDimension(worksheet=DummyWorksheet())
+        rd2 = copy(rd1)
+        assert dict(rd1) == dict(rd2)
 
 
 @pytest.fixture
@@ -137,6 +145,12 @@ class TestColDimension:
         expected = """<col max="2" min="2" outlineLevel="1"/>"""
         diff = compare_xml(expected, xml)
         assert diff is None, diff
+
+
+    def test_copy(self, ColumnDimension):
+        cd1 = ColumnDimension(worksheet=DummyWorksheet())
+        cd2 = copy(cd1)
+        assert dict(cd1) == dict(cd2)
 
 
 class TestGrouping:
