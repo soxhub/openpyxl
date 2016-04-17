@@ -58,6 +58,21 @@ You can loop through worksheets ::
     >>> for sheet in wb:
     ...     print(sheet.title)
 
+You can create copies of worksheets within a single workbook:
+
+:func:`openpyxl.workbook.Workbook.copy_worksheet` method::
+
+    >>> active_worksheet = wb.active
+    >>> copied_worksheet = wb.copy_worksheet(ws1)
+
+.. note::
+
+    Only cells and styles can be copied. You cannot copy worksheets between
+    workbooks.
+
+
+You can copy worksheets in a workbook with the
+
 
 Playing with data
 ------------------
