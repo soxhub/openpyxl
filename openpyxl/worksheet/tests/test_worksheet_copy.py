@@ -105,6 +105,26 @@ class TestWorksheetCopy:
         assert ws2['A1'].hyperlink.target == "http://www.example.com"
 
 
+    def test_copy_row_dimensions(self, copier):
+        ws1 = copier.source_worksheet
+        ws2 = copier.target_worksheet
+        rd1 = ws1.row_dimensions[4]
+        rd1.height = 25
+        copier.copy_row_dimensions()
+        rd2 = ws2.row_dimensions[4]
+        assert rd2.height == 25
+
+
+    def test_copy_col_dimensions(self, copier):
+        ws1 = copier.source_worksheet
+        ws2 = copier.target_worksheet
+        cd1 = ws1.column_dimensions['D']
+        cd1.width = 25
+        copier.copy_column_dimensions()
+        cd2 = ws2.column_dimensions['D']
+        assert cd2.width == 25
+
+
 @pytest.fixture()
 def load_copy_worksheets(datadir, WorksheetCopy):
     datadir.chdir()
