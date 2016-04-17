@@ -1,15 +1,12 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-
 #standard lib imports
 from copy import copy
 
 #openpyxl imports
 from openpyxl.comments import Comment
-from openpyxl.styles.cell_style import StyleArray
 from openpyxl.worksheet import Worksheet
-
 
 
 class WorksheetCopy(object):
@@ -24,6 +21,7 @@ class WorksheetCopy(object):
         self._verify_resources()
 
     def _verify_resources(self):
+
         if self.source_worksheet is self.target_worksheet:
             raise ValueError("Cannot copy a worksheet to itself")
 
@@ -53,8 +51,7 @@ class WorksheetCopy(object):
             target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
 
         if source_cell.has_style:
-            st = StyleArray(copy(source_cell._style))
-            target_cell._style = st
+            target_cell._style = copy(source_cell._style)
 
 
     def copy_row_dimensions(self):
@@ -65,7 +62,7 @@ class WorksheetCopy(object):
 
     def _copy_row_dimension(self, source_row_dimension, target_row_dimension):
             if source_row_dimension.has_style:
-                target_row_dimension._style = StyleArray(copy(source_row_dimension._style))
+                target_row_dimension._style = copy(source_row_dimension._style)
 
             attrs = ('ht', 'hidden', 'outlineLevel', 'collapsed', 'thickBot', 'thickTop')
             for attr in attrs:
@@ -81,7 +78,7 @@ class WorksheetCopy(object):
 
     def _copy_column_dimension(self, source_column_dimension, target_column_dimension):
         if source_column_dimension.has_style:
-            target_column_dimension._style = StyleArray(copy(source_column_dimension._style))
+            target_column_dimension._style = copy(source_column_dimension._style)
 
         attrs = ('hidden', 'outlineLevel', 'collapsed', 'width', 'bestFit', 'min', 'max')
         for attr in attrs:
