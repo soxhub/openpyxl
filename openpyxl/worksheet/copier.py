@@ -39,6 +39,8 @@ class WorksheetCopy(object):
         self._copy_row_dimensions()
         self._copy_column_dimensions()
 
+        self.target_worksheet.sheet_format = copy(self.source_worksheet.sheet_format)
+        self.target_worksheet.sheet_properties = copy(self.source_worksheet.sheet_properties)
         self.target_worksheet._merged_cells = copy(self.source_worksheet._merged_cells)
 
 
