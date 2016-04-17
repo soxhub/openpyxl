@@ -21,6 +21,8 @@ class WorksheetCopy(object):
         self._verify_resources()
 
     def _verify_resources(self):
+        if self.source_worksheet is self.target_worksheet:
+            raise ValueError("Cannot copy a worksheet to itself")
 
         if self.source_worksheet.parent != self.target_worksheet.parent:
             raise ValueError('Cannot copy between worksheets from different workbooks')
