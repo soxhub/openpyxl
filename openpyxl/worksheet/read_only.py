@@ -172,10 +172,6 @@ class ReadOnlyWorksheet(object):
             return cell[0]
         return EMPTY_CELL
 
-    @property
-    def rows(self):
-        return self.iter_rows()
-
 
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
@@ -244,3 +240,4 @@ class ReadOnlyWorksheet(object):
     __getitem__ = Worksheet.__getitem__
     cell = Worksheet.cell
     iter_rows = Worksheet.iter_rows
+    rows = Worksheet.rows
