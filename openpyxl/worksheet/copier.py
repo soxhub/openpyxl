@@ -16,37 +16,35 @@ class WorksheetCopy(object):
     """
 
     def __init__(self, source_worksheet, target_worksheet):
-        self.source_worksheet = source_worksheet
-        self.target_worksheet = target_worksheet
+        self.source = source_worksheet
+        self.target = target_worksheet
         self._verify_resources()
 
 
     def _verify_resources(self):
 
-        if (not isinstance(self.source_worksheet, Worksheet)
-            and not isinstance(self.target_worksheet, Worksheet)):
+        if (not isinstance(self.source, Worksheet)
+            and not isinstance(self.target, Worksheet)):
             raise TypeError("Can only copy worksheets")
 
-        if self.source_worksheet is self.target_worksheet:
+        if self.source is self.target:
             raise ValueError("Cannot copy a worksheet to itself")
 
-        if self.source_worksheet.parent != self.target_worksheet.parent:
+        if self.source.parent != self.target.parent:
             raise ValueError('Cannot copy between worksheets from different workbooks')
 
 
     def copy_worksheet(self):
         self._copy_cells()
-        self._copy_row_dimensions()
-        self._copy_column_dimensions()
 
-        self.target_worksheet.sheet_format = copy(self.source_worksheet.sheet_format)
-        self.target_worksheet.sheet_properties = copy(self.source_worksheet.sheet_properties)
-        self.target_worksheet._merged_cells = copy(self.source_worksheet._merged_cells)
+        self.target.sheet_format = copy(self.source.sheet_format)
+        self.target.sheet_properties = copy(self.source.sheet_properties)
+        self.target._merged_cells = copy(self.source._merged_cells)
 
 
     def _copy_cells(self):
-        for (row, col), source_cell  in self.source_worksheet._cells.items():
-            target_cell = self.target_worksheet.cell(column=col, row=row)
+        for (row, col), source_cell  in self.source._cells.items():
+            target_cell = self.target.cell(column=col, row=row)
 
             target_cell._value = source_cell._value
             target_cell.data_type = source_cell.data_type
@@ -61,15 +59,10 @@ class WorksheetCopy(object):
                 target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
 
 
-    def _copy_row_dimensions(self):
-        for key, source_dim in self.source_worksheet.row_dimensions.items():
-            target_dim = copy(source_dim)
-            target_dim.worksheet = self.target_worksheet
-            self.target_worksheet.row_dimensions[key] = target_dim
-
-
-    def _copy_column_dimensions(self):
-        for key, source_dim in self.source_worksheet.column_dimensions.items():
-            target_dim = copy(source_dim)
-            target_dim.worksheet = self.target_worksheet
-            self.target_worksheet.column_dimensions[key] = target_dim
+    def _copy_dimensions(self):
+        for attr in ('row_dimensions', 'column_dimensions'):
+            src = getattr(self.source, attr)
+            target = getattr(self.target, attr)
+            for key, dim in src.items():
+                target[key] = copy(dim)
+                target[key].worksheet = self.target

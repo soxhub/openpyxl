@@ -41,8 +41,8 @@ class TestWorksheetCopy:
         ws1 = wb.create_sheet()
         ws2 = wb.create_sheet()
         copier = WorksheetCopy(ws1, ws2)
-        assert copier.source_worksheet == ws1
-        assert copier.target_worksheet == ws2
+        assert copier.source == ws1
+        assert copier.target == ws2
 
 
     def test_cannot_copy_between_workbooks(self, WorksheetCopy):
@@ -67,8 +67,8 @@ class TestWorksheetCopy:
 
 
     def test_merged_cell_copy(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         ws1.merge_cells('A10:A11')
         ws1.merge_cells('F20:J23')
         copier.copy_worksheet()
@@ -76,16 +76,16 @@ class TestWorksheetCopy:
 
 
     def test_cell_copy_value(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         ws1['A1'] = 4
         copier._copy_cells()
         assert ws2['A1'].value == 4
 
 
     def test_cell_copy_style(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         c1 = ws1['A1']
         c1.font = Font(bold=True)
         copier._copy_cells()
@@ -93,8 +93,8 @@ class TestWorksheetCopy:
 
 
     def test_cell_copy_comment(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         c1 = ws1['A1']
         c1.comment = Comment("A Comment", "Nobody")
         copier._copy_cells()
@@ -102,8 +102,8 @@ class TestWorksheetCopy:
 
 
     def test_cell_copy_hyperlink(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         c1 = ws1['A1']
         c1.hyperlink = "http://www.example.com"
         copier._copy_cells()
@@ -111,21 +111,21 @@ class TestWorksheetCopy:
 
 
     def test_copy_row_dimensions(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         rd1 = ws1.row_dimensions[4]
         rd1.height = 25
-        copier._copy_row_dimensions()
+        copier._copy_dimensions()
         rd2 = ws2.row_dimensions[4]
         assert rd2.height == 25
 
 
     def test_copy_col_dimensions(self, copier):
-        ws1 = copier.source_worksheet
-        ws2 = copier.target_worksheet
+        ws1 = copier.source
+        ws2 = copier.target
         cd1 = ws1.column_dimensions['D']
         cd1.width = 25
-        copier._copy_column_dimensions()
+        copier._copy_dimensions()
         cd2 = ws2.column_dimensions['D']
         assert cd2.width == 25
 
