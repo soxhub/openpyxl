@@ -61,17 +61,8 @@ def test_create_sheet_readonly():
 def test_remove_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet(0)
-    wb.remove_sheet(new_sheet)
+    wb.remove(new_sheet)
     assert new_sheet not in wb.worksheets
-
-
-def test_get_sheet_by_name():
-    wb = Workbook()
-    new_sheet = wb.create_sheet()
-    title = 'my sheet'
-    new_sheet.title = title
-    found_sheet = wb.get_sheet_by_name(title)
-    assert new_sheet == found_sheet
 
 
 def test_getitem(Workbook, Worksheet):
@@ -95,15 +86,14 @@ def test_contains(Workbook):
 
 def test_iter(Workbook):
     wb = Workbook()
-    for i, ws in enumerate(wb):
+    for ws in wb:
         pass
-    assert i == 0
     assert ws.title == "Sheet"
 
-def test_get_index():
+def test_index():
     wb = Workbook()
     new_sheet = wb.create_sheet()
-    sheet_index = wb.get_index(new_sheet)
+    sheet_index = wb.index(new_sheet)
     assert sheet_index == 1
 
 
@@ -112,8 +102,7 @@ def test_get_sheet_names():
     names = ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet4', 'Sheet5']
     for count in range(5):
         wb.create_sheet(0)
-    actual_names = wb.get_sheet_names()
-    assert sorted(actual_names) == sorted(names)
+    assert wb.sheetnames == names
 
 
 def test_get_named_ranges():

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from openpyxl.compat import deprecated
 from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils.indexed_list import IndexedList
@@ -144,7 +145,7 @@ class Workbook(object):
     def _add_sheet(self, sheet, index=None):
         """Add an worksheet (at an optional index)."""
 
-        if not isinstance(sheet, (Worksheet, Chartsheet)):
+        if not isinstance(sheet, (Worksheet, WriteOnlyWorksheet, Chartsheet)):
             raise TypeError("Cannot be added to a workbook")
 
         if sheet.parent != self:
@@ -156,9 +157,15 @@ class Workbook(object):
             self._sheets.insert(index, sheet)
 
 
-    def remove_sheet(self, worksheet):
+    def remove(self, worksheet):
         """Remove a worksheet from this workbook."""
         self._sheets.remove(worksheet)
+
+
+    @deprecated("Use wb.remove(worksheet) or del wb[sheetname]")
+    def remove_sheet(self, worksheet):
+        """Remove a worksheet from this workbook."""
+        self.remove(worksheet)
 
 
     def create_chartsheet(self, title=None, index=None):
@@ -183,9 +190,16 @@ class Workbook(object):
     def __contains__(self, key):
         return key in set(self.sheetnames)
 
+
+    def index(self, worksheet):
+        """Return the index of a worksheet."""
+        return self.worksheets.index(worksheet)
+
+
+    @deprecated("Use wb.index(worksheet)")
     def get_index(self, worksheet):
         """Return the index of the worksheet."""
-        return self.worksheets.index(worksheet)
+        return self.index(worksheet)
 
     def __getitem__(self, key):
         """Returns a worksheet by its name.
@@ -201,7 +215,7 @@ class Workbook(object):
 
     def __delitem__(self, key):
         sheet = self[key]
-        self.remove_sheet(sheet)
+        self.remove(sheet)
 
     def __iter__(self):
         return iter(self.worksheets)
@@ -213,7 +227,7 @@ class Workbook(object):
 
     @property
     def worksheets(self):
-        return [s for s in self._sheets if isinstance(s, Worksheet)]
+        return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet))]
 
     @property
     def chartsheets(self):
