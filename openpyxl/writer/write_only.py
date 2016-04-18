@@ -9,8 +9,6 @@ from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
 
-from openpyxl import LXML
-from openpyxl.compat import removed_method
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.related import Related

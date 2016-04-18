@@ -9,7 +9,7 @@ from openpyxl.compat import range
 
 # package
 from openpyxl.cell.text import Text
-from openpyxl.compat import removed_method
+
 from openpyxl.xml.functions import iterparse, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
