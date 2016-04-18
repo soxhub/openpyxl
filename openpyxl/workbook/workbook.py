@@ -157,9 +157,15 @@ class Workbook(object):
             self._sheets.insert(index, sheet)
 
 
-    def remove_sheet(self, worksheet):
+    def remove(self, worksheet):
         """Remove a worksheet from this workbook."""
         self._sheets.remove(worksheet)
+
+
+    @deprecated("Use wb.remove(worksheet) or del wb[sheetname]")
+    def remove_sheet(self, worksheet):
+        """Remove a worksheet from this workbook."""
+        self.remove(worksheet)
 
 
     def create_chartsheet(self, title=None, index=None):
@@ -209,7 +215,7 @@ class Workbook(object):
 
     def __delitem__(self, key):
         sheet = self[key]
-        self.remove_sheet(sheet)
+        self.remove(sheet)
 
     def __iter__(self):
         return iter(self.worksheets)

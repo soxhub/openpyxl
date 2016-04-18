@@ -61,7 +61,7 @@ def test_create_sheet_readonly():
 def test_remove_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet(0)
-    wb.remove_sheet(new_sheet)
+    wb.remove(new_sheet)
     assert new_sheet not in wb.worksheets
 
 
@@ -102,7 +102,7 @@ def test_get_sheet_names():
     names = ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet4', 'Sheet5']
     for count in range(5):
         wb.create_sheet(0)
-    wb.sheetnames == names
+    assert wb.sheetnames == names
 
 
 def test_get_named_ranges():
