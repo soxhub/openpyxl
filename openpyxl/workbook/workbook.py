@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from openpyxl.compat import deprecated
 from openpyxl.compat import OrderedDict
 from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils.indexed_list import IndexedList
@@ -227,7 +228,7 @@ class Workbook(object):
 
     @property
     def worksheets(self):
-        return [s for s in self._sheets if isinstance(s, Worksheet)]
+        return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet))]
 
     @property
     def chartsheets(self):

@@ -209,9 +209,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
 
         if read_only:
             ws = ReadOnlyWorksheet(wb, sheet_name, worksheet_path, None,
-                                       shared_strings)
+                                   shared_strings)
 
-            wb._add_sheet(ws)
+            wb._sheets.append(ws)
         else:
             fh = archive.open(worksheet_path)
             ws = wb.create_sheet(sheet_name)

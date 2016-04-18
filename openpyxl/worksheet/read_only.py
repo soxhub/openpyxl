@@ -51,7 +51,7 @@ INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 
-class ReadOnlyWorksheet(Worksheet):
+class ReadOnlyWorksheet(object):
 
     _xml = None
     _min_column = 1
@@ -60,8 +60,8 @@ class ReadOnlyWorksheet(Worksheet):
 
     def __init__(self, parent_workbook, title, worksheet_path,
                  xml_source, shared_strings):
-        Worksheet.__init__(self, parent_workbook, title)
-        self._cells = None
+        self.parent = parent_workbook
+        self.title = title
         self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
@@ -177,16 +177,6 @@ class ReadOnlyWorksheet(Worksheet):
         return self.iter_rows()
 
 
-    @property
-    def columns(self):
-        """
-        Returning cells by column from a read-only worksheet can be very inefficient.
-        """
-        if self.max_column is None:
-            self.calculate_dimension()
-        return super(ReadOnlyWorksheet, self).columns
-
-
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
             if force:
@@ -250,8 +240,7 @@ class ReadOnlyWorksheet(Worksheet):
         self._max_column = value
 
 
-setattr(ReadOnlyWorksheet, '__setitem__', removed_method)
-setattr(ReadOnlyWorksheet, 'range', removed_method)
-setattr(ReadOnlyWorksheet, 'merge_cells', removed_method)
-setattr(ReadOnlyWorksheet, 'iter_cols', removed_method)
-setattr(ReadOnlyWorksheet, 'columns', removed_method)
+    # Methods shared with normal Worksheets
+    __getitem__ = Worksheet.__getitem__
+    cell = Worksheet.cell
+    iter_rows = Worksheet.iter_rows
