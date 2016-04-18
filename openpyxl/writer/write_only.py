@@ -54,8 +54,8 @@ class WriteOnlyWorksheet(object):
     writer = None
     _default_title = "Sheet"
 
-    def __init__(self, parent_workbook, title):
-        Worksheet.__init__(self, parent_workbook, title)
+    def __init__(self, parent, title):
+        Worksheet.__init__(self, parent, title)
 
         self._max_col = 0
         self._max_row = 0

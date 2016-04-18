@@ -135,7 +135,7 @@ class Workbook(object):
             raise ReadOnlyWorkbookException('Cannot create new sheet in a read-only workbook')
 
         if self.write_only :
-            new_ws = WriteOnlyWorksheet(parent_workbook=self, title=title)
+            new_ws = WriteOnlyWorksheet(parent=self, title=title)
         else:
             new_ws = Worksheet(parent=self, title=title)
 
