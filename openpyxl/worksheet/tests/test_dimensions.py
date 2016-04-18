@@ -73,6 +73,7 @@ class TestRowDimension:
     def test_copy(self, RowDimension):
         rd1 = RowDimension(worksheet=DummyWorksheet())
         rd2 = copy(rd1)
+        assert rd1._style is not rd2._style
         assert dict(rd1) == dict(rd2)
 
 
@@ -148,8 +149,9 @@ class TestColDimension:
 
 
     def test_copy(self, ColumnDimension):
-        cd1 = ColumnDimension(worksheet=DummyWorksheet())
+        cd1 = ColumnDimension(worksheet=DummyWorksheet(), style=[])
         cd2 = copy(cd1)
+        assert cd1._style is not cd2._style
         assert dict(cd1) == dict(cd2)
 
 

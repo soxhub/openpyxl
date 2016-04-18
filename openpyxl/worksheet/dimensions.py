@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from copy import copy
+
 from openpyxl.compat import safe_string, deprecated
 from openpyxl.utils import (
     get_column_interval,
@@ -51,6 +53,15 @@ class Dimension(Strict, StyleableObject):
                 value = self.style_id
             if value:
                 yield key, safe_string(value)
+
+
+    def __copy__(self):
+        cp = self.__new__(self.__class__)
+        attrib = self.__dict__
+        attrib['worksheet'] = self.parent
+        cp.__init__(**attrib)
+        cp._style = copy(self._style)
+        return cp
 
 
 class RowDimension(Dimension):
