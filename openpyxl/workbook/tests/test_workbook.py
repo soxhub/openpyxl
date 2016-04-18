@@ -148,37 +148,6 @@ def test_remove_named_range():
     assert 'test_nr' not in named_ranges_list
 
 
-def test_write_regular_date(tmpdir):
-    tmpdir.chdir()
-    today = datetime.datetime(2010, 1, 18, 14, 15, 20, 1600)
-    book = Workbook()
-    sheet = book.active
-    sheet.cell("A1").value = today
-    dest_filename = 'date_read_write_issue.xlsx'
-    book.save(dest_filename)
-
-    validate_archive(dest_filename)
-    test_book = load_workbook(dest_filename)
-    test_sheet = test_book.active
-
-    assert test_sheet.cell("A1").value == today
-
-
-def test_write_regular_float(tmpdir):
-    float_value = 1.0 / 3.0
-    book = Workbook()
-    sheet = book.active
-    sheet.cell("A1").value = float_value
-    dest_filename = 'float_read_write_issue.xlsx'
-    book.save(dest_filename)
-
-    validate_archive(dest_filename)
-    test_book = load_workbook(dest_filename)
-    test_sheet = test_book.active
-
-    assert test_sheet.cell("A1").value == float_value
-
-
 def test_add_invalid_worksheet_class_instance():
 
     class AlternativeWorksheet(object):
