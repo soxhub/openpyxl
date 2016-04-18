@@ -184,9 +184,16 @@ class Workbook(object):
     def __contains__(self, key):
         return key in set(self.sheetnames)
 
+
+    def index(self, worksheet):
+        """Return the index of a worksheet."""
+        return self.worksheets.index(worksheet)
+
+
+    @deprecated("Use wb.index(worksheet)")
     def get_index(self, worksheet):
         """Return the index of the worksheet."""
-        return self.worksheets.index(worksheet)
+        return self.index(worksheet)
 
     def __getitem__(self, key):
         """Returns a worksheet by its name.
