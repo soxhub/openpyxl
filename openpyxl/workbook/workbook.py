@@ -146,7 +146,7 @@ class Workbook(object):
     def _add_sheet(self, sheet, index=None):
         """Add an worksheet (at an optional index)."""
 
-        if not isinstance(sheet, (Worksheet, Chartsheet)):
+        if not isinstance(sheet, (Worksheet, WriteOnlyWorksheet, Chartsheet)):
             raise TypeError("Cannot be added to a workbook")
 
         if sheet.parent != self:

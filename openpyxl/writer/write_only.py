@@ -44,23 +44,23 @@ def create_temporary_file(suffix=''):
     return filename
 
 
-class WriteOnlyWorksheet(Worksheet):
+class WriteOnlyWorksheet(object):
     """
-    Streaming worksheet using lxml
-    Optimised to reduce memory by writing rows just in time
-    Cells can be styled and have comments
-    Styles for rows and columns must be applied before writing cells
+    Streaming worksheet. Optimised to reduce memory by writing rows just in
+    time.
+    Cells can be styled and have comments Styles for rows and columns
+    must be applied before writing cells
     """
 
     __saved = False
     writer = None
+    _default_title = "Sheet"
 
     def __init__(self, parent_workbook, title):
         Worksheet.__init__(self, parent_workbook, title)
 
         self._max_col = 0
         self._max_row = 0
-        self._parent = parent_workbook
 
         self._fileobj_name = create_temporary_file()
 
@@ -195,12 +195,15 @@ class WriteOnlyWorksheet(Worksheet):
         self._cleanup()
         return out
 
+    # from Worksheet
 
-setattr(WriteOnlyWorksheet, '__getitem__', removed_method)
-setattr(WriteOnlyWorksheet, '__setitem__', removed_method)
-setattr(WriteOnlyWorksheet, 'cell', removed_method)
-setattr(WriteOnlyWorksheet, 'range', removed_method)
-setattr(WriteOnlyWorksheet, 'merge_cells', removed_method)
+    _add_row = Worksheet._add_row
+    _add_column = Worksheet._add_column
+    parent = Worksheet.parent
+    _rel_type = Worksheet._rel_type
+    _path = Worksheet._path
+    sheet_view = Worksheet.sheet_view
+    freeze_panes = Worksheet.freeze_panes
 
 
 def save_dump(workbook, filename):

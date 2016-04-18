@@ -117,7 +117,7 @@ class Worksheet(_WorkbookChild):
     ORIENTATION_LANDSCAPE = 'landscape'
 
     def __init__(self, parent, title=None):
-        super(Worksheet, self).__init__(parent, title)
+        _WorkbookChild.__init__(self, parent, title)
         self.row_dimensions = BoundDictionary("index", self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
@@ -131,7 +131,7 @@ class Worksheet(_WorkbookChild):
         self._merged_cells = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
-        self.sheet_state = self.SHEETSTATE_VISIBLE
+        self.sheet_state = 'visible'
         self.page_setup = PrintPageSetup(worksheet=self)
         self.print_options = PrintOptions()
         self._print_rows = None
@@ -201,6 +201,7 @@ class Worksheet(_WorkbookChild):
     """ End To keep compatibility with previous versions"""
 
 
+    @deprecated("Use the ws.values property")
     def get_cell_collection(self):
         """Return an unordered list of the cells in this worksheet."""
         return self._cells.values()
