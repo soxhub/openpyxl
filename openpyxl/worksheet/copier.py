@@ -36,6 +36,7 @@ class WorksheetCopy(object):
 
     def copy_worksheet(self):
         self._copy_cells()
+        self._copy_dimensions()
 
         self.target.sheet_format = copy(self.source.sheet_format)
         self.target.sheet_properties = copy(self.source.sheet_properties)
@@ -52,10 +53,10 @@ class WorksheetCopy(object):
             if source_cell.has_style:
                 target_cell._style = copy(source_cell._style)
 
-            if source_cell.hyperlink is not None:
+            if source_cell.hyperlink:
                 target_cell._hyperlink = copy(source_cell.hyperlink)
 
-            if source_cell.comment is not None:
+            if source_cell.comment:
                 target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
 
 
