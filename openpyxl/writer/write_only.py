@@ -11,6 +11,7 @@ from tempfile import NamedTemporaryFile
 
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
+from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.worksheet.related import Related
 from openpyxl.worksheet.dimensions import SheetFormatProperties
 
@@ -42,7 +43,7 @@ def create_temporary_file(suffix=''):
     return filename
 
 
-class WriteOnlyWorksheet(object):
+class WriteOnlyWorksheet(_WorkbookChild):
     """
     Streaming worksheet. Optimised to reduce memory by writing rows just in
     time.
@@ -52,15 +53,31 @@ class WriteOnlyWorksheet(object):
 
     __saved = False
     writer = None
-    _default_title = "Sheet"
+    _rel_type = Worksheet._rel_type
+    _path = Worksheet._path
 
     def __init__(self, parent, title):
-        Worksheet.__init__(self, parent, title)
-
+        super(WriteOnlyWorksheet, self).__init__(parent, title)
         self._max_col = 0
         self._max_row = 0
-
         self._fileobj_name = create_temporary_file()
+
+        # Methods from Worksheet
+        self._add_row = Worksheet._add_row.__get__(self)
+        self._add_column = Worksheet._add_column.__get__(self)
+        setup = Worksheet._setup.__get__(self)
+        setup()
+        self.sheet_view = Worksheet.sheet_view.__get__(self)
+
+
+    @property
+    def freeze_panes(self):
+        return Worksheet.freeze_panes.__get__(self)
+
+
+    @freeze_panes.setter
+    def freeze_panes(self, value):
+        Worksheet.freeze_panes.__set__(self, value)
 
 
     @property
@@ -192,16 +209,6 @@ class WriteOnlyWorksheet(object):
             out = src.read()
         self._cleanup()
         return out
-
-    # from Worksheet
-
-    _add_row = Worksheet._add_row
-    _add_column = Worksheet._add_column
-    parent = Worksheet.parent
-    _rel_type = Worksheet._rel_type
-    _path = Worksheet._path
-    sheet_view = Worksheet.sheet_view
-    freeze_panes = Worksheet.freeze_panes
 
 
 def save_dump(workbook, filename):
