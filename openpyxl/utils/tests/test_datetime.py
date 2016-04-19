@@ -111,18 +111,6 @@ def test_days_to_time():
     assert FUT(td) == time(14, 15, 20, 1600)
 
 
-class GMT(tzinfo):
-
-    def utcoffset(self, dt):
-        return timedelta(0)
-
-    def dst(self, dt):
-        return timedelta(0)
-
-    def tzname(self,dt):
-        return "GMT"
-
-
 class CET(tzinfo):
 
     def utcoffset(self, dt):
@@ -144,7 +132,9 @@ class CET(tzinfo):
 
 
 def test_localised_time():
-    from ..datetime import time_to_days
+
+    from ..datetime import time_to_days, GMT
+
     dt1 = datetime(2015, 7, 24, tzinfo=GMT())
     dt2 = datetime(2015, 7, 24, 2, tzinfo=CET())
     assert dt2 - dt2 == timedelta(0)
