@@ -85,7 +85,7 @@ try:
     from datetime import timezone
     UTC = timezone(timedelta(0))
 except ImportError:
-    # Python 2.6
+    # Python 2
     UTC = GMT()
 
 
