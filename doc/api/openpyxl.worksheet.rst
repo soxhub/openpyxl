@@ -11,6 +11,7 @@ Submodules
 
 .. toctree::
 
+   openpyxl.worksheet.copier
    openpyxl.worksheet.datavalidation
    openpyxl.worksheet.dimensions
    openpyxl.worksheet.drawing
