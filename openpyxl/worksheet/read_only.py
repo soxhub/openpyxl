@@ -71,6 +71,18 @@ class ReadOnlyWorksheet(object):
         if dimensions is not None:
             self.min_column, self.min_row, self.max_column, self.max_row = dimensions
 
+        # Methods from Worksheet
+        self.cell = Worksheet.cell.__get__(self)
+        self.iter_rows = Worksheet.iter_rows.__get__(self)
+        self.rows = Worksheet.rows.__get__(self)
+
+
+    def __getitem__(self, key):
+        # use protected method from Worksheet
+        meth = Worksheet.__getitem__.__get__(self)
+        return meth(key)
+
+
     @property
     def xml_source(self):
         """Parse xml source on demand, default to Excel archive"""
@@ -234,10 +246,3 @@ class ReadOnlyWorksheet(object):
     @max_column.setter
     def max_column(self, value):
         self._max_column = value
-
-
-    # Methods shared with normal Worksheets
-    __getitem__ = Worksheet.__getitem__
-    cell = Worksheet.cell
-    iter_rows = Worksheet.iter_rows
-    rows = Worksheet.rows

@@ -118,6 +118,9 @@ class Worksheet(_WorkbookChild):
 
     def __init__(self, parent, title=None):
         _WorkbookChild.__init__(self, parent, title)
+        self._setup()
+
+    def _setup(self):
         self.row_dimensions = BoundDictionary("index", self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
