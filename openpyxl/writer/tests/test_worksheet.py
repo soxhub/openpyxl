@@ -391,7 +391,7 @@ def write_worksheet():
 
 def test_write_empty(worksheet, write_worksheet):
     ws = worksheet
-    xml = write_worksheet(ws, None)
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <sheetPr>
@@ -417,7 +417,7 @@ def test_vba(worksheet, write_worksheet):
     ws = worksheet
     ws.vba_code = {"codeName":"Sheet1"}
     ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
-    xml = write_worksheet(ws, None)
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -445,12 +445,12 @@ def test_vba_comments(datadir, write_worksheet):
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     ws = wb['Form Controls']
-    sheet = fromstring(write_worksheet(ws, None))
+    sheet = fromstring(write_worksheet(ws))
     els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
     assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
     assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
 
-def test_vba_rels(datadir, write_worksheet):
+def test_vba_rels(datadir):
     datadir.chdir()
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
@@ -470,7 +470,7 @@ def test_vba_rels(datadir, write_worksheet):
 def test_write_comments(worksheet, write_worksheet):
     ws = worksheet
     worksheet._comments = True
-    xml = write_worksheet(ws, None)
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">

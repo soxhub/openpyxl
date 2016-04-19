@@ -203,7 +203,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
             type(iterable))
                         )
 
-    def _write(self, shared_strings=None):
+    def _write(self):
         self.close()
         with open(self.filename) as src:
             out = src.read()

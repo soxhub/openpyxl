@@ -32,7 +32,7 @@ def collapse_cell_addresses(cells, input_ranges=()):
         object applied, attempt to collapse down to a single range, A1:B3.
 
         Currently only collapsing contiguous vertical ranges (i.e. above
-        example results in A1:A3 B1:B3).  More work to come.
+        example results in A1:A3 B1:B3).
     """
     keyfunc = lambda x: x[0]
 
@@ -51,12 +51,12 @@ def collapse_cell_addresses(cells, input_ranges=()):
                         groupby(enumerate(rows),
                         lambda x: x[0] - x[1])]
         for rows in grouped_rows:
-            if len(rows) == 0:
-                pass
-            elif len(rows) == 1:
-                ranges.append("%s%d" % (column, rows[0]))
-            else:
-                ranges.append("%s%d:%s%d" % (column, rows[0], column, rows[-1]))
+            if not rows:
+                continue
+            fmt = "{0}{1}:{2}{3}"
+            if len(rows) == 1:
+                fmt = "{0}{1}"
+            ranges.append(fmt.format(column, rows[0], column, rows[-1]))
 
     return " ".join(ranges)
 

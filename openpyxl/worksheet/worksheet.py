@@ -801,9 +801,9 @@ class Worksheet(_WorkbookChild):
         return RowDimension(self)
 
 
-    def _write(self, shared_strings=None):
+    def _write(self):
         from openpyxl.writer.worksheet import write_worksheet
-        return write_worksheet(self, shared_strings)
+        return write_worksheet(self)
 
 
     @property

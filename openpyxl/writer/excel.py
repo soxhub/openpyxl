@@ -164,7 +164,7 @@ class ExcelWriter(object):
 
         for idx, sheet in enumerate(self.workbook.worksheets, 1):
 
-            xml = sheet._write(self.workbook.shared_strings)
+            xml = sheet._write()
             sheet._path = "sheet{0}.xml".format(idx)
             arc_path = "{0}/{1}".format(PACKAGE_WORKSHEETS, sheet._path)
             rels_path = get_rels_path(arc_path)
