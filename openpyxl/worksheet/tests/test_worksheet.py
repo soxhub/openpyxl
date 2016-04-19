@@ -151,7 +151,7 @@ class TestWorksheet:
         with pytest.raises(InsufficientCoordinatesException):
             ws.cell(row=8)
 
-    def test_cell_range_name(self, Worksheet):
+    def test_cell_range_name(self):
         wb = Workbook()
         ws = wb.active
         wb.create_named_range('test_range_single', ws, 'B12')

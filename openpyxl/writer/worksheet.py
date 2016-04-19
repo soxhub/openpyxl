@@ -75,7 +75,7 @@ def write_drawing(worksheet):
         return drawing.to_tree("drawing")
 
 
-def write_worksheet(worksheet, shared_strings):
+def write_worksheet(worksheet):
     """Write a worksheet to an xml file."""
 
     ws = worksheet
