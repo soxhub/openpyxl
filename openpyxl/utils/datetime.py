@@ -7,7 +7,6 @@ from __future__ import division
 # Python stdlib imports
 import datetime
 from datetime import timedelta, tzinfo
-from datetime import timezone
 from math import isnan
 import re
 
@@ -71,7 +70,24 @@ def from_excel(value, offset=CALENDAR_WINDOWS_1900):
         return datetime.datetime(*parts[:3] + [0])
 
 
-UTC = timezone(timedelta(0))
+class GMT(tzinfo):
+
+    def utcoffset(self, dt):
+        return timedelta(0)
+
+    def dst(self, dt):
+        return timedelta(0)
+
+    def tzname(self,dt):
+        return "GMT"
+
+try:
+    from datetime import timezone
+    UTC = timezone(timedelta(0))
+except ImportError:
+    # Python 2.6
+    UTC = GMT()
+
 
 def time_to_days(value):
     """Convert a time value to fractions of day"""
