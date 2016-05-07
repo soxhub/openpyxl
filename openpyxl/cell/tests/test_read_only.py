@@ -55,9 +55,6 @@ def test_string_table(dummy_sheet):
 def test_coordinate(dummy_sheet):
     cell = ReadOnlyCell(dummy_sheet, 1, 1, 10, None)
     assert cell.coordinate == "A1"
-    cell = ReadOnlyCell(dummy_sheet, None, None, 1, None)
-    with pytest.raises(AttributeError):
-        cell.coordinate
 
 
 @pytest.mark.parametrize("value, expected",
