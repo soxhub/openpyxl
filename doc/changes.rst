@@ -1,3 +1,14 @@
+2.4.0 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#625 <https://bitbucket.org/openpyxl/openpyxl/issues/625>`_ Exception
+raises when inspecting EmptyCells in read-only mode
+
+
 2.4.0-a1 (2016-04-11)
 =====================
 
