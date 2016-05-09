@@ -192,7 +192,7 @@ def apply_stylesheet(archive, wb):
     wb._borders = IndexedList(stylesheet.borders)
     wb._fonts = IndexedList(stylesheet.fonts)
     wb._fills = IndexedList(stylesheet.fills)
-    wb._differential_styles = IndexedList(stylesheet.dxfs)
+    wb._differential_styles.styles = stylesheet.dxfs
     wb._number_formats = stylesheet.number_formats
     wb._protections = stylesheet.protections
     wb._alignments = stylesheet.alignments
