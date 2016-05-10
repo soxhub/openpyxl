@@ -55,8 +55,6 @@ class ReadOnlyCell(object):
 
     @property
     def coordinate(self):
-        if self.row is None or self.column is None:
-            raise AttributeError("Empty cells have no coordinates")
         column = get_column_letter(self.column)
         return "{1}{0}".format(self.row, column)
 
@@ -133,4 +131,18 @@ class ReadOnlyCell(object):
         self._value = value
 
 
-EMPTY_CELL = ReadOnlyCell(None, None, None, None)
+class EmptyCell(object):
+
+    __slots__ = ()
+
+    value = None
+    is_date = False
+    font = None
+    border = None
+    fill = None
+    number_format = None
+    alignment = None
+    data_type = 'n'
+
+
+EMPTY_CELL = EmptyCell()
