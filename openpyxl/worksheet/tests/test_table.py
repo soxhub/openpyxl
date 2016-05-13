@@ -42,7 +42,7 @@ def Table():
 class TestTable:
 
     def test_ctor(self, Table, TableColumn):
-        table = Table(id=1, displayName="A Sample Table", ref="A1:F10",
+        table = Table(id=1, displayName="A_Sample_Table", ref="A1:F10",
                       )
         table.tableColumns.append(TableColumn(id=1, name="Column1"))
         xml = tostring(table.to_tree())
