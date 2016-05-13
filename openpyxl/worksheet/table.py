@@ -189,6 +189,7 @@ class TableNameDescriptor(String):
     def __set__(self, instance, value):
         if " " in value:
             raise ValueError("Table names cannot have spaces")
+        super(TableNameDescriptor, self).__set__(instance, value)
 
 
 class Table(Serialisable):
@@ -197,8 +198,8 @@ class Table(Serialisable):
 
     id = Integer()
     name = TableNameDescriptor(allow_none=True)
-    displayName = String()
-    comment = TableNameDescriptor(allow_none=True)
+    displayName = TableNameDescriptor()
+    comment = String(allow_none=True)
     ref = String()
     tableType = NoneSet(values=(['worksheet', 'xml', 'queryTable']))
     headerRowCount = Integer(allow_none=True)
