@@ -17,6 +17,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.utils.escape import escape, unescape
 
 from .filters import (
     AutoFilter,
@@ -165,14 +166,39 @@ class TableColumn(Serialisable):
         self.extLst = extLst
 
 
+    def __iter__(self):
+        for k, v in super(TableColumn, self).__iter__():
+            if k == 'name':
+                v = escape(v)
+            yield k, v
+
+
+    @classmethod
+    def from_tree(cls, node):
+        self = super(TableColumn, cls).from_tree(node)
+        self.name = unescape(self.name)
+        return self
+
+
+class TableNameDescriptor(String):
+
+    """
+    Table names cannot have spaces in them
+    """
+
+    def __set__(self, instance, value):
+        if " " in value:
+            raise ValueError("Table names cannot have spaces")
+
+
 class Table(Serialisable):
 
     tagname = "table"
 
     id = Integer()
-    name = String(allow_none=True)
+    name = TableNameDescriptor(allow_none=True)
     displayName = String()
-    comment = String(allow_none=True)
+    comment = TableNameDescriptor(allow_none=True)
     ref = String()
     tableType = NoneSet(values=(['worksheet', 'xml', 'queryTable']))
     headerRowCount = Integer(allow_none=True)
@@ -230,8 +256,10 @@ class Table(Serialisable):
                  extLst=None,
                 ):
         self.id = id
-        self.name = name
         self.displayName = displayName
+        if name is None:
+            name = displayName
+        self.name = name
         self.comment = comment
         self.ref = ref
         self.tableType = tableType
