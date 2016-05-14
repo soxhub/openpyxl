@@ -6,6 +6,10 @@ import re
 
 
 def escape(value):
+    """
+    Convert ASCII < 31 to OOXML: \n == _x + hex(ord(\n)) + _
+    """
+
     CHAR_REGEX = re.compile(r"[\001-\031]")
 
     def _sub(match):
@@ -18,6 +22,11 @@ def escape(value):
 
 
 def unescape(value):
+    """
+    Convert escaped strings to ASCIII: _x000a_ == \n
+    """
+
+
     ESCAPED_REGEX = re.compile("_x([0-9A-Fa-f]{4})_")
 
     def _sub(match):
