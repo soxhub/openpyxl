@@ -15,6 +15,7 @@ Submodules
    openpyxl.utils.cell
    openpyxl.utils.dataframe
    openpyxl.utils.datetime
+   openpyxl.utils.escape
    openpyxl.utils.exceptions
    openpyxl.utils.indexed_list
    openpyxl.utils.units
