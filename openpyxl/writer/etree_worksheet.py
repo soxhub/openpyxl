@@ -44,7 +44,7 @@ def write_row(xf, worksheet, row, row_idx, max_column):
         row_dimension = dims[row_idx]
         attrs.update(dict(row_dimension))
 
-    with xf.element("row", attrs) as mm:
+    with xf.element("row", attrs):
 
         for col, cell in row:
             if (

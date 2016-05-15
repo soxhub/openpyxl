@@ -146,7 +146,12 @@ class WriteOnlyWorksheet(_WorkbookChild):
                         while True:
                             row = (yield)
                             row_idx = self._max_row
-                            with xf.element("row", r="%d" % row_idx):
+                            attrs = {'r': '%d' % row_idx}
+                            if row_idx in self.row_dimensions:
+                                dim = self.row_dimensions[row_idx]
+                                attrs.update(dict(dim))
+
+                            with xf.element("row", attrs):
 
                                 for col_idx, value in enumerate(row, 1):
                                     if value is None:
