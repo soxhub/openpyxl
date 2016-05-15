@@ -19,6 +19,8 @@ from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.utils.escape import escape, unescape
 
+from .related import Related
+
 from .filters import (
     AutoFilter,
     SortState,
@@ -290,3 +292,24 @@ class Table(Serialisable):
         tree = super(Table, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
+
+
+class TablePart(Related):
+
+    tagname = "tablePart"
+
+
+class TablePartList(Serialisable):
+
+    tagname = "tablePart"
+
+    count = Integer(allow_none=True)
+    tablePart = Typed(expected_type=TablePart, allow_none=True)
+
+    __elements__ = ('tablePart',)
+
+    def __init__(self,
+                 count=None,
+                 tablePart=None,
+                ):
+        self.tablePart = tablePart
