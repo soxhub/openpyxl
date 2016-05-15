@@ -155,8 +155,9 @@ def test_cell_comment(WriteOnlyWorksheet):
     cell = WriteOnlyCell(ws, 1)
     comment = Comment('hello', 'me')
     cell.comment = comment
-    ws.append([cell])
+    ws.append([1, cell])
     assert len(ws._comments) == 1
+    assert ws._comments[0].ref == "B1"
     ws.close()
 
     with open(ws.filename) as src:
@@ -174,7 +175,10 @@ def test_cell_comment(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
-    <row r="1"><c r="A1" t="n"><v>1</v></c></row>
+    <row r="1">
+     <c r="A1" t="n"><v>1</v></c>
+     <c r="B1" t="n"><v>1</v></c>
+     </row>
     </sheetData>
     <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
