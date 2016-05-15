@@ -65,8 +65,11 @@ class WriteOnlyWorksheet(_WorkbookChild):
         # Methods from Worksheet
         self._add_row = Worksheet._add_row.__get__(self)
         self._add_column = Worksheet._add_column.__get__(self)
+
         setup = Worksheet._setup.__get__(self)
         setup()
+
+        self.print_titles = Worksheet.print_titles.__get__(self)
         self.sheet_view = Worksheet.sheet_view.__get__(self)
 
 
@@ -78,6 +81,36 @@ class WriteOnlyWorksheet(_WorkbookChild):
     @freeze_panes.setter
     def freeze_panes(self, value):
         Worksheet.freeze_panes.__set__(self, value)
+
+
+    @property
+    def print_title_cols(self):
+        return Worksheet.print_title_cols.__get__(self)
+
+
+    @print_title_cols.setter
+    def print_title_cols(self, value):
+        Worksheet.print_title_cols.__set__(self, value)
+
+
+    @property
+    def print_title_rows(self):
+        return Worksheet.print_title_rows.__get__(self)
+
+
+    @print_title_rows.setter
+    def print_title_rows(self, value):
+        Worksheet.print_title_rows.__set__(self, value)
+
+
+    @property
+    def print_area(self):
+        return Worksheet.print_area.__get__(self)
+
+
+    @print_area.setter
+    def print_area(self, value):
+        Worksheet.print_area.__set__(self, value)
 
 
     @property
@@ -113,7 +146,12 @@ class WriteOnlyWorksheet(_WorkbookChild):
                         while True:
                             row = (yield)
                             row_idx = self._max_row
-                            with xf.element("row", r="%d" % row_idx):
+                            attrs = {'r': '%d' % row_idx}
+                            if row_idx in self.row_dimensions:
+                                dim = self.row_dimensions[row_idx]
+                                attrs.update(dict(dim))
+
+                            with xf.element("row", attrs):
 
                                 for col_idx, value in enumerate(row, 1):
                                     if value is None:

@@ -227,7 +227,7 @@ class Workbook(object):
 
     @property
     def worksheets(self):
-        return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet))]
+        return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet, WriteOnlyWorksheet))]
 
     @property
     def chartsheets(self):
