@@ -38,7 +38,6 @@ def WriteOnlyWorksheet():
     return WriteOnlyWorksheet(DummyWorkbook(), title="TestWorksheet")
 
 
-@pytest.mark.lxml_required
 def test_write_header(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     doc = ws._write_header()
@@ -149,7 +148,6 @@ def test_invalid_append(WriteOnlyWorksheet, row):
         ws.append(row)
 
 
-@pytest.mark.lxml_required
 def test_cell_comment(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     from openpyxl.comments import Comment
@@ -157,8 +155,9 @@ def test_cell_comment(WriteOnlyWorksheet):
     cell = WriteOnlyCell(ws, 1)
     comment = Comment('hello', 'me')
     cell.comment = comment
-    ws.append([cell])
+    ws.append([1, cell])
     assert len(ws._comments) == 1
+    assert ws._comments[0].ref == "B1"
     ws.close()
 
     with open(ws.filename) as src:
@@ -176,7 +175,10 @@ def test_cell_comment(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData>
-    <row r="1"><c r="A1" t="n"><v>1</v></c></row>
+    <row r="1">
+     <c r="A1" t="n"><v>1</v></c>
+     <c r="B1" t="n"><v>1</v></c>
+     </row>
     </sheetData>
     <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
@@ -185,7 +187,6 @@ def test_cell_comment(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-@pytest.mark.lxml_required
 def test_cannot_save_twice(WriteOnlyWorksheet):
     from .. write_only import WorkbookAlreadySaved
 
@@ -197,7 +198,6 @@ def test_cannot_save_twice(WriteOnlyWorksheet):
         ws.append([1])
 
 
-@pytest.mark.lxml_required
 def test_close(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     ws.close()
@@ -222,7 +222,6 @@ def test_close(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-@pytest.mark.lxml_required
 def test_auto_filter(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     ws.auto_filter.ref = 'A1:F1'
@@ -249,7 +248,6 @@ def test_auto_filter(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-@pytest.mark.lxml_required
 def test_frozen_panes(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     ws.freeze_panes = 'D4'
@@ -278,7 +276,6 @@ def test_frozen_panes(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-@pytest.mark.lxml_required
 def test_write_empty_row(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     ws.append(['1', '2', '3'])
