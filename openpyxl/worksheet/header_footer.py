@@ -17,6 +17,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.xml.functions import Element
+from openpyxl.utils.escape import escape, unescape
 
 RGB = ("^[A-Fa-f0-9]{6}$")
 
@@ -165,7 +166,8 @@ class HeaderFooterItem(Strict):
             if part.text is not None:
                 txt.append("&{0}{1}".format(key, str(part)))
         txt = "".join(txt)
-        return SUBS_REGEX.sub(replace, txt)
+        txt = SUBS_REGEX.sub(replace, txt)
+        return escape(txt)
 
 
     def __bool__(self):
@@ -195,9 +197,8 @@ class HeaderFooterItem(Strict):
 
 
 
-TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D', '\n': '_x000D_',
-        '&[Path]': '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F',
-        '&[Picture]': '&G'}
+TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D', '&[Path]':
+             '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F', '&[Picture]': '&G'}
 
 
 # escape keys and create regex
