@@ -110,6 +110,13 @@ class PrintPageSetup(Serialisable):
         self.sheet_properties.autoPageBreaks = value
 
 
+    @classmethod
+    def from_tree(cls, node):
+        self = super(PrintPageSetup, cls).from_tree(node)
+        self.id = None # strip link to binary settings
+        return self
+
+
 class PrintOptions(Serialisable):
     """ Worksheet print options """
 
