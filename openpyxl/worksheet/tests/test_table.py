@@ -72,14 +72,9 @@ class TestTable:
                               ref="A1:AA27")
 
 
-    def test_local_path(self, Table):
+    def test_path(self, Table):
         table = Table(displayName="Table1", ref="A1:M6")
-        assert table.path == "/tables/table1.xml"
-
-
-    def test_archive_path(self, Table):
-        table = Table(displayName="Table1", ref="A1:M6")
-        assert table.abs_path == "/xl/tables/table1.xml"
+        assert table.path == "/xl/tables/table1.xml"
 
 
     def test_write(self, Table):

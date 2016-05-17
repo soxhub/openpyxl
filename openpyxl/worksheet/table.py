@@ -304,16 +304,9 @@ class Table(Serialisable):
     @property
     def path(self):
         """
-        Return local (within XL package) but absolute path
-        """
-        return self._path.format(self.id)
-
-    @property
-    def abs_path(self):
-        """
         Return path within the archive
         """
-        return "/xl" + self.path
+        return "/xl" + self._path.format(self.id)
 
 
     def _write(self, archive):
@@ -321,7 +314,7 @@ class Table(Serialisable):
         Serialise to XML and write to archive
         """
         xml = self.to_tree()
-        archive.writestr(self.abs_path, tostring(xml))
+        archive.writestr(self.path, tostring(xml))
 
 
 class TablePartList(Serialisable):

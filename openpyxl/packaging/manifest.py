@@ -213,7 +213,7 @@ def write_content_types(workbook, as_template=False, exts=None):
             manifest.Override.append(Override(name, COMMENTS_TYPE))
 
         for t in sheet._tables:
-            manifest.Override.append(Override(t.abs_path, t._type))
+            manifest.Override.append(Override(t.path, t._type))
 
 
     # chartsheets
