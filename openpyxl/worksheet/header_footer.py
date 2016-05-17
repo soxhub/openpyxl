@@ -63,8 +63,7 @@ class _HeaderFooterPart(Strict):
     * &B   Toggles bold
     * &D or &[Date]   Inserts the current date
     * &E   Toggles double-underline
-    * &F or &[File]   Inserts the workbook name    oddHeader = Typed(expected_type=HeaderFooterItem)
-    oddFooter = Typed(expected_type=HeaderFooterItem)
+    * &F or &[File]   Inserts the workbook name
     * &I   Toggles italic
     * &N or &[Pages]   Inserts the total page count
     * &S   Toggles strikethrough
