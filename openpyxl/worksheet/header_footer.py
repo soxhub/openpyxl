@@ -203,7 +203,8 @@ class HeaderFooterItem(Strict):
     @classmethod
     def from_tree(cls, node):
         if node.text:
-            parts = _split_string(node.text)
+            text = unescape(node.text)
+            parts = _split_string(text)
             for k, v in parts.items():
                 if v is not None:
                     parts[k] = _HeaderFooterPart.from_str(v)
