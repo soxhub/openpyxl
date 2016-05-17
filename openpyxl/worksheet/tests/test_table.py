@@ -51,6 +51,7 @@ class TestTable:
         expected = """
         <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
            displayName="A_Sample_Table" name="A_Sample_Table" id="1" ref="A1:F10">
+           <autoFilter ref="A1:F10" />
         <tableColumns count="1">
           <tableColumn id="1" name="Column1" />
         </tableColumns>

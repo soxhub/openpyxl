@@ -289,6 +289,8 @@ class Table(Serialisable):
         self.dataCellStyle = dataCellStyle
         self.totalsRowCellStyle = totalsRowCellStyle
         self.connectionId = connectionId
+        if autoFilter is None:
+            autoFilter = AutoFilter(ref=ref)
         self.autoFilter = autoFilter
         self.sortState = sortState
         self.tableColumns = tableColumns
