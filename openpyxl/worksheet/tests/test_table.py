@@ -188,7 +188,7 @@ class TestTablePartList:
         tables.append(Related(id="rId1"))
         xml = tostring(tables.to_tree())
         expected = """
-        <tableParts xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        <tableParts count="1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
           <tablePart r:id="rId1" />
         </tableParts>
         """

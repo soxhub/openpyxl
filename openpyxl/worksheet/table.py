@@ -332,6 +332,7 @@ class TablePartList(Serialisable):
     tablePart = Sequence(expected_type=Related)
 
     __elements__ = ('tablePart',)
+    __attrs__ = ('count',)
 
     def __init__(self,
                  count=None,
