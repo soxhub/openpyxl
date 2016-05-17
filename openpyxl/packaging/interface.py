@@ -34,3 +34,17 @@ class ISerialisableFile(ABC):
         Qualified namespace when serialised
         """
         pass
+
+
+    @abstractproperty
+    def _type(self):
+        """
+        The content type for the manifest
+        """
+
+
+    @abstractproperty
+    def _rel_type(self):
+        """
+        The content type for relationships
+        """
