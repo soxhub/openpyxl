@@ -28,19 +28,19 @@ FORMAT_REGEX = re.compile("{0}|{1}|{2}".format(FONT_PATTERN, COLOR_PATTERN,
                                                SIZE_REGEX)
                           )
 
-# See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
-ITEM_REGEX = re.compile("""
-(&L(?P<left>.+?))?
-(&C(?P<center>.+?))?
-(&R(?P<right>.+?))?
-$""", re.VERBOSE | re.DOTALL)
-
-# add support for multiline strings (how do re.flags combine?)
-
 def _split_string(text):
     """
     Split the combined (decoded) string into left, center and right parts
+
+    # See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
     """
+
+    ITEM_REGEX = re.compile("""
+    (&L(?P<left>.+?))?
+    (&C(?P<center>.+?))?
+    (&R(?P<right>.+?))?
+    $""", re.VERBOSE | re.DOTALL)
+
     m = ITEM_REGEX.match(text)
     try:
         parts = m.groupdict()
@@ -159,6 +159,22 @@ class HeaderFooterItem(Strict):
         """
         Pack parts into a single string
         """
+        TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D',
+                     '&[Path]': '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F',
+                     '&[Picture]': '&G'}
+
+        # escape keys and create regex
+        SUBS_REGEX = re.compile("|".join(["({0})".format(re.escape(k))
+                                          for k in TRANSFORM]))
+
+        def replace(match):
+            """
+            Callback for re.sub
+            Replace expanded control with mini-format equivalent
+            """
+            sub = match.group(0)
+            return TRANSFORM[sub]
+
         txt = []
         for key, part in zip(
             self.__keys, [self.left, self.center, self.right]):
@@ -193,25 +209,6 @@ class HeaderFooterItem(Strict):
                     parts[k] = _HeaderFooterPart.from_str(v)
             self = cls(**parts)
             return self
-
-
-
-TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D', '&[Path]':
-             '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F', '&[Picture]': '&G'}
-
-
-# escape keys and create regex
-SUBS_REGEX = re.compile("|".join(["({0})".format(re.escape(k))
-                                  for k in TRANSFORM]))
-
-
-def replace(match):
-    """
-    Callback for re.sub
-    Replace expanded control with mini-format equivalent
-    """
-    sub = match.group(0)
-    return TRANSFORM[sub]
 
 
 class HeaderFooter(Serialisable):

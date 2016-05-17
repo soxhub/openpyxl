@@ -8,13 +8,15 @@ from openpyxl.tests.helper import compare_xml
 
 
 def test_split_into_parts():
-    from .. header_footer import ITEM_REGEX
-    m = ITEM_REGEX.match("&Ltest header")
-    assert m.group('left') == "test header"
-    m = ITEM_REGEX.match("""&L&"Lucida Grande,Standard"&K000000Left top&C&"Lucida Grande,Standard"&K000000Middle top&R&"Lucida Grande,Standard"&K000000Right top""")
-    assert m.group('left') == '&"Lucida Grande,Standard"&K000000Left top'
-    assert m.group('center') == '&"Lucida Grande,Standard"&K000000Middle top'
-    assert m.group('right') == '&"Lucida Grande,Standard"&K000000Right top'
+    from .. header_footer import _split_string
+
+    headers = _split_string("&Ltest header")
+    assert headers['left'] == "test header"
+
+    headers = _split_string("""&L&"Lucida Grande,Standard"&K000000Left top&C&"Lucida Grande,Standard"&K000000Middle top&R&"Lucida Grande,Standard"&K000000Right top""")
+    assert headers['left'] == '&"Lucida Grande,Standard"&K000000Left top'
+    assert headers['center'] == '&"Lucida Grande,Standard"&K000000Middle top'
+    assert headers['right'] == '&"Lucida Grande,Standard"&K000000Right top'
 
 
 def test_cannot_split():
@@ -25,10 +27,11 @@ def test_cannot_split():
 
 
 def test_multiline_string():
-    from .. header_footer import ITEM_REGEX
+    from .. header_footer import _split_string
+
     s = """&L141023 V1&CRoute - Malls\nSchedules R1201 v R1301&RClient-internal use only"""
-    match = ITEM_REGEX.match(s)
-    assert match.groupdict() == {
+    headers = _split_string(s)
+    assert headers == {
         'center': 'Route - Malls\nSchedules R1201 v R1301',
         'left': '141023 V1',
         'right': 'Client-internal use only'
@@ -69,13 +72,6 @@ class TestHeaderFooterPart:
         assert bool(hf) is False
         hf.text = "Title"
         assert bool(hf) is True
-
-
-def test_subs():
-    from ..header_footer import SUBS_REGEX, replace
-    s = "MyName&[Tab]&[Page]&[Path]"
-    t = SUBS_REGEX.sub(replace, s)
-    assert t == "MyName&A&P&Z"
 
 
 @pytest.fixture
