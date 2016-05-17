@@ -82,7 +82,7 @@ class TestTable:
         archive = ZipFile(out, "w")
         table = Table(displayName="Table1", ref="B1:L10")
         table._write(archive)
-        assert "/xl/tables/table1.xml" in archive.namelist()
+        assert "xl/tables/table1.xml" in archive.namelist()
 
 
 @pytest.fixture

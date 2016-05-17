@@ -21,4 +21,4 @@ def test_tables():
     writer = ExcelWriter(wb)
     writer._write_worksheets(archive)
 
-    assert t.path in archive.namelist()
+    assert t.path[1:] in archive.namelist()

@@ -314,7 +314,7 @@ class Table(Serialisable):
         Serialise to XML and write to archive
         """
         xml = self.to_tree()
-        archive.writestr(self.path, tostring(xml))
+        archive.writestr(self.path[1:], tostring(xml))
 
 
 class TablePartList(Serialisable):
