@@ -204,7 +204,7 @@ class ExcelWriter(object):
 
             for t in sheet._tables:
                 self._tables.append(t)
-                t._id = len(self._tables)
+                t.id = len(self._tables)
                 sheet._rels[t._rel_id].Target = t.path
 
             if (sheet._rels

@@ -13,7 +13,7 @@ class ISerialisableFile(ABC):
 
 
     @abstractproperty
-    def _id(self):
+    def id(self):
         """
         Object id making it unique
         """
