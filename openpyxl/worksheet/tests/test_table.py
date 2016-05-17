@@ -2,6 +2,9 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 import pytest
 
+from io import BytesIO
+from zipfile import ZipFile
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -42,8 +45,7 @@ def Table():
 class TestTable:
 
     def test_ctor(self, Table, TableColumn):
-        table = Table(id=1, displayName="A_Sample_Table", ref="A1:F10",
-                      )
+        table = Table(displayName="A_Sample_Table", ref="A1:F10")
         table.tableColumns.append(TableColumn(id=1, name="Column1"))
         xml = tostring(table.to_tree())
         expected = """
@@ -66,8 +68,26 @@ class TestTable:
         """
         node = fromstring(src)
         table = Table.from_tree(node)
-        assert table == Table(id=1, displayName="Table1", name="Table1",
+        assert table == Table(displayName="Table1", name="Table1",
                               ref="A1:AA27")
+
+
+    def test_local_path(self, Table):
+        table = Table(displayName="Table1", ref="A1:M6")
+        assert table.path == "/tables/table1.xml"
+
+
+    def test_archive_path(self, Table):
+        table = Table(displayName="Table1", ref="A1:M6")
+        assert table.abs_path == "/xl/tables/table1.xml"
+
+
+    def test_write(self, Table):
+        out = BytesIO()
+        archive = ZipFile(out, "w")
+        table = Table(displayName="Table1", ref="B1:L10")
+        table._write(archive)
+        assert "/xl/tables/table1.xml" in archive.namelist()
 
 
 @pytest.fixture
@@ -150,3 +170,39 @@ class TestXMLColumnPr:
         node = fromstring(src)
         col = XMLColumnProps.from_tree(node)
         assert col == XMLColumnProps(mapId="1", xpath="/xml/foo/element", xmlDataType="string")
+
+
+
+@pytest.fixture
+def TablePartList():
+    from ..table import TablePartList
+    return TablePartList
+
+from ..related import Related
+
+
+class TestTablePartList:
+
+    def test_ctor(self, TablePartList):
+        tables = TablePartList()
+        tables.append(Related(id="rId1"))
+        xml = tostring(tables.to_tree())
+        expected = """
+        <tableParts xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <tablePart r:id="rId1" />
+        </tableParts>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, TablePartList):
+        src = """
+        <tableParts xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <tablePart r:id="rId1" />
+          <tablePart r:id="rId2" />
+        </tableParts>
+        """
+        node = fromstring(src)
+        tables = TablePartList.from_tree(node)
+        assert len(tables.tablePart) == 2

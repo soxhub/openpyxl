@@ -13,6 +13,7 @@ from openpyxl.descriptors import (
     Integer,
     NoneSet,
     String,
+    Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
@@ -190,14 +191,13 @@ class TableNameDescriptor(String):
     """
 
     def __set__(self, instance, value):
-        if " " in value:
+        if value is not None and " " in value:
             raise ValueError("Table names cannot have spaces")
         super(TableNameDescriptor, self).__set__(instance, value)
 
 
 class Table(Serialisable):
 
-    _id = None
     _path = "/tables/table{0}.xml"
     _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
     _rel_type = "table"
@@ -237,7 +237,7 @@ class Table(Serialisable):
                     'tableStyleInfo')
 
     def __init__(self,
-                 id=None,
+                 id=1,
                  name=None,
                  displayName=None,
                  comment=None,
@@ -306,7 +306,7 @@ class Table(Serialisable):
         """
         Return local (within XL package) but absolute path
         """
-        return self._path.format(self._id)
+        return self._path.format(self.id)
 
     @property
     def abs_path(self):
@@ -321,21 +321,21 @@ class Table(Serialisable):
         Serialise to XML and write to archive
         """
         xml = self.to_tree()
-        archive.write(self.abs_path, tostring(xml))
+        archive.writestr(self.abs_path, tostring(xml))
 
 
 class TablePartList(Serialisable):
 
-    tagname = "tablePart"
+    tagname = "tableParts"
 
     count = Integer(allow_none=True)
-    tablePart = Typed(expected_type=Related, allow_none=True)
+    tablePart = Sequence(expected_type=Related)
 
     __elements__ = ('tablePart',)
 
     def __init__(self,
                  count=None,
-                 tablePart=None,
+                 tablePart=(),
                 ):
         self.tablePart = tablePart
 
