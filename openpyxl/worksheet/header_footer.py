@@ -19,7 +19,6 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.functions import Element
 from openpyxl.utils.escape import escape, unescape
 
-RGB = ("^[A-Fa-f0-9]{6}$")
 
 FONT_PATTERN = '&"(?P<font>.+)"'
 COLOR_PATTERN  = "&K(?P<color>[A-F0-9]{6})"
@@ -86,6 +85,7 @@ class _HeaderFooterPart(Strict):
     text = String(allow_none=True)
     font = String(allow_none=True)
     size = Integer(allow_none=True)
+    RGB = ("^[A-Fa-f0-9]{6}$")
     color = MatchPattern(allow_none=True, pattern=RGB)
 
 
