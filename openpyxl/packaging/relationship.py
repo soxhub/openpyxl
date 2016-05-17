@@ -66,6 +66,8 @@ class RelationshipList(Serialisable):
     def append(self, value):
         values = self.Relationship[:]
         values.append(value)
+        if not value.Id:
+            value.Id = "rId{0}".format((len(values)))
         self.Relationship = values
 
 

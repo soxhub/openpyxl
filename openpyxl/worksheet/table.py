@@ -17,6 +17,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
 from openpyxl.utils.escape import escape, unescape
 
 from .related import Related
@@ -196,6 +197,12 @@ class TableNameDescriptor(String):
 
 class Table(Serialisable):
 
+    _id = None
+    _path = "/tables/table{0}.xml"
+    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
+    _rel_type = "table"
+    _rel_id = None
+
     tagname = "table"
 
     id = Integer()
@@ -294,9 +301,27 @@ class Table(Serialisable):
         return tree
 
 
-class TablePart(Related):
+    @property
+    def path(self):
+        """
+        Return local (within XL package) but absolute path
+        """
+        return self._path.format(self._id)
 
-    tagname = "tablePart"
+    @property
+    def abs_path(self):
+        """
+        Return path within the archive
+        """
+        return "/xl" + self.path
+
+
+    def _write(self, archive):
+        """
+        Serialise to XML and write to archive
+        """
+        xml = self.to_tree()
+        archive.write(self.abs_path, tostring(xml))
 
 
 class TablePartList(Serialisable):
@@ -304,7 +329,7 @@ class TablePartList(Serialisable):
     tagname = "tablePart"
 
     count = Integer(allow_none=True)
-    tablePart = Typed(expected_type=TablePart, allow_none=True)
+    tablePart = Typed(expected_type=Related, allow_none=True)
 
     __elements__ = ('tablePart',)
 
@@ -313,3 +338,18 @@ class TablePartList(Serialisable):
                  tablePart=None,
                 ):
         self.tablePart = tablePart
+
+
+    def append(self, part):
+        self.tablePart.append(part)
+
+
+    @property
+    def count(self):
+        return len(self.tablePart)
+
+
+    def __bool__(self):
+        return bool(self.tablePart)
+
+    __nonzero__ = __bool__
