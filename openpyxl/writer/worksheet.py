@@ -21,7 +21,7 @@ from openpyxl.worksheet.hyperlink import (
     HyperlinkList,
 )
 from openpyxl.worksheet.related import Related
-from openpyxl.worksheet.table import TablePartList
+from openpyxl.worksheet.table import TablePartList, TableColumn
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.worksheet.dimensions import (
     SheetFormatProperties,
@@ -164,6 +164,9 @@ def write_worksheet(worksheet):
             tables = TablePartList()
 
             for table in ws._tables:
+                row = ws[table.ref][0]
+                for idx, cell in enumerate(row, 1):
+                    table.tableColumns.append(TableColumn(id=idx, name=cell.value))
                 rel = Relationship(type=table._rel_type, Target="")
                 ws._rels.append(rel)
                 table._rel_id = rel.Id
