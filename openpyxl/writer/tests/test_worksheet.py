@@ -503,3 +503,35 @@ def test_write_drawing(worksheet):
     xml = tostring(write_drawing(worksheet))
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_write_tables(worksheet, write_worksheet):
+    from openpyxl.worksheet.table import Table
+
+    worksheet._tables = [Table(displayName="Table1", ref="A1:D6")]
+    xml = write_worksheet(worksheet)
+    assert len(worksheet._rels) == 1
+
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+      <sheetPr>
+        <outlinePr summaryRight="1" summaryBelow="1"/>
+        <pageSetUpPr/>
+      </sheetPr>
+      <dimension ref="A1:A1"/>
+      <sheetViews>
+        <sheetView workbookViewId="0">
+          <selection sqref="A1" activeCell="A1"/>
+        </sheetView>
+      </sheetViews>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+      <sheetData/>
+      <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
+      <tableParts count="1">
+         <tablePart r:id="rId1" />
+      </tableParts>
+    </worksheet>
+    """
+
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

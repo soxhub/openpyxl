@@ -13,10 +13,12 @@ from openpyxl.descriptors import (
     Integer,
     NoneSet,
     String,
+    Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
 from openpyxl.utils.escape import escape, unescape
 
 from .related import Related
@@ -189,12 +191,17 @@ class TableNameDescriptor(String):
     """
 
     def __set__(self, instance, value):
-        if " " in value:
+        if value is not None and " " in value:
             raise ValueError("Table names cannot have spaces")
         super(TableNameDescriptor, self).__set__(instance, value)
 
 
 class Table(Serialisable):
+
+    _path = "/tables/table{0}.xml"
+    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
+    _rel_type = "table"
+    _rel_id = None
 
     tagname = "table"
 
@@ -230,11 +237,11 @@ class Table(Serialisable):
                     'tableStyleInfo')
 
     def __init__(self,
-                 id=None,
-                 name=None,
+                 id=1,
                  displayName=None,
-                 comment=None,
                  ref=None,
+                 name=None,
+                 comment=None,
                  tableType=None,
                  headerRowCount=None,
                  insertRow=None,
@@ -294,22 +301,56 @@ class Table(Serialisable):
         return tree
 
 
-class TablePart(Related):
+    @property
+    def path(self):
+        """
+        Return local (within XL package) but absolute path
+        """
+        return self._path.format(self.id)
 
-    tagname = "tablePart"
+    @property
+    def abs_path(self):
+        """
+        Return path within the archive
+        """
+        return "/xl" + self.path
+
+
+    def _write(self, archive):
+        """
+        Serialise to XML and write to archive
+        """
+        xml = self.to_tree()
+        archive.writestr(self.abs_path, tostring(xml))
 
 
 class TablePartList(Serialisable):
 
-    tagname = "tablePart"
+    tagname = "tableParts"
 
     count = Integer(allow_none=True)
-    tablePart = Typed(expected_type=TablePart, allow_none=True)
+    tablePart = Sequence(expected_type=Related)
 
     __elements__ = ('tablePart',)
+    __attrs__ = ('count',)
 
     def __init__(self,
                  count=None,
-                 tablePart=None,
+                 tablePart=(),
                 ):
         self.tablePart = tablePart
+
+
+    def append(self, part):
+        self.tablePart.append(part)
+
+
+    @property
+    def count(self):
+        return len(self.tablePart)
+
+
+    def __bool__(self):
+        return bool(self.tablePart)
+
+    __nonzero__ = __bool__

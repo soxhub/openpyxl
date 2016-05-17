@@ -132,6 +132,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comments = []
         self._merged_cells = []
+        self._tables = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
         self.sheet_state = 'visible'
@@ -665,6 +666,10 @@ class Worksheet(_WorkbookChild):
             img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
         self.parent._images.append(ref(img))
+
+
+    def add_table(self, table):
+        self._tables.append(table)
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):

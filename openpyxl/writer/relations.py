@@ -7,7 +7,9 @@ from openpyxl.packaging.relationship import Relationship, RelationshipList
 def write_rels(worksheet, comments_id=None):
     """Write relationships for the worksheet to xml."""
 
-    rels = RelationshipList(worksheet._rels)
+    rels = worksheet._rels
+    if not isinstance(rels, RelationshipList):
+        rels = RelationshipList(worksheet._rels)
 
     # If there is an existing vml file that is preserved or extended then
     # create its relation.

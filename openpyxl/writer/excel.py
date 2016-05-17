@@ -57,6 +57,7 @@ class ExcelWriter(object):
         self.workbook = workbook
         self.workbook._drawings = []
         self.vba_modified = set()
+        self._tables = []
 
 
     def write_data(self, archive, as_template=False):
@@ -99,6 +100,7 @@ class ExcelWriter(object):
                 exts.append(n)
         manifest = write_content_types(self.workbook, as_template=as_template, exts=exts)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
+
 
     def _write_string_table(self, archive):
         archive.writestr(ARC_SHARED_STRINGS,
@@ -199,6 +201,12 @@ class ExcelWriter(object):
                     vmlroot = Element("xml")
                     archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
                         cw.write_comments_vml(vmlroot))
+
+            for t in sheet._tables:
+                self._tables.append(t)
+                t.id = len(self._tables)
+                t._write(archive)
+                sheet._rels[t._rel_id].Target = t.path
 
             if (sheet._rels
                 or sheet._comments

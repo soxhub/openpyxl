@@ -13,9 +13,9 @@ class ISerialisableFile(ABC):
 
 
     @abstractproperty
-    def _id(self):
+    def id(self):
         """
-        The id linking the object to its parent
+        Object id making it unique
         """
         pass
 
@@ -34,3 +34,24 @@ class ISerialisableFile(ABC):
         Qualified namespace when serialised
         """
         pass
+
+
+    @abstractproperty
+    def _type(self):
+        """
+        The content type for the manifest
+        """
+
+
+    @abstractproperty
+    def _rel_type(self):
+        """
+        The content type for relationships
+        """
+
+
+    @abstractproperty
+    def _rel_id(self):
+        """
+        Links object with parent
+        """
