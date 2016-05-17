@@ -38,11 +38,18 @@ def test_multiline_string():
     }
 
 
-def test_font_size():
-    from .. header_footer import SIZE_REGEX
-    s = "&9"
-    match = re.search(SIZE_REGEX, s)
-    assert match.group('size') == "9"
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("&9", [('', '', '9')]),
+                             ('&"Lucida Grande,Standard"', [("Lucida Grande,Standard", '', '')]),
+                             ('&K000000', [('', '000000', '')])
+                         ]
+                         )
+def test_parse_format(value, expected):
+    from .. header_footer import FORMAT_REGEX
+
+    m = FORMAT_REGEX.findall(value)
+    assert m == expected
 
 
 @pytest.fixture
