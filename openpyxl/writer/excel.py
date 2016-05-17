@@ -205,6 +205,7 @@ class ExcelWriter(object):
             for t in sheet._tables:
                 self._tables.append(t)
                 t.id = len(self._tables)
+                t._write(archive)
                 sheet._rels[t._rel_id].Target = t.path
 
             if (sheet._rels
