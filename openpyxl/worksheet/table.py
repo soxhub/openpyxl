@@ -238,10 +238,10 @@ class Table(Serialisable):
 
     def __init__(self,
                  id=1,
-                 name=None,
                  displayName=None,
-                 comment=None,
                  ref=None,
+                 name=None,
+                 comment=None,
                  tableType=None,
                  headerRowCount=None,
                  insertRow=None,
