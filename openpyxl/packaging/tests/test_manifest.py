@@ -327,6 +327,35 @@ class TestContentTypes:
         assert diff is None, diff
 
 
+    def test_tables(self, Manifest):
+        from openpyxl import Workbook
+        from openpyxl.worksheet.table import Table
+        from ..manifest import write_content_types
+
+        wb = Workbook()
+        ws = wb.active
+        t = Table(displayName="Table1", ref="A1:C2")
+        ws.add_table(t)
+
+        manifest = write_content_types(wb)
+        xml = tostring(manifest.to_tree())
+        expected = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels"/>
+          <Default ContentType="application/xml" Extension="xml"/>
+          <Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml" PartName="/xl/sharedStrings.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml" PartName="/xl/styles.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml" PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml" PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml" PartName="/docProps/app.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml" PartName="/xl/tables/table1.xml"/>
+        </Types>
+        """
+
+
     def test_media(self):
         from openpyxl import Workbook
         from ..manifest import write_content_types
