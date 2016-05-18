@@ -45,15 +45,17 @@ def Table():
 class TestTable:
 
     def test_ctor(self, Table, TableColumn):
-        table = Table(displayName="A_Sample_Table", ref="A1:F10")
-        table.tableColumns.append(TableColumn(id=1, name="Column1"))
+        table = Table(displayName="A_Sample_Table", ref="A1:D5")
         xml = tostring(table.to_tree())
         expected = """
         <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-           displayName="A_Sample_Table" name="A_Sample_Table" id="1" ref="A1:F10">
-           <autoFilter ref="A1:F10" />
-        <tableColumns count="1">
-          <tableColumn id="1" name="Column1" />
+           displayName="A_Sample_Table" name="A_Sample_Table" id="1" ref="A1:D5">
+           <autoFilter ref="A1:D5" />
+        <tableColumns count="4">
+          <tableColumn id="1" name="" />
+          <tableColumn id="2" name="" />
+          <tableColumn id="3" name="" />
+          <tableColumn id="4" name="" />
         </tableColumns>
         </table>
         """

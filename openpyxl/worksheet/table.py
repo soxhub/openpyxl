@@ -293,6 +293,8 @@ class Table(Serialisable):
             autoFilter = AutoFilter(ref=ref)
         self.autoFilter = autoFilter
         self.sortState = sortState
+        if not tableColumns:
+            tableColumns = list(_initialise_columns(ref))
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
 
@@ -317,6 +319,17 @@ class Table(Serialisable):
         """
         xml = self.to_tree()
         archive.writestr(self.path[1:], tostring(xml))
+
+
+def _initialise_columns(ref):
+    """
+    Create a list of table columns from a cell range
+    """
+
+    from openpyxl.utils import range_boundaries
+    min_col, min_row, max_col, max_row = range_boundaries(ref)
+    for idx in range(min_col, max_col+1):
+        yield TableColumn(id=idx, name="")
 
 
 class TablePartList(Serialisable):
