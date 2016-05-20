@@ -51,9 +51,6 @@ class Workbook(object):
         self.vba_archive = None
         self.is_template = False
         self._differential_styles = DifferentialStyleList()
-        self._drawings = []
-        self._charts = []
-        self._images = []
         self.code_name = None
         self.excel_base_date = CALENDAR_WINDOWS_1900
         self.encoding = "utf-8"

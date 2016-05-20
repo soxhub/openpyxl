@@ -55,9 +55,11 @@ class ExcelWriter(object):
 
     def __init__(self, workbook):
         self.workbook = workbook
-        self.workbook._drawings = []
         self.vba_modified = set()
         self._tables = []
+        self._charts = []
+        self._images = []
+        self._drawings = []
 
 
     def write_data(self, archive, as_template=False):
@@ -74,10 +76,10 @@ class ExcelWriter(object):
         else:
             archive.writestr(ARC_THEME, write_theme())
 
-        self._write_charts(archive)
         self._write_images(archive)
         self._write_worksheets(archive)
         self._write_chartsheets(archive)
+        self._write_charts(archive)
         self._write_string_table(archive)
         self._write_external_links(archive)
         stylesheet = write_stylesheet(self.workbook)
@@ -108,23 +110,34 @@ class ExcelWriter(object):
 
 
     def _write_images(self, archive):
-        for idx, ref in enumerate(self.workbook._images, 1):
-            img = ref()
-            if img is None:
-                continue
+        for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
-            img._id = idx
             archive.writestr(img._path, buf.getvalue())
 
 
     def _write_charts(self, archive):
-        for idx, ref in enumerate(self.workbook._charts, 1):
-            chart = ref()
-            if not chart:
-                continue
-            chart._id = idx
+        for chart in self._charts:
             archive.writestr(chart._path, tostring(chart._write()))
+
+
+    def _write_drawing(self, archive, drawing):
+        """
+        Write a drawing
+        """
+        self._drawings.append(drawing)
+        drawing_id = len(self._drawings)
+        for chart in drawing.charts:
+            self._charts.append(chart)
+            chart._id = len(self._charts)
+        for img in drawing.images:
+            self._images.append(img)
+            img._id = len(self._images)
+        drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
+        archive.writestr(drawingpath, tostring(drawing._write()))
+        archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
+                                                                drawing_id), tostring(drawing._write_rels()))
+        return drawingpath
 
 
     def _write_chartsheets(self, archive):
@@ -142,15 +155,7 @@ class ExcelWriter(object):
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
-                self.workbook._drawings.append(drawing)
-                drawing_id = len(self.workbook._drawings)
-                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, tostring(drawing._write()))
-                archive.writestr(
-                    "{0}/_rels/drawing{1}.xml.rels".format(
-                        PACKAGE_DRAWINGS, drawing_id),
-                    tostring(drawing._write_rels())
-                )
+                drawingpath = self._write_drawing(archive, drawing)
 
                 rel = Relationship(type="drawing", Target="/" + drawingpath)
                 rels = RelationshipList()
@@ -177,12 +182,8 @@ class ExcelWriter(object):
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
                 drawing.images = sheet._images
-                self.workbook._drawings.append(drawing)
-                drawing_id = len(self.workbook._drawings)
-                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, tostring(drawing._write()))
-                archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                        drawing_id), tostring(drawing._write_rels()))
+                drawingpath = self._write_drawing(archive, drawing)
+
                 for r in sheet._rels:
                     if "drawing" in r.Type:
                         r.Target = "/" + drawingpath

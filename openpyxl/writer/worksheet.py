@@ -160,13 +160,13 @@ def write_worksheet(worksheet):
             if ws.page_breaks:
                 xf.write(ws.page_breaks.to_tree())
 
-
             tables = TablePartList()
 
             for table in ws._tables:
                 row = ws[table.ref][0]
                 for cell, col in zip(row, table.tableColumns):
-                    col.name = cell.value
+                    if cell.value:
+                        col.name = str(cell.value)
                 rel = Relationship(type=table._rel_type, Target="")
                 ws._rels.append(rel)
                 table._rel_id = rel.Id
