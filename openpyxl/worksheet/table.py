@@ -329,7 +329,7 @@ def _initialise_columns(ref):
     from openpyxl.utils import range_boundaries
     min_col, min_row, max_col, max_row = range_boundaries(ref)
     for idx in range(min_col, max_col+1):
-        yield TableColumn(id=idx, name="")
+        yield TableColumn(id=idx, name="Column{0}".format(idx))
 
 
 class TablePartList(Serialisable):

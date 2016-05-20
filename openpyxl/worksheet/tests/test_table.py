@@ -52,10 +52,10 @@ class TestTable:
            displayName="A_Sample_Table" name="A_Sample_Table" id="1" ref="A1:D5">
            <autoFilter ref="A1:D5" />
         <tableColumns count="4">
-          <tableColumn id="1" name="" />
-          <tableColumn id="2" name="" />
-          <tableColumn id="3" name="" />
-          <tableColumn id="4" name="" />
+          <tableColumn id="1" name="Column1" />
+          <tableColumn id="2" name="Column2" />
+          <tableColumn id="3" name="Column3" />
+          <tableColumn id="4" name="Column4" />
         </tableColumns>
         </table>
         """
