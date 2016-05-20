@@ -8,7 +8,6 @@ from __future__ import absolute_import
 from itertools import islice, product
 import re
 from inspect import isgenerator
-from weakref import ref
 from warnings import warn
 
 # compatibility imports
@@ -654,7 +653,6 @@ class Worksheet(_WorkbookChild):
         if anchor is not None:
             chart.anchor = anchor
         self._charts.append(chart)
-        self.parent._charts.append(ref(chart))
 
     def add_image(self, img, anchor=None):
         """
@@ -665,7 +663,6 @@ class Worksheet(_WorkbookChild):
             cell = self[anchor]
             img.anchor(cell, anchortype="oneCell")
         self._images.append(img)
-        self.parent._images.append(ref(img))
 
 
     def add_table(self, table):

@@ -508,6 +508,7 @@ def test_write_drawing(worksheet):
 def test_write_tables(worksheet, write_worksheet):
     from openpyxl.worksheet.table import Table
 
+    worksheet.append(list("ABCDEF"))
     worksheet._tables = [Table(displayName="Table1", ref="A1:D6")]
     xml = write_worksheet(worksheet)
     assert len(worksheet._rels) == 1
@@ -518,14 +519,35 @@ def test_write_tables(worksheet, write_worksheet):
         <outlinePr summaryRight="1" summaryBelow="1"/>
         <pageSetUpPr/>
       </sheetPr>
-      <dimension ref="A1:A1"/>
+      <dimension ref="A1:F1"/>
       <sheetViews>
         <sheetView workbookViewId="0">
           <selection sqref="A1" activeCell="A1"/>
         </sheetView>
       </sheetViews>
       <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
-      <sheetData/>
+      <sheetData>
+        <row r="1" spans="1:6">
+        <c r="A1" t="s">
+          <v>0</v>
+        </c>
+        <c r="B1" t="s">
+          <v>1</v>
+        </c>
+        <c r="C1" t="s">
+          <v>2</v>
+        </c>
+        <c r="D1" t="s">
+          <v>3</v>
+        </c>
+        <c r="E1" t="s">
+          <v>4</v>
+        </c>
+        <c r="F1" t="s">
+          <v>5</v>
+        </c>
+        </row>
+    </sheetData>
       <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
       <tableParts count="1">
          <tablePart r:id="rId1" />

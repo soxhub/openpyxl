@@ -289,8 +289,12 @@ class Table(Serialisable):
         self.dataCellStyle = dataCellStyle
         self.totalsRowCellStyle = totalsRowCellStyle
         self.connectionId = connectionId
+        if autoFilter is None:
+            autoFilter = AutoFilter(ref=ref)
         self.autoFilter = autoFilter
         self.sortState = sortState
+        if not tableColumns:
+            tableColumns = list(_initialise_columns(ref))
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
 
@@ -304,16 +308,9 @@ class Table(Serialisable):
     @property
     def path(self):
         """
-        Return local (within XL package) but absolute path
-        """
-        return self._path.format(self.id)
-
-    @property
-    def abs_path(self):
-        """
         Return path within the archive
         """
-        return "/xl" + self.path
+        return "/xl" + self._path.format(self.id)
 
 
     def _write(self, archive):
@@ -321,7 +318,18 @@ class Table(Serialisable):
         Serialise to XML and write to archive
         """
         xml = self.to_tree()
-        archive.writestr(self.abs_path, tostring(xml))
+        archive.writestr(self.path[1:], tostring(xml))
+
+
+def _initialise_columns(ref):
+    """
+    Create a list of table columns from a cell range
+    """
+
+    from openpyxl.utils import range_boundaries
+    min_col, min_row, max_col, max_row = range_boundaries(ref)
+    for idx in range(min_col, max_col+1):
+        yield TableColumn(id=idx, name="Column{0}".format(idx))
 
 
 class TablePartList(Serialisable):

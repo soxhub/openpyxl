@@ -177,7 +177,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
                         pass
 
                 if self.protection.sheet:
-                    xf.write(worksheet.protection.to_tree())
+                    xf.write(self.protection.to_tree())
 
                 if self.auto_filter.ref:
                     xf.write(self.auto_filter.to_tree())
