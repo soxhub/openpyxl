@@ -198,7 +198,6 @@ def write_content_types(workbook, as_template=False, exts=None):
             name = '/xl/drawings/drawing%d.xml' % drawing_id
             manifest.Override.append(Override(name, DRAWING_TYPE))
 
-
             for chart in sheet._charts:
                 chart_id += 1
                 name = '/xl/charts/chart%d.xml' % chart_id
