@@ -184,7 +184,7 @@ class ExcelWriter(object):
                 drawing.images = sheet._images
                 drawingpath = self._write_drawing(archive, drawing)
 
-                for r in sheet._rels:
+                for r in sheet._rels.Relationship:
                     if "drawing" in r.Type:
                         r.Target = "/" + drawingpath
 
