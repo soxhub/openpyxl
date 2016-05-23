@@ -63,3 +63,20 @@ def test_write_chart(ExcelWriter, archive):
                          'Type':
                          'http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing'}
 
+
+@pytest.mark.pil_required
+def test_write_images(datadir, ExcelWriter, archive):
+    from openpyxl.drawing.image import Image
+    datadir.chdir()
+
+    writer = ExcelWriter(None)
+
+    img = Image("plain.png")
+    writer._images.append(img)
+
+    writer._write_images(archive)
+    archive.close()
+
+    zipinfo = archive.infolist()
+    assert len(zipinfo) == 1
+    assert zipinfo[0].filename == 'xl/media/image1.png'

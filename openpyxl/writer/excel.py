@@ -76,12 +76,14 @@ class ExcelWriter(object):
         else:
             archive.writestr(ARC_THEME, write_theme())
 
-        self._write_images(archive)
         self._write_worksheets(archive)
         self._write_chartsheets(archive)
+        self._write_images(archive)
         self._write_charts(archive)
+
         self._write_string_table(archive)
         self._write_external_links(archive)
+
         stylesheet = write_stylesheet(self.workbook)
         archive.writestr(ARC_STYLE, tostring(stylesheet))
 
