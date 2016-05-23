@@ -23,6 +23,8 @@ class CommentWriter(object):
 
     def __init__(self, sheet):
         self.comments = sheet._comments
+        self.vml = None
+        self.vml_path = None
 
 
     def write_comments(self):
