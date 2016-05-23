@@ -65,6 +65,7 @@ class ExcelWriter(object):
         self._charts = []
         self._images = []
         self._drawings = []
+        self._comments = []
         self.as_template = False
 
 
@@ -84,6 +85,7 @@ class ExcelWriter(object):
             archive.writestr(ARC_THEME, write_theme())
 
         self._write_worksheets()
+        self._write_comments()
         self._write_chartsheets()
         self._write_images()
         self._write_charts()
@@ -172,8 +174,22 @@ class ExcelWriter(object):
                 self.archive.writestr(rels_path, tostring(tree))
 
 
+    def _write_comments(self):
+        for idx, cw in enumerate(self._comments, 1):
+
+            self.archive.writestr('xl/comments%d.xml' % idx,
+                                  cw.write_comments())
+            if cw.vml is not None:
+                vml = cw.write_comments_vml(cw.vml)
+                vml_path = cw.vml_path
+            else:
+                vml = Element("xml")
+                vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
+                cw.write_comments_vml(vml)
+            self.archive.writestr(vml_path, vml)
+
+
     def _write_worksheets(self):
-        comments_id = 0
 
         for idx, sheet in enumerate(self.workbook.worksheets, 1):
 
@@ -195,19 +211,16 @@ class ExcelWriter(object):
                         r.Target = "/" + drawingpath
 
             if sheet._comments:
-                comments_id += 1
                 cw = self.comment_writer(sheet)
-                self.archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
-                    cw.write_comments())
+
                 if sheet.legacy_drawing is not None:
-                    vmlroot = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
-                    self.archive.writestr(sheet.legacy_drawing, cw.write_comments_vml(vmlroot))
+                    vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
+                    cw.vml = vml
+                    cw.vml_path = sheet.legacy_drawing
                     # Record this file so we don't write it again when we dump out vba_archive
                     self.vba_modified.add(sheet.legacy_drawing)
-                else:
-                    vmlroot = Element("xml")
-                    self.archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
-                        cw.write_comments_vml(vmlroot))
+
+                self._comments.append(cw)
 
             for t in sheet._tables:
                 self._tables.append(t)
@@ -218,7 +231,7 @@ class ExcelWriter(object):
             if (sheet._rels
                 or sheet._comments
                 or sheet.legacy_drawing is not None):
-                rels = write_rels(sheet, comments_id=comments_id)
+                rels = write_rels(sheet, comments_id=len(self._comments))
 
                 self.archive.writestr(rels_path, tostring(rels))
 
@@ -230,7 +243,7 @@ class ExcelWriter(object):
 
             link._path = "{0}{1}.xml".format(link._rel_type, idx)
 
-            arc_path = "{0}/{1}s/{2}".format(PACKAGE_XL, link._rel_type, link._path)
+            arc_path = "xl/{0}s/{1}".format(link._rel_type, link._path)
             rels_path = get_rels_path(arc_path)
 
             xml = link.to_tree()
