@@ -8,6 +8,7 @@ import atexit
 from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.worksheet import Worksheet
@@ -250,8 +251,9 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
 
 def save_dump(workbook, filename):
+    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
     if workbook.worksheets == []:
         workbook.create_sheet()
-    writer = ExcelWriter(workbook)
+    writer = ExcelWriter(workbook, archive)
     writer.save(filename)
     return True

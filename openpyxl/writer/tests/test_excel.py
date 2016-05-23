@@ -31,8 +31,8 @@ def test_tables(ExcelWriter, archive):
     ws.add_table(t)
 
 
-    writer = ExcelWriter(wb)
-    writer._write_worksheets(archive)
+    writer = ExcelWriter(wb, archive)
+    writer._write_worksheets()
 
     assert t.path[1:] in archive.namelist()
 
@@ -43,8 +43,8 @@ def test_drawing(ExcelWriter, archive):
 
     drawing = SpreadsheetDrawing()
 
-    writer = ExcelWriter(wb)
-    assert writer._write_drawing(archive, drawing) == 'xl/drawings/drawing1.xml'
+    writer = ExcelWriter(wb, archive)
+    assert writer._write_drawing(drawing) == 'xl/drawings/drawing1.xml'
 
 
 def test_write_chart(ExcelWriter, archive):
@@ -54,8 +54,8 @@ def test_write_chart(ExcelWriter, archive):
     chart = BarChart()
     ws.add_chart(chart)
 
-    writer = ExcelWriter(wb)
-    writer._write_worksheets(archive)
+    writer = ExcelWriter(wb, archive)
+    writer._write_worksheets()
     assert "xl/worksheets/sheet1.xml" in archive.namelist()
 
     rel = ws._rels["rId1"]
@@ -69,12 +69,12 @@ def test_write_images(datadir, ExcelWriter, archive):
     from openpyxl.drawing.image import Image
     datadir.chdir()
 
-    writer = ExcelWriter(None)
+    writer = ExcelWriter(None, archive)
 
     img = Image("plain.png")
     writer._images.append(img)
 
-    writer._write_images(archive)
+    writer._write_images()
     archive.close()
 
     zipinfo = archive.infolist()
