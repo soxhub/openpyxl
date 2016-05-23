@@ -243,7 +243,7 @@ class ExcelWriter(object):
 
             link._path = "{0}{1}.xml".format(link._rel_type, idx)
 
-            arc_path = "{0}/{1}s/{2}".format(PACKAGE_XL, link._rel_type, link._path)
+            arc_path = "xl/{0}s/{1}".format(link._rel_type, link._path)
             rels_path = get_rels_path(arc_path)
 
             xml = link.to_tree()
