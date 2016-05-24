@@ -48,7 +48,7 @@ def test_merge_comments_vml(datadir):
     cw = CommentWriter(ws)
 
     with open('control+comments.vml') as existing:
-        content = fromstring(cw.write_comments_vml(fromstring(existing.read())))
+        content = fromstring(cw.write(fromstring(existing.read())))
     assert len(content.findall('{%s}shape' % vmlns)) == 5
     assert len(content.findall('{%s}shapetype' % vmlns)) == 2
 
@@ -58,7 +58,7 @@ def test_write_comments_vml(datadir):
     ws = _create_ws()
     cw = CommentWriter(ws)
 
-    content = cw.write_comments_vml(Element("xml"))
+    content = cw.write(Element("xml"))
     with open('commentsDrawing1.vml') as expected:
         correct = fromstring(expected.read())
     check = fromstring(content)

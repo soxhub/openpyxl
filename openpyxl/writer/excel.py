@@ -182,12 +182,12 @@ class ExcelWriter(object):
             self.archive.writestr('xl/comments%d.xml' % idx, comment_sheet)
 
             if cw.vml is not None:
-                vml = cw.write_comments_vml(cw.vml)
+                vml = cw.write(cw.vml)
                 vml_path = cw.vml_path
             else:
                 root = Element("xml")
                 vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
-                vml = cw.write_comments_vml(root)
+                vml = cw.write(root)
 
             self.archive.writestr(vml_path, vml)
 

@@ -24,7 +24,7 @@ class CommentWriter(object):
         self.vml_path = None
 
 
-    def add_shapetype_vml(self, root):
+    def add_comment_shapetype(self, root):
         shape_layout = SubElement(root, "{%s}shapelayout" % officens,
                                   {"{%s}ext" % vmlns: "edit"})
         SubElement(shape_layout,
@@ -44,7 +44,7 @@ class CommentWriter(object):
         return root
 
 
-    def add_shape_vml(self, root, idx, comment):
+    def add_commentadd_comment_shape(self, root, idx, comment):
         col, row = coordinate_from_string(comment.ref)
         row -= 1
         column = column_index_from_string(col) - 1
@@ -53,7 +53,8 @@ class CommentWriter(object):
         shape.set('id',  "_x0000_s%04d" % idx)
         root.append(shape)
 
-    def write_comments_vml(self, root):
+
+    def write(self, root):
         # Remove any existing comment shapes
         comments = root.findall("{%s}shape" % vmlns)
         for c in comments:
@@ -69,10 +70,10 @@ class CommentWriter(object):
                 break
 
         if not comments_type:
-            self.add_shapetype_vml(root)
+            self.add_comment_shapetype(root)
 
         for idx, comment in enumerate(self.comments, 1026):
-            self.add_shape_vml(root, idx, comment)
+            self.add_commentadd_comment_shape(root, idx, comment)
 
         return tostring(root)
 
