@@ -42,24 +42,11 @@ def test_comment_writer_init():
     assert len(cw.comments) == 3
 
 
-def test_write_comments(datadir):
-    datadir.chdir()
-    ws = _create_ws()
-    cw = CommentWriter(ws)
-    xml = cw.write_comments()
-
-    with open('comments_out.xml') as src:
-        expected = src.read()
-
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
 def test_merge_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()
     cw = CommentWriter(ws)
-    cw.write_comments()
+
     with open('control+comments.vml') as existing:
         content = fromstring(cw.write_comments_vml(fromstring(existing.read())))
     assert len(content.findall('{%s}shape' % vmlns)) == 5
@@ -70,7 +57,7 @@ def test_write_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()
     cw = CommentWriter(ws)
-    cw.write_comments()
+
     content = cw.write_comments_vml(Element("xml"))
     with open('commentsDrawing1.vml') as expected:
         correct = fromstring(expected.read())

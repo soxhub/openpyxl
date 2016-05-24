@@ -24,13 +24,6 @@ class CommentWriter(object):
         self.vml_path = None
 
 
-    def write_comments(self):
-        """
-        Create list of comments and authors
-        """
-        return CommentSheet.write(self.comments)
-
-
     def add_shapetype_vml(self, root):
         shape_layout = SubElement(root, "{%s}shapelayout" % officens,
                                   {"{%s}ext" % vmlns: "edit"})

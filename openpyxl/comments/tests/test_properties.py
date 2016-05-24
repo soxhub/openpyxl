@@ -4,17 +4,34 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl import Workbook
+from ..properties import CommentRecord
 
-@pytest.fixture
-def Comment():
-    from ..properties import CommentRecord
-    return CommentRecord
+
+def _comment_list():
+    from ..comments import Comment
+    wb = Workbook()
+    ws = wb.active
+    comment1 = Comment("text", "author")
+    comment2 = Comment("text2", "author2")
+    comment3 = Comment("text3", "author3")
+    ws["B2"].comment = comment1
+    ws["C7"].comment = comment2
+    ws["D9"].comment = comment3
+
+    comments = []
+    for coord, cell in sorted(ws._cells.items()):
+        if cell._comment is not None:
+            comment = CommentRecord._adapted(cell._comment, cell.coordinate)
+            comments.append(comment)
+
+    return comments
 
 
 class TestComment:
 
-    def test_ctor(self, Comment):
-        comment = Comment()
+    def test_ctor(self):
+        comment = CommentRecord()
         comment.text.t = "Some kind of comment"
         xml = tostring(comment.to_tree())
         expected = """
@@ -28,18 +45,46 @@ class TestComment:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Comment):
+    def test_from_xml(self):
         src = """
         <comment authorId="0" ref="A1">
           <text></text>
         </comment>
         """
         node = fromstring(src)
-        comment = Comment.from_tree(node)
-        assert comment == Comment(ref="A1")
+        comment = CommentRecord.from_tree(node)
+        assert comment == CommentRecord(ref="A1")
 
 
-def test_read_google_docs(datadir, Comment):
+class TestCommentSheet:
+
+
+    def test_read_comments(self, datadir):
+        from ..properties import CommentSheet
+
+        datadir.chdir()
+        with open("comments1.xml") as src:
+            node = fromstring(src.read())
+
+        comments = CommentSheet.from_tree(node)
+        assert comments.authors.author == ['author2', 'author', 'author3']
+        assert len(comments.commentList) == 3
+
+
+    def test_write_comments(self, datadir):
+        from .. properties import CommentSheet
+        datadir.chdir()
+        comments = _comment_list()
+        xml = CommentSheet.write(comments)
+
+        with open('comments_out.xml') as src:
+            expected = src.read()
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+def test_read_google_docs(datadir):
     datadir.chdir()
     xml = """
     <comment authorId="0" ref="A1">
@@ -50,17 +95,5 @@ def test_read_google_docs(datadir, Comment):
     </comment>
     """
     node = fromstring(xml)
-    comment = Comment.from_tree(node)
+    comment = CommentRecord.from_tree(node)
     assert comment.text.t == "some comment\n\t -Peter Lustig"
-
-
-def test_read_comments(datadir):
-    from ..properties import CommentSheet
-
-    datadir.chdir()
-    with open("comments1.xml") as src:
-        node = fromstring(src.read())
-
-    comments = CommentSheet.from_tree(node)
-    assert comments.authors.author == ['author2', 'author', 'author3']
-    assert len(comments.commentList) == 3
