@@ -212,7 +212,7 @@ class ExcelWriter(object):
                 ws._rels.append(shape_rel)
 
             if ws._comments:
-                cs = CommentSheet.from_cells(ws._comments)
+                cs = CommentSheet.from_comments(ws._comments)
                 self._comments.append(cs)
 
                 cs._id = len(self._comments)

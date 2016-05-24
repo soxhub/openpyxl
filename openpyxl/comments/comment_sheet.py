@@ -200,7 +200,7 @@ class CommentSheet(Serialisable):
 
 
     @classmethod
-    def from_cells(cls, comments):
+    def from_comments(cls, comments):
         """
         Create a comment sheet from a list of comments for a particular worksheet
         """

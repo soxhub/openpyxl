@@ -75,7 +75,7 @@ class TestCommentSheet:
         from .. comment_sheet import CommentSheet
         datadir.chdir()
         comments = _comment_list()
-        cs = CommentSheet.from_cells(comments)
+        cs = CommentSheet.from_comments(comments)
         xml = tostring(cs.to_tree())
 
         with open('comments_out.xml') as src:
