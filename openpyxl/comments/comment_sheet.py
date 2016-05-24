@@ -164,7 +164,7 @@ class CommentSheet(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     _id = None
-    _path = "/comments/comments{0}.xml"
+    _path = "/comments{0}.xml"
     _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
     _rel_type = "comment"
     _rel_id = None
