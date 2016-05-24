@@ -214,7 +214,7 @@ class ExcelWriter(object):
                         r.Target = "/" + drawingpath
 
             if sheet._comments:
-                cw = self.comment_writer(sheet)
+                cw = self.comment_writer(sheet._comments)
 
                 if sheet.legacy_drawing is not None:
                     vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))

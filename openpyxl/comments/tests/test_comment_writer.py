@@ -3,11 +3,12 @@ from __future__ import absolute_import
 
 
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Worksheet
-
 from openpyxl.tests.helper import compare_xml
-
-from openpyxl.xml.functions import fromstring, tostring, Element
+from openpyxl.xml.functions import (
+    fromstring,
+    tostring,
+    Element,
+)
 
 from ..comments import Comment
 from ..properties import CommentRecord
@@ -18,9 +19,9 @@ from ..writer import (
 )
 
 
-def _create_ws():
+def create_comments():
     wb = Workbook()
-    ws = Worksheet(wb)
+    ws = wb.active
     comment1 = Comment("text", "author")
     comment2 = Comment("text2", "author2")
     comment3 = Comment("text3", "author3")
@@ -28,24 +29,18 @@ def _create_ws():
     ws["C7"].comment = comment2
     ws["D9"].comment = comment3
 
+    comments = []
     for coord, cell in sorted(ws._cells.items()):
         if cell._comment is not None:
             comment = CommentRecord._adapted(cell._comment, cell.coordinate)
-            ws._comments.append(comment)
+            comments.append(comment)
 
-    return ws
-
-
-def test_comment_writer_init():
-    ws = _create_ws()
-    cw = ShapeWriter(ws)
-    assert len(cw.comments) == 3
+    return comments
 
 
 def test_merge_comments_vml(datadir):
     datadir.chdir()
-    ws = _create_ws()
-    cw = ShapeWriter(ws)
+    cw = ShapeWriter(create_comments())
 
     with open('control+comments.vml') as existing:
         content = fromstring(cw.write(fromstring(existing.read())))
@@ -55,8 +50,7 @@ def test_merge_comments_vml(datadir):
 
 def test_write_comments_vml(datadir):
     datadir.chdir()
-    ws = _create_ws()
-    cw = ShapeWriter(ws)
+    cw = ShapeWriter(create_comments())
 
     content = cw.write(Element("xml"))
     with open('commentsDrawing1.vml') as expected:
@@ -94,7 +88,6 @@ def test_write_comments_vml(datadir):
 
 
 def test_shape():
-    from openpyxl.xml.functions import Element, tostring
     from ..writer import _shape_factory
 
     shape = _shape_factory(2,3)

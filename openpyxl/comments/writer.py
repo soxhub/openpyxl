@@ -20,11 +20,12 @@ class ShapeWriter(object):
     Create VML for comments
     """
 
+    vml = None
+    vml_path = None
 
-    def __init__(self, sheet):
-        self.comments = sheet._comments
-        self.vml = None
-        self.vml_path = None
+
+    def __init__(self, comments):
+        self.comments = comments
 
 
     def add_comment_shapetype(self, root):
