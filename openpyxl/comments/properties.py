@@ -15,7 +15,9 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import Guid, ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 
+from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
 
 from openpyxl.cell.text import Text
 from .author import AuthorList
@@ -184,3 +186,20 @@ class CommentSheet(Serialisable):
 
         for c in self.commentList:
             yield c.ref, Comment(c.content, authors[c.authorId])
+
+
+    @classmethod
+    def write(cls, comments):
+        """
+        Create a comment sheet from a list of comments for a particular worksheet
+        """
+        authors = IndexedList()
+
+        # dedupe authors and get indexes
+        for comment in comments:
+            comment.authorId = authors.add(comment.author)
+
+        self = cls(authors=AuthorList(authors), commentList=comments)
+        return tostring(self.to_tree())
+
+

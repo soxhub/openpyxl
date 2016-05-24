@@ -1,9 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-
-from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import Element, SubElement, tostring, fromstring
 from openpyxl.utils import (
     column_index_from_string,
@@ -31,15 +28,7 @@ class CommentWriter(object):
         """
         Create list of comments and authors
         """
-
-        authors = IndexedList()
-
-        # dedupe authors and get indexes
-        for comment in self.comments:
-            comment.authorId = authors.add(comment.author)
-
-        root = CommentSheet(authors=AuthorList(authors), commentList=self.comments)
-        return tostring(root.to_tree())
+        return CommentSheet.write(self.comments)
 
 
     def add_shapetype_vml(self, root):
