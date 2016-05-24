@@ -46,8 +46,9 @@ from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.styles.stylesheet import write_stylesheet
 
-from openpyxl.comments.writer import ShapeWriter
-from openpyxl.comments.properties import CommentSheet
+from openpyxl.comments.shape_writer import ShapeWriter
+from openpyxl.comments.comment_sheet import CommentSheet
+
 
 ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
            'xl/activeX', r'xl/media/.*\.emf')

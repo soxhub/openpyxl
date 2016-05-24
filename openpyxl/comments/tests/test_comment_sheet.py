@@ -5,7 +5,7 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 from openpyxl import Workbook
-from ..properties import CommentRecord
+from ..comment_sheet import CommentRecord
 
 
 def _comment_list():
@@ -60,7 +60,7 @@ class TestCommentSheet:
 
 
     def test_read_comments(self, datadir):
-        from ..properties import CommentSheet
+        from ..comment_sheet import CommentSheet
 
         datadir.chdir()
         with open("comments1.xml") as src:
@@ -72,7 +72,7 @@ class TestCommentSheet:
 
 
     def test_write_comments(self, datadir):
-        from .. properties import CommentSheet
+        from .. comment_sheet import CommentSheet
         datadir.chdir()
         comments = _comment_list()
         xml = CommentSheet.write(comments)

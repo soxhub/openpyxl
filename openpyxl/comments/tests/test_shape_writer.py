@@ -11,8 +11,8 @@ from openpyxl.xml.functions import (
 )
 
 from ..comments import Comment
-from ..properties import CommentRecord
-from ..writer import (
+from ..comment_sheet import CommentRecord
+from ..shape_writer import (
     ShapeWriter,
     vmlns,
     excelns,
@@ -88,7 +88,7 @@ def test_write_comments_vml(datadir):
 
 
 def test_shape():
-    from ..writer import _shape_factory
+    from ..shape_writer import _shape_factory
 
     shape = _shape_factory(2,3)
     xml = tostring(shape)

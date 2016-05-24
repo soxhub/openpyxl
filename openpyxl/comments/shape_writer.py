@@ -1,14 +1,17 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.xml.functions import Element, SubElement, tostring, fromstring
+from openpyxl.xml.functions import (
+    Element,
+    SubElement,
+    tostring,
+    fromstring,
+)
+
 from openpyxl.utils import (
     column_index_from_string,
     coordinate_from_string,
 )
-
-from .author import AuthorList
-from .properties import CommentSheet, CommentRecord
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
