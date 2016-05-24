@@ -61,6 +61,8 @@ class ShapeWriter(object):
 
 
     def write(self, root):
+        if root is None:
+            root = Element("xml")
         # Remove any existing comment shapes
         comments = root.findall("{%s}shape[@type='#_x0000_t202']" % vmlns)
         for c in comments:
