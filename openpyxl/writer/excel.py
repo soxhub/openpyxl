@@ -183,9 +183,10 @@ class ExcelWriter(object):
                 vml = cw.write_comments_vml(cw.vml)
                 vml_path = cw.vml_path
             else:
-                vml = Element("xml")
+                root = Element("xml")
                 vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
-                cw.write_comments_vml(vml)
+                vml = cw.write_comments_vml(root)
+
             self.archive.writestr(vml_path, vml)
 
 
