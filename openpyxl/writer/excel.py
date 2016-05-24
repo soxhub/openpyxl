@@ -42,7 +42,6 @@ from openpyxl.writer.workbook import (
     write_workbook,
 )
 from openpyxl.writer.theme import write_theme
-from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.styles.stylesheet import write_stylesheet
 
@@ -177,17 +176,13 @@ class ExcelWriter(object):
 
 
     def _write_comments(self):
-        for idx, cs in enumerate(self._comments, 1):
-            cs._id = idx
+        for cs in self._comments:
 
             self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
             vml = cs.write_shapes()
 
             vml_path = cs.vml_path
-            if vml_path is None:
-                vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
-
-            self.archive.writestr(vml_path, vml)
+            self.archive.writestr(vml_path[1:], vml)
 
 
     def _write_worksheets(self):
@@ -211,17 +206,33 @@ class ExcelWriter(object):
                     if "drawing" in r.Type:
                         r.Target = "/" + drawingpath
 
+            if sheet.legacy_drawing is not None:
+                shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
+                                         Target="/" + sheet.legacy_drawing)
+                sheet._rels.append(shape_rel)
+
             if sheet._comments:
                 cs = CommentSheet.from_cells(sheet._comments)
+                self._comments.append(cs)
+
+                cs._id = len(self._comments)
+                cs.vml_path = '/xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+
+                comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
+                sheet._rels.append(comment_rel)
 
                 if sheet.legacy_drawing is not None:
-                    vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
-                    cs.vml = vml
-                    cs.vml_path = sheet.legacy_drawing
-                    # Record this file so we don't write it again when we dump out vba_archive
+                    # File is used for comments and VBA controls
+                    # Make a note here that the file will be written when comments are
+                    # So that it doesn't get copied from the original archive
                     self.vba_modified.add(sheet.legacy_drawing)
 
-                self._comments.append(cs)
+                    vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
+                    cs.vml = vml
+                    cs.vml_path = "/" + sheet.legacy_drawing
+                else:
+                    shape_rel = Relationship(type="vmlDrawing", Id="anysvml", Target=cs.vml_path)
+                    sheet._rels.append(shape_rel)
 
             for t in sheet._tables:
                 self._tables.append(t)
@@ -229,12 +240,9 @@ class ExcelWriter(object):
                 t._write(self.archive)
                 sheet._rels[t._rel_id].Target = t.path
 
-            if (sheet._rels
-                or sheet._comments
-                or sheet.legacy_drawing is not None):
-                rels = write_rels(sheet, comments_id=len(self._comments))
-
-                self.archive.writestr(rels_path, tostring(rels))
+            if sheet._rels:
+                tree = sheet._rels.to_tree()
+                self.archive.writestr(rels_path, tostring(tree))
 
 
     def _write_external_links(self):

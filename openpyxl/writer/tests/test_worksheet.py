@@ -12,7 +12,6 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl import Workbook
 
 from .. worksheet import write_worksheet
-from .. relations import write_rels
 
 from openpyxl.tests.helper import compare_xml
 from openpyxl.worksheet.properties import PageSetupProperties
@@ -244,7 +243,7 @@ def test_external_hyperlink(worksheet):
 
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1
-    assert worksheet._rels[0].Target == "http://test.com"
+    assert worksheet._rels["rId1"].Target == "http://test.com"
     xml = tostring(hyper.to_tree())
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -449,22 +448,6 @@ def test_vba_comments(datadir, write_worksheet):
     els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
     assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
     assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
-
-def test_vba_rels(datadir):
-    datadir.chdir()
-    fname = 'vba+comments.xlsm'
-    wb = load_workbook(fname, keep_vba=True)
-    ws = wb['Form Controls']
-    ws._comments = True
-    xml = tostring(write_rels(ws, comments_id=1))
-    expected = """
-    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-        <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
-        <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"/>
-    </Relationships>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
 
 
 def test_write_comments(worksheet, write_worksheet):
