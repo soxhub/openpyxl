@@ -48,11 +48,10 @@ class ShapeWriter(object):
                    "{%s}path" % vmlns,
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
-        return root
 
 
-    def add_comment_shape(self, root, idx, comment):
-        col, row = coordinate_from_string(comment.ref)
+    def add_comment_shape(self, root, idx, coord):
+        col, row = coordinate_from_string(coord)
         row -= 1
         column = column_index_from_string(col) - 1
         shape = _shape_factory(row, column)
@@ -63,6 +62,9 @@ class ShapeWriter(object):
 
     def write(self, root):
         # Remove any existing comment shapes
+        if root is None:
+            root = Element("xml")
+
         comments = root.findall("{%s}shape" % vmlns)
         for c in comments:
             if c.get("type") == '#_x0000_t202':
@@ -79,8 +81,8 @@ class ShapeWriter(object):
         if not comments_type:
             self.add_comment_shapetype(root)
 
-        for idx, comment in enumerate(self.comments, 1026):
-            self.add_comment_shape(root, idx, comment)
+        for idx, (coord, comment) in enumerate(self.comments, 1026):
+            self.add_comment_shape(root, idx, coord)
 
         return tostring(root)
 

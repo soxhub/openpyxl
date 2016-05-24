@@ -177,18 +177,15 @@ class ExcelWriter(object):
 
 
     def _write_comments(self):
-        for idx, cw in enumerate(self._comments, 1):
+        for idx, cs in enumerate(self._comments, 1):
+            cs._id = idx
 
-            cs = CommentSheet.from_cells(cw.comments)
             self.archive.writestr('xl/comments%d.xml' % idx, tostring(cs.to_tree()))
+            vml = cs.write_shapes()
 
-            if cw.vml is not None:
-                vml = cw.write(cw.vml)
-                vml_path = cw.vml_path
-            else:
-                root = Element("xml")
+            vml_path = cs.vml_path
+            if vml_path is None:
                 vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
-                vml = cw.write(root)
 
             self.archive.writestr(vml_path, vml)
 
@@ -215,16 +212,16 @@ class ExcelWriter(object):
                         r.Target = "/" + drawingpath
 
             if sheet._comments:
-                cw = self.comment_writer(sheet._comments)
+                cs = CommentSheet.from_cells(sheet._comments)
 
                 if sheet.legacy_drawing is not None:
                     vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
-                    cw.vml = vml
-                    cw.vml_path = sheet.legacy_drawing
+                    cs.vml = vml
+                    cs.vml_path = sheet.legacy_drawing
                     # Record this file so we don't write it again when we dump out vba_archive
                     self.vba_modified.add(sheet.legacy_drawing)
 
-                self._comments.append(cw)
+                self._comments.append(cs)
 
             for t in sheet._tables:
                 self._tables.append(t)

@@ -22,6 +22,7 @@ from openpyxl.xml.functions import tostring
 from openpyxl.cell.text import Text
 from .author import AuthorList
 from .comments import Comment
+from .shape_writer import ShapeWriter
 
 
 class ObjectAnchor(Serialisable):
@@ -162,6 +163,14 @@ class CommentSheet(Serialisable):
     commentList = NestedSequence(expected_type=CommentRecord, count=0)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
+    _id = None
+    _path = "/comments/comments{0}.xml"
+    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
+    _rel_type = "comment"
+    _rel_id = None
+    vml = None
+    vml_path = None
+
     __elements__ = ('authors', 'commentList')
 
     def __init__(self,
@@ -202,3 +211,11 @@ class CommentSheet(Serialisable):
             comment.authorId = authors.add(comment.author)
 
         return cls(authors=AuthorList(authors), commentList=comments)
+
+
+    def write_shapes(self):
+        """
+        Create the VML for comments
+        """
+        sw = ShapeWriter(self.comments)
+        return sw.write(self.vml)

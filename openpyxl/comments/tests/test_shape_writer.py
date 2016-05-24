@@ -33,7 +33,7 @@ def create_comments():
     for coord, cell in sorted(ws._cells.items()):
         if cell._comment is not None:
             comment = CommentRecord.from_cell(cell)
-            comments.append(comment)
+            comments.append((cell.coordinate, comment))
 
     return comments
 
