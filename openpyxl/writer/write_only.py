@@ -20,7 +20,6 @@ from openpyxl.utils.exceptions import WorkbookAlreadySaved
 
 from .etree_worksheet import write_cell
 from .excel import ExcelWriter
-from .relations import write_rels
 from .worksheet import write_drawing
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element

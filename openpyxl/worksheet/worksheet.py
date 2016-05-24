@@ -43,6 +43,7 @@ from openpyxl.utils.units import (
     DEFAULT_ROW_HEIGHT,
 )
 from openpyxl.formatting.formatting import ConditionalFormattingList
+from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
@@ -127,7 +128,7 @@ class Worksheet(_WorkbookChild):
         self._cells = {}
         self._charts = []
         self._images = []
-        self._rels = []
+        self._rels = RelationshipList()
         self._drawing = None
         self._comments = []
         self._merged_cells = []
