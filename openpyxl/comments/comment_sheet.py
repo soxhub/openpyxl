@@ -219,3 +219,11 @@ class CommentSheet(Serialisable):
         """
         sw = ShapeWriter(self.comments)
         return sw.write(self.vml)
+
+
+    @property
+    def path(self):
+        """
+        Return path within the archive
+        """
+        return "/xl" + self._path.format(self._id)

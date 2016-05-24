@@ -180,7 +180,7 @@ class ExcelWriter(object):
         for idx, cs in enumerate(self._comments, 1):
             cs._id = idx
 
-            self.archive.writestr('xl/comments%d.xml' % idx, tostring(cs.to_tree()))
+            self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
             vml = cs.write_shapes()
 
             vml_path = cs.vml_path
