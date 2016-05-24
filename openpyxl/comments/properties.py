@@ -201,5 +201,3 @@ class CommentSheet(Serialisable):
 
         self = cls(authors=AuthorList(authors), commentList=comments)
         return tostring(self.to_tree())
-
-
