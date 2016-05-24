@@ -1,48 +1,37 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from openpyxl.xml.functions import (
+    Element,
+    SubElement,
+    tostring,
+    fromstring,
+)
 
-from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import Element, SubElement, tostring, fromstring
 from openpyxl.utils import (
     column_index_from_string,
     coordinate_from_string,
 )
-
-from .author import AuthorList
-from .properties import CommentSheet, CommentRecord
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
 excelns = "urn:schemas-microsoft-com:office:excel"
 
 
-class CommentWriter(object):
+class ShapeWriter(object):
+    """
+    Create VML for comments
+    """
+
+    vml = None
+    vml_path = None
 
 
-    def __init__(self, sheet):
-        self.comments = sheet._comments
-        self.vml = None
-        self.vml_path = None
+    def __init__(self, comments):
+        self.comments = comments
 
 
-    def write_comments(self):
-        """
-        Create list of comments and authors
-        """
-
-        authors = IndexedList()
-
-        # dedupe authors and get indexes
-        for comment in self.comments:
-            comment.authorId = authors.add(comment.author)
-
-        root = CommentSheet(authors=AuthorList(authors), commentList=self.comments)
-        return tostring(root.to_tree())
-
-
-    def add_shapetype_vml(self, root):
+    def add_comment_shapetype(self, root):
         shape_layout = SubElement(root, "{%s}shapelayout" % officens,
                                   {"{%s}ext" % vmlns: "edit"})
         SubElement(shape_layout,
@@ -59,11 +48,10 @@ class CommentWriter(object):
                    "{%s}path" % vmlns,
                    {"gradientshapeok": "t",
                     "{%s}connecttype" % officens: "rect"})
-        return root
 
 
-    def add_shape_vml(self, root, idx, comment):
-        col, row = coordinate_from_string(comment.ref)
+    def add_comment_shape(self, root, idx, coord):
+        col, row = coordinate_from_string(coord)
         row -= 1
         column = column_index_from_string(col) - 1
         shape = _shape_factory(row, column)
@@ -71,19 +59,21 @@ class CommentWriter(object):
         shape.set('id', "_x0000_s%04d" % idx)
         root.append(shape)
 
-    def write_comments_vml(self, root):
+
+    def write(self, root):
         # Remove any existing comment shapes
         comments = root.findall("{%s}shape[@type='#_x0000_t202']" % vmlns)
         for c in comments:
             root.remove(c)
 
         # check whether comments shape type already exists
+
         shape_types = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
         if not shape_types:
-            self.add_shapetype_vml(root)
+            self.add_comment_shapetype(root)
 
-        for idx, comment in enumerate(self.comments, 1026):
-            self.add_shape_vml(root, idx, comment)
+        for idx, (coord, comment) in enumerate(self.comments, 1026):
+            self.add_comment_shape(root, idx, coord)
 
         return tostring(root)
 

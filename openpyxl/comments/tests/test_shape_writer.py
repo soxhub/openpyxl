@@ -3,24 +3,25 @@ from __future__ import absolute_import
 
 
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Worksheet
-
 from openpyxl.tests.helper import compare_xml
-
-from openpyxl.xml.functions import fromstring, tostring, Element
+from openpyxl.xml.functions import (
+    fromstring,
+    tostring,
+    Element,
+)
 
 from ..comments import Comment
-from ..properties import CommentRecord
-from ..writer import (
-    CommentWriter,
+from ..comment_sheet import CommentRecord
+from ..shape_writer import (
+    ShapeWriter,
     vmlns,
     excelns,
 )
 
 
-def _create_ws():
+def create_comments():
     wb = Workbook()
-    ws = Worksheet(wb)
+    ws = wb.active
     comment1 = Comment("text", "author")
     comment2 = Comment("text2", "author2")
     comment3 = Comment("text3", "author3")
@@ -28,50 +29,30 @@ def _create_ws():
     ws["C7"].comment = comment2
     ws["D9"].comment = comment3
 
+    comments = []
     for coord, cell in sorted(ws._cells.items()):
         if cell._comment is not None:
-            comment = CommentRecord._adapted(cell._comment, cell.coordinate)
-            ws._comments.append(comment)
+            comment = CommentRecord.from_cell(cell)
+            comments.append((cell.coordinate, comment))
 
-    return ws
-
-
-def test_comment_writer_init():
-    ws = _create_ws()
-    cw = CommentWriter(ws)
-    assert len(cw.comments) == 3
-
-
-def test_write_comments(datadir):
-    datadir.chdir()
-    ws = _create_ws()
-    cw = CommentWriter(ws)
-    xml = cw.write_comments()
-
-    with open('comments_out.xml') as src:
-        expected = src.read()
-
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+    return comments
 
 
 def test_merge_comments_vml(datadir):
     datadir.chdir()
-    ws = _create_ws()
-    cw = CommentWriter(ws)
-    cw.write_comments()
+    cw = ShapeWriter(create_comments())
+
     with open('control+comments.vml') as existing:
-        content = fromstring(cw.write_comments_vml(fromstring(existing.read())))
+        content = fromstring(cw.write(fromstring(existing.read())))
     assert len(content.findall('{%s}shape' % vmlns)) == 5
     assert len(content.findall('{%s}shapetype' % vmlns)) == 2
 
 
 def test_write_comments_vml(datadir):
     datadir.chdir()
-    ws = _create_ws()
-    cw = CommentWriter(ws)
-    cw.write_comments()
-    content = cw.write_comments_vml(Element("xml"))
+    cw = ShapeWriter(create_comments())
+
+    content = cw.write(Element("xml"))
     with open('commentsDrawing1.vml') as expected:
         correct = fromstring(expected.read())
     check = fromstring(content)
@@ -107,8 +88,7 @@ def test_write_comments_vml(datadir):
 
 
 def test_shape():
-    from openpyxl.xml.functions import Element, tostring
-    from ..writer import _shape_factory
+    from ..shape_writer import _shape_factory
 
     shape = _shape_factory(2,3)
     xml = tostring(shape)

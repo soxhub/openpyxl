@@ -46,7 +46,9 @@ from .relations import write_rels
 from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.styles.stylesheet import write_stylesheet
 
-from openpyxl.comments.writer import CommentWriter
+from openpyxl.comments.shape_writer import ShapeWriter
+from openpyxl.comments.comment_sheet import CommentSheet
+
 
 ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
            'xl/activeX', r'xl/media/.*\.emf')
@@ -55,7 +57,7 @@ ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'custom
 class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
 
-    comment_writer = CommentWriter
+    comment_writer = ShapeWriter
 
     def __init__(self, workbook, archive):
         self.archive = archive
@@ -175,17 +177,15 @@ class ExcelWriter(object):
 
 
     def _write_comments(self):
-        for idx, cw in enumerate(self._comments, 1):
+        for idx, cs in enumerate(self._comments, 1):
+            cs._id = idx
 
-            self.archive.writestr('xl/comments%d.xml' % idx,
-                                  cw.write_comments())
-            if cw.vml is not None:
-                vml = cw.write_comments_vml(cw.vml)
-                vml_path = cw.vml_path
-            else:
-                root = Element("xml")
+            self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
+            vml = cs.write_shapes()
+
+            vml_path = cs.vml_path
+            if vml_path is None:
                 vml_path = 'xl/drawings/commentsDrawing%d.vml' % idx
-                vml = cw.write_comments_vml(root)
 
             self.archive.writestr(vml_path, vml)
 
@@ -212,16 +212,16 @@ class ExcelWriter(object):
                         r.Target = "/" + drawingpath
 
             if sheet._comments:
-                cw = self.comment_writer(sheet)
+                cs = CommentSheet.from_cells(sheet._comments)
 
                 if sheet.legacy_drawing is not None:
                     vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
-                    cw.vml = vml
-                    cw.vml_path = sheet.legacy_drawing
+                    cs.vml = vml
+                    cs.vml_path = sheet.legacy_drawing
                     # Record this file so we don't write it again when we dump out vba_archive
                     self.vba_modified.add(sheet.legacy_drawing)
 
-                self._comments.append(cw)
+                self._comments.append(cs)
 
             for t in sheet._tables:
                 self._tables.append(t)

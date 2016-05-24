@@ -12,7 +12,7 @@ import pytest
 
 def test_read_comments(datadir):
     datadir.chdir()
-    from .. properties import CommentSheet
+    from .. comment_sheet import CommentSheet
 
     with open("comments2.xml") as src:
         node = fromstring(src.read())

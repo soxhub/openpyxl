@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from operator import itemgetter
 
 from openpyxl.compat import safe_string
-from openpyxl.comments.properties import CommentRecord
+from openpyxl.comments.comment_sheet import CommentRecord
 from openpyxl.xml.functions import Element, SubElement
 from openpyxl import LXML
 
@@ -69,7 +69,7 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
     value = cell._value
 
     if cell._comment is not None:
-        comment = CommentRecord._adapted(cell.comment, cell.coordinate)
+        comment = CommentRecord.from_cell(cell)
         worksheet._comments.append(comment)
 
     el = Element("c", attributes)
@@ -108,7 +108,7 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
     value = cell._value
 
     if cell._comment is not None:
-        comment = CommentRecord._adapted(cell.comment, cell.coordinate)
+        comment = CommentRecord.from_cell(cell)
         worksheet._comments.append(comment)
 
     if value == '' or value is None:

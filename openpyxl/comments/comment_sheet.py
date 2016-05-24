@@ -15,11 +15,14 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import Guid, ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 
+from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
 
 from openpyxl.cell.text import Text
 from .author import AuthorList
 from .comments import Comment
+from .shape_writer import ShapeWriter
 
 
 class ObjectAnchor(Serialisable):
@@ -133,10 +136,12 @@ class CommentRecord(Serialisable):
 
 
     @classmethod
-    def _adapted(cls, comment, ref=None):
+    def from_cell(cls, cell):
         """
-        Class method to convert from old style comments
+        Class method to convert cell comment
         """
+        comment = cell._comment
+        ref = cell.coordinate
         self = cls(ref=ref, author=comment.author)
         self.text.t = comment.content
         return self
@@ -157,6 +162,14 @@ class CommentSheet(Serialisable):
     authors = Typed(expected_type=AuthorList)
     commentList = NestedSequence(expected_type=CommentRecord, count=0)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    _id = None
+    _path = "/comments{0}.xml"
+    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
+    _rel_type = "comment"
+    _rel_id = None
+    vml = None
+    vml_path = None
 
     __elements__ = ('authors', 'commentList')
 
@@ -184,3 +197,33 @@ class CommentSheet(Serialisable):
 
         for c in self.commentList:
             yield c.ref, Comment(c.content, authors[c.authorId])
+
+
+    @classmethod
+    def from_cells(cls, comments):
+        """
+        Create a comment sheet from a list of comments for a particular worksheet
+        """
+        authors = IndexedList()
+
+        # dedupe authors and get indexes
+        for comment in comments:
+            comment.authorId = authors.add(comment.author)
+
+        return cls(authors=AuthorList(authors), commentList=comments)
+
+
+    def write_shapes(self):
+        """
+        Create the VML for comments
+        """
+        sw = ShapeWriter(self.comments)
+        return sw.write(self.vml)
+
+
+    @property
+    def path(self):
+        """
+        Return path within the archive
+        """
+        return "/xl" + self._path.format(self._id)
