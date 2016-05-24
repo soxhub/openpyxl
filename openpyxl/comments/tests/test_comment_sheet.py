@@ -71,11 +71,12 @@ class TestCommentSheet:
         assert len(comments.commentList) == 3
 
 
-    def test_write_comments(self, datadir):
+    def test_from_comments(self, datadir):
         from .. comment_sheet import CommentSheet
         datadir.chdir()
         comments = _comment_list()
-        xml = CommentSheet.write(comments)
+        cs = CommentSheet.from_cells(comments)
+        xml = tostring(cs.to_tree())
 
         with open('comments_out.xml') as src:
             expected = src.read()

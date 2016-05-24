@@ -191,7 +191,7 @@ class CommentSheet(Serialisable):
 
 
     @classmethod
-    def write(cls, comments):
+    def from_cells(cls, comments):
         """
         Create a comment sheet from a list of comments for a particular worksheet
         """
@@ -201,5 +201,4 @@ class CommentSheet(Serialisable):
         for comment in comments:
             comment.authorId = authors.add(comment.author)
 
-        self = cls(authors=AuthorList(authors), commentList=comments)
-        return tostring(self.to_tree())
+        return cls(authors=AuthorList(authors), commentList=comments)

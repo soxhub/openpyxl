@@ -179,8 +179,8 @@ class ExcelWriter(object):
     def _write_comments(self):
         for idx, cw in enumerate(self._comments, 1):
 
-            comment_sheet = CommentSheet.write(cw.comments)
-            self.archive.writestr('xl/comments%d.xml' % idx, comment_sheet)
+            cs = CommentSheet.from_cells(cw.comments)
+            self.archive.writestr('xl/comments%d.xml' % idx, tostring(cs.to_tree()))
 
             if cw.vml is not None:
                 vml = cw.write(cw.vml)
