@@ -12,7 +12,7 @@ from openpyxl.xml.functions import fromstring, tostring, Element
 from ..comments import Comment
 from ..properties import CommentRecord
 from ..writer import (
-    CommentWriter,
+    ShapeWriter,
     vmlns,
     excelns,
 )
@@ -38,14 +38,14 @@ def _create_ws():
 
 def test_comment_writer_init():
     ws = _create_ws()
-    cw = CommentWriter(ws)
+    cw = ShapeWriter(ws)
     assert len(cw.comments) == 3
 
 
 def test_merge_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()
-    cw = CommentWriter(ws)
+    cw = ShapeWriter(ws)
 
     with open('control+comments.vml') as existing:
         content = fromstring(cw.write(fromstring(existing.read())))
@@ -56,7 +56,7 @@ def test_merge_comments_vml(datadir):
 def test_write_comments_vml(datadir):
     datadir.chdir()
     ws = _create_ws()
-    cw = CommentWriter(ws)
+    cw = ShapeWriter(ws)
 
     content = cw.write(Element("xml"))
     with open('commentsDrawing1.vml') as expected:

@@ -15,7 +15,10 @@ officens = "urn:schemas-microsoft-com:office:office"
 excelns = "urn:schemas-microsoft-com:office:excel"
 
 
-class CommentWriter(object):
+class ShapeWriter(object):
+    """
+    Create VML for comments
+    """
 
 
     def __init__(self, sheet):
@@ -44,7 +47,7 @@ class CommentWriter(object):
         return root
 
 
-    def add_commentadd_comment_shape(self, root, idx, comment):
+    def add_comment_shape(self, root, idx, comment):
         col, row = coordinate_from_string(comment.ref)
         row -= 1
         column = column_index_from_string(col) - 1
@@ -73,7 +76,7 @@ class CommentWriter(object):
             self.add_comment_shapetype(root)
 
         for idx, comment in enumerate(self.comments, 1026):
-            self.add_commentadd_comment_shape(root, idx, comment)
+            self.add_comment_shape(root, idx, comment)
 
         return tostring(root)
 
