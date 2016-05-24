@@ -22,7 +22,7 @@ def _comment_list():
     comments = []
     for coord, cell in sorted(ws._cells.items()):
         if cell._comment is not None:
-            comment = CommentRecord._adapted(cell._comment, cell.coordinate)
+            comment = CommentRecord.from_cell(cell)
             comments.append(comment)
 
     return comments
