@@ -89,7 +89,8 @@ class Worksheet(_WorkbookChild):
     """
 
     _rel_type = "worksheet"
-    _path = "sheet1.xml"
+    _path = "/xl/worksheets/sheet{0}.xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
 
     BREAK_NONE = 0
     BREAK_ROW = 1

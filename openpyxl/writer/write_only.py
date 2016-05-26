@@ -55,6 +55,8 @@ class WriteOnlyWorksheet(_WorkbookChild):
     writer = None
     _rel_type = Worksheet._rel_type
     _path = Worksheet._path
+    mime_type = Worksheet.mime_type
+
 
     def __init__(self, parent, title):
         super(WriteOnlyWorksheet, self).__init__(parent, title)
