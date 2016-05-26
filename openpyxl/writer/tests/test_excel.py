@@ -44,7 +44,8 @@ def test_drawing(ExcelWriter, archive):
     drawing = SpreadsheetDrawing()
 
     writer = ExcelWriter(wb, archive)
-    assert writer._write_drawing(drawing) == 'xl/drawings/drawing1.xml'
+    writer._write_drawing(drawing)
+    assert drawing.path == '/xl/drawings/drawing1.xml'
 
 
 def test_write_chart(ExcelWriter, archive):

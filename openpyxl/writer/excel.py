@@ -142,16 +142,15 @@ class ExcelWriter(object):
         Write a drawing
         """
         self._drawings.append(drawing)
-        drawing_id = len(self._drawings)
+        drawing._id = len(self._drawings)
         for chart in drawing.charts:
             self._charts.append(chart)
             chart._id = len(self._charts)
         for img in drawing.images:
             self._images.append(img)
             img._id = len(self._images)
-        drawingpath = drawing.path[1:]
-        rels_path = get_rels_path(drawingpath)
-        self.archive.writestr(drawingpath, tostring(drawing._write()))
+        rels_path = get_rels_path(drawing.path)
+        self.archive.writestr(drawing.path, tostring(drawing._write()))
         self.archive.writestr(rels_path, tostring(drawing._write_rels()))
         self.manifest.append(drawing)
 
@@ -197,16 +196,16 @@ class ExcelWriter(object):
 
             ws._id = idx
             xml = ws._write()
-            arc_path = ws.path[1:]
-            rels_path = get_rels_path(arc_path)
+            rels_path = get_rels_path(ws.path)
 
-            self.archive.writestr(arc_path, xml)
-            self.manifest.append(sheet)
+            self.archive.writestr(ws.path[1:], xml)
+            self.manifest.append(ws)
 
             if ws._charts or ws._images:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = ws._charts
                 drawing.images = ws._images
+                self._write_drawing(drawing)
 
                 for r in ws._rels.Relationship:
                     if "drawing" in r.Type:
