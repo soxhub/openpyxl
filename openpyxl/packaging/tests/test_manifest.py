@@ -197,6 +197,15 @@ class TestManifest:
         assert len(manifest.Default) == 3
 
 
+    def test_append(self, Manifest):
+        from openpyxl import Workbook
+        wb = Workbook()
+        ws = wb.active
+        manifest = Manifest()
+        manifest.append(ws)
+        assert len(manifest.Override) == 7
+
+
 class TestContentTypes:
 
 

@@ -147,6 +147,15 @@ class Manifest(Serialisable):
                 return t
 
 
+    def append(self, obj):
+        """
+        Add content object to the package manifest
+        # needs a contract...
+        """
+        ct = Override(PartName=obj.path, ContentType=obj.mime_type)
+        self.Override.append(ct)
+
+
 def write_content_types(workbook, as_template=False, exts=None):
 
     manifest = Manifest()
@@ -190,8 +199,7 @@ def write_content_types(workbook, as_template=False, exts=None):
     # ugh! can't we get this from the zip archive?
     # worksheets
     for sheet in workbook.worksheets:
-        name = '/xl/worksheets/{0}'.format(sheet._path)
-        manifest.Override.append(Override(name, WORKSHEET_TYPE))
+        manifest.append(sheet)
 
         if sheet._charts or sheet._images:
             drawing_id += 1
@@ -199,9 +207,7 @@ def write_content_types(workbook, as_template=False, exts=None):
             manifest.Override.append(Override(name, DRAWING_TYPE))
 
             for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
+                manifest.append(chart)
 
         if sheet._comments:
             comments_id += 1
@@ -211,14 +217,13 @@ def write_content_types(workbook, as_template=False, exts=None):
             name = '/xl/comments%d.xml' % comments_id
             manifest.Override.append(Override(name, COMMENTS_TYPE))
 
-        for t in sheet._tables:
-            manifest.Override.append(Override(t.path, t._type))
+        for table in sheet._tables:
+            manifest.append(table)
 
 
     # chartsheets
     for sheet in workbook.chartsheets:
-        name = '/xl/chartsheets/{0}'.format(sheet._path)
-        manifest.Override.append(Override(name, CHARTSHEET_TYPE))
+        manifest.Override.append(sheet)
 
         if sheet._charts:
             drawing_id += 1
@@ -226,13 +231,11 @@ def write_content_types(workbook, as_template=False, exts=None):
             manifest.Override.append(Override(name, DRAWING_TYPE))
 
             for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
+                manifest.append(chart)
 
     #external links
-    for idx, _ in enumerate(workbook._external_links, 1):
-        name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
-        manifest.Override.append(Override(name, EXTERNAL_LINK))
+    for link in enumerate(workbook._external_links, 1):
+        #name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
+        manifest.append(link)
 
     return manifest
