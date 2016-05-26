@@ -278,7 +278,17 @@ class TestContentTypes:
         wb = load_workbook('sample.xlsm', keep_vba=True)
         manifest = write_content_types(wb)
         partnames = [t.PartName for t in manifest.Override]
-        expected = ['/xl/workbook.xml', '/xl/worksheets/sheet1.xml', '/xl/worksheets/sheet2.xml', '/xl/worksheets/sheet3.xml', '/xl/theme/theme1.xml', '/xl/styles.xml', '/docProps/core.xml', '/docProps/app.xml', '/xl/sharedStrings.xml']
+        expected = [
+            '/xl/workbook.xml',
+            '/xl/worksheets/sheet1.xml',
+            '/xl/worksheets/sheet2.xml',
+            '/xl/worksheets/sheet3.xml',
+            '/xl/theme/theme1.xml',
+            '/xl/styles.xml',
+            '/docProps/core.xml',
+            '/docProps/app.xml',
+            '/xl/sharedStrings.xml'
+                    ]
         assert partnames == expected
 
     @pytest.mark.lxml_required # for XPATH lookup
