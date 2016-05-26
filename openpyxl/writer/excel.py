@@ -27,7 +27,10 @@ from openpyxl.xml.constants import (
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring, fromstring, Element
-from openpyxl.packaging.manifest import write_content_types
+from openpyxl.packaging.manifest import (
+    write_content_types,
+    Manifest,
+)
 from openpyxl.packaging.relationship import (
     get_rels_path,
     RelationshipList,
@@ -61,6 +64,7 @@ class ExcelWriter(object):
     def __init__(self, workbook, archive):
         self.archive = archive
         self.workbook = workbook
+        self.manifest = Manifest()
         self.vba_modified = set()
         self._tables = []
         self._charts = []
@@ -145,29 +149,30 @@ class ExcelWriter(object):
         for img in drawing.images:
             self._images.append(img)
             img._id = len(self._images)
-        drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
+        drawingpath = drawing.path[1:]
+        rels_path = get_rels_path(drawingpath)
         self.archive.writestr(drawingpath, tostring(drawing._write()))
-        self.archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                drawing_id), tostring(drawing._write_rels()))
-        return drawingpath
+        self.archive.writestr(rels_path, tostring(drawing._write_rels()))
+        self.manifest.append(drawing)
 
 
     def _write_chartsheets(self):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
-            sheet._path = "sheet{0}.xml".format(idx)
-            arc_path = "{0}/{1}".format(PACKAGE_CHARTSHEETS, sheet._path)
+            sheet._id = idx
+            arc_path = sheet.path[1:]
             rels_path = get_rels_path(arc_path)
             xml = tostring(sheet.to_tree())
 
             self.archive.writestr(arc_path, xml)
+            self.manifest.append(sheet)
 
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
-                drawingpath = self._write_drawing(self.archive, drawing)
+                self._write_drawing(self.archive, drawing)
 
-                rel = Relationship(type="drawing", Target="/" + drawingpath)
+                rel = Relationship(type="drawing", Target=drawing.path)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
@@ -183,28 +188,29 @@ class ExcelWriter(object):
 
             vml_path = cs.vml_path
             self.archive.writestr(vml_path[1:], vml)
+            self.manifest.append(cs)
 
 
     def _write_worksheets(self):
 
         for idx, ws in enumerate(self.workbook.worksheets, 1):
 
+            ws._id = idx
             xml = ws._write()
-            ws._path = "sheet{0}.xml".format(idx)
-            arc_path = "{0}/{1}".format(PACKAGE_WORKSHEETS, ws._path)
+            arc_path = ws.path[1:]
             rels_path = get_rels_path(arc_path)
 
             self.archive.writestr(arc_path, xml)
+            self.manifest.append(sheet)
 
             if ws._charts or ws._images:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = ws._charts
                 drawing.images = ws._images
-                drawingpath = self._write_drawing(drawing)
 
                 for r in ws._rels.Relationship:
                     if "drawing" in r.Type:
-                        r.Target = "/" + drawingpath
+                        r.Target = drawing.path
 
             if ws.legacy_drawing is not None:
                 shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
