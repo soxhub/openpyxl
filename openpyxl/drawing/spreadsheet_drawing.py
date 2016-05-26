@@ -215,6 +215,9 @@ class TwoCellAnchor(_AnchorBase):
 class SpreadsheetDrawing(Serialisable):
 
     tagname = "wsDr"
+    mime_type = "application/vnd.openxmlformats-officedocument.drawing+xml"
+    _path = PartName="/xl/drawings/drawing{0}.xml"
+    _id = None
 
     twoCellAnchor = Sequence(expected_type=TwoCellAnchor, allow_none=True)
     oneCellAnchor = Sequence(expected_type=OneCellAnchor, allow_none=True)
@@ -240,6 +243,12 @@ class SpreadsheetDrawing(Serialisable):
         Just need to check for identity
         """
         return id(self)
+
+
+    def __bool__(self):
+        return bool(self.charts) or bool(self.images)
+
+    __nonzero__ = __bool__
 
 
     def _write(self):
@@ -309,3 +318,8 @@ class SpreadsheetDrawing(Serialisable):
         rels = RelationshipList()
         rels.Relationship = self._rels
         return rels.to_tree()
+
+
+    @property
+    def path(self):
+        return self._path.format(self._id)
