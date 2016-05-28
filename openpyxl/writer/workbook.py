@@ -89,10 +89,7 @@ def write_workbook(workbook):
     # worksheets
     for idx, sheet in enumerate(wb._sheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
-        rel = Relationship(
-            type=sheet._rel_type,
-            Target='{0}s/{1}'.format(sheet._rel_type, sheet._path)
-        )
+        rel = Relationship(type=sheet._rel_type, Target=sheet.path)
         wb.rels.append(rel)
 
         if not sheet.sheet_state == 'visible':
