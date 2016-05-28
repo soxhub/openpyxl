@@ -149,9 +149,10 @@ class ExternalLink(Serialisable):
 
     tagname = "externalLink"
 
-    _id = ""
-    _path = ""
+    _id = None
+    _path = "/xl/externalLinks/externalLink{0}.xml"
     _rel_type = "externalLink"
+    mime_type = ""
 
     externalBook = Typed(expected_type=ExternalBook, allow_none=True)
     file_link = Typed(expected_type=Relationship, allow_none=True) # link to external file
@@ -172,6 +173,11 @@ class ExternalLink(Serialisable):
         node = super(ExternalLink, self).to_tree()
         node.set("xmlns", SHEET_MAIN_NS)
         return node
+
+
+    @property
+    def path(self):
+        return self._path.format(self._id)
 
 
 def read_external_link(archive, book_path):

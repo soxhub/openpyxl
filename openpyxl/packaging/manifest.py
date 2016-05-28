@@ -192,50 +192,8 @@ def write_content_types(workbook, as_template=False, exts=None):
             part.ContentType = ct
 
 
-    drawing_id = 0
-    chart_id = 0
-    comments_id = 0
-
-    # ugh! can't we get this from the zip archive?
-    # worksheets
-    for sheet in workbook.worksheets:
-        manifest.append(sheet)
-
-        if sheet._charts or sheet._images:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-            for chart in sheet._charts:
-                manifest.append(chart)
-
-        if sheet._comments:
-            comments_id += 1
-            vml = FileExtension("vml", mimetypes.types_map[".vml"])
-            if vml not in manifest.Default:
-                manifest.Default.append(vml)
-            name = '/xl/comments%d.xml' % comments_id
-            manifest.Override.append(Override(name, COMMENTS_TYPE))
-
-        for table in sheet._tables:
-            manifest.append(table)
-
-
-    # chartsheets
-    for sheet in workbook.chartsheets:
-        manifest.Override.append(sheet)
-
-        if sheet._charts:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-            for chart in sheet._charts:
-                manifest.append(chart)
-
     #external links
-    for link in enumerate(workbook._external_links, 1):
-        #name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
+    for link in workbook._external_links:
         manifest.append(link)
 
     return manifest

@@ -30,6 +30,8 @@ from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import (
     write_content_types,
     Manifest,
+    FileExtension,
+    mimetypes
 )
 from openpyxl.packaging.relationship import (
     get_rels_path,
@@ -129,7 +131,7 @@ class ExcelWriter(object):
         for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
-            self.archive.writestr(img._path, buf.getvalue())
+            self.archive.writestr(img.path[1:], buf.getvalue())
 
 
     def _write_charts(self):
@@ -150,7 +152,7 @@ class ExcelWriter(object):
             self._images.append(img)
             img._id = len(self._images)
         rels_path = get_rels_path(drawing.path)
-        self.archive.writestr(drawing.path, tostring(drawing._write()))
+        self.archive.writestr(drawing.path[1:], tostring(drawing._write()))
         self.archive.writestr(rels_path, tostring(drawing._write_rels()))
         self.manifest.append(drawing)
 
@@ -180,14 +182,19 @@ class ExcelWriter(object):
 
 
     def _write_comments(self):
+        if self._comments:
+            ext = FileExtension("vml", mimetypes.types_map[".vml"])
+            self.manifest.Default.append(ext)
+
         for cs in self._comments:
 
             self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
-            vml = cs.write_shapes()
+            self.manifest.append(cs)
 
+            vml = cs.write_shapes()
             vml_path = cs.vml_path
             self.archive.writestr(vml_path[1:], vml)
-            self.manifest.append(cs)
+            self.manifest.Override.append(object)
 
 
     def _write_worksheets(self):
@@ -243,6 +250,7 @@ class ExcelWriter(object):
                 self._tables.append(t)
                 t.id = len(self._tables)
                 t._write(self.archive)
+                self.manifest.append(t)
                 ws._rels[t._rel_id].Target = t.path
 
             if ws._rels:
@@ -254,17 +262,15 @@ class ExcelWriter(object):
         """Write links to external workbooks"""
         wb = self.workbook
         for idx, link in enumerate(wb._external_links, 1):
-
-            link._path = "{0}{1}.xml".format(link._rel_type, idx)
-
-            arc_path = "xl/{0}s/{1}".format(link._rel_type, link._path)
-            rels_path = get_rels_path(arc_path)
+            link._id = idx
+            rels_path = get_rels_path(link.path[1:])
 
             xml = link.to_tree()
-            self.archive.writestr(arc_path, tostring(xml))
+            self.archive.writestr(link.path[1:], tostring(xml))
             rels = RelationshipList()
             rels.append(link.file_link)
             self.archive.writestr(rels_path, tostring(rels.to_tree()))
+            self.manifest.append(link)
 
 
     def save(self, filename):

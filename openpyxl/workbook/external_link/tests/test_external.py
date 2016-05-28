@@ -48,6 +48,11 @@ class TestExternalLink:
         assert diff is None, diff
 
 
+    def test_path(self, ExternalLink):
+        link = ExternalLink()
+        assert link.path == "/xl/externalLinks/externalLinkNone.xml"
+
+
 @pytest.fixture
 def ExternalBook():
     from .. external import ExternalBook

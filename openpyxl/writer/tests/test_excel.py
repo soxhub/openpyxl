@@ -35,6 +35,7 @@ def test_tables(ExcelWriter, archive):
     writer._write_worksheets()
 
     assert t.path[1:] in archive.namelist()
+    assert t.path in writer.manifest.filenames
 
 
 def test_drawing(ExcelWriter, archive):
@@ -46,6 +47,8 @@ def test_drawing(ExcelWriter, archive):
     writer = ExcelWriter(wb, archive)
     writer._write_drawing(drawing)
     assert drawing.path == '/xl/drawings/drawing1.xml'
+    assert drawing.path[1:] in archive.namelist()
+    assert drawing.path in writer.manifest.filenames
 
 
 def test_write_chart(ExcelWriter, archive):
@@ -57,7 +60,8 @@ def test_write_chart(ExcelWriter, archive):
 
     writer = ExcelWriter(wb, archive)
     writer._write_worksheets()
-    assert "xl/worksheets/sheet1.xml" in archive.namelist()
+    assert 'xl/worksheets/sheet1.xml' in archive.namelist()
+    assert ws.path in writer.manifest.filenames
 
     rel = ws._rels["rId1"]
     assert dict(rel) == {'Id': 'rId1', 'Target': '/xl/drawings/drawing1.xml',
@@ -81,3 +85,4 @@ def test_write_images(datadir, ExcelWriter, archive):
     zipinfo = archive.infolist()
     assert len(zipinfo) == 1
     assert zipinfo[0].filename == 'xl/media/image1.png'
+    assert 'xl/media/image1.png' in archive.namelist()
