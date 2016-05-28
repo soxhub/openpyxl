@@ -258,7 +258,7 @@ class SpreadsheetDrawing(Serialisable):
         anchors = []
         for idx, obj in enumerate(self.charts + self.images, 1):
             if isinstance(obj, ChartBase):
-                rel = Relationship(type="chart", Target='../charts/chart%s.xml' % obj._id)
+                rel = Relationship(type="chart", Target=obj.path)
                 anchor = obj.anchor
                 if not isinstance(anchor, _AnchorBase):
                     row, col = coordinate_to_tuple(anchor)
