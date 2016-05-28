@@ -22,6 +22,16 @@ def archive():
     return ZipFile(out, "w")
 
 
+def test_worksheet(ExcelWriter, archive):
+    wb = Workbook()
+    ws = wb.active
+    writer = ExcelWriter(wb, archive)
+    writer._write_worksheets()
+
+    assert ws.path[1:] in archive.namelist()
+    assert ws.path in writer.manifest.filenames
+
+
 def test_tables(ExcelWriter, archive):
     wb = Workbook()
     ws = wb.active

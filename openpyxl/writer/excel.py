@@ -118,7 +118,8 @@ class ExcelWriter(object):
         for n in archive.namelist():
             if "media" in n:
                 exts.append(n)
-        manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts)
+
+        manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
 
@@ -203,7 +204,7 @@ class ExcelWriter(object):
 
             ws._id = idx
             xml = ws._write()
-            rels_path = get_rels_path(ws.path)
+            rels_path = get_rels_path(ws.path)[1:]
 
             self.archive.writestr(ws.path[1:], xml)
             self.manifest.append(ws)

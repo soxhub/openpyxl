@@ -156,9 +156,10 @@ class Manifest(Serialisable):
         self.Override.append(ct)
 
 
-def write_content_types(workbook, as_template=False, exts=None):
+def write_content_types(workbook, as_template=False, exts=None, manifest=None):
 
-    manifest = Manifest()
+    if manifest is None:
+        manifest = Manifest()
 
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
