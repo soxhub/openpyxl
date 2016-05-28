@@ -13,7 +13,6 @@ Submodules
 
    openpyxl.writer.etree_worksheet
    openpyxl.writer.excel
-   openpyxl.writer.relations
    openpyxl.writer.strings
    openpyxl.writer.theme
    openpyxl.writer.workbook

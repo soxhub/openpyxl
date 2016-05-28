@@ -24,10 +24,10 @@ Bug fixes
 
 * `#625 <https://bitbucket.org/openpyxl/openpyxl/issues/625>`_ Exception
 raises when inspecting EmptyCells in read-only mode
-* `547`<https://bitbucket.org/openpyxl/openpyxl/issues/547>`_ Functions for handling OOXML "escaped" ST_XStrings
-* `629`<https://bitbucket.org/openpyxl/openpyxl/issues/629>`_ Row Dimensions not supported in write-only mode
-* `530`<https://bitbucket.org/openpyxl/openpyxl/issues/530>`_ Problems when removing worksheets with charts
-* `630`<https://bitbucket.org/openpyxl/openpyxl/issues/530>`_ Cannot use SheetProtection in write-only mode
+* `547 <https://bitbucket.org/openpyxl/openpyxl/issues/547>`_ Functions for handling OOXML "escaped" ST_XStrings
+* `629 <https://bitbucket.org/openpyxl/openpyxl/issues/629>`_ Row Dimensions not supported in write-only mode
+* `530 <https://bitbucket.org/openpyxl/openpyxl/issues/530>`_ Problems when removing worksheets with charts
+* `630 <https://bitbucket.org/openpyxl/openpyxl/issues/530>`_ Cannot use SheetProtection in write-only mode
 
 
 Features

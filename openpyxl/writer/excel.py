@@ -196,7 +196,6 @@ class ExcelWriter(object):
             vml = cs.write_shapes()
             vml_path = cs.vml_path
             self.archive.writestr(vml_path[1:], vml)
-            self.manifest.Override.append(object)
 
 
     def _write_worksheets(self):
