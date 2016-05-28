@@ -42,6 +42,7 @@ class Image(object):
     """ Raw Image class """
 
     _id = 1
+    _path = "/xl/media/image{0}.png"
 
     def __init__(self, img, coordinates=((0, 0), (1, 1)), size=(None, None),
                  nochangeaspect=True, nochangearrowheads=True):
@@ -78,5 +79,5 @@ class Image(object):
 
 
     @property
-    def _path(self):
-        return PACKAGE_IMAGES + '/image{0}.png'.format(self._id)
+    def path(self):
+        return self._path.format(self._id)

@@ -319,3 +319,20 @@ class TestSpreadsheetDrawing:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_path(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        assert drawing.path == "/xl/drawings/drawingNone.xml"
+
+
+    def test_empty(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        assert bool(drawing) is False
+
+
+    @pytest.mark.parametrize("attr", ['charts', 'images'])
+    def test_bool(self, SpreadsheetDrawing, attr):
+        drawing = SpreadsheetDrawing()
+        getattr(drawing, attr).append(1)
+        assert bool(drawing) is True

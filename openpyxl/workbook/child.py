@@ -35,6 +35,8 @@ def avoid_duplicate_name(names, value):
 class _WorkbookChild(object):
 
     __title = ""
+    _id = None
+    _path = "{0}"
     __parent = None
     _default_title = "Sheet"
 
@@ -151,3 +153,8 @@ class _WorkbookChild(object):
     @firstFooter.setter
     def firstFooter(self, value):
         self.HeaderFooter.firstFooter = value
+
+
+    @property
+    def path(self):
+        return self._path.format(self._id)

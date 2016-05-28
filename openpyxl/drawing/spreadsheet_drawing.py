@@ -215,6 +215,9 @@ class TwoCellAnchor(_AnchorBase):
 class SpreadsheetDrawing(Serialisable):
 
     tagname = "wsDr"
+    mime_type = "application/vnd.openxmlformats-officedocument.drawing+xml"
+    _path = PartName="/xl/drawings/drawing{0}.xml"
+    _id = None
 
     twoCellAnchor = Sequence(expected_type=TwoCellAnchor, allow_none=True)
     oneCellAnchor = Sequence(expected_type=OneCellAnchor, allow_none=True)
@@ -242,6 +245,12 @@ class SpreadsheetDrawing(Serialisable):
         return id(self)
 
 
+    def __bool__(self):
+        return bool(self.charts) or bool(self.images)
+
+    __nonzero__ = __bool__
+
+
     def _write(self):
         """
         create required structure and the serialise
@@ -249,7 +258,7 @@ class SpreadsheetDrawing(Serialisable):
         anchors = []
         for idx, obj in enumerate(self.charts + self.images, 1):
             if isinstance(obj, ChartBase):
-                rel = Relationship(type="chart", Target='../charts/chart%s.xml' % obj._id)
+                rel = Relationship(type="chart", Target=obj.path)
                 anchor = obj.anchor
                 if not isinstance(anchor, _AnchorBase):
                     row, col = coordinate_to_tuple(anchor)
@@ -309,3 +318,8 @@ class SpreadsheetDrawing(Serialisable):
         rels = RelationshipList()
         rels.Relationship = self._rels
         return rels.to_tree()
+
+
+    @property
+    def path(self):
+        return self._path.format(self._id)

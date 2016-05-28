@@ -52,7 +52,9 @@ class ChartBase(Serialisable):
     width = 15 # in cm, approx 5 rows
     height = 7.5 # in cm, approx 14 rows
     _id = 1
+    _path = "/xl/charts/chart{0}.xml"
     style = Integer(allow_none=True)
+    mime_type = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
     graphical_properties = Typed(expected_type=GraphicalProperties, allow_none=True)
 
     __elements__ = ()
@@ -174,5 +176,5 @@ class ChartBase(Serialisable):
 
 
     @property
-    def _path(self):
-        return PACKAGE_CHARTS + '/chart{0}.xml'.format(self._id)
+    def path(self):
+        return self._path.format(self._id)

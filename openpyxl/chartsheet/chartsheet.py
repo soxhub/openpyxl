@@ -30,7 +30,8 @@ class Chartsheet(_WorkbookChild, Serialisable):
     tagname = "chartsheet"
     _default_title = "Chart"
     _rel_type = "chartsheet"
-    _path = "sheet1.xml"
+    _path = "/xl/chartsheets/sheet{0}.xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml"
 
     sheetPr = Typed(expected_type=ChartsheetProperties, allow_none=True)
     sheetViews = Typed(expected_type=ChartsheetViewList)
@@ -92,7 +93,6 @@ class Chartsheet(_WorkbookChild, Serialisable):
     def add_chart(self, chart):
         chart.anchor = AbsoluteAnchor()
         self._charts.append(chart)
-        self.parent._charts.append(ref(chart))
 
 
     def to_tree(self):

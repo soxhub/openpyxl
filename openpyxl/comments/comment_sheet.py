@@ -165,7 +165,7 @@ class CommentSheet(Serialisable):
 
     _id = None
     _path = "/comments{0}.xml"
-    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
     _rel_type = "comments"
     _rel_id = None
     vml = None
@@ -200,7 +200,7 @@ class CommentSheet(Serialisable):
 
 
     @classmethod
-    def from_cells(cls, comments):
+    def from_comments(cls, comments):
         """
         Create a comment sheet from a list of comments for a particular worksheet
         """

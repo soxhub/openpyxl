@@ -33,6 +33,11 @@ def Worksheet():
 
 class TestWorksheet:
 
+
+    def test_path(self, Worksheet):
+        ws = Worksheet(Workbook())
+        assert ws.path == "/xl/worksheets/sheetNone.xml"
+
     def test_new_worksheet(self, Worksheet):
         wb = Workbook()
         ws = Worksheet(wb)

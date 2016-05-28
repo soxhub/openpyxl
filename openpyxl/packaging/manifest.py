@@ -147,9 +147,19 @@ class Manifest(Serialisable):
                 return t
 
 
-def write_content_types(workbook, as_template=False, exts=None):
+    def append(self, obj):
+        """
+        Add content object to the package manifest
+        # needs a contract...
+        """
+        ct = Override(PartName=obj.path, ContentType=obj.mime_type)
+        self.Override.append(ct)
 
-    manifest = Manifest()
+
+def write_content_types(workbook, as_template=False, exts=None, manifest=None):
+
+    if manifest is None:
+        manifest = Manifest()
 
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
@@ -163,7 +173,6 @@ def write_content_types(workbook, as_template=False, exts=None):
             fe = FileExtension(ext[1:], mime)
             manifest.Default.append(fe)
 
-
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
         manifest = Manifest.from_tree(node)
@@ -173,7 +182,6 @@ def write_content_types(workbook, as_template=False, exts=None):
             if override.PartName not in partnames:
                 manifest.Override.append(override)
 
-
     # templates
     for part in manifest.Override:
         if part.PartName == "/" + ARC_WORKBOOK:
@@ -181,58 +189,5 @@ def write_content_types(workbook, as_template=False, exts=None):
             if workbook.vba_archive:
                 ct = as_template and XLTM or XLSM
             part.ContentType = ct
-
-
-    drawing_id = 0
-    chart_id = 0
-    comments_id = 0
-
-    # ugh! can't we get this from the zip archive?
-    # worksheets
-    for sheet in workbook.worksheets:
-        name = '/xl/worksheets/{0}'.format(sheet._path)
-        manifest.Override.append(Override(name, WORKSHEET_TYPE))
-
-        if sheet._charts or sheet._images:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-            for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
-
-        if sheet._comments:
-            comments_id += 1
-            vml = FileExtension("vml", mimetypes.types_map[".vml"])
-            if vml not in manifest.Default:
-                manifest.Default.append(vml)
-            name = '/xl/comments%d.xml' % comments_id
-            manifest.Override.append(Override(name, COMMENTS_TYPE))
-
-        for t in sheet._tables:
-            manifest.Override.append(Override(t.path, t._type))
-
-
-    # chartsheets
-    for sheet in workbook.chartsheets:
-        name = '/xl/chartsheets/{0}'.format(sheet._path)
-        manifest.Override.append(Override(name, CHARTSHEET_TYPE))
-
-        if sheet._charts:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-            for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
-
-    #external links
-    for idx, _ in enumerate(workbook._external_links, 1):
-        name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
-        manifest.Override.append(Override(name, EXTERNAL_LINK))
 
     return manifest

@@ -83,7 +83,7 @@ class TestChartBase:
 
     def test_path(self, ChartBase):
         chart = ChartBase()
-        assert chart._path == "xl/charts/chart1.xml"
+        assert chart.path == "/xl/charts/chart1.xml"
 
 
     def test_plot_area(self, ChartBase):

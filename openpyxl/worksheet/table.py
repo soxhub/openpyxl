@@ -199,7 +199,7 @@ class TableNameDescriptor(String):
 class Table(Serialisable):
 
     _path = "/tables/table{0}.xml"
-    _type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
     _rel_type = "table"
     _rel_id = None
 

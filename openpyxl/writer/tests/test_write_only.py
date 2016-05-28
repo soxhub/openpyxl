@@ -38,6 +38,11 @@ def WriteOnlyWorksheet():
     return WriteOnlyWorksheet(DummyWorkbook(), title="TestWorksheet")
 
 
+def test_path(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    assert ws.path == "/xl/worksheets/sheetNone.xml"
+
+
 def test_write_header(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     doc = ws._write_header()

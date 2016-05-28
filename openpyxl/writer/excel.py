@@ -27,7 +27,12 @@ from openpyxl.xml.constants import (
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring, fromstring, Element
-from openpyxl.packaging.manifest import write_content_types
+from openpyxl.packaging.manifest import (
+    write_content_types,
+    Manifest,
+    FileExtension,
+    mimetypes
+)
 from openpyxl.packaging.relationship import (
     get_rels_path,
     RelationshipList,
@@ -61,6 +66,7 @@ class ExcelWriter(object):
     def __init__(self, workbook, archive):
         self.archive = archive
         self.workbook = workbook
+        self.manifest = Manifest()
         self.vba_modified = set()
         self._tables = []
         self._charts = []
@@ -112,7 +118,8 @@ class ExcelWriter(object):
         for n in archive.namelist():
             if "media" in n:
                 exts.append(n)
-        manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts)
+
+        manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
 
@@ -125,12 +132,13 @@ class ExcelWriter(object):
         for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
-            self.archive.writestr(img._path, buf.getvalue())
+            self.archive.writestr(img.path[1:], buf.getvalue())
 
 
     def _write_charts(self):
         for chart in self._charts:
-            self.archive.writestr(chart._path, tostring(chart._write()))
+            self.archive.writestr(chart.path[1:], tostring(chart._write()))
+            self.manifest.append(chart)
 
 
     def _write_drawing(self, drawing):
@@ -138,36 +146,36 @@ class ExcelWriter(object):
         Write a drawing
         """
         self._drawings.append(drawing)
-        drawing_id = len(self._drawings)
+        drawing._id = len(self._drawings)
         for chart in drawing.charts:
             self._charts.append(chart)
             chart._id = len(self._charts)
         for img in drawing.images:
             self._images.append(img)
             img._id = len(self._images)
-        drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-        self.archive.writestr(drawingpath, tostring(drawing._write()))
-        self.archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                drawing_id), tostring(drawing._write_rels()))
-        return drawingpath
+        rels_path = get_rels_path(drawing.path)[1:]
+        self.archive.writestr(drawing.path[1:], tostring(drawing._write()))
+        self.archive.writestr(rels_path, tostring(drawing._write_rels()))
+        self.manifest.append(drawing)
 
 
     def _write_chartsheets(self):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
-            sheet._path = "sheet{0}.xml".format(idx)
-            arc_path = "{0}/{1}".format(PACKAGE_CHARTSHEETS, sheet._path)
+            sheet._id = idx
+            arc_path = sheet.path[1:]
             rels_path = get_rels_path(arc_path)
             xml = tostring(sheet.to_tree())
 
             self.archive.writestr(arc_path, xml)
+            self.manifest.append(sheet)
 
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
-                drawingpath = self._write_drawing(self.archive, drawing)
+                self._write_drawing(drawing)
 
-                rel = Relationship(type="drawing", Target="/" + drawingpath)
+                rel = Relationship(type="drawing", Target=drawing.path)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
@@ -176,72 +184,79 @@ class ExcelWriter(object):
 
 
     def _write_comments(self):
+        if self._comments:
+            ext = FileExtension("vml", mimetypes.types_map[".vml"])
+            self.manifest.Default.append(ext)
+
         for cs in self._comments:
 
             self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
-            vml = cs.write_shapes()
+            self.manifest.append(cs)
 
+            vml = cs.write_shapes()
             vml_path = cs.vml_path
             self.archive.writestr(vml_path[1:], vml)
+            self.manifest.Override.append(object)
 
 
     def _write_worksheets(self):
 
-        for idx, sheet in enumerate(self.workbook.worksheets, 1):
+        for idx, ws in enumerate(self.workbook.worksheets, 1):
 
-            xml = sheet._write()
-            sheet._path = "sheet{0}.xml".format(idx)
-            arc_path = "{0}/{1}".format(PACKAGE_WORKSHEETS, sheet._path)
-            rels_path = get_rels_path(arc_path)
+            ws._id = idx
+            xml = ws._write()
+            rels_path = get_rels_path(ws.path)[1:]
 
-            self.archive.writestr(arc_path, xml)
+            self.archive.writestr(ws.path[1:], xml)
+            self.manifest.append(ws)
 
-            if sheet._charts or sheet._images:
+            if ws._charts or ws._images:
                 drawing = SpreadsheetDrawing()
-                drawing.charts = sheet._charts
-                drawing.images = sheet._images
-                drawingpath = self._write_drawing(drawing)
+                drawing.charts = ws._charts
+                drawing.images = ws._images
+                self._write_drawing(drawing)
 
-                for r in sheet._rels.Relationship:
+                for r in ws._rels.Relationship:
                     if "drawing" in r.Type:
-                        r.Target = "/" + drawingpath
+                        r.Target = drawing.path
 
-            if sheet.legacy_drawing is not None:
+            if ws.legacy_drawing is not None:
                 shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
-                                         Target="/" + sheet.legacy_drawing)
-                sheet._rels.append(shape_rel)
+                                         Target="/" + ws.legacy_drawing)
+                ws._rels.append(shape_rel)
 
-            if sheet._comments:
-                cs = CommentSheet.from_cells(sheet._comments)
+            if ws._comments:
+                cs = CommentSheet.from_comments(ws._comments)
                 self._comments.append(cs)
 
                 cs._id = len(self._comments)
                 cs.vml_path = '/xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
 
                 comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
-                sheet._rels.append(comment_rel)
+                ws._rels.append(comment_rel)
 
-                if sheet.legacy_drawing is not None:
+                if ws.legacy_drawing is not None:
                     # File is used for comments and VBA controls
                     # Make a note here that the file will be written when comments are
                     # So that it doesn't get copied from the original archive
-                    self.vba_modified.add(sheet.legacy_drawing)
+                    self.vba_modified.add(ws.legacy_drawing)
 
-                    vml = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
+                    vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
                     cs.vml = vml
-                    cs.vml_path = "/" + sheet.legacy_drawing
+                    cs.vml_path = "/" + ws.legacy_drawing
                 else:
                     shape_rel = Relationship(type="vmlDrawing", Id="anysvml", Target=cs.vml_path)
-                    sheet._rels.append(shape_rel)
+                    ws._rels.append(shape_rel)
 
-            for t in sheet._tables:
+            for t in ws._tables:
                 self._tables.append(t)
                 t.id = len(self._tables)
                 t._write(self.archive)
-                sheet._rels[t._rel_id].Target = t.path
+                self.manifest.append(t)
+                ws._rels[t._rel_id].Target = t.path
 
-            if sheet._rels:
-                tree = sheet._rels.to_tree()
+            if ws._rels:
+                tree = ws._rels.to_tree()
                 self.archive.writestr(rels_path, tostring(tree))
 
 
@@ -249,17 +264,15 @@ class ExcelWriter(object):
         """Write links to external workbooks"""
         wb = self.workbook
         for idx, link in enumerate(wb._external_links, 1):
-
-            link._path = "{0}{1}.xml".format(link._rel_type, idx)
-
-            arc_path = "xl/{0}s/{1}".format(link._rel_type, link._path)
-            rels_path = get_rels_path(arc_path)
+            link._id = idx
+            rels_path = get_rels_path(link.path[1:])
 
             xml = link.to_tree()
-            self.archive.writestr(arc_path, tostring(xml))
+            self.archive.writestr(link.path[1:], tostring(xml))
             rels = RelationshipList()
             rels.append(link.file_link)
             self.archive.writestr(rels_path, tostring(rels.to_tree()))
+            self.manifest.append(link)
 
 
     def save(self, filename):

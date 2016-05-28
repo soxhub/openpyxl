@@ -89,10 +89,7 @@ def write_workbook(workbook):
     # worksheets
     for idx, sheet in enumerate(wb._sheets, 1):
         sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
-        rel = Relationship(
-            type=sheet._rel_type,
-            Target='{0}s/{1}'.format(sheet._rel_type, sheet._path)
-        )
+        rel = Relationship(type=sheet._rel_type, Target=sheet.path)
         wb.rels.append(rel)
 
         if not sheet.sheet_state == 'visible':
@@ -102,16 +99,13 @@ def write_workbook(workbook):
         root.sheets.append(sheet_node)
 
     # external references
-    if wb._external_links:
+    for link in wb._external_links:
         # need to match a counter with a workbook's relations
         rId = len(wb.rels)
-        for idx, link in enumerate(wb._external_links, 1):
-            ext = ExternalReference(id="rId{0}".format(rId + idx))
-            rel = Relationship(type=link._rel_type,
-                               Target='{0}s/{1}'.format(link._rel_type, link._path)
-                               )
-            root.externalReferences.append(ext)
-            wb.rels.append(rel)
+        ext = ExternalReference(id="rId{0}".format(link._id))
+        rel = Relationship(type=link._rel_type, Target=link.path)
+        root.externalReferences.append(ext)
+        wb.rels.append(rel)
 
     # Defined names
     defined_names = copy(wb.defined_names) # don't add special defns to workbook itself.
