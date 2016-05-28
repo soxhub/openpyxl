@@ -172,7 +172,7 @@ class ExcelWriter(object):
             if sheet._charts:
                 drawing = SpreadsheetDrawing()
                 drawing.charts = sheet._charts
-                self._write_drawing(self.archive, drawing)
+                self._write_drawing(drawing)
 
                 rel = Relationship(type="drawing", Target=drawing.path)
                 rels = RelationshipList()
