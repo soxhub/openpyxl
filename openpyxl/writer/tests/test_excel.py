@@ -93,8 +93,6 @@ def test_write_images(datadir, ExcelWriter, archive):
     archive.close()
 
     zipinfo = archive.infolist()
-    assert len(zipinfo) == 1
-    assert zipinfo[0].filename == 'xl/media/image1.png'
     assert 'xl/media/image1.png' in archive.namelist()
 
 
