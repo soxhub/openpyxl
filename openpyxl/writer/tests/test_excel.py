@@ -96,3 +96,14 @@ def test_write_images(datadir, ExcelWriter, archive):
     assert len(zipinfo) == 1
     assert zipinfo[0].filename == 'xl/media/image1.png'
     assert 'xl/media/image1.png' in archive.namelist()
+
+
+def test_chartsheet(ExcelWriter, archive):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+
+    writer = ExcelWriter(wb, archive)
+    writer._write_chartsheets()
+
+    assert cs.path in writer.manifest.filenames
+    assert cs.path[1:] in writer.archive.namelist()
