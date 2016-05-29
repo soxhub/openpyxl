@@ -1,9 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.utils import column_index_from_string
-from openpyxl.xml.constants import PACKAGE_IMAGES
-
 from .drawing import Drawing
 
 
@@ -55,8 +52,10 @@ class Image(object):
         self.drawing = Drawing()
         self.drawing.coordinates = coordinates
 
-        newsize = bounding_box(size[0], size[1],
-                               self.image.size[0], self.image.size[1])
+        newsize = bounding_box(
+            size[0], size[1],
+            self.image.size[0], self.image.size[1]
+        )
         size = newsize
         self.drawing.width = size[0]
         self.drawing.height = size[1]
@@ -71,7 +70,7 @@ class Image(object):
                     cell.parent.point_pos(self.drawing.top + self.drawing.height,
                                           self.drawing.left + self.drawing.width))
         elif anchortype == "oneCell":
-            self.drawing.anchorcol = column_index_from_string(cell.column) - 1
+            self.drawing.anchorcol = cell.col_idx - 1
             self.drawing.anchorrow = cell.row - 1
             return ((self.drawing.anchorcol, self.drawing.anchorrow), None)
         else:
