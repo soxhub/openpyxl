@@ -206,15 +206,12 @@ class ExcelWriter(object):
             self.archive.writestr(ws.path[1:], xml)
             self.manifest.append(ws)
 
-            if ws._charts or ws._images:
-                drawing = SpreadsheetDrawing()
-                drawing.charts = ws._charts
-                drawing.images = ws._images
-                self._write_drawing(drawing)
+            if ws._drawing:
+                self._write_drawing(ws._drawing)
 
                 for r in ws._rels.Relationship:
                     if "drawing" in r.Type:
-                        r.Target = drawing.path
+                        r.Target = ws._drawing.path
 
             if ws.legacy_drawing is not None:
                 shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
