@@ -163,23 +163,20 @@ class ExcelWriter(object):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
             sheet._id = idx
-            arc_path = sheet.path[1:]
-            rels_path = get_rels_path(arc_path)
             xml = tostring(sheet.to_tree())
 
-            self.archive.writestr(arc_path, xml)
+            self.archive.writestr(sheet.path[1:], xml)
             self.manifest.append(sheet)
 
-            if sheet._charts:
-                drawing = SpreadsheetDrawing()
-                drawing.charts = sheet._charts
-                self._write_drawing(drawing)
+            if sheet._drawing:
+                self._write_drawing(self._drawing)
 
-                rel = Relationship(type="drawing", Target=drawing.path)
+                rel = Relationship(type="drawing", Target=self._drawing.path)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
 
+                rels_path = get_rels_path(sheet.path[1:])
                 self.archive.writestr(rels_path, tostring(tree))
 
 
