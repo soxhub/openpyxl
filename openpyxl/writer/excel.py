@@ -195,6 +195,28 @@ class ExcelWriter(object):
             self.archive.writestr(vml_path[1:], vml)
 
 
+    def _write_comment(self, ws):
+
+        cs = CommentSheet.from_comments(ws._comments)
+        self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
+        self.manifest.append(cs)
+
+        if ws.legacy_drawing is None:
+            ws.legacy_drawing = 'xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+            vml = None
+        else:
+            vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
+
+        vml = cs.write_shapes(vml)
+        vml_path = cs.vml_path
+
+        self.archive.writestr(ws.legacy_drawing, vml)
+        self.vba_modified.add(ws.legacy_drawing)
+
+        comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
+        ws._rels.append(comment_rel)
+
+
     def _write_worksheets(self):
 
         for idx, ws in enumerate(self.workbook.worksheets, 1):
@@ -213,33 +235,27 @@ class ExcelWriter(object):
                     if "drawing" in r.Type:
                         r.Target = ws._drawing.path
 
-            if ws.legacy_drawing is not None:
-                shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
-                                         Target="/" + ws.legacy_drawing)
-                ws._rels.append(shape_rel)
-
             if ws._comments:
                 cs = CommentSheet.from_comments(ws._comments)
                 self._comments.append(cs)
 
                 cs._id = len(self._comments)
-                cs.vml_path = '/xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+                if ws.legacy_drawing is None:
+                    ws.legacy_drawing = 'xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+                else:
+                    vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
+                    cs.vml = vml
+
+                self.vba_modified.add(ws.legacy_drawing)
+                cs.vml_path = "/" + ws.legacy_drawing
 
                 comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
                 ws._rels.append(comment_rel)
 
-                if ws.legacy_drawing is not None:
-                    # File is used for comments and VBA controls
-                    # Make a note here that the file will be written when comments are
-                    # So that it doesn't get copied from the original archive
-                    self.vba_modified.add(ws.legacy_drawing)
-
-                    vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
-                    cs.vml = vml
-                    cs.vml_path = "/" + ws.legacy_drawing
-                else:
-                    shape_rel = Relationship(type="vmlDrawing", Id="anysvml", Target=cs.vml_path)
-                    ws._rels.append(shape_rel)
+            if ws.legacy_drawing is not None:
+                shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
+                                         Target="/" + ws.legacy_drawing)
+                ws._rels.append(shape_rel)
 
             for t in ws._tables:
                 self._tables.append(t)
