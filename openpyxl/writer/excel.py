@@ -30,8 +30,6 @@ from openpyxl.xml.functions import tostring, fromstring, Element
 from openpyxl.packaging.manifest import (
     write_content_types,
     Manifest,
-    FileExtension,
-    mimetypes
 )
 from openpyxl.packaging.relationship import (
     get_rels_path,
@@ -92,7 +90,6 @@ class ExcelWriter(object):
             archive.writestr(ARC_THEME, write_theme())
 
         self._write_worksheets()
-        self._write_comments()
         self._write_chartsheets()
         self._write_images()
         self._write_charts()
@@ -180,21 +177,6 @@ class ExcelWriter(object):
                 self.archive.writestr(rels_path, tostring(tree))
 
 
-    def _write_comments(self):
-        if self._comments:
-            ext = FileExtension("vml", mimetypes.types_map[".vml"])
-            self.manifest.Default.append(ext)
-
-        for cs in self._comments:
-
-            self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
-            self.manifest.append(cs)
-
-            vml = cs.write_shapes()
-            vml_path = cs.vml_path
-            self.archive.writestr(vml_path[1:], vml)
-
-
     def _write_comment(self, ws):
 
         cs = CommentSheet.from_comments(ws._comments)
@@ -237,21 +219,7 @@ class ExcelWriter(object):
                         r.Target = ws._drawing.path
 
             if ws._comments:
-                cs = CommentSheet.from_comments(ws._comments)
-                self._comments.append(cs)
-
-                cs._id = len(self._comments)
-                if ws.legacy_drawing is None:
-                    ws.legacy_drawing = 'xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
-                else:
-                    vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
-                    cs.vml = vml
-
-                self.vba_modified.add(ws.legacy_drawing)
-                cs.vml_path = "/" + ws.legacy_drawing
-
-                comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
-                ws._rels.append(comment_rel)
+                self._write_comment(ws)
 
             if ws.legacy_drawing is not None:
                 shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
