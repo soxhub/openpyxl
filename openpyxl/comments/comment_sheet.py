@@ -216,7 +216,7 @@ class CommentSheet(Serialisable):
         Create the VML for comments
         """
         sw = ShapeWriter(self.comments)
-        return sw.write(self.vml)
+        return sw.write(vml)
 
 
     @property

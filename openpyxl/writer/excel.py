@@ -208,7 +208,6 @@ class ExcelWriter(object):
             vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
 
         vml = cs.write_shapes(vml)
-        vml_path = cs.vml_path
 
         self.archive.writestr(ws.legacy_drawing, vml)
         self.vba_modified.add(ws.legacy_drawing)
