@@ -198,6 +198,8 @@ class ExcelWriter(object):
     def _write_comment(self, ws):
 
         cs = CommentSheet.from_comments(ws._comments)
+        self._comments.append(cs)
+        cs._id = len(self._comments)
         self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
         self.manifest.append(cs)
 
