@@ -105,3 +105,13 @@ def test_chartsheet(ExcelWriter, archive):
 
     assert cs.path in writer.manifest.filenames
     assert cs.path[1:] in writer.archive.namelist()
+
+
+def test_comment(ExcelWriter, archive):
+    from openpyxl.comments import Comment
+    wb = Workbook()
+    ws = wb.active
+    ws['B5'].comment = Comment("A comment", "The Author")
+
+    writer = ExcelWriter(None, archive)
+    writer._write_comment(ws)
