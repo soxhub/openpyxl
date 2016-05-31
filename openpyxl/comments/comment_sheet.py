@@ -168,8 +168,6 @@ class CommentSheet(Serialisable):
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
     _rel_type = "comments"
     _rel_id = None
-    vml = None
-    vml_path = None
 
     __elements__ = ('authors', 'commentList')
 
@@ -213,7 +211,7 @@ class CommentSheet(Serialisable):
         return cls(authors=AuthorList(authors), commentList=comments)
 
 
-    def write_shapes(self):
+    def write_shapes(self, vml=None):
         """
         Create the VML for comments
         """
