@@ -806,7 +806,11 @@ class Worksheet(_WorkbookChild):
 
 
     def _write(self):
+        from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
         from openpyxl.writer.worksheet import write_worksheet
+        self._drawing = SpreadsheetDrawing()
+        self._drawing.charts = self._charts
+        self._drawing.images = self._images
         return write_worksheet(self)
 
 

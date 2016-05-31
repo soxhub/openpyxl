@@ -93,6 +93,29 @@ def test_write_images(datadir, ExcelWriter, archive):
     archive.close()
 
     zipinfo = archive.infolist()
-    assert len(zipinfo) == 1
-    assert zipinfo[0].filename == 'xl/media/image1.png'
     assert 'xl/media/image1.png' in archive.namelist()
+
+
+def test_chartsheet(ExcelWriter, archive):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+
+    writer = ExcelWriter(wb, archive)
+    writer._write_chartsheets()
+
+    assert cs.path in writer.manifest.filenames
+    assert cs.path[1:] in writer.archive.namelist()
+
+
+def test_comment(ExcelWriter, archive):
+    from openpyxl.comments import Comment
+    wb = Workbook()
+    ws = wb.active
+    ws['B5'].comment = Comment("A comment", "The Author")
+
+    writer = ExcelWriter(None, archive)
+    writer._write_comment(ws)
+
+    assert archive.namelist() == ['xl/comments1.xml', 'xl/drawings/commentsDrawing1.vml']
+    assert '/xl/comments1.xml' in writer.manifest.filenames
+    assert ws.legacy_drawing == 'xl/drawings/commentsDrawing1.vml'

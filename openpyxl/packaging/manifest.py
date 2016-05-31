@@ -161,6 +161,12 @@ def write_content_types(workbook, as_template=False, exts=None, manifest=None):
     if manifest is None:
         manifest = Manifest()
 
+    for n in manifest.filenames:
+        if n.endswith('.vml'):
+            ext = FileExtension("vml", mimetypes.types_map[".vml"])
+            manifest.Default.append(ext)
+            break
+
     if workbook.vba_archive:
         node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
         manifest = Manifest.from_tree(node)
