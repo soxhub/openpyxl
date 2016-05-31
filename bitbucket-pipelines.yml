@@ -1,4 +1,4 @@
-image: numpy-pandas
+image: jjuanda:numpy-pandas
 
 pipelines:
   default:
