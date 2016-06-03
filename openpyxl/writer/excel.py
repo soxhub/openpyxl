@@ -91,7 +91,8 @@ class ExcelWriter(object):
         self._write_images()
         self._write_charts()
 
-        self._write_string_table()
+        self.archive.writestr(ARC_SHARED_STRINGS,
+                              write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
         stylesheet = write_stylesheet(self.workbook)
@@ -115,11 +116,6 @@ class ExcelWriter(object):
 
         manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
-
-
-    def _write_string_table(self):
-        self.archive.writestr(ARC_SHARED_STRINGS,
-                write_string_table(self.workbook.shared_strings))
 
 
     def _write_images(self):
