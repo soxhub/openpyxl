@@ -34,6 +34,7 @@ from openpyxl.xml.constants import (
     CHARTSHEET_TYPE,
     CONTYPES_NS
 )
+from openpyxl.xml.functions import tostring
 
 # initialise mime-types
 mimetypes.init()
@@ -89,6 +90,7 @@ class Manifest(Serialisable):
 
     Default = Sequence(expected_type=FileExtension, unique=True)
     Override = Sequence(expected_type=Override, unique=True)
+    path = "[Content_Types].xml"
 
     __elements__ = ("Default", "Override")
 
@@ -154,6 +156,12 @@ class Manifest(Serialisable):
         """
         ct = Override(PartName=obj.path, ContentType=obj.mime_type)
         self.Override.append(ct)
+
+    def _write(self, archive):
+        """
+        Write manifest to the archive
+        """
+        archive.writestr(self.path, tostring(self.to_tree()))
 
 
 def write_content_types(workbook, as_template=False, exts=None, manifest=None):

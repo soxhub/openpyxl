@@ -102,8 +102,7 @@ class ExcelWriter(object):
         manifest = write_content_types(self.workbook,
                                        as_template=self.as_template, exts=archive.namelist(),
                                        manifest=self.manifest)
-        # delegate to object
-        archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
+        manifest._write(archive)
 
 
     def _merge_vba(self):
