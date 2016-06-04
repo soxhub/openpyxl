@@ -51,10 +51,6 @@ from openpyxl.styles.stylesheet import write_stylesheet
 from openpyxl.comments.comment_sheet import CommentSheet
 
 
-ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
-           'xl/activeX', r'xl/media/.*\.emf')
-
-
 class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
 
@@ -101,13 +97,7 @@ class ExcelWriter(object):
         archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
         archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
 
-        if self.workbook.vba_archive:
-            vba_archive = self.workbook.vba_archive
-            for name in set(vba_archive.namelist()) - self.vba_modified:
-                for s in ARC_VBA:
-                    if re.match(s, name):
-                        archive.writestr(name, vba_archive.read(name))
-                        break
+        self._merge_vba()
 
         # pass namelist into function / method
         exts = []
@@ -118,6 +108,23 @@ class ExcelWriter(object):
         manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
         # delegate to object
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
+
+
+    def _merge_vba(self):
+        """
+        If workbook contains macros then extract associated files from cache
+        of old file and add to archive
+        """
+        ARC_VBA = re.compile("|".join(
+            ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml',
+             'xl/ctrlProps', 'customUI', 'xl/activeX', r'xl/media/.*\.emf')
+        )
+                             )
+
+        if self.workbook.vba_archive:
+            for name in set(self.workbook.vba_archive.namelist()) - self.vba_modified:
+                if ARC_VBA.match(name):
+                    self.archive.writestr(name, self.workbook.vba_archive.read(name))
 
 
     def _write_images(self):
