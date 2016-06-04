@@ -109,16 +109,19 @@ class ExcelWriter(object):
                         archive.writestr(name, vba_archive.read(name))
                         break
 
+        # pass namelist into function / method
         exts = []
         for n in archive.namelist():
             if "media" in n:
                 exts.append(n)
 
         manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
+        # delegate to object
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 
 
     def _write_images(self):
+        # delegate to object
         for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
@@ -126,6 +129,7 @@ class ExcelWriter(object):
 
 
     def _write_charts(self):
+        # delegate to object
         for chart in self._charts:
             self.archive.writestr(chart.path[1:], tostring(chart._write()))
             self.manifest.append(chart)
@@ -232,6 +236,7 @@ class ExcelWriter(object):
 
 
     def _write_external_links(self):
+        # delegate to object
         """Write links to external workbooks"""
         wb = self.workbook
         for idx, link in enumerate(wb._external_links, 1):
