@@ -99,13 +99,9 @@ class ExcelWriter(object):
 
         self._merge_vba()
 
-        # pass namelist into function / method
-        exts = []
-        for n in archive.namelist():
-            if "media" in n:
-                exts.append(n)
-
-        manifest = write_content_types(self.workbook, as_template=self.as_template, exts=exts, manifest=self.manifest)
+        manifest = write_content_types(self.workbook,
+                                       as_template=self.as_template, exts=archive.namelist(),
+                                       manifest=self.manifest)
         # delegate to object
         archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
 

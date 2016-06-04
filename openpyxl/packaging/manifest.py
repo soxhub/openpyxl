@@ -175,6 +175,8 @@ def write_content_types(workbook, as_template=False, exts=None, manifest=None):
     if exts is not None:
         for ext in exts:
             ext = os.path.splitext(ext)[-1]
+            if not ext:
+                continue
             mime = mimetypes.types_map[ext]
             fe = FileExtension(ext[1:], mime)
             manifest.Default.append(fe)
