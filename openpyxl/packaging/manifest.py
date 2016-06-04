@@ -157,53 +157,43 @@ class Manifest(Serialisable):
         ct = Override(PartName=obj.path, ContentType=obj.mime_type)
         self.Override.append(ct)
 
-    def _write(self, archive):
+    def _write(self, archive, workbook):
         """
         Write manifest to the archive
         """
         archive.writestr(self.path, tostring(self.to_tree()))
 
 
-def write_content_types(workbook, as_template=False, exts=None, manifest=None):
+    def _write_content_types(self, workbook, as_template=False, filenames=None):
 
-    if manifest is None:
-        manifest = Manifest()
+        for n in self.filenames:
+            if n.endswith('.vml'):
+                ext = FileExtension("vml", mimetypes.types_map[".vml"])
+                self.manifest.Default.append(ext)
+                break
 
-    for n in manifest.filenames:
-        if n.endswith('.vml'):
-            ext = FileExtension("vml", mimetypes.types_map[".vml"])
-            manifest.Default.append(ext)
-            break
+        if filenames is not None:
+            for fn in filenames:
+                ext = os.path.splitext(fn)[-1]
+                if not ext:
+                    continue
+                mime = mimetypes.types_map[ext]
+                fe = FileExtension(ext[1:], mime)
+                self.Defult.append(fe)
 
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
+        if workbook.vba_archive:
+            node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+            mf = Manifest.from_tree(node)
+            for override in DEFAULT_OVERRIDE:
+                if override.PartName not in mf.filenames:
+                    self.Override.append(override)
 
-    if exts is not None:
-        for ext in exts:
-            ext = os.path.splitext(ext)[-1]
-            if not ext:
-                continue
-            mime = mimetypes.types_map[ext]
-            fe = FileExtension(ext[1:], mime)
-            manifest.Default.append(fe)
+        # templates
+        for part in self.Override:
+            if part.PartName == "/workbook.xml":
+                ct = as_template and XLTX or XLSX
+                if workbook.vba_archive:
+                    ct = as_template and XLTM or XLSM
+                part.ContentType = ct
 
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
-        partnames = [t.PartName for t in manifest.Override]
-        for override in DEFAULT_OVERRIDE:
-            if override.PartName not in partnames:
-                manifest.Override.append(override)
-
-    # templates
-    for part in manifest.Override:
-        if part.PartName == "/" + ARC_WORKBOOK:
-            ct = as_template and XLTX or XLSX
-            if workbook.vba_archive:
-                ct = as_template and XLTM or XLSM
-            part.ContentType = ct
-
-    return manifest
+        return self

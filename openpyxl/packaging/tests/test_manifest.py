@@ -212,8 +212,9 @@ class TestContentTypes:
     def test_workbook(self):
         from openpyxl import Workbook
         wb = Workbook()
-        from ..manifest import write_content_types
-        manifest = write_content_types(wb)
+        from ..manifest import Manifest
+        manifest = Manifest()
+        manifest._write_content_types(wb)
         xml = tostring(manifest.to_tree())
         expected = """
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -239,10 +240,11 @@ class TestContentTypes:
 
     def test_vba(self, datadir):
         from openpyxl import load_workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
         datadir.chdir()
         wb = load_workbook('sample.xlsm', keep_vba=True)
-        manifest = write_content_types(wb)
+        manifest = Manifest()
+        manifest._write_content_types(wb)
         partnames = [t.PartName for t in manifest.Override]
         expected = [
             '/xl/workbook.xml',
@@ -268,7 +270,7 @@ class TestContentTypes:
                              )
     def test_templates(self, has_vba, as_template, content_type, Manifest, Override):
         from openpyxl import Workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
 
         wb = Workbook()
         if has_vba:
@@ -277,7 +279,9 @@ class TestContentTypes:
             m = Manifest(Override=parts)
             archive.writestr(ARC_CONTENT_TYPES, tostring(m.to_tree()))
             wb.vba_archive = archive
-        manifest = write_content_types(wb, as_template=as_template)
+
+        manifest = Manifest()
+        manifest._write_content_types(wb, as_template=as_template)
         xml = tostring(manifest.to_tree())
         root = fromstring(xml)
         node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
@@ -286,10 +290,11 @@ class TestContentTypes:
 
     def test_media(self):
         from openpyxl import Workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
         wb = Workbook()
 
-        manifest = write_content_types(wb, exts=['xl/media/image1.png'])
+        manifest = Manifest()
+        manifest._write_content_types(wb, exts=['xl/media/image1.png'])
         xml = tostring(manifest.Default[-1].to_tree())
         expected = """<Default ContentType="image/png" Extension="png" />"""
         diff = compare_xml(xml, expected)
