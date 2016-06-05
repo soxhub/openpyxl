@@ -34,6 +34,7 @@ from openpyxl.xml.constants import (
     CHARTSHEET_TYPE,
     CONTYPES_NS
 )
+from openpyxl.xml.functions import tostring
 
 # initialise mime-types
 mimetypes.init()
@@ -89,6 +90,7 @@ class Manifest(Serialisable):
 
     Default = Sequence(expected_type=FileExtension, unique=True)
     Override = Sequence(expected_type=Override, unique=True)
+    path = "[Content_Types].xml"
 
     __elements__ = ("Default", "Override")
 
@@ -156,44 +158,44 @@ class Manifest(Serialisable):
         self.Override.append(ct)
 
 
-def write_content_types(workbook, as_template=False, exts=None, manifest=None):
+    def _write(self, archive, workbook, as_template=False):
+        """
+        Write manifest to the archive
+        """
+        self._write_content_types(workbook, as_template=as_template, filenames=archive.namelist())
+        archive.writestr(self.path, tostring(self.to_tree()))
 
-    if manifest is None:
-        manifest = Manifest()
 
-    for n in manifest.filenames:
-        if n.endswith('.vml'):
-            ext = FileExtension("vml", mimetypes.types_map[".vml"])
-            manifest.Default.append(ext)
-            break
+    def _write_content_types(self, workbook, as_template=False, filenames=None):
 
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
+        for n in self.filenames:
+            if n.endswith('.vml'):
+                ext = FileExtension("vml", mimetypes.types_map[".vml"])
+                self.manifest.Default.append(ext)
+                break
 
-    if exts is not None:
-        for ext in exts:
-            ext = os.path.splitext(ext)[-1]
-            mime = mimetypes.types_map[ext]
-            fe = FileExtension(ext[1:], mime)
-            manifest.Default.append(fe)
+        if filenames is not None:
+            for fn in filenames:
+                ext = os.path.splitext(fn)[-1]
+                if not ext:
+                    continue
+                mime = mimetypes.types_map[ext]
+                fe = FileExtension(ext[1:], mime)
+                self.Default.append(fe)
 
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
-        partnames = [t.PartName for t in manifest.Override]
-        for override in DEFAULT_OVERRIDE:
-            if override.PartName not in partnames:
-                manifest.Override.append(override)
+        if workbook.vba_archive:
+            node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+            mf = Manifest.from_tree(node)
+            for override in mf.Override:
+                if override not in self.Override:
+                    self.Override.append(override)
 
-    # templates
-    for part in manifest.Override:
-        if part.PartName == "/" + ARC_WORKBOOK:
-            ct = as_template and XLTX or XLSX
-            if workbook.vba_archive:
-                ct = as_template and XLTM or XLSM
-            part.ContentType = ct
+        # templates
+        for part in self.Override:
+            if part.PartName == "/xl/workbook.xml":
+                ct = as_template and XLTX or XLSX
+                if workbook.vba_archive:
+                    ct = as_template and XLTM or XLSM
+                part.ContentType = ct
 
-    return manifest
+        return self

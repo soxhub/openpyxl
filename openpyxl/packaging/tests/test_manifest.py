@@ -212,8 +212,9 @@ class TestContentTypes:
     def test_workbook(self):
         from openpyxl import Workbook
         wb = Workbook()
-        from ..manifest import write_content_types
-        manifest = write_content_types(wb)
+        from ..manifest import Manifest
+        manifest = Manifest()
+        manifest._write_content_types(wb)
         xml = tostring(manifest.to_tree())
         expected = """
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -239,12 +240,13 @@ class TestContentTypes:
 
     def test_vba(self, datadir):
         from openpyxl import load_workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
         datadir.chdir()
         wb = load_workbook('sample.xlsm', keep_vba=True)
-        manifest = write_content_types(wb)
-        partnames = [t.PartName for t in manifest.Override]
-        expected = [
+        manifest = Manifest()
+        manifest._write_content_types(wb)
+        partnames = set([t.PartName for t in manifest.Override])
+        expected = set([
             '/xl/workbook.xml',
             '/xl/worksheets/sheet1.xml',
             '/xl/worksheets/sheet2.xml',
@@ -254,7 +256,7 @@ class TestContentTypes:
             '/docProps/core.xml',
             '/docProps/app.xml',
             '/xl/sharedStrings.xml'
-                    ]
+                    ])
         assert partnames == expected
 
     @pytest.mark.lxml_required # for XPATH lookup
@@ -268,28 +270,32 @@ class TestContentTypes:
                              )
     def test_templates(self, has_vba, as_template, content_type, Manifest, Override):
         from openpyxl import Workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
 
         wb = Workbook()
+        filenames = []
         if has_vba:
             archive = ZipFile(BytesIO(), "w")
             parts = [Override("/xl/workbook.xml", "")]
             m = Manifest(Override=parts)
             archive.writestr(ARC_CONTENT_TYPES, tostring(m.to_tree()))
             wb.vba_archive = archive
-        manifest = write_content_types(wb, as_template=as_template)
-        xml = tostring(manifest.to_tree())
-        root = fromstring(xml)
-        node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
-        assert node.get("ContentType") == content_type
+            filenames = archive.namelist()
+
+        manifest = Manifest()
+        manifest._write_content_types(wb, as_template=as_template, filenames=filenames)
+        for override in manifest:
+            if override.Partname == "/xl/workbook.xml":
+                assert override.ContentType == content_type
 
 
     def test_media(self):
         from openpyxl import Workbook
-        from ..manifest import write_content_types
+        from ..manifest import Manifest
         wb = Workbook()
 
-        manifest = write_content_types(wb, exts=['xl/media/image1.png'])
+        manifest = Manifest()
+        manifest._write_content_types(wb, filenames=['xl/media/image1.png'])
         xml = tostring(manifest.Default[-1].to_tree())
         expected = """<Default ContentType="image/png" Extension="png" />"""
         diff = compare_xml(xml, expected)
