@@ -123,6 +123,7 @@ def test_comment(ExcelWriter, archive):
 
 def test_merge_vba(ExcelWriter, archive, datadir):
     from openpyxl import load_workbook
+    datadir.chdir()
     wb = load_workbook("vba+comments.xlsm", keep_vba=True)
 
     writer = ExcelWriter(wb, archive)
