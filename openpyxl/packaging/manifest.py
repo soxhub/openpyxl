@@ -157,10 +157,12 @@ class Manifest(Serialisable):
         ct = Override(PartName=obj.path, ContentType=obj.mime_type)
         self.Override.append(ct)
 
-    def _write(self, archive, workbook):
+
+    def _write(self, archive, workbook, as_template=False):
         """
         Write manifest to the archive
         """
+        self._write_content_types(workbook, as_template=as_template, filenames=archive.namelist())
         archive.writestr(self.path, tostring(self.to_tree()))
 
 
@@ -179,18 +181,18 @@ class Manifest(Serialisable):
                     continue
                 mime = mimetypes.types_map[ext]
                 fe = FileExtension(ext[1:], mime)
-                self.Defult.append(fe)
+                self.Default.append(fe)
 
         if workbook.vba_archive:
             node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
             mf = Manifest.from_tree(node)
-            for override in DEFAULT_OVERRIDE:
-                if override.PartName not in mf.filenames:
+            for override in mf.Override:
+                if override not in self.Override:
                     self.Override.append(override)
 
         # templates
         for part in self.Override:
-            if part.PartName == "/workbook.xml":
+            if part.PartName == "/xl/workbook.xml":
                 ct = as_template and XLTX or XLSX
                 if workbook.vba_archive:
                     ct = as_template and XLTM or XLSM

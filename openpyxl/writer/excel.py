@@ -96,10 +96,7 @@ class ExcelWriter(object):
 
         self._merge_vba()
 
-        manifest._write_content_types(self.workbook,
-                                      as_template=self.as_template, exts=archive.namelist(), )
-        manifest._write(archive)
-
+        self.manifest._write(archive, self.workbook, as_template=self.as_template)
 
     def _merge_vba(self):
         """
