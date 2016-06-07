@@ -89,7 +89,7 @@ class TestCommentSheet:
         from ..comment_sheet import CommentSheet
         from ..author import AuthorList
         cs = CommentSheet(authors=AuthorList(), commentList=())
-        assert cs.path == '/xl/commentsNone.xml'
+        assert cs.path == '/xl/comments/commentNone.xml'
 
 
 def test_read_google_docs(datadir):
