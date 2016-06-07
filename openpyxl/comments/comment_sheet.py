@@ -164,8 +164,8 @@ class CommentSheet(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     _id = None
-    _path = "/comments{0}.xml"
-    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
+    _path = "/xl/comments/comment{0}.xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"
     _rel_type = "comments"
     _rel_id = None
 
@@ -224,4 +224,4 @@ class CommentSheet(Serialisable):
         """
         Return path within the archive
         """
-        return "/xl" + self._path.format(self._id)
+        return self._path.format(self._id)

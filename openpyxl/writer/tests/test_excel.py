@@ -116,8 +116,8 @@ def test_comment(ExcelWriter, archive):
     writer = ExcelWriter(None, archive)
     writer._write_comment(ws)
 
-    assert archive.namelist() == ['xl/comments1.xml', 'xl/drawings/commentsDrawing1.vml']
-    assert '/xl/comments1.xml' in writer.manifest.filenames
+    assert archive.namelist() == ['xl/comments/comment1.xml', 'xl/drawings/commentsDrawing1.vml']
+    assert '/xl/comments/comment1.xml' in writer.manifest.filenames
     assert ws.legacy_drawing == 'xl/drawings/commentsDrawing1.vml'
 
 

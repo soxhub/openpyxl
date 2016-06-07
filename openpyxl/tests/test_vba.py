@@ -16,7 +16,6 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS, CONTYPES_NS
 
 
-@pytest.mark.xfail
 def test_content_types(datadir):
     datadir.join('reader').chdir()
     fname = 'vba+comments.xlsm'
@@ -70,7 +69,21 @@ def test_save_with_saved_comments(datadir):
     wb = load_workbook(fname, keep_vba=True)
     buf = save_virtual_workbook(wb)
     files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
-    expected = set(zipfile.ZipFile(fname, 'r').namelist())
+    expected = set([
+        'xl/styles.xml',
+        'docProps/core.xml',
+        'xl/_rels/workbook.xml.rels',
+        'xl/drawings/vmlDrawing1.vml',
+        'xl/comments/comment1.xml',
+        'docProps/app.xml',
+        '[Content_Types].xml',
+        'xl/worksheets/sheet1.xml',
+        'xl/sharedStrings.xml',
+        'xl/worksheets/_rels/sheet1.xml.rels',
+        '_rels/.rels',
+        'xl/workbook.xml',
+        'xl/theme/theme1.xml'
+    ])
     assert files == expected
 
 def test_save_without_vba(datadir):
