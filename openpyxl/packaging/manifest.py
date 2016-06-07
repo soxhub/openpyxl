@@ -186,8 +186,9 @@ class Manifest(Serialisable):
         if workbook.vba_archive:
             node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
             mf = Manifest.from_tree(node)
+            filenames = self.filenames
             for override in mf.Override:
-                if override not in self.Override:
+                if override.PartName not in filenames:
                     self.Override.append(override)
 
         # templates

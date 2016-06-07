@@ -16,7 +16,6 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS, CONTYPES_NS
 
 
-@pytest.mark.xfail
 def test_content_types(datadir):
     datadir.join('reader').chdir()
     fname = 'vba+comments.xlsm'
