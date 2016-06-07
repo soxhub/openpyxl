@@ -165,7 +165,7 @@ class CommentSheet(Serialisable):
 
     _id = None
     _path = "/comments{0}.xml"
-    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comment+xml"
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"
     _rel_type = "comments"
     _rel_id = None
 
