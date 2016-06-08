@@ -43,6 +43,13 @@ class TestDataValidation:
             assert dv_dict['showInputMessage'] == '1'
 
 
+    def test_hide_drop_down(self, DataValidation):
+        dv = DataValidation()
+        assert not dv.hide_drop_down
+        dv.hide_drop_down = True
+        assert dv.showDropDown is True
+
+
     def test_writer_validation(self, DataValidation):
 
         class DummyCell:

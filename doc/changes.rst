@@ -2,6 +2,12 @@
 =====================
 
 
+Minor changes
+-------------
+
+* Add an the alias `hide_drop_down` to DataValidation for `showDropDown` because that is how Excel works.
+
+
 Bug fixes
 ---------
 
