@@ -251,7 +251,7 @@ class ExcelWriter(object):
         self.archive.close()
 
 
-def save_workbook(workbook, filename, as_template=False):
+def save_workbook(workbook, filename,):
     """Save the given workbook on the filesystem under the name filename.
 
     :param workbook: the workbook to save
@@ -265,18 +265,16 @@ def save_workbook(workbook, filename, as_template=False):
     """
     archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
     writer = ExcelWriter(workbook, archive)
-    writer.as_template = as_template
     writer.save(filename)
     return True
 
 
-def save_virtual_workbook(workbook, as_template=False):
+def save_virtual_workbook(workbook,):
     """Return an in-memory workbook, suitable for a Django response."""
     temp_buffer = BytesIO()
     archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED, allowZip64=True)
 
     writer = ExcelWriter(workbook, archive)
-    writer.as_template = as_template
 
     try:
         writer.write_data()
