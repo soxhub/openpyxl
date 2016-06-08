@@ -39,16 +39,12 @@ You can change this providing an RRGGBB color code to the sheet_properties.tabCo
 
     ws.sheet_properties.tabColor = "1072BA"
 
-Once you gave a worksheet a name, you can get it as a key of the workbook or
-using the :func:`openpyxl.workbook.Workbook.get_sheet_by_name` method ::
+Once you gave a worksheet a name, you can get it as a key of the workbook::
 
     >>> ws3 = wb["New Title"]
-    >>> ws4 = wb.get_sheet_by_name("New Title")
-    >>> ws is ws3 is ws4
-    True
 
 You can review the names of all worksheets of the workbook with the
-:func:`openpyxl.workbook.Workbook.get_sheet_names` method ::
+:func:`openpyxl.workbook.Workbook.sheetnames` property ::
 
     >>> print(wb.sheetnames)
     ['Sheet2', 'New Title', 'Sheet1']
@@ -251,13 +247,13 @@ The simplest and safest way to save a workbook is by using the
     with .zip and open it with your favourite ZIP archive manager.
 
 You can specify the attribute `template=True`, to save a workbook
-as a template
+as a template::
 
     >>> wb = load_workbook('document.xlsx')
     >>> wb.template = True
     >>> wb.save('document_template.xltx')
 
-or set this attribute to `False` (default), to save as a document
+or set this attribute to `False` (default), to save as a document::
 
     >>> wb = load_workbook('document_template.xltx')
     >>> wb.template = False
@@ -271,7 +267,7 @@ or set this attribute to `False` (default), to save as a document
 
 .. note::
 
-    The following will fail:
+    The following will fail::
 
     >>> wb = load_workbook('document.xlsx')
     >>> # Need to save with the extension *.xlsx

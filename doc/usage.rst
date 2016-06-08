@@ -32,33 +32,6 @@ AA
 >>> wb.save(filename = dest_filename)
 
 
-Write a workbook from \*.xltx as \*.xlsx
-----------------------------------------
-
->>> from openpyxl import load_workbook
->>>
->>>
->>> wb = load_workbook('sample_book.xltx')
->>> wb.template = False
->>> ws = wb.active
->>> ws['D2'] = 42
->>>
->>> wb.save('sample_book.xlsx')
-
-
-Write a workbook from \*.xltm as \*.xlsm
-----------------------------------------
-
->>> from openpyxl import load_workbook
->>>
->>>
->>> wb = load_workbook('sample_book.xltm', keep_vba=True)
->>> wb.template = False
->>> ws = wb.active
->>> ws['D2'] = 42
->>>
->>> wb.save('sample_book.xlsm')
-
 Read an existing workbook
 -------------------------
 .. :: doctest
