@@ -214,7 +214,23 @@ class TestManifest:
         assert "/xl/workbook.xml" in mf.filenames
 
 
-class TestContentTypes:
+    @pytest.mark.parametrize("file, registration",
+                             [
+                                ('xl/media/image1.png',
+                                 '<Default ContentType="image/png" Extension="png" />'),
+                                ('xl/drawings/commentsDrawing.vml',
+                                 '<Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml" />'),
+                             ]
+                             )
+    def test_media(self, Manifest, file, registration):
+        from openpyxl import Workbook
+        wb = Workbook()
+
+        manifest = Manifest()
+        manifest._register_mimetypes([file])
+        xml = tostring(manifest.Default[-1].to_tree())
+        diff = compare_xml(xml, registration)
+        assert diff is None, diff
 
 
     def test_vba(self, datadir, Manifest):
@@ -223,7 +239,7 @@ class TestContentTypes:
         wb = load_workbook('sample.xlsm', keep_vba=True)
 
         manifest = Manifest()
-        manifest._write_content_types(wb)
+        manifest._write_vba(wb)
         partnames = set([t.PartName for t in manifest.Override])
         expected = set([
             '/xl/workbook.xml',
@@ -239,13 +255,3 @@ class TestContentTypes:
         assert partnames == expected
 
 
-    def test_media(self, Manifest):
-        from openpyxl import Workbook
-        wb = Workbook()
-
-        manifest = Manifest()
-        manifest._write_content_types(wb, filenames=['xl/media/image1.png'])
-        xml = tostring(manifest.Default[-1].to_tree())
-        expected = """<Default ContentType="image/png" Extension="png" />"""
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff

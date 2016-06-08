@@ -162,31 +162,28 @@ class Manifest(Serialisable):
         Write manifest to the archive
         """
         self.append(workbook)
-        self._write_content_types(workbook, filenames=archive.namelist())
+        self._write_vba(workbook)
+        self._register_mimetypes(filenames=archive.namelist())
         archive.writestr(self.path, tostring(self.to_tree()))
 
 
-    def _write_content_types(self, workbook, filenames=None):
+    def _register_mimetypes(self, filenames):
         """
-        Add content types to manifest if required
+        Make sure that the mime type for all file extensions is registered
         """
+        for fn in filenames:
+            ext = os.path.splitext(fn)[-1]
+            if not ext:
+                continue
+            mime = mimetypes.types_map[ext]
+            fe = FileExtension(ext[1:], mime)
+            self.Default.append(fe)
 
-        for n in self.filenames:
-            if n.endswith('.vml'):
-                ext = FileExtension("vml", mimetypes.types_map[".vml"])
-                self.manifest.Default.append(ext)
-                break
 
-        # Media files do not appear in the manifest but their types must be registered
-        if filenames is not None:
-            for fn in filenames:
-                ext = os.path.splitext(fn)[-1]
-                if not ext:
-                    continue
-                mime = mimetypes.types_map[ext]
-                fe = FileExtension(ext[1:], mime)
-                self.Default.append(fe)
-
+    def _write_vba(self, workbook):
+        """
+        Add content types from cached workbook when keeping VBA
+        """
         if workbook.vba_archive:
             node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
             mf = Manifest.from_tree(node)
@@ -194,5 +191,3 @@ class Manifest(Serialisable):
             for override in mf.Override:
                 if override.PartName not in filenames:
                     self.Override.append(override)
-
-        return self
