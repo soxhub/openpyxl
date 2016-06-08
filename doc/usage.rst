@@ -34,37 +34,30 @@ AA
 
 Write a workbook from \*.xltx as \*.xlsx
 ----------------------------------------
-.. ::doctest
 
 >>> from openpyxl import load_workbook
 >>>
 >>>
->>> wb = load_workbook('sample_book.xltx') #doctest: +SKIP
->>> ws = wb.active #doctest: +SKIP
->>> ws['D2'] = 42 #doctest: +SKIP
+>>> wb = load_workbook('sample_book.xltx')
+>>> wb.template = False
+>>> ws = wb.active
+>>> ws['D2'] = 42
 >>>
->>> wb.save('sample_book.xlsx') #doctest: +SKIP
->>>
->>> # or you can overwrite the current document template
->>> # wb.save('sample_book.xltx')
+>>> wb.save('sample_book.xlsx')
 
 
 Write a workbook from \*.xltm as \*.xlsm
 ----------------------------------------
-.. ::doctest
 
 >>> from openpyxl import load_workbook
 >>>
 >>>
->>> wb = load_workbook('sample_book.xltm', keep_vba=True) #doctest: +SKIP
->>> ws = wb.active #doctest: +SKIP
->>> ws['D2'] = 42 #doctest: +SKIP
+>>> wb = load_workbook('sample_book.xltm', keep_vba=True)
+>>> wb.template = False
+>>> ws = wb.active
+>>> ws['D2'] = 42
 >>>
->>> wb.save('sample_book.xlsm') #doctest: +SKIP
->>>
->>> # or you can overwrite the current document template
->>> # wb.save('sample_book.xltm')
-
+>>> wb.save('sample_book.xlsm')
 
 Read an existing workbook
 -------------------------
