@@ -253,5 +253,3 @@ class TestManifest:
             '/xl/sharedStrings.xml'
                     ])
         assert partnames == expected
-
-
