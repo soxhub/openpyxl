@@ -79,16 +79,16 @@ class DataValidation(Serialisable):
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
+    hide_drop_down = Alias('showDropDown')
     showInputMessage = Bool()
     showErrorMessage = Bool()
     allowBlank = Bool()
-    allow_blank = Bool()
+    allow_blank = Alias('allowBlank')
 
     errorTitle = String(allow_none = True)
     error = String(allow_none = True)
     promptTitle = String(allow_none = True)
     prompt = String(allow_none = True)
-    sqref = String(allow_none = True)
     formula1 = NestedText(allow_none=True, expected_type=unicode)
     formula2 = NestedText(allow_none=True, expected_type=unicode)
 
@@ -126,9 +126,9 @@ class DataValidation(Serialisable):
         self.operator = operator
         self.formula1 = formula1
         self.formula2 = formula2
-        self.allowBlank = allow_blank
-        if allowBlank is not None:
-            self.allowBlank = allowBlank
+        if allow_blank is not None:
+            allowBlank = allow_blank
+        self.allowBlank = allowBlank
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
         self.type = type
@@ -141,9 +141,7 @@ class DataValidation(Serialisable):
         self.error = error
         self.prompt = prompt
         self.errorTitle = errorTitle
-        self.__attrs__ = ('type', 'allowBlank', 'operator', 'sqref',
-                          'showInputMessage', 'showErrorMessage', 'errorTitle', 'error',
-                          'errorStyle', 'promptTitle', 'prompt')
+        self.__attrs__ = DataValidation.__attrs__ + ('sqref',)
 
 
     def add(self, cell):
