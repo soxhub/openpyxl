@@ -293,8 +293,6 @@ class Workbook(object):
         not and whether it contains macros or not. Excel requires the file
         extension to match but openpyxl does not enforce this.
 
-        By default no workbooks are templates, even if the existing file is
-        one.
         """
         ct = self.template and XLTX or XLSX
         if self.vba_archive:
