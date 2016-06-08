@@ -75,7 +75,6 @@ DEFAULT_TYPES = [
 ]
 
 DEFAULT_OVERRIDE = [
-    Override("/" + ARC_WORKBOOK, XLSX), # Workbook
     Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
     Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
     Override("/" + ARC_THEME, THEME_TYPE), # Theme
@@ -158,31 +157,33 @@ class Manifest(Serialisable):
         self.Override.append(ct)
 
 
-    def _write(self, archive, workbook, as_template=False):
+    def _write(self, archive, workbook):
         """
         Write manifest to the archive
         """
-        self._write_content_types(workbook, as_template=as_template, filenames=archive.namelist())
+        self.append(workbook)
+        self._write_vba(workbook)
+        self._register_mimetypes(filenames=archive.namelist())
         archive.writestr(self.path, tostring(self.to_tree()))
 
 
-    def _write_content_types(self, workbook, as_template=False, filenames=None):
+    def _register_mimetypes(self, filenames):
+        """
+        Make sure that the mime type for all file extensions is registered
+        """
+        for fn in filenames:
+            ext = os.path.splitext(fn)[-1]
+            if not ext:
+                continue
+            mime = mimetypes.types_map[ext]
+            fe = FileExtension(ext[1:], mime)
+            self.Default.append(fe)
 
-        for n in self.filenames:
-            if n.endswith('.vml'):
-                ext = FileExtension("vml", mimetypes.types_map[".vml"])
-                self.manifest.Default.append(ext)
-                break
 
-        if filenames is not None:
-            for fn in filenames:
-                ext = os.path.splitext(fn)[-1]
-                if not ext:
-                    continue
-                mime = mimetypes.types_map[ext]
-                fe = FileExtension(ext[1:], mime)
-                self.Default.append(fe)
-
+    def _write_vba(self, workbook):
+        """
+        Add content types from cached workbook when keeping VBA
+        """
         if workbook.vba_archive:
             node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
             mf = Manifest.from_tree(node)
@@ -190,13 +191,3 @@ class Manifest(Serialisable):
             for override in mf.Override:
                 if override.PartName not in filenames:
                     self.Override.append(override)
-
-        # templates
-        for part in self.Override:
-            if part.PartName == "/xl/workbook.xml":
-                ct = as_template and XLTX or XLSX
-                if workbook.vba_archive:
-                    ct = as_template and XLTM or XLSM
-                part.ContentType = ct
-
-        return self

@@ -30,7 +30,7 @@ def test_workbook_is_template(datadir, tmpl, is_template):
     datadir.chdir()
 
     wb = load_workbook(tmpl)
-    assert wb.is_template is is_template
+    assert wb.template is is_template
 
 
 @pytest.mark.parametrize('tmpl, wb_type', [
@@ -54,9 +54,10 @@ def test_xl_content_type(datadir, tmpl, wb_type):
 def test_save_xl_as_no_template(datadir, tmpl, keep_vba, wb_type):
     datadir.chdir()
 
-    wb = save_virtual_workbook(load_workbook(tmpl, keep_vba=keep_vba),
-                               as_template=False)
-    check_content_type(wb_type, ZipFile(BytesIO(wb)))
+    wb = load_workbook(tmpl, keep_vba=keep_vba)
+    wb.template = False
+    archive = save_virtual_workbook(wb)
+    check_content_type(wb_type, ZipFile(BytesIO(archive)))
 
 
 @pytest.mark.parametrize('tmpl, keep_vba, wb_type', [
@@ -68,6 +69,7 @@ def test_save_xl_as_no_template(datadir, tmpl, keep_vba, wb_type):
 def test_save_xl_as_template(datadir, tmpl, keep_vba, wb_type):
     datadir.chdir()
 
-    wb = save_virtual_workbook(load_workbook(tmpl, keep_vba=keep_vba),
-                               as_template=True)
-    check_content_type(wb_type, ZipFile(BytesIO(wb)))
+    wb = load_workbook(tmpl, keep_vba=keep_vba)
+    wb.template = True
+    archive = save_virtual_workbook(wb)
+    check_content_type(wb_type, ZipFile(BytesIO(archive)))

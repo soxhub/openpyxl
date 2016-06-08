@@ -61,7 +61,6 @@ class ExcelWriter(object):
         self._images = []
         self._drawings = []
         self._comments = []
-        self.as_template = False
 
 
     def write_data(self):
@@ -96,7 +95,7 @@ class ExcelWriter(object):
 
         self._merge_vba()
 
-        self.manifest._write(archive, self.workbook, as_template=self.as_template)
+        self.manifest._write(archive, self.workbook)
 
     def _merge_vba(self):
         """
@@ -252,7 +251,7 @@ class ExcelWriter(object):
         self.archive.close()
 
 
-def save_workbook(workbook, filename, as_template=False):
+def save_workbook(workbook, filename,):
     """Save the given workbook on the filesystem under the name filename.
 
     :param workbook: the workbook to save
@@ -266,18 +265,16 @@ def save_workbook(workbook, filename, as_template=False):
     """
     archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
     writer = ExcelWriter(workbook, archive)
-    writer.as_template = as_template
     writer.save(filename)
     return True
 
 
-def save_virtual_workbook(workbook, as_template=False):
+def save_virtual_workbook(workbook,):
     """Return an in-memory workbook, suitable for a Django response."""
     temp_buffer = BytesIO()
     archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED, allowZip64=True)
 
     writer = ExcelWriter(workbook, archive)
-    writer.as_template = as_template
 
     try:
         writer.write_data()

@@ -181,7 +181,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     src = archive.read(ARC_CONTENT_TYPES)
     root = fromstring(src)
     package = Manifest.from_tree(root)
-    wb.is_template = XLTX in package or XLTM in package
+    wb.template = XLTX in package or XLTM in package
 
     shared_strings = []
     ct = package.find(SHARED_STRINGS)
