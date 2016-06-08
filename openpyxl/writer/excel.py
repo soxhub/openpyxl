@@ -61,7 +61,6 @@ class ExcelWriter(object):
         self._images = []
         self._drawings = []
         self._comments = []
-        self.as_template = False
 
 
     def write_data(self):
@@ -96,7 +95,7 @@ class ExcelWriter(object):
 
         self._merge_vba()
 
-        self.manifest._write(archive, self.workbook, as_template=self.as_template)
+        self.manifest._write(archive, self.workbook)
 
     def _merge_vba(self):
         """
