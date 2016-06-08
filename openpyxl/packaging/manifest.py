@@ -75,7 +75,6 @@ DEFAULT_TYPES = [
 ]
 
 DEFAULT_OVERRIDE = [
-    Override("/" + ARC_WORKBOOK, XLSX), # Workbook
     Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
     Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
     Override("/" + ARC_THEME, THEME_TYPE), # Theme
@@ -158,15 +157,19 @@ class Manifest(Serialisable):
         self.Override.append(ct)
 
 
-    def _write(self, archive, workbook, as_template=False):
+    def _write(self, archive, workbook):
         """
         Write manifest to the archive
         """
-        self._write_content_types(workbook, as_template=as_template, filenames=archive.namelist())
+        self.append(workbook)
+        self._write_content_types(workbook, filenames=archive.namelist())
         archive.writestr(self.path, tostring(self.to_tree()))
 
 
-    def _write_content_types(self, workbook, as_template=False, filenames=None):
+    def _write_content_types(self, workbook, filenames=None):
+        """
+        Add content types to manifest if required
+        """
 
         for n in self.filenames:
             if n.endswith('.vml'):
@@ -174,6 +177,7 @@ class Manifest(Serialisable):
                 self.manifest.Default.append(ext)
                 break
 
+        # Media files do not appear in the manifest but their types must be registered
         if filenames is not None:
             for fn in filenames:
                 ext = os.path.splitext(fn)[-1]
@@ -190,13 +194,5 @@ class Manifest(Serialisable):
             for override in mf.Override:
                 if override.PartName not in filenames:
                     self.Override.append(override)
-
-        # templates
-        for part in self.Override:
-            if part.PartName == "/xl/workbook.xml":
-                ct = as_template and XLTX or XLSX
-                if workbook.vba_archive:
-                    ct = as_template and XLTM or XLSM
-                part.ContentType = ct
 
         return self

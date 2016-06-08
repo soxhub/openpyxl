@@ -98,8 +98,6 @@ class TestManifest:
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="/xl/workbook.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
             PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
@@ -183,10 +181,10 @@ class TestManifest:
 
     def test_no_dupe_overrides(self, Manifest):
         manifest = Manifest()
+        assert len(manifest.Override) == 5
+        manifest.Override.append("a")
+        manifest.Override.append("a")
         assert len(manifest.Override) == 6
-        manifest.Override.append("a")
-        manifest.Override.append("a")
-        assert len(manifest.Override) == 7
 
 
     def test_no_dupe_types(self, Manifest):
@@ -203,46 +201,27 @@ class TestManifest:
         ws = wb.active
         manifest = Manifest()
         manifest.append(ws)
-        assert len(manifest.Override) == 7
+        assert len(manifest.Override) == 6
+
+
+    def test_write(self, Manifest):
+        mf = Manifest()
+        from openpyxl import Workbook
+        wb = Workbook()
+
+        archive = ZipFile(BytesIO(), "w")
+        mf._write(archive, wb)
+        assert "/xl/workbook.xml" in mf.filenames
 
 
 class TestContentTypes:
 
 
-    def test_workbook(self):
-        from openpyxl import Workbook
-        wb = Workbook()
-        from ..manifest import Manifest
-        manifest = Manifest()
-        manifest._write_content_types(wb)
-        xml = tostring(manifest.to_tree())
-        expected = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
-          <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="/xl/workbook.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="/xl/sharedStrings.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="/xl/styles.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="/xl/theme/theme1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
-            PartName="/docProps/core.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
-            PartName="/docProps/app.xml"/>
-        </Types>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_vba(self, datadir):
-        from openpyxl import load_workbook
-        from ..manifest import Manifest
+    def test_vba(self, datadir, Manifest):
         datadir.chdir()
+        from openpyxl import load_workbook
         wb = load_workbook('sample.xlsm', keep_vba=True)
+
         manifest = Manifest()
         manifest._write_content_types(wb)
         partnames = set([t.PartName for t in manifest.Override])
@@ -259,39 +238,9 @@ class TestContentTypes:
                     ])
         assert partnames == expected
 
-    @pytest.mark.lxml_required # for XPATH lookup
-    @pytest.mark.parametrize("has_vba, as_template, content_type",
-                             [
-                                 (None, False, XLSX),
-                                 (None, True, XLTX),
-                                 (True, False, XLSM),
-                                 (True, True, XLTM)
-                             ]
-                             )
-    def test_templates(self, has_vba, as_template, content_type, Manifest, Override):
+
+    def test_media(self, Manifest):
         from openpyxl import Workbook
-        from ..manifest import Manifest
-
-        wb = Workbook()
-        filenames = []
-        if has_vba:
-            archive = ZipFile(BytesIO(), "w")
-            parts = [Override("/xl/workbook.xml", "")]
-            m = Manifest(Override=parts)
-            archive.writestr(ARC_CONTENT_TYPES, tostring(m.to_tree()))
-            wb.vba_archive = archive
-            filenames = archive.namelist()
-
-        manifest = Manifest()
-        manifest._write_content_types(wb, as_template=as_template, filenames=filenames)
-        for override in manifest:
-            if override.Partname == "/xl/workbook.xml":
-                assert override.ContentType == content_type
-
-
-    def test_media(self):
-        from openpyxl import Workbook
-        from ..manifest import Manifest
         wb = Workbook()
 
         manifest = Manifest()
