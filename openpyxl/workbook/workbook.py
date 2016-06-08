@@ -26,12 +26,21 @@ from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.relationship import RelationshipList
 from .protection import DocumentSecurity
 
+from openpyxl.xml.constants import (
+    XLSM,
+    XLSX,
+    XLTM,
+    XLTX
+)
+
 
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
 
     _read_only = False
     _data_only = False
+    template = False
+    path = "/xl/workbook.xml"
 
     def __init__(self,
                  write_only=False,
@@ -275,6 +284,22 @@ class Workbook(object):
     def remove_named_range(self, named_range):
         """Remove a named_range from this workbook."""
         del self.defined_names[named_range]
+
+
+    @property
+    def mime_type(self):
+        """
+        The mime type is determined by whether a workbook is a template or
+        not and whether it contains macros or not. Excel requires the file
+        extension to match but openpyxl does not enforce this.
+
+        By default no workbooks are templates, even if the existing file is
+        one.
+        """
+        ct = self.template and XLTX or XLSX
+        if self.vba_archive:
+            ct = self.template and XLTM or XLSM
+        return ct
 
 
     def save(self, filename):
