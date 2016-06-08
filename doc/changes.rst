@@ -15,7 +15,7 @@ Minor changes
 * Remove deprecated methods from Worksheet
 
 
-2.4.0-b1 (unreleased)
+2.4.0-b1 (2016-06-08)
 =====================
 
 
