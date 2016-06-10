@@ -1,4 +1,4 @@
-image: jjuanda/numpy-pandas
+image: openpyxl/openpyxl-ci
 
 pipelines:
   default:

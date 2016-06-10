@@ -157,9 +157,9 @@ class ExcelWriter(object):
             self.manifest.append(sheet)
 
             if sheet._drawing:
-                self._write_drawing(self._drawing)
+                self._write_drawing(sheet._drawing)
 
-                rel = Relationship(type="drawing", Target=self._drawing.path)
+                rel = Relationship(type="drawing", Target=sheet._drawing.path)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
