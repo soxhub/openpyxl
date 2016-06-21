@@ -102,7 +102,7 @@ class _HeaderFooterPart(Strict):
         """
         fmt = []
         if self.font:
-            fmt.append('&"{0}"'.format(self.font))
+            fmt.append(u'&"{0}"'.format(self.font))
         if self.size:
             fmt.append("&{0}".format(self.size))
         if self.color:
@@ -179,7 +179,7 @@ class HeaderFooterItem(Strict):
         for key, part in zip(
             self.__keys, [self.left, self.center, self.right]):
             if part.text is not None:
-                txt.append("&{0}{1}".format(key, str(part)))
+                txt.append(u"&{0}{1}".format(key, str(part)))
         txt = "".join(txt)
         txt = SUBS_REGEX.sub(replace, txt)
         return escape(txt)
