@@ -16,6 +16,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.serialisable import Serialisable
 
+from openpyxl.compat import unicode
 from openpyxl.xml.functions import Element
 from openpyxl.utils.escape import escape, unescape
 
@@ -109,7 +110,6 @@ class _HeaderFooterPart(Strict):
             fmt.append("&K{0}".format(self.color))
         return u"".join(fmt + [self.text])
 
-
     def __bool__(self):
         return bool(self.text)
 
@@ -179,7 +179,7 @@ class HeaderFooterItem(Strict):
         for key, part in zip(
             self.__keys, [self.left, self.center, self.right]):
             if part.text is not None:
-                txt.append(u"&{0}{1}".format(key, str(part)))
+                txt.append(u"&{0}{1}".format(key, unicode(part)))
         txt = "".join(txt)
         txt = SUBS_REGEX.sub(replace, txt)
         return escape(txt)
@@ -196,7 +196,7 @@ class HeaderFooterItem(Strict):
         Return as XML node
         """
         el = Element(tagname)
-        el.text = str(self)
+        el.text = unicode(self)
         return el
 
 
