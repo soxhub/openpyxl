@@ -55,6 +55,30 @@ class NumberFormatDescriptor(object):
         return coll[idx - 164]
 
 
+class NamedStyleDescriptor(object):
+
+    key = "xfId"
+    collection = "_named_styles"
+
+
+    def __set__(self, instance, value):
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
+        coll = getattr(instance.parent.parent, self.collection).names
+        if value not in coll:
+            raise ValueError("{0} is not a known style")
+        idx = coll.index(value)
+        setattr(instance._style, self.key, idx)
+
+
+    def __get__(self, instance, cls):
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
+        idx = getattr(instance._style, self.key)
+        coll = getattr(instance.parent.parent, self.collection)
+        return coll.names[idx]
+
+
 class StyleableObject(object):
     """
     Base class for styleble objects implementing proxy and lookup functions
@@ -66,6 +90,7 @@ class StyleableObject(object):
     number_format = NumberFormatDescriptor()
     protection = StyleDescriptor('_protections', "protectionId")
     alignment = StyleDescriptor('_alignments', "alignmentId")
+    style = NamedStyleDescriptor()
 
     __slots__ = ('parent', '_style')
 
