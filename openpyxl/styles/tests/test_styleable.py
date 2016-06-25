@@ -17,7 +17,7 @@ from ..named_styles import (
 )
 
 
-def test_descriptor():
+def test_descriptor(Worksheet):
     from ..styleable import StyleDescriptor
     from ..cell_style import StyleArray
     from ..fonts import Font
@@ -28,37 +28,49 @@ def test_descriptor():
 
         def __init__(self):
             self._style = StyleArray()
-            self.parent = DummyWorksheet()
+            self.parent = Worksheet
 
     styled = Styled()
     styled.font = Font()
     assert styled.font == Font()
 
 
-class DummyWorkbook:
+@pytest.fixture
+def Workbook():
 
-    _fonts = IndexedList()
-    _fills = IndexedList()
-    _borders = IndexedList()
-    _protections = IndexedList()
-    _alignments = IndexedList()
-    _number_formats = IndexedList()
-    _named_styles = NamedStyles()
+    class DummyWorkbook:
 
+        _fonts = IndexedList()
+        _fills = IndexedList()
+        _borders = IndexedList()
+        _protections = IndexedList()
+        _alignments = IndexedList()
+        _number_formats = IndexedList()
+        _named_styles = NamedStyles()
 
-class DummyWorksheet:
-
-    parent = DummyWorkbook()
+    return DummyWorkbook()
 
 
 @pytest.fixture
-def StyleableObject():
+def Worksheet(Workbook):
+
+    class DummyWorksheet:
+
+        parent = Workbook
+
+    return DummyWorksheet()
+
+
+@pytest.fixture
+def StyleableObject(Worksheet):
     from .. styleable import StyleableObject
-    return StyleableObject
+    so = StyleableObject(sheet=Worksheet, style_array=list(range(9)))
+    return so
 
 
 def test_has_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
+    so = StyleableObject
+    so._style = None
     assert not so.has_style
     so.number_format= 'dd'
     assert so.has_style
@@ -67,28 +79,27 @@ def test_has_style(StyleableObject):
 class TestNamedStyle:
 
     def test_assign(self, StyleableObject):
-        ws = DummyWorksheet()
-        wb = ws.parent
+        so = StyleableObject
+        wb = so.parent.parent
         style = NamedStyle(name='Standard')
         wb._named_styles.append(style)
 
-        so = StyleableObject(sheet=ws)
         so.style = 'Standard'
-
+        assert so._style.xfId == 0
 
     def test_unknown_style(self, StyleableObject):
-        so = StyleableObject(sheet=DummyWorksheet())
+        so = StyleableObject
+
         with pytest.raises(ValueError):
             so.style = "Financial"
 
 
     def test_read(self, StyleableObject):
-        ws = DummyWorksheet()
-        wb = ws.parent
+        so = StyleableObject
+        wb = so.parent.parent
 
         style = NamedStyle(name='Red')
         wb._named_styles.append(style)
 
-        so = StyleableObject(sheet=ws, style_array=list(range(9)))
-        so._style.xfId = 1
+        so._style.xfId = 0
         assert so.style == "Red"
