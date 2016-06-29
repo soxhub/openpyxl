@@ -1,3 +1,14 @@
+2.4.0 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#642 <https://bitbucket.org/openpyxl/openpyxl/issues/642>`_ Cannot handle unicode in headers and footers in Python 2
+* `#646 <https://bitbucket.org/openpyxl/openpyxl/issues/646>`_ Cannot handle unicode sheetnames in Python 2
+
+
 2.4.0-b1 (2016-06-08)
 =====================
 
