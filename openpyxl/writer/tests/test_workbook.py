@@ -197,3 +197,29 @@ def test_print_area(Unicode_Workbook):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_print_titles(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    ws.print_title_rows = '1:5'
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+      <definedName localSheetId="0" name="_xlnm.Print_Titles">D&#xFC;sseldorf!1:5</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
