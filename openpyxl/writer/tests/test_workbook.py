@@ -165,10 +165,17 @@ def test_write_root_rels():
     assert diff is None, diff
 
 
-def test_print_area():
+@pytest.fixture
+def Unicode_Workbook():
     wb = Workbook()
     ws = wb.active
     ws.title = u"D\xfcsseldorf"
+    return wb
+
+
+def test_print_area(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
     ws.print_area = 'A1:D4'
     xml = write_workbook(wb)
 
