@@ -56,7 +56,9 @@ def _unpack_print_area(defn):
     new = []
     for r in ranges:
         m = SHEETRANGE_RE.match(r)
-        new.append(m.group('cells'))
+        coord = m.group("cells")
+        if coord:
+            new.append(coord)
     return new
 
 

@@ -113,9 +113,14 @@ def test_invalid_range():
         range_to_tuple("A1:E5")
 
 
-def test_quote_sheetname():
+@pytest.mark.parametrize("title",
+                         [
+                             u'In D\xfcsseldorf',
+                             u'My-Sheet'
+                         ]
+                         )
+def test_quote_sheetname(title):
     from .. import quote_sheetname
-    title = b'In D\xc3\xbcsseldorf'.decode("utf-8")
     assert quote_sheetname(title) == u"'{0}'".format(title)
 
 
