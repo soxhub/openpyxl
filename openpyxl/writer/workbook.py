@@ -115,7 +115,7 @@ def write_workbook(workbook):
         auto_filter = sheet.auto_filter.ref
         if auto_filter:
             name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
-            name.value = "{0}!{1}".format(quote_sheetname(sheet.title),
+            name.value = u"{0}!{1}".format(quote_sheetname(sheet.title),
                                           absolute_coordinate(auto_filter)
                                           )
             defined_names.append(name)
@@ -129,7 +129,7 @@ def write_workbook(workbook):
         # print areas
         if sheet.print_area:
             name = DefinedName(name="Print_Area", localSheetId=idx)
-            name.value = ",".join(["{0}!{1}".format(quote_sheetname(sheet.title), r)
+            name.value = ",".join([u"{0}!{1}".format(quote_sheetname(sheet.title), r)
                                   for r in sheet.print_area])
             defined_names.append(name)
 

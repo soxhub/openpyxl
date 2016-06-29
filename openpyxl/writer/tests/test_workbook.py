@@ -163,3 +163,92 @@ def test_write_root_rels():
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+@pytest.fixture
+def Unicode_Workbook():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = u"D\xfcsseldorf"
+    return wb
+
+
+def test_print_area(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    ws.print_area = 'A1:D4'
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+      <definedName localSheetId="0" name="_xlnm.Print_Area">D&#xFC;sseldorf!$A$1:$D$4</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_print_titles(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    ws.print_title_rows = '1:5'
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+      <definedName localSheetId="0" name="_xlnm.Print_Titles">D&#xFC;sseldorf!1:5</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_print_autofilter(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    from openpyxl.worksheet.filters import AutoFilter
+    ws.auto_filter.ref = "A1:A10"
+    ws.auto_filter.add_filter_column(0, ["Kiwi", "Apple", "Mango"])
+
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+    <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">D&#xFC;sseldorf!$A$1:$A$10</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
