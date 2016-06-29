@@ -59,7 +59,7 @@ You can create copies of worksheets within a single workbook:
 :func:`openpyxl.workbook.Workbook.copy_worksheet` method::
 
     >>> active_worksheet = wb.active
-    >>> copied_worksheet = wb.copy_worksheet(ws1)
+    >>> copied_worksheet = wb.copy_worksheet(active_worksheet)
 
 .. note::
 
