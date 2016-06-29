@@ -115,7 +115,7 @@ def write_workbook(workbook):
         auto_filter = sheet.auto_filter.ref
         if auto_filter:
             name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
-            name.value = "{0}!{1}".format(quote_sheetname(sheet.title),
+            name.value = u"{0}!{1}".format(quote_sheetname(sheet.title),
                                           absolute_coordinate(auto_filter)
                                           )
             defined_names.append(name)

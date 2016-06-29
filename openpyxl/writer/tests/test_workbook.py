@@ -223,3 +223,32 @@ def test_print_titles(Unicode_Workbook):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_print_autofilter(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    from openpyxl.worksheet.filters import AutoFilter
+    ws.auto_filter.ref = "A1:A10"
+    ws.auto_filter.add_filter_column(0, ["Kiwi", "Apple", "Mango"])
+
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+    <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">D&#xFC;sseldorf!$A$1:$A$10</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
