@@ -152,7 +152,7 @@ class ExternalLink(Serialisable):
     _id = None
     _path = "/xl/externalLinks/externalLink{0}.xml"
     _rel_type = "externalLink"
-    mime_type = ""
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"
 
     externalBook = Typed(expected_type=ExternalBook, allow_none=True)
     file_link = Typed(expected_type=Relationship, allow_none=True) # link to external file
