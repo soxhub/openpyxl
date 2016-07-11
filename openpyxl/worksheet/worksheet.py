@@ -714,8 +714,8 @@ class Worksheet(_WorkbookChild):
 
     @property
     def merged_cell_ranges(self):
-        """Public attribute for which cells have been merged"""
-        return self._merged_cells
+        """Return a copy of cell ranges"""
+        return self._merged_cells[:]
 
 
     def unmerge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
