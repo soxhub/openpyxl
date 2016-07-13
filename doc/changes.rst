@@ -10,6 +10,14 @@ Bug fixes
 * `#646 <https://bitbucket.org/openpyxl/openpyxl/issues/646>`_ Cannot handle unicode sheetnames in Python 2
 
 
+Minor changes
+-------------
+
+* Add a `keep_links` option to `load_workbook`. External links contain cached
+copies of the external workbooks. If these are big it can be advantageous to
+be able to disable them.
+
+
 2.4.0-b1 (2016-06-08)
 =====================
 
