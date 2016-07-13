@@ -119,7 +119,8 @@ def _validate_archive(filename):
     return archive
 
 
-def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False, guess_types=False):
+def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
+                  data_only=False, guess_types=False, keep_links=True):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
@@ -137,6 +138,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     :param data_only: controls whether cells with formulae have either the formula (default) or the value stored the last time Excel read the sheet
     :type data_only: bool
 
+    :param keep_links: whether links to external workbooks should be preserved. The default is True
+    :type keep_links: bool
+
     :rtype: :class:`openpyxl.workbook.Workbook`
 
     .. note::
@@ -149,11 +153,12 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False,
     read_only = read_only
 
     parser = WorkbookParser(archive)
-    parser.parse()
     wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only
+    wb._keep_links = keep_links
     wb.guess_types = guess_types
+    parser.parse()
     wb._sheets = []
 
     if read_only and guess_types:

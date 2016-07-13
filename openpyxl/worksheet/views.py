@@ -76,6 +76,7 @@ class SheetView(Serialisable):
     zoomScaleNormal = Integer(allow_none=True)
     zoomScaleSheetLayoutView = Integer(allow_none=True)
     zoomScalePageLayoutView = Integer(allow_none=True)
+    zoomToFit = Bool(allow_none=True) # Chart sheets only
     workbookViewId = Integer()
     selection = Sequence(expected_type=Selection)
     pane = Typed(expected_type=Pane, allow_none=True)
@@ -100,6 +101,7 @@ class SheetView(Serialisable):
         zoomScaleNormal=None,
         zoomScaleSheetLayoutView=None,
         zoomScalePageLayoutView=None,
+        zoomToFit=None,
         workbookViewId=0,
         selection=None,
         pane=None,
@@ -122,6 +124,7 @@ class SheetView(Serialisable):
         self.zoomScaleNormal = zoomScaleNormal
         self.zoomScaleSheetLayoutView = zoomScaleSheetLayoutView
         self.zoomScalePageLayoutView = zoomScalePageLayoutView
+        self.zoomToFit = zoomToFit
         self.workbookViewId = workbookViewId
         self.pane = pane
         if selection is None:

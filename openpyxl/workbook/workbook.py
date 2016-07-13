@@ -38,6 +38,7 @@ class Workbook(object):
 
     _read_only = False
     _data_only = False
+    _keep_links = True
     template = False
     path = "/xl/workbook.xml"
 
@@ -111,6 +112,10 @@ class Workbook(object):
     @property
     def write_only(self):
         return self.__write_only
+
+    @property
+    def keep_links(self):
+        return self._keep_links
 
     @deprecated("Use the .active property")
     def get_active_sheet(self):
