@@ -91,6 +91,12 @@ Any string at most 15 characters:
                         operator="lessThanOrEqual"),
                         formula1=15)
 
+Cell range validation:
+::
+
+    dv = DataValidation(type="list",
+                        formula1="sheetname!$B$1:$B$10")
+
 Custom rule:
 ::
 
