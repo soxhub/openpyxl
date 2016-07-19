@@ -91,6 +91,14 @@ Any string at most 15 characters:
                         operator="lessThanOrEqual"),
                         formula1=15)
 
+Cell range validation:
+::
+
+    from openpyxl.utils import quote_sheetname
+    dv = DataValidation(type="list",
+                        formula1="{0}!$B$1:$B$10".format(quote_sheetname(sheetname))
+                        )
+
 Custom rule:
 ::
 
