@@ -16,6 +16,7 @@ Minor changes
 * Add a `keep_links` option to `load_workbook`. External links contain cached
 copies of the external workbooks. If these are big it can be advantageous to
 be able to disable them.
+* Provide an example for using cell ranges in DataValidation.
 
 
 2.4.0-b1 (2016-06-08)

@@ -94,8 +94,10 @@ Any string at most 15 characters:
 Cell range validation:
 ::
 
+    from openpyxl.utils import quote_sheetname
     dv = DataValidation(type="list",
-                        formula1="sheetname!$B$1:$B$10")
+                        formula1="{0}!$B$1:$B$10".format(quote_sheetname(sheetname))
+                        )
 
 Custom rule:
 ::
