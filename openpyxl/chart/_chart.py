@@ -6,7 +6,8 @@ from openpyxl.compat import basestring
 from openpyxl.descriptors import (
     Typed,
     Integer,
-    Alias
+    Alias,
+    MinMax,
 )
 from openpyxl.descriptors.nested import Nested
 from openpyxl.descriptors.serialisable import Serialisable
@@ -53,7 +54,7 @@ class ChartBase(Serialisable):
     height = 7.5 # in cm, approx 14 rows
     _id = 1
     _path = "/xl/charts/chart{0}.xml"
-    style = Integer(allow_none=True)
+    style = MinMax(allow_none=True, min=1, max=48)
     mime_type = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
     graphical_properties = Typed(expected_type=GraphicalProperties, allow_none=True)
 

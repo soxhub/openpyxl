@@ -371,7 +371,7 @@ class ChartSpace(Serialisable):
     date1904 = NestedBool(allow_none=True)
     lang = NestedString(allow_none=True)
     roundedCorners = NestedBool(allow_none=True)
-    style = NestedInteger(allow_none=True)
+    style = NestedMinMax(allow_none=True, min=1, max=48)
     clrMapOvr = Typed(expected_type=ColorMapping, allow_none=True)
     pivotSource = Typed(expected_type=PivotSource, allow_none=True)
     protection = Typed(expected_type=Protection, allow_none=True)
