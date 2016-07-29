@@ -8,6 +8,7 @@ Bug fixes
 * `#652 <https://bitbucket.org/openpyxl/openpyxl/issues/652>`_ Exception raised when epoch is 1904
 * `#642 <https://bitbucket.org/openpyxl/openpyxl/issues/642>`_ Cannot handle unicode in headers and footers in Python 2
 * `#646 <https://bitbucket.org/openpyxl/openpyxl/issues/646>`_ Cannot handle unicode sheetnames in Python 2
+* `#658 <https://bitbucket.org/openpyxl/openpyxl/issues/658>`_ Chart styles, and axis units should not be 0
 
 
 Minor changes
