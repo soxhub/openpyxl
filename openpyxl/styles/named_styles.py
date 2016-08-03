@@ -18,8 +18,16 @@ from .fills import PatternFill, Fill
 from .fonts import Font, DEFAULT_FONT
 from .borders import Border
 from .alignment import Alignment
-from .numbers import NumberFormatDescriptor
 from .protection import Protection
+from .numbers import (
+    NumberFormatDescriptor,
+    BUILTIN_FORMATS,
+    BUILTIN_FORMATS_REVERSE,
+)
+from .cell_style import (
+    StyleArray,
+    CellStyle,
+)
 
 
 class NamedStyle(Serialisable):
@@ -36,7 +44,8 @@ class NamedStyle(Serialisable):
     protection = Typed(expected_type=Protection)
     builtinId = Integer(allow_none=True)
     hidden = Bool(allow_none=True)
-    xfIf = Integer(allow_none=True)
+    xfId = Integer(allow_none=True)
+    name = String()
 
 
     def __init__(self,
@@ -60,7 +69,16 @@ class NamedStyle(Serialisable):
         self.protection = protection
         self.builtinId = builtinId
         self.hidden = hidden
-        self.xfId = xfId
+        self.xfId = xfId # index
+        self._wb = None
+        self._style = StyleArray()
+
+
+    def __setattr__(self, attr, value):
+        super(NamedStyle, self).__setattr__(attr, value)
+        if getattr(self, '_wb', None) and attr in ('fill', 'border', 'alignment', 'number_format',
+                    'protection', 'builtinId', 'hidden', 'xfId'):
+            self._recalculate()
 
 
     def __iter__(self):
@@ -68,6 +86,52 @@ class NamedStyle(Serialisable):
             value = getattr(self, key, None)
             if value is not None:
                 yield key, safe_string(value)
+
+
+    def bind(self, wb):
+        """
+        Bind a named style to a workbook
+        """
+        self._wb = wb
+        self._recalculate()
+
+
+    def _recalculate(self):
+        self._style.fontId =  self._wb._fonts.add(self.font)
+        self._style.borderId = self._wb._borders.add(self.border)
+        self._style.fillId =  self._wb._fills.add(self.fill)
+        fmt = self.number_format
+        if fmt in BUILTIN_FORMATS_REVERSE:
+            fmt = BUILTIN_FORMATS_REVERSE[fmt]
+        else:
+            fmt = self._wb._number_formats.add(self.number_format) + 164
+        self._style.numFmtId = fmt
+
+
+    def as_tuple(self):
+        """Return a style array representing the current style"""
+        return self._style
+
+
+    def as_xf(self):
+        """
+        Return equivalent XfStyle
+        """
+        return CellStyle.from_array(self._style)
+
+
+    def as_name(self):
+        """
+        Return relevant named style
+
+        """
+        named = NamedCellStyle(
+            name=self.name,
+            builtinId=self.builtinId,
+            hidden=self.hidden,
+            xfId=self.xfId
+        )
+        return named
 
 
 class NamedCellStyle(Serialisable):
@@ -162,17 +226,27 @@ class NamedStyles(list):
     def __getitem__(self, key):
         if isinstance(key, int):
             return super(NamedStyles, self).__getitem__(key)
+
         names = self.names
         if key not in names:
             raise KeyError("No named style with the name{0} exists".format(key))
+
         for idx, name in enumerate(names):
             if name == key:
                 return self[idx]
 
 
-    def append(self, object):
-        if not isinstance(object, NamedStyle):
+    def append(self, style):
+        if not isinstance(style, NamedStyle):
             raise TypeError("""Only NamedStyle instances can be added""")
-        elif object.name in self.names:
-            raise ValueError("""Style {0} exists already""".format(object.name))
-        super(NamedStyles, self).append(object)
+        elif style.name in self.names:
+            raise ValueError("""Style {0} exists already""".format(style.name))
+        super(NamedStyles, self).append(style)
+
+
+    def add(self, style):
+        """
+        Add a style and return uts
+        """
+        self.append(style)
+        return self[style.name]

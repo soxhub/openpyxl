@@ -3,11 +3,16 @@ from __future__ import absolute_import
 
 import pytest
 
+from array import array
+
 from ..fonts import Font
 from ..borders import Border
 from ..fills import PatternFill
 from ..alignment import Alignment
 from ..protection import Protection
+from ..cell_style import CellStyle
+
+from openpyxl import Workbook
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
@@ -30,11 +35,57 @@ class TestNamedStyle:
         assert style.protection == Protection()
         assert style.alignment == Alignment()
         assert style.number_format == "General"
+        assert style._wb is None
 
 
     def test_dict(self, NamedStyle):
         style = NamedStyle()
         assert dict(style) == {'name':'Normal', 'hidden':'0'}
+
+
+    def test_bind(self, NamedStyle):
+        style = NamedStyle()
+
+        wb = Workbook()
+        style.bind(wb)
+
+        assert style._wb is wb
+
+
+    def test_as_tuple(self, NamedStyle, NamedCellStyle):
+        style = NamedStyle()
+        assert style.as_tuple() == array('i', (0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+
+    def test_as_xf(self, NamedStyle):
+        style = NamedStyle(xfId=0)
+
+        xf = style.as_xf()
+        assert xf == CellStyle(numFmtId=0, fontId=0, fillId=0, borderId=0,
+                              xfId=0,
+                              quotePrefix=False,
+                              pivotButton=False,
+                              applyNumberFormat=None,
+                              applyFont=None,
+                              applyFill=None,
+                              applyBorder=None,
+                              applyAlignment=None,
+                              applyProtection=None,
+                              alignment=None,
+                              protection=None,
+                              )
+
+
+    def test_as_name(self, NamedStyle, NamedCellStyle):
+        style = NamedStyle(xfId=0)
+
+        name = style.as_name()
+
+        assert name == NamedCellStyle(name='Normal', xfId=0, hidden=False)
+
+
+    def test_recalculate(self, NamedStyle):
+        pass
 
 
 @pytest.fixture

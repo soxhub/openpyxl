@@ -267,6 +267,14 @@ class Workbook(object):
         self.defined_names.append(defn)
 
 
+    def add_named_style(self, style):
+        """
+        Add a named style
+        """
+        style.xfId = self._named_styles.add(style)
+        style.bind(self)
+
+
     @deprecated("Use workbook.defined_names.definedName")
     def get_named_ranges(self):
         """Return all named ranges"""
