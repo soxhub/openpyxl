@@ -125,32 +125,9 @@ class Stylesheet(Serialisable):
         """
         Convert NamedStyle into separate CellStyle and Xf objects
         """
-        names = []
-        xfs = []
-
-        for idx, style in enumerate(wb._named_styles):
-            name = NamedCellStyle(
-                name=style.name,
-                builtinId=style.builtinId,
-                hidden=style.hidden,
-                xfId = idx
-            )
-            names.append(name)
-
-            xf = CellStyle()
-            xf.fontId =  wb._fonts.add(style.font)
-            xf.borderId = wb._borders.add(style.border)
-            xf.fillId =  wb._fills.add(style.fill)
-            fmt = style.number_format
-            if fmt in BUILTIN_FORMATS_REVERSE:
-                fmt = BUILTIN_FORMATS_REVERSE[fmt]
-            else:
-                fmt = wb._number_formats.add(style.number_format) + 164
-            xf.numFmtId = fmt
-            xfs.append(xf)
-
-        self.cellStyles.cellStyle = names
-        self.cellStyleXfs = CellStyleList(xf=xfs)
+        for style in wb._named_styles:
+            self.cellStyles.cellStyle.append(style.as_name())
+            self.cellStyleXfs.xf.append(style.as_xf())
 
 
     @property
