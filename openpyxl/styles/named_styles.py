@@ -76,8 +76,9 @@ class NamedStyle(Serialisable):
 
     def __setattr__(self, attr, value):
         super(NamedStyle, self).__setattr__(attr, value)
-        if getattr(self, '_wb', None) and attr in ('fill', 'border', 'alignment', 'number_format',
-                    'protection', 'builtinId', 'hidden', 'xfId'):
+        if getattr(self, '_wb', None) and attr in (
+            'fill', 'border', 'alignment', 'number_format', 'protection',
+            ):
             self._recalculate()
 
 
@@ -100,6 +101,8 @@ class NamedStyle(Serialisable):
         self._style.fontId =  self._wb._fonts.add(self.font)
         self._style.borderId = self._wb._borders.add(self.border)
         self._style.fillId =  self._wb._fills.add(self.fill)
+        self._style.protectionId = self._wb._protections.add(self.protection)
+        self._style.alignmentId = self._wb._alignments.add(self.alignment)
         fmt = self.number_format
         if fmt in BUILTIN_FORMATS_REVERSE:
             fmt = BUILTIN_FORMATS_REVERSE[fmt]
