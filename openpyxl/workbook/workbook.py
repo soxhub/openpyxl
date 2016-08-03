@@ -99,7 +99,8 @@ class Workbook(object):
 
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleArray()])
-        self._named_styles = NamedStyles([NamedStyle(font=DEFAULT_FONT, builtinId=0)])
+        self._named_styles = NamedStyles()
+        self.add_named_style(NamedStyle(font=DEFAULT_FONT, builtinId=0))
 
 
     @property
