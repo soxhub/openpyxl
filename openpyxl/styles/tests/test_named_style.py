@@ -10,7 +10,7 @@ from ..borders import Border
 from ..fills import PatternFill
 from ..alignment import Alignment
 from ..protection import Protection
-from ..cell_style import CellStyle
+from ..cell_style import CellStyle, StyleArray
 
 from openpyxl import Workbook
 
@@ -83,8 +83,26 @@ class TestNamedStyle:
         assert name == NamedCellStyle(name='Normal', xfId=0, hidden=False)
 
 
-    def test_recalculate(self, NamedStyle):
-        pass
+    @pytest.mark.parametrize("attr, key, collection, expected",
+                             [
+                                 ('font', 'fontId', '_fonts', 0),
+                                 ('fill', 'fillId', '_fills', 0),
+                                 ('border', 'borderId', '_borders', 0),
+                                 ('alignment', 'alignmentId', '_alignments', 0),
+                                 ('protection', 'protectionId', '_protections', 0),
+                                 ('number_format', 'numFmtId', '_number_formats', 164),
+                             ]
+                             )
+    def test_recalculate(self, NamedStyle, attr, key, collection, expected):
+        style = NamedStyle(xfId=0)
+        wb = Workbook()
+        wb._number_formats.append("###")
+        style.bind(wb)
+        style._style = StyleArray([1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+        obj = getattr(wb, collection)[0]
+        setattr(style, attr, obj)
+        assert getattr(style._style, key) == expected
 
 
 @pytest.fixture

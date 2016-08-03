@@ -77,7 +77,7 @@ class NamedStyle(Serialisable):
     def __setattr__(self, attr, value):
         super(NamedStyle, self).__setattr__(attr, value)
         if getattr(self, '_wb', None) and attr in (
-            'fill', 'border', 'alignment', 'number_format', 'protection',
+           'font', 'fill', 'border', 'alignment', 'number_format', 'protection',
             ):
             self._recalculate()
 
