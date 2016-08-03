@@ -249,7 +249,7 @@ class NamedStyles(list):
 
     def add(self, style):
         """
-        Add a style and return uts
+        Add a style and return index
         """
         self.append(style)
-        return self[style.name]
+        return self.index(style)
