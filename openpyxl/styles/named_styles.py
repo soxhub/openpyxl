@@ -120,7 +120,11 @@ class NamedStyle(Serialisable):
         """
         Return equivalent XfStyle
         """
-        return CellStyle.from_array(self._style)
+        xf = CellStyle.from_array(self._style)
+        xf.xfId = None
+        xf.pivotButton = None
+        xf.quotePrefix = None
+        return xf
 
 
     def as_name(self):

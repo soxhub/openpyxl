@@ -62,9 +62,6 @@ class TestNamedStyle:
 
         xf = style.as_xf()
         assert xf == CellStyle(numFmtId=0, fontId=0, fillId=0, borderId=0,
-                              xfId=0,
-                              quotePrefix=False,
-                              pivotButton=False,
                               applyNumberFormat=None,
                               applyFont=None,
                               applyFill=None,
