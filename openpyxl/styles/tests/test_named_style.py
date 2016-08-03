@@ -80,7 +80,6 @@ class TestNamedStyle:
         style = NamedStyle(xfId=0)
 
         name = style.as_name()
-
         assert name == NamedCellStyle(name='Normal', xfId=0, hidden=False)
 
 
