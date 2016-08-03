@@ -15,7 +15,7 @@ from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
 from .fills import PatternFill, Fill
-from .fonts import Font, DEFAULT_FONT
+from .fonts import Font
 from .borders import Border
 from .alignment import Alignment
 from .protection import Protection
@@ -72,7 +72,6 @@ class NamedStyle(Serialisable):
         self.xfId = xfId # index
         self._wb = None
         self._style = StyleArray()
-
 
     def __setattr__(self, attr, value):
         super(NamedStyle, self).__setattr__(attr, value)
@@ -132,7 +131,7 @@ class NamedStyle(Serialisable):
         Return relevant named style
 
         """
-        named = NamedCellStyle(
+        named = _NamedCellStyle(
             name=self.name,
             builtinId=self.builtinId,
             hidden=self.hidden,
@@ -141,11 +140,52 @@ class NamedStyle(Serialisable):
         return named
 
 
-class NamedCellStyle(Serialisable):
+class NamedStyleList(list):
+    """
+    Named styles are editable and can be applied to multiple objects
+    """
+
+    @property
+    def names(self):
+        return [s.name for s in self]
+
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return super(NamedStyleList, self).__getitem__(key)
+
+        names = self.names
+        if key not in names:
+            raise KeyError("No named style with the name{0} exists".format(key))
+
+        for idx, name in enumerate(names):
+            if name == key:
+                return self[idx]
+
+
+    def append(self, style):
+        if not isinstance(style, NamedStyle):
+            raise TypeError("""Only NamedStyle instances can be added""")
+        elif style.name in self.names:
+            raise ValueError("""Style {0} exists already""".format(style.name))
+        super(NamedStyleList, self).append(style)
+
+
+    def add(self, style):
+        """
+        Add a style and return index
+        """
+        self.append(style)
+        return self.index(style)
+
+
+class _NamedCellStyle(Serialisable):
 
     """
     Pointer-based representation of named styles in XML
-    xfId refers to the corresponding CellStyleXf
+    xfId refers to the corresponding CellStyleXfs
+
+    Not used in client code.
     """
 
     tagname = "cellStyle"
@@ -178,12 +218,17 @@ class NamedCellStyle(Serialisable):
         self.customBuiltin = customBuiltin
 
 
-class NamedCellStyleList(Serialisable):
+class _NamedCellStyleList(Serialisable):
+    """
+    Container for named cell style objects
+
+    Not used in client code
+    """
 
     tagname = "cellStyles"
 
     count = Integer(allow_none=True)
-    cellStyle = Sequence(expected_type=NamedCellStyle)
+    cellStyle = Sequence(expected_type=_NamedCellStyle)
 
     __attrs__ = ("count",)
 
@@ -217,43 +262,4 @@ class NamedCellStyleList(Serialisable):
             style.builtinId = ns.builtinId
             style.xfId = ns.xfId
             styles[ns.name] = style
-        return NamedStyles(styles.values())
-
-
-class NamedStyles(list):
-    """
-    Named styles are editable and can be applied to multiple objects
-    """
-
-    @property
-    def names(self):
-        return [s.name for s in self]
-
-
-    def __getitem__(self, key):
-        if isinstance(key, int):
-            return super(NamedStyles, self).__getitem__(key)
-
-        names = self.names
-        if key not in names:
-            raise KeyError("No named style with the name{0} exists".format(key))
-
-        for idx, name in enumerate(names):
-            if name == key:
-                return self[idx]
-
-
-    def append(self, style):
-        if not isinstance(style, NamedStyle):
-            raise TypeError("""Only NamedStyle instances can be added""")
-        elif style.name in self.names:
-            raise ValueError("""Style {0} exists already""".format(style.name))
-        super(NamedStyles, self).append(style)
-
-
-    def add(self, style):
-        """
-        Add a style and return index
-        """
-        self.append(style)
-        return self.index(style)
+        return NamedStyleList(styles.values())

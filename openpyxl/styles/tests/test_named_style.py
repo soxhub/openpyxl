@@ -52,7 +52,7 @@ class TestNamedStyle:
         assert style._wb is wb
 
 
-    def test_as_tuple(self, NamedStyle, NamedCellStyle):
+    def test_as_tuple(self, NamedStyle):
         style = NamedStyle()
         assert style.as_tuple() == array('i', (0, 0, 0, 0, 0, 0, 0, 0, 0))
 
@@ -73,11 +73,11 @@ class TestNamedStyle:
                               )
 
 
-    def test_as_name(self, NamedStyle, NamedCellStyle):
+    def test_as_name(self, NamedStyle, _NamedCellStyle):
         style = NamedStyle(xfId=0)
 
         name = style.as_name()
-        assert name == NamedCellStyle(name='Normal', xfId=0, hidden=False)
+        assert name == _NamedCellStyle(name='Normal', xfId=0, hidden=False)
 
 
     @pytest.mark.parametrize("attr, key, collection, expected",
@@ -103,15 +103,15 @@ class TestNamedStyle:
 
 
 @pytest.fixture
-def NamedCellStyle():
-    from ..named_styles import NamedCellStyle
-    return NamedCellStyle
+def _NamedCellStyle():
+    from ..named_styles import _NamedCellStyle
+    return _NamedCellStyle
 
 
 class TestNamedCellStyle:
 
-    def test_ctor(self, NamedCellStyle):
-        named_style = NamedCellStyle(xfId=0, name="Normal", builtinId=0)
+    def test_ctor(self, _NamedCellStyle):
+        named_style = _NamedCellStyle(xfId=0, name="Normal", builtinId=0)
         xml = tostring(named_style.to_tree())
         expected = """
         <cellStyle name="Normal" xfId="0" builtinId="0"/>
@@ -120,13 +120,13 @@ class TestNamedCellStyle:
         assert diff is None, diff
 
 
-    def test_from_xml(self, NamedCellStyle):
+    def test_from_xml(self, _NamedCellStyle):
         src = """
         <cellStyle name="Followed Hyperlink" xfId="10" builtinId="9" hidden="1"/>
         """
         node = fromstring(src)
-        named_style = NamedCellStyle.from_tree(node)
-        assert named_style == NamedCellStyle(
+        named_style = _NamedCellStyle.from_tree(node)
+        assert named_style == _NamedCellStyle(
             name="Followed Hyperlink",
             xfId=10,
             builtinId=9,
@@ -135,15 +135,15 @@ class TestNamedCellStyle:
 
 
 @pytest.fixture
-def NamedCellStyleList():
-    from ..named_styles import NamedCellStyleList
-    return NamedCellStyleList
+def _NamedCellStyleList():
+    from ..named_styles import _NamedCellStyleList
+    return _NamedCellStyleList
 
 
 class TestNamedCellStyleList:
 
-    def test_ctor(self, NamedCellStyleList):
-        styles = NamedCellStyleList()
+    def test_ctor(self, _NamedCellStyleList):
+        styles = _NamedCellStyleList()
         xml = tostring(styles.to_tree())
         expected = """
         <cellStyles count ="0" />
@@ -152,16 +152,16 @@ class TestNamedCellStyleList:
         assert diff is None, diff
 
 
-    def test_from_xml(self, NamedCellStyleList):
+    def test_from_xml(self, _NamedCellStyleList):
         src = """
         <cellStyles />
         """
         node = fromstring(src)
-        styles = NamedCellStyleList.from_tree(node)
-        assert styles == NamedCellStyleList()
+        styles = _NamedCellStyleList.from_tree(node)
+        assert styles == _NamedCellStyleList()
 
 
-    def test_styles(self, NamedCellStyleList):
+    def test_styles(self, _NamedCellStyleList):
         src = """
         <cellStyles count="11">
           <cellStyle name="Followed Hyperlink" xfId="2" builtinId="9" hidden="1"/>
@@ -178,61 +178,61 @@ class TestNamedCellStyleList:
         </cellStyles>
         """
         node = fromstring(src)
-        styles = NamedCellStyleList.from_tree(node)
+        styles = _NamedCellStyleList.from_tree(node)
         assert [s.name for s in styles.names] == ['Normal', 'Hyperlink', 'Followed Hyperlink']
 
 
 @pytest.fixture
-def NamedStyles():
-    from ..named_styles import NamedStyles
-    return NamedStyles
+def NamedStyleList():
+    from ..named_styles import NamedStyleList
+    return NamedStyleList
 
 
-class TestNamedStyles:
+class TestNamedStyleList:
 
-    def test_append_valid(self, NamedStyle, NamedStyles):
-        styles = NamedStyles()
+    def test_append_valid(self, NamedStyle, NamedStyleList):
+        styles = NamedStyleList()
         style = NamedStyle(name="special")
         styles.append(style)
         assert style in styles
 
 
-    def test_append_invalid(self, NamedStyles):
-        styles = NamedStyles()
+    def test_append_invalid(self, NamedStyleList):
+        styles = NamedStyleList()
         with pytest.raises(TypeError):
             styles.append(1)
 
 
-    def test_duplicate(self, NamedStyles, NamedStyle):
-        styles = NamedStyles()
+    def test_duplicate(self, NamedStyleList, NamedStyle):
+        styles = NamedStyleList()
         style = NamedStyle(name="special")
         styles.append(style)
         with pytest.raises(ValueError):
             styles.append(style)
 
 
-    def test_names(self, NamedStyles, NamedStyle):
-        styles = NamedStyles()
+    def test_names(self, NamedStyleList, NamedStyle):
+        styles = NamedStyleList()
         style = NamedStyle(name="special")
         styles.append(style)
         assert styles.names == ['special']
 
 
-    def test_idx(self, NamedStyles, NamedStyle):
-        styles = NamedStyles()
+    def test_idx(self, NamedStyleList, NamedStyle):
+        styles = NamedStyleList()
         style = NamedStyle(name="special")
         styles.append(style)
         assert styles[0] == style
 
 
-    def test_key(self, NamedStyles, NamedStyle):
-        styles = NamedStyles()
+    def test_key(self, NamedStyleList, NamedStyle):
+        styles = NamedStyleList()
         style = NamedStyle(name="special")
         styles.append(style)
         assert styles['special'] == style
 
 
-    def test_key_error(self, NamedStyles):
-        styles = NamedStyles()
+    def test_key_error(self, NamedStyleList):
+        styles = NamedStyleList()
         with pytest.raises(KeyError):
             styles['special']

@@ -12,7 +12,7 @@ from ..import (
     Protection
 )
 from ..named_styles import (
-    NamedStyles,
+    NamedStyleList,
     NamedStyle,
 )
 
@@ -46,7 +46,7 @@ def Workbook():
         _protections = IndexedList()
         _alignments = IndexedList()
         _number_formats = IndexedList()
-        _named_styles = NamedStyles()
+        _named_styles = NamedStyleList()
 
     return DummyWorkbook()
 

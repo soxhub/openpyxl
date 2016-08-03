@@ -79,7 +79,7 @@ class Workbook(object):
         from openpyxl.styles.fonts import DEFAULT_FONT
         from openpyxl.styles.protection import Protection
         from openpyxl.styles.colors import COLOR_INDEX
-        from openpyxl.styles.named_styles import NamedStyles
+        from openpyxl.styles.named_styles import NamedStyleList
 
         self._fonts = IndexedList()
         self._fonts.add(DEFAULT_FONT)
@@ -99,7 +99,7 @@ class Workbook(object):
 
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleArray()])
-        self._named_styles = NamedStyles()
+        self._named_styles = NamedStyleList()
         self.add_named_style(NamedStyle(font=DEFAULT_FONT, builtinId=0))
 
 

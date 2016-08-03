@@ -25,8 +25,8 @@ from .alignment import Alignment
 from .protection import Protection
 from .named_styles import (
     NamedStyle,
-    NamedCellStyle,
-    NamedCellStyleList
+    _NamedCellStyle,
+    _NamedCellStyleList
 )
 from .cell_style import CellStyle, CellStyleList
 
@@ -41,7 +41,7 @@ class Stylesheet(Serialisable):
     borders = NestedSequence(expected_type=Border, count=True)
     cellStyleXfs = Typed(expected_type=CellStyleList)
     cellXfs = Typed(expected_type=CellStyleList)
-    cellStyles = Typed(expected_type=NamedCellStyleList)
+    cellStyles = Typed(expected_type=_NamedCellStyleList)
     dxfs = NestedSequence(expected_type=DifferentialStyle, count=True)
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
@@ -76,7 +76,7 @@ class Stylesheet(Serialisable):
             cellXfs = CellStyleList()
         self.cellXfs = cellXfs
         if cellStyles is None:
-            cellStyles = NamedCellStyleList()
+            cellStyles = _NamedCellStyleList()
         self.cellStyles = cellStyles
 
         self.dxfs = dxfs
