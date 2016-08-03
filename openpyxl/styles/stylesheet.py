@@ -25,8 +25,8 @@ from .alignment import Alignment
 from .protection import Protection
 from .named_styles import (
     NamedStyle,
-    NamedCellStyle,
-    NamedCellStyleList
+    _NamedCellStyle,
+    _NamedCellStyleList
 )
 from .cell_style import CellStyle, CellStyleList
 
@@ -41,7 +41,7 @@ class Stylesheet(Serialisable):
     borders = NestedSequence(expected_type=Border, count=True)
     cellStyleXfs = Typed(expected_type=CellStyleList)
     cellXfs = Typed(expected_type=CellStyleList)
-    cellStyles = Typed(expected_type=NamedCellStyleList)
+    cellStyles = Typed(expected_type=_NamedCellStyleList)
     dxfs = NestedSequence(expected_type=DifferentialStyle, count=True)
     tableStyles = Typed(expected_type=TableStyleList, allow_none=True)
     colors = Typed(expected_type=ColorList, allow_none=True)
@@ -76,7 +76,7 @@ class Stylesheet(Serialisable):
             cellXfs = CellStyleList()
         self.cellXfs = cellXfs
         if cellStyles is None:
-            cellStyles = NamedCellStyleList()
+            cellStyles = _NamedCellStyleList()
         self.cellStyles = cellStyles
 
         self.dxfs = dxfs
@@ -125,32 +125,9 @@ class Stylesheet(Serialisable):
         """
         Convert NamedStyle into separate CellStyle and Xf objects
         """
-        names = []
-        xfs = []
-
-        for idx, style in enumerate(wb._named_styles):
-            name = NamedCellStyle(
-                name=style.name,
-                builtinId=style.builtinId,
-                hidden=style.hidden,
-                xfId = idx
-            )
-            names.append(name)
-
-            xf = CellStyle()
-            xf.fontId =  wb._fonts.add(style.font)
-            xf.borderId = wb._borders.add(style.border)
-            xf.fillId =  wb._fills.add(style.fill)
-            fmt = style.number_format
-            if fmt in BUILTIN_FORMATS_REVERSE:
-                fmt = BUILTIN_FORMATS_REVERSE[fmt]
-            else:
-                fmt = wb._number_formats.add(style.number_format) + 164
-            xf.numFmtId = fmt
-            xfs.append(xf)
-
-        self.cellStyles.cellStyle = names
-        self.cellStyleXfs = CellStyleList(xf=xfs)
+        for style in wb._named_styles:
+            self.cellStyles.cellStyle.append(style.as_name())
+            self.cellStyleXfs.xf.append(style.as_xf())
 
 
     @property
