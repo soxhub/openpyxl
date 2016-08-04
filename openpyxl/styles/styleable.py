@@ -64,11 +64,11 @@ class NamedStyleDescriptor(object):
     def __set__(self, instance, value):
         if not getattr(instance, "_style"):
             instance._style = StyleArray()
-        coll = getattr(instance.parent.parent, self.collection).names
-        if value not in coll:
+        coll = getattr(instance.parent.parent, self.collection)
+        if value not in coll.names:
             raise ValueError("{0} is not a known style")
-        idx = coll.index(value)
-        setattr(instance._style, self.key, idx)
+        style = coll[value]
+        instance._style = style.as_tuple()
 
 
     def __get__(self, instance, cls):

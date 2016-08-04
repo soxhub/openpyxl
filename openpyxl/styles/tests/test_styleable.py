@@ -48,6 +48,10 @@ def Workbook():
         _number_formats = IndexedList()
         _named_styles = NamedStyleList()
 
+        def add_named_style(self, style):
+            self._named_styles.append(style)
+            style.bind(self)
+
     return DummyWorkbook()
 
 
@@ -82,10 +86,11 @@ class TestNamedStyle:
         so = StyleableObject
         wb = so.parent.parent
         style = NamedStyle(name='Standard')
-        wb._named_styles.append(style)
+        wb.add_named_style(style)
 
         so.style = 'Standard'
         assert so._style.xfId == 0
+
 
     def test_unknown_style(self, StyleableObject):
         so = StyleableObject
@@ -98,8 +103,10 @@ class TestNamedStyle:
         so = StyleableObject
         wb = so.parent.parent
 
-        style = NamedStyle(name='Red')
-        wb._named_styles.append(style)
+        red = NamedStyle(name='Red')
+        wb.add_named_style(red)
+        blue = NamedStyle(name='Blue')
+        wb.add_named_style(blue)
 
-        so._style.xfId = 0
-        assert so.style == "Red"
+        so._style.xfId = 1
+        assert so.style == "Blue"
