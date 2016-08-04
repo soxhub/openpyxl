@@ -41,6 +41,11 @@ class TestWorkbook:
         assert wb.mime_type == content_type
 
 
+    def test_named_styles(self):
+        wb = Workbook()
+        assert wb.named_styles == ['Normal']
+
+
 def test_get_active_sheet():
     wb = Workbook()
     assert wb.active == wb.worksheets[0]
