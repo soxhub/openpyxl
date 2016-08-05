@@ -82,13 +82,22 @@ def test_has_style(StyleableObject):
 
 class TestNamedStyle:
 
-    def test_assign(self, StyleableObject):
+    def test_assign_name(self, StyleableObject):
         so = StyleableObject
         wb = so.parent.parent
         style = NamedStyle(name='Standard')
         wb.add_named_style(style)
 
         so.style = 'Standard'
+        assert so._style.xfId == 0
+
+
+    def test_assign_style(self, StyleableObject):
+        so = StyleableObject
+        wb = so.parent.parent
+        style = NamedStyle(name='Standard')
+
+        so.style = style
         assert so._style.xfId == 0
 
 
