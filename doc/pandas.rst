@@ -44,10 +44,8 @@ To convert a dataframe into a worksheet highlighting the header and index::
     side = Side(style="thin", color="000000")
     border = Border(left=side, right=side, top=side, bottom=side)
 
-    for c in ws['A'] + ws[1]:
-        c.font = ft
-        c.alignment = al
-        c.border = border
+    for cell in ws['A'] + ws[1]:
+        cell.style = NamedStyle(name="Pandas Title", font=ft, alignment=al, border=border)
 
     wb.save("pandas_openpyxl.xlsx")
 
@@ -63,9 +61,7 @@ Alternatively, if you just want to convert the data you can use write-only mode:
     border = Border(left=side, right=side, top=side, bottom=side)
 
     cell = WriteOnlyCell(ws)
-    cell.font = ft
-    cell.alignment = al
-    cell.border = border
+    cell.style = NamedStyle(name="Pandas Title", font=ft, alignment=al, border=border)
 
      def format_first_row(row, cell):
 
