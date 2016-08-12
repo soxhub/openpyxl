@@ -14,6 +14,26 @@ from openpyxl.xml.functions import tostring, fromstring
 
 
 @pytest.fixture
+def ExternalCell():
+    from ..external import ExternalCell
+    return ExternalCell
+
+
+class TestExternalCell:
+
+
+    def test_read(self, ExternalCell):
+        src = """
+        <cell r="B1" t="str">
+            <v>D&#0252;sseldorf</v>
+        </cell>
+        """
+        node = fromstring(src)
+        cell = ExternalCell.from_tree(node)
+        assert cell.v == u'D\xfcsseldorf'
+
+
+@pytest.fixture
 def ExternalLink():
     from .. external import ExternalLink
     return ExternalLink
@@ -51,6 +71,7 @@ class TestExternalLink:
     def test_path(self, ExternalLink):
         link = ExternalLink()
         assert link.path == "/xl/externalLinks/externalLinkNone.xml"
+
 
 
 @pytest.fixture
