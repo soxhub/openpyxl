@@ -6,6 +6,7 @@ from warnings import warn
 from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
 from .proxy import StyleProxy
 from .cell_style import StyleArray
+from .named_styles import NamedStyle
 
 
 class StyleDescriptor(object):
@@ -64,11 +65,16 @@ class NamedStyleDescriptor(object):
     def __set__(self, instance, value):
         if not getattr(instance, "_style"):
             instance._style = StyleArray()
-        coll = getattr(instance.parent.parent, self.collection).names
-        if value not in coll:
-            raise ValueError("{0} is not a known style")
-        idx = coll.index(value)
-        setattr(instance._style, self.key, idx)
+        coll = getattr(instance.parent.parent, self.collection)
+        if isinstance(value, NamedStyle):
+            style = value
+            if style not in coll:
+                instance.parent.parent.add_named_style(style)
+        elif value not in coll.names:
+            raise ValueError("{0} is not a known style".format(value))
+        else:
+            style = coll[value]
+        instance._style = style.as_tuple()
 
 
     def __get__(self, instance, cls):

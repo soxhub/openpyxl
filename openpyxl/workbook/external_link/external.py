@@ -33,7 +33,7 @@ class ExternalCell(Serialisable):
     r = String()
     t = NoneSet(values=(['b', 'd', 'n', 'e', 's', 'str', 'inlineStr']))
     vm = Integer(allow_none=True)
-    v = NestedText(allow_none=True, expected_type=str)
+    v = NestedText(allow_none=True, expected_type=basestring)
 
     def __init__(self,
                  r=None,
