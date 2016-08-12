@@ -55,7 +55,7 @@ class TestExternalLink:
         assert link.externalBook.id == "rId1"
 
 
-    def test_ctor(self, ExternalLink):
+    def test_write(self, ExternalLink):
         expected  = """
         <externalLink
           xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -71,7 +71,6 @@ class TestExternalLink:
     def test_path(self, ExternalLink):
         link = ExternalLink()
         assert link.path == "/xl/externalLinks/externalLinkNone.xml"
-
 
 
 @pytest.fixture
