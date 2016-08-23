@@ -4,7 +4,5 @@ pipelines:
   default:
     - step:
         script:
-          - pip install -U -r requirements.txt
-          - pip --version
-          - tox --version
-          - tox -- -xrf openpyxl
+          - /tools/clean-launch.sh tox
+          - /tools/clean-launch.sh /tools/build-coverage.sh
