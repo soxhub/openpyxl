@@ -1,9 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
-
 from copy import copy
 
 from openpyxl.compat import deprecated
