@@ -17,7 +17,7 @@ def escape(value):
         Callback to escape chars
         """
         return "_x%04x_" % ord(match.group(0)) # py 2.6
-        return "_x{:0>4x}_".format(ord(match.group(0)))
+        #return "_x{:0>4x}_".format(ord(match.group(0)))
 
     return CHAR_REGEX.sub(_sub, value)
 
