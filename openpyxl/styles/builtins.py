@@ -6,24 +6,6 @@ from __future__ import absolute_import
 from .named_styles import NamedStyle
 from openpyxl.xml.functions import fromstring
 
-builtins = frozenset(
-    [
-        'Normal', 'Comma', 'Currency', 'Percent', 'Comma [0]',
-        'Currency [0] ', 'Hyperlink ', 'Followed Hyperlink ',
-        'Note', 'Warning Text ', 'Title ',
-        'Heading 1 ', 'Heading 2 ', 'Heading 3 ','Heading 4 ',
-        'Input ', 'Output ', 'Calculation ', 'Check Cell ', 'Linked Cell ', 'Total ',
-        'Good ', 'Bad ', 'Neutral ',
-        'Accent1 ', '20% - Accent1 ', '40% - Accent1 ', '60% - Accent1 ',
-        'Accent2 ', '20% - Accent2 ', '40% - Accent2 ', '60% - Accent2 ',
-        'Accent3 ', '20% - Accent3 ', '40% - Accent3 ', '60% - Accent3 ',
-        'Accent4 ', '20% - Accent4 ', '40% - Accent4 ', '60% - Accent4 ',
-        'Accent5 ', '20% - Accent5 ', '40% - Accent5 ', '60% - Accent5',
-        'Accent6 ', '20% - Accent6 ', '40% - Accent6 ', '60% - Accent6 ',
-        'Explanatory Text '
-    ]
-)
-
 
 normal = """
   <namedStyle builtinId="0" name="Normal">
@@ -52,6 +34,7 @@ normal = """
 comma = """
   <namedStyle builtinId="3" name="Comma">
     <alignment/>
+    <number_format>_-* #,##0.00\\ _€_-;\\-* #,##0.00\\ _€_-;_-* "-"??\\ _€_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
@@ -76,6 +59,7 @@ comma = """
 comma_0 = """
   <namedStyle builtinId="6" name="Comma [0]">
     <alignment/>
+    <number_format>_-* #,##0\\ _€_-;\\-* #,##0\\ _€_-;_-* "-"\\ _€_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
@@ -100,6 +84,7 @@ comma_0 = """
 currency = """
   <namedStyle builtinId="4" name="Currency">
     <alignment/>
+    <number_format>_-* #,##0.00\\ "$"_-;\\-* #,##0.00\\ "$"_-;_-* "-"??\\ "$"_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
@@ -124,6 +109,7 @@ currency = """
 currency_0 = """
   <namedStyle builtinId="7" name="Currency [0]">
     <alignment/>
+    <number_format>_-* #,##0\\ "$"_-;\\-* #,##0\\ "$"_-;_-* "-"\\ "$"_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
@@ -148,6 +134,7 @@ currency_0 = """
 percent = """
   <namedStyle builtinId="5" name="Percent">
     <alignment/>
+    <number_format>0%</number_format>
     <border>
       <left/>
       <right/>
@@ -185,7 +172,7 @@ hyperlink = """
     <font>
       <name val="Calibri"/>
       <family val="2"/>
-      <color theme="1"/>
+      <color theme="10"/>
       <sz val="12"/>
       <scheme val="minor"/>
     </font>
@@ -208,7 +195,7 @@ followed_hyperlink = """
     <font>
       <name val="Calibri"/>
       <family val="2"/>
-      <color theme="10"/>
+      <color theme="11"/>
       <sz val="12"/>
       <scheme val="minor"/>
     </font>
@@ -1334,3 +1321,57 @@ accent_6_60 = """
     <protection hidden="0" locked="1"/>
   </namedStyle>
 """
+
+styles = dict(
+    [
+        ('Normal', NamedStyle.from_tree(fromstring(normal))),
+        ('Comma', NamedStyle.from_tree(fromstring(comma))),
+        ('Currency', NamedStyle.from_tree(fromstring(currency))),
+        ('Percent', NamedStyle.from_tree(fromstring(percent))),
+        ('Comma [0]', NamedStyle.from_tree(fromstring(comma_0))),
+        ('Currency [0]', NamedStyle.from_tree(fromstring(currency_0))),
+        ('Hyperlink', NamedStyle.from_tree(fromstring(hyperlink))),
+        ('Followed Hyperlink', NamedStyle.from_tree(fromstring(followed_hyperlink))),
+        ('Note', NamedStyle.from_tree(fromstring(note))),
+        ('Warning Text', NamedStyle.from_tree(fromstring(warning))),
+        ('Title', NamedStyle.from_tree(fromstring(title))),
+        ('Headline 1', NamedStyle.from_tree(fromstring(headline_1))),
+        ('Headline 2', NamedStyle.from_tree(fromstring(headline_2))),
+        ('Headline 3', NamedStyle.from_tree(fromstring(headline_3))),
+        ('Headline 4', NamedStyle.from_tree(fromstring(headline_4))),
+        ('Input', NamedStyle.from_tree(fromstring(input))),
+        ('Output', NamedStyle.from_tree(fromstring(output))),
+        ('Calculation',NamedStyle.from_tree(fromstring(calculation))),
+        ('Check Cell', NamedStyle.from_tree(fromstring(check_cell))),
+        ('Linked Cell', NamedStyle.from_tree(fromstring(linked_cell))),
+        ('Total', NamedStyle.from_tree(fromstring(total))),
+        ('Good', NamedStyle.from_tree(fromstring(good))),
+        ('Bad', NamedStyle.from_tree(fromstring(bad))),
+        ('Neutral', NamedStyle.from_tree(fromstring(neutral))),
+        ('Accent1', NamedStyle.from_tree(fromstring(accent_1))),
+        ('20 % - Accent1', NamedStyle.from_tree(fromstring(accent_1_20))),
+        ('40 % - Accent1', NamedStyle.from_tree(fromstring(accent_1_40))),
+        ('60 % - Accent1', NamedStyle.from_tree(fromstring(accent_1_60))),
+        ('Accent2', NamedStyle.from_tree(fromstring(accent_2))),
+        ('20 % - Accent2', NamedStyle.from_tree(fromstring(accent_2_20))),
+        ('40 % - Accent2', NamedStyle.from_tree(fromstring(accent_2_40))),
+        ('60 % - Accent2', NamedStyle.from_tree(fromstring(accent_2_60))),
+        ('Accent3', NamedStyle.from_tree(fromstring(accent_3))),
+        ('20 % - Accent3', NamedStyle.from_tree(fromstring(accent_3_20))),
+        ('40 % - Accent3', NamedStyle.from_tree(fromstring(accent_3_40))),
+        ('60 % - Accent3', NamedStyle.from_tree(fromstring(accent_3_60))),
+        ('Accent4', NamedStyle.from_tree(fromstring(accent_4))),
+        ('20 % - Accent4', NamedStyle.from_tree(fromstring(accent_4_20))),
+        ('40 % - Accent4', NamedStyle.from_tree(fromstring(accent_4_40))),
+        ('60 % - Accent4', NamedStyle.from_tree(fromstring(accent_4_60))),
+        ('Accent5', NamedStyle.from_tree(fromstring(accent_5))),
+        ('20 % - Accent5', NamedStyle.from_tree(fromstring(accent_5_20))),
+        ('40 % - Accent5', NamedStyle.from_tree(fromstring(accent_5_40))),
+        ('60 % - Accent5', NamedStyle.from_tree(fromstring(accent_5_60))),
+        ('Accent6', NamedStyle.from_tree(fromstring(accent_6))),
+        ('20 % - Accent6', NamedStyle.from_tree(fromstring(accent_6_20))),
+        ('40 % - Accent6', NamedStyle.from_tree(fromstring(accent_6_40))),
+        ('60 % - Accent6', NamedStyle.from_tree(fromstring(accent_6_60))),
+        ('Explanatory Text', NamedStyle.from_tree(fromstring(explanatory))),
+    ]
+)
