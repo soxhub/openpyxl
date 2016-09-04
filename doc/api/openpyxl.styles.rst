@@ -13,6 +13,7 @@ Submodules
 
    openpyxl.styles.alignment
    openpyxl.styles.borders
+   openpyxl.styles.builtins
    openpyxl.styles.cell_style
    openpyxl.styles.colors
    openpyxl.styles.differential

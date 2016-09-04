@@ -119,3 +119,9 @@ class TestNamedStyle:
 
         so._style.xfId = 1
         assert so.style == "Blue"
+
+
+    def test_builtin(self, StyleableObject):
+        so = StyleableObject
+        so.style = "Hyperlink"
+        assert so.style == "Hyperlink"

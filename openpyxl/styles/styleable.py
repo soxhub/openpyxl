@@ -7,6 +7,7 @@ from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
 from .proxy import StyleProxy
 from .cell_style import StyleArray
 from .named_styles import NamedStyle
+from .builtins import styles
 
 
 class StyleDescriptor(object):
@@ -71,7 +72,12 @@ class NamedStyleDescriptor(object):
             if style not in coll:
                 instance.parent.parent.add_named_style(style)
         elif value not in coll.names:
-            raise ValueError("{0} is not a known style".format(value))
+            if value in styles:
+                style = styles[value]
+                if style not in coll:
+                    instance.parent.parent.add_named_style(style)
+            else:
+                raise ValueError("{0} is not a known style".format(value))
         else:
             style = coll[value]
         instance._style = style.as_tuple()
