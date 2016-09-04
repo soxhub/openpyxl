@@ -112,8 +112,7 @@ class Stylesheet(Serialisable):
             style.fill = self.fills[xf.fillId]
             style.border = self.borders[xf.borderId]
             if xf.numFmtId in custom:
-                fmt = custom[xf.numFmtId]
-                style.numFmtId = formats.index(fmt) + 164
+                style.number_format = custom[xf.numFmtId]
             if xf.alignment:
                 style.alignment = xf.alignment
             if xf.protection:
