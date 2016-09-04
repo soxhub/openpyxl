@@ -222,7 +222,10 @@ Once registered assign the style using just the name:
 Using builtin styles
 --------------------
 
-The specification includes some builtin styles which can also be used. Unfortunately, the names for these styles are stored in their localised forms. openpyxl will only recognise the English names. These are as follows:
+The specification includes some builtin styles which can also be used.
+Unfortunately, the names for these styles are stored in their localised
+forms. openpyxl will only recognise the English names and only exactly as
+written here. These are as follows:
 
 
 'Normal', # same as no style
