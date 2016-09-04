@@ -219,6 +219,68 @@ Once registered assign the style using just the name:
 >>> ws['D5'].style = 'highlight'
 
 
+Using builtin styles
+--------------------
+
+The specification includes some builtin styles which can also be used. Unfortunately, the names for these styles are stored in their localised forms. openpyxl will only recognise the English names. These are as follows:
+
+
+'Normal', # same as no style
+# Number formats
+'Comma',
+'Comma [0]',
+'Currency',
+'Currency [0]',
+'Percent',
+# Informative
+'Calculation',
+'Total',
+'Note',
+'Warning Text',
+'Explanatory Text',
+# Text styles
+'Title',
+'Headline 1',
+'Headline 2',
+'Headline 3',
+'Headline 4',
+'Hyperlink',
+'Followed Hyperlink',
+'Linked Cell',
+# Comparisons
+'Input',
+'Output',
+'Check Cell',
+'Good',
+'Bad',
+'Neutral',
+# Highlights
+'Accent1',
+'20 % - Accent1',
+'40 % - Accent1',
+'60 % - Accent1',
+'Accent2',
+'20 % - Accent2',
+'40 % - Accent2',
+'60 % - Accent2',
+'Accent3',
+'20 % - Accent3',
+'40 % - Accent3',
+'60 % - Accent3',
+'Accent4',
+'20 % - Accent4',
+'40 % - Accent4',
+'60 % - Accent4',
+'Accent5',
+'20 % - Accent5'
+'40 % - Accent5',
+'60 % - Accent5',
+'Accent6',
+'20 % - Accent6',
+'40 % - Accent6',
+'60 % - Accent6',
+
+
 Worksheet Additional Properties
 -------------------------------
 
