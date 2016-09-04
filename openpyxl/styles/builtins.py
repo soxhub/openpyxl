@@ -34,7 +34,7 @@ normal = """
 comma = """
   <namedStyle builtinId="3" name="Comma">
     <alignment/>
-    <number_format>_-* #,##0.00\\ _€_-;\\-* #,##0.00\\ _€_-;_-* "-"??\\ _€_-;_-@_-</number_format>
+    <number_format>_-* #,##0.00\\ _$_-;\\-* #,##0.00\\ _$_-;_-* "-"??\\ _$_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
@@ -59,7 +59,7 @@ comma = """
 comma_0 = """
   <namedStyle builtinId="6" name="Comma [0]">
     <alignment/>
-    <number_format>_-* #,##0\\ _€_-;\\-* #,##0\\ _€_-;_-* "-"\\ _€_-;_-@_-</number_format>
+    <number_format>_-* #,##0\\ _$_-;\\-* #,##0\\ _$_-;_-* "-"\\ _$_-;_-@_-</number_format>
     <border>
       <left/>
       <right/>
