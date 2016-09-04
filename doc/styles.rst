@@ -214,7 +214,7 @@ But named styles will also be registered automatically the first time they are a
 
 >>> ws['A1'].style = highlight
 
-Once registered assign the style using the name:
+Once registered assign the style using just the name:
 
 >>> ws['D5'].style = 'highlight'
 
