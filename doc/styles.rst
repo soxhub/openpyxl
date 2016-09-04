@@ -5,8 +5,7 @@ Introduction
 ------------
 
 Styles are used to change the look of your data while displayed on screen.
-They are also used to determine the number format being used for a given cell
-or range of cells.
+They are also used to determine the formatting for numbers.
 
 Styles can be applied to the following aspects:
 
@@ -61,7 +60,15 @@ The following are the default values
 ...                         hidden=False)
 >>>
 
-Styles are shared between objects and once they have been assigned they
+Cell Styles and Named Styles
+----------------------------
+
+There are two types of styles: cell styles and named styles, also known as style templates.
+
+Cell Styles
++++++++++++
+
+Cell styles are shared between objects and once they have been assigned they
 cannot be changed. This stops unwanted side-effects such as changing the
 style for lots of cells when instead of only one.
 
@@ -110,7 +117,7 @@ Styles can also be copied
 
 Basic Font Colors
 -----------------
-Colors are usually RGB or aRGB hexvalues. The `colors` module contains some constants
+Colors are usually RGB or aRGB hexvalues. The `colors` module contains some handy constants
 
 .. :: doctest
 
@@ -175,6 +182,41 @@ Edit Page Setup
 >>> ws.page_setup.paperSize = ws.PAPERSIZE_TABLOID
 >>> ws.page_setup.fitToHeight = 0
 >>> ws.page_setup.fitToWidth = 1
+
+
+Named Styles
+++++++++++++
+
+In contrast to Cell Styles, Named Styles are mutable. They make sense when
+you want to apply formatting to lots of different cells at once. NB. once you
+have assigned a named style to a cell, additional changes to the style will
+**not** affect the cell.
+
+Once a named style has been registered with a workbook, it can be referred to simply by name.
+
+
+Creating a Named Style
+----------------------
+
+.. :: doctest
+
+>>> from openpyxl.styles import NamedStyle, Font, Border, Side
+>>> highlight = NamedStyle(name="highlight")
+>>> highlight.font = Font(bold=True, size=20)
+>>> bd = Side(style='thick', color="000000")
+>>> highlight.border = Border(left=bd, top=bd, right=bd, bottom=bd)
+
+Once a named style has been created, it can be registered with the workbook:
+
+>>> wb.add_named_style(highlight)
+
+But named styles will also be registered automatically the first time they are assigned to a cell:
+
+>>> ws['A1'].style = highlight
+
+Once registered assign the style using the name:
+
+>>> ws['D5'].style = 'highlight'
 
 
 Worksheet Additional Properties
