@@ -205,6 +205,7 @@ Working with styles
 .. toctree::
 
     styles
+    worksheet_properties
 
 
 Conditional Formatting

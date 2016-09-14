@@ -6,7 +6,7 @@ import re
 
 
 def escape(value):
-    """
+    r"""
     Convert ASCII < 31 to OOXML: \n == _x + hex(ord(\n)) + _
     """
 
@@ -22,7 +22,7 @@ def escape(value):
 
 
 def unescape(value):
-    """
+    r"""
     Convert escaped strings to ASCIII: _x000a_ == \n
     """
 

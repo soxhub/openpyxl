@@ -228,96 +228,75 @@ forms. openpyxl will only recognise the English names and only exactly as
 written here. These are as follows:
 
 
-'Normal', # same as no style
-# Number formats
-'Comma',
-'Comma [0]',
-'Currency',
-'Currency [0]',
-'Percent',
-# Informative
-'Calculation',
-'Total',
-'Note',
-'Warning Text',
-'Explanatory Text',
-# Text styles
-'Title',
-'Headline 1',
-'Headline 2',
-'Headline 3',
-'Headline 4',
-'Hyperlink',
-'Followed Hyperlink',
-'Linked Cell',
-# Comparisons
-'Input',
-'Output',
-'Check Cell',
-'Good',
-'Bad',
-'Neutral',
-# Highlights
-'Accent1',
-'20 % - Accent1',
-'40 % - Accent1',
-'60 % - Accent1',
-'Accent2',
-'20 % - Accent2',
-'40 % - Accent2',
-'60 % - Accent2',
-'Accent3',
-'20 % - Accent3',
-'40 % - Accent3',
-'60 % - Accent3',
-'Accent4',
-'20 % - Accent4',
-'40 % - Accent4',
-'60 % - Accent4',
-'Accent5',
-'20 % - Accent5'
-'40 % - Accent5',
-'60 % - Accent5',
-'Accent6',
-'20 % - Accent6',
-'40 % - Accent6',
-'60 % - Accent6',
+* 'Normal' # same as no style
 
+Number formats
+++++++++++++++
 
-Worksheet Additional Properties
--------------------------------
+* 'Comma'
+* 'Comma [0]'
+* 'Currency'
+* 'Currency [0]'
+* 'Percent'
 
-These are advanced properties for particular behaviours, the most used ones
-are the "fitTopage" page setup property and the tabColor that define the
-background color of the worksheet tab.
+Informative
++++++++++++
 
-Available properties for worksheet:
-"enableFormatConditionsCalculation", "filterMode", "published",
-"syncHorizontal", "syncRef", "syncVertical", "transitionEvaluation",
-"transitionEntry", "tabColor". Available fields for page setup properties:
-"autoPageBreaks", "fitToPage". Available fields for outline properties:
-"applyStyles", "summaryBelow", "summaryRight", "showOutlineSymbols".
+* 'Calculation'
+* 'Total'
+* 'Note'
+* 'Warning Text'
+* 'Explanatory Text'
 
-see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.sheetproperties%28v=office.14%29.aspx_ for details.
+Text styles
++++++++++++
 
-..note::
-        By default, outline properties are intitialized so you can directly modify each of their 4 attributes, while page setup properties don't.
-        If you want modify the latter, you should first initialize a PageSetupPr object with the required parameters.
-        Once done, they can be directly modified by the routine later if needed.
+* 'Title'
+* 'Headline 1'
+* 'Headline 2'
+* 'Headline 3'
+* 'Headline 4'
+* 'Hyperlink'
+* 'Followed Hyperlink'
+* 'Linked Cell'
 
+Comparisons
++++++++++++
 
-.. :: doctest
+* 'Input'
+* 'Output'
+* 'Check Cell'
+* 'Good'
+* 'Bad'
+* 'Neutral'
 
->>> from openpyxl.workbook import Workbook
->>> from openpyxl.worksheet.properties import WorksheetProperties, PageSetupProperties
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>>
->>> wsprops = ws.sheet_properties
->>> wsprops.tabColor = "1072BA"
->>> wsprops.filterMode = False
->>> wsprops.PageSetupProperties = PageSetupProperties(fitToPage=True, autoPageBreaks=False)
->>> wsprops.outlinePr.summaryBelow = False
->>> wsprops.outlinePr.applyStyles = True
->>> wsprops.PageSetupProperties.autoPageBreaks = True
+Highlights
+++++++++++
+
+* 'Accent1'
+* '20 % - Accent1'
+* '40 % - Accent1'
+* '60 % - Accent1'
+* 'Accent2'
+* '20 % - Accent2'
+* '40 % - Accent2'
+* '60 % - Accent2'
+* 'Accent3'
+* '20 % - Accent3'
+* '40 % - Accent3'
+* '60 % - Accent3'
+* 'Accent4'
+* '20 % - Accent4'
+* '40 % - Accent4'
+* '60 % - Accent4'
+* 'Accent5'
+* '20 % - Accent5'
+* '40 % - Accent5'
+* '60 % - Accent5'
+* 'Accent6'
+* '20 % - Accent6'
+* '40 % - Accent6'
+* '60 % - Accent6'
+* 'Pandas'
+
+For more information about the builtin styles please refer to the :mod:`openpyxl.styles.builtins`

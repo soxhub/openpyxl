@@ -29,12 +29,18 @@ Bug fixes
 * `#663 <https://bitbucket.org/openpyxl/openpyxl/issues/663>`_ Strings in external workbooks not unicode
 
 
+Major changes
+-------------
+
+* Add support for builtin styles and include one for Pandas
+
+
 Minor changes
 -------------
 
 * Add a `keep_links` option to `load_workbook`. External links contain cached
-copies of the external workbooks. If these are big it can be advantageous to
-be able to disable them.
+  copies of the external workbooks. If these are big it can be advantageous to
+  be able to disable them.
 * Provide an example for using cell ranges in DataValidation.
 
 
