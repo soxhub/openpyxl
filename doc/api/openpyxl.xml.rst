@@ -13,5 +13,4 @@ Submodules
 
    openpyxl.xml.constants
    openpyxl.xml.functions
-   openpyxl.xml.namespace
 
