@@ -299,4 +299,4 @@ Highlights
 * '60 % - Accent6'
 * 'Pandas'
 
-For more information about the builtin styles please refer to the :file:`openpyxl.styles.builtins`
+For more information about the builtin styles please refer to the :mod:`openpyxl.styles.builtins`
