@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+# Copyright (c) 2010-2016 openpyxl
+
 """
 OOXML has non-standard escaping for characters < \031
 """
@@ -6,8 +9,8 @@ import re
 
 
 def escape(value):
-    """
-    Convert ASCII < 31 to OOXML: \n == _x + hex(ord(\n)) + _
+    r"""
+    Convert ASCII < 31 to OOXML: \n == _x + hex(ord(\n)) +_
     """
 
     CHAR_REGEX = re.compile(r"[\001-\031]")
@@ -17,13 +20,12 @@ def escape(value):
         Callback to escape chars
         """
         return "_x%04x_" % ord(match.group(0)) # py 2.6
-        #return "_x{:0>4x}_".format(ord(match.group(0)))
 
     return CHAR_REGEX.sub(_sub, value)
 
 
 def unescape(value):
-    """
+    r"""
     Convert escaped strings to ASCIII: _x000a_ == \n
     """
 
