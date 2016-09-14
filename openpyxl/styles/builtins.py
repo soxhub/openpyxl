@@ -1322,6 +1322,26 @@ accent_6_60 = """
   </namedStyle>
 """
 
+pandas_highlight = """
+  <namedStyle hidden="0" name="Pandas">
+    <alignment horizontal="center"/>
+    <border>
+      <left style="thin"><color rgb="00000000"/></left>
+      <right style="thin"><color rgb="00000000"/></right>
+      <top style="thin"><color rgb="00000000"/></top>
+      <bottom style="thin"><color rgb="00000000"/></bottom>
+      <diagonal/>
+    </border>
+    <fill>
+      <patternFill/>
+    </fill>
+    <font>
+      <b val="1"/>
+    </font>
+    <protection hidden="0" locked="1"/>
+  </namedStyle>
+"""
+
 styles = dict(
     [
         ('Normal', NamedStyle.from_tree(fromstring(normal))),
@@ -1373,5 +1393,6 @@ styles = dict(
         ('40 % - Accent6', NamedStyle.from_tree(fromstring(accent_6_40))),
         ('60 % - Accent6', NamedStyle.from_tree(fromstring(accent_6_60))),
         ('Explanatory Text', NamedStyle.from_tree(fromstring(explanatory))),
+        ('Pandas', NamedStyle.from_tree(fromstring(pandas_highlight)))
     ]
 )
