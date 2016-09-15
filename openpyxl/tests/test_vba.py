@@ -5,24 +5,16 @@ from __future__ import absolute_import
 # Python stdlib imports
 from io import BytesIO
 import zipfile
+import pytest
 
 # package imports
 from openpyxl.tests.helper import compare_xml
+from openpyxl.packaging.manifest import Manifest
 from openpyxl.reader.excel import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
-from openpyxl.packaging.manifest import write_content_types
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS, CONTYPES_NS
 
-def test_write_content_types(datadir):
-    datadir.join('reader').chdir()
-    wb = load_workbook('vba-test.xlsm', keep_vba=True)
-    manifest = write_content_types(wb)
-    datadir.chdir()
-    datadir.join('writer').chdir()
-    with open('Content_types_vba.xml') as expected:
-        diff = compare_xml(tostring(manifest.to_tree()), expected.read())
-        assert diff is None, diff
 
 def test_content_types(datadir):
     datadir.join('reader').chdir()
@@ -77,7 +69,21 @@ def test_save_with_saved_comments(datadir):
     wb = load_workbook(fname, keep_vba=True)
     buf = save_virtual_workbook(wb)
     files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
-    expected = set(zipfile.ZipFile(fname, 'r').namelist())
+    expected = set([
+        'xl/styles.xml',
+        'docProps/core.xml',
+        'xl/_rels/workbook.xml.rels',
+        'xl/drawings/vmlDrawing1.vml',
+        'xl/comments/comment1.xml',
+        'docProps/app.xml',
+        '[Content_Types].xml',
+        'xl/worksheets/sheet1.xml',
+        'xl/sharedStrings.xml',
+        'xl/worksheets/_rels/sheet1.xml.rels',
+        '_rels/.rels',
+        'xl/workbook.xml',
+        'xl/theme/theme1.xml'
+    ])
     assert files == expected
 
 def test_save_without_vba(datadir):
@@ -85,13 +91,21 @@ def test_save_without_vba(datadir):
     fname = 'vba-test.xlsm'
     vbFiles = set(['xl/activeX/activeX2.xml',
                    'xl/drawings/_rels/vmlDrawing1.vml.rels',
-                   'xl/activeX/_rels/activeX1.xml.rels', 'xl/drawings/vmlDrawing1.vml',
-                   'xl/activeX/activeX1.bin', 'xl/media/image1.emf', 'xl/vbaProject.bin',
+                   'xl/activeX/_rels/activeX1.xml.rels',
+                   'xl/drawings/vmlDrawing1.vml',
+                   'xl/activeX/activeX1.bin',
+                   'xl/media/image1.emf',
+                   'xl/vbaProject.bin',
                    'xl/activeX/_rels/activeX2.xml.rels',
-                   'xl/worksheets/_rels/sheet1.xml.rels', 'customUI/customUI.xml',
-                   'xl/media/image2.emf', 'xl/ctrlProps/ctrlProp1.xml',
-                   'xl/activeX/activeX2.bin', 'xl/activeX/activeX1.xml',
-                   'xl/ctrlProps/ctrlProp2.xml', 'xl/drawings/drawing1.xml'])
+                   'xl/worksheets/_rels/sheet1.xml.rels',
+                   'customUI/customUI.xml',
+                   'xl/media/image2.emf',
+                   'xl/ctrlProps/ctrlProp1.xml',
+                   'xl/activeX/activeX2.bin',
+                   'xl/activeX/activeX1.xml',
+                   'xl/ctrlProps/ctrlProp2.xml',
+                   'xl/drawings/drawing1.xml'
+                   ])
 
     wb = load_workbook(fname, keep_vba=False)
     buf = save_virtual_workbook(wb)

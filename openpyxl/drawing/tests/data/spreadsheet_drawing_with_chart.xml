@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">
+  <oneCellAnchor>
+    <from>
+      <col>1</col>
+      <colOff>0</colOff>
+      <row>28</row>
+      <rowOff>0</rowOff>
+    </from>
+    <ext cx="18000000" cy="7200000"/>
+    <graphicFrame>
+      <nvGraphicFramePr>
+        <cNvPr id="1" name="Chart 1"/>
+        <cNvGraphicFramePr/>
+      </nvGraphicFramePr>
+      <xfrm/>
+      <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+        </a:graphicData>
+      </a:graphic>
+    </graphicFrame>
+    <clientData/>
+  </oneCellAnchor>
+</wsDr>

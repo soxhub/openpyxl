@@ -2,20 +2,15 @@
 
 """Setup script for packaging openpyxl.
 
-Requires setuptools.
-
-To build the setuptools egg use
-    python setup.py bdist_egg
-and either upload it to the PyPI with:
+To build a package for distribution:
+    python setup.py sdist
+and upload it to the PyPI with:
     python setup.py upload
-or upload to your own server and register the release with PyPI:
-    python setup.py register
 
-A source distribution (.zip) can be built with
-    python setup.py sdist --format=zip
+Install a link for development work:
+    pip install -e .
 
-That uses the manifest.in file for data files rather than searching for
-them here.
+Thee manifest.in file is used for data files.
 
 """
 
@@ -25,10 +20,9 @@ import warnings
 if sys.version_info < (2, 6):
     raise Exception("Python >= 2.6 is required.")
 elif sys.version_info[:2] == (3, 2):
-    warnings.warn("Python 3.2 is no longer officially supported")
+    warnings.warn("Python 3.2 is not supported")
 
-from setuptools import setup, Extension, find_packages
-import re
+from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -80,5 +74,6 @@ setup(name='openpyxl',
                  'Programming Language :: Python :: 2.7',
                  'Programming Language :: Python :: 3.3',
                  'Programming Language :: Python :: 3.4',
+                 'Programming Language :: Python :: 3.5',
                  ],
     )

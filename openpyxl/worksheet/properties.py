@@ -6,12 +6,10 @@ from __future__ import absolute_import
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import String, Bool, Typed
 from openpyxl.styles.colors import ColorDescriptor
-from openpyxl.xml.constants import SHEET_MAIN_NS
 
 
 class Outline(Serialisable):
 
-    tag = "{%s}outlinePr" % SHEET_MAIN_NS
     tagname = "outlinePr"
 
     applyStyles = Bool(allow_none=True)
@@ -34,7 +32,6 @@ class Outline(Serialisable):
 
 class PageSetupProperties(Serialisable):
 
-    tag = "{%s}pageSetUpPr" % SHEET_MAIN_NS
     tagname = "pageSetUpPr"
 
     autoPageBreaks = Bool(allow_none=True)
@@ -47,7 +44,6 @@ class PageSetupProperties(Serialisable):
 
 class WorksheetProperties(Serialisable):
 
-    tag = "{%s}sheetPr" % SHEET_MAIN_NS
     tagname = "sheetPr"
 
     codeName = String(allow_none=True)
@@ -98,6 +94,5 @@ class WorksheetProperties(Serialisable):
             self.outlinePr = outlinePr
 
         if pageSetUpPr is None:
-            self.pageSetUpPr = PageSetupProperties()
-        else:
-            self.pageSetUpPr = pageSetUpPr
+            pageSetUpPr = PageSetupProperties()
+        self.pageSetUpPr = pageSetUpPr

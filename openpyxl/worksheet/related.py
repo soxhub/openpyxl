@@ -14,5 +14,5 @@ class Related(Serialisable):
         self.id = id
 
 
-    def to_tree(self, tagname):
+    def to_tree(self, tagname, idx=None):
         return super(Related, self).to_tree(tagname)

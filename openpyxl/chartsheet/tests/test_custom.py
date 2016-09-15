@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.worksheet import PageMargins
+from openpyxl.worksheet.page import PageMargins
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 

@@ -5,8 +5,7 @@ Introduction
 ------------
 
 Styles are used to change the look of your data while displayed on screen.
-They are also used to determine the number format being used for a given cell
-or range of cells.
+They are also used to determine the formatting for numbers.
 
 Styles can be applied to the following aspects:
 
@@ -61,7 +60,15 @@ The following are the default values
 ...                         hidden=False)
 >>>
 
-Styles are shared between objects and once they have been assigned they
+Cell Styles and Named Styles
+----------------------------
+
+There are two types of styles: cell styles and named styles, also known as style templates.
+
+Cell Styles
++++++++++++
+
+Cell styles are shared between objects and once they have been assigned they
 cannot be changed. This stops unwanted side-effects such as changing the
 style for lots of cells when instead of only one.
 
@@ -95,9 +102,11 @@ Styles can also be copied
 .. :: doctest
 
 >>> from openpyxl.styles import Font
+>>> from copy import copy
 >>>
 >>> ft1 = Font(name='Arial', size=14)
->>> ft2 = ft1.copy(name="Tahoma")
+>>> ft2 = copy(ft1)
+>>> ft2.name = "Tahoma"
 >>> ft1.name
 'Arial'
 >>> ft2.name
@@ -108,7 +117,7 @@ Styles can also be copied
 
 Basic Font Colors
 -----------------
-Colors are usually RGB or aRGB hexvalues. The `colors` module contains some constants
+Colors are usually RGB or aRGB hexvalues. The `colors` module contains some handy constants
 
 .. :: doctest
 
@@ -147,6 +156,18 @@ yourself. This is a restriction of the file format::
 >>> row = ws.row_dimensions[1]
 >>> row.font = Font(underline="single")
 
+.. _styling-merged-cells:
+
+Styling Merged Cells
+--------------------
+
+Sometimes you want to format a range of cells as if they were a single
+object. Excel pretends that this is possible by merging cells (deleting all
+but the top-left cell) and then recreating them in order to apply
+pseudo-styles.
+
+.. literalinclude:: format_merged_cells.py
+
 
 Edit Page Setup
 -------------------
@@ -163,78 +184,119 @@ Edit Page Setup
 >>> ws.page_setup.fitToWidth = 1
 
 
-Edit Print Options
--------------------
-.. :: doctest
+Named Styles
+++++++++++++
 
->>> from openpyxl.workbook import Workbook
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>>
->>> ws.print_options.horizontalCentered = True
->>> ws.print_options.verticalCentered = True
+In contrast to Cell Styles, Named Styles are mutable. They make sense when
+you want to apply formatting to lots of different cells at once. NB. once you
+have assigned a named style to a cell, additional changes to the style will
+**not** affect the cell.
+
+Once a named style has been registered with a workbook, it can be referred to simply by name.
 
 
-
-Header / Footer
----------------
-
-Headers and footers use their own formatting language. This is fully
-supported when writing them but, due to the complexity and the possibility of
-nesting, only partially when reading them.
-
+Creating a Named Style
+----------------------
 
 .. :: doctest
 
->>> from openpyxl.workbook import Workbook
->>>
->>> wb = Workbook()
->>> ws = wb.worksheets[0]
->>>
->>> ws.header_footer.center_header.text = 'My Excel Page'
->>> ws.header_footer.center_header.font_size = 14
->>> ws.header_footer.center_header.font_name = "Tahoma,Bold"
->>> ws.header_footer.center_header.font_color = "CC3366"
+>>> from openpyxl.styles import NamedStyle, Font, Border, Side
+>>> highlight = NamedStyle(name="highlight")
+>>> highlight.font = Font(bold=True, size=20)
+>>> bd = Side(style='thick', color="000000")
+>>> highlight.border = Border(left=bd, top=bd, right=bd, bottom=bd)
 
-# Or just
->>> ws.header_footer.right_footer.text = 'My Right Footer'
+Once a named style has been created, it can be registered with the workbook:
 
+>>> wb.add_named_style(highlight)
 
-Worksheet Additional Properties
--------------------------------
+But named styles will also be registered automatically the first time they are assigned to a cell:
 
-These are advanced properties for particular behaviours, the most used ones
-are the "fitTopage" page setup property and the tabColor that define the
-background color of the worksheet tab.
+>>> ws['A1'].style = highlight
 
-Available properties for worksheet: "codeName",
-"enableFormatConditionsCalculation", "filterMode", "published",
-"syncHorizontal", "syncRef", "syncVertical", "transitionEvaluation",
-"transitionEntry", "tabColor". Available fields for page setup properties:
-"autoPageBreaks", "fitToPage". Available fields for outline properties:
-"applyStyles", "summaryBelow", "summaryRight", "showOutlineSymbols".
+Once registered assign the style using just the name:
 
-see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.sheetproperties%28v=office.14%29.aspx_ for details.
-
-..note::
-        By default, outline properties are intitialized so you can directly modify each of their 4 attributes, while page setup properties don't.
-        If you want modify the latter, you should first initialize a PageSetupPr object with the required parameters.
-        Once done, they can be directly modified by the routine later if needed.
+>>> ws['D5'].style = 'highlight'
 
 
-.. :: doctest
+Using builtin styles
+--------------------
 
->>> from openpyxl.workbook import Workbook
->>> from openpyxl.worksheet.properties import WorksheetProperties, PageSetupProperties
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>>
->>> wsprops = ws.sheet_properties
->>> wsprops.tabColor = "1072BA"
->>> wsprops.filterMode = False
->>> wsprops.PageSetupProperties = PageSetupProperties(fitToPage=True, autoPageBreaks=False)
->>> wsprops.outlinePr.summaryBelow = False
->>> wsprops.outlinePr.applyStyles = True
->>> wsprops.PageSetupProperties.autoPageBreaks = True
+The specification includes some builtin styles which can also be used.
+Unfortunately, the names for these styles are stored in their localised
+forms. openpyxl will only recognise the English names and only exactly as
+written here. These are as follows:
+
+
+* 'Normal' # same as no style
+
+Number formats
+++++++++++++++
+
+* 'Comma'
+* 'Comma [0]'
+* 'Currency'
+* 'Currency [0]'
+* 'Percent'
+
+Informative
++++++++++++
+
+* 'Calculation'
+* 'Total'
+* 'Note'
+* 'Warning Text'
+* 'Explanatory Text'
+
+Text styles
++++++++++++
+
+* 'Title'
+* 'Headline 1'
+* 'Headline 2'
+* 'Headline 3'
+* 'Headline 4'
+* 'Hyperlink'
+* 'Followed Hyperlink'
+* 'Linked Cell'
+
+Comparisons
++++++++++++
+
+* 'Input'
+* 'Output'
+* 'Check Cell'
+* 'Good'
+* 'Bad'
+* 'Neutral'
+
+Highlights
+++++++++++
+
+* 'Accent1'
+* '20 % - Accent1'
+* '40 % - Accent1'
+* '60 % - Accent1'
+* 'Accent2'
+* '20 % - Accent2'
+* '40 % - Accent2'
+* '60 % - Accent2'
+* 'Accent3'
+* '20 % - Accent3'
+* '40 % - Accent3'
+* '60 % - Accent3'
+* 'Accent4'
+* '20 % - Accent4'
+* '40 % - Accent4'
+* '60 % - Accent4'
+* 'Accent5'
+* '20 % - Accent5'
+* '40 % - Accent5'
+* '60 % - Accent5'
+* 'Accent6'
+* '20 % - Accent6'
+* '40 % - Accent6'
+* '60 % - Accent6'
+* 'Pandas'
+
+For more information about the builtin styles please refer to the :mod:`openpyxl.styles.builtins`

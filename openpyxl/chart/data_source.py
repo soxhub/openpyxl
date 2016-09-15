@@ -92,7 +92,7 @@ class StrVal(Serialisable):
     tagname = "strVal"
 
     idx = Integer()
-    v = NestedString()
+    v = NestedText(expected_type=unicode)
 
     def __init__(self,
                  idx=0,

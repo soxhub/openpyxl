@@ -20,30 +20,28 @@ class TestFont:
 
     def test_ctor(self, Font):
         f = Font()
-        assert f.name == 'Calibri'
-        assert f.size == 11
-        assert f.bold is False
-        assert f.italic is False
-        assert f.underline is None
-        assert f.strikethrough is False
-        assert f.color.value == '00000000'
-        assert f.color.type == 'rgb'
+        assert f.name is None
+        assert f.size is None
+        assert not f.bold
+        assert not f.italic
+        assert not f.underline
+        assert f.strikethrough is None
+        assert f.color is None
         assert f.vertAlign is None
         assert f.charset is None
 
 
-    def test_serialise(self, Font):
-        ft = Font(name='Calibri', charset=204, vertAlign='superscript', underline='single')
+    def test_serialise(self):
+        from ..fonts import DEFAULT_FONT
+        ft = DEFAULT_FONT
         xml = tostring(ft.to_tree())
         expected = """
         <font>
-          <name val="Calibri"></name>
-          <charset val="204"></charset>
-          <family val="2"></family>
-          <color rgb="00000000"></color>
-          <sz val="11"></sz>
-          <u val="single"/>
-          <vertAlign val="superscript" />
+          <name val="Calibri" />
+          <family val="2" />
+          <color theme="1" />
+          <sz val="11" />
+          <scheme val="minor" />
          </font>
         """
         diff = compare_xml(xml, expected)
@@ -63,6 +61,7 @@ class TestFont:
          </font>"""
         xml = fromstring(src)
         ft = Font.from_tree(xml)
-        assert ft == Font(name='Calibri', charset=204, vertAlign='superscript', underline='single', color="FF3300FF")
+        assert ft == Font(name='Calibri', charset=204, family=2, sz=11,
+                          vertAlign='superscript', underline='single', color="FF3300FF")
 
 

@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from openpyxl.compat import deprecated
+
 
 class Comment(object):
 
@@ -16,6 +18,17 @@ class Comment(object):
     def parent(self):
         return self._parent
 
+
+    def __eq__(self, other):
+        return (
+            self.content == other.content
+            and self.author == other.author
+        )
+
+    def __repr__(self):
+        return "Comment: {0} by {1}".format(self.content, self.author)
+
+
     @parent.setter
     def parent(self, cell):
         if cell is not None and self._parent is not None and self._parent != cell:
@@ -29,7 +42,6 @@ class Comment(object):
         Any comment text stripped of all formatting.
         """
         return self.content
-
 
     @text.setter
     def text(self, value):

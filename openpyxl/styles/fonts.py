@@ -2,7 +2,12 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 
-from openpyxl.descriptors import Alias
+from openpyxl.descriptors import (
+    Alias,
+    Sequence,
+    Integer
+)
+from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.descriptors.nested import (
     NestedValue,
@@ -13,8 +18,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedFloat,
 )
-from .hashable import HashableObject
-from .colors import ColorDescriptor, BLACK
+from .colors import ColorDescriptor, Color, BLACK
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement
@@ -25,7 +29,7 @@ def _no_value(tagname, value, namespace=None):
         return Element(tagname, val=safe_string(value))
 
 
-class Font(HashableObject):
+class Font(Serialisable):
     """Font options used in styles."""
 
     UNDERLINE_DOUBLE = 'double'
@@ -33,7 +37,7 @@ class Font(HashableObject):
     UNDERLINE_SINGLE = 'single'
     UNDERLINE_SINGLE_ACCOUNTING = 'singleAccounting'
 
-    name = NestedString()
+    name = NestedString(allow_none=True)
     charset = NestedInteger(allow_none=True)
     family = NestedMinMax(min=0, max=14, allow_none=True)
     sz = NestedFloat(allow_none=True)
@@ -42,12 +46,12 @@ class Font(HashableObject):
     bold = Alias("b")
     i = NestedBool(to_tree=_no_value)
     italic = Alias("i")
-    strike = NestedBool(to_tree=_no_value)
+    strike = NestedBool(allow_none=True)
     strikethrough = Alias("strike")
-    outline = NestedBool(to_tree=_no_value)
-    shadow = NestedBool(to_tree=_no_value)
-    condense = NestedBool(to_tree=_no_value)
-    extend = NestedBool(to_tree=_no_value)
+    outline = NestedBool(allow_none=True)
+    shadow = NestedBool(allow_none=True)
+    condense = NestedBool(allow_none=True)
+    extend = NestedBool(allow_none=True)
     u = NestedNoneSet(values=('single', 'double', 'singleAccounting',
                              'doubleAccounting'))
     underline = Alias("u")
@@ -61,14 +65,12 @@ class Font(HashableObject):
                   'shadow', 'condense', 'color', 'extend', 'sz', 'u', 'vertAlign',
                   'scheme')
 
-    __fields__ = __elements__
 
-
-    def __init__(self, name='Calibri', sz=11, b=False, i=False, charset=None,
-                 u=None, strike=False, color=BLACK, scheme=None, family=2, size=None,
+    def __init__(self, name=None, sz=None, b=None, i=None, charset=None,
+                 u=None, strike=None, color=None, scheme=None, family=None, size=None,
                  bold=None, italic=None, strikethrough=None, underline=None,
-                 vertAlign=None, outline=False, shadow=False, condense=False,
-                 extend=False):
+                 vertAlign=None, outline=None, shadow=None, condense=None,
+                 extend=None):
         self.name = name
         self.family = family
         if size is not None:
@@ -96,6 +98,4 @@ class Font(HashableObject):
         self.scheme = scheme
 
 
-from . colors import Color
-
-DEFAULT_FONT = Font(color=Color(theme=1), scheme="minor")
+DEFAULT_FONT = Font(name="Calibri", sz=11, family=2, b=False, i=False, color=Color(theme=1), scheme="minor")

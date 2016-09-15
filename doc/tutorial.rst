@@ -24,9 +24,9 @@ using the :func:`openpyxl.workbook.Workbook.active` property ::
 You can also create new worksheets by using the
 :func:`openpyxl.workbook.Workbook.create_sheet` method ::
 
-    >>> ws1 = wb.create_sheet() # insert at the end (default)
+    >>> ws1 = wb.create_sheet("Mysheet") # insert at the end (default)
     # or
-    >>> ws2 = wb.create_sheet(0) # insert at first position
+    >>> ws2 = wb.create_sheet("Mysheet", 0) # insert at first position
 
 Sheets are given a name automatically when they are created.
 They are numbered in sequence (Sheet, Sheet1, Sheet2, ...).
@@ -39,24 +39,35 @@ You can change this providing an RRGGBB color code to the sheet_properties.tabCo
 
     ws.sheet_properties.tabColor = "1072BA"
 
-Once you gave a worksheet a name, you can get it as a key of the workbook or
-using the :func:`openpyxl.workbook.Workbook.get_sheet_by_name` method ::
+Once you gave a worksheet a name, you can get it as a key of the workbook::
 
     >>> ws3 = wb["New Title"]
-    >>> ws4 = wb.get_sheet_by_name("New Title")
-    >>> ws is ws3 is ws4
-    True
 
 You can review the names of all worksheets of the workbook with the
-:func:`openpyxl.workbook.Workbook.get_sheet_names` method ::
+:func:`openpyxl.workbook.Workbook.sheetnames` property ::
 
-    >>> print(wb.get_sheet_names())
+    >>> print(wb.sheetnames)
     ['Sheet2', 'New Title', 'Sheet1']
 
 You can loop through worksheets ::
 
     >>> for sheet in wb:
     ...     print(sheet.title)
+
+You can create copies of worksheets within a single workbook:
+
+:func:`openpyxl.workbook.Workbook.copy_worksheet` method::
+
+    >>> source = wb.active
+    >>> target = wb.copy_worksheet(source)
+
+.. note::
+
+    Only cells and styles can be copied. You cannot copy worksheets between
+    workbooks.
+
+
+You can copy worksheets in a workbook with the
 
 
 Playing with data
@@ -76,19 +87,16 @@ Values can be directly assigned ::
 
     >>> ws['A4'] = 4
 
-There is also the :func:`openpyxl.worksheet.Worksheet.cell` method::
+There is also the :func:`openpyxl.worksheet.Worksheet.cell` method.
 
-    >>> c = ws.cell('A4')
+This provides access to cells using row and column notation::
 
-You can also access a cell using row and column notation::
-
-    >>> d = ws.cell(row = 4, column = 2)
+    >>> d = ws.cell(row=4, column=2, value=10)
 
 .. note::
 
     When a worksheet is created in memory, it contains no `cells`. They are
-    created when first accessed. This way we don't create objects that would never
-    be accessed, thus reducing the memory footprint.
+    created when first accessed.
 
 .. warning::
 
@@ -99,11 +107,10 @@ You can also access a cell using row and column notation::
 
         >>> for i in range(1,101):
         ...        for j in range(1,101):
-        ...            ws.cell(row = i, column = j)
+        ...            ws.cell(row=i, column=j)
 
     will create 100x100 cells in memory, for nothing.
 
-    However, there is a way to clean all those unwanted cells, we'll see that later.
 
 
 Accessing many cells
@@ -113,15 +120,19 @@ Ranges of cells can be accessed using slicing ::
 
     >>> cell_range = ws['A1':'C2']
 
+
+Ranges of rows or columns can be obtained similarly::
+
+    >>> colC = ws['C']
+    >>> col_range = ws['C:D']
+    >>> row10 = ws[10]
+    >>> row_range = ws[5:10]
+
 You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
 
-    >>> tuple(ws.iter_rows('A1:C2'))
-    ((<Cell Sheet1.A1>, <Cell Sheet1.B1>, <Cell Sheet1.C1>),
-     (<Cell Sheet1.A2>, <Cell Sheet1.B2>, <Cell Sheet1.C2>))
-
-    >>> for row in ws.iter_rows('A1:C2'):
-    ...        for cell in row:
-    ...            print cell
+    >>> for row in ws.iter_rows(min_row=1, max_col=3, max_row=2):
+    ...    for cell in row:
+    ...        print(cell)
     <Cell Sheet1.A1>
     <Cell Sheet1.B1>
     <Cell Sheet1.C1>
@@ -129,12 +140,25 @@ You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
     <Cell Sheet1.B2>
     <Cell Sheet1.C2>
 
+Likewise the :func:`openpyxl.worksheet.Worksheet.iter_cols` method will return columns::
+
+    >>> for col in ws.iter_cols(min_row=1, max_col=3, max_row=2):
+    ...     for cell in col:
+    ...         print(cell)
+    <Cell Sheet1.A1>
+    <Cell Sheet1.A2>
+    <Cell Sheet1.B1>
+    <Cell Sheet1.B2>
+    <Cell Sheet1.C1>
+    <Cell Sheet1.C2>
+
+
 If you need to iterate through all the rows or columns of a file, you can instead use the
 :func:`openpyxl.worksheet.Worksheet.rows` property::
 
     >>> ws = wb.active
     >>> ws['C9'] = 'hello world'
-    >>> ws.rows
+    >>> tuple(ws.rows)
     ((<Cell Sheet.A1>, <Cell Sheet.B1>, <Cell Sheet.C1>),
     (<Cell Sheet.A2>, <Cell Sheet.B2>, <Cell Sheet.C2>),
     (<Cell Sheet.A3>, <Cell Sheet.B3>, <Cell Sheet.C3>),
@@ -147,7 +171,7 @@ If you need to iterate through all the rows or columns of a file, you can instea
 
 or the :func:`openpyxl.worksheet.Worksheet.columns` property::
 
-    >>> ws.columns
+    >>> tuple(ws.columns)
     ((<Cell Sheet.A1>,
     <Cell Sheet.A2>,
     <Cell Sheet.A3>,
@@ -222,20 +246,18 @@ The simplest and safest way to save a workbook is by using the
     As OOXML files are basically ZIP files, you can also end the filename
     with .zip and open it with your favourite ZIP archive manager.
 
-You can specify the attribute as_template=True, to save the document
-as a template
+You can specify the attribute `template=True`, to save a workbook
+as a template::
 
-    >>> wb = load_workbook('document.xlsx')# doctest: +SKIP
-    >>> wb.save('document_template.xltx', as_template=True)# doctest: +SKIP
+    >>> wb = load_workbook('document.xlsx')
+    >>> wb.template = True
+    >>> wb.save('document_template.xltx')
 
-or specify the attribute as_template=False (by default), to save
-the document template (or document) as document.
+or set this attribute to `False` (default), to save as a document::
 
-    >>> wb = load_workbook('document_template.xltx')# doctest: +SKIP
-    >>> wb.save('document.xlsx', as_template=False)# doctest: +SKIP
-
-    >>> wb = load_workbook('document.xlsx')# doctest: +SKIP
-    >>> wb.save('new_document.xlsx', as_template=False)# doctest: +SKIP
+    >>> wb = load_workbook('document_template.xltx')
+    >>> wb.template = False
+    >>> wb.save('document.xlsx', as_template=False)
 
 .. warning::
 
@@ -245,27 +267,26 @@ the document template (or document) as document.
 
 .. note::
 
-    The following will fail:
+    The following will fail::
 
-    >>> wb = load_workbook('document.xlsx')# doctest: +SKIP
+    >>> wb = load_workbook('document.xlsx')
     >>> # Need to save with the extension *.xlsx
-    >>> wb.save('new_document.xlsm')# doctest: +SKIP
+    >>> wb.save('new_document.xlsm')
     >>> # MS Excel can't open the document
     >>>
     >>> # or
     >>>
     >>> # Need specify attribute keep_vba=True
-    >>> wb = load_workbook('document.xlsm')# doctest: +SKIP
-    >>> wb.save('new_document.xlsm')# doctest: +SKIP
-    >>> # MS Excel can't open the document
+    >>> wb = load_workbook('document.xlsm')
+    >>> wb.save('new_document.xlsm')
+    >>> # MS Excel will not open the document
     >>>
     >>> # or
     >>>
-    >>> wb = load_workbook('document.xltm', keep_vba=True)# doctest: +SKIP
-    >>> # If us need template document, then we need specify extension as *.xltm.
-    >>> # If us need document, then we need specify attribute as_template=False.
-    >>> wb.save('new_document.xlsm', as_template=True)# doctest: +SKIP
-    >>> # MS Excel can't open the document
+    >>> wb = load_workbook('document.xltm', keep_vba=True)
+    >>> # If we need a template document, then we must specify extension as *.xltm.
+    >>> wb.save('new_document.xlsm')
+    >>> # MS Excel will not open the document
 
 
 Loading from a file

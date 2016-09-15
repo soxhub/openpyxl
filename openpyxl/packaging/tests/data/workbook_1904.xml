@@ -1,0 +1,12 @@
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <workbookPr date1904="1" />
+  <bookViews>
+    <workbookView activeTab="0" />
+  </bookViews>
+  <sheets>
+    <sheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    name="Blatt1" sheetId="1" state="visible" r:id="rId1" />
+  </sheets>
+  <definedNames />
+  <calcPr calcId="124519" fullCalcOnLoad="1" />
+</workbook>

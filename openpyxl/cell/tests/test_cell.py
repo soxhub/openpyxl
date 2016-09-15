@@ -254,20 +254,6 @@ def test_comment_assignment(dummy_cell):
     assert dummy_cell.comment == comm
 
 
-def test_comment_count(dummy_cell):
-    cell = dummy_cell
-    ws = cell.parent
-    assert ws._comment_count == 0
-    cell.comment = Comment("text", "author")
-    assert ws._comment_count == 1
-    cell.comment = Comment("text", "author")
-    assert ws._comment_count == 1
-    cell.comment = None
-    assert ws._comment_count == 0
-    cell.comment = None
-    assert ws._comment_count == 0
-
-
 def test_only_one_cell_per_comment(dummy_cell):
     ws = dummy_cell.parent
     comm = Comment('text', 'author')
@@ -314,7 +300,8 @@ class TestEncoding:
     def test_good_encoding(self):
         from openpyxl import Workbook
 
-        wb = Workbook(encoding='latin1')
+        wb = Workbook()
+        wb.encoding = 'latin1'
         ws = wb.active
         cell = ws['A1']
         cell.value = self.test_string

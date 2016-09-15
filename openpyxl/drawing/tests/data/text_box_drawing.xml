@@ -1,0 +1,64 @@
+<wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+      xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <twoCellAnchor editAs="absolute">
+    <from>
+      <col>1</col>
+      <colOff>142875</colOff>
+      <row>0</row>
+      <rowOff>19050</rowOff>
+    </from>
+    <to>
+      <col>2</col>
+      <colOff>600075</colOff>
+      <row>4</row>
+      <rowOff>76200</rowOff>
+    </to>
+    <sp macro="" textlink="">
+      <nvSpPr>
+        <cNvPr id="1025" name="Comment 1"/>
+        <cNvSpPr txBox="1">
+          <a:spLocks noChangeArrowheads="1"/>
+        </cNvSpPr>
+      </nvSpPr>
+      <spPr bwMode="auto">
+        <a:xfrm>
+          <a:off x="904875" y="19050"/>
+          <a:ext cx="1219200" cy="819150"/>
+        </a:xfrm>
+        <a:prstGeom prst="rect">
+          <a:avLst/>
+        </a:prstGeom>
+        <a:solidFill>
+          <a:srgbClr val="FFFFE1"/>
+        </a:solidFill>
+        <a:ln w="9525">
+          <a:solidFill>
+            <a:srgbClr val="000000"/>
+          </a:solidFill>
+          <a:headEnd/>
+          <a:tailEnd/>
+        </a:ln>
+        <a:effectLst/>
+      </spPr>
+      <txBody>
+        <a:bodyPr vertOverflow="clip" wrap="square" lIns="27432" tIns="22860" rIns="0" bIns="0" anchor="t" upright="1"/>
+        <a:p>
+          <a:pPr algn="l" rtl="0">
+            <a:defRPr sz="1000"/>
+          </a:pPr>
+          <a:r>
+            <a:rPr b="1">
+            </a:rPr>
+            <a:t>charlie clark:</a:t>
+          </a:r>
+        </a:p>
+        <a:p>
+          <a:r>
+            <a:t>This is a comment</a:t>
+          </a:r>
+        </a:p>
+      </txBody>
+    </sp>
+    <clientData/>
+  </twoCellAnchor>
+</wsDr>

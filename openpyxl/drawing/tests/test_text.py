@@ -63,6 +63,25 @@ class TestParagraphProperties:
         assert text == ParagraphProperties()
 
 
+from ..spreadsheet_drawing import SpreadsheetDrawing
+
+
+class TestTextBox:
+
+    def test_from_xml(self, datadir):
+        datadir.chdir()
+        with open("text_box_drawing.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        drawing = SpreadsheetDrawing.from_tree(node)
+        anchor = drawing.twoCellAnchor[0]
+        box = anchor.sp
+        meta = box.nvSpPr
+        graphic = box.graphicalProperties
+        text = box.txBody
+        assert len(text.p) == 2
+
+
 @pytest.fixture
 def CharacterProperties():
     from ..text import CharacterProperties

@@ -8,24 +8,20 @@ import atexit
 from inspect import isgenerator
 import os
 from tempfile import NamedTemporaryFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
-from openpyxl.compat import removed_method
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, WriteOnlyCell
+from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.worksheet import Worksheet
+from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.worksheet.related import Related
+from openpyxl.worksheet.dimensions import SheetFormatProperties
 
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
-from openpyxl.writer.excel import ExcelWriter
-from openpyxl.comments.writer import CommentWriter
-from .relations import write_rels
-from .worksheet import (
-    write_autofilter,
-    write_datavalidation,
-    write_cell,
-    write_cols,
-    write_drawing,
-    write_format,
-)
+
+from .etree_worksheet import write_cell
+from .excel import ExcelWriter
+from .worksheet import write_drawing
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element
 
@@ -40,15 +36,6 @@ def _openpyxl_shutdown():
             os.remove(path)
 
 
-class CommentParentCell(object):
-    __slots__ = ('coordinate', 'row', 'column')
-
-    def __init__(self, cell):
-        self.coordinate = cell.coordinate
-        self.row = cell.row
-        self.column = cell.column
-
-
 def create_temporary_file(suffix=''):
     fobj = NamedTemporaryFile(mode='w+', suffix=suffix,
                               prefix='openpyxl.', delete=False)
@@ -57,31 +44,77 @@ def create_temporary_file(suffix=''):
     return filename
 
 
-def WriteOnlyCell(ws=None, value=None):
-    return Cell(worksheet=ws, column='A', row=1, value=value)
-
-
-class WriteOnlyWorksheet(Worksheet):
+class WriteOnlyWorksheet(_WorkbookChild):
     """
-    Streaming worksheet using lxml
-    Optimised to reduce memory by writing rows just in time
-    Cells can be styled and have comments
-    Styles for rows and columns must be applied before writing cells
+    Streaming worksheet. Optimised to reduce memory by writing rows just in
+    time.
+    Cells can be styled and have comments Styles for rows and columns
+    must be applied before writing cells
     """
 
     __saved = False
     writer = None
+    _rel_type = Worksheet._rel_type
+    _path = Worksheet._path
+    mime_type = Worksheet.mime_type
 
-    def __init__(self, parent_workbook, title):
-        Worksheet.__init__(self, parent_workbook, title)
 
+    def __init__(self, parent, title):
+        super(WriteOnlyWorksheet, self).__init__(parent, title)
         self._max_col = 0
         self._max_row = 0
-        self._parent = parent_workbook
-
         self._fileobj_name = create_temporary_file()
 
-        self._comments = []
+        # Methods from Worksheet
+        self._add_row = Worksheet._add_row.__get__(self)
+        self._add_column = Worksheet._add_column.__get__(self)
+        self.add_chart = Worksheet.add_chart.__get__(self)
+
+        setup = Worksheet._setup.__get__(self)
+        setup()
+
+        self.print_titles = Worksheet.print_titles.__get__(self)
+        self.sheet_view = Worksheet.sheet_view.__get__(self)
+
+
+    @property
+    def freeze_panes(self):
+        return Worksheet.freeze_panes.__get__(self)
+
+
+    @freeze_panes.setter
+    def freeze_panes(self, value):
+        Worksheet.freeze_panes.__set__(self, value)
+
+
+    @property
+    def print_title_cols(self):
+        return Worksheet.print_title_cols.__get__(self)
+
+
+    @print_title_cols.setter
+    def print_title_cols(self, value):
+        Worksheet.print_title_cols.__set__(self, value)
+
+
+    @property
+    def print_title_rows(self):
+        return Worksheet.print_title_rows.__get__(self)
+
+
+    @print_title_rows.setter
+    def print_title_rows(self, value):
+        Worksheet.print_title_rows.__set__(self, value)
+
+
+    @property
+    def print_area(self):
+        return Worksheet.print_area.__get__(self)
+
+
+    @print_area.setter
+    def print_area(self, value):
+        Worksheet.print_area.__set__(self, value)
 
 
     @property
@@ -101,33 +134,63 @@ class WriteOnlyWorksheet(Worksheet):
                     pr = self.sheet_properties.to_tree()
 
                 xf.write(pr)
-                views = Element('sheetViews')
-                views.append(self.sheet_view.to_tree())
-                xf.write(views)
-                xf.write(write_format(self))
+                xf.write(self.views.to_tree())
 
-                cols = write_cols(self)
+                cols = self.column_dimensions.to_tree()
+
+                self.sheet_format.outlineLevelCol = self.column_dimensions.max_outline
+                xf.write(self.sheet_format.to_tree())
+
                 if cols is not None:
                     xf.write(cols)
 
                 with xf.element("sheetData"):
+                    cell = WriteOnlyCell(self)
                     try:
                         while True:
-                            r = (yield)
-                            xf.write(r)
+                            row = (yield)
+                            row_idx = self._max_row
+                            attrs = {'r': '%d' % row_idx}
+                            if row_idx in self.row_dimensions:
+                                dim = self.row_dimensions[row_idx]
+                                attrs.update(dict(dim))
+
+                            with xf.element("row", attrs):
+
+                                for col_idx, value in enumerate(row, 1):
+                                    if value is None:
+                                        continue
+                                    try:
+                                        cell.value = value
+                                    except ValueError:
+                                        if isinstance(value, Cell):
+                                            cell = value
+                                        else:
+                                            raise ValueError
+
+                                    cell.col_idx = col_idx
+                                    cell.row = row_idx
+
+                                    styled = cell.has_style
+                                    write_cell(xf, self, cell, styled)
+
+                                    if styled: # styled cell or datetime
+                                        cell = WriteOnlyCell(self)
+
                     except GeneratorExit:
                         pass
 
                 if self.protection.sheet:
-                    xf.write(worksheet.protection.to_tree())
+                    xf.write(self.protection.to_tree())
 
-                af = write_autofilter(self)
-                if af is not None:
-                    xf.write(af)
+                if self.auto_filter.ref:
+                    xf.write(self.auto_filter.to_tree())
 
-                dv = write_datavalidation(self)
-                if dv is not None:
-                    xf.write(dv)
+                if self.sort_state.ref:
+                    xf.write(self.sort_state.to_tree())
+
+                if self.data_validations.count:
+                    xf.write(self.data_validations.to_tree())
 
                 drawing = write_drawing(self)
                 if drawing is not None:
@@ -155,50 +218,20 @@ class WriteOnlyWorksheet(Worksheet):
         :param row: iterable containing values to append
         :type row: iterable
         """
+
         if (not isgenerator(row) and
             not isinstance(row, (list, tuple, range))
             ):
             self._invalid_row(row)
-        cell = WriteOnlyCell(self)  # singleton
 
         self._max_row += 1
-        row_idx = self._max_row
+
         if self.writer is None:
             self.writer = self._write_header()
             next(self.writer)
 
-        el = Element("row", r='%d' % self._max_row)
-
-        col_idx = None
-        for col_idx, value in enumerate(row, 1):
-            if value is None:
-                continue
-            try:
-                cell.value = value
-            except ValueError:
-                if isinstance(value, Cell):
-                    cell = value
-                    if cell.comment is not None:
-                        comment = cell.comment
-                        comment._parent = CommentParentCell(cell)
-                        self._comments.append(comment)
-                else:
-                    raise ValueError
-
-            cell.col_idx = col_idx
-            cell.row = row_idx
-
-            styled = cell.has_style
-            tree = write_cell(self, cell, styled)
-            el.append(tree)
-            if styled: # styled cell or datetime
-                cell = WriteOnlyCell(self)
-
-        if col_idx:
-            self._max_col = max(self._max_col, col_idx)
-            el.set('spans', '1:%d' % col_idx)
         try:
-            self.writer.send(el)
+            self.writer.send(row)
         except StopIteration:
             self._already_saved()
 
@@ -212,7 +245,10 @@ class WriteOnlyWorksheet(Worksheet):
             type(iterable))
                         )
 
-    def _write(self, shared_strings=None):
+    def _write(self):
+        self._drawing = SpreadsheetDrawing()
+        self._drawing.charts = self._charts
+        self._drawing.images = self._images
         self.close()
         with open(self.filename) as src:
             out = src.read()
@@ -220,30 +256,10 @@ class WriteOnlyWorksheet(Worksheet):
         return out
 
 
-setattr(WriteOnlyWorksheet, '__getitem__', removed_method)
-setattr(WriteOnlyWorksheet, '__setitem__', removed_method)
-setattr(WriteOnlyWorksheet, 'cell', removed_method)
-setattr(WriteOnlyWorksheet, 'range', removed_method)
-setattr(WriteOnlyWorksheet, 'merge_cells', removed_method)
-
-
-class DumpCommentWriter(CommentWriter):
-
-    def _extract_comments(self):
-        from openpyxl.comments.properties import Comment
-        for comment in self.sheet._comments:
-            new_comment = Comment(ref=comment.parent.coordinate)
-            new_comment.text.t = comment.text
-            new_comment.author = comment.author
-            new_comment.height = comment.height
-            new_comment.width = comment.width
-            self.comments.append(new_comment)
-
-
 def save_dump(workbook, filename):
+    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
     if workbook.worksheets == []:
         workbook.create_sheet()
-    writer = ExcelWriter(workbook)
-    writer.comment_writer = DumpCommentWriter
+    writer = ExcelWriter(workbook, archive)
     writer.save(filename)
     return True

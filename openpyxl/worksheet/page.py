@@ -8,11 +8,9 @@ from openpyxl.descriptors import (
     Integer,
     String,
     NoneSet,
+    Alias,
     )
-from openpyxl.descriptors.excel import UniversalMeasure
-from openpyxl.xml.functions import Element
-from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
-from openpyxl.compat import deprecated
+from openpyxl.descriptors.excel import UniversalMeasure, Relation
 
 
 class PrintPageSetup(Serialisable):
@@ -38,7 +36,7 @@ class PrintPageSetup(Serialisable):
     horizontalDpi = Integer(allow_none=True)
     verticalDpi = Integer(allow_none=True)
     copies = Integer(allow_none=True)
-    id = String(allow_none=True)
+    id = Relation()
 
 
     def __init__(self,
@@ -83,22 +81,6 @@ class PrintPageSetup(Serialisable):
         self.copies = copies
         self.id = id
 
-    @deprecated("this property does not exists anymore")
-    def setup(self):
-        pass
-
-    @deprecated("this property does not exists anymore")
-    def options(self):
-        pass
-
-    @deprecated("this property has to be called via print_options")
-    def horizontalCentered(self):
-        pass
-
-    @deprecated("this property has to be called via print_options")
-    def verticalCentered(self):
-        pass
-
 
     @property
     def sheet_properties(self):
@@ -130,26 +112,15 @@ class PrintPageSetup(Serialisable):
 
     @classmethod
     def from_tree(cls, node):
-        attrs = node.attrib
-        id_key = '{%s}id' % REL_NS
-        if id_key in attrs:
-            attrs.pop(id_key)
-        return cls(**attrs)
-
-
-    def to_tree(self):
-        attrs = dict(self)
-        if 'id' in attrs:
-            attrs['{%s}id' % REL_NS] = attrs['id']
-            del attrs['id']
-        return Element(self.tagname, attrs)
+        self = super(PrintPageSetup, cls).from_tree(node)
+        self.id = None # strip link to binary settings
+        return self
 
 
 class PrintOptions(Serialisable):
     """ Worksheet print options """
 
     tagname = "printOptions"
-    tag = "{%s}" % SHEET_MAIN_NS + tagname
     horizontalCentered = Bool(allow_none=True)
     verticalCentered = Bool(allow_none=True)
     headings = Bool(allow_none=True)

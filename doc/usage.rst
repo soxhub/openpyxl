@@ -7,7 +7,7 @@ Write a workbook
 
 >>> from openpyxl import Workbook
 >>> from openpyxl.compat import range
->>> from openpyxl.cell import get_column_letter
+>>> from openpyxl.utils import get_column_letter
 >>>
 >>> wb = Workbook()
 >>>
@@ -26,44 +26,10 @@ Write a workbook
 >>> ws3 = wb.create_sheet(title="Data")
 >>> for row in range(10, 20):
 ...     for col in range(27, 54):
-...         _ = ws3.cell(column=col, row=row, value="%s" % get_column_letter(col))
+...         _ = ws3.cell(column=col, row=row, value="{0}".format(get_column_letter(col)))
 >>> print(ws3['AA10'].value)
 AA
 >>> wb.save(filename = dest_filename)
-
-
-Write a workbook from \*.xltx as \*.xlsx
-----------------------------------------
-.. ::doctest
-
->>> from openpyxl import load_workbook
->>>
->>>
->>> wb = load_workbook('sample_book.xltx') #doctest: +SKIP
->>> ws = wb.active #doctest: +SKIP
->>> ws['D2'] = 42 #doctest: +SKIP
->>>
->>> wb.save('sample_book.xlsx') #doctest: +SKIP
->>>
->>> # or you can overwrite the current document template
->>> # wb.save('sample_book.xltx')
-
-
-Write a workbook from \*.xltm as \*.xlsm
-----------------------------------------
-.. ::doctest
-
->>> from openpyxl import load_workbook
->>>
->>>
->>> wb = load_workbook('sample_book.xltm', keep_vba=True) #doctest: +SKIP
->>> ws = wb.active #doctest: +SKIP
->>> ws['D2'] = 42 #doctest: +SKIP
->>>
->>> wb.save('sample_book.xlsm') #doctest: +SKIP
->>>
->>> # or you can overwrite the current document template
->>> # wb.save('sample_book.xltm')
 
 
 Read an existing workbook
@@ -104,17 +70,18 @@ Using number formats
 
 >>> import datetime
 >>> from openpyxl import Workbook
->>> wb = Workbook(guess_types=True)
+>>> wb = Workbook()
 >>> ws = wb.active
 >>> # set date using a Python datetime
 >>> ws['A1'] = datetime.datetime(2010, 7, 21)
 >>>
 >>> ws['A1'].number_format
 'yyyy-mm-dd h:mm:ss'
->>>
+>>> # You can enable type inference on a case-by-case basis
+>>> wb.guess_types = True
 >>> # set percentage using a string followed by the percent sign
 >>> ws['B1'] = '3.14%'
->>>
+>>> wb.guess_types = False
 >>> ws['B1'].value
 0.031400000000000004
 >>>
@@ -148,6 +115,10 @@ If you're trying to use a formula that isn't known this could be because you're 
 
 Merge / Unmerge cells
 ---------------------
+
+When you merge cells all cells but the top-left one are **removed** from the
+worksheet. See :ref:`styling-merged-cells` for information on formatting merged cells.
+
 .. :: doctest
 
 >>> from openpyxl.workbook import Workbook
@@ -187,7 +158,7 @@ Fold columns (outline)
 .. :: doctest
 
 >>> import openpyxl
->>> wb = openpyxl.Workbook(True)
+>>> wb = openpyxl.Workbook()
 >>> ws = wb.create_sheet()
 >>> ws.column_dimensions.group('A','D', hidden=True)
 >>> wb.save('group.xlsx')

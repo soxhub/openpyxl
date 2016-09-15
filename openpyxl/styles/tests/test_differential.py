@@ -27,25 +27,24 @@ def test_parse(DifferentialStyle, datadir):
         formats.append(DifferentialStyle.from_tree(node))
     assert len(formats) == 164
     cond = formats[1]
-    assert cond.font == Font(underline="double", color=Color(auto=1), strikethrough=True, italic=True)
+    assert cond.font == Font(underline="double", b=False, color=Color(auto=1), strikethrough=True, italic=True)
     assert cond.fill == PatternFill(end_color='FFFFC7CE')
 
 
 def test_serialise(DifferentialStyle):
     cond = DifferentialStyle()
-    cond.font = Font()
+    cond.font = Font(name="Calibri", family=2, sz=11)
     cond.fill = PatternFill()
     xml = tostring(cond.to_tree())
     expected = """
     <dxf>
     <font>
-    <name val="Calibri"></name>
-    <family val="2"></family>
-    <color rgb="00000000"></color>
-    <sz val="11"></sz>
+      <name val="Calibri"></name>
+      <family val="2"></family>
+      <sz val="11"></sz>
     </font>
     <fill>
-    <patternFill />
+      <patternFill />
     </fill>
     </dxf>
     """

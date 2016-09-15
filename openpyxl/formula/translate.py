@@ -51,7 +51,6 @@ class Translator(object):
 
     def get_tokens(self):
         "Returns a list with the tokens comprising the formula."
-        self.tokenizer.parse()
         return self.tokenizer.items
 
     ROW_RANGE_RE = re.compile(r"(\$?[1-9][0-9]{0,6}):(\$?[1-9][0-9]{0,6})$")

@@ -98,8 +98,6 @@ class TestManifest:
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="/xl/workbook.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
             PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
@@ -122,7 +120,35 @@ class TestManifest:
             node = fromstring(src.read())
         manifest = Manifest.from_tree(node)
         assert len(manifest.Default) == 2
-        assert len(manifest.Override) == 10
+        defaults = [
+            ("application/xml", 'xml'),
+            ("application/vnd.openxmlformats-package.relationships+xml", 'rels'),
+        ]
+        assert  [(ct.ContentType, ct.Extension) for ct in manifest.Default] == defaults
+
+        overrides = [
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml',
+             '/xl/workbook.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml',
+             '/xl/worksheets/sheet1.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml',
+             '/xl/chartsheets/sheet1.xml'),
+            ('application/vnd.openxmlformats-officedocument.theme+xml',
+             '/xl/theme/theme1.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml',
+             '/xl/styles.xml'),
+            ('application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml',
+             '/xl/sharedStrings.xml'),
+            ('application/vnd.openxmlformats-officedocument.drawing+xml',
+             '/xl/drawings/drawing1.xml'),
+            ('application/vnd.openxmlformats-officedocument.drawingml.chart+xml',
+             '/xl/charts/chart1.xml'),
+            ('application/vnd.openxmlformats-package.core-properties+xml',
+             '/docProps/core.xml'),
+            ('application/vnd.openxmlformats-officedocument.extended-properties+xml',
+             '/docProps/app.xml')
+        ]
+        assert [(ct.ContentType, ct.PartName) for ct in manifest.Override] == overrides
 
 
     def test_filenames(self, datadir, Manifest):
@@ -155,10 +181,10 @@ class TestManifest:
 
     def test_no_dupe_overrides(self, Manifest):
         manifest = Manifest()
+        assert len(manifest.Override) == 5
+        manifest.Override.append("a")
+        manifest.Override.append("a")
         assert len(manifest.Override) == 6
-        manifest.Override.append("a")
-        manifest.Override.append("a")
-        assert len(manifest.Override) == 7
 
 
     def test_no_dupe_types(self, Manifest):
@@ -169,143 +195,61 @@ class TestManifest:
         assert len(manifest.Default) == 3
 
 
-class TestContentTypes:
-
-
-    def test_workbook(self):
+    def test_append(self, Manifest):
         from openpyxl import Workbook
-        wb = Workbook()
-        from ..manifest import write_content_types
-        manifest = write_content_types(wb)
-        xml = tostring(manifest.to_tree())
-        expected = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
-          <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="/xl/workbook.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="/xl/sharedStrings.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="/xl/styles.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="/xl/theme/theme1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
-            PartName="/docProps/core.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
-            PartName="/docProps/app.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
-            PartName="/xl/worksheets/sheet1.xml"/>
-        </Types>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_chartsheet(self):
-        from openpyxl import Workbook
-        wb = Workbook()
-        wb.create_chartsheet()
-        from ..manifest import write_content_types
-        manifest = write_content_types(wb)
-        xml = tostring(manifest.to_tree())
-        expected = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
-          <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-            PartName="/xl/workbook.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="/xl/sharedStrings.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
-            PartName="/xl/styles.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
-            PartName="/xl/theme/theme1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
-            PartName="/docProps/core.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
-            PartName="/docProps/app.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
-            PartName="/xl/worksheets/sheet1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml"
-            PartName="/xl/chartsheets/sheet1.xml"/>
-        </Types>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-    def test_vba(self, datadir):
-        from openpyxl import load_workbook
-        from ..manifest import write_content_types
-        datadir.chdir()
-        wb = load_workbook('sample.xlsm', keep_vba=True)
-        manifest = write_content_types(wb)
-        partnames = [t.PartName for t in manifest.Override]
-        expected = ['/xl/workbook.xml', '/xl/worksheets/sheet1.xml', '/xl/worksheets/sheet2.xml', '/xl/worksheets/sheet3.xml', '/xl/theme/theme1.xml', '/xl/styles.xml', '/docProps/core.xml', '/docProps/app.xml', '/xl/sharedStrings.xml']
-        assert partnames == expected
-
-    @pytest.mark.lxml_required # for XPATH lookup
-    @pytest.mark.parametrize("has_vba, as_template, content_type",
-                             [
-                                 (None, False, XLSX),
-                                 (None, True, XLTX),
-                                 (True, False, XLSM),
-                                 (True, True, XLTM)
-                             ]
-                             )
-    def test_templates(self, has_vba, as_template, content_type, Manifest, Override):
-        from openpyxl import Workbook
-        from ..manifest import write_content_types
-
-        wb = Workbook()
-        if has_vba:
-            archive = ZipFile(BytesIO(), "w")
-            parts = [Override("/xl/workbook.xml", "")]
-            m = Manifest(Override=parts)
-            archive.writestr(ARC_CONTENT_TYPES, tostring(m.to_tree()))
-            wb.vba_archive = archive
-        manifest = write_content_types(wb, as_template=as_template)
-        xml = tostring(manifest.to_tree())
-        root = fromstring(xml)
-        node = root.find('{%s}Override[@PartName="/xl/workbook.xml"]'% CONTYPES_NS)
-        assert node.get("ContentType") == content_type
-
-
-    def test_comments(self, Manifest):
-        from openpyxl import Workbook
-        from ..manifest import write_content_types
-
         wb = Workbook()
         ws = wb.active
-        ws._comment_count = 1
-        manifest = write_content_types(wb)
-        xml = tostring(manifest.to_tree())
-        expected = """
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels"/>
-          <Default ContentType="application/xml" Extension="xml"/>
-          <Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml" PartName="/xl/sharedStrings.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml" PartName="/xl/styles.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml" PartName="/xl/theme/theme1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml" PartName="/docProps/core.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml" PartName="/docProps/app.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet1.xml"/>
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments1.xml"/>
-        </Types>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
+        manifest = Manifest()
+        manifest.append(ws)
+        assert len(manifest.Override) == 6
 
 
-    def test_media(self):
+    def test_write(self, Manifest):
+        mf = Manifest()
         from openpyxl import Workbook
-        from ..manifest import write_content_types
         wb = Workbook()
 
-        manifest = write_content_types(wb, exts=['xl/media/image1.png'])
+        archive = ZipFile(BytesIO(), "w")
+        mf._write(archive, wb)
+        assert "/xl/workbook.xml" in mf.filenames
+
+
+    @pytest.mark.parametrize("file, registration",
+                             [
+                                ('xl/media/image1.png',
+                                 '<Default ContentType="image/png" Extension="png" />'),
+                                ('xl/drawings/commentsDrawing.vml',
+                                 '<Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml" />'),
+                             ]
+                             )
+    def test_media(self, Manifest, file, registration):
+        from openpyxl import Workbook
+        wb = Workbook()
+
+        manifest = Manifest()
+        manifest._register_mimetypes([file])
         xml = tostring(manifest.Default[-1].to_tree())
-        expected = """<Default ContentType="image/png" Extension="png" />"""
-        diff = compare_xml(xml, expected)
+        diff = compare_xml(xml, registration)
         assert diff is None, diff
+
+
+    def test_vba(self, datadir, Manifest):
+        datadir.chdir()
+        from openpyxl import load_workbook
+        wb = load_workbook('sample.xlsm', keep_vba=True)
+
+        manifest = Manifest()
+        manifest._write_vba(wb)
+        partnames = set([t.PartName for t in manifest.Override])
+        expected = set([
+            '/xl/workbook.xml',
+            '/xl/worksheets/sheet1.xml',
+            '/xl/worksheets/sheet2.xml',
+            '/xl/worksheets/sheet3.xml',
+            '/xl/theme/theme1.xml',
+            '/xl/styles.xml',
+            '/docProps/core.xml',
+            '/docProps/app.xml',
+            '/xl/sharedStrings.xml'
+                    ])
+        assert partnames == expected

@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     String,
+    Sequence,
 )
 from openpyxl.descriptors.excel import Relation
 
@@ -18,6 +19,8 @@ class Hyperlink(Serialisable):
     id = Relation()
     target = String(allow_none=True)
 
+    __attrs__ = ("ref", "location", "tooltip", "display", "id")
+
     def __init__(self,
                  ref=None,
                  location=None,
@@ -32,4 +35,23 @@ class Hyperlink(Serialisable):
         self.display = display
         self.id = id
         self.target = target
-        self.__attrs__ = ("ref", "location", "tooltip", "display", "id")
+
+
+class HyperlinkList(Serialisable):
+
+    tagname = "hyperlinks"
+
+    hyperlink = Sequence(expected_type=Hyperlink)
+
+    def __init__(self, hyperlink=()):
+        self.hyperlink = hyperlink
+
+
+    def __bool__(self):
+        return bool(self.hyperlink)
+
+    __nonzero__ = __bool__
+
+
+    def __len__(self):
+        return len(self.hyperlink)

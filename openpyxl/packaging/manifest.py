@@ -34,6 +34,7 @@ from openpyxl.xml.constants import (
     CHARTSHEET_TYPE,
     CONTYPES_NS
 )
+from openpyxl.xml.functions import tostring
 
 # initialise mime-types
 mimetypes.init()
@@ -56,10 +57,6 @@ class FileExtension(Serialisable):
         self.ContentType = ContentType
 
 
-    def __hash__(self):
-        return hash((self.Extension, self.ContentType))
-
-
 class Override(Serialisable):
 
     tagname = "Override"
@@ -72,17 +69,12 @@ class Override(Serialisable):
         self.ContentType = ContentType
 
 
-    def __hash__(self):
-        return hash((self.PartName, self.ContentType))
-
-
 DEFAULT_TYPES = [
     FileExtension("rels", "application/vnd.openxmlformats-package.relationships+xml"),
     FileExtension("xml", "application/xml"),
 ]
 
 DEFAULT_OVERRIDE = [
-    Override("/" + ARC_WORKBOOK, XLSX), # Workbook
     Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
     Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
     Override("/" + ARC_THEME, THEME_TYPE), # Theme
@@ -97,6 +89,7 @@ class Manifest(Serialisable):
 
     Default = Sequence(expected_type=FileExtension, unique=True)
     Override = Sequence(expected_type=Override, unique=True)
+    path = "[Content_Types].xml"
 
     __elements__ = ("Default", "Override")
 
@@ -137,84 +130,64 @@ class Manifest(Serialisable):
         return tree
 
 
-def write_content_types(workbook, as_template=False, exts=None):
+    def __contains__(self, content_type):
+        """
+        Check whether a particular content type is contained
+        """
+        for t in self.Override:
+            if t.ContentType == content_type:
+                return True
 
-    manifest = Manifest()
 
-    if exts is not None:
-        for ext in exts:
-            ext = os.path.splitext(ext)[-1]
+    def find(self, content_type):
+        """
+        Find specific content-type
+        """
+        for t in self.Override:
+            if t.ContentType == content_type:
+                return t
+
+
+    def append(self, obj):
+        """
+        Add content object to the package manifest
+        # needs a contract...
+        """
+        ct = Override(PartName=obj.path, ContentType=obj.mime_type)
+        self.Override.append(ct)
+
+
+    def _write(self, archive, workbook):
+        """
+        Write manifest to the archive
+        """
+        self.append(workbook)
+        self._write_vba(workbook)
+        self._register_mimetypes(filenames=archive.namelist())
+        archive.writestr(self.path, tostring(self.to_tree()))
+
+
+    def _register_mimetypes(self, filenames):
+        """
+        Make sure that the mime type for all file extensions is registered
+        """
+        for fn in filenames:
+            ext = os.path.splitext(fn)[-1]
+            if not ext:
+                continue
             mime = mimetypes.types_map[ext]
             fe = FileExtension(ext[1:], mime)
-            if fe not in manifest.Default:
-                manifest.Default.append(fe)
-
-    if workbook.vba_archive:
-        node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
-        manifest = Manifest.from_tree(node)
-        del node
-        partnames = [t.PartName for t in manifest.Override]
-        for override in DEFAULT_OVERRIDE:
-            if override.PartName not in partnames:
-                manifest.Override.append(override)
-
-    # templates
-    for part in manifest.Override:
-        if part.PartName == "/" + ARC_WORKBOOK:
-            ct = as_template and XLTX or XLSX
-            if workbook.vba_archive:
-                ct = as_template and XLTM or XLSM
-            part.ContentType = ct
+            self.Default.append(fe)
 
 
-    drawing_id = 0
-    chart_id = 0
-    comments_id = 0
-
-    # ugh! can't we get this from the zip archive?
-    # worksheets
-    for sheet_id, sheet in enumerate(workbook.worksheets):
-        name = '/xl/worksheets/sheet%d.xml' % (sheet_id + 1)
-        manifest.Override.append(Override(name, WORKSHEET_TYPE))
-
-        if sheet._charts or sheet._images:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-
-            for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
-
-        if sheet._comment_count > 0:
-            comments_id += 1
-            vml = FileExtension("vml", mimetypes.types_map[".vml"])
-            if vml not in manifest.Default:
-                manifest.Default.append(vml)
-            name = '/xl/comments%d.xml' % comments_id
-            manifest.Override.append(Override(name, COMMENTS_TYPE))
-
-
-    # chartsheets
-    for sheet_id, sheet in enumerate(workbook.chartsheets, sheet_id+1):
-        name = '/xl/chartsheets/sheet%d.xml' % (sheet_id)
-        manifest.Override.append(Override(name, CHARTSHEET_TYPE))
-
-        if sheet._charts:
-            drawing_id += 1
-            name = '/xl/drawings/drawing%d.xml' % drawing_id
-            manifest.Override.append(Override(name, DRAWING_TYPE))
-
-            for chart in sheet._charts:
-                chart_id += 1
-                name = '/xl/charts/chart%d.xml' % chart_id
-                manifest.Override.append(Override(name, CHART_TYPE))
-
-    #external links
-    for idx, _ in enumerate(workbook._external_links, 1):
-        name = '/xl/externalLinks/externalLink{0}.xml'.format(idx)
-        manifest.Override.append(Override(name, EXTERNAL_LINK))
-
-    return manifest
+    def _write_vba(self, workbook):
+        """
+        Add content types from cached workbook when keeping VBA
+        """
+        if workbook.vba_archive:
+            node = fromstring(workbook.vba_archive.read(ARC_CONTENT_TYPES))
+            mf = Manifest.from_tree(node)
+            filenames = self.filenames
+            for override in mf.Override:
+                if override.PartName not in filenames:
+                    self.Override.append(override)

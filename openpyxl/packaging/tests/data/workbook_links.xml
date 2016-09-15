@@ -1,0 +1,16 @@
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <workbookPr />
+  <bookViews>
+    <workbookView activeTab="0" />
+  </bookViews>
+  <sheets>
+    <sheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    name="Blatt1" sheetId="1" state="visible" r:id="rId1" />
+  </sheets>
+  <definedNames />
+  <externalReferences>
+    <externalReference xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    r:id="rId2" />
+  </externalReferences>
+  <calcPr calcId="124519" fullCalcOnLoad="1" />
+</workbook>

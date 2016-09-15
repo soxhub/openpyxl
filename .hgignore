@@ -24,3 +24,5 @@ Include/
 Lib/
 Scripts/
 downloads/
+Compliance
+Spec

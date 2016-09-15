@@ -4,11 +4,22 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.utils.indexed_list import IndexedList
-from ..import Style, Font, Border, PatternFill, Alignment, Protection
+from ..import (
+    Font,
+    Border,
+    PatternFill,
+    Alignment,
+    Protection
+)
+from ..named_styles import (
+    NamedStyleList,
+    NamedStyle,
+)
 
 
-def test_descriptor():
-    from ..styleable import StyleDescriptor, StyleArray
+def test_descriptor(Worksheet):
+    from ..styleable import StyleDescriptor
+    from ..cell_style import StyleArray
     from ..fonts import Font
 
     class Styled(object):
@@ -17,54 +28,100 @@ def test_descriptor():
 
         def __init__(self):
             self._style = StyleArray()
-            self.parent = DummyWorksheet()
+            self.parent = Worksheet
 
     styled = Styled()
     styled.font = Font()
     assert styled.font == Font()
 
 
-class DummyWorkbook:
+@pytest.fixture
+def Workbook():
 
-    _fonts = IndexedList()
-    _fills = IndexedList()
-    _borders = IndexedList()
-    _protections = IndexedList()
-    _alignments = IndexedList()
-    _number_formats = IndexedList()
+    class DummyWorkbook:
 
+        _fonts = IndexedList()
+        _fills = IndexedList()
+        _borders = IndexedList()
+        _protections = IndexedList()
+        _alignments = IndexedList()
+        _number_formats = IndexedList()
+        _named_styles = NamedStyleList()
 
-class DummyWorksheet:
+        def add_named_style(self, style):
+            self._named_styles.append(style)
+            style.bind(self)
 
-    parent = DummyWorkbook()
+    return DummyWorkbook()
 
 
 @pytest.fixture
-def StyleableObject():
+def Worksheet(Workbook):
+
+    class DummyWorksheet:
+
+        parent = Workbook
+
+    return DummyWorksheet()
+
+
+@pytest.fixture
+def StyleableObject(Worksheet):
     from .. styleable import StyleableObject
-    return StyleableObject
+    so = StyleableObject(sheet=Worksheet, style_array=list(range(9)))
+    return so
 
 
 def test_has_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
+    so = StyleableObject
+    so._style = None
     assert not so.has_style
     so.number_format= 'dd'
     assert so.has_style
 
 
-def test_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
-    so.font = Font(bold=True)
-    so.fill = PatternFill()
-    so.border = Border()
-    so.protection = Protection()
-    so.alignment = Alignment()
-    so.number_format = "not general"
-    assert so.style == Style(font=Font(bold=True), number_format="not general")
+class TestNamedStyle:
+
+    def test_assign_name(self, StyleableObject):
+        so = StyleableObject
+        wb = so.parent.parent
+        style = NamedStyle(name='Standard')
+        wb.add_named_style(style)
+
+        so.style = 'Standard'
+        assert so._style.xfId == 0
 
 
-def test_assign_style(StyleableObject):
-    so = StyleableObject(sheet=DummyWorksheet())
-    style = Style(font=Font(underline="single"))
-    so.style = style
-    assert style.font == Font(underline="single")
+    def test_assign_style(self, StyleableObject):
+        so = StyleableObject
+        wb = so.parent.parent
+        style = NamedStyle(name='Standard')
+
+        so.style = style
+        assert so._style.xfId == 0
+
+
+    def test_unknown_style(self, StyleableObject):
+        so = StyleableObject
+
+        with pytest.raises(ValueError):
+            so.style = "Financial"
+
+
+    def test_read(self, StyleableObject):
+        so = StyleableObject
+        wb = so.parent.parent
+
+        red = NamedStyle(name='Red')
+        wb.add_named_style(red)
+        blue = NamedStyle(name='Blue')
+        wb.add_named_style(blue)
+
+        so._style.xfId = 1
+        assert so.style == "Blue"
+
+
+    def test_builtin(self, StyleableObject):
+        so = StyleableObject
+        so.style = "Hyperlink"
+        assert so.style == "Hyperlink"

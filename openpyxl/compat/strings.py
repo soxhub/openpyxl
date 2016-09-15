@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from math import isnan
 import sys
 
 VER = sys.version_info
 
-from math import isnan
 from .numbers import NUMERIC_TYPES
 
 if VER[0] == 3:

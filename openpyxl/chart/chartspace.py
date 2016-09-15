@@ -22,8 +22,9 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import (
     Percentage,
-    ExtensionList
-    )
+    ExtensionList,
+    Relation
+)
 
 from openpyxl.descriptors.nested import (
     NestedBool,
@@ -55,10 +56,9 @@ from .surface_chart import SurfaceChart, SurfaceChart3D
 
 from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
 from .title import Title
+from .print_settings import PrintSettings
 
 from openpyxl.xml.functions import Element
-from openpyxl.worksheet.page import PageMargins, PrintPageSetup
-from openpyxl.worksheet.header_footer import HeaderFooter
 
 
 class PivotFormat(Serialisable):
@@ -364,31 +364,6 @@ class ExternalData(Serialisable):
         self.id = id
 
 
-class RelId(Serialisable):
-
-    pass # todo
-
-
-class PrintSettings(Serialisable):
-
-    tagname = "printSettings"
-
-    headerFooter = Typed(expected_type=HeaderFooter, allow_none=True)
-    pageMargins = Typed(expected_type=PageMargins, allow_none=True)
-    pageSetup = Typed(expected_type=PrintPageSetup, allow_none=True)
-
-    __elements__ = ("headerFooter", "pageMargins", "pageMargins")
-
-    def __init__(self,
-                 headerFooter=None,
-                 pageMargins=None,
-                 pageSetup=None,
-                ):
-        self.headerFooter = headerFooter
-        self.pageMargins = pageMargins
-        self.pageSetup = pageSetup
-
-
 class ChartSpace(Serialisable):
 
     tagname = "chartSpace"
@@ -396,7 +371,7 @@ class ChartSpace(Serialisable):
     date1904 = NestedBool(allow_none=True)
     lang = NestedString(allow_none=True)
     roundedCorners = NestedBool(allow_none=True)
-    style = NestedInteger(allow_none=True)
+    style = NestedMinMax(allow_none=True, min=1, max=48)
     clrMapOvr = Typed(expected_type=ColorMapping, allow_none=True)
     pivotSource = Typed(expected_type=PivotSource, allow_none=True)
     protection = Typed(expected_type=Protection, allow_none=True)
@@ -407,7 +382,7 @@ class ChartSpace(Serialisable):
     textProperties = Alias("txPr")
     externalData = Typed(expected_type=ExternalData, allow_none=True)
     printSettings = Typed(expected_type=PrintSettings, allow_none=True)
-    userShapes = Typed(expected_type=RelId, allow_none=True)
+    userShapes = Relation()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('date1904', 'lang', 'roundedCorners', 'style',

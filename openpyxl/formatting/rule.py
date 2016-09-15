@@ -161,6 +161,10 @@ class Rule(Serialisable):
     dxf = Typed(expected_type=DifferentialStyle, allow_none=True)
 
     __elements__ = ('colorScale', 'dataBar', 'iconSet', 'formula')
+    __attrs__ = ('type', 'rank', 'priority', 'equalAverage', 'operator',
+                 'aboveAverage', 'dxfId', 'stdDev', 'stopIfTrue', 'timePeriod', 'text',
+                 'percent', 'bottom')
+
 
     def __init__(self,
                  type,

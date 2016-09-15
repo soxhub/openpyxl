@@ -9,7 +9,6 @@ formulas into their consitutuent tokens. Usage is as follows:
 
 >>> from openpyxl.formula import Tokenizer
 >>> tok = Tokenizer("""=IF($A$1,"then True",MAX(DEFAULT_VAL,'Sheet 2'!B1))""")
->>> tok.parse()
 >>> print("\n".join("%12s%11s%9s" % (t.value, t.type, t.subtype) for t in tok.items))
          IF(       FUNC     OPEN
         $A$1    OPERAND    RANGE

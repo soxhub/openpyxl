@@ -82,13 +82,25 @@ class TestText:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Text):
-        src = """
-        <text />
-        """
+    @pytest.mark.parametrize("src, expected",
+                             [
+                                 ("""<is><t>ID</t></is>""", "ID"),
+                                 ("""
+                                 <is>
+                                   <r>
+                                     <rPr />
+                                     <t xml:space="preserve">11 de September de 2014</t>
+                                   </r>
+                                 </is>
+                                 """,
+                                  "11 de September de 2014"
+                                  ),
+                             ]
+                             )
+    def test_from_xml(self, Text, src, expected):
         node = fromstring(src)
         text = Text.from_tree(node)
-        assert text == Text()
+        assert text.content == expected
 
 
     def test_empty_element(self, Text):
@@ -123,7 +135,7 @@ def PhoneticText():
 class TestPhoneticText:
 
     def test_ctor(self, PhoneticText):
-        text = PhoneticText(sb=9, eb=10, t=u"よ")
+        text = PhoneticText(sb=9, eb=10, t=u'\u3088')
         xml = tostring(text.to_tree())
         expected = b"""
         <rPh sb="9" eb="10">
@@ -142,7 +154,7 @@ class TestPhoneticText:
         """
         node = fromstring(src)
         text = PhoneticText.from_tree(node)
-        assert text == PhoneticText(sb=9, eb=10, t=u"よ")
+        assert text == PhoneticText(sb=9, eb=10, t=u'\u3088')
 
 
 @pytest.fixture

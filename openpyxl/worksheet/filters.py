@@ -1,101 +1,347 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+import re
 
-def normalize_reference(cell_range):
-    # Normalize range to a str or None
-    if not cell_range:
-        cell_range = None
-    elif isinstance(cell_range, str):
-        cell_range = cell_range.upper()
-    else:  # Assume a row generator
-        cell_range = tuple(cell_range)
-        first_cell = cell_range[0][0]
-        last_cell = cell_range[-1][-1]
-        cell_range = "%s:%s" % (first_cell.coordinate, last_cell.coordinate)
-    return cell_range
-
-
-class FilterColumn(object):
-    __slots__ = ("_vals", "_col_id", "_blank")
-
-    def __init__(self, col_id, vals, blank):
-        self._vals = list(vals)
-        self.col_id = col_id
-        self.blank = blank
-
-    @property
-    def col_id(self):
-        return self._col_id
-
-    @col_id.setter
-    def col_id(self, value):
-        self._col_id = int(value)
-
-    @property
-    def vals(self):
-        return self._vals
-
-    @property
-    def blank(self):
-        return self._blank
-
-    @blank.setter
-    def blank(self, value):
-        self._blank = bool(int(value)) if value else False
+from openpyxl.compat import basestring
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import (
+    Alias,
+    Typed,
+    Set,
+    Float,
+    DateTime,
+    NoneSet,
+    Bool,
+    Integer,
+    String,
+    MatchPattern,
+    Sequence,
+    Convertible,
+    MinMax,
+)
+from openpyxl.descriptors.excel import ExtensionList, CellRange
+from openpyxl.descriptors.sequence import ValueSequence
 
 
-class SortCondition(object):
-    __slots__ = ("_ref", "_descending")
+class SortCondition(Serialisable):
 
-    def __init__(self, ref, descending):
-        self.ref = ref
+    tagname = "sortCondition"
+
+    descending = Bool(allow_none=True)
+    sortBy = NoneSet(values=(['value', 'cellColor', 'fontColor', 'icon']))
+    ref = CellRange()
+    customList = String(allow_none=True)
+    dxfId = Integer(allow_none=True)
+    iconSet = NoneSet(values=(['3Arrows', '3ArrowsGray', '3Flags',
+                           '3TrafficLights1', '3TrafficLights2', '3Signs', '3Symbols', '3Symbols2',
+                           '4Arrows', '4ArrowsGray', '4RedToBlack', '4Rating', '4TrafficLights',
+                           '5Arrows', '5ArrowsGray', '5Rating', '5Quarters']))
+    iconId = Integer(allow_none=True)
+
+    def __init__(self,
+                 ref=None,
+                 descending=None,
+                 sortBy=None,
+                 customList=None,
+                 dxfId=None,
+                 iconSet=None,
+                 iconId=None,
+                ):
         self.descending = descending
-
-    @property
-    def ref(self):
-        """Return the ref for this sheet."""
-        return self._ref
-
-    @ref.setter
-    def ref(self, value):
-        self._ref = normalize_reference(value)
-
-    @property
-    def descending(self):
-        return self._descending
-
-    @descending.setter
-    def descending(self, value):
-        self._descending = bool(int(value)) if value else False
+        self.sortBy = sortBy
+        self.ref = ref
+        self.customList = customList
+        self.dxfId = dxfId
+        self.iconSet = iconSet
+        self.iconId = iconId
 
 
-class AutoFilter(object):
-    """Represents a auto filter.
+class SortState(Serialisable):
 
-    Don't create auto filters by yourself. It is created by :class:`~openpyxl.worksheet.Worksheet`.
-    You can use via :attr:`~~openpyxl.worksheet.Worksheet.auto_filter` attribute.
-    """
-    __slots__ = ("_ref", "_filter_columns", "_sort_conditions")
+    tagname = "sortState"
 
-    def __init__(self):
-        self._ref = None
-        self._filter_columns = {}
-        self._sort_conditions = []
+    columnSort = Bool(allow_none=True)
+    caseSensitive = Bool(allow_none=True)
+    sortMethod = NoneSet(values=(['stroke', 'pinYin']))
+    ref = CellRange()
+    sortCondition = Sequence(expected_type=SortCondition, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    @property
-    def ref(self):
-        """Return the reference of this auto filter."""
-        return self._ref
+    __elements__ = ('sortCondition',)
 
-    @ref.setter
-    def ref(self, value):
-        self._ref = normalize_reference(value)
+    def __init__(self,
+                 columnSort=None,
+                 caseSensitive=None,
+                 sortMethod=None,
+                 ref=None,
+                 sortCondition=(),
+                 extLst=None,
+                ):
+        self.columnSort = columnSort
+        self.caseSensitive = caseSensitive
+        self.sortMethod = sortMethod
+        self.ref = ref
+        self.sortCondition = sortCondition
 
-    @property
-    def filter_columns(self):
-        """Return filters for columns."""
-        return self._filter_columns
+
+    def __bool__(self):
+        return self.ref is not None
+
+    __nonzero__ = __bool__
+
+
+class IconFilter(Serialisable):
+
+    tagname = "iconFilter"
+
+    iconSet = Set(values=(['3Arrows', '3ArrowsGray', '3Flags',
+                           '3TrafficLights1', '3TrafficLights2', '3Signs', '3Symbols', '3Symbols2',
+                           '4Arrows', '4ArrowsGray', '4RedToBlack', '4Rating', '4TrafficLights',
+                           '5Arrows', '5ArrowsGray', '5Rating', '5Quarters']))
+    iconId = Integer(allow_none=True)
+
+    def __init__(self,
+                 iconSet=None,
+                 iconId=None,
+                ):
+        self.iconSet = iconSet
+        self.iconId = iconId
+
+
+class ColorFilter(Serialisable):
+
+    tagname = "colorFilter"
+
+    dxfId = Integer(allow_none=True)
+    cellColor = Bool(allow_none=True)
+
+    def __init__(self,
+                 dxfId=None,
+                 cellColor=None,
+                ):
+        self.dxfId = dxfId
+        self.cellColor = cellColor
+
+
+class DynamicFilter(Serialisable):
+
+    tagname = "dynamicFilter"
+
+    type = Set(values=(['null', 'aboveAverage', 'belowAverage', 'tomorrow',
+                        'today', 'yesterday', 'nextWeek', 'thisWeek', 'lastWeek', 'nextMonth',
+                        'thisMonth', 'lastMonth', 'nextQuarter', 'thisQuarter', 'lastQuarter',
+                        'nextYear', 'thisYear', 'lastYear', 'yearToDate', 'Q1', 'Q2', 'Q3', 'Q4',
+                        'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11',
+                        'M12']))
+    val = Float(allow_none=True)
+    valIso = DateTime(allow_none=True)
+    maxVal = Float(allow_none=True)
+    maxValIso = DateTime(allow_none=True)
+
+    def __init__(self,
+                 type=None,
+                 val=None,
+                 valIso=None,
+                 maxVal=None,
+                 maxValIso=None,
+                ):
+        self.type = type
+        self.val = val
+        self.valIso = valIso
+        self.maxVal = maxVal
+        self.maxValIso = maxValIso
+
+
+class CustomFilter(Serialisable):
+
+    tagname = "customFilter"
+
+    operator = Set(values=(['equal', 'lessThan', 'lessThanOrEqual',
+                            'notEqual', 'greaterThanOrEqual', 'greaterThan']))
+    val = String()
+
+    def __init__(self,
+                 operator=None,
+                 val=None,
+                ):
+        self.operator = operator
+        self.val = val
+
+
+class CustomFilters(Serialisable):
+
+    tagname = "customFilters"
+
+    _and = Bool(allow_none=True)
+    customFilter = Sequence(expected_type=CustomFilter) # min 1, max 2
+
+    __elements__ = ('customFilter',)
+
+    def __init__(self,
+                 _and=None,
+                 customFilter=(),
+                ):
+        self._and = _and
+        self.customFilter = customFilter
+
+
+class Top10(Serialisable):
+
+    tagname = "top10"
+
+    top = Bool(allow_none=True)
+    percent = Bool(allow_none=True)
+    val = Float()
+    filterVal = Float(allow_none=True)
+
+    def __init__(self,
+                 top=None,
+                 percent=None,
+                 val=None,
+                 filterVal=None,
+                ):
+        self.top = top
+        self.percent = percent
+        self.val = val
+        self.filterVal = filterVal
+
+
+class DateGroupItem(Serialisable):
+
+    tagname = "dateGroupItem"
+
+    year = Integer()
+    month = MinMax(min=1, max=12, allow_none=True)
+    day = MinMax(min=1, max=31, allow_none=True)
+    hour = MinMax(min=0, max=23, allow_none=True)
+    minute = MinMax(min=0, max=59, allow_none=True)
+    second = Integer(min=0, max=59, allow_none=True)
+    dateTimeGrouping = Set(values=(['year', 'month', 'day', 'hour', 'minute',
+                                    'second']))
+
+    def __init__(self,
+                 year=None,
+                 month=None,
+                 day=None,
+                 hour=None,
+                 minute=None,
+                 second=None,
+                 dateTimeGrouping=None,
+                ):
+        self.year = year
+        self.month = month
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+        self.dateTimeGrouping = dateTimeGrouping
+
+
+class Filters(Serialisable):
+
+    tagname = "filters"
+
+    blank = Bool(allow_none=True)
+    calendarType = NoneSet(values=["gregorian","gregorianUs",
+                                   "gregorianMeFrench","gregorianArabic", "hijri","hebrew",
+                                   "taiwan","japan", "thai","korea",
+                                   "saka","gregorianXlitEnglish","gregorianXlitFrench"])
+    filter = ValueSequence(expected_type=str)
+    dateGroupItem = Sequence(expected_type=DateGroupItem, allow_none=True)
+
+    __elements__ = ('filter', 'dateGroupItem')
+
+    def __init__(self,
+                 blank=None,
+                 calendarType=None,
+                 filter=(),
+                 dateGroupItem=(),
+                ):
+        self.blank = blank
+        self.calendarType = calendarType
+        self.filter = filter
+        self.dateGroupItem = dateGroupItem
+
+
+class FilterColumn(Serialisable):
+
+    tagname = "filterColumn"
+
+    colId = Integer()
+    col_id = Alias('colId')
+    hiddenButton = Bool(allow_none=True)
+    showButton = Bool(allow_none=True)
+    # some elements are choice
+    filters = Typed(expected_type=Filters, allow_none=True)
+    top10 = Typed(expected_type=Top10, allow_none=True)
+    customFilters = Typed(expected_type=CustomFilters, allow_none=True)
+    dynamicFilter = Typed(expected_type=DynamicFilter, allow_none=True)
+    colorFilter = Typed(expected_type=ColorFilter, allow_none=True)
+    iconFilter = Typed(expected_type=IconFilter, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('filters', 'top10', 'customFilters', 'dynamicFilter',
+                    'colorFilter', 'iconFilter')
+
+    def __init__(self,
+                 colId=None,
+                 hiddenButton=None,
+                 showButton=None,
+                 filters=None,
+                 top10=None,
+                 customFilters=None,
+                 dynamicFilter=None,
+                 colorFilter=None,
+                 iconFilter=None,
+                 extLst=None,
+                 blank=None,
+                 vals=None,
+                ):
+        self.colId = colId
+        self.hiddenButton = hiddenButton
+        self.showButton = showButton
+        if filters is None:
+            filters = Filters()
+        self.filters = filters
+        self.top10 = top10
+        self.customFilters = customFilters
+        self.dynamicFilter = dynamicFilter
+        self.colorFilter = colorFilter
+        self.iconFilter = iconFilter
+        if blank is not None:
+            self.filters.blank = blank
+        if vals is not None:
+            self.filters.filter = vals
+
+
+class AutoFilter(Serialisable):
+
+    tagname = "autoFilter"
+
+    ref = CellRange()
+    filterColumn = Sequence(expected_type=FilterColumn, allow_none=True)
+    sortState = Typed(expected_type=SortState, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('filterColumn', 'sortState')
+
+    def __init__(self,
+                 ref=None,
+                 filterColumn=(),
+                 sortState=None,
+                 extLst=None,
+                ):
+        self.ref = ref
+        self.filterColumn = filterColumn
+        self.sortState = sortState
+
+
+    def __bool__(self):
+        return self.ref is not None
+
+    __nonzero__ = __bool__
+
 
     def add_filter_column(self, col_id, vals, blank=False):
         """
@@ -108,14 +354,8 @@ class AutoFilter(object):
         :param blank: Show rows that have blank cell if True (default=``False``)
         :type  blank: bool
         """
-        filter_column = FilterColumn(col_id, vals, blank)
-        self._filter_columns[filter_column.col_id] = filter_column
-        return filter_column
+        self.filterColumn.append(FilterColumn(colId=col_id, vals=vals, blank=blank))
 
-    @property
-    def sort_conditions(self):
-        """Return sort conditions"""
-        return self._sort_conditions
 
     def add_sort_condition(self, ref, descending=False):
         """
@@ -126,8 +366,7 @@ class AutoFilter(object):
         :param descending: Descending sort order (default=``False``)
         :type  descending: bool
         """
-        sort_condition = SortCondition(ref, descending)
-        self._sort_conditions.append(sort_condition)
-        return sort_condition
-
-
+        cond = SortCondition(ref, descending)
+        if self.sortState is None:
+            self.sortState = SortState(ref=ref)
+        self.sortState.sortCondition.append(cond)

@@ -11,6 +11,10 @@ Submodules
 
 .. toctree::
 
+   openpyxl.packaging.core
+   openpyxl.packaging.extended
+   openpyxl.packaging.interface
    openpyxl.packaging.manifest
    openpyxl.packaging.relationship
+   openpyxl.packaging.workbook
 
