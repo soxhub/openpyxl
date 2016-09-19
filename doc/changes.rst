@@ -15,6 +15,19 @@ Minor changes
 * Remove deprecated methods from Worksheet
 
 
+2.4.1 (unreleased)
+==================
+
+
+Minor changes
+-------------
+
+* Add support for Python 3.6
+
+Bug fixes
+---------
+
+
 2.4.0 (2016-09-15)
 ==================
 
