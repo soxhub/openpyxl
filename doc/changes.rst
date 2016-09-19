@@ -5,6 +5,7 @@
 Minor changes
 -------------
 
+* Add support for Python 3.6
 
 Bug fixes
 ---------
