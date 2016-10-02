@@ -112,6 +112,10 @@ class Manifest(Serialisable):
 
     @property
     def extensions(self):
+        """
+        Map content types to file extensions
+        Skip parts without extensions
+        """
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
         return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts) if ext]
 
