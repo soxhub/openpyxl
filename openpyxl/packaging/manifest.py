@@ -113,7 +113,7 @@ class Manifest(Serialisable):
     @property
     def extensions(self):
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
-        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts)]
+        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts) if ext]
 
 
     def to_tree(self):
