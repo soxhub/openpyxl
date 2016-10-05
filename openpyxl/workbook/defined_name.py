@@ -33,7 +33,7 @@ COL_RANGE = r"""(?P<cols>[$]?[a-zA-Z]{1,3}:[$]?[a-zA-Z]{1,3})"""
 COL_RANGE_RE = re.compile(COL_RANGE)
 ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
 ROW_RANGE_RE = re.compile(ROW_RANGE)
-TITLES_REGEX = re.compile("""^{0}{1}?,?{2}?$""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
+TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
                           re.VERBOSE)
 
 
@@ -44,8 +44,11 @@ def _unpack_print_titles(defn):
     Extract rows and or columns from print titles so that they can be
     assigned to a worksheet
     """
-    m = TITLES_REGEX.match(defn.value)
-    return m.group('rows'), m.group('cols')
+    scanner = TITLES_REGEX.finditer(defn.value)
+    kw = dict((k, v) for match in scanner
+              for k, v in match.groupdict().items() if v)
+
+    return kw.get('rows'), kw.get('cols')
 
 
 def _unpack_print_area(defn):

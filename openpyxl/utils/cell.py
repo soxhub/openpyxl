@@ -4,7 +4,7 @@ from __future__ import absolute_import
 """
 Collection of utilities used within the package and also available for client code
 """
-import regex as re
+import re
 
 from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException

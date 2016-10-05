@@ -57,26 +57,36 @@ def test_print_cols(value, expected):
 @pytest.mark.parametrize("value, expected",
                          [
                              ("Sheet!$1:$1",
-                              {'cols': None, 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              { 'notquoted': 'Sheet', 'rows': '$1:$1'}
                               ),
                              ("Sheet!$1:$1,C:D",
-                              {'cols': 'C:D', 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              {'cols': 'C:D', 'notquoted': 'Sheet', 'rows': '$1:$1'}
                               ),
                             ("'Blatt5'!$C:$D",
-                             {'cols': '$C:$D', 'notquoted': None, 'quoted': 'Blatt5', 'rows': None}
-                             )
+                             {'cols': '$C:$D', 'quoted': 'Blatt5',}
+                             ),
+                            ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
+                             {'quoted': "Sheet 1", 'cols': '$A:$A', 'rows': "$1:$1"}
+                             ),
                          ]
                          )
 def test_print_titles(value, expected):
     from ..defined_name import TITLES_REGEX
-    match = TITLES_REGEX.match(value)
-    assert match.groupdict() == expected
+
+    scanner = TITLES_REGEX.finditer(value)
+    kw = dict((k, v) for match in scanner
+              for k, v in match.groupdict().items() if v)
+
+    assert kw == expected
 
 
 @pytest.mark.parametrize("value, expected",
                          [
                              ("Sheet1!$1:$2,$A:$A",
                               ("$1:$2", "$A:$A")
+                              ),
+                             ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
+                              ("$1:$1", "$A:$A"),
                               ),
                          ]
                          )
