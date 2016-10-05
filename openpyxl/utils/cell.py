@@ -4,7 +4,7 @@ from __future__ import absolute_import
 """
 Collection of utilities used within the package and also available for client code
 """
-import re
+import regex as re
 
 from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
@@ -21,7 +21,7 @@ RANGE_EXPR = """
 """
 ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
 SHEET_TITLE = """
-^(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!"""
+(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!"""
 SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})$""".format(
     SHEET_TITLE, RANGE_EXPR), re.VERBOSE)
 
