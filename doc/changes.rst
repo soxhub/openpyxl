@@ -6,6 +6,7 @@ Bug fixes
 ---------
 
 * `#691 <https://bitbucket.org/openpyxl/openpyxl/issues/691>`_ Cannot work with macro files created by LibreOffice
+* Prevent duplicate differential styles
 
 
 Minor changes
