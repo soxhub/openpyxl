@@ -597,6 +597,7 @@ class Worksheet(_WorkbookChild):
                         for column in range(min_col, max_col + 1))
 
 
+    @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
     def get_named_range(self, range_name):
         """
         Returns a 2D array of cells, with optional row and column offsets.
