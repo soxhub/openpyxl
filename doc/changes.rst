@@ -15,6 +15,13 @@ Minor changes
 
 * Add support for Python 3.6
 
+
+Deprecations
+------------
+
+Worksheet methods `get_named_range()` and `get_sqaured_range()`
+
+
 Bug fixes
 ---------
 
