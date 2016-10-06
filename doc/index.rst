@@ -240,6 +240,14 @@ Data Validation
     validation
 
 
+Defined Names & Ranges
+++++++++++++++++++++++
+
+.. toctree::
+
+    defined_names
+
+
 Parsing Formulas
 ++++++++++++++++
 
