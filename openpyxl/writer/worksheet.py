@@ -42,10 +42,11 @@ def write_mergecells(worksheet):
 
 def write_conditional_formatting(worksheet):
     """Write conditional formatting to xml."""
+    df = DifferentialStyle()
     wb = worksheet.parent
     for cf in worksheet.conditional_formatting:
         for rule in cf.rules:
-            if rule.dxf and rule.dxf != DifferentialStyle():
+            if rule.dxf and rule.dxf != df:
                 rule.dxfId = wb._differential_styles.add(rule.dxf)
         yield cf.to_tree()
 

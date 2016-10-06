@@ -22,13 +22,22 @@ Minor changes
 Bug fixes
 ---------
 
+* `#690 <https://bitbucket.org/openpyxl/openpyxl/issues/690>`_ Cannot parse print titles with multiple sheet names
 * `#691 <https://bitbucket.org/openpyxl/openpyxl/issues/691>`_ Cannot work with macro files created by LibreOffice
+* Prevent duplicate differential styles
 
 
 Minor changes
 -------------
 
 * Add support for Python 3.6
+
+
+Deprecations
+------------
+
+Worksheet methods `get_named_range()` and `get_sqaured_range()`
+
 
 Bug fixes
 ---------

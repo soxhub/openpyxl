@@ -573,6 +573,10 @@ class Worksheet(_WorkbookChild):
         return self.iter_cols()
 
 
+    @deprecated("""
+    Use ws.iter_rows() or ws.iter_cols() depending whether you
+    want rows or columns
+    """)
     def get_squared_range(self, min_col, min_row, max_col, max_row):
         """Returns a 2D array of cells. Will create any cells within the
         boundaries that do not already exist
@@ -597,6 +601,7 @@ class Worksheet(_WorkbookChild):
                         for column in range(min_col, max_col + 1))
 
 
+    @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
     def get_named_range(self, range_name):
         """
         Returns a 2D array of cells, with optional row and column offsets.

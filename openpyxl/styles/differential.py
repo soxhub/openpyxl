@@ -53,6 +53,9 @@ class DifferentialStyle(Serialisable):
 
 
 class DifferentialStyleList(Serialisable):
+    """
+    Deduping container for differential styles.
+    """
 
     tagname = "dxfs"
 
@@ -65,14 +68,22 @@ class DifferentialStyleList(Serialisable):
 
 
     def append(self, dxf):
-        styles = self.styles
-        styles.append(dxf)
-        self.styles = styles
+        """
+        Check to see whether style already exists and append it if does not.
+        """
+        if not isinstance(dxf, DifferentialStyle):
+            raise TypeError('expected ' + str(DifferentialStyle))
+        if dxf in self.styles:
+            return
+        self.styles.append(dxf)
 
 
     def add(self, dxf):
+        """
+        Add a differential style and return its index
+        """
         self.append(dxf)
-        return len(self.styles) - 1
+        return self.styles.index(dxf)
 
 
     def __bool__(self):
