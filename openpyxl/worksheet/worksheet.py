@@ -575,7 +575,7 @@ class Worksheet(_WorkbookChild):
 
     @deprecated("""
     Use ws.iter_rows() or ws.iter_cols() depending whether you
-    want rows or columns
+    want rows or columns returned.
     """)
     def get_squared_range(self, min_col, min_row, max_col, max_row):
         """Returns a 2D array of cells. Will create any cells within the
