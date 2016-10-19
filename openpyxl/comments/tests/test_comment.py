@@ -26,6 +26,7 @@ def test_can_copy():
     ws.cell(row=1, column=1).comment = source
     clone = copy(source)
     ws.cell(row=2, column=1).comment = clone
+    assert clone._parent == ws.cell(row=2, column=1)
     assert clone._parent is ws.cell(row=2, column=1)
     assert clone.text == "text"
     assert clone.author == "author"
