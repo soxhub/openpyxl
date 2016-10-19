@@ -34,6 +34,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Chi Ho Kwok
 * Yingjie Lan
 * Detlef Lannert
+* Laurent Laporte
 * Nicholas Laver
 * Greg Lehmann
 * Adam Lofts
