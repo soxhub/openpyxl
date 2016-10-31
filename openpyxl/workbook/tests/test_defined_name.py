@@ -179,19 +179,31 @@ class TestDefinition:
         assert defn.type == value_type
 
 
-    def test_destinations(self, DefinedName):
+    @pytest.mark.parametrize("value, destinations",
+                             [
+                                 (
+                                     "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7",
+                                     (
+                                         ("Sheet1", '$C$5:$C$7'),
+                                         ("Sheet1", '$C$9:$C$11'),
+                                         ("Sheet1", '$E$5:$E$7'),
+                                     )
+                                     ),
+                                 (
+                                     "'Sheet 1'!$A$1",
+                                     (
+                                         ("Sheet 1", "$A$1"),
+                                     )
+                                 ),
+                             ]
+                             )
+    def test_destinations(self, DefinedName, value, destinations):
         defn = DefinedName(name="some")
-        defn.value = "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7,Sheet1!$E$9:$E$11,Sheet1!$D$8"
+        defn.value = value
 
         assert defn.type == "RANGE"
         des = tuple(defn.destinations)
-        assert des == (
-            ("Sheet1", '$C$5:$C$7'),
-            ("Sheet1", '$C$9:$C$11'),
-            ("Sheet1", '$E$5:$E$7'),
-            ("Sheet1", '$E$9:$E$11'),
-            ("Sheet1", '$D$8'),
-        )
+        assert des == destinations
 
 
     @pytest.mark.parametrize("name, expected",

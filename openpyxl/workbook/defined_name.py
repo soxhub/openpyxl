@@ -140,7 +140,8 @@ class DefinedName(Serialisable):
             for part in tok.items:
                 if part.subtype == "RANGE":
                     m = SHEETRANGE_RE.match(part.value)
-                    yield m.group('notquoted'), m.group('cells')
+                    sheetname = m.group('notquoted') or m.group('quoted')
+                    yield sheetname, m.group('cells')
 
 
     @property
