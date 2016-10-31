@@ -23,6 +23,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Brice Gelineau
 * Alex Gronholm
 * Yaroslav Halchenko
+* Fumito Hamamura
 * Khchine Hamza
 * Josh Haywood
 * Jeff Holman
