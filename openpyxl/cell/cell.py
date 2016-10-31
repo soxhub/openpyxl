@@ -306,13 +306,17 @@ class Cell(StyleableObject):
         """Set value and display for hyperlinks in a cell.
         Automatically sets the `value` of the cell with link text,
         but you can modify it afterwards by setting the `value`
-        property, and the hyperlink will remain."""
-        if not isinstance(val, Hyperlink):
-            val = Hyperlink(ref="", target=val)
-        val.ref = self.coordinate
-        self._hyperlink = val
-        if self._value is None:
-            self.value = val.target or val.location
+        property, and the hyperlink will remain.
+        Hyperlink is removed if set to ``None``."""
+        if val is None:
+            self._hyperlink = None
+        else:
+            if not isinstance(val, Hyperlink):
+                val = Hyperlink(ref="", target=val)
+            val.ref = self.coordinate
+            self._hyperlink = val
+            if self._value is None:
+                self.value = val.target or val.location
 
 
     @property

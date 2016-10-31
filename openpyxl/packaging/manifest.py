@@ -40,7 +40,7 @@ from openpyxl.xml.functions import tostring
 mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
-mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
+mimetypes.add_type("application/vnd.ms-office.vbaProject", ".bin")
 mimetypes.add_type("application/vnd.openxmlformats-officedocument.vmlDrawing", ".vml")
 mimetypes.add_type("image/x-emf", ".emf")
 

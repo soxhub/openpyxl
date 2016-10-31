@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 from io import BytesIO
+from openpyxl.xml.functions import fromstring
 from zipfile import ZipFile
 
 import pytest
@@ -69,6 +70,26 @@ class TestWorkbookParser:
             ['Chart1', 'visible', 'xl/chartsheets/sheet1.xml', CHARTSHEET_REL],
             ['Sheet1', 'visible', 'xl/worksheets/sheet1.xml', WORKSHEET_REL],
         ]
+
+
+    def test_broken_sheet_ref(self, datadir, recwarn, WorkbookParser):
+        from openpyxl.workbook.parser import WorkbookPackage
+        datadir.chdir()
+        with open("workbook_missing_id.xml", "rb") as src:
+            xml = src.read()
+            node = fromstring(xml)
+        wb = WorkbookPackage.from_tree(node)
+
+        archive = ZipFile(BytesIO(), "a")
+        archive.write("workbook_links.xml", ARC_WORKBOOK)
+        archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
+
+        parser = WorkbookParser(archive)
+        parser.sheets = wb.sheets
+        sheets = parser.find_sheets()
+        list(sheets)
+        w = recwarn.pop()
+        assert issubclass(w.category, UserWarning)
 
 
     def test_assign_names(self, datadir, WorkbookParser):

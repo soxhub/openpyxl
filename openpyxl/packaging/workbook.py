@@ -6,6 +6,7 @@ OO-based reader
 """
 
 import posixpath
+from warnings import warn
 
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
@@ -61,8 +62,18 @@ class WorkbookParser:
 
 
     def find_sheets(self):
+        """
+        Find all sheets in the workbook and return the link to the source file.
+
+        Older XLSM files sometimes contain invalid sheet elements.
+        Warn user when these are removed.
+        """
 
         for sheet in self.sheets:
+            if not sheet.id:
+                msg = "File contains an invalid specification for {0}. This will be removed".format(sheet.name)
+                warn(msg)
+                continue
             yield sheet, self.rels[sheet.id]
 
 
