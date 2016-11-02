@@ -34,6 +34,7 @@ Minor changes
 -------------
 
 * Add support for Python 3.6
+* Correct documentation for headers and footers
 
 
 Deprecations

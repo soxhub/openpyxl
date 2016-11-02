@@ -7,6 +7,7 @@ import re
 from warnings import warn
 
 from openpyxl.descriptors import (
+    Alias,
     Bool,
     Strict,
     String,
@@ -138,6 +139,7 @@ class HeaderFooterItem(Strict):
 
     left = Typed(expected_type=_HeaderFooterPart)
     center = Typed(expected_type=_HeaderFooterPart)
+    centre = Alias("center")
     right = Typed(expected_type=_HeaderFooterPart)
 
     __keys = ('L', 'C', 'R')

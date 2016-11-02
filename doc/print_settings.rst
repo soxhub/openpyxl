@@ -23,7 +23,7 @@ Headers and Footers
 Headers and footers use their own formatting language. This is fully
 supported when writing them but, due to the complexity and the possibility of
 nesting, only partially when reading them. There is support for the font,
-size and color for a left, centre, or right element. Granular control
+size and color for a left, centre/center, or right element. Granular control
 (highlighting individuals words) will require applying control codes
 manually.
 
@@ -35,13 +35,11 @@ manually.
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
->>> ws.oddHeader.text = "Page &[Page] of &N"
->>> ws.oddHeader.size = 14
->>> ws.oddHeader.font = "Tahoma,Bold"
->>> ws.oddHeader.color = "CC3366"
+>>> ws.oddHeader.left.text = "Page &[Page] of &N"
+>>> ws.oddHeader.left.size = 14
+>>> ws.oddHeader.left.font = "Tahoma,Bold"
+>>> ws.oddHeader.left.color = "CC3366"
 
-# Or just
->>> ws.oddFooter.right.text = 'My Right Footer'
 
 Also supported are `evenHeader` and `evenFooter` as well as `firstHeader` and `firstFooter`.
 
