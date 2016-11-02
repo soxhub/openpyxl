@@ -285,9 +285,12 @@ class Worksheet(_WorkbookChild):
         :param coordinate: coordinates of the cell (e.g. 'B12')
         :type coordinate: string
 
+        :param value: value of the cell (e.g. 5)
+        :type value: numeric or time or string or bool or none
+
         :raise: InsufficientCoordinatesException when neither row nor column are not given
 
-        :rtype: :class:openpyxl.cell.Cell
+        :rtype: openpyxl.cell.Cell
 
         """
 
@@ -464,6 +467,9 @@ class Worksheet(_WorkbookChild):
 
         Additional rows and columns can be created using offsets.
 
+        :param range_string: range string (e.g. 'A1:B2') *deprecated*
+        :type range_string: string
+
         :param min_col: smallest column index (1-based index)
         :type min_col: int
 
@@ -477,10 +483,10 @@ class Worksheet(_WorkbookChild):
         :type max_row: int
 
         :param row_offset: additional rows (e.g. 4)
-        :type row: int
+        :type row_offset: int
 
-        :param column_offset: additonal columns (e.g. 3)
-        :type column: int
+        :param column_offset: additional columns (e.g. 3)
+        :type column_offset: int
 
         :rtype: generator
         """
@@ -609,7 +615,7 @@ class Worksheet(_WorkbookChild):
         :param range_name: `named range` name
         :type range_name: string
 
-        :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
+        :rtype: tuple[tuple[openpyxl.cell.Cell]]
         """
         defn = self.parent.defined_names[range_name]
         if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
@@ -752,7 +758,7 @@ class Worksheet(_WorkbookChild):
         * If it's a dict: values are assigned to the columns indicated by the keys (numbers or letters)
 
         :param iterable: list, range or generator, or dict containing values to append
-        :type iterable: list/tuple/range/generator or dict
+        :type iterable: list|tuple|range|generator or dict
 
         Usage:
 
