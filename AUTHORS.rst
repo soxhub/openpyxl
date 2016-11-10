@@ -62,6 +62,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Dieter Vandenbussche
 * Paul Van Der Linden
 * Gerald Van Huffelen
+* Koert van der Veer
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki

@@ -44,7 +44,7 @@ class TestNamedStyle:
 
 
     def test_bind(self, NamedStyle):
-        style = NamedStyle()
+        style = NamedStyle(xfId=0)
 
         wb = Workbook()
         style.bind(wb)

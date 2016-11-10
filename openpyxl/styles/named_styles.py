@@ -94,6 +94,7 @@ class NamedStyle(Serialisable):
         """
         self._wb = wb
         self._recalculate()
+        self._style.xfId = self.xfId
 
 
     def _recalculate(self):
@@ -143,6 +144,9 @@ class NamedStyle(Serialisable):
 class NamedStyleList(list):
     """
     Named styles are editable and can be applied to multiple objects
+
+    As only the index is stored in referencing objects the order mus
+    be preserved.
     """
 
     @property
@@ -168,15 +172,8 @@ class NamedStyleList(list):
             raise TypeError("""Only NamedStyle instances can be added""")
         elif style.name in self.names:
             raise ValueError("""Style {0} exists already""".format(style.name))
+        style.xfId = len(self) # expose index to referencing objects
         super(NamedStyleList, self).append(style)
-
-
-    def add(self, style):
-        """
-        Add a style and return index
-        """
-        self.append(style)
-        return self.index(style)
 
 
 class _NamedCellStyle(Serialisable):
