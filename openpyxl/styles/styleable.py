@@ -72,7 +72,7 @@ class NamedStyleDescriptor(object):
             if style not in coll:
                 instance.parent.parent.add_named_style(style)
         elif value not in coll.names:
-            if value in styles:
+            if value in styles: # is it builtin?
                 style = styles[value]
                 if style not in coll:
                     instance.parent.parent.add_named_style(style)

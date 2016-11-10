@@ -212,6 +212,25 @@ class TestStylesheet:
         assert normal.border == Border()
 
 
+    def test_split_named_styles(self, Stylesheet):
+        from openpyxl.workbook import Workbook
+        import copy
+        wb = Workbook()
+        new_style = copy.copy(wb._named_styles[0])
+        # Set to an incorrect xfId, which will happen when we load a
+        # worksheet with unused styles. The unused styles never make it to the
+        # workbook, so the xfIds will be off by the trimmed number.
+        new_style.xfId = 100
+        new_style.name = "Regression647"
+        wb._named_styles.append(new_style)
+
+        stylesheet = Stylesheet()
+        stylesheet._split_named_styles(wb)
+
+        assert stylesheet.cellStyles.cellStyle[-1].name == "Regression647"
+        assert stylesheet.cellStyles.cellStyle[-1].xfId < stylesheet.cellStyleXfs.count
+
+
 def test_no_styles():
     from ..stylesheet import apply_stylesheet
     from zipfile import ZipFile
