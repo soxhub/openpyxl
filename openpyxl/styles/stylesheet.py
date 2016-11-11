@@ -173,8 +173,9 @@ def apply_stylesheet(archive, wb):
     stylesheet = Stylesheet.from_tree(node)
 
     wb._cell_styles = stylesheet.cell_styles
-    for ns in stylesheet.named_styles:
-        wb.add_named_style(ns)
+    wb._named_styles = stylesheet.named_styles
+    for ns in wb._named_styles:
+        ns.bind(wb)
 
     wb._borders = IndexedList(stylesheet.borders)
     wb._fonts = IndexedList(stylesheet.fonts)

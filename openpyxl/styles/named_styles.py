@@ -280,6 +280,6 @@ class _NamedCellStyleList(Serialisable):
                 builtinId = ns.builtinId
             )
             names.add(ns.name)
-            styles.append(style)
+            styles.append(style) # assign xfId
 
         return styles
