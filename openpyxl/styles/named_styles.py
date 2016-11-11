@@ -258,22 +258,28 @@ class _NamedCellStyleList(Serialisable):
     @property
     def names(self):
         """
-        Convert to NamedStyle objects and remove duplicates
+        Convert to NamedStyle objects and remove duplicates.
+
+        In theory the highest xfId wins but in practice they are duplicates
+        so it doesn't matter.
         """
 
         def sort_fn(v):
             return v.xfId
 
-        styles = OrderedDict()
+        styles = NamedStyleList()
+        names = set()
+
         for ns in sorted(self.cellStyle, key=sort_fn):
+            if ns.name in names:
+                continue
+
             style = NamedStyle(
                 name=ns.name,
-                hidden=ns.hidden
+                hidden=ns.hidden,
+                builtinId = ns.builtinId
             )
-            style.builtinId = ns.builtinId
-            styles[ns.name] = style
+            names.add(ns.name)
+            styles.append(style)
 
-        ns = NamedStyleList()
-        for s in styles.values():
-            ns.append(s)
-        return ns
+        return styles
