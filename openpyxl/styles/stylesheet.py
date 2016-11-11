@@ -87,7 +87,7 @@ class Stylesheet(Serialisable):
         self.alignments = self.cellXfs.alignments
         self.protections = self.cellXfs.prots
         self._normalise_numbers()
-        self.named_styles =  self._merge_named_styles()
+        self.named_styles = self._merge_named_styles()
 
 
     @classmethod
@@ -96,7 +96,7 @@ class Stylesheet(Serialisable):
         attrs = dict(node.attrib)
         for k in attrs:
             del node.attrib[k]
-        return  super(Stylesheet, cls).from_tree(node)
+        return super(Stylesheet, cls).from_tree(node)
 
 
     def _merge_named_styles(self):
@@ -164,7 +164,9 @@ def apply_stylesheet(archive, wb):
     stylesheet = Stylesheet.from_tree(node)
 
     wb._cell_styles = stylesheet.cell_styles
-    wb._named_styles = stylesheet.named_styles
+    for ns in stylesheet.named_styles:
+        wb.add_named_style(ns)
+
     wb._borders = IndexedList(stylesheet.borders)
     wb._fonts = IndexedList(stylesheet.fonts)
     wb._fills = IndexedList(stylesheet.fills)
