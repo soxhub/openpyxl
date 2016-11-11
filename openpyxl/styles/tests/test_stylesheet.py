@@ -220,7 +220,6 @@ class TestStylesheet:
         # Set to an incorrect xfId, which will happen when we load a
         # worksheet with unused styles. The unused styles never make it to the
         # workbook, so the xfIds will be off by the trimmed number.
-        new_style.xfId = 100
         new_style.name = "Regression647"
         wb._named_styles.append(new_style)
 

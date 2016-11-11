@@ -40,7 +40,7 @@ class TestNamedStyle:
 
     def test_dict(self, NamedStyle):
         style = NamedStyle()
-        assert dict(style) == {'name':'Normal', 'hidden':'0'}
+        assert dict(style) == {'name':'Normal', 'hidden':'0', 'xfId':'0'}
 
 
     def test_bind(self, NamedStyle):
