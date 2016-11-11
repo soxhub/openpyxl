@@ -101,23 +101,32 @@ class Stylesheet(Serialisable):
 
     def _merge_named_styles(self):
         """
-        Merge named style names "cellStyles" with their associated styles "cellStyleXfs"
+        Merge named style names "cellStyles" with their associated styles
+        "cellStyleXfs"
         """
         named_styles = self.cellStyles.names
-        custom = self.custom_formats
-        formats = self.number_formats
+
         for style in named_styles:
-            xf = self.cellStyleXfs[style.xfId]
-            style.font = self.fonts[xf.fontId]
-            style.fill = self.fills[xf.fillId]
-            style.border = self.borders[xf.borderId]
-            if xf.numFmtId in custom:
-                style.number_format = custom[xf.numFmtId]
-            if xf.alignment:
-                style.alignment = xf.alignment
-            if xf.protection:
-                style.protection = xf.protection
+            self._expand_named_style(style)
+
         return named_styles
+
+
+    def _expand_named_style(self, named_style):
+        """
+        Bind format definitions for a named style from the associated style
+        record
+        """
+        xf = self.cellStyleXfs[named_style.xfId]
+        named_style.font = self.fonts[xf.fontId]
+        named_style.fill = self.fills[xf.fillId]
+        named_style.border = self.borders[xf.borderId]
+        if xf.numFmtId in self.custom_formats:
+            named_style.number_format = self.custom_formats[xf.numFmtId]
+        if xf.alignment:
+            named_style.alignment = xf.alignment
+        if xf.protection:
+            named_style.protection = xf.protection
 
 
     def _split_named_styles(self, wb):
@@ -164,8 +173,9 @@ def apply_stylesheet(archive, wb):
     stylesheet = Stylesheet.from_tree(node)
 
     wb._cell_styles = stylesheet.cell_styles
-    for ns in stylesheet.named_styles:
-        wb.add_named_style(ns)
+    wb._named_styles = stylesheet.named_styles
+    for ns in wb._named_styles:
+        ns.bind(wb)
 
     wb._borders = IndexedList(stylesheet.borders)
     wb._fonts = IndexedList(stylesheet.fonts)
