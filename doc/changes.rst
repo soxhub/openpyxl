@@ -31,6 +31,7 @@ Bug fixes
 * `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
 * `#715 <https://bitbucket.org/openpyxl/openpyxl/issues/715>`_ Cannot read files containing macro sheets
 * `#717 <https://bitbucket.org/openpyxl/openpyxl/issues/717>`_ Details from named styles not preserved when reading files
+* `#722 <https://bitbucket.org/openpyxl/openpyxl/issues/722>`_ Remove broken Print Title and Print Area definitions
 
 
 Minor changes

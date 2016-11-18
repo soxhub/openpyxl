@@ -178,6 +178,14 @@ class DefinedNameList(Serialisable):
         self.definedName = definedName
 
 
+    def _cleanup(self):
+        """
+        Strip broken or unknown definitions
+        """
+        self.delete("_xlnm.Print_Titles")
+        self.delete("_xlnm.Print_Area")
+
+
     def _duplicate(self, defn):
         """
         Check for whether DefinedName with the same name and scope already
@@ -203,20 +211,46 @@ class DefinedNameList(Serialisable):
 
 
     def __contains__(self, name):
+        """
+        See if a globaly defined name exists
+        """
         for defn in self.definedName:
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId is None:
                 return True
 
 
     def __getitem__(self, name):
+        """
+        Get globally defined name
+        """
+        defn = self.get(name)
+        if not defn:
+            raise KeyError("No definition called {0}".format(name))
+        return defn
+
+
+    def get(self, name, scope=None):
+        """
+        Get the name assigned to a specicic sheet or global
+        """
         for defn in self.definedName:
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId == scope:
                 return defn
-        raise KeyError("No definition called {0}".format(name))
 
 
     def __delitem__(self, name):
+        """
+        Delete a globally defined name
+        """
+        if not self.delete(name):
+            raise KeyError("No globally defined name {0}".format(name))
+
+
+    def delete(self, name, scope=None):
+        """
+        Delete a name assigned to a specific or global
+        """
         for idx, defn in enumerate(self.definedName):
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId == scope:
                 del self.definedName[idx]
-                break
+                return True
