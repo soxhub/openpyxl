@@ -298,3 +298,14 @@ class TestDefinitionList:
         dl.append(defn)
         assert dl._duplicate(defn)
 
+
+    def test_cleanup(self, DefinedNameList, datadir):
+        datadir.chdir()
+        with open("broken_print_titles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        assert len(dl) == 4
+        dl._cleanup()
+        assert len(dl) == 2
+
