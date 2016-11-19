@@ -41,7 +41,8 @@ def test_invalid_chars(value):
                              (["Sheet2"], "Sheet2", "Sheet21"), # suggestions are stupid
                              (["Sheet", "Sheet1"], 'Sheet', 'Sheet2'),
                              (["Regex Test ("], "Regex Test (", "Regex Test (1"),
-                             (["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"], "Sheet", "Sheet")
+                             (["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"], "Sheet", "Sheet"),
+                             (["Foo"], "FOO", "FOO1"),
                          ]
                          )
 def test_duplicate_title(names, value, result):
