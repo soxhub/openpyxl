@@ -5,11 +5,13 @@
 Bug fixes
 ---------
 
+* `#643 <https://bitbucket.org/openpyxl/openpyxl/issues/643>`_ Make checking for duplicate sheet titles case insensitive
 * `#647 <https://bitbucket.org/openpyxl/openpyxl/issues/647>`_ Trouble handling LibreOffice files with named styles
 * `#687 <https://bitbucket.org/openpyxl/openpyxl/issues/682>`_ Directly assigned new named styles always refer to "Normal"
 * `#690 <https://bitbucket.org/openpyxl/openpyxl/issues/690>`_ Cannot parse print titles with multiple sheet names
 * `#691 <https://bitbucket.org/openpyxl/openpyxl/issues/691>`_ Cannot work with macro files created by LibreOffice
 * Prevent duplicate differential styles
+* `#694 <https://bitbucket.org/openpyxl/openpyxl/issues/694>`_ Allow sheet titles longer than 31 characters
 * `#697 <https://bitbucket.org/openpyxl/openpyxl/issues/697>`_ Cannot unset hyperlinks
 * `#703 <https://bitbucket.org/openpyxl/openpyxl/issues/703>`_ Copy height and width when copying comments
 * `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
