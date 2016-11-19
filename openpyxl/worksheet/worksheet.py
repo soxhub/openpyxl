@@ -810,6 +810,10 @@ class Worksheet(_WorkbookChild):
         """ tells which cell is under the given coordinates (in pixels)
         counting from the top-left corner of the sheet.
         Can be used to locate images and charts on the worksheet """
+
+        if left < 0 or top < 0:
+            raise ValueError("Coordinates must be positive")
+
         current_col = 1
         current_row = 1
         column_dimensions = self.column_dimensions
