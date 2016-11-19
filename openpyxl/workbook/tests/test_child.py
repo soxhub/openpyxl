@@ -79,9 +79,11 @@ class TestWorkbookChild:
         assert child.title == "Sheet"
 
 
-    def test_title_too_long(self, WorkbookChild):
-        with pytest.raises(ValueError):
-            WorkbookChild(DummyWorkbook(), 'X' * 50)
+    def test_title_too_long(self, WorkbookChild, recwarn):
+
+        WorkbookChild(DummyWorkbook(), 'X' * 50)
+        w = recwarn.pop()
+        assert w.category == UserWarning
 
 
     def test_set_encoded_title(self, WorkbookChild):

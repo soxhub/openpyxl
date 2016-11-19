@@ -2,6 +2,8 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 import re
+import warnings
+
 from openpyxl.compat import unicode
 
 from openpyxl.worksheet.header_footer import HeaderFooter
@@ -90,7 +92,7 @@ class _WorkbookChild(object):
             value = avoid_duplicate_name(self.parent.sheetnames, value)
 
         if len(value) > 31:
-            raise ValueError('Maximum 31 characters allowed in sheet title')
+            warnings.warn("Title is more than 31 characters. Some applications may not be able to read the file")
 
         self.__title = value
 
