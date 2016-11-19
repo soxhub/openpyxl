@@ -259,8 +259,8 @@ def test_only_one_cell_per_comment(dummy_cell):
     dummy_cell.comment = comm
 
     c2 = ws.cell(column=1, row=2)
-    with pytest.raises(AttributeError):
-        c2.comment = comm
+    c2.comment = comm
+    assert c2.comment.parent is c2
 
 
 def test_remove_comment(dummy_cell):

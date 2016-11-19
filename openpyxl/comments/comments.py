@@ -35,12 +35,21 @@ class Comment(object):
         return clone
 
 
-    @parent.setter
-    def parent(self, cell):
+    def bind(self, cell):
+        """
+        Bind comment to a particular cell
+        """
         if cell is not None and self._parent is not None and self._parent != cell:
             fmt = "Comment already assigned to {0} in worksheet {1}. Cannot assign a comment to more than one cell"
             raise AttributeError(fmt.format(cell.coordinate, cell.parent.title))
         self._parent = cell
+
+
+    def unbind(self):
+        """
+        Unbind a comment from a cell
+        """
+        self._parent = None
 
 
     @property
