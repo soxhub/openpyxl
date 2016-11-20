@@ -18,14 +18,21 @@ from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.styles.colors import Color, ColorDescriptor
 from openpyxl.styles.differential import DifferentialStyle
 
+from openpyxl.utils.cell import COORD_RE
+
 
 class ValueDescriptor(Float):
     """
     Expected type depends upon type attribue of parent :-(
+
+    Most values should be numeric BUT they can also be cell references
     """
 
     def __set__(self, instance, value):
-        if instance.type == "formula":
+        ref = None
+        if value is not None and isinstance(value, basestring):
+            ref = COORD_RE.match(value)
+        if instance.type == "formula" or ref:
             self.expected_type = basestring
         else:
             self.expected_type = float
