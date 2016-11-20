@@ -104,11 +104,11 @@ def write_workbook(workbook):
     # external references
     for link in wb._external_links:
         # need to match a counter with a workbook's relations
-        rId = len(wb.rels)
-        ext = ExternalReference(id="rId{0}".format(link._id))
+        rId = len(wb.rels) + 1
         rel = Relationship(type=link._rel_type, Target=link.path)
-        root.externalReferences.append(ext)
         wb.rels.append(rel)
+        ext = ExternalReference(id=rel.id)
+        root.externalReferences.append(ext)
 
     # Defined names
     defined_names = copy(wb.defined_names) # don't add special defns to workbook itself.
