@@ -13,6 +13,7 @@ Bug fixes
 * Prevent duplicate differential styles
 * `#694 <https://bitbucket.org/openpyxl/openpyxl/issues/694>`_ Allow sheet titles longer than 31 characters
 * `#697 <https://bitbucket.org/openpyxl/openpyxl/issues/697>`_ Cannot unset hyperlinks
+* `#699 <https://bitbucket.org/openpyxl/openpyxl/issues/699>`_ Exception raised when format objects use cell references
 * `#703 <https://bitbucket.org/openpyxl/openpyxl/issues/703>`_ Copy height and width when copying comments
 * `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
 * `#711 <https://bitbucket.org/openpyxl/openpyxl/issues/711>`_ Files with external links become corrupted
