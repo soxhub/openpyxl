@@ -2,6 +2,8 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 import re
+import warnings
+
 from openpyxl.compat import unicode
 
 from openpyxl.worksheet.header_footer import HeaderFooter
@@ -17,10 +19,13 @@ def avoid_duplicate_name(names, value):
     """
     Naive check to see whether name already exists.
     If name does exist suggest a name using an incrementer
+    Duplicates are case insensitive
     """
-    if value in names:
+    # Check for an absolute match in which case we need to find an alternative
+    match = [n for n in names if n.lower() == value.lower()]
+    if match:
         names = ",".join(names)
-        sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value))
+        sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value), re.I)
         matches = sheet_title_regex.findall(names)
         if matches:
             # use name, but append with the next highest integer
@@ -90,7 +95,7 @@ class _WorkbookChild(object):
             value = avoid_duplicate_name(self.parent.sheetnames, value)
 
         if len(value) > 31:
-            raise ValueError('Maximum 31 characters allowed in sheet title')
+            warnings.warn("Title is more than 31 characters. Some applications may not be able to read the file")
 
         self.__title = value
 

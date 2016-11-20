@@ -12,6 +12,7 @@ cells using Excel's 'A1' column/row nomenclature are also provided.
 __docformat__ = "restructuredtext en"
 
 # Python stdlib imports
+from copy import copy
 import datetime
 import re
 
@@ -353,13 +354,19 @@ class Cell(StyleableObject):
         """
         return self._comment
 
+
     @comment.setter
     def comment(self, value):
+        """
+        Assign a comment to a cell
+        """
 
         if value is not None:
-            value.parent = self
+            if value.parent:
+                value = copy(value)
+            value.bind(self)
         elif value is None and self._comment:
-            self._comment.parent = None
+            self._comment.unbind()
         self._comment = value
 
 

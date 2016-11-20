@@ -22,13 +22,18 @@ Minor changes
 Bug fixes
 ---------
 
+* `#643 <https://bitbucket.org/openpyxl/openpyxl/issues/643>`_ Make checking for duplicate sheet titles case insensitive
 * `#647 <https://bitbucket.org/openpyxl/openpyxl/issues/647>`_ Trouble handling LibreOffice files with named styles
 * `#687 <https://bitbucket.org/openpyxl/openpyxl/issues/682>`_ Directly assigned new named styles always refer to "Normal"
 * `#690 <https://bitbucket.org/openpyxl/openpyxl/issues/690>`_ Cannot parse print titles with multiple sheet names
 * `#691 <https://bitbucket.org/openpyxl/openpyxl/issues/691>`_ Cannot work with macro files created by LibreOffice
 * Prevent duplicate differential styles
+* `#694 <https://bitbucket.org/openpyxl/openpyxl/issues/694>`_ Allow sheet titles longer than 31 characters
 * `#697 <https://bitbucket.org/openpyxl/openpyxl/issues/697>`_ Cannot unset hyperlinks
+* `#699 <https://bitbucket.org/openpyxl/openpyxl/issues/699>`_ Exception raised when format objects use cell references
+* `#703 <https://bitbucket.org/openpyxl/openpyxl/issues/703>`_ Copy height and width when copying comments
 * `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
+* `#711 <https://bitbucket.org/openpyxl/openpyxl/issues/711>`_ Files with external links become corrupted
 * `#715 <https://bitbucket.org/openpyxl/openpyxl/issues/715>`_ Cannot read files containing macro sheets
 * `#717 <https://bitbucket.org/openpyxl/openpyxl/issues/717>`_ Details from named styles not preserved when reading files
 * `#722 <https://bitbucket.org/openpyxl/openpyxl/issues/722>`_ Remove broken Print Title and Print Area definitions
@@ -78,6 +83,7 @@ Minor changes
   copies of the external workbooks. If these are big it can be advantageous to
   be able to disable them.
 * Provide an example for using cell ranges in DataValidation.
+* PR 138 - add copy support to comments.
 
 
 2.4.0-b1 (2016-06-08)

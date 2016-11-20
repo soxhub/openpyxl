@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.compat import deprecated
-
 
 class Comment(object):
 
@@ -29,11 +27,29 @@ class Comment(object):
         return "Comment: {0} by {1}".format(self.content, self.author)
 
 
-    @parent.setter
-    def parent(self, cell):
+    def __copy__(self):
+        """Create a detached copy of this comment."""
+        clone = self.__class__(self.content, self.author)
+        clone.width = self.width
+        clone.height = self.height
+        return clone
+
+
+    def bind(self, cell):
+        """
+        Bind comment to a particular cell
+        """
         if cell is not None and self._parent is not None and self._parent != cell:
-            raise AttributeError("Comment already assigned to %s in worksheet %s. Cannot assign a comment to more than one cell" % (cell.coordinate, cell.parent.title))
+            fmt = "Comment already assigned to {0} in worksheet {1}. Cannot assign a comment to more than one cell"
+            raise AttributeError(fmt.format(cell.coordinate, cell.parent.title))
         self._parent = cell
+
+
+    def unbind(self):
+        """
+        Unbind a comment from a cell
+        """
+        self._parent = None
 
 
     @property
