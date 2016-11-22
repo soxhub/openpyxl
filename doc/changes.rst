@@ -16,6 +16,7 @@ Bug fixes
 * `#699 <https://bitbucket.org/openpyxl/openpyxl/issues/699>`_ Exception raised when format objects use cell references
 * `#703 <https://bitbucket.org/openpyxl/openpyxl/issues/703>`_ Copy height and width when copying comments
 * `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
+* `#707 <https://bitbucket.org/openpyxl/openpyxl/issues/707>`_ IndexError raised in read-only mode when accessing individual cells
 * `#711 <https://bitbucket.org/openpyxl/openpyxl/issues/711>`_ Files with external links become corrupted
 * `#715 <https://bitbucket.org/openpyxl/openpyxl/issues/715>`_ Cannot read files containing macro sheets
 * `#717 <https://bitbucket.org/openpyxl/openpyxl/issues/717>`_ Details from named styles not preserved when reading files
