@@ -10,6 +10,7 @@ from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 from openpyxl.reader.excel import load_workbook
 from openpyxl.compat import range
+from openpyxl.cell.read_only import EMPTY_CELL
 
 
 @pytest.fixture
@@ -341,6 +342,29 @@ def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
     row = ws._get_row(element, max_col=10)
     row = tuple(row)
     assert len(row) == 10
+
+
+@pytest.mark.parametrize("row, column",
+                         [
+                             (2, 1),
+                             (3, 1),
+                             (5, 1),
+                         ]
+                         )
+def test_read_cell_from_empty_row(DummyWorkbook, ReadOnlyWorksheet, row, column):
+    src = BytesIO()
+    src.write(b"""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetData>
+      <row r="2" />
+      <row r="4" />
+    </sheetData>
+    </worksheet>
+    """)
+    src.seek(0)
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+    ws._xml = src
+    cell = ws._get_cell(row, column)
+    assert cell is EMPTY_CELL
 
 
 def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
