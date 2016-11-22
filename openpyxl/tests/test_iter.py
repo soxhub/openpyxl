@@ -348,6 +348,7 @@ def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
                          [
                              (2, 1),
                              (3, 1),
+                             (5, 1),
                          ]
                          )
 def test_read_cell_from_empty_row(DummyWorkbook, ReadOnlyWorksheet, row, column):
