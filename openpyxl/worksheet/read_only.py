@@ -74,7 +74,6 @@ class ReadOnlyWorksheet(object):
         # Methods from Worksheet
         self.cell = Worksheet.cell.__get__(self)
         self.iter_rows = Worksheet.iter_rows.__get__(self)
-        self.rows = Worksheet.rows.__get__(self)
 
 
     def __getitem__(self, key):
@@ -185,6 +184,11 @@ class ReadOnlyWorksheet(object):
         return EMPTY_CELL
 
 
+    @property
+    def rows(self):
+        return self.iter_rows()
+
+
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
             if force:
@@ -202,8 +206,11 @@ class ReadOnlyWorksheet(object):
         Loop through all the cells to get the size of a worksheet.
         Do this only if it is explicitly requested.
         """
+
         max_col = 0
         for r in self.rows:
+            if not r:
+                continue
             cell = r[-1]
             max_col = max(max_col, cell.column)
 
