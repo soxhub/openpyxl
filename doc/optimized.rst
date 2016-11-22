@@ -10,7 +10,7 @@ Introducing :class:`openpyxl.worksheet.read_only.ReadOnlyWorksheet`::
 
     from openpyxl import load_workbook
     wb = load_workbook(filename='large_file.xlsx', read_only=True)
-    ws = wb['big_data'] # ws is now an IterableWorksheet
+    ws = wb['big_data']
 
     for row in ws.rows:
         for cell in row:
@@ -22,6 +22,20 @@ Introducing :class:`openpyxl.worksheet.read_only.ReadOnlyWorksheet`::
 
 Cells returned are not regular :class:`openpyxl.cell.cell.Cell` but
 :class:`openpyxl.cell.read_only.ReadOnlyCell`.
+
+
+Worksheet dimensions
+--------------------
+
+Read-only mode relies applications and libraries that created the file
+providing correct information about the worksheets, specifically the used
+part of it, known as the dimensions. Some applications set this incorrectly.
+You can check the apparent dimensions of a worksheet using
+`ws.calculate_dimensions()`. If this returns a range that you know is
+incorrect, say `A1:A1` then simply resetting the max_row and max_column
+attributes should allow you to work with the file::
+
+    ws.max_row = ws.max_column = None
 
 
 Write-only mode
