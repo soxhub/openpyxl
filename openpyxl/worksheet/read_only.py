@@ -178,9 +178,9 @@ class ReadOnlyWorksheet(object):
 
     def _get_cell(self, row, column):
         """Cells are returned by a generator which can be empty"""
-        cell = tuple(self.get_squared_range(column, row, column, row))[0]
-        if cell:
-            return cell[0]
+        for row in self.get_squared_range(column, row, column, row):
+            if row:
+                return row[0]
         return EMPTY_CELL
 
 
