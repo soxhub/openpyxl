@@ -253,3 +253,20 @@ class TestManifest:
             '/xl/sharedStrings.xml'
                     ])
         assert partnames == expected
+
+
+    def test_no_defaults(self, datadir, Manifest):
+        """
+        LibreOffice does not use the Default element
+        """
+        xml = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+           <Override PartName="/_rels/.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+        </Types>
+        """
+
+        node = fromstring(xml)
+        manifest = Manifest.from_tree(node)
+        exts = manifest.extensions
+
+        assert exts == []

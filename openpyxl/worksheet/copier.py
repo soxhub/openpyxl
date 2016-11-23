@@ -57,7 +57,7 @@ class WorksheetCopy(object):
                 target_cell._hyperlink = copy(source_cell.hyperlink)
 
             if source_cell.comment:
-                target_cell.comment = Comment(source_cell.comment.text, source_cell.comment.author)
+                target_cell.comment = copy(source_cell.comment)
 
 
     def _copy_dimensions(self):

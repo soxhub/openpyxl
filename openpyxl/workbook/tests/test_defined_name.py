@@ -57,26 +57,36 @@ def test_print_cols(value, expected):
 @pytest.mark.parametrize("value, expected",
                          [
                              ("Sheet!$1:$1",
-                              {'cols': None, 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              { 'notquoted': 'Sheet', 'rows': '$1:$1'}
                               ),
                              ("Sheet!$1:$1,C:D",
-                              {'cols': 'C:D', 'notquoted': 'Sheet', 'quoted': None, 'rows': '$1:$1'}
+                              {'cols': 'C:D', 'notquoted': 'Sheet', 'rows': '$1:$1'}
                               ),
                             ("'Blatt5'!$C:$D",
-                             {'cols': '$C:$D', 'notquoted': None, 'quoted': 'Blatt5', 'rows': None}
-                             )
+                             {'cols': '$C:$D', 'quoted': 'Blatt5',}
+                             ),
+                            ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
+                             {'quoted': "Sheet 1", 'cols': '$A:$A', 'rows': "$1:$1"}
+                             ),
                          ]
                          )
 def test_print_titles(value, expected):
     from ..defined_name import TITLES_REGEX
-    match = TITLES_REGEX.match(value)
-    assert match.groupdict() == expected
+
+    scanner = TITLES_REGEX.finditer(value)
+    kw = dict((k, v) for match in scanner
+              for k, v in match.groupdict().items() if v)
+
+    assert kw == expected
 
 
 @pytest.mark.parametrize("value, expected",
                          [
                              ("Sheet1!$1:$2,$A:$A",
                               ("$1:$2", "$A:$A")
+                              ),
+                             ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
+                              ("$1:$1", "$A:$A"),
                               ),
                          ]
                          )
@@ -169,19 +179,31 @@ class TestDefinition:
         assert defn.type == value_type
 
 
-    def test_destinations(self, DefinedName):
+    @pytest.mark.parametrize("value, destinations",
+                             [
+                                 (
+                                     "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7",
+                                     (
+                                         ("Sheet1", '$C$5:$C$7'),
+                                         ("Sheet1", '$C$9:$C$11'),
+                                         ("Sheet1", '$E$5:$E$7'),
+                                     )
+                                     ),
+                                 (
+                                     "'Sheet 1'!$A$1",
+                                     (
+                                         ("Sheet 1", "$A$1"),
+                                     )
+                                 ),
+                             ]
+                             )
+    def test_destinations(self, DefinedName, value, destinations):
         defn = DefinedName(name="some")
-        defn.value = "Sheet1!$C$5:$C$7,Sheet1!$C$9:$C$11,Sheet1!$E$5:$E$7,Sheet1!$E$9:$E$11,Sheet1!$D$8"
+        defn.value = value
 
         assert defn.type == "RANGE"
         des = tuple(defn.destinations)
-        assert des == (
-            ("Sheet1", '$C$5:$C$7'),
-            ("Sheet1", '$C$9:$C$11'),
-            ("Sheet1", '$E$5:$E$7'),
-            ("Sheet1", '$E$9:$E$11'),
-            ("Sheet1", '$D$8'),
-        )
+        assert des == destinations
 
 
     @pytest.mark.parametrize("name, expected",
@@ -275,4 +297,15 @@ class TestDefinitionList:
         assert not dl._duplicate(defn)
         dl.append(defn)
         assert dl._duplicate(defn)
+
+
+    def test_cleanup(self, DefinedNameList, datadir):
+        datadir.chdir()
+        with open("broken_print_titles.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        assert len(dl) == 4
+        dl._cleanup()
+        assert len(dl) == 2
 

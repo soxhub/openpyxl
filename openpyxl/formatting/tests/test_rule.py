@@ -52,6 +52,12 @@ class TestFormatObject:
         assert cfvo.val == expected
 
 
+    def test_cell_reference(self, FormatObject):
+        cfvo = FormatObject(type="num")
+        cfvo.val = "$K$6"
+        assert cfvo.val == "$K$6"
+
+
 @pytest.fixture
 def ColorScale():
     from ..rule import ColorScale

@@ -6,6 +6,7 @@ OO-based reader
 """
 
 import posixpath
+from warnings import warn
 
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
@@ -57,12 +58,23 @@ class WorkbookParser:
             )
 
         if package.definedNames:
+            package.definedNames._cleanup()
             self.wb.defined_names = package.definedNames
 
 
     def find_sheets(self):
+        """
+        Find all sheets in the workbook and return the link to the source file.
+
+        Older XLSM files sometimes contain invalid sheet elements.
+        Warn user when these are removed.
+        """
 
         for sheet in self.sheets:
+            if not sheet.id:
+                msg = "File contains an invalid specification for {0}. This will be removed".format(sheet.name)
+                warn(msg)
+                continue
             yield sheet, self.rels[sheet.id]
 
 
@@ -71,6 +83,7 @@ class WorkbookParser:
         Bind reserved names to parsed worksheets
         """
         defns = []
+
         for defn in self.wb.defined_names.definedName:
             reserved = defn.is_reserved
             if reserved in ("Print_Titles", "Print_Area"):
@@ -81,7 +94,6 @@ class WorkbookParser:
                     sheet.print_title_cols = cols
                 elif reserved == "Print_Area":
                     sheet.print_area = _unpack_print_area(defn)
-                continue
             else:
                 defns.append(defn)
         self.wb.defined_names.definedName = defns

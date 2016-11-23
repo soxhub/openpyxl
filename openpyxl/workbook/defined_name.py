@@ -33,7 +33,7 @@ COL_RANGE = r"""(?P<cols>[$]?[a-zA-Z]{1,3}:[$]?[a-zA-Z]{1,3})"""
 COL_RANGE_RE = re.compile(COL_RANGE)
 ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
 ROW_RANGE_RE = re.compile(ROW_RANGE)
-TITLES_REGEX = re.compile("""^{0}{1}?,?{2}?$""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
+TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
                           re.VERBOSE)
 
 
@@ -44,8 +44,11 @@ def _unpack_print_titles(defn):
     Extract rows and or columns from print titles so that they can be
     assigned to a worksheet
     """
-    m = TITLES_REGEX.match(defn.value)
-    return m.group('rows'), m.group('cols')
+    scanner = TITLES_REGEX.finditer(defn.value)
+    kw = dict((k, v) for match in scanner
+              for k, v in match.groupdict().items() if v)
+
+    return kw.get('rows'), kw.get('cols')
 
 
 def _unpack_print_area(defn):
@@ -137,7 +140,8 @@ class DefinedName(Serialisable):
             for part in tok.items:
                 if part.subtype == "RANGE":
                     m = SHEETRANGE_RE.match(part.value)
-                    yield m.group('notquoted'), m.group('cells')
+                    sheetname = m.group('notquoted') or m.group('quoted')
+                    yield sheetname, m.group('cells')
 
 
     @property
@@ -174,6 +178,14 @@ class DefinedNameList(Serialisable):
         self.definedName = definedName
 
 
+    def _cleanup(self):
+        """
+        Strip broken or unknown definitions
+        """
+        self.delete("_xlnm.Print_Titles")
+        self.delete("_xlnm.Print_Area")
+
+
     def _duplicate(self, defn):
         """
         Check for whether DefinedName with the same name and scope already
@@ -199,20 +211,46 @@ class DefinedNameList(Serialisable):
 
 
     def __contains__(self, name):
+        """
+        See if a globaly defined name exists
+        """
         for defn in self.definedName:
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId is None:
                 return True
 
 
     def __getitem__(self, name):
+        """
+        Get globally defined name
+        """
+        defn = self.get(name)
+        if not defn:
+            raise KeyError("No definition called {0}".format(name))
+        return defn
+
+
+    def get(self, name, scope=None):
+        """
+        Get the name assigned to a specicic sheet or global
+        """
         for defn in self.definedName:
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId == scope:
                 return defn
-        raise KeyError("No definition called {0}".format(name))
 
 
     def __delitem__(self, name):
+        """
+        Delete a globally defined name
+        """
+        if not self.delete(name):
+            raise KeyError("No globally defined name {0}".format(name))
+
+
+    def delete(self, name, scope=None):
+        """
+        Delete a name assigned to a specific or global
+        """
         for idx, defn in enumerate(self.definedName):
-            if defn.name == name:
+            if defn.name == name and defn.localSheetId == scope:
                 del self.definedName[idx]
-                break
+                return True

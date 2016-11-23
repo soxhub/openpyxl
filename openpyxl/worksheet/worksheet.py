@@ -285,9 +285,12 @@ class Worksheet(_WorkbookChild):
         :param coordinate: coordinates of the cell (e.g. 'B12')
         :type coordinate: string
 
+        :param value: value of the cell (e.g. 5)
+        :type value: numeric or time or string or bool or none
+
         :raise: InsufficientCoordinatesException when neither row nor column are not given
 
-        :rtype: :class:openpyxl.cell.Cell
+        :rtype: openpyxl.cell.Cell
 
         """
 
@@ -464,6 +467,9 @@ class Worksheet(_WorkbookChild):
 
         Additional rows and columns can be created using offsets.
 
+        :param range_string: range string (e.g. 'A1:B2') *deprecated*
+        :type range_string: string
+
         :param min_col: smallest column index (1-based index)
         :type min_col: int
 
@@ -477,10 +483,10 @@ class Worksheet(_WorkbookChild):
         :type max_row: int
 
         :param row_offset: additional rows (e.g. 4)
-        :type row: int
+        :type row_offset: int
 
-        :param column_offset: additonal columns (e.g. 3)
-        :type column: int
+        :param column_offset: additional columns (e.g. 3)
+        :type column_offset: int
 
         :rtype: generator
         """
@@ -573,6 +579,10 @@ class Worksheet(_WorkbookChild):
         return self.iter_cols()
 
 
+    @deprecated("""
+    Use ws.iter_rows() or ws.iter_cols() depending whether you
+    want rows or columns returned.
+    """)
     def get_squared_range(self, min_col, min_row, max_col, max_row):
         """Returns a 2D array of cells. Will create any cells within the
         boundaries that do not already exist
@@ -597,6 +607,7 @@ class Worksheet(_WorkbookChild):
                         for column in range(min_col, max_col + 1))
 
 
+    @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
     def get_named_range(self, range_name):
         """
         Returns a 2D array of cells, with optional row and column offsets.
@@ -604,7 +615,7 @@ class Worksheet(_WorkbookChild):
         :param range_name: `named range` name
         :type range_name: string
 
-        :rtype: tuples of tuples of :class:`openpyxl.cell.Cell`
+        :rtype: tuple[tuple[openpyxl.cell.Cell]]
         """
         defn = self.parent.defined_names[range_name]
         if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
@@ -747,7 +758,7 @@ class Worksheet(_WorkbookChild):
         * If it's a dict: values are assigned to the columns indicated by the keys (numbers or letters)
 
         :param iterable: list, range or generator, or dict containing values to append
-        :type iterable: list/tuple/range/generator or dict
+        :type iterable: list|tuple|range|generator or dict
 
         Usage:
 
@@ -799,6 +810,10 @@ class Worksheet(_WorkbookChild):
         """ tells which cell is under the given coordinates (in pixels)
         counting from the top-left corner of the sheet.
         Can be used to locate images and charts on the worksheet """
+
+        if left < 0 or top < 0:
+            raise ValueError("Coordinates must be positive")
+
         current_col = 1
         current_row = 1
         column_dimensions = self.column_dimensions

@@ -40,7 +40,7 @@ from openpyxl.xml.functions import tostring
 mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
-mimetypes.add_type("application/vnd.ms-office.activeX", ".bin")
+mimetypes.add_type("application/vnd.ms-office.vbaProject", ".bin")
 mimetypes.add_type("application/vnd.openxmlformats-officedocument.vmlDrawing", ".vml")
 mimetypes.add_type("image/x-emf", ".emf")
 
@@ -112,8 +112,12 @@ class Manifest(Serialisable):
 
     @property
     def extensions(self):
+        """
+        Map content types to file extensions
+        Skip parts without extensions
+        """
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
-        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts)]
+        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts) if ext]
 
 
     def to_tree(self):

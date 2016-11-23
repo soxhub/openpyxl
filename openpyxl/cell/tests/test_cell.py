@@ -27,7 +27,6 @@ def DummyWorksheet():
 
     class Wb(object):
         excel_base_date = CALENDAR_WINDOWS_1900
-        _number_formats = IndexedList()
         _fonts = IndexedList()
         _fills = IndexedList()
         _borders = IndexedList()
@@ -91,7 +90,7 @@ def test_infer_numeric(dummy_cell, guess_types, value, expected):
     if cell.guess_types:
         assert cell.value == expected
     else:
-        cell.value == value
+        assert cell.value == value
 
 
 def test_ctor(dummy_cell):
@@ -260,8 +259,8 @@ def test_only_one_cell_per_comment(dummy_cell):
     dummy_cell.comment = comm
 
     c2 = ws.cell(column=1, row=2)
-    with pytest.raises(AttributeError):
-        c2.comment = comm
+    c2.comment = comm
+    assert c2.comment.parent is c2
 
 
 def test_remove_comment(dummy_cell):
@@ -382,3 +381,11 @@ def test_quote_prefix(DummyWorksheet, Cell):
     cell.style_id
     cell._style.quotePrefix = 1
     assert cell.quotePrefix is True
+
+
+def test_remove_hyperlink(dummy_cell):
+    """Remove a cell hyperlink"""
+    cell = dummy_cell
+    cell.hyperlink = "http://test.com"
+    cell.hyperlink = None
+    assert cell.hyperlink is None

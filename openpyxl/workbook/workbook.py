@@ -272,7 +272,7 @@ class Workbook(object):
         """
         Add a named style
         """
-        style.xfId = self._named_styles.add(style)
+        self._named_styles.append(style)
         style.bind(self)
 
 

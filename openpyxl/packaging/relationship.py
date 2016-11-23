@@ -30,7 +30,7 @@ class Relationship(Serialisable):
     target = Alias("Target")
     TargetMode = String(allow_none=True)
     Id = String(allow_none=True)
-    id = Alias("id")
+    id = Alias("Id")
 
 
     def __init__(self,
