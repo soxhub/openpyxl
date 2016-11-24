@@ -609,9 +609,6 @@ class Worksheet(_WorkbookChild):
         """
 
         return self._cells_by_row(min_col, min_row, max_col, max_row)
-        for row in range(min_row, max_row + 1):
-            yield tuple(self.cell(row=row, column=column)
-                        for column in range(min_col, max_col + 1))
 
 
     @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
