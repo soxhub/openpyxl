@@ -507,10 +507,16 @@ class Worksheet(_WorkbookChild):
             max_col += column_offset
         if max_row is not None:
             max_row += row_offset
-        return self.get_squared_range(min_col + column_offset,
-                                      min_row + row_offset,
-                                      max_col,
-                                      max_row)
+        return self._cells_by_row(min_col + column_offset,
+                                  min_row + row_offset,
+                                  max_col,
+                                  max_row)
+
+
+    def _cells_by_row(self, min_col, min_row, max_col, max_row):
+        for row in range(min_row, max_row + 1):
+            yield tuple(self.cell(row=row, column=column)
+                    for column in range(min_col, max_col + 1))
 
 
     @property
@@ -602,6 +608,7 @@ class Worksheet(_WorkbookChild):
         :rtype: generator
         """
 
+        return self._cells_by_row(min_col, min_row, max_col, max_row)
         for row in range(min_row, max_row + 1):
             yield tuple(self.cell(row=row, column=column)
                         for column in range(min_col, max_col + 1))
