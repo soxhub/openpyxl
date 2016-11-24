@@ -19,6 +19,12 @@ Minor changes
 ==================
 
 
+Bug fixes
+---------
+
+* `#727 <https://bitbucket.org/openpyxl/openpyxl/issues/727>`_ DeprecationWarning is incorrect
+
+
 2.4.1 (2016-11-23)
 ==================
 
