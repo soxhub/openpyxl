@@ -25,6 +25,12 @@ Bug fixes
 * `#727 <https://bitbucket.org/openpyxl/openpyxl/issues/727>`_ DeprecationWarning is incorrect
 
 
+Minor Changes
+-------------
+
+* Add unicode support for sheet name incrementation.
+
+
 2.4.1 (2016-11-23)
 ==================
 

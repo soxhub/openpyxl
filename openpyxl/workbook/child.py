@@ -24,7 +24,7 @@ def avoid_duplicate_name(names, value):
     # Check for an absolute match in which case we need to find an alternative
     match = [n for n in names if n.lower() == value.lower()]
     if match:
-        names = ",".join(names)
+        names = u",".join(names)
         sheet_title_regex = re.compile("(?P<title>%s)(?P<count>\d*),?" % re.escape(value), re.I)
         matches = sheet_title_regex.findall(names)
         if matches:
@@ -33,7 +33,7 @@ def avoid_duplicate_name(names, value):
             highest = 0
             if counts:
                 highest = max(counts)
-            value = "{0}{1}".format(value, highest + 1)
+            value = u"{0}{1}".format(value, highest + 1)
     return value
 
 
