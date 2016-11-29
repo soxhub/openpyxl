@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -274,33 +274,6 @@ class TestPivotSource:
         node = fromstring(src)
         src = PivotSource.from_tree(node)
         assert src == PivotSource(name="pivot source", fmtId=1)
-
-
-@pytest.fixture
-def PrintSettings():
-    from ..chartspace import PrintSettings
-    return PrintSettings
-
-
-class TestPrintSettings:
-
-    def test_ctor(self, PrintSettings):
-        chartspace = PrintSettings()
-        xml = tostring(chartspace.to_tree())
-        expected = """
-        <printSettings />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PrintSettings):
-        src = """
-        <printSettings />
-        """
-        node = fromstring(src)
-        chartspace = PrintSettings.from_tree(node)
-        assert chartspace == PrintSettings()
 
 
 @pytest.fixture

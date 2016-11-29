@@ -1,11 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import safe_string
 
 from openpyxl.descriptors import Bool, MinMax, Min, Alias, NoneSet
+from openpyxl.descriptors.serialisable import Serialisable
 
-from .hashable import HashableObject
 
 horizontal_alignments = (
     "general", "left", "center", "right", "fill", "justify", "centerContinuous",
@@ -14,7 +14,7 @@ vertical_aligments = (
     "top", "center", "bottom", "justify", "distributed",
 )
 
-class Alignment(HashableObject):
+class Alignment(Serialisable):
     """Alignment options for use in styles."""
 
     tagname = "alignment"

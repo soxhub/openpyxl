@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 
 """
@@ -7,11 +7,13 @@ Based on Python Cookbook 3rd Edition, 8.13
 http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
 """
 
+import datetime
 import re
-from openpyxl.compat import basestring, bytes, long
-from openpyxl.xml.functions import Element
-from .namespace import namespaced
 
+from openpyxl.compat import basestring, bytes, long
+from openpyxl.utils.datetime import W3CDTF_to_datetime
+
+from .namespace import namespaced
 
 class Descriptor(object):
 
@@ -169,6 +171,11 @@ class String(Typed):
     expected_type = basestring
 
 
+class Text(String, Convertible):
+
+    pass
+
+
 class ASCII(Typed):
 
     expected_type = bytes
@@ -234,10 +241,13 @@ class MatchPattern(Descriptor):
             raise TypeError('missing pattern value')
 
         super(MatchPattern, self).__init__(name, **kw)
-        self.test_pattern = re.compile(self.pattern)
+        self.test_pattern = re.compile(self.pattern, re.VERBOSE)
 
 
     def __set__(self, instance, value):
+
+        if value is None and not self.allow_none:
+            raise ValueError("Value must not be none")
 
         if ((self.allow_none and value is not None)
             or not self.allow_none):
@@ -245,3 +255,16 @@ class MatchPattern(Descriptor):
                 raise ValueError('Value does not match pattern {0}'.format(self.pattern))
 
         super(MatchPattern, self).__set__(instance, value)
+
+
+class DateTime(Typed):
+
+    expected_type = datetime.datetime
+
+    def __set__(self, instance, value):
+        if value is not None and isinstance(value, basestring):
+            try:
+                value = W3CDTF_to_datetime(value)
+            except ValueError:
+                raise ValueError("Value must be ISO datetime format")
+        super(DateTime, self).__set__(instance, value)

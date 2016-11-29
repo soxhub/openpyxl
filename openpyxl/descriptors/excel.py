@@ -6,9 +6,16 @@ Excel specific descriptors
 """
 
 from openpyxl.xml.constants import REL_NS
-from . import MatchPattern, MinMax, Integer, String, Typed, Sequence
+from . import (
+    MatchPattern,
+    MinMax,
+    Integer,
+    String,
+    Typed,
+    Sequence,
+)
 from .serialisable import Serialisable
-
+from openpyxl.utils.cell import RANGE_EXPR
 
 class HexBinary(MatchPattern):
 
@@ -73,3 +80,15 @@ class Base64Binary(MatchPattern):
 class Guid(MatchPattern):
     # https://msdn.microsoft.com/en-us/library/dd946381(v=office.12).aspx
     pattern = "{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}"
+
+
+class CellRange(MatchPattern):
+
+    pattern = """^[$]?(?P<min_col>[A-Za-z]{1,3})[$]?(?P<min_row>\d+)(:[$]?(?P<max_col>[A-Za-z]{1,3})[$]?(?P<max_row>\d+)?)?$"""
+    allow_none = True
+
+    def __set__(self, instance, value):
+
+        if value is not None:
+            value = value.upper()
+        super(CellRange, self).__set__(instance, value)

@@ -31,7 +31,7 @@ Support
 This is an open source project, maintained by volunteers in their spare time.
 This may well mean that particular features or functions that you would like
 are missing. But things don't have to stay that way. You can contribute the
-project :ref:`development` yourself or contract a developer for particular
+project :doc:`development` yourself or contract a developer for particular
 features.
 
 
@@ -146,7 +146,7 @@ This may be the case if bugs have been fixed but a release has not yet been
 made.
 
 .. parsed-literal::
-    $ pip hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
+    $ pip install -e hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
 
 
 Usage examples
@@ -166,12 +166,22 @@ Cookbook
 
     usage
 
+
+Pandas and NumPy
+++++++++++++++++
+
+.. toctree::
+
+    pandas
+
+
 Charts
 ++++++
 
 .. toctree::
 
     charts/introduction
+
 
 Comments
 ++++++++
@@ -180,6 +190,7 @@ Comments
 
     comments
 
+
 Read/write large files
 ++++++++++++++++++++++
 
@@ -187,12 +198,15 @@ Read/write large files
 
     optimized
 
+
 Working with styles
 +++++++++++++++++++
 
 .. toctree::
 
     styles
+    worksheet_properties
+
 
 Conditional Formatting
 ++++++++++++++++++++++
@@ -201,12 +215,38 @@ Conditional Formatting
 
     formatting
 
+
+Print Settings
+++++++++++++++++++++++
+
+.. toctree::
+
+    print_settings
+
+
+Filtering and Sorting
++++++++++++++++++++++
+
+.. toctree::
+
+    filters
+
+
 Data Validation
 +++++++++++++++
 
 .. toctree::
 
     validation
+
+
+Defined Names & Ranges
+++++++++++++++++++++++
+
+.. toctree::
+
+    defined_names
+
 
 Parsing Formulas
 ++++++++++++++++
@@ -223,6 +263,7 @@ Information for Developers
 
     development
     windows-development
+
 
 API Documentation
 ------------------

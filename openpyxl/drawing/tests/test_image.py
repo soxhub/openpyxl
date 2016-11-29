@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -28,6 +28,7 @@ class DummyCell:
     """Required for images"""
 
     column = "A"
+    col_idx = 1
     row = 1
     anchor = (0, 0)
 

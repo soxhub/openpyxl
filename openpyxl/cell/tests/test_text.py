@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 # coding=utf8
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -82,13 +82,48 @@ class TestText:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Text):
+    @pytest.mark.parametrize("src, expected",
+                             [
+                                 ("""<is><t>ID</t></is>""", "ID"),
+                                 ("""
+                                 <is>
+                                   <r>
+                                     <rPr />
+                                     <t xml:space="preserve">11 de September de 2014</t>
+                                   </r>
+                                 </is>
+                                 """,
+                                  "11 de September de 2014"
+                                  ),
+                             ]
+                             )
+    def test_from_xml(self, Text, src, expected):
+        node = fromstring(src)
+        text = Text.from_tree(node)
+        assert text.content == expected
+
+
+    def test_empty_element(self, Text):
         src = """
-        <text />
+        <si>
+          <r>
+             <t>Replaced Data</t>
+          </r>
+          <r>
+            <rPr>
+              <sz val="11"/>
+              <color rgb="FF008080"/>
+              <rFont val="Calibri"/>
+              <family val="2"/>
+              <scheme val="minor"/>
+            </rPr>
+            <t/>
+          </r>
+        </si>
         """
         node = fromstring(src)
         text = Text.from_tree(node)
-        assert text == Text()
+        assert text.content == "Replaced Data"
 
 
 @pytest.fixture
@@ -100,11 +135,11 @@ def PhoneticText():
 class TestPhoneticText:
 
     def test_ctor(self, PhoneticText):
-        text = PhoneticText(sb=9, eb=10, t=u"よ")
+        text = PhoneticText(sb=9, eb=10, t=u'\u3088')
         xml = tostring(text.to_tree())
         expected = b"""
         <rPh sb="9" eb="10">
-            <t>\xe3\x82\x88</t>
+            <t>&#12424;</t>
         </rPh>
         """
         diff = compare_xml(xml, expected)
@@ -114,12 +149,12 @@ class TestPhoneticText:
     def test_from_xml(self, PhoneticText):
         src = b"""
         <rPh sb="9" eb="10">
-            <t>\xe3\x82\x88</t>
+            <t>&#12424;</t>
         </rPh>
         """
         node = fromstring(src)
         text = PhoneticText.from_tree(node)
-        assert text == PhoneticText(sb=9, eb=10, t=u"よ")
+        assert text == PhoneticText(sb=9, eb=10, t=u'\u3088')
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -42,6 +42,7 @@ class PageBreak(Serialisable):
     brk = Sequence(expected_type=Break, allow_none=True)
 
     __elements__ = ('brk',)
+    __attrs__ = ("count", "manualBreakCount",)
 
     def __init__(self,
                  count=None,
@@ -49,19 +50,26 @@ class PageBreak(Serialisable):
                  brk=(),
                 ):
         self.brk = brk
-        self.__attrs__ = ("count", "manualBreakCount",)
 
+
+    def __bool__(self):
+        return len(self.brk) > 0
+
+    __nonzero__ = __bool__
 
     def __len__(self):
         return len(self.brk)
+
 
     @property
     def count(self):
         return len(self)
 
+
     @property
     def manualBreakCount(self):
         return len(self)
+
 
     def append(self, brk=None):
         """

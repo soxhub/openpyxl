@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 # @license: http://www.opensource.org/licenses/mit-license.php
 # @author: see AUTHORS file
@@ -23,6 +23,7 @@ except IOError:
     pass
 
 """Imports for the openpyxl package."""
+from openpyxl.compat.numbers import NUMPY, PANDAS
 from openpyxl.xml import LXML
 
 from openpyxl.workbook import Workbook

@@ -14,6 +14,7 @@ from .base import (
     Float,
     Integer,
     String,
+    Text,
     )
 from .sequence import Sequence
 from openpyxl.compat import safe_string

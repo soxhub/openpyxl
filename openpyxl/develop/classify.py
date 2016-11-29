@@ -1,5 +1,5 @@
 from __future__ import absolute_import, print_function
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """
 Generate Python classes from XML Schema
@@ -30,6 +30,7 @@ XSD = "http://www.w3.org/2001/XMLSchema"
 simple_mapping = {
     'xsd:boolean':'Bool',
     'xsd:unsignedInt':'Integer',
+    'xsd:unsignedShort':'Integer',
     'xsd:int':'Integer',
     'xsd:double':'Float',
     'xsd:string':'String',
@@ -37,6 +38,7 @@ simple_mapping = {
     'xsd:byte':'Integer',
     'xsd:long':'Float',
     'xsd:token':'String',
+    'xsd:dateTime':'DateTime',
     's:ST_Panose':'HexBinary',
     's:ST_Lang':'String',
     'ST_Percentage':'String',
@@ -61,20 +63,14 @@ ST_REGEX = re.compile("(?P<schema>[a-z]:)?(?P<typename>ST_[A-Za-z]+)")
 
 
 def get_attribute_group(schema, tagname):
-    for node in schema.iterfind("{%s}attributeGroup" % XSD):
-        if node.get("ref") == tagname:
-            break
+    node = schema.find("{%s}attributeGroup[@name='%s']" % (XSD, tagname))
     attrs = node.findall("{%s}attribute" % XSD)
     return attrs
 
 
 def get_element_group(schema, tagname):
-    for node in schema.iterfind("{%s}group" % XSD):
-        if node.get("name") == tagname:
-            break
-    seq = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
-    return seq + choice
+    node = schema.find("{%s}group[@name='%s']" % (XSD, tagname))
+    return node.findall(".//{%s}element" % XSD)
 
 
 def classify(tagname, src=sheet_src, schema=None):
@@ -83,13 +79,8 @@ def classify(tagname, src=sheet_src, schema=None):
     """
     if schema is None:
         schema = parse(src)
-    nodes = schema.iterfind("{%s}complexType" % XSD)
-    tag = None
-    for node in nodes:
-        if node.get('name') == tagname:
-            tag = tagname
-            break
-    if tag is None:
+    node = schema.find("{%s}complexType[@name='%s']" % (XSD, tagname))
+    if node is None:
         pass
         raise ValueError("Tag {0} not found".format(tagname))
 
@@ -97,6 +88,9 @@ def classify(tagname, src=sheet_src, schema=None):
 
     s = """\n\nclass %s(Serialisable):\n\n""" % tagname[3:]
     attrs = []
+
+    node = derived(node)
+    node = extends(node)
 
     # attributes
     attributes = node.findall("{%s}attribute" % XSD)
@@ -128,11 +122,11 @@ def classify(tagname, src=sheet_src, schema=None):
 
     children = []
     element_names =[]
-    elements = node.findall("{%s}sequence/{%s}element" % (XSD, XSD))
-    choice = node.findall("{%s}choice/{%s}element" % (XSD, XSD))
+    elements = node.findall(".//{%s}element" % XSD)
+    choice = node.findall("{%s}choice" % XSD)
     if choice:
         s += """    # some elements are choice\n"""
-        elements.extend(choice)
+
     groups = node.findall("{%s}sequence/{%s}group" % (XSD, XSD))
     for group in groups:
         ref = group.get("ref")
@@ -194,14 +188,23 @@ def classify(tagname, src=sheet_src, schema=None):
     return s, types, children
 
 
+def derived(node):
+    base = node.find("{%s}simpleContent" % XSD)
+    return base or node
+
+
+def extends(node):
+    base = node.find("{%s}extension" % XSD)
+    return base or node
+
+
 def simple(tagname, schema, use=""):
 
-    for node in schema.iterfind("{%s}simpleType" % XSD):
-        if node.get("name") == tagname:
-            break
+    node = schema.find("{%s}simpleType[@name='%s']" % (XSD, tagname))
     constraint = node.find("{%s}restriction" % XSD)
     if constraint is None:
         return "unknown defintion for {0}".format(tagname)
+
     typ = constraint.get("base")
     typ = "{0}()".format(simple_mapping.get(typ, typ))
     values = constraint.findall("{%s}enumeration" % XSD)
@@ -222,7 +225,7 @@ class ClassMaker:
     Generate
     """
 
-    def __init__(self, tagname, src=chart_src, classes=set()):
+    def __init__(self, tagname, src=sheet_src, classes=set()):
         self.schema=parse(src)
         self.types = set()
         self.classes = classes

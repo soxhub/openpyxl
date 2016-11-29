@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -42,7 +42,8 @@ def test_invalid_chars(value):
                              ([u"R\xf3g"], u"R\xf3g", u"R\xf3g1"),
                              (["Sheet", "Sheet1"], 'Sheet', 'Sheet2'),
                              (["Regex Test ("], "Regex Test (", "Regex Test (1"),
-                             (["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"], "Sheet", "Sheet")
+                             (["Foo", "Baz", "Sheet2", "Sheet3", "Bar", "Sheet4", "Sheet6"], "Sheet", "Sheet"),
+                             (["Foo"], "FOO", "FOO1"),
                          ]
                          )
 def test_duplicate_title(names, value, result):
@@ -80,9 +81,11 @@ class TestWorkbookChild:
         assert child.title == "Sheet"
 
 
-    def test_title_too_long(self, WorkbookChild):
-        with pytest.raises(ValueError):
-            WorkbookChild(DummyWorkbook(), 'X' * 50)
+    def test_title_too_long(self, WorkbookChild, recwarn):
+
+        WorkbookChild(DummyWorkbook(), 'X' * 50)
+        w = recwarn.pop()
+        assert w.category == UserWarning
 
 
     def test_set_encoded_title(self, WorkbookChild):

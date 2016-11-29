@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.xml.functions import NS_REGEX, Element
 from openpyxl.xml.constants import CHART_NS, REL_NS, DRAWING_NS
@@ -18,6 +18,7 @@ from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 
 from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.chart.text import RichText
 
 from .effect import *
 from .fill import RelativeRect, BlipFillProperties
@@ -85,6 +86,7 @@ class GroupLocking(Serialisable):
     noSelect = Bool(allow_none=True)
     noRot = Bool(allow_none=True)
     noChangeAspect = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
     noMove = Bool(allow_none=True)
     noResize = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
@@ -95,6 +97,7 @@ class GroupLocking(Serialisable):
                  noSelect=None,
                  noRot=None,
                  noChangeAspect=None,
+                 noChangeArrowheads=None,
                  noMove=None,
                  noResize=None,
                  extLst=None,
@@ -104,6 +107,7 @@ class GroupLocking(Serialisable):
         self.noSelect = noSelect
         self.noRot = noRot
         self.noChangeAspect = noChangeAspect
+        self.noChangeArrowheads = noChangeArrowheads
         self.noMove = noMove
         self.noResize = noResize
         self.extLst = extLst
@@ -119,6 +123,24 @@ class NonVisualGroupDrawingShapeProps(Serialisable):
                  extLst=None,
                 ):
         self.grpSpLocks = grpSpLocks
+        self.extLst = extLst
+
+
+class NonVisualDrawingShapeProps(Serialisable):
+
+    tagname = "cNvSpPr"
+
+    spLocks = Typed(expected_type=GroupLocking, allow_none=True)
+    txBax = Bool(allow_none=True)
+    extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    def __init__(self,
+                 spLocks=None,
+                 txBox=None,
+                 extLst=None,
+                ):
+        self.spLocks = spLocks
+        self.txBox = txBox
         self.extLst = extLst
 
 
@@ -375,27 +397,46 @@ class ConnectorNonVisual(Serialisable):
         self.cNvCxnSpPr = cNvCxnSpPr
 
 
-class Connector(Serialisable):
+class ShapeMeta(Serialisable):
+
+    tagname = "nvSpPr"
+
+    cNvPr = Typed(expected_type=NonVisualDrawingProps)
+    cNvSpPr = Typed(expected_type=NonVisualDrawingShapeProps)
+
+    def __init__(self, cNvPr=None, cNvSpPr=None):
+        self.cNvPr = cNvPr
+        self.cNvSpPr = cNvSpPr
+
+
+class Shape(Serialisable):
 
     macro = String(allow_none=True)
+    textlink = String(allow_none=True)
     fPublished = Bool(allow_none=True)
-    nvCxnSpPr = Typed(expected_type=ConnectorNonVisual, )
-    spPr = Typed(expected_type=GraphicalProperties, )
+    nvSpPr = Typed(expected_type=ShapeMeta)
+    meta = Alias("nvSpPr")
+    spPr = Typed(expected_type=GraphicalProperties)
     graphicalProperties = Alias("spPr")
     style = Typed(expected_type=ShapeStyle, allow_none=True)
+    txBody = Typed(expected_type=RichText, allow_none=True)
 
     def __init__(self,
                  macro=None,
+                 textlink=None,
                  fPublished=None,
-                 nvCxnSpPr=None,
+                 nvSpPr=None,
                  spPr=None,
                  style=None,
+                 txBody=None,
                 ):
         self.macro = macro
+        self.textlink = textlink
         self.fPublished = fPublished
-        self.nvCxnSpPr = nvCxnSpPr
+        self.nvSpPr =nvSpPr
         self.spPr = spPr
         self.style = style
+        self.txBody = txBody
 
 
 class PictureLocking(Serialisable):

@@ -18,10 +18,12 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Dmitriy Chernyshov
 * Eric Chlebek
 * Alexandre Fayolle
+* Don Freeman
 * Eric Gazoni
 * Brice Gelineau
 * Alex Gronholm
 * Yaroslav Halchenko
+* Fumito Hamamura
 * Khchine Hamza
 * Josh Haywood
 * Jeff Holman
@@ -33,6 +35,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Chi Ho Kwok
 * Yingjie Lan
 * Detlef Lannert
+* Laurent Laporte
 * Nicholas Laver
 * Greg Lehmann
 * Adam Lofts
@@ -59,6 +62,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Dieter Vandenbussche
 * Paul Van Der Linden
 * Gerald Van Huffelen
+* Koert van der Veer
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki

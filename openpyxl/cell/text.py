@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """
 Richtext definition
@@ -181,5 +181,6 @@ class Text(Serialisable):
         if self.plain is not None:
             snippets.append(self.plain)
         for block in self.formatted:
-            snippets.append(block.t)
-        return "".join(snippets)
+            if block.t is not None:
+                snippets.append(block.t)
+        return u"".join(snippets)

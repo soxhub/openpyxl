@@ -1,3 +1,216 @@
+2.4.2 (unreleased)
+==================
+
+
+Bug fixes
+---------
+
+* `#727 <https://bitbucket.org/openpyxl/openpyxl/issues/727>`_ DeprecationWarning is incorrect
+
+
+2.4.1 (2016-11-23)
+==================
+
+
+Bug fixes
+---------
+
+* `#643 <https://bitbucket.org/openpyxl/openpyxl/issues/643>`_ Make checking for duplicate sheet titles case insensitive
+* `#647 <https://bitbucket.org/openpyxl/openpyxl/issues/647>`_ Trouble handling LibreOffice files with named styles
+* `#687 <https://bitbucket.org/openpyxl/openpyxl/issues/682>`_ Directly assigned new named styles always refer to "Normal"
+* `#690 <https://bitbucket.org/openpyxl/openpyxl/issues/690>`_ Cannot parse print titles with multiple sheet names
+* `#691 <https://bitbucket.org/openpyxl/openpyxl/issues/691>`_ Cannot work with macro files created by LibreOffice
+* Prevent duplicate differential styles
+* `#694 <https://bitbucket.org/openpyxl/openpyxl/issues/694>`_ Allow sheet titles longer than 31 characters
+* `#697 <https://bitbucket.org/openpyxl/openpyxl/issues/697>`_ Cannot unset hyperlinks
+* `#699 <https://bitbucket.org/openpyxl/openpyxl/issues/699>`_ Exception raised when format objects use cell references
+* `#703 <https://bitbucket.org/openpyxl/openpyxl/issues/703>`_ Copy height and width when copying comments
+* `#705 <https://bitbucket.org/openpyxl/openpyxl/issues/705>`_ Incorrect content type for VBA macros
+* `#707 <https://bitbucket.org/openpyxl/openpyxl/issues/707>`_ IndexError raised in read-only mode when accessing individual cells
+* `#711 <https://bitbucket.org/openpyxl/openpyxl/issues/711>`_ Files with external links become corrupted
+* `#715 <https://bitbucket.org/openpyxl/openpyxl/issues/715>`_ Cannot read files containing macro sheets
+* `#717 <https://bitbucket.org/openpyxl/openpyxl/issues/717>`_ Details from named styles not preserved when reading files
+* `#722 <https://bitbucket.org/openpyxl/openpyxl/issues/722>`_ Remove broken Print Title and Print Area definitions
+
+
+Minor changes
+-------------
+
+* Add support for Python 3.6
+* Correct documentation for headers and footers
+
+
+Deprecations
+------------
+
+Worksheet methods `get_named_range()` and `get_sqaured_range()`
+
+
+Bug fixes
+---------
+
+
+2.4.0 (2016-09-15)
+==================
+
+
+Bug fixes
+---------
+
+* `#652 <https://bitbucket.org/openpyxl/openpyxl/issues/652>`_ Exception raised when epoch is 1904
+* `#642 <https://bitbucket.org/openpyxl/openpyxl/issues/642>`_ Cannot handle unicode in headers and footers in Python 2
+* `#646 <https://bitbucket.org/openpyxl/openpyxl/issues/646>`_ Cannot handle unicode sheetnames in Python 2
+* `#658 <https://bitbucket.org/openpyxl/openpyxl/issues/658>`_ Chart styles, and axis units should not be 0
+* `#663 <https://bitbucket.org/openpyxl/openpyxl/issues/663>`_ Strings in external workbooks not unicode
+
+
+Major changes
+-------------
+
+* Add support for builtin styles and include one for Pandas
+
+
+Minor changes
+-------------
+
+* Add a `keep_links` option to `load_workbook`. External links contain cached
+  copies of the external workbooks. If these are big it can be advantageous to
+  be able to disable them.
+* Provide an example for using cell ranges in DataValidation.
+* PR 138 - add copy support to comments.
+
+
+2.4.0-b1 (2016-06-08)
+=====================
+
+
+Minor changes
+-------------
+
+* Add an the alias `hide_drop_down` to DataValidation for `showDropDown` because that is how Excel works.
+
+
+Bug fixes
+---------
+
+* `#625 <https://bitbucket.org/openpyxl/openpyxl/issues/625>`_ Exception raises when inspecting EmptyCells in read-only mode
+* `#547 <https://bitbucket.org/openpyxl/openpyxl/issues/547>`_ Functions for handling OOXML "escaped" ST_XStrings
+* `#629 <https://bitbucket.org/openpyxl/openpyxl/issues/629>`_ Row Dimensions not supported in write-only mode
+* `#530 <https://bitbucket.org/openpyxl/openpyxl/issues/530>`_ Problems when removing worksheets with charts
+* `#630 <https://bitbucket.org/openpyxl/openpyxl/issues/630>`_ Cannot use SheetProtection in write-only mode
+
+
+Features
+--------
+
+* Add write support for worksheet tables
+
+
+2.4.0-a1 (2016-04-11)
+=====================
+
+
+Minor changes
+-------------
+
+* Remove deprecated methods from DataValidation
+* Remove deprecated methods from PrintPageSetup
+* Convert AutoFilter to Serialisable and extend support for filters
+* Add support for SortState
+* Removed `use_iterators` keyword when loading workbooks. Use `read_only` instead.
+* Removed `optimized_write` keyword for new workbooks. Use `write_only` instead.
+* Improve print title support
+* Add print area support
+* New implementation of defined names
+* New implementation of page headers and footers
+* Add support for Python's NaN
+* Added iter_cols method for worksheets
+* ws.rows and ws.columns now always return generators and start at the top of the worksheet
+* Add a `values` property for worksheets
+* Default column width changed to 8 as per the specification
+
+
+Deprecations
+------------
+
+* Cell anchor method
+* Worksheet point_pos method
+* Worksheet add_print_title method
+* Worksheet HeaderFooter attribute, replaced by individual ones
+* Flatten function for cells
+* Workbook get_named_range, add_named_range, remove_named_range, get_sheet_names, get_sheet_by_name
+* Comment text attribute
+* Use of range strings deprecated for ws.iter_rows()
+* Use of coordinates deprecated for ws.cell()
+* Deprecate .copy() method for StyleProxy objects
+
+
+Bug fixes
+---------
+
+* `#152 <https://bitbucket.org/openpyxl/openpyxl/issues/152>`_ Hyperlinks lost when reading files
+* `#171 <https://bitbucket.org/openpyxl/openpyxl/issues/171>`_ Add function for copying worksheets
+* `#386 <https://bitbucket.org/openpyxl/openpyxl/issues/386>`_ Cells with inline strings considered empty
+* `#397 <https://bitbucket.org/openpyxl/openpyxl/issues/397>`_ Add support for ranges of rows and columns
+* `#446 <https://bitbucket.org/openpyxl/openpyxl/issues/446>`_ Workbook with definedNames corrupted by openpyxl
+* `#481 <https://bitbucket.org/openpyxl/openpyxl/issues/481>`_ "safe" reserved ranges are not read from workbooks
+* `#501 <https://bitbucket.org/openpyxl/openpyxl/issues/501>`_ Discarding named ranges can lead to corrupt files
+* `#574 <https://bitbucket.org/openpyxl/openpyxl/issues/574>`_ Exception raised when using the class method to parse Relationships
+* `#579 <https://bitbucket.org/openpyxl/openpyxl/issues/579>`_ Crashes when reading defined names with no content
+* `#597 <https://bitbucket.org/openpyxl/openpyxl/issues/597>`_ Cannot read worksheets without coordinates
+* `#617 <https://bitbucket.org/openpyxl/openpyxl/issues/617>`_ Customised named styles not correctly preserved
+
+
+2.3.5 (2016-04-11)
+==================
+
+
+Bug fixes
+---------
+
+* `#618 <https://bitbucket.org/openpyxl/openpyxl/issues/618>`_ Comments not written in write-only mode
+
+
+2.3.4 (2016-03-16)
+==================
+
+
+Bug fixes
+---------
+
+* `#594 <https://bitbucket.org/openpyxl/openpyxl/issues/594>`_ Content types might be missing when keeping VBA
+* `#599 <https://bitbucket.org/openpyxl/openpyxl/issues/599>`_ Cells with only one cell look empty
+* `#607 <https://bitbucket.org/openpyxl/openpyxl/issues/607>`_ Serialise NaN as ''
+
+
+Minor changes
+-------------
+
+* Preserve the order of external references because formualae use numerical indices.
+* Typo corrected in cell unit tests (PR 118)
+
+
+2.3.3 (2016-01-18)
+==================
+
+
+Bug fixes
+---------
+
+* `#540 <https://bitbucket.org/openpyxl/openpyxl/issues/540>`_ Cannot read merged cells in read-only mode
+* `#565 <https://bitbucket.org/openpyxl/openpyxl/issues/565>`_ Empty styled text blocks cannot be parsed
+* `#569 <https://bitbucket.org/openpyxl/openpyxl/issues/569>`_ Issue warning rather than raise Exception raised for unparsable definedNames
+* `#575 <https://bitbucket.org/openpyxl/openpyxl/issues/575>`_ Cannot open workbooks with embdedded OLE files
+* `#584 <https://bitbucket.org/openpyxl/openpyxl/issues/584>`_ Exception when saving borders with attributes
+
+
+Minor changes
+-------------
+
+* `PR 103 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/103/>`_ Documentation about chart scaling and axis limits
+* Raise an exception when trying to copy cells from other workbooks.
+
+
 2.3.2 (2015-12-07)
 ==================
 

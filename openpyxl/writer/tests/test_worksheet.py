@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import datetime
 import decimal
@@ -12,12 +12,13 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl import Workbook
 
 from .. worksheet import write_worksheet
-from .. relations import write_rels
 
 from openpyxl.tests.helper import compare_xml
 from openpyxl.worksheet.properties import PageSetupProperties
+from openpyxl.worksheet.dimensions import DimensionHolder
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 
+from openpyxl import LXML
 
 @pytest.fixture
 def worksheet():
@@ -33,16 +34,10 @@ def DummyWorksheet():
 
         def __init__(self):
             self._styles = {}
-            self.column_dimensions = {}
+            self.column_dimensions = DimensionHolder(self)
             self.parent = Workbook()
 
     return DummyWorksheet()
-
-
-@pytest.fixture
-def write_cols():
-    from .. worksheet import write_cols
-    return write_cols
 
 
 @pytest.fixture
@@ -51,109 +46,29 @@ def ColumnDimension():
     return ColumnDimension
 
 
-def test_no_cols(write_cols, DummyWorksheet):
-
-    cols = write_cols(DummyWorksheet)
-    assert cols is None
-
-
-def test_col_widths(write_cols, ColumnDimension, DummyWorksheet):
-    ws = DummyWorksheet
-    ws.column_dimensions['A'] = ColumnDimension(worksheet=ws, width=4)
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols><col width="4" min="1" max="1" customWidth="1"></col></cols>"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_col_style(write_cols, ColumnDimension, DummyWorksheet):
-    from openpyxl.styles import Font
-    ws = DummyWorksheet
-    cd = ColumnDimension(worksheet=ws)
-    ws.column_dimensions['A'] = cd
-    cd.font = Font(color="FF0000")
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols><col max="1" min="1" style="1"></col></cols>"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_lots_cols(write_cols, ColumnDimension, DummyWorksheet):
-    from openpyxl.styles import Font
-    ws = DummyWorksheet
-    from openpyxl.cell import get_column_letter
-    for i in range(1, 15):
-        label = get_column_letter(i)
-        cd = ColumnDimension(worksheet=ws)
-        cd.font = Font(name=label)
-        dict(cd)  # create style_id in order for test
-        ws.column_dimensions[label] = cd
-    cols = write_cols(ws)
-    xml = tostring(cols)
-    expected = """<cols>
-   <col max="1" min="1" style="1"></col>
-   <col max="2" min="2" style="2"></col>
-   <col max="3" min="3" style="3"></col>
-   <col max="4" min="4" style="4"></col>
-   <col max="5" min="5" style="5"></col>
-   <col max="6" min="6" style="6"></col>
-   <col max="7" min="7" style="7"></col>
-   <col max="8" min="8" style="8"></col>
-   <col max="9" min="9" style="9"></col>
-   <col max="10" min="10" style="10"></col>
-   <col max="11" min="11" style="11"></col>
-   <col max="12" min="12" style="12"></col>
-   <col max="13" min="13" style="13"></col>
-   <col max="14" min="14" style="14"></col>
- </cols>
-"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-@pytest.fixture
-def write_format():
-    from .. worksheet import write_format
-    return write_format
-
-
-def test_sheet_format(write_format, ColumnDimension, DummyWorksheet):
-    fmt = write_format(DummyWorksheet)
-    xml = tostring(fmt)
-    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10"/>"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
-def test_outline_format(write_format, ColumnDimension, DummyWorksheet):
-    worksheet = DummyWorksheet
-    worksheet.column_dimensions['A'] = ColumnDimension(worksheet=worksheet,
-                                                       outline_level=1)
-    fmt = write_format(worksheet)
-    xml = tostring(fmt)
-    expected = """<sheetFormatPr defaultRowHeight="15" baseColWidth="10" outlineLevelCol="1" />"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
-def test_outline_cols(write_cols, ColumnDimension, DummyWorksheet):
-    worksheet = DummyWorksheet
-    worksheet.column_dimensions['A'] = ColumnDimension(worksheet=worksheet,
-                                                       outline_level=1)
-    cols = write_cols(worksheet)
-    xml = tostring(cols)
-    expected = """<cols><col max="1" min="1" outlineLevel="1"/></cols>"""
-    diff = compare_xml(expected, xml)
-    assert diff is None, diff
-
-
 @pytest.fixture
 def write_rows():
     from .. etree_worksheet import write_rows
     return write_rows
 
+
+@pytest.fixture
+def etree_write_cell():
+    from ..etree_worksheet import etree_write_cell
+    return etree_write_cell
+
+
+@pytest.fixture
+def lxml_write_cell():
+    from ..etree_worksheet import lxml_write_cell
+    return lxml_write_cell
+
+
+@pytest.fixture(params=['etree', 'lxml'])
+def write_cell_implementation(request, etree_write_cell, lxml_write_cell):
+    if request.param == "lxml" and LXML:
+        return lxml_write_cell
+    return etree_write_cell
 
 
 @pytest.mark.parametrize("value, expected",
@@ -168,17 +83,36 @@ def write_rows():
                              (None, """<c r="A1" t="n"></c>"""),
                              (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>40902</v></c>"""),
                          ])
-def test_write_cell(worksheet, value, expected):
+def test_write_cell(worksheet, write_cell_implementation, value, expected):
     from openpyxl.cell import Cell
-    from .. etree_worksheet import write_cell
+    write_cell = write_cell_implementation
+
     ws = worksheet
     cell = ws['A1']
     cell.value = value
 
-    el = write_cell(ws, cell, cell.has_style)
-    xml = tostring(el)
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, cell.has_style)
+
+    xml = out.getvalue()
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_write_comment(worksheet, write_cell_implementation):
+
+    write_cell = write_cell_implementation
+    from openpyxl.comments import Comment
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.comment = Comment("test comment", "test author")
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, False)
+    assert len(ws._comments) == 1
 
 
 def test_write_formula(worksheet, write_rows):
@@ -271,87 +205,6 @@ def test_get_rows_to_write(worksheet):
         (10, [(1, ws['A10'])])
     ]
 
-@pytest.fixture
-def write_autofilter():
-    from .. worksheet import write_autofilter
-    return write_autofilter
-
-
-def test_auto_filter(worksheet, write_autofilter):
-    ws = worksheet
-    ws.auto_filter.ref = 'A1:F1'
-    af = write_autofilter(ws)
-    xml = tostring(af)
-    expected = """<autoFilter ref="A1:F1"></autoFilter>"""
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_auto_filter_filter_column(worksheet, write_autofilter):
-    ws = worksheet
-    ws.auto_filter.ref = 'A1:F1'
-    ws.auto_filter.add_filter_column(0, ["0"], blank=True)
-
-    af = write_autofilter(ws)
-    xml = tostring(af)
-    expected = """
-    <autoFilter ref="A1:F1">
-      <filterColumn colId="0">
-        <filters blank="1">
-          <filter val="0"></filter>
-        </filters>
-      </filterColumn>
-    </autoFilter>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_auto_filter_sort_condition(worksheet, write_autofilter):
-    ws = worksheet
-    ws.cell('A1').value = 'header'
-    ws.cell('A2').value = 1
-    ws.cell('A3').value = 0
-    ws.auto_filter.ref = 'A2:A3'
-    ws.auto_filter.add_sort_condition('A2:A3', descending=True)
-
-    af = write_autofilter(ws)
-    xml = tostring(af)
-    expected = """
-    <autoFilter ref="A2:A3">
-    <sortState ref="A2:A3">
-      <sortCondtion descending="1" ref="A2:A3"></sortCondtion>
-    </sortState>
-    </autoFilter>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_auto_filter_worksheet(worksheet, write_worksheet):
-    worksheet.auto_filter.ref = 'A1:F1'
-    xml = write_worksheet(worksheet, None)
-    expected = """
-    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-      <sheetPr>
-        <outlinePr summaryBelow="1" summaryRight="1"/>
-        <pageSetUpPr/>
-      </sheetPr>
-      <dimension ref="A1:A1"/>
-      <sheetViews>
-        <sheetView workbookViewId="0">
-          <selection activeCell="A1" sqref="A1"/>
-        </sheetView>
-      </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
-      <sheetData/>
-      <autoFilter ref="A1:F1"/>
-      <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-    </worksheet>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
 
 def test_merge(worksheet):
     from .. worksheet import write_mergecells
@@ -379,61 +232,19 @@ def test_no_merge(worksheet):
     assert merge is None
 
 
-def test_header_footer(worksheet):
-    ws = worksheet
-    ws.header_footer.left_header.text = "Left Header Text"
-    ws.header_footer.center_header.text = "Center Header Text"
-    ws.header_footer.center_header.font_name = "Arial,Regular"
-    ws.header_footer.center_header.font_size = 6
-    ws.header_footer.center_header.font_color = "445566"
-    ws.header_footer.right_header.text = "Right Header Text"
-    ws.header_footer.right_header.font_name = "Arial,Bold"
-    ws.header_footer.right_header.font_size = 8
-    ws.header_footer.right_header.font_color = "112233"
-    ws.header_footer.left_footer.text = "Left Footer Text\nAnd &[Date] and &[Time]"
-    ws.header_footer.left_footer.font_name = "Times New Roman,Regular"
-    ws.header_footer.left_footer.font_size = 10
-    ws.header_footer.left_footer.font_color = "445566"
-    ws.header_footer.center_footer.text = "Center Footer Text &[Path]&[File] on &[Tab]"
-    ws.header_footer.center_footer.font_name = "Times New Roman,Bold"
-    ws.header_footer.center_footer.font_size = 12
-    ws.header_footer.center_footer.font_color = "778899"
-    ws.header_footer.right_footer.text = "Right Footer Text &[Page] of &[Pages]"
-    ws.header_footer.right_footer.font_name = "Times New Roman,Italic"
-    ws.header_footer.right_footer.font_size = 14
-    ws.header_footer.right_footer.font_color = "AABBCC"
-
-    from .. worksheet import write_header_footer
-    hf = write_header_footer(ws)
-    xml = tostring(hf)
-    expected = """
-    <headerFooter>
-      <oddHeader>&amp;L&amp;"Calibri,Regular"&amp;K000000Left Header Text&amp;C&amp;"Arial,Regular"&amp;6&amp;K445566Center Header Text&amp;R&amp;"Arial,Bold"&amp;8&amp;K112233Right Header Text</oddHeader>
-      <oddFooter>&amp;L&amp;"Times New Roman,Regular"&amp;10&amp;K445566Left Footer Text_x000D_And &amp;D and &amp;T&amp;C&amp;"Times New Roman,Bold"&amp;12&amp;K778899Center Footer Text &amp;Z&amp;F on &amp;A&amp;R&amp;"Times New Roman,Italic"&amp;14&amp;KAABBCCRight Footer Text &amp;P of &amp;N</oddFooter>
-    </headerFooter>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_no_header(worksheet):
-    from .. worksheet import write_header_footer
-
-    hf = write_header_footer(worksheet)
-    assert hf is None
-
-
-def test_hyperlink(worksheet):
+def test_external_hyperlink(worksheet):
     from .. worksheet import write_hyperlinks
 
     ws = worksheet
-    ws.cell('A1').value = "test"
-    ws.cell('A1').hyperlink = "http://test.com"
+    cell = ws['A1']
+    cell.value = "test"
+    cell.hyperlink = "http://test.com"
+    ws._hyperlinks.append(cell.hyperlink)
 
     hyper = write_hyperlinks(ws)
     assert len(worksheet._rels) == 1
-    assert worksheet._rels[0].target == "http://test.com"
-    xml = tostring(hyper)
+    assert worksheet._rels["rId1"].Target == "http://test.com"
+    xml = tostring(hyper.to_tree())
     expected = """
     <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <hyperlink r:id="rId1" ref="A1"/>
@@ -443,11 +254,25 @@ def test_hyperlink(worksheet):
     assert diff is None, diff
 
 
-def test_no_hyperlink(worksheet):
+def test_internal_hyperlink(worksheet):
     from .. worksheet import write_hyperlinks
+    from openpyxl.worksheet.hyperlink import Hyperlink
 
-    l = write_hyperlinks(worksheet)
-    assert l is None
+    ws = worksheet
+    cell = ws['A1']
+    cell.hyperlink = Hyperlink(ref="", location="'STP nn000TL-10, PKG 2.52'!A1")
+
+    ws._hyperlinks.append(cell.hyperlink)
+
+    hyper = write_hyperlinks(ws)
+    xml = tostring(hyper.to_tree())
+    expected = """
+    <hyperlinks>
+      <hyperlink location="'STP nn000TL-10, PKG 2.52'!A1" ref="A1"/>
+    </hyperlinks>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
 
 
 @pytest.mark.xfail
@@ -466,8 +291,8 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
 
 @pytest.fixture
 def worksheet_with_cf(worksheet):
-    from openpyxl.formatting import ConditionalFormatting
-    worksheet.conditional_formating = ConditionalFormatting()
+    from openpyxl.formatting.formatting import ConditionalFormattingList
+    worksheet.conditional_formating = ConditionalFormattingList()
     return worksheet
 
 
@@ -482,9 +307,7 @@ def test_conditional_formatting_customRule(worksheet_with_cf, write_conditional_
     from openpyxl.formatting.rule import Rule
 
     ws.conditional_formatting.add('C1:C10',
-                                  Rule(**{'type': 'expression',
-                                          'formula': ['ISBLANK(C1)'], 'stopIfTrue': '1'}
-                                       )
+                                  Rule(type='expression',formula=['ISBLANK(C1)'], stopIfTrue='1')
                                   )
     cfs = write_conditional_formatting(ws)
     xml = b""
@@ -567,7 +390,7 @@ def write_worksheet():
 
 def test_write_empty(worksheet, write_worksheet):
     ws = worksheet
-    xml = write_worksheet(ws, None)
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
       <sheetPr>
@@ -580,7 +403,7 @@ def test_write_empty(worksheet, write_worksheet):
           <selection sqref="A1" activeCell="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
     </worksheet>
@@ -593,7 +416,7 @@ def test_vba(worksheet, write_worksheet):
     ws = worksheet
     ws.vba_code = {"codeName":"Sheet1"}
     ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
-    xml = write_worksheet(ws, None)
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -607,7 +430,7 @@ def test_vba(worksheet, write_worksheet):
           <selection activeCell="A1" sqref="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
       <legacyDrawing r:id="anysvml"/>
@@ -621,31 +444,16 @@ def test_vba_comments(datadir, write_worksheet):
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     ws = wb['Form Controls']
-    sheet = fromstring(write_worksheet(ws, None))
+    sheet = fromstring(write_worksheet(ws))
     els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
     assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
     assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
 
-def test_vba_rels(datadir, write_worksheet):
-    datadir.chdir()
-    fname = 'vba+comments.xlsm'
-    wb = load_workbook(fname, keep_vba=True)
-    ws = wb['Form Controls']
-    xml = tostring(write_rels(ws, comments_id=1))
-    expected = """
-    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-        <Relationship Id="anysvml" Target="/xl/drawings/vmlDrawing1.vml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"/>
-        <Relationship Id="comments" Target="/xl/comments1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"/>
-    </Relationships>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
 
 def test_write_comments(worksheet, write_worksheet):
     ws = worksheet
-    worksheet._comment_count = 1
-    xml = write_worksheet(ws, None)
+    worksheet._comments = True
+    xml = write_worksheet(ws)
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -659,7 +467,7 @@ def test_write_comments(worksheet, write_worksheet):
           <selection activeCell="A1" sqref="A1"/>
         </sheetView>
       </sheetViews>
-      <sheetFormatPr baseColWidth="10" defaultRowHeight="15"/>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData/>
       <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
       <legacyDrawing r:id="anysvml"></legacyDrawing>
@@ -676,5 +484,59 @@ def test_write_drawing(worksheet):
     <drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
     """
     xml = tostring(write_drawing(worksheet))
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_write_tables(worksheet, write_worksheet):
+    from openpyxl.worksheet.table import Table
+
+    worksheet.append(list("ABCDEF"))
+    worksheet._tables = [Table(displayName="Table1", ref="A1:D6")]
+    xml = write_worksheet(worksheet)
+    assert len(worksheet._rels) == 1
+
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+      <sheetPr>
+        <outlinePr summaryRight="1" summaryBelow="1"/>
+        <pageSetUpPr/>
+      </sheetPr>
+      <dimension ref="A1:F1"/>
+      <sheetViews>
+        <sheetView workbookViewId="0">
+          <selection sqref="A1" activeCell="A1"/>
+        </sheetView>
+      </sheetViews>
+      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+      <sheetData>
+        <row r="1" spans="1:6">
+        <c r="A1" t="s">
+          <v>0</v>
+        </c>
+        <c r="B1" t="s">
+          <v>1</v>
+        </c>
+        <c r="C1" t="s">
+          <v>2</v>
+        </c>
+        <c r="D1" t="s">
+          <v>3</v>
+        </c>
+        <c r="E1" t="s">
+          <v>4</v>
+        </c>
+        <c r="F1" t="s">
+          <v>5</v>
+        </c>
+        </row>
+    </sheetData>
+      <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
+      <tableParts count="1">
+         <tablePart r:id="rId1" />
+      </tableParts>
+    </worksheet>
+    """
+
     diff = compare_xml(xml, expected)
     assert diff is None, diff

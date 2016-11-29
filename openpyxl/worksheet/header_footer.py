@@ -1,207 +1,47 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# @license: http://www.opensource.org/licenses/mit-license.php
-# @author: see AUTHORS file
+# Copyright (c) 2010-2016 openpyxl
 
+# Simplified implementation of headers and footers: let worksheets have separate items
 
-class HeaderFooterItem(object):
-    """Individual left/center/right header/footer items
-
-       Header & Footer ampersand codes:
-
-       * &A   Inserts the worksheet name
-       * &B   Toggles bold
-       * &D or &[Date]   Inserts the current date
-       * &E   Toggles double-underline
-       * &F or &[File]   Inserts the workbook name
-       * &I   Toggles italic
-       * &N or &[Pages]   Inserts the total page count
-       * &S   Toggles strikethrough
-       * &T   Inserts the current time
-       * &[Tab]   Inserts the worksheet name
-       * &U   Toggles underline
-       * &X   Toggles superscript
-       * &Y   Toggles subscript
-       * &P or &[Page]   Inserts the current page number
-       * &P+n   Inserts the page number incremented by n
-       * &P-n   Inserts the page number decremented by n
-       * &[Path]   Inserts the workbook path
-       * &&   Escapes the ampersand character
-       * &"fontname"   Selects the named font
-       * &nn   Selects the specified 2-digit font point size
-    """
-    CENTER = 'C'
-    LEFT = 'L'
-    RIGHT = 'R'
-
-    REPLACE_LIST = (
-        ('\n', '_x000D_'),
-        ('&[Page]', '&P'),
-        ('&[Pages]', '&N'),
-        ('&[Date]', '&D'),
-        ('&[Time]', '&T'),
-        ('&[Path]', '&Z'),
-        ('&[File]', '&F'),
-        ('&[Tab]', '&A'),
-        ('&[Picture]', '&G')
-        )
-
-    __slots__ = ('type',
-                 'font_name',
-                 'font_size',
-                 'font_color',
-                 'text')
-
-    def __init__(self, type):
-        self.type = type
-        self.font_name = "Calibri,Regular"
-        self.font_size = None
-        self.font_color = "000000"
-        self.text = None
-
-    def has(self):
-        return True if self.text else False
-
-    def get(self):
-        t = []
-        if self.text:
-            t.append('&%s' % self.type)
-            t.append('&"%s"' % self.font_name)
-            if self.font_size:
-                t.append('&%d' % self.font_size)
-            t.append('&K%s' % self.font_color)
-            text = self.text
-            for old, new in self.REPLACE_LIST:
-                text = text.replace(old, new)
-            t.append(text)
-        return ''.join(t)
-
-    def set(self, text):
-        """
-        Convert a compound string into attributes
-        # incomplete because formatting commands can be nested
-        """
-        if text is None:
-            return
-        m = FONT_REGEX.search(text)
-        if m:
-            self.font_name = m.group('font')
-            text = FONT_REGEX.sub('', text)
-
-        m = SIZE_REGEX.search(text)
-        if m:
-            self.font_size = int(m.group('size'))
-            text = SIZE_REGEX.sub('', text)
-
-        m = COLOR_REGEX.search(text)
-        if m:
-            self.font_color = m.group('color')
-            text = COLOR_REGEX.sub('', text)
-
-        self.text = text
-
-
-class HeaderFooter(object):
-    """Information about the header/footer for this sheet.
-    """
-    __slots__ = ('left_header',
-                 'center_header',
-                 'right_header',
-                 'left_footer',
-                 'center_footer',
-                 'right_footer')
-
-    def __init__(self):
-        self.left_header = HeaderFooterItem(HeaderFooterItem.LEFT)
-        self.center_header = HeaderFooterItem(HeaderFooterItem.CENTER)
-        self.right_header = HeaderFooterItem(HeaderFooterItem.RIGHT)
-        self.left_footer = HeaderFooterItem(HeaderFooterItem.LEFT)
-        self.center_footer = HeaderFooterItem(HeaderFooterItem.CENTER)
-        self.right_footer = HeaderFooterItem(HeaderFooterItem.RIGHT)
-
-    def hasHeader(self):
-        return True if self.left_header.has() or self.center_header.has() or self.right_header.has() else False
-
-    def hasFooter(self):
-        return True if self.left_footer.has() or self.center_footer.has() or self.right_footer.has() else False
-
-    def getHeader(self):
-        t = []
-        if self.left_header.has():
-            t.append(self.left_header.get())
-        if self.center_header.has():
-            t.append(self.center_header.get())
-        if self.right_header.has():
-            t.append(self.right_header.get())
-        return ''.join(t)
-
-    def getFooter(self):
-        t = []
-        if self.left_footer.has():
-            t.append(self.left_footer.get())
-        if self.center_footer.has():
-            t.append(self.center_footer.get())
-        if self.right_footer.has():
-            t.append(self.right_footer.get())
-        return ''.join(t)
-
-
-    def setHeader(self, item):
-        matches = _split_string(item)
-        l = matches['left']
-        c = matches['center']
-        r = matches['right']
-
-        self.left_header.set(l)
-        self.center_header.set(c)
-        self.right_header.set(r)
-
-
-    def setFooter(self, item):
-        matches = _split_string(item)
-        l = matches['left']
-        c = matches['center']
-        r = matches['right']
-
-        self.left_footer.set(l)
-        self.center_footer.set(c)
-        self.right_footer.set(r)
-
-
-# See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
 import re
-
-ITEM_REGEX = re.compile("""
-(&L(?P<left>.+?))?
-(&C(?P<center>.+?))?
-(&R(?P<right>.+?))?
-$""", re.VERBOSE | re.DOTALL)
-
-# add support for multiline strings (how do re.flags combine?)
-
 from warnings import warn
 
+from openpyxl.descriptors import (
+    Alias,
+    Bool,
+    Strict,
+    String,
+    Integer,
+    MatchPattern,
+    Typed,
+)
+from openpyxl.descriptors.serialisable import Serialisable
+
+from openpyxl.compat import unicode
+from openpyxl.xml.functions import Element
+from openpyxl.utils.escape import escape, unescape
+
+
+FONT_PATTERN = '&"(?P<font>.+)"'
+COLOR_PATTERN  = "&K(?P<color>[A-F0-9]{6})"
+SIZE_REGEX = r"&(?P<size>\d+)"
+FORMAT_REGEX = re.compile("{0}|{1}|{2}".format(FONT_PATTERN, COLOR_PATTERN,
+                                               SIZE_REGEX)
+                          )
+
 def _split_string(text):
-    """Split the combined (decoded) string into left, center and right parts"""
+    """
+    Split the combined (decoded) string into left, center and right parts
+
+    # See http://stackoverflow.com/questions/27711175/regex-with-multiple-optional-groups for discussion
+    """
+
+    ITEM_REGEX = re.compile("""
+    (&L(?P<left>.+?))?
+    (&C(?P<center>.+?))?
+    (&R(?P<right>.+?))?
+    $""", re.VERBOSE | re.DOTALL)
+
     m = ITEM_REGEX.match(text)
     try:
         parts = m.groupdict()
@@ -210,7 +50,225 @@ def _split_string(text):
         parts = {'left':'', 'right':'', 'center':''}
     return parts
 
-HEADER_REGEX = re.compile(r"(&[ABDEGHINOPSTUXYZ\+\-])") # split part into commands
-FONT_REGEX = re.compile('&"(?P<font>.+)"')
-COLOR_REGEX = re.compile("&K(?P<color>[A-F0-9]{6})")
-SIZE_REGEX = re.compile(r"&(?P<size>\d+)")
+
+class _HeaderFooterPart(Strict):
+
+    """
+    Individual left/center/right header/footer part
+
+    Do not use directly.
+
+    Header & Footer ampersand codes:
+
+    * &A   Inserts the worksheet name
+    * &B   Toggles bold
+    * &D or &[Date]   Inserts the current date
+    * &E   Toggles double-underline
+    * &F or &[File]   Inserts the workbook name
+    * &I   Toggles italic
+    * &N or &[Pages]   Inserts the total page count
+    * &S   Toggles strikethrough
+    * &T   Inserts the current time
+    * &[Tab]   Inserts the worksheet name
+    * &U   Toggles underline
+    * &X   Toggles superscript
+    * &Y   Toggles subscript
+    * &P or &[Page]   Inserts the current page number
+    * &P+n   Inserts the page number incremented by n
+    * &P-n   Inserts the page number decremented by n
+    * &[Path]   Inserts the workbook path
+    * &&   Escapes the ampersand character
+    * &"fontname"   Selects the named font
+    * &nn   Selects the specified 2-digit font point size
+
+    Colours are in RGB Hex
+    """
+
+    text = String(allow_none=True)
+    font = String(allow_none=True)
+    size = Integer(allow_none=True)
+    RGB = ("^[A-Fa-f0-9]{6}$")
+    color = MatchPattern(allow_none=True, pattern=RGB)
+
+
+    def __init__(self, text=None, font=None, size=None, color=None):
+        self.text = text
+        self.font = font
+        self.size = size
+        self.color = color
+
+
+    def __str__(self):
+        """
+        Convert to Excel HeaderFooter miniformat minus position
+        """
+        fmt = []
+        if self.font:
+            fmt.append(u'&"{0}"'.format(self.font))
+        if self.size:
+            fmt.append("&{0}".format(self.size))
+        if self.color:
+            fmt.append("&K{0}".format(self.color))
+        return u"".join(fmt + [self.text])
+
+    def __bool__(self):
+        return bool(self.text)
+
+    __nonzero__ = __bool__
+
+
+    @classmethod
+    def from_str(cls, text):
+        """
+        Convert from miniformat to object
+        """
+        keys = ('font', 'color', 'size')
+        kw = dict((k, v) for match in FORMAT_REGEX.findall(text)
+                  for k, v in zip(keys, match) if v)
+
+        kw['text'] = FORMAT_REGEX.sub('', text)
+
+        return cls(**kw)
+
+
+class HeaderFooterItem(Strict):
+    """
+    Header or footer item
+
+    """
+
+    left = Typed(expected_type=_HeaderFooterPart)
+    center = Typed(expected_type=_HeaderFooterPart)
+    centre = Alias("center")
+    right = Typed(expected_type=_HeaderFooterPart)
+
+    __keys = ('L', 'C', 'R')
+
+
+    def __init__(self, left=None, right=None, center=None):
+        if left is None:
+            left = _HeaderFooterPart()
+        self.left = left
+        if center is None:
+            center = _HeaderFooterPart()
+        self.center = center
+        if right is None:
+            right = _HeaderFooterPart()
+        self.right = right
+
+
+    def __str__(self):
+        """
+        Pack parts into a single string
+        """
+        TRANSFORM = {'&[Tab]': '&A', '&[Pages]': '&N', '&[Date]': '&D',
+                     '&[Path]': '&Z', '&[Page]': '&P', '&[Time]': '&T', '&[File]': '&F',
+                     '&[Picture]': '&G'}
+
+        # escape keys and create regex
+        SUBS_REGEX = re.compile("|".join(["({0})".format(re.escape(k))
+                                          for k in TRANSFORM]))
+
+        def replace(match):
+            """
+            Callback for re.sub
+            Replace expanded control with mini-format equivalent
+            """
+            sub = match.group(0)
+            return TRANSFORM[sub]
+
+        txt = []
+        for key, part in zip(
+            self.__keys, [self.left, self.center, self.right]):
+            if part.text is not None:
+                txt.append(u"&{0}{1}".format(key, unicode(part)))
+        txt = "".join(txt)
+        txt = SUBS_REGEX.sub(replace, txt)
+        return escape(txt)
+
+
+    def __bool__(self):
+        return any([self.left, self.center, self.right])
+
+    __nonzero__ = __bool__
+
+
+    def to_tree(self, tagname):
+        """
+        Return as XML node
+        """
+        el = Element(tagname)
+        el.text = unicode(self)
+        return el
+
+
+    @classmethod
+    def from_tree(cls, node):
+        if node.text:
+            text = unescape(node.text)
+            parts = _split_string(text)
+            for k, v in parts.items():
+                if v is not None:
+                    parts[k] = _HeaderFooterPart.from_str(v)
+            self = cls(**parts)
+            return self
+
+
+class HeaderFooter(Serialisable):
+
+    tagname = "headerFooter"
+
+    differentOddEven = Bool(allow_none=True)
+    differentFirst = Bool(allow_none=True)
+    scaleWithDoc = Bool(allow_none=True)
+    alignWithMargins = Bool(allow_none=True)
+    oddHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    oddFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    evenFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstHeader = Typed(expected_type=HeaderFooterItem, allow_none=True)
+    firstFooter = Typed(expected_type=HeaderFooterItem, allow_none=True)
+
+    __elements__ = ("oddHeader", "oddFooter", "evenHeader", "evenFooter", "firstHeader", "firstFooter")
+
+    def __init__(self,
+                 differentOddEven=None,
+                 differentFirst=None,
+                 scaleWithDoc=None,
+                 alignWithMargins=None,
+                 oddHeader=None,
+                 oddFooter=None,
+                 evenHeader=None,
+                 evenFooter=None,
+                 firstHeader=None,
+                 firstFooter=None,
+                ):
+        self.differentOddEven = differentOddEven
+        self.differentFirst = differentFirst
+        self.scaleWithDoc = scaleWithDoc
+        self.alignWithMargins = alignWithMargins
+        if oddHeader is None:
+            oddHeader = HeaderFooterItem()
+        self.oddHeader = oddHeader
+        if oddFooter is None:
+            oddFooter = HeaderFooterItem()
+        self.oddFooter = oddFooter
+        if evenHeader is None:
+            evenHeader = HeaderFooterItem()
+        self.evenHeader = evenHeader
+        if evenFooter is None:
+            evenFooter = HeaderFooterItem()
+        self.evenFooter = evenFooter
+        if firstHeader is None:
+            firstHeader = HeaderFooterItem()
+        self.firstHeader = firstHeader
+        if firstFooter is None:
+            firstFooter = HeaderFooterItem()
+        self.firstFooter = firstFooter
+
+
+    def __bool__(self):
+        parts = [getattr(self, attr) for attr in self.__attrs__ + self.__elements__]
+        return any(parts)
+
+    __nonzero__ = __bool__

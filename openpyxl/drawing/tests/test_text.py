@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -63,6 +63,25 @@ class TestParagraphProperties:
         assert text == ParagraphProperties()
 
 
+from ..spreadsheet_drawing import SpreadsheetDrawing
+
+
+class TestTextBox:
+
+    def test_from_xml(self, datadir):
+        datadir.chdir()
+        with open("text_box_drawing.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        drawing = SpreadsheetDrawing.from_tree(node)
+        anchor = drawing.twoCellAnchor[0]
+        box = anchor.sp
+        meta = box.nvSpPr
+        graphic = box.graphicalProperties
+        text = box.txBody
+        assert len(text.p) == 2
+
+
 @pytest.fixture
 def CharacterProperties():
     from ..text import CharacterProperties
@@ -72,10 +91,10 @@ def CharacterProperties():
 class TestCharacterProperties:
 
     def test_ctor(self, CharacterProperties):
-        text = CharacterProperties(sz=10)
+        text = CharacterProperties(sz=110)
         xml = tostring(text.to_tree())
         expected = ('<defRPr xmlns="http://schemas.openxmlformats.org/'
-                    'drawingml/2006/main" sz="10"/>')
+                    'drawingml/2006/main" sz="110"/>')
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -83,8 +102,8 @@ class TestCharacterProperties:
 
     def test_from_xml(self, CharacterProperties):
         src = """
-        <defRPr sz="10"/>
+        <defRPr sz="110"/>
         """
         node = fromstring(src)
         text = CharacterProperties.from_tree(node)
-        assert text == CharacterProperties(sz=10)
+        assert text == CharacterProperties(sz=110)

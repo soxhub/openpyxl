@@ -26,8 +26,7 @@ Comments have a text attribute and an author attribute, which must both be set
 >>> comment.author
 'Comment Author'
 
-You cannot assign the same Comment object to two different cells. Doing so
-raises an AttributeError.
+If you assign the same comment to multiple cells then openpyxl will automatically create copies
 
 .. :: doctest
 
@@ -38,9 +37,10 @@ raises an AttributeError.
 >>> comment = Comment("Text", "Author")
 >>> ws["A1"].comment = comment
 >>> ws["B2"].comment = comment
-Traceback (most recent call last):
-AttributeError: Comment already assigned to A1 in worksheet Sheet. Cannot
-assign a comment to more than one cell
+>>> ws["A1"].comment is comment
+True
+>>> ws["B2"].comment is comment
+False
 
 
 Loading and saving comments

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -291,3 +291,48 @@ class TestSpreadsheetDrawing:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_read_chart(self, SpreadsheetDrawing, datadir):
+        datadir.chdir()
+        with open("spreadsheet_drawing_with_chart.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+
+        drawing = SpreadsheetDrawing.from_tree(node)
+        anchor = drawing.oneCellAnchor[0]
+        assert anchor._from.row == 28
+        assert anchor._from.col == 1
+
+
+    def test_write_rels(self, SpreadsheetDrawing):
+        from openpyxl.packaging.relationship import Relationship
+        rel = Relationship(type="drawing", Target="../file.xml")
+        drawing = SpreadsheetDrawing()
+        drawing._rels.append(rel)
+        xml = tostring(drawing._write_rels())
+        expected = """
+        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+        <Relationship Id="rId1" Target="../file.xml"
+           Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"/>
+        </Relationships>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_path(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        assert drawing.path == "/xl/drawings/drawingNone.xml"
+
+
+    def test_empty(self, SpreadsheetDrawing):
+        drawing = SpreadsheetDrawing()
+        assert bool(drawing) is False
+
+
+    @pytest.mark.parametrize("attr", ['charts', 'images'])
+    def test_bool(self, SpreadsheetDrawing, attr):
+        drawing = SpreadsheetDrawing()
+        getattr(drawing, attr).append(1)
+        assert bool(drawing) is True

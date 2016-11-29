@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from zipfile import ZipFile
 
@@ -15,8 +15,8 @@ def Relationship():
 
 
 def test_ctor(Relationship):
-    rel = Relationship(type="drawing", target="drawings.xml",
-                       targetMode="external", id="4")
+    rel = Relationship(type="drawing", Target="drawings.xml",
+                       TargetMode="external", Id="4")
 
     assert dict(rel) == {'Id': '4', 'Target': 'drawings.xml', 'TargetMode':
                          'external', 'Type':
@@ -33,10 +33,10 @@ def test_ctor(Relationship):
 def test_sequence(Relationship):
     from ..relationship import RelationshipList
     rels = RelationshipList()
-    rels.append(Relationship(type="drawing", target="drawings.xml",
-                             targetMode="external", id=""))
-    rels.append(Relationship(type="chart", target="chart1.xml",
-                             targetMode="", id="chart"))
+    rels.append(Relationship(type="drawing", Target="drawings.xml",
+                             TargetMode="external", Id=""))
+    rels.append(Relationship(type="chart", Target="chart1.xml",
+                             TargetMode="", Id="chart"))
     xml = tostring(rels.to_tree())
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -99,3 +99,13 @@ def test_get_dependents(datadir, filename, expected):
     from ..relationship import get_dependents
     rels = get_dependents(archive, filename)
     assert [r.Target for r in rels.Relationship] == expected
+
+
+def test_get_external_link(datadir):
+    datadir.chdir()
+    archive = ZipFile("hyperlink.xlsx")
+
+    from ..relationship import get_dependents
+    rels = get_dependents(archive, "xl/worksheets/_rels/sheet1.xml.rels")
+
+    assert [r.Target for r in rels.Relationship] == ["http://www.readthedocs.org"]

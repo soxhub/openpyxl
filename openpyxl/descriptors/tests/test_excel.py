@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -170,3 +170,36 @@ class TestBase64Binary():
     def test_valid(self, Base64Binary, value):
         with pytest.raises(ValueError):
             Base64Binary.value = value
+
+
+@pytest.fixture
+def CellRange():
+    from ..excel import CellRange
+
+    class Dummy(Strict):
+        value = CellRange()
+
+    return Dummy()
+
+
+class TestCellRange():
+
+    @pytest.mark.parametrize("value",
+                             ["A1",
+                              "A1:H5",
+                              ]
+                             )
+    def test_valid(self, CellRange, value):
+        CellRange.value = value
+        assert CellRange.value == value
+
+
+    @pytest.mark.parametrize("value",
+                             ["A1:",
+                              "A1:5",
+                              "A1:B4:C7"
+                              ]
+                             )
+    def test_invalid(self, CellRange, value):
+        with pytest.raises(ValueError):
+            CellRange.value = value

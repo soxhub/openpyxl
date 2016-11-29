@@ -13,7 +13,5 @@ Submodules
 
    openpyxl.reader.excel
    openpyxl.reader.strings
-   openpyxl.reader.style
-   openpyxl.reader.workbook
    openpyxl.reader.worksheet
 

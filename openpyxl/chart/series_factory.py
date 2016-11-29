@@ -1,10 +1,10 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from .data_source import NumDataSource, NumRef, AxDataSource
 from .reference import Reference
 from .series import Series, XYSeries, SeriesLabel, StrRef
-from ..utils import SHEETRANGE_RE, rows_from_range, quote_sheetname
+from  openpyxl.utils import rows_from_range, quote_sheetname
 
 
 def SeriesFactory(values, xvalues=None, zvalues=None, title=None, title_from_data=False):

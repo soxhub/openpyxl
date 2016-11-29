@@ -1,136 +1,152 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
-import datetime
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import (
+    String,
+    Float,
+    Integer,
+    Bool,
+    NoneSet,
+    Set,
+)
 
-from openpyxl.compat import safe_string, unicode
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, datetime_to_W3CDTF, W3CDTF_to_datetime
-from openpyxl.descriptors import Strict, String, Typed, Alias
-from openpyxl.xml.functions import ElementTree, Element, SubElement, tostring, fromstring, safe_iterator, localname
-from openpyxl.xml.constants import COREPROPS_NS, DCORE_NS, XSI_NS, DCTERMS_NS, DCTERMS_PREFIX
-
-
-
-class W3CDateTime(Typed):
-
-    expected_type = datetime.datetime
-
-    def __set__(self, instance, value):
-        if value is not None and isinstance(value, str):
-            try:
-                value = W3CDTF_to_datetime(value)
-            except ValueError:
-                raise ValueError("Value must be W3C datetime format")
-        super(W3CDateTime, self).__set__(instance, value)
+from openpyxl.descriptors.excel import Guid
 
 
-class DocumentProperties(Strict):
-    """High-level properties of the document.
-    Defined in ECMA-376 Par2 Annex D
-    """
+class WorkbookProperties(Serialisable):
 
-    category = String(allow_none=True)
-    contentStatus = String(allow_none=True)
-    keywords = String(allow_none=True)
-    lastModifiedBy = String(allow_none=True)
-    lastPrinted = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
-    revision = String(allow_none=True)
-    version = String(allow_none=True)
-    last_modified_by = Alias("lastModifiedBy")
+    tagname = "workbookPr"
 
-    # Dublin Core Properties
-    subject = String(allow_none=True)
-    title = String(allow_none=True)
-    creator = String(allow_none=True)
-    description = String(allow_none=True)
-    identifier = String(allow_none=True)
-    language = String(allow_none=True)
-    created = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
-    modified = W3CDateTime(expected_type=datetime.datetime, allow_none=True)
-
-    __fields__ = ("category", "contentStatus", "lastModifiedBy", "keywords",
-                "lastPrinted", "revision", "version", "created", "creator", "description",
-                "identifier", "language", "modified", "subject", "title")
+    date1904 = Bool(allow_none=True)
+    dateCompatibility = Bool(allow_none=True)
+    showObjects = NoneSet(values=(['all', 'placeholders']))
+    showBorderUnselectedTables = Bool(allow_none=True)
+    filterPrivacy = Bool(allow_none=True)
+    promptedSolutions = Bool(allow_none=True)
+    showInkAnnotation = Bool(allow_none=True)
+    backupFile = Bool(allow_none=True)
+    saveExternalLinkValues = Bool(allow_none=True)
+    updateLinks = NoneSet(values=(['userSet', 'never', 'always']))
+    codeName = String(allow_none=True)
+    hidePivotFieldList = Bool(allow_none=True)
+    showPivotChartFilter = Bool(allow_none=True)
+    allowRefreshQuery = Bool(allow_none=True)
+    publishItems = Bool(allow_none=True)
+    checkCompatibility = Bool(allow_none=True)
+    autoCompressPictures = Bool(allow_none=True)
+    refreshAllConnections = Bool(allow_none=True)
+    defaultThemeVersion = Integer(allow_none=True)
 
     def __init__(self,
-                 category=None,
-                 contentStatus=None,
-                 keywords=None,
-                 lastModifiedBy=None,
-                 lastPrinted=None,
-                 revision=None,
-                 version=None,
-                 created=datetime.datetime.now(),
-                 creator="openpyxl",
-                 description=None,
-                 identifier=None,
-                 language=None,
-                 modified=datetime.datetime.now(),
-                 subject=None,
-                 title=None,
-                 ):
-        self.contentStatus = contentStatus
-        self.lastPrinted = lastPrinted
-        self.revision = revision
-        self.version = version
-        self.creator = creator
-        self.lastModifiedBy = lastModifiedBy
-        self.modified = modified
-        self.created = created
-        self.title = title
-        self.subject = subject
-        self.description = description
-        self.identifier = identifier
-        self.language = language
-        self.keywords = keywords
-        self.category = category
-
-    def __iter__(self):
-        for attr in self.__fields__:
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-
-def write_properties(props):
-    """Write the core properties to xml."""
-    root = Element('{%s}coreProperties' % COREPROPS_NS)
-    for attr in ("creator", "title", "description", "subject", "identifier",
-                 "language"):
-        SubElement(root, '{%s}%s' % (DCORE_NS, attr)).text = getattr(props, attr)
-
-    for attr in ("created", "modified"):
-        value = datetime_to_W3CDTF(getattr(props, attr))
-        SubElement(root, '{%s}%s' % (DCTERMS_NS, attr),
-                   {'{%s}type' % XSI_NS:'%s:W3CDTF' % DCTERMS_PREFIX}).text = value
-
-    for attr in ("lastModifiedBy", "category", "contentStatus", "version",
-                 "revision", "keywords"):
-        SubElement(root, '{%s}%s' % (COREPROPS_NS, attr)).text = getattr(props, attr)
-
-    if props.lastPrinted is not None:
-        SubElement(root, "{%s}lastPrinted" % COREPROPS_NS).text = datetime_to_W3CDTF(props.lastPrinted
-                                                                            )
-    return tostring(root)
+                 date1904=None,
+                 dateCompatibility=None,
+                 showObjects=None,
+                 showBorderUnselectedTables=None,
+                 filterPrivacy=None,
+                 promptedSolutions=None,
+                 showInkAnnotation=None,
+                 backupFile=None,
+                 saveExternalLinkValues=None,
+                 updateLinks=None,
+                 codeName=None,
+                 hidePivotFieldList=None,
+                 showPivotChartFilter=None,
+                 allowRefreshQuery=None,
+                 publishItems=None,
+                 checkCompatibility=None,
+                 autoCompressPictures=None,
+                 refreshAllConnections=None,
+                 defaultThemeVersion=None,
+                ):
+        self.date1904 = date1904
+        self.dateCompatibility = dateCompatibility
+        self.showObjects = showObjects
+        self.showBorderUnselectedTables = showBorderUnselectedTables
+        self.filterPrivacy = filterPrivacy
+        self.promptedSolutions = promptedSolutions
+        self.showInkAnnotation = showInkAnnotation
+        self.backupFile = backupFile
+        self.saveExternalLinkValues = saveExternalLinkValues
+        self.updateLinks = updateLinks
+        self.codeName = codeName
+        self.hidePivotFieldList = hidePivotFieldList
+        self.showPivotChartFilter = showPivotChartFilter
+        self.allowRefreshQuery = allowRefreshQuery
+        self.publishItems = publishItems
+        self.checkCompatibility = checkCompatibility
+        self.autoCompressPictures = autoCompressPictures
+        self.refreshAllConnections = refreshAllConnections
+        self.defaultThemeVersion = defaultThemeVersion
 
 
-def read_properties(xml_source):
-    properties = DocumentProperties()
-    root = fromstring(xml_source)
+class CalcProperties(Serialisable):
 
-    for node in safe_iterator(root):
-        tag = localname(node)
-        setattr(properties, tag, node.text)
+    tagname = "calcPr"
 
-    return properties
+    calcId = Integer()
+    calcMode = NoneSet(values=(['manual', 'auto', 'autoNoTable']))
+    fullCalcOnLoad = Bool(allow_none=True)
+    refMode = NoneSet(values=(['A1', 'R1C1']))
+    iterate = Bool(allow_none=True)
+    iterateCount = Integer(allow_none=True)
+    iterateDelta = Float(allow_none=True)
+    fullPrecision = Bool(allow_none=True)
+    calcCompleted = Bool(allow_none=True)
+    calcOnSave = Bool(allow_none=True)
+    concurrentCalc = Bool(allow_none=True)
+    concurrentManualCount = Integer(allow_none=True)
+    forceFullCalc = Bool(allow_none=True)
+
+    def __init__(self,
+                 calcId=124519,
+                 calcMode=None,
+                 fullCalcOnLoad=True,
+                 refMode=None,
+                 iterate=None,
+                 iterateCount=None,
+                 iterateDelta=None,
+                 fullPrecision=None,
+                 calcCompleted=None,
+                 calcOnSave=None,
+                 concurrentCalc=None,
+                 concurrentManualCount=None,
+                 forceFullCalc=None,
+                ):
+        self.calcId = calcId
+        self.calcMode = calcMode
+        self.fullCalcOnLoad = fullCalcOnLoad
+        self.refMode = refMode
+        self.iterate = iterate
+        self.iterateCount = iterateCount
+        self.iterateDelta = iterateDelta
+        self.fullPrecision = fullPrecision
+        self.calcCompleted = calcCompleted
+        self.calcOnSave = calcOnSave
+        self.concurrentCalc = concurrentCalc
+        self.concurrentManualCount = concurrentManualCount
+        self.forceFullCalc = forceFullCalc
 
 
-class DocumentSecurity(object):
-    """Security information about the document."""
+class FileVersion(Serialisable):
 
-    def __init__(self):
-        self.lock_revision = False
-        self.lock_structure = False
-        self.lock_windows = False
-        self.revision_password = ''
-        self.workbook_password = ''
+    tagname = "fileVersion"
+
+    appName = String(allow_none=True)
+    lastEdited = String(allow_none=True)
+    lowestEdited = String(allow_none=True)
+    rupBuild = String(allow_none=True)
+    codeName = Guid(allow_none=True)
+
+    def __init__(self,
+                 appName=None,
+                 lastEdited=None,
+                 lowestEdited=None,
+                 rupBuild=None,
+                 codeName=None,
+                ):
+        self.appName = appName
+        self.lastEdited = lastEdited
+        self.lowestEdited = lowestEdited
+        self.rupBuild = rupBuild
+        self.codeName = codeName

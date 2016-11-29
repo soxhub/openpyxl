@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """Manage individual cells in a spreadsheet.
 
@@ -12,6 +12,7 @@ cells using Excel's 'A1' column/row nomenclature are also provided.
 __docformat__ = "restructuredtext en"
 
 # Python stdlib imports
+from copy import copy
 import datetime
 import re
 
@@ -135,7 +136,7 @@ class Cell(StyleableObject):
 
     @property
     def guess_types(self):
-        return getattr(self.parent.parent, '_guess_types', False)
+        return getattr(self.parent.parent, 'guess_types', False)
 
     def __repr__(self):
         return unicode("<Cell %s.%s>") % (self.parent.title, self.coordinate)
@@ -172,11 +173,6 @@ class Cell(StyleableObject):
         self.data_type = data_type
 
 
-    @deprecated("Method is private")
-    def bind_value(self, value):
-        self._bind_value(value)
-
-
     def _bind_value(self, value):
         """Given a value, infer the correct data type"""
 
@@ -188,11 +184,7 @@ class Cell(StyleableObject):
         elif isinstance(value, NUMERIC_TYPES):
             pass
 
-        elif isinstance(value, NUMERIC_TYPES):
-            self.data_type = self.TYPE_NUMERIC
-
         elif isinstance(value, TIME_TYPES):
-            self.data_type = self.TYPE_NUMERIC
             value = self._cast_datetime(value)
 
         elif isinstance(value, STRING_TYPES):
@@ -209,11 +201,6 @@ class Cell(StyleableObject):
             raise ValueError("Cannot convert {0} to Excel".format(value))
 
         self._value = value
-
-
-    @deprecated("Method is private")
-    def infer_value(self, value):
-        return self._infer_value(value)
 
 
     def _infer_value(self, value):
@@ -314,16 +301,24 @@ class Cell(StyleableObject):
         """Return the hyperlink target or an empty string"""
         return self._hyperlink
 
+
     @hyperlink.setter
     def hyperlink(self, val):
         """Set value and display for hyperlinks in a cell.
         Automatically sets the `value` of the cell with link text,
         but you can modify it afterwards by setting the `value`
-        property, and the hyperlink will remain."""
-        self._hyperlink = Hyperlink(ref=self.coordinate, target=val)
-        self.parent.hyperlinks.add(self)
-        if self._value is None:
-            self.value = val
+        property, and the hyperlink will remain.
+        Hyperlink is removed if set to ``None``."""
+        if val is None:
+            self._hyperlink = None
+        else:
+            if not isinstance(val, Hyperlink):
+                val = Hyperlink(ref="", target=val)
+            val.ref = self.coordinate
+            self._hyperlink = val
+            if self._value is None:
+                self.value = val.target or val.location
+
 
     @property
     def is_date(self):
@@ -351,6 +346,7 @@ class Cell(StyleableObject):
         return self.parent.cell(column=offset_column, row=offset_row)
 
     @property
+    @deprecated("Use anchor objects for positioning")
     def anchor(self):
         """ returns the expected position of a cell in pixels from the top-left
             of the sheet. For example, A1 anchor should be (0,0).
@@ -393,17 +389,21 @@ class Cell(StyleableObject):
         """
         return self._comment
 
+
     @comment.setter
     def comment(self, value):
-
-        # Ensure the number of comments for the parent worksheet is up-to-date
-        if value is None and self._comment is not None:
-            self.parent._comment_count -= 1
-        if value is not None and self._comment is None:
-            self.parent._comment_count += 1
+        """
+        Assign a comment to a cell
+        """
 
         if value is not None:
-            value.parent = self
+            if value.parent:
+                value = copy(value)
+            value.bind(self)
         elif value is None and self._comment:
-            self._comment.parent = None
+            self._comment.unbind()
         self._comment = value
+
+
+def WriteOnlyCell(ws=None, value=None):
+    return Cell(worksheet=ws, column='A', row=1, value=value)

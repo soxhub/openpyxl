@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 
 import os
@@ -25,6 +25,8 @@ drawing_schema = XMLSchema(file=drawing_src)
 drawing_main_src = os.path.join(SCHEMA_FOLDER, "dml-main.xsd")
 
 shared_src = os.path.join(SCHEMA_FOLDER, "shared-commonSimpleTypes.xsd")
+
+extended_src = os.path.join(SCHEMA_FOLDER, "shared-documentPropertiesExtended.xsd")
 
 rel_src = os.path.join(SCHEMA_FOLDER, "opc-relationships.xsd")
 

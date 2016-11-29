@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
+from . import Descriptor
 from . import _Serialiasable
 from .sequence import Sequence, NestedSequence
 from .namespace import namespaced
@@ -43,11 +44,21 @@ class Serialisable(_Serialiasable):
         """
         Create object from XML
         """
+        # strip known namespaces from attributes
         attrib = dict(node.attrib)
         for key, ns in cls.__namespaced__:
             if ns in attrib:
                 attrib[key] = attrib[ns]
                 del attrib[ns]
+
+        # strip attributes with unknown namespaces
+        for key in list(attrib):
+            if key.startswith('{'):
+                del attrib[key]
+
+        if node.text and "attr_text" in cls.__attrs__:
+            attrib["attr_text"] = node.text
+
         for el in node:
             tag = localname(el)
             if tag in KEYWORDS:
@@ -97,6 +108,8 @@ class Serialisable(_Serialiasable):
                 del attrs[key]
 
         el = Element(tagname, attrs)
+        if "attr_text" in self.__attrs__:
+            el.text = safe_string(getattr(self, "attr_text"))
 
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
@@ -131,12 +144,14 @@ class Serialisable(_Serialiasable):
     def __iter__(self):
         for attr in self.__attrs__:
             value = getattr(self, attr)
-            if value is not None:
+            if attr != "attr_text" and value is not None:
                 yield attr, safe_string(value)
 
 
     def __eq__(self, other):
-        if not dict(self) == dict(other):
+        if not self.__class__ == other.__class__:
+            return False
+        elif not dict(self) == dict(other):
             return False
         for el in self.__elements__:
             if getattr(self, el) != getattr(other, el):
@@ -146,3 +161,46 @@ class Serialisable(_Serialiasable):
 
     def __ne__(self, other):
         return not self == other
+
+
+    def __repr__(self):
+        s = u"<{0}.{1} object>\nParameters:".format(
+            self.__module__,
+            self.__class__.__name__
+        )
+        args = []
+        for k in self.__attrs__ + self.__elements__:
+            v = getattr(self, k)
+            if isinstance(v, Descriptor):
+                v = None
+            args.append(u"{0}={1}".format(k, repr(v)))
+        args = u", ".join(args)
+
+        return u"\n".join([s, args])
+
+
+    def __hash__(self):
+        fields = []
+        for attr in self.__attrs__ + self.__elements__:
+            val = getattr(self, attr)
+            if isinstance(val, list):
+                val = tuple(val)
+            fields.append(val)
+
+        return hash(tuple(fields))
+
+
+    def __add__(self, other):
+        if type(self) != type(other):
+            raise TypeError("Cannot combine instances of different types")
+        vals = {}
+        for attr in self.__attrs__:
+            vals[attr] = getattr(self, attr) or getattr(other, attr)
+        for el in self.__elements__:
+            a = getattr(self, el)
+            b = getattr(other, el)
+            if a and b:
+                vals[el] = a + b
+            else:
+                vals[el] = a or b
+        return self.__class__(**vals)

@@ -1,10 +1,13 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
+
+from copy import copy
 
 from openpyxl.compat import safe_string, deprecated
 from openpyxl.utils import (
     get_column_interval,
     column_index_from_string,
+    range_boundaries,
 )
 from openpyxl.descriptors import (
     Integer,
@@ -14,9 +17,12 @@ from openpyxl.descriptors import (
     String,
     Alias,
 )
-from openpyxl.styles.styleable import StyleableObject, StyleArray
+from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.styles.styleable import StyleableObject
+from openpyxl.styles.cell_style import StyleArray
 
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.xml.functions import Element
 
 
 class Dimension(Strict, StyleableObject):
@@ -42,20 +48,27 @@ class Dimension(Strict, StyleableObject):
 
     def __iter__(self):
         for key in self.__fields__:
-            value = getattr(self, key)
+            value = getattr(self, key, None)
+            if key in ('style', 's'):
+                value = self.style_id
             if value:
                 yield key, safe_string(value)
 
-    @property
-    @deprecated("Use `hidden` instead")
-    def visible(self):
-        return not self.hidden
+
+    def __copy__(self):
+        cp = self.__new__(self.__class__)
+        attrib = self.__dict__
+        attrib['worksheet'] = self.parent
+        cp.__init__(**attrib)
+        cp._style = copy(self._style)
+        return cp
 
 
 class RowDimension(Dimension):
     """Information about the display properties of a row."""
 
-    __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's')
+    __fields__ = Dimension.__fields__ + ('ht', 'customFormat', 'customHeight', 's',
+                                         'thickBot', 'thickTop')
     r = Alias('index')
     s = Alias('style_id')
     ht = Float(allow_none=True)
@@ -91,6 +104,8 @@ class RowDimension(Dimension):
             hidden = not visible
         if outline_level is not None:
             outlineLevel = outlineLevel
+        self.thickBot = thickBot
+        self.thickTop = thickTop
         super(RowDimension, self).__init__(index, hidden, outlineLevel,
                                            collapsed, worksheet, style=s)
 
@@ -148,19 +163,24 @@ class ColumnDimension(Dimension):
         super(ColumnDimension, self).__init__(index, hidden, outlineLevel,
                                               collapsed, worksheet, style=style)
 
+
     @property
     def customWidth(self):
         """Always true if there is a width for the column"""
         return self.width is not None
 
-    def __iter__(self):
-        for key in self.__fields__:
-            if key == 'style':
-                value = self.style_id
-            else:
-                value = getattr(self, key)
-            if value:
-                yield key, safe_string(value)
+
+    def reindex(self):
+        """
+        Set boundaries for column definition
+        """
+        if not all([self.min, self.max]):
+            self.min = self.max = column_index_from_string(self.index)
+
+
+    def to_tree(self):
+        attrs = dict(self)
+        return Element("col", **attrs)
 
 
 class DimensionHolder(BoundDictionary):
@@ -170,6 +190,7 @@ class DimensionHolder(BoundDictionary):
 
     def __init__(self, worksheet, reference="index", default_factory=None):
         self.worksheet = worksheet
+        self.max_outline = None
         super(DimensionHolder, self).__init__(reference, default_factory)
 
 
@@ -193,3 +214,80 @@ class DimensionHolder(BoundDictionary):
             if column_letter in self:
                 del self[column_letter]
         new_dim.min, new_dim.max = map(column_index_from_string, (start, end))
+
+
+    def to_tree(self):
+
+        def sorter(value):
+            value.reindex()
+            return value.min
+
+        el = Element('cols')
+        obj = None
+        outlines = set()
+
+        for col in sorted(self.values(), key=sorter):
+            obj = col.to_tree()
+            outlines.add(col.outlineLevel)
+            if obj is not None:
+                el.append(obj)
+
+        if outlines:
+            self.max_outline = max(outlines)
+
+        if obj is not None:
+            return el
+
+
+class SheetFormatProperties(Serialisable):
+
+    tagname = "sheetFormatPr"
+
+    baseColWidth = Integer(allow_none=True)
+    defaultColWidth = Float(allow_none=True)
+    defaultRowHeight = Float()
+    customHeight = Bool(allow_none=True)
+    zeroHeight = Bool(allow_none=True)
+    thickTop = Bool(allow_none=True)
+    thickBottom = Bool(allow_none=True)
+    outlineLevelRow = Integer(allow_none=True)
+    outlineLevelCol = Integer(allow_none=True)
+
+    def __init__(self,
+                 baseColWidth=8, #according to spec
+                 defaultColWidth=None,
+                 defaultRowHeight=15,
+                 customHeight=None,
+                 zeroHeight=None,
+                 thickTop=None,
+                 thickBottom=None,
+                 outlineLevelRow=None,
+                 outlineLevelCol=None,
+                ):
+        self.baseColWidth = baseColWidth
+        self.defaultColWidth = defaultColWidth
+        self.defaultRowHeight = defaultRowHeight
+        self.customHeight = customHeight
+        self.zeroHeight = zeroHeight
+        self.thickTop = thickTop
+        self.thickBottom = thickBottom
+        self.outlineLevelRow = outlineLevelRow
+        self.outlineLevelCol = outlineLevelCol
+
+
+class SheetDimension(Serialisable):
+
+    tagname = "dimension"
+
+    ref = String()
+
+    def __init__(self,
+                 ref=None,
+                ):
+        self.ref = ref
+
+
+    @property
+    def boundaries(self):
+        return range_boundaries(self.ref)
+

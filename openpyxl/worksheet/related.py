@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.excel import Relation
@@ -14,5 +14,5 @@ class Related(Serialisable):
         self.id = id
 
 
-    def to_tree(self, tagname):
+    def to_tree(self, tagname, idx=None):
         return super(Related, self).to_tree(tagname)

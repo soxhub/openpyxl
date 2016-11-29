@@ -1,11 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 """Write a .xlsx file."""
 
 # Python stdlib imports
 from io import BytesIO
-from re import match
+import re
 from zipfile import ZipFile, ZIP_DEFLATED
 
 # package imports
@@ -27,203 +27,231 @@ from openpyxl.xml.constants import (
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import tostring, fromstring, Element
-from openpyxl.packaging.manifest import write_content_types
+from openpyxl.packaging.manifest import Manifest
+from openpyxl.packaging.relationship import (
+    get_rels_path,
+    RelationshipList,
+    Relationship,
+)
+from openpyxl.packaging.extended import ExtendedProperties
+
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_root_rels,
     write_workbook_rels,
-    write_properties_app,
-    write_workbook
-    )
-from openpyxl.workbook.properties import write_properties
-from openpyxl.writer.theme import write_theme
-from openpyxl.writer.styles import StyleWriter
-from .relations import write_rels
-from openpyxl.writer.worksheet import write_worksheet
-from openpyxl.workbook.names.external import (
-    write_external_link,
-    write_external_book_rel
+    write_workbook,
 )
+from openpyxl.writer.theme import write_theme
+from openpyxl.writer.worksheet import write_worksheet
+from openpyxl.styles.stylesheet import write_stylesheet
 
-from openpyxl.comments.writer import CommentWriter
+from openpyxl.comments.comment_sheet import CommentSheet
 
-ARC_VBA = ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml', 'xl/ctrlProps', 'customUI',
-           'xl/activeX', r'xl/media/.*\.emf')
 
 class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
 
-    comment_writer = CommentWriter
-
-    def __init__(self, workbook):
+    def __init__(self, workbook, archive):
+        self.archive = archive
         self.workbook = workbook
-        self.workbook._drawings = []
-        self.style_writer = StyleWriter(workbook)
+        self.manifest = Manifest()
         self.vba_modified = set()
+        self._tables = []
+        self._charts = []
+        self._images = []
+        self._drawings = []
+        self._comments = []
 
-    def write_data(self, archive, as_template=False):
+
+    def write_data(self):
         """Write the various xml files into the zip archive."""
         # cleanup all worksheets
+        archive = self.archive
 
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
-        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
-        archive.writestr(ARC_APP, write_properties_app(self.workbook))
-        archive.writestr(ARC_CORE, write_properties(self.workbook.properties))
+        props = ExtendedProperties()
+        archive.writestr(ARC_APP, tostring(props.to_tree()))
+
+        archive.writestr(ARC_CORE, tostring(self.workbook.properties.to_tree()))
         if self.workbook.loaded_theme:
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)
         else:
             archive.writestr(ARC_THEME, write_theme())
-        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
 
-        self._write_charts(archive)
-        self._write_images(archive)
-        self._write_worksheets(archive)
-        self._write_chartsheets(archive)
-        self._write_string_table(archive)
-        self._write_external_links(archive)
-        archive.writestr(ARC_STYLE, self.style_writer.write_table())
+        self._write_worksheets()
+        self._write_chartsheets()
+        self._write_images()
+        self._write_charts()
+
+        self.archive.writestr(ARC_SHARED_STRINGS,
+                              write_string_table(self.workbook.shared_strings))
+        self._write_external_links()
+
+        stylesheet = write_stylesheet(self.workbook)
+        archive.writestr(ARC_STYLE, tostring(stylesheet))
+
+        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
+        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
+
+        self._merge_vba()
+
+        self.manifest._write(archive, self.workbook)
+
+    def _merge_vba(self):
+        """
+        If workbook contains macros then extract associated files from cache
+        of old file and add to archive
+        """
+        ARC_VBA = re.compile("|".join(
+            ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml',
+             'xl/ctrlProps', 'customUI', 'xl/activeX', r'xl/media/.*\.emf')
+        )
+                             )
 
         if self.workbook.vba_archive:
-            vba_archive = self.workbook.vba_archive
-            for name in set(vba_archive.namelist()) - self.vba_modified:
-                for s in ARC_VBA:
-                    if match(s, name):
-                        archive.writestr(name, vba_archive.read(name))
-                        break
-
-        exts = []
-        for n in archive.namelist():
-            if "media" in n:
-                exts.append(n)
-        manifest = write_content_types(self.workbook, as_template=as_template, exts=exts)
-        archive.writestr(ARC_CONTENT_TYPES, tostring(manifest.to_tree()))
-
-    def _write_string_table(self, archive):
-        archive.writestr(ARC_SHARED_STRINGS,
-                write_string_table(self.workbook.shared_strings))
+            for name in set(self.workbook.vba_archive.namelist()) - self.vba_modified:
+                if ARC_VBA.match(name):
+                    self.archive.writestr(name, self.workbook.vba_archive.read(name))
 
 
-    def _write_images(self, archive):
-        for idx, ref in enumerate(self.workbook._images, 1):
-            img = ref()
-            if img is None:
-                continue
+    def _write_images(self):
+        # delegate to object
+        for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
-            img._id = idx
-            archive.writestr(img._path, buf.getvalue())
+            self.archive.writestr(img.path[1:], buf.getvalue())
 
 
-    def _write_charts(self, archive):
-        for idx, ref in enumerate(self.workbook._charts, 1):
-            chart = ref()
-            if not chart:
-                continue
-            chart._id = idx
-            archive.writestr(chart._path, tostring(chart._write()))
+    def _write_charts(self):
+        # delegate to object
+        for chart in self._charts:
+            self.archive.writestr(chart.path[1:], tostring(chart._write()))
+            self.manifest.append(chart)
 
 
-    def _write_chartsheets(self, archive):
-        from openpyxl.packaging.relationship import Relationship, RelationshipList
-        from openpyxl.worksheet.drawing import Drawing
+    def _write_drawing(self, drawing):
+        """
+        Write a drawing
+        """
+        self._drawings.append(drawing)
+        drawing._id = len(self._drawings)
+        for chart in drawing.charts:
+            self._charts.append(chart)
+            chart._id = len(self._charts)
+        for img in drawing.images:
+            self._images.append(img)
+            img._id = len(self._images)
+        rels_path = get_rels_path(drawing.path)[1:]
+        self.archive.writestr(drawing.path[1:], tostring(drawing._write()))
+        self.archive.writestr(rels_path, tostring(drawing._write_rels()))
+        self.manifest.append(drawing)
+
+
+    def _write_chartsheets(self):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
 
-            if sheet._charts:
-                drawing = SpreadsheetDrawing()
-                drawing.charts = sheet._charts
-                self.workbook._drawings.append(drawing)
-                drawing_id = len(self.workbook._drawings)
-                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, tostring(drawing._write()))
-                archive.writestr(
-                    "{0}/_rels/drawing{1}.xml.rels".format(
-                        PACKAGE_DRAWINGS, drawing_id),
-                    tostring(drawing._write_rels())
-                )
+            sheet._id = idx
+            xml = tostring(sheet.to_tree())
 
-                rel = Relationship(type="drawing", target="/" + drawingpath)
+            self.archive.writestr(sheet.path[1:], xml)
+            self.manifest.append(sheet)
+
+            if sheet._drawing:
+                self._write_drawing(sheet._drawing)
+
+                rel = Relationship(type="drawing", Target=sheet._drawing.path)
                 rels = RelationshipList()
                 rels.append(rel)
                 tree = rels.to_tree()
 
-                sheet.drawing.id = "rId{0}".format(len(rels))
-
-                archive.writestr(PACKAGE_CHARTSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % idx, tostring(tree)
-                                 )
-
-            xml = tostring(sheet.to_tree())
-            archive.writestr(PACKAGE_CHARTSHEETS + '/sheet%d.xml' % idx, xml)
+                rels_path = get_rels_path(sheet.path[1:])
+                self.archive.writestr(rels_path, tostring(tree))
 
 
-    def _write_worksheets(self, archive):
-        comments_id = 0
+    def _write_comment(self, ws):
 
-        for i, sheet in enumerate(self.workbook.worksheets, 1):
-            xml = sheet._write(self.workbook.shared_strings)
-            archive.writestr(PACKAGE_WORKSHEETS + '/sheet%d.xml' % i , xml)
+        cs = CommentSheet.from_comments(ws._comments)
+        self._comments.append(cs)
+        cs._id = len(self._comments)
+        self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
+        self.manifest.append(cs)
 
-            if sheet._charts or sheet._images:
-                drawing = SpreadsheetDrawing()
-                drawing.charts = sheet._charts
-                drawing.images = sheet._images
-                self.workbook._drawings.append(drawing)
-                drawing_id = len(self.workbook._drawings)
-                drawingpath = "{0}/drawing{1}.xml".format(PACKAGE_DRAWINGS, drawing_id)
-                archive.writestr(drawingpath, tostring(drawing._write()))
-                archive.writestr("{0}/_rels/drawing{1}.xml.rels".format(PACKAGE_DRAWINGS,
-                                                                        drawing_id), tostring(drawing._write_rels()))
-                for r in sheet._rels:
-                    if "drawing" in r.type:
-                        r.target = "/" + drawingpath
+        if ws.legacy_drawing is None:
+            ws.legacy_drawing = 'xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+            vml = None
+        else:
+            vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
 
-            if sheet._comment_count > 0:
-                comments_id += 1
-                cw = self.comment_writer(sheet)
-                archive.writestr(PACKAGE_XL + '/comments%d.xml' % comments_id,
-                    cw.write_comments())
-                if sheet.legacy_drawing is not None:
-                    vmlroot = fromstring(self.workbook.vba_archive.read(sheet.legacy_drawing))
-                    archive.writestr(sheet.legacy_drawing, cw.write_comments_vml(vmlroot))
-                    # Record this file so we don't write it again when we dump out vba_archive
-                    self.vba_modified.add(sheet.legacy_drawing)
-                else:
-                    vmlroot = Element("xml")
-                    archive.writestr(PACKAGE_XL + '/drawings/commentsDrawing%d.vml' % comments_id,
-                        cw.write_comments_vml(vmlroot))
+        vml = cs.write_shapes(vml)
 
-            if (sheet._rels
-                or sheet._comment_count > 0
-                or sheet.legacy_drawing is not None):
-                rels = write_rels(sheet, comments_id=comments_id)
-                archive.writestr(PACKAGE_WORKSHEETS +
-                                 '/_rels/sheet%d.xml.rels' % i, tostring(rels))
+        self.archive.writestr(ws.legacy_drawing, vml)
+        self.vba_modified.add(ws.legacy_drawing)
+
+        comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
+        ws._rels.append(comment_rel)
 
 
-    def _write_external_links(self, archive):
+    def _write_worksheets(self):
+
+        for idx, ws in enumerate(self.workbook.worksheets, 1):
+
+            ws._id = idx
+            xml = ws._write()
+            rels_path = get_rels_path(ws.path)[1:]
+
+            self.archive.writestr(ws.path[1:], xml)
+            self.manifest.append(ws)
+
+            if ws._drawing:
+                self._write_drawing(ws._drawing)
+
+                for r in ws._rels.Relationship:
+                    if "drawing" in r.Type:
+                        r.Target = ws._drawing.path
+
+            if ws._comments:
+                self._write_comment(ws)
+
+            if ws.legacy_drawing is not None:
+                shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
+                                         Target="/" + ws.legacy_drawing)
+                ws._rels.append(shape_rel)
+
+            for t in ws._tables:
+                self._tables.append(t)
+                t.id = len(self._tables)
+                t._write(self.archive)
+                self.manifest.append(t)
+                ws._rels[t._rel_id].Target = t.path
+
+            if ws._rels:
+                tree = ws._rels.to_tree()
+                self.archive.writestr(rels_path, tostring(tree))
+
+
+    def _write_external_links(self):
+        # delegate to object
         """Write links to external workbooks"""
         wb = self.workbook
-        for idx, book in enumerate(wb._external_links, 1):
-            el = write_external_link(book.links)
-            rel = write_external_book_rel(book)
-            archive.writestr(
-                "{0}/externalLinks/externalLink{1}.xml".format(PACKAGE_XL, idx),
-                 tostring(el)
-            )
-            archive.writestr(
-                "{0}/externalLinks/_rels/externalLink{1}.xml.rels".format(PACKAGE_XL, idx),
-                tostring(rel)
-            )
+        for idx, link in enumerate(wb._external_links, 1):
+            link._id = idx
+            rels_path = get_rels_path(link.path[1:])
+
+            xml = link.to_tree()
+            self.archive.writestr(link.path[1:], tostring(xml))
+            rels = RelationshipList()
+            rels.append(link.file_link)
+            self.archive.writestr(rels_path, tostring(rels.to_tree()))
+            self.manifest.append(link)
 
 
-    def save(self, filename, as_template=False):
+    def save(self, filename):
         """Write data into the archive."""
-        archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
-        self.write_data(archive, as_template=as_template)
-        archive.close()
+        self.write_data()
+        self.archive.close()
 
 
-def save_workbook(workbook, filename, as_template=False):
+def save_workbook(workbook, filename,):
     """Save the given workbook on the filesystem under the name filename.
 
     :param workbook: the workbook to save
@@ -235,20 +263,24 @@ def save_workbook(workbook, filename, as_template=False):
     :rtype: bool
 
     """
-    writer = ExcelWriter(workbook)
-    writer.save(filename, as_template=as_template)
+    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
+    writer = ExcelWriter(workbook, archive)
+    writer.save(filename)
     return True
 
 
-def save_virtual_workbook(workbook, as_template=False):
+def save_virtual_workbook(workbook,):
     """Return an in-memory workbook, suitable for a Django response."""
-    writer = ExcelWriter(workbook)
     temp_buffer = BytesIO()
+    archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED, allowZip64=True)
+
+    writer = ExcelWriter(workbook, archive)
+
     try:
-        archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED, allowZip64=True)
-        writer.write_data(archive, as_template=as_template)
+        writer.write_data()
     finally:
         archive.close()
+
     virtual_workbook = temp_buffer.getvalue()
     temp_buffer.close()
     return virtual_workbook

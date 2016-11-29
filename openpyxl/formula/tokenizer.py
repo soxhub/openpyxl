@@ -23,12 +23,12 @@ class Tokenizer(object):
 
     `formula`: The unicode string to tokenize
 
-    Tokenizer defines a method `.parse()` to parse the formula into tokens,
+    Tokenizer defines a method `._parse()` to parse the formula into tokens,
     which can then be accessed through the `.items` attribute.
 
     """
 
-    SN_RE = re.compile("^[1-9](\\.[0-9]+)?E$")  # Scientific notation
+    SN_RE = re.compile("^[1-9](\\.[0-9]+)?[Ee]$")  # Scientific notation
     WSPACE_RE = re.compile(" +")
     STRING_REGEXES = {
         # Inside a string, all characters are treated as literals, except for
@@ -39,7 +39,7 @@ class Tokenizer(object):
         "'": re.compile("'(?:[^']*'')*[^']*'(?!')"),
     }
     ERROR_CODES = ("#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?",
-                   "#NUM!", "#N/A")
+                   "#NUM!", "#N/A", "#GETTING_DATA")
     TOKEN_ENDERS = ',;}) +-*/^&=><%'  # Each of these characters, marks the
                                        # end of an operand token
 
@@ -50,9 +50,12 @@ class Tokenizer(object):
                                # parentheses
         self.offset = 0  # How many chars have we read
         self.token = []  # Used to build up token values char by char
+        self._parse()
 
-    def parse(self):
+    def _parse(self):
         "Populate self.items with the tokens from the formula."
+        if self.offset:
+            return  # Already parsed!
         if not self.formula:
             return
         elif self.formula[0] == '=':
@@ -61,14 +64,14 @@ class Tokenizer(object):
             self.items.append(Token(self.formula, Token.LITERAL))
             return
         consumers = (
-            ('"\'', self.parse_string),
-            ('[', self.parse_brackets),
-            ('#', self.parse_error),
-            (' ', self.parse_whitespace),
-            ('+-*/^&=><%', self.parse_operator),
-            ('{(', self.parse_opener),
-            (')}', self.parse_closer),
-            (';,', self.parse_separator),
+            ('"\'', self._parse_string),
+            ('[', self._parse_brackets),
+            ('#', self._parse_error),
+            (' ', self._parse_whitespace),
+            ('+-*/^&=><%', self._parse_operator),
+            ('{(', self._parse_opener),
+            (')}', self._parse_closer),
+            (';,', self._parse_separator),
         )
         dispatcher = {}  # maps chars to the specific parsing function
         for chars, consumer in consumers:
@@ -88,7 +91,7 @@ class Tokenizer(object):
                 self.offset += 1
         self.save_token()
 
-    def parse_string(self):
+    def _parse_string(self):
         """
         Parse a "-delimited string or '-delimited link.
 
@@ -118,7 +121,7 @@ class Tokenizer(object):
             self.token.append(match)
         return len(match)
 
-    def parse_brackets(self):
+    def _parse_brackets(self):
         """
         Consume all the text between square brackets [].
 
@@ -134,7 +137,7 @@ class Tokenizer(object):
         self.token.append(self.formula[self.offset: right])
         return right - self.offset
 
-    def parse_error(self):
+    def _parse_error(self):
         """
         Consume the text following a '#' as an error.
 
@@ -153,7 +156,7 @@ class Tokenizer(object):
             "Invalid error code at position %d in '%s'" %
             (self.offset, self.formula))
 
-    def parse_whitespace(self):
+    def _parse_whitespace(self):
         """
         Consume a string of consecutive spaces.
 
@@ -164,7 +167,7 @@ class Tokenizer(object):
         self.items.append(Token(' ', Token.WSPACE))
         return self.WSPACE_RE.match(self.formula[self.offset:]).end()
 
-    def parse_operator(self):
+    def _parse_operator(self):
         """
         Consume the characters constituting an operator.
 
@@ -201,7 +204,7 @@ class Tokenizer(object):
         self.items.append(token)
         return 1
 
-    def parse_opener(self):
+    def _parse_opener(self):
         """
         Consumes a ( or { character.
 
@@ -223,7 +226,7 @@ class Tokenizer(object):
         self.token_stack.append(token)
         return 1
 
-    def parse_closer(self):
+    def _parse_closer(self):
         """
         Consumes a } or ) character.
 
@@ -239,7 +242,7 @@ class Tokenizer(object):
         self.items.append(token)
         return 1
 
-    def parse_separator(self):
+    def _parse_separator(self):
         """
         Consumes a ; or , character.
 
@@ -353,6 +356,9 @@ class Token(object):
     LOGICAL = 'LOGICAL'
     ERROR = 'ERROR'
     RANGE = 'RANGE'
+
+    def __repr__(self):
+        return u"{0} {1} {2}:".format(self.type, self.subtype, self.value)
 
     @classmethod
     def make_operand(cls, value):

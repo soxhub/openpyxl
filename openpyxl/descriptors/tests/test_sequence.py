@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring, Element
@@ -206,7 +206,7 @@ def ComplexObject(NestedSequence):
 
         tagname = "style"
 
-        fonts = NestedSequence(expected_type=Font)
+        fonts = NestedSequence(expected_type=Font, count=True)
 
         def __init__(self, fonts=()):
             self.fonts = fonts
@@ -219,7 +219,7 @@ class TestNestedSequence:
 
     def test_ctor(self, ComplexObject):
         style = ComplexObject()
-        ft1 = Font()
+        ft1 = Font(family=2, sz=11, name="Arial")
         ft2 = Font(bold=True)
         style.fonts = [ft1, ft2]
 
@@ -227,17 +227,12 @@ class TestNestedSequence:
         <style>
           <fonts count="2">
             <font>
-              <name val="Calibri"></name>
+              <name val="Arial" />
               <family val="2"></family>
-              <color rgb="00000000"></color>
               <sz val="11"></sz>
             </font>
             <font>
-              <name val="Calibri"></name>
-              <family val="2"></family>
               <b val="1"></b>
-              <color rgb="00000000"></color>
-              <sz val="11"></sz>
             </font>
           </fonts>
         </style>

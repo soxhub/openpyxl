@@ -1,9 +1,9 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
-from openpyxl.utils.indexed_list import IndexedList
+from copy import copy
 
-from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
+from openpyxl.compat import deprecated
 
 
 class StyleProxy(object):
@@ -14,8 +14,6 @@ class StyleProxy(object):
     __slots__ = ('__target')
 
     def __init__(self, target):
-        if not hasattr(target, 'copy'):
-            raise TypeError("Proxied objects must have a copy method.")
         self.__target = target
 
 
@@ -34,9 +32,27 @@ class StyleProxy(object):
         super(StyleProxy, self).__setattr__(attr, value)
 
 
+    def __copy__(self):
+        """
+        Return a copy of the proxied object.
+        """
+        return copy(self.__target)
+
+
+    def __add__(self, other):
+        """
+        Add proxied object to another instance and return the combined object
+        """
+        return self.__target + other
+
+
+    @deprecated("Use copy(obj) or cell.obj = cell.obj + other")
     def copy(self, **kw):
         """Return a copy of the proxied object. Keyword args will be passed through"""
-        return self.__target.copy(**kw)
+        cp = copy(self.__target)
+        for k, v in kw.items():
+            setattr(cp, k, v)
+        return cp
 
 
     def __eq__(self, other):

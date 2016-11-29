@@ -1,11 +1,18 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import safe_string
-from openpyxl.descriptors import NoneSet, Typed, Bool, Alias
+from openpyxl.descriptors import (
+    NoneSet,
+    Typed,
+    Bool,
+    Alias,
+    Sequence,
+    Integer,
+)
+from openpyxl.descriptors.serialisable import Serialisable
 
 from .colors import ColorDescriptor
-from .hashable import HashableObject
 
 
 BORDER_NONE = None
@@ -24,7 +31,7 @@ BORDER_THICK = 'thick'
 BORDER_THIN = 'thin'
 
 
-class Side(HashableObject):
+class Side(Serialisable):
 
     """Border options for use in styles.
     Caution: if you do not specify a border_style, other attributes will
@@ -47,7 +54,7 @@ class Side(HashableObject):
         self.color = color
 
 
-class Border(HashableObject):
+class Border(Serialisable):
     """Border positioning for use in styles."""
 
     tagname = "border"
@@ -100,8 +107,8 @@ class Border(HashableObject):
         for attr in self.__attrs__:
             value = getattr(self, attr)
             if value and attr != "outline":
-                yield attr, value
+                yield attr, safe_string(value)
             elif attr == "outline" and not value:
-                yield attr, value
+                yield attr, safe_string(value)
 
 DEFAULT_BORDER = Border()

@@ -1,8 +1,6 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
-
-from tempfile import NamedTemporaryFile
 
 from .strings import (
     basestring,
@@ -13,23 +11,17 @@ from .strings import (
     safe_string
     )
 from .numbers import long, NUMERIC_TYPES
-from .itertools import (
-    range,
-    iteritems,
-    iterkeys,
-    itervalues,
-    zip,
-)
-try:
-    from functools import lru_cache
-except ImportError:
-    from .functools import lru_cache
 
 # Python 2.6
 try:
     from collections import OrderedDict
 except ImportError:
     from .odict import OrderedDict
+
+try:
+    range = xrange
+except NameError:
+    range = range
 
 import warnings
 from functools import wraps
@@ -60,7 +52,7 @@ class deprecated(object):
 
             warnings.warn_explicit(
                 '{0}.'.format(msg),
-                category=UserWarning,
+                category=DeprecationWarning,
                 filename=_code.co_filename,
                 lineno=_code.co_firstlineno + 1
             )
@@ -79,3 +71,10 @@ class deprecated(object):
         _code.co_filename = obj.__module__
         _code.co_firstlineno = 0
         return _code
+
+
+def removed_method(*args, **kw):
+    """
+    Disallow methods in inherited classes.
+    """
+    raise NotImplementedError

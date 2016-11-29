@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 import pytest
 
@@ -89,11 +89,6 @@ class TestGradientFill:
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
         assert fill.stop == [Color(theme=0), Color(theme=4)]
-
-
-    def test_hashable(self, GradientFill):
-        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[BLACK, WHITE])
-        assert hash(gf) == hash(('linear', 90, 1.0, 2.0, 3.0, 4.0, ( Color(BLACK), Color(WHITE) )))
 
 
 @pytest.fixture

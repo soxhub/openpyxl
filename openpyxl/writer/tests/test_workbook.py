@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 #stdlib
 from io import BytesIO
@@ -11,7 +11,7 @@ from openpyxl.tests.helper import compare_xml
 
 # package
 from openpyxl import Workbook, load_workbook
-from openpyxl.workbook.names.named_range import NamedRange
+from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.xml.functions import Element, tostring, fromstring
 from openpyxl.xml.constants import XLTX, XLSX, XLSM, XLTM
 from .. excel import (
@@ -47,11 +47,11 @@ def test_write_hidden_worksheet():
     <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
     <workbookPr/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="1"/>
     </bookViews>
     <sheets>
       <sheet name="Sheet" sheetId="1" state="hidden" r:id="rId1"/>
-      <sheet name="Sheet1" sheetId="2" r:id="rId2"/>
+      <sheet name="Sheet1" sheetId="2" state="visible" r:id="rId2"/>
     </sheets>
       <definedNames/>
       <calcPr calcId="124519" fullCalcOnLoad="1"/>
@@ -64,9 +64,10 @@ def test_write_hidden_worksheet():
 def test_write_hidden_single_worksheet():
     wb = Workbook()
     ws = wb.active
-    ws.sheet_state = ws.SHEETSTATE_HIDDEN
-    with pytest.raises(ValueError):
-        write_workbook(wb)
+    ws.sheet_state = "hidden"
+    from ..workbook import get_active_sheet
+    with pytest.raises(IndexError):
+        get_active_sheet(wb)
 
 
 def test_write_empty_workbook(tmpdir):
@@ -84,11 +85,19 @@ def test_write_virtual_workbook():
     assert new_wb
 
 
-def test_write_workbook_rels(datadir):
+@pytest.mark.parametrize("vba, filename",
+                         [
+                             (None, 'workbook.xml.rels',),
+                             (True, 'workbook_vba.xml.rels'),
+
+                         ]
+                         )
+def test_write_workbook_rels(datadir, vba, filename):
     datadir.chdir()
     wb = Workbook()
+    wb.vba_archive = vba
     content = write_workbook_rels(wb)
-    with open('workbook.xml.rels') as expected:
+    with open(filename) as expected:
         diff = compare_xml(content, expected.read())
         assert diff is None, diff
 
@@ -97,39 +106,25 @@ def test_write_workbook(datadir):
     datadir.chdir()
     wb = Workbook()
     content = write_workbook(wb)
+    assert len(wb.rels) == 1
     with open('workbook.xml') as expected:
         diff = compare_xml(content, expected.read())
         assert diff is None, diff
 
 
 def test_write_named_range():
-    from openpyxl.writer.workbook import _write_defined_names
     wb = Workbook()
     ws = wb.active
-    xlrange = NamedRange('test_range', [(ws, "A1:B5")])
-    wb._named_ranges.append(xlrange)
-    root = Element("root")
-    _write_defined_names(wb, root)
-    xml = tostring(root)
+    wb.create_named_range("test_range", ws, value="A1:B5")
+
+    xml = tostring(wb.defined_names.to_tree())
     expected = """
-    <root>
-     <s:definedName xmlns:s="http://schemas.openxmlformats.org/spreadsheetml/2006/main" name="test_range">'Sheet'!$A$1:$B$5</s:definedName>
-    </root>
+    <definedNames>
+     <definedName name="test_range">Sheet!A1:B5</definedName>
+    </definedNames>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
-
-
-@pytest.mark.parametrize('tmpl, code_name', [
-    ('workbook.xml', u'ThisWorkbook'),
-    ('workbook_russian_code_name.xml', u'\u042d\u0442\u0430\u041a\u043d\u0438\u0433\u0430')
-])
-def test_read_workbook_code_name(datadir, tmpl, code_name):
-    from openpyxl.reader.workbook import read_workbook_code_name
-    datadir.chdir()
-
-    with open(tmpl, "rb") as expected:
-        assert read_workbook_code_name(expected.read()) == code_name
 
 
 def test_write_workbook_code_name():
@@ -144,7 +139,7 @@ def test_write_workbook_code_name():
       <workbookView activeTab="0"/>
     </bookViews>
     <sheets>
-      <sheet name="Sheet" sheetId="1" r:id="rId1"/>
+      <sheet name="Sheet" sheetId="1" state="visible" r:id="rId1"/>
     </sheets>
     <definedNames/>
     <calcPr calcId="124519" fullCalcOnLoad="1"/>
@@ -165,6 +160,95 @@ def test_write_root_rels():
       <Relationship Id="rId2" Target="docProps/core.xml" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"/>
       <Relationship Id="rId3" Target="docProps/app.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"/>
     </Relationships>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+@pytest.fixture
+def Unicode_Workbook():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = u"D\xfcsseldorf"
+    return wb
+
+
+def test_print_area(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    ws.print_area = 'A1:D4'
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+      <definedName localSheetId="0" name="_xlnm.Print_Area">D&#xFC;sseldorf!$A$1:$D$4</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_print_titles(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    ws.print_title_rows = '1:5'
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+      <definedName localSheetId="0" name="_xlnm.Print_Titles">D&#xFC;sseldorf!1:5</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_print_autofilter(Unicode_Workbook):
+    wb = Unicode_Workbook
+    ws = wb.active
+    from openpyxl.worksheet.filters import AutoFilter
+    ws.auto_filter.ref = "A1:A10"
+    ws.auto_filter.add_filter_column(0, ["Kiwi", "Apple", "Mango"])
+
+    xml = write_workbook(wb)
+
+    expected = """
+    <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <workbookPr/>
+    <bookViews>
+      <workbookView activeTab="0"/>
+    </bookViews>
+    <sheets>
+      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+    </sheets>
+    <definedNames>
+    <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">D&#xFC;sseldorf!$A$1:$A$10</definedName>
+    </definedNames>
+    <calcPr calcId="124519" fullCalcOnLoad="1"/>
+    </workbook>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff

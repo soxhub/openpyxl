@@ -1,16 +1,20 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from itertools import groupby, chain
-import warnings
 
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import Bool, NoneSet, String
+from openpyxl.descriptors import (
+    Bool,
+    NoneSet,
+    String,
+    Sequence,
+    Alias,
+    Integer,
+)
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import OrderedDict, safe_string, deprecated, unicode
-from openpyxl.utils import coordinate_from_string
-from openpyxl.worksheet import rows_from_range
-from openpyxl.xml.functions import Element, SubElement
+from openpyxl.compat import OrderedDict, safe_string, unicode
+from openpyxl.utils import coordinate_from_string, rows_from_range
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -21,7 +25,7 @@ def collapse_cell_addresses(cells, input_ranges=()):
         object applied, attempt to collapse down to a single range, A1:B3.
 
         Currently only collapsing contiguous vertical ranges (i.e. above
-        example results in A1:A3 B1:B3).  More work to come.
+        example results in A1:A3 B1:B3).
     """
     keyfunc = lambda x: x[0]
 
@@ -40,12 +44,12 @@ def collapse_cell_addresses(cells, input_ranges=()):
                         groupby(enumerate(rows),
                         lambda x: x[0] - x[1])]
         for rows in grouped_rows:
-            if len(rows) == 0:
-                pass
-            elif len(rows) == 1:
-                ranges.append("%s%d" % (column, rows[0]))
-            else:
-                ranges.append("%s%d:%s%d" % (column, rows[0], column, rows[-1]))
+            if not rows:
+                continue
+            fmt = "{0}{1}:{2}{3}"
+            if len(rows) == 1:
+                fmt = "{0}{1}"
+            ranges.append(fmt.format(column, rows[0], column, rows[-1]))
 
     return " ".join(ranges)
 
@@ -68,16 +72,16 @@ class DataValidation(Serialisable):
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
+    hide_drop_down = Alias('showDropDown')
     showInputMessage = Bool()
     showErrorMessage = Bool()
     allowBlank = Bool()
-    allow_blank = Bool()
+    allow_blank = Alias('allowBlank')
 
     errorTitle = String(allow_none = True)
     error = String(allow_none = True)
     promptTitle = String(allow_none = True)
     prompt = String(allow_none = True)
-    sqref = String(allow_none = True)
     formula1 = NestedText(allow_none=True, expected_type=unicode)
     formula2 = NestedText(allow_none=True, expected_type=unicode)
 
@@ -89,6 +93,7 @@ class DataValidation(Serialisable):
                               "fullHangul", "halfHangul"))
     operator = NoneSet(values=("between", "notBetween", "equal", "notEqual",
                                "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"))
+    validation_type = Alias('type')
 
     def __init__(self,
                  type=None,
@@ -107,7 +112,6 @@ class DataValidation(Serialisable):
                  errorTitle=None,
                  imeMode=None,
                  operator=None,
-                 validation_type=None, # remove in future
                  ):
 
         self.showDropDown = showDropDown
@@ -115,15 +119,11 @@ class DataValidation(Serialisable):
         self.operator = operator
         self.formula1 = formula1
         self.formula2 = formula2
-        self.allowBlank = allow_blank
-        if allowBlank is not None:
-            self.allowBlank = allowBlank
+        if allow_blank is not None:
+            allowBlank = allow_blank
+        self.allowBlank = allowBlank
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
-        if validation_type is not None:
-            warnings.warn("Use 'DataValidation(type={0})'".format(validation_type))
-            if type is not None:
-                self.type = validation_type
         self.type = type
         self.cells = set()
         self.ranges = []
@@ -134,52 +134,57 @@ class DataValidation(Serialisable):
         self.error = error
         self.prompt = prompt
         self.errorTitle = errorTitle
+        self.__attrs__ = DataValidation.__attrs__ + ('sqref',)
 
-    def to_tree(self, tagname=None):
-        attrs = dict(self)
-        el = Element(self.tagname, attrs)
-        for n in self.__nested__:
-            value = getattr(self, n)
-            if value:
-                SubElement(el, n).text = value
-        return el
-
-
-    @deprecated("Use DataValidation.add(). Will be removed in 2.4")
-    def add_cell(self, cell):
-        """Adds a openpyxl.cell to this validator"""
-        self.add(cell)
 
     def add(self, cell):
         """Adds a openpyxl.cell to this validator"""
         self.cells.add(cell.coordinate)
 
-    @deprecated("Set DataValidation.ErrorTitle and DataValidation.error Will be removed in 2.4")
-    def set_error_message(self, error, error_title="Validation Error"):
-        """Creates a custom error message, displayed when a user changes a cell
-           to an invalid value"""
-        self.errorTitle = error_title
-        self.error = error
-
-    @deprecated("Set DataValidation.PromptTitle and DataValidation.prompt Will be removed in 2.4")
-    def set_prompt_message(self, prompt, prompt_title="Validation Prompt"):
-        """Creates a custom prompt message"""
-        self.promptTitle = prompt_title
-        self.prompt = prompt
 
     @property
     def sqref(self):
         return collapse_cell_addresses(self.cells, self.ranges)
 
+
     @sqref.setter
     def sqref(self, range_string):
         self.cells = expand_cell_ranges(range_string)
 
-    def __iter__(self):
-        for attr in ('type', 'allowBlank', 'operator', 'sqref',
-                     'showInputMessage', 'showErrorMessage', 'errorTitle', 'error',
-                     'errorStyle',
-                     'promptTitle', 'prompt'):
-            value = getattr(self, attr)
-            if value is not None:
-                yield attr, safe_string(value)
+
+class DataValidationList(Serialisable):
+
+    tagname = "dataValidations"
+
+    disablePrompts = Bool(allow_none=True)
+    xWindow = Integer(allow_none=True)
+    yWindow = Integer(allow_none=True)
+    dataValidation = Sequence(expected_type=DataValidation)
+
+    __elements__ = ('dataValidation',)
+    __attrs__ = ('disablePrompts', 'xWindow', 'yWindow', 'count')
+
+    def __init__(self,
+                 disablePrompts=None,
+                 xWindow=None,
+                 yWindow=None,
+                 count=None,
+                 dataValidation=(),
+                ):
+        self.disablePrompts = disablePrompts
+        self.xWindow = xWindow
+        self.yWindow = yWindow
+        self.dataValidation = dataValidation
+
+
+    @property
+    def count(self):
+        return len(self)
+
+
+    def __len__(self):
+        return len(self.dataValidation)
+
+
+    def append(self, dv):
+        self.dataValidation.append(dv)

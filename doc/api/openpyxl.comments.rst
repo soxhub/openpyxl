@@ -12,8 +12,7 @@ Submodules
 .. toctree::
 
    openpyxl.comments.author
+   openpyxl.comments.comment_sheet
    openpyxl.comments.comments
-   openpyxl.comments.properties
-   openpyxl.comments.reader
-   openpyxl.comments.writer
+   openpyxl.comments.shape_writer
 

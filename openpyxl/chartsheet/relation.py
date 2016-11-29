@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.descriptors import (
     Integer,
@@ -54,7 +54,7 @@ class DrawingHF(Serialisable):
     rfe = Integer(allow_none=True)
     rightFooterEvenPages = Alias('rfe')
     rff = Integer(allow_none=True)
-    rightFooterFirstPage = Alias('eff')
+    rightFooterFirstPage = Alias('rff')
 
     def __init__(self,
                  id=None,

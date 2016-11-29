@@ -26,9 +26,9 @@ Creating a virtual environment
 You will need to manually install virtualenv. This is best done by first installing pip. open a command line and download the script "get_pip.py" to your preferred Python folder::
 
     bitsadmin /transfer pip http://bootstrap.pypa.io/get-pip.py c:\python27\get-pip.py # change the path as necessary
-    
+
 Install pip (it needs to be at least pip 6.0)::
-  
+
     python get_pip.py
 
 Now you can install virtualenv::
@@ -36,7 +36,7 @@ Now you can install virtualenv::
     Scripts\pip install virtualenv
     Scripts\virtualenv c:\Users\YOURUSER\openpyxl
 
-    
+
 lxml
 ----
 
@@ -45,29 +45,34 @@ openpyxl needs `lxml` in order to run the tests. Unfortunately, automatic instal
 #. In the command line switch to your repository folder::
 
     cd c:\Users\YOURUSER\openpyxl
-  
+
 #. Activate the virtualenv::
 
     Scripts\activate
 
 #. Install a development version of openpyxl::
 
-    python setup.py develop
+    pip install -e .
 
 #. Download all the relevant `lxml Windows wheels <http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml>`_
+
+    Releases for legacy versions of Python:
+
+    * `lxml 3.5.0 for Python 2.6 <http://www.lfd.uci.edu/~gohlke/pythonlibs/bofhrmxk/lxml-3.5.0-cp26-none-win32.whl>`_
+    * `lxml 3.5.0 for Python 3.3 <http://www.lfd.uci.edu/~gohlke/pythonlibs/bofhrmxk/lxml-3.5.0-cp33-none-win32.whl>`_
 
 #. Move all these files to a folder called "downloads" in your openpyxl checkout
 
 #. Install the project requirements::
 
-    pip install --download downloads -r requirements.txt
+    pip download -r requirements.txt -d downloads
     pip install --no-index --find-links downloads -r requirements.txt
 
 To run tests for the virtualenv::
 
     py.test -xrf openpyxl # the flag will stop testing at the first error
 
-    
+
 tox
 ---
 

@@ -1,0 +1,1198 @@
+<?xml version="1.0" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <c:date1904 val="0"/>
+  <c:lang />
+  <c:roundedCorners val="0"/>
+  <mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <mc:Choice xmlns:c14="http://schemas.microsoft.com/office/drawing/2007/8/2/chart" Requires="c14">
+      <c14:style val="102"/>
+    </mc:Choice>
+    <mc:Fallback>
+      <c:style val="2"/>
+    </mc:Fallback>
+  </mc:AlternateContent>
+  <c:chart>
+    <c:title>
+      <c:tx>
+        <c:rich>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:r>
+              <a:rPr />
+              <a:t>Website Performance</a:t>
+            </a:r>
+          </a:p>
+        </c:rich>
+      </c:tx>
+      <c:layout/>
+      <c:overlay val="0"/>
+    </c:title>
+    <c:autoTitleDeleted val="0"/>
+    <c:plotArea>
+      <c:layout/>
+      <c:lineChart>
+        <c:grouping val="standard"/>
+        <c:varyColors val="0"/>
+        <c:ser>
+          <c:idx val="0"/>
+          <c:order val="0"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$2</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Bob</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$2:$L$2</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>9436.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>14389.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>12502.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>13691.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>9337.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>12471.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>13671.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>14200.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>12755.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>20353.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>12489.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="1"/>
+          <c:order val="1"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$3</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Alice</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$3:$L$3</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>4382.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>4628.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>5439.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>6077.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>6849.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>5164.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>5611.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>10239.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>5391.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>4200.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>6908.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="2"/>
+          <c:order val="2"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$4</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Eve</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$4:$L$4</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>9404.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>9277.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>8842.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>9193.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>12849.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>9408.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>6985.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>8376.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>6589.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>5326.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>9380.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="3"/>
+          <c:order val="3"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$5</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Charles</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$5:$L$5</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>8669.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>12775.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>18881.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>13008.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>11672.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>9092.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>9427.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>11328.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>8308.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>11606.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>8685.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="4"/>
+          <c:order val="4"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$6</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Sam</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln w="50050">
+              <a:prstDash val="sysDot"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$6:$L$6</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>3126.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>3451.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>2007.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>6498.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>4327.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>3840.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>3420.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>4437.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>3700.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>4167.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>4065.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="5"/>
+          <c:order val="5"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$7</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>June</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$7:$L$7</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>12337.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>13909.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>12156.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>11869.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>11810.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>14288.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>12644.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>12912.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>12048.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>13620.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>14090.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="6"/>
+          <c:order val="6"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$8</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Roger</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$8:$L$8</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>10492.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>7541.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>6503.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>57700.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>9235.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>10934.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>12223.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>9639.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42414.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>11192.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="7"/>
+          <c:order val="7"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$9</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Helen</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$9:$L$9</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>19456.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>16247.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>18118.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>17689.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>15583.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>16092.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>16477.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>18264.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>16444.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>16336.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>15730.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="8"/>
+          <c:order val="8"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$10</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Dave</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$10:$L$10</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>8456.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>9263.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>9469.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>7756.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>8322.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>10372.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>8305.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>10749.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>10780.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>16264.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>11250.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:ser>
+          <c:idx val="9"/>
+          <c:order val="9"/>
+          <c:tx>
+            <c:strRef>
+              <c:f>onLoad!$A$11</c:f>
+              <c:strCache>
+                <c:ptCount val="1"/>
+                <c:pt idx="0">
+                  <c:v>Charlotte</c:v>
+                </c:pt>
+              </c:strCache>
+            </c:strRef>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:prstDash val="solid"/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:cat>
+            <c:numRef>
+              <c:f>onLoad!$B$1:$M$1</c:f>
+              <c:numCache>
+                <c:formatCode>d\-mmm\-yy</c:formatCode>
+                <c:ptCount val="12"/>
+                <c:pt idx="0">
+                  <c:v>42186.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>42200.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>42217.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>42231.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>42248.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>42262.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>42292.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>42309.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>42323.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>42339.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>42353.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>onLoad!$B$11:$L$11</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="11"/>
+                <c:pt idx="0">
+                  <c:v>10411.0</c:v>
+                </c:pt>
+                <c:pt idx="1">
+                  <c:v>9473.0</c:v>
+                </c:pt>
+                <c:pt idx="2">
+                  <c:v>9610.0</c:v>
+                </c:pt>
+                <c:pt idx="3">
+                  <c:v>12045.0</c:v>
+                </c:pt>
+                <c:pt idx="4">
+                  <c:v>7571.0</c:v>
+                </c:pt>
+                <c:pt idx="5">
+                  <c:v>9756.0</c:v>
+                </c:pt>
+                <c:pt idx="6">
+                  <c:v>9004.0</c:v>
+                </c:pt>
+                <c:pt idx="7">
+                  <c:v>9871.0</c:v>
+                </c:pt>
+                <c:pt idx="8">
+                  <c:v>15782.0</c:v>
+                </c:pt>
+                <c:pt idx="9">
+                  <c:v>20767.0</c:v>
+                </c:pt>
+                <c:pt idx="10">
+                  <c:v>8120.0</c:v>
+                </c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:smooth val="0"/>
+        </c:ser>
+        <c:dLbls>
+          <c:showLegendKey val="0"/>
+          <c:showVal val="0"/>
+          <c:showCatName val="0"/>
+          <c:showSerName val="0"/>
+          <c:showPercent val="0"/>
+          <c:showBubbleSize val="0"/>
+        </c:dLbls>
+        <c:marker val="1"/>
+        <c:smooth val="0"/>
+        <c:axId val="2105247384"/>
+        <c:axId val="2142514808"/>
+      </c:lineChart>
+      <c:valAx>
+        <c:axId val="2142514808"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+          <c:max val="20000.0"/>
+          <c:min val="0.0"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="l"/>
+        <c:majorGridlines/>
+        <c:title>
+          <c:tx>
+            <c:rich>
+              <a:bodyPr/>
+              <a:lstStyle/>
+              <a:p>
+                <a:r>
+                  <a:rPr lang="de-DE"/>
+                  <a:t>Time in seconds</a:t>
+                </a:r>
+              </a:p>
+            </c:rich>
+          </c:tx>
+          <c:layout/>
+          <c:overlay val="0"/>
+        </c:title>
+        <c:numFmt formatCode="General" sourceLinked="1"/>
+        <c:majorTickMark val="out"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="2105247384"/>
+        <c:crosses val="autoZero"/>
+        <c:crossBetween val="between"/>
+        <c:dispUnits>
+          <c:builtInUnit val="thousands"/>
+        </c:dispUnits>
+      </c:valAx>
+      <c:dateAx>
+        <c:axId val="2105247384"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="b"/>
+        <c:numFmt formatCode="d\-mmm\-yy" sourceLinked="0"/>
+        <c:majorTickMark val="out"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="2142514808"/>
+        <c:crosses val="autoZero"/>
+        <c:auto val="0"/>
+        <c:lblOffset val="100"/>
+        <c:baseTimeUnit val="days"/>
+        <c:majorUnit val="1.0"/>
+        <c:majorTimeUnit val="months"/>
+      </c:dateAx>
+    </c:plotArea>
+    <c:legend>
+      <c:legendPos val="r"/>
+      <c:layout/>
+      <c:overlay val="0"/>
+    </c:legend>
+    <c:plotVisOnly val="0"/>
+    <c:dispBlanksAs val="gap"/>
+    <c:showDLblsOverMax val="0"/>
+  </c:chart>
+  <c:printSettings>
+    <c:headerFooter/>
+    <c:pageMargins b="1.0" l="0.75" r="0.75" t="1.0" header="0.5" footer="0.5"/>
+    <c:pageSetup/>
+  </c:printSettings>
+</c:chartSpace>

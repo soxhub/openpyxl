@@ -1,16 +1,13 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
-from array import array
 from warnings import warn
 
-from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element
-
-from openpyxl.utils.indexed_list import IndexedList
 from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
 from .proxy import StyleProxy
-from . import Style
+from .cell_style import StyleArray
+from .named_styles import NamedStyle
+from .builtins import styles
 
 
 class StyleDescriptor(object):
@@ -60,81 +57,38 @@ class NumberFormatDescriptor(object):
         return coll[idx - 164]
 
 
-class ArrayDescriptor(object):
+class NamedStyleDescriptor(object):
 
-    def __init__(self, key):
-        self.key = key
+    key = "xfId"
+    collection = "_named_styles"
 
-    def __get__(self, instance, cls):
-        return instance[self.key]
 
     def __set__(self, instance, value):
-        instance[self.key] = value
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
+        coll = getattr(instance.parent.parent, self.collection)
+        if isinstance(value, NamedStyle):
+            style = value
+            if style not in coll:
+                instance.parent.parent.add_named_style(style)
+        elif value not in coll.names:
+            if value in styles: # is it builtin?
+                style = styles[value]
+                if style not in coll:
+                    instance.parent.parent.add_named_style(style)
+            else:
+                raise ValueError("{0} is not a known style".format(value))
+        else:
+            style = coll[value]
+        instance._style = style.as_tuple()
 
 
-class StyleArray(array):
-    """
-    Simplified named tuple with an array
-    """
-
-    __slots__ = ()
-    tagname = 'xf'
-
-    fontId = ArrayDescriptor(0)
-    fillId = ArrayDescriptor(1)
-    borderId = ArrayDescriptor(2)
-    numFmtId = ArrayDescriptor(3)
-    protectionId = ArrayDescriptor(4)
-    alignmentId = ArrayDescriptor(5)
-    pivotButton = ArrayDescriptor(6)
-    quotePrefix = ArrayDescriptor(7)
-    xfId = ArrayDescriptor(8)
-
-    __attrs__ = ("fontId", "fillId", "borderId", "numFmtId", "protectionId",
-                 "alignmentId", "pivotButton", "quotePrefix", "xfId")
-
-    def __new__(cls, args=[0]*9):
-        return array.__new__(cls, 'i', args)
-
-
-    def __hash__(self):
-        return hash(tuple(self))
-
-
-    @classmethod
-    def from_tree(cls, node):
-        self = cls()
-        for k, v in node.attrib.items():
-            if k in cls.__attrs__:
-                setattr(self, k, int(v))
-        return self
-
-
-    @property
-    def applyAlignment(self):
-        return self.alignmentId != 0
-
-
-    @property
-    def applyProtection(self):
-        return self.protectionId != 0
-
-
-    def to_tree(self):
-        """
-        Alignment and protection objects are implemented as child elements.
-        This is a completely different API to other format objects. :-/
-        """
-        attrs = {}
-        for key in self.__attrs__ + ('applyProtection', 'applyAlignment'):
-            value = getattr(self, key)
-            if key in ('alignmentId', 'protectionId'):
-                continue
-            elif key in ('quotePrefix', 'pivotButton', 'applyProtection', 'applyAlignment') and not value:
-                continue
-            attrs[key] = value
-        attrs = dict((k, safe_string(v)) for k,v in attrs.items())
-        return Element(self.tagname, attrs)
+    def __get__(self, instance, cls):
+        if not getattr(instance, "_style"):
+            instance._style = StyleArray()
+        idx = getattr(instance._style, self.key)
+        coll = getattr(instance.parent.parent, self.collection)
+        return coll.names[idx]
 
 
 class StyleableObject(object):
@@ -148,6 +102,7 @@ class StyleableObject(object):
     number_format = NumberFormatDescriptor()
     protection = StyleDescriptor('_protections', "protectionId")
     alignment = StyleDescriptor('_alignments', "alignmentId")
+    style = NamedStyleDescriptor()
 
     __slots__ = ('parent', '_style')
 
@@ -170,29 +125,6 @@ class StyleableObject(object):
             return False
         return any(self._style)
 
-    #legacy
-    @property
-    def style(self):
-        warn("Use formatting objects such as font directly")
-        return Style(
-            font=self.font.copy(),
-            fill=self.fill.copy(),
-            border=self.border.copy(),
-            alignment=self.alignment.copy(),
-            number_format=self.number_format,
-            protection=self.protection.copy()
-        )
-
-    #legacy
-    @style.setter
-    def style(self, value):
-        warn("Use formatting objects such as font directly")
-        self.font = value.font.copy()
-        self.fill = value.fill.copy()
-        self.border = value.border.copy()
-        self.protection = value.protection.copy()
-        self.alignment = value.alignment.copy()
-        self.number_format = value.number_format
 
     @property
     def pivotButton(self):

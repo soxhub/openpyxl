@@ -1,6 +1,7 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
+from math import isnan
 import sys
 
 VER = sys.version_info
@@ -26,7 +27,10 @@ else:
 def safe_string(value):
     """Safely and consistently format numeric values"""
     if isinstance(value, NUMERIC_TYPES):
-        value = "%.16g" % value
+        if isnan(value):
+            value = ""
+        else:
+            value = "%.16g" % value
     elif value is None:
         value = "none"
     elif not isinstance(value, basestring):

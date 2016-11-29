@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2016 openpyxl
 
 from openpyxl.compat import unicode
 
@@ -118,7 +118,7 @@ class CharacterProperties(Serialisable):
     kumimoji = Bool(allow_none=True)
     lang = String(allow_none=True)
     altLang = String(allow_none=True)
-    sz = Integer(allow_none=True)
+    sz = MinMax(allow_none=True, min=100, max=400000) # 100ths of a point
     b = Bool(allow_none=True)
     i = Bool(allow_none=True)
     u = NoneSet(values=(['words', 'sng', 'dbl', 'heavy', 'dotted',
