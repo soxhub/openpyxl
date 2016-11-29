@@ -59,6 +59,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * James Smagala
 * Wolfgane Scherer
 * Joseph Tate
+* turkus
 * Dieter Vandenbussche
 * Paul Van Der Linden
 * Gerald Van Huffelen
