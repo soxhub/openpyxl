@@ -56,10 +56,10 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Rick Rankin
 * ramn_se
 * Philip Roche
+* Wojciech Rola
 * James Smagala
 * Wolfgane Scherer
 * Joseph Tate
-* turkus
 * Dieter Vandenbussche
 * Paul Van Der Linden
 * Gerald Van Huffelen
