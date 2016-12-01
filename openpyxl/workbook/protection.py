@@ -88,7 +88,7 @@ class FileSharing(Serialisable):
     tagname = "fileSharing"
 
     readOnlyRecommended = Bool(allow_none=True)
-    userName = String()
+    userName = String(allow_none=True)
     reservationPassword = HexBinary(allow_none=True)
     algorithmName = String(allow_none=True)
     hashValue = HexBinary(allow_none=True)
