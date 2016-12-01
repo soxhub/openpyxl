@@ -41,10 +41,10 @@ def FileSharing():
 class TestFileSharing:
 
     def test_ctor(self, FileSharing):
-        share = FileSharing(userName="bob")
+        share = FileSharing(readOnlyRecommended=True)
         xml = tostring(share.to_tree())
         expected = """
-        <fileSharing userName="bob" />
+        <fileSharing readOnlyRecommended="1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
