@@ -137,10 +137,21 @@ class TestDataValidationList:
 
 
 COLLAPSE_TEST_DATA = [
-    (["A1"], "A1"),
-    (["A1", "B1"], "A1 B1"),
-    (["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4"], "A1:A4 B1:B4"),
-    (["A2", "A4", "A3", "A1", "A5"], "A1:A5"),
+    (
+        ["A1"], "A1"
+        ),
+    (
+        ["A1", "B1"], "A1 B1"
+        ),
+    (
+        ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4"], "A1:A4 B1:B4"
+        ),
+    (
+        ["A2", "A4", "A3", "A1", "A5"], "A1:A5"
+        ),
+    (
+        ['AA1','AA2', 'B1', 'B2', 'B3', 'AA4', 'AA3'], ("AA1:AA4 B1:B3")
+    ),
 ]
 @pytest.mark.parametrize("cells, expected",
                          COLLAPSE_TEST_DATA)
