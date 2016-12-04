@@ -140,6 +140,8 @@ class WorkbookPackage(Serialisable):
         self.conformance = conformance
         self.fileVersion = fileVersion
         self.fileSharing = fileSharing
+        if workbookPr is None:
+            workbookPr = WorkbookProperties()
         self.workbookPr = workbookPr
         self.workbookProtection = workbookProtection
         self.bookViews = bookViews
