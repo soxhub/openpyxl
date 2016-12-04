@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
-from itertools import groupby, chain
+from collections import defaultdict
+from itertools import chain
 from operator import itemgetter
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -15,7 +16,11 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.compat import OrderedDict, safe_string, unicode
-from openpyxl.utils import coordinate_from_string, rows_from_range
+from openpyxl.utils import (
+    rows_from_range,
+    coordinate_to_tuple,
+    get_column_letter,
+)
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -29,28 +34,24 @@ def collapse_cell_addresses(cells, input_ranges=()):
         example results in A1:A3 B1:B3).
     """
 
-    # Get the raw coordinates for each cell given
-    raw_coords = [coordinate_from_string(cell) for cell in cells]
-
-    # Group up as {column: [list of rows]}
-    grouped_coords = OrderedDict((k, [c[1] for c in g]) for k, g in
-                          groupby(sorted(raw_coords, key=itemgetter(0)),
-                                  itemgetter(0)))
     ranges = list(input_ranges)
 
-    # For each column, find contiguous ranges of rows
-    for column in grouped_coords:
-        rows = sorted(grouped_coords[column])
-        grouped_rows = [[r[1] for r in list(g)] for k, g in
-                        groupby(enumerate(rows),
-                        lambda x: x[0] - x[1])]
-        for rows in grouped_rows:
-            if not rows:
-                continue
-            fmt = "{0}{1}:{2}{3}"
-            if len(rows) == 1:
-                fmt = "{0}{1}"
-            ranges.append(fmt.format(column, rows[0], column, rows[-1]))
+    # convert cell into row, col tuple
+    raw_coords = (coordinate_to_tuple(cell) for cell in cells)
+
+    # group by column in order
+    grouped_coords = defaultdict(list)
+    for row, col in sorted(raw_coords, key=itemgetter(1)):
+        grouped_coords[col].append(row)
+
+    # create range string from first and last row in column
+    for col, cells in grouped_coords.items():
+        col = get_column_letter(col)
+        fmt = "{0}{1}:{2}{3}"
+        if len(cells) == 1:
+            fmt = "{0}{1}"
+        r = fmt.format(col, min(cells), col, max(cells))
+        ranges.append(r)
 
     return " ".join(ranges)
 
