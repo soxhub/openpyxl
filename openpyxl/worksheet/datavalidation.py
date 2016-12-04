@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
 from itertools import groupby, chain
+from operator import itemgetter
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -27,14 +28,14 @@ def collapse_cell_addresses(cells, input_ranges=()):
         Currently only collapsing contiguous vertical ranges (i.e. above
         example results in A1:A3 B1:B3).
     """
-    keyfunc = lambda x: x[0]
 
     # Get the raw coordinates for each cell given
     raw_coords = [coordinate_from_string(cell) for cell in cells]
 
     # Group up as {column: [list of rows]}
     grouped_coords = OrderedDict((k, [c[1] for c in g]) for k, g in
-                          groupby(sorted(raw_coords, key=keyfunc), keyfunc))
+                          groupby(sorted(raw_coords, key=itemgetter(0)),
+                                  itemgetter(0)))
     ranges = list(input_ranges)
 
     # For each column, find contiguous ranges of rows
