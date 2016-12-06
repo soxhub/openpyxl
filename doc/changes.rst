@@ -24,6 +24,7 @@ Bug fixes
 
 * `#727 <https://bitbucket.org/openpyxl/openpyxl/issues/727>`_ DeprecationWarning is incorrect
 * `#734 <https://bitbucket.org/openpyxl/openpyxl/issues/734>`_ Exception raised if userName is missing
+* `#740 <https://bitbucket.org/openpyxl/openpyxl/issues/740>`_ Hashes should be stored as Base64
 
 
 Minor Changes
