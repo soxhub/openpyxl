@@ -17,6 +17,7 @@ from openpyxl.descriptors.excel import (
     HexBinary,
     Guid,
     Relation,
+    Base64Binary,
 )
 
 
@@ -37,12 +38,12 @@ class WorkbookProtection(Serialisable):
     lockRevision = Bool(allow_none=True)
     lock_revision = Alias("lockRevision")
     revisionsAlgorithmName = String(allow_none=True)
-    revisionsHashValue = HexBinary(allow_none=True)
-    revisionsSaltValue = HexBinary(allow_none=True)
+    revisionsHashValue = Base64Binary(allow_none=True)
+    revisionsSaltValue = Base64Binary(allow_none=True)
     revisionsSpinCount = Integer(allow_none=True)
     workbookAlgorithmName = String(allow_none=True)
-    workbookHashValue = HexBinary(allow_none=True)
-    workbookSaltValue = HexBinary(allow_none=True)
+    workbookHashValue = Base64Binary(allow_none=True)
+    workbookSaltValue = Base64Binary(allow_none=True)
     workbookSpinCount = Integer(allow_none=True)
 
     def __init__(self,

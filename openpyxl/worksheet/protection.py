@@ -8,6 +8,10 @@ from openpyxl.descriptors import (
     Integer,
 )
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors.excel import (
+    HexBinary,
+    Base64Binary,
+)
 
 
 def hash_password(plaintext_password=''):
@@ -77,10 +81,10 @@ class SheetProtection(Serialisable, _Protected):
     sort = Bool()
     autoFilter = Bool()
     pivotTables = Bool()
-    saltValue = String(allow_none=True)
+    saltValue = Base64Binary(allow_none=True)
     spinCount = Integer(allow_none=True)
     algorithmName = String(allow_none=True)
-    hashValue = String(allow_none=True)
+    hashValue = Base64Binary(allow_none=True)
 
     _password = None
 
