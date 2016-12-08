@@ -444,8 +444,8 @@ class TestWorksheet:
 
     @pytest.mark.parametrize("value, result, rows_cols",
                              [
-                                 (3, "Sheet!1:3", None),
-                                 (4, "Sheet!A:D", "cols")
+                                 (3, "1:3", None),
+                                 (4, "A:D", "cols")
                              ])
     def test_print_title_old(self, value, result, rows_cols):
         wb = Workbook()
@@ -456,9 +456,9 @@ class TestWorksheet:
 
     @pytest.mark.parametrize("rows, cols, titles",
                              [
-                                ("1:4", None, "Sheet!1:4"),
-                                (None, "A:F", "Sheet!A:F"),
-                                ("1:2", "C:D", "Sheet!1:2,Sheet!C:D"),
+                                ("1:4", None, "1:4"),
+                                (None, "A:F", "A:F"),
+                                ("1:2", "C:D", "1:2,C:D"),
                              ]
                              )
     def test_print_titles_new(self, rows, cols, titles):

@@ -126,7 +126,8 @@ def write_workbook(workbook):
         # print titles
         if sheet.print_titles:
             name = DefinedName(name="Print_Titles", localSheetId=idx)
-            name.value = quote_sheetname(sheet.print_titles)
+            name.value = ",".join([u"{0}!{1}".format(quote_sheetname(sheet.title), r)
+                                  for r in sheet.print_titles.split(",")])
             defined_names.append(name)
 
         # print areas
