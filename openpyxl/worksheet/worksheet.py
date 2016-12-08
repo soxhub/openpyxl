@@ -871,20 +871,6 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    def print_titles(self):
-        """
-        Return the print titles for the worksheet as rows and columns,
-        if set.
-        """
-        if self.print_title_rows and self.print_title_cols:
-            return ",".join([self.print_title_rows, self.print_title_cols])
-        elif self.print_title_rows:
-            return self.print_title_rows
-        elif self.print_title_cols:
-            return self.print_title_cols
-
-
-    @property
     def print_title_rows(self):
         if self._print_rows:
             return u"{0}!{1}".format(self.title, self._print_rows)
