@@ -9,7 +9,7 @@ Bug fixes
 * `#734 <https://bitbucket.org/openpyxl/openpyxl/issues/734>`_ Exception raised if userName is missing
 * `#740 <https://bitbucket.org/openpyxl/openpyxl/issues/740>`_ Hashes should be stored as Base64
 * `#743 <https://bitbucket.org/openpyxl/openpyxl/issues/743>`_ Print titles broken on sheetnames with spaces
-
+* `#748 <https://bitbucket.org/openpyxl/openpyxl/issues/748>`_ Workbook breaks when active sheet is removed
 
 Minor Changes
 -------------
