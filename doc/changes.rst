@@ -27,6 +27,8 @@ Bug fixes
 * `#740 <https://bitbucket.org/openpyxl/openpyxl/issues/740>`_ Hashes should be stored as Base64
 * `#743 <https://bitbucket.org/openpyxl/openpyxl/issues/743>`_ Print titles broken on sheetnames with spaces
 * `#748 <https://bitbucket.org/openpyxl/openpyxl/issues/748>`_ Workbook breaks when active sheet is removed
+* `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
+
 
 Minor Changes
 -------------
