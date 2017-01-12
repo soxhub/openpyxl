@@ -267,7 +267,7 @@ class _NamedCellStyleList(Serialisable):
         def sort_fn(v):
             return v.xfId
 
-        styles = NamedStyleList()
+        styles = []
         names = set()
 
         for ns in sorted(self.cellStyle, key=sort_fn):
@@ -280,6 +280,7 @@ class _NamedCellStyleList(Serialisable):
                 builtinId = ns.builtinId
             )
             names.add(ns.name)
-            styles.append(style) # assign xfId
+            style._set_index(len(styles)) # assign xfId
+            styles.append(style)
 
-        return styles
+        return NamedStyleList(styles)
