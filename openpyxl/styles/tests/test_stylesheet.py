@@ -194,6 +194,7 @@ class TestStylesheet:
         stylesheet = Stylesheet.from_tree(node)
 
         followed = stylesheet.named_styles['Followed Hyperlink']
+        assert followed.xfId == 2
         assert followed.name == "Followed Hyperlink"
         assert followed.font == stylesheet.fonts[2]
         assert followed.fill == DEFAULT_EMPTY_FILL
