@@ -1,5 +1,5 @@
 import pytest
-import xml
+from xml.etree.ElementTree import ParseError
 
 def test_safe_iterator_none():
     from .. functions import safe_iterator
@@ -39,5 +39,5 @@ def test_dont_resolve():
             <!ELEMENT foo ANY >
             <!ENTITY xxe SYSTEM "file:///dev/random" >]>
             <foo>&xxe;</foo>"""
-    with pytest.raises(xml.etree.ElementTree.ParseError):
+    with pytest.raises(ParseError):
         node = fromstring(s)
