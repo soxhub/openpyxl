@@ -21,11 +21,14 @@ if LXML is True:
     fromstring,
     tostring,
     register_namespace,
-    iterparse,
     QName,
-    xmlfile
+    xmlfile,
+    XMLParser,
     )
     from xml.etree.cElementTree import iterparse
+    # do not resolve entities
+    safe_parser = XMLParser(resolve_entities=False)
+    fromstring = partial(fromstring, parser=safe_parser)
 else:
     try:
         from xml.etree.cElementTree import (
