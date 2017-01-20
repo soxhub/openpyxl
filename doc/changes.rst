@@ -30,6 +30,7 @@ Bug fixes
 * `#748 <https://bitbucket.org/openpyxl/openpyxl/issues/748>`_ Workbook breaks when active sheet is removed
 * `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
 * `#756 <https://bitbucket.org/openpyxl/openpyxl/issues/756>`_ Potential XXE vulerability
+* `#758 <https://bitbucket.org/openpyxl/openpyxl/issues/758>`_ Cannot create files with page breaks and charts
 
 
 Minor Changes
