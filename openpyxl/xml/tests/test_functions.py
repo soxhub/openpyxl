@@ -1,6 +1,6 @@
 import pytest
 try:
-    from xml.etree.ElementTree import ParseError
+    from xml.etree.cElementTree import ParseError
 except ImportError:
     # py26
     ParseError = SyntaxError
