@@ -1,5 +1,5 @@
 import pytest
-from xml.etree.ElementTree import ParseError
+from xml.etree.cElementTree import ParseError
 
 def test_safe_iterator_none():
     from .. functions import safe_iterator
