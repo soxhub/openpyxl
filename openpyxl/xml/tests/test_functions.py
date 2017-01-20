@@ -1,5 +1,9 @@
 import pytest
-from xml.etree.ElementTree import ParseError
+try:
+    from xml.etree.ElementTree import ParseError
+except ImportError:
+    # py26
+    ParseError = SyntaxError
 
 def test_safe_iterator_none():
     from .. functions import safe_iterator
