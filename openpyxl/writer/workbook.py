@@ -142,7 +142,7 @@ def write_workbook(workbook):
 
     root.definedNames = defined_names
 
-    root.calcPr = CalcProperties(calcId=124519, fullCalcOnLoad=True)
+    root.calcPr = wb.calculation
 
     return tostring(root.to_tree())
 

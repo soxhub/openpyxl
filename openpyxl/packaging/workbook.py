@@ -46,6 +46,7 @@ class WorkbookParser:
         self.wb.code_name = package.properties.codeName
         self.wb.active = package.active
         self.sheets = package.sheets
+        self.wb.calculation = package.calcPr
 
         #external links contain cached worksheets and can be very big
         if not self.wb.keep_links:

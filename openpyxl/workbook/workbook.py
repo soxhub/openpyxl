@@ -24,6 +24,8 @@ from .defined_name import DefinedName, DefinedNameList
 from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.relationship import RelationshipList
 from .protection import DocumentSecurity
+from .properties import CalcProperties
+
 
 from openpyxl.xml.constants import (
     XLSM,
@@ -68,6 +70,7 @@ class Workbook(object):
             self._sheets.append(Worksheet(self))
 
         self.rels = RelationshipList()
+        self.calculation = CalcProperties()
 
 
     def _setup_styles(self):
