@@ -4,5 +4,4 @@ pipelines:
   default:
     - step:
         script:
-          - /tools/clean-launch.sh tox --skip-missing-interpreters
-          - /tools/clean-launch.sh /tools/build-coverage.sh
+          - /tools/clean-launch.sh tox --skip-missing-interpreters -- -qrf
