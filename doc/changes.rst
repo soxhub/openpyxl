@@ -31,6 +31,7 @@ Bug fixes
 * `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
 * `#756 <https://bitbucket.org/openpyxl/openpyxl/issues/756>`_ Potential XXE vulerability
 * `#758 <https://bitbucket.org/openpyxl/openpyxl/issues/758>`_ Cannot create files with page breaks and charts
+* `#759 <https://bitbucket.org/openpyxl/openpyxl/issues/759>`_ Problems with sheetnames that contain commas
 
 
 Minor Changes
