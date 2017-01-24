@@ -118,6 +118,7 @@ def test_invalid_range():
                          [
                              u'In D\xfcsseldorf',
                              u'My-Sheet',
+                             u'E,F',
                          ]
                          )
 def test_quote_sheetname(title):

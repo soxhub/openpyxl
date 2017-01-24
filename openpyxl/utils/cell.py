@@ -22,7 +22,7 @@ RANGE_EXPR = """
 ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
 SHEET_TITLE = """
 (('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!"""
-SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})$""".format(
+SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1}),?""".format(
     SHEET_TITLE, RANGE_EXPR), re.VERBOSE)
 
 
@@ -199,6 +199,7 @@ def quote_sheetname(sheetname):
     Add quotes around sheetnames if they contain spaces.
     """
     if (" " in sheetname
-        or "-" in sheetname):
+        or "-" in sheetname
+        or "," in sheetname):
         sheetname = u"'{0}'".format(sheetname)
     return sheetname
