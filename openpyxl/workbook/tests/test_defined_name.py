@@ -103,7 +103,8 @@ def test_unpack_print_titles(DefinedName, value, expected):
                              ("'Blatt1'!$A$1:$F$14,'Blatt1'!$H$10:$I$17,Blatt1!$I$16:$K$25",
                               ["$A$1:$F$14","$H$10:$I$17","$I$16:$K$25"]),
                              ("MySheet!#REF!", []),
-                             ("'E,F'!$A$1:$B$3", ["$A$1:$B$3"]),
+                             ("'C,D'!$A$1:$B$3", ["$A$1:$B$3"]),
+                             ("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14", ["$A$1:$D$5", "$B$9:$F$14"]),
                          ]
                          )
 def test_unpack_print_area(DefinedName, value, expected):
