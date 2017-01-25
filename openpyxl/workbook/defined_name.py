@@ -55,10 +55,8 @@ def _unpack_print_area(defn):
     """
     Extract print area
     """
-    ranges = defn.value.split(",") # can be multiple
     new = []
-    for r in ranges:
-        m = SHEETRANGE_RE.match(r)
+    for m in SHEETRANGE_RE.finditer(defn.value): # can be multiple
         coord = m.group("cells")
         if coord:
             new.append(coord)
