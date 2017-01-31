@@ -147,6 +147,9 @@ def write_worksheet(worksheet):
             if bool(ws.HeaderFooter):
                 xf.write(ws.HeaderFooter.to_tree())
 
+            if ws.page_breaks:
+                xf.write(ws.page_breaks.to_tree())
+
             drawing = write_drawing(ws)
             if drawing is not None:
                 xf.write(drawing)
@@ -157,9 +160,6 @@ def write_worksheet(worksheet):
                 legacyDrawing = Related(id="anysvml")
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
-
-            if ws.page_breaks:
-                xf.write(ws.page_breaks.to_tree())
 
             tables = TablePartList()
 

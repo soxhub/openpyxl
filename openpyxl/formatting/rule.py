@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 # copyright openpyxl 2010-2015
 
-from openpyxl.compat import basestring
+from openpyxl.compat import basestring, unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -160,7 +160,7 @@ class Rule(Serialisable):
     rank = Integer(allow_none=True)
     stdDev = Integer(allow_none=True)
     equalAverage = Bool(allow_none=True)
-    formula = Sequence(expected_type=basestring)
+    formula = Sequence(expected_type=unicode)
     colorScale = Typed(expected_type=ColorScale, allow_none=True)
     dataBar = Typed(expected_type=DataBar, allow_none=True)
     iconSet = Typed(expected_type=IconSet, allow_none=True)

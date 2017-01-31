@@ -54,19 +54,22 @@ def write_root_rels(workbook):
 def get_active_sheet(wb):
     """
     Return the index of the active sheet.
-    If the sheet set to active is hidden return the next visible sheet
+    If the sheet set to active is hidden return the next visible sheet or None
     """
+    visible_sheets = [idx for idx, sheet in enumerate(wb._sheets) if sheet.sheet_state == "visible"]
+    if not visible_sheets:
+        raise IndexError("At least one sheet must be visible")
+
     idx = wb._active_sheet_index
     sheet = wb.active
-    if sheet.sheet_state == "visible":
+    if sheet and sheet.sheet_state == "visible":
         return idx
 
-    for idx, sheet in enumerate(wb._sheets[idx:], idx):
-        if sheet.sheet_state == "visible":
-            wb.active = idx
-            return idx
+    for idx in visible_sheets[idx:]:
+        wb.active = idx
+        return idx
 
-    raise IndexError("At least one sheet must be visible")
+    return None
 
 
 def write_workbook(workbook):
@@ -126,7 +129,8 @@ def write_workbook(workbook):
         # print titles
         if sheet.print_titles:
             name = DefinedName(name="Print_Titles", localSheetId=idx)
-            name.value = quote_sheetname(sheet.print_titles)
+            name.value = ",".join([u"{0}!{1}".format(quote_sheetname(sheet.title), r)
+                                  for r in sheet.print_titles.split(",")])
             defined_names.append(name)
 
         # print areas

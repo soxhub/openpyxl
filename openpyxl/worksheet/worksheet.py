@@ -507,10 +507,16 @@ class Worksheet(_WorkbookChild):
             max_col += column_offset
         if max_row is not None:
             max_row += row_offset
-        return self.get_squared_range(min_col + column_offset,
-                                      min_row + row_offset,
-                                      max_col,
-                                      max_row)
+        return self._cells_by_row(min_col + column_offset,
+                                  min_row + row_offset,
+                                  max_col,
+                                  max_row)
+
+
+    def _cells_by_row(self, min_col, min_row, max_col, max_row):
+        for row in range(min_row, max_row + 1):
+            yield tuple(self.cell(row=row, column=column)
+                    for column in range(min_col, max_col + 1))
 
 
     @property
@@ -602,9 +608,7 @@ class Worksheet(_WorkbookChild):
         :rtype: generator
         """
 
-        for row in range(min_row, max_row + 1):
-            yield tuple(self.cell(row=row, column=column)
-                        for column in range(min_col, max_col + 1))
+        return self._cells_by_row(min_col, min_row, max_col, max_row)
 
 
     @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
@@ -867,23 +871,9 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    def print_titles(self):
-        """
-        Return the print titles for the worksheet as rows and columns,
-        if set.
-        """
-        if self.print_title_rows and self.print_title_cols:
-            return ",".join([self.print_title_rows, self.print_title_cols])
-        elif self.print_title_rows:
-            return self.print_title_rows
-        elif self.print_title_cols:
-            return self.print_title_cols
-
-
-    @property
     def print_title_rows(self):
         if self._print_rows:
-            return u"{0}!{1}".format(self.title, self._print_rows)
+            return self._print_rows
 
 
     @print_title_rows.setter
@@ -901,7 +891,7 @@ class Worksheet(_WorkbookChild):
     @property
     def print_title_cols(self):
         if self._print_cols:
-            return u"{0}!{1}".format(self.title, self._print_cols)
+            return self._print_cols
 
 
     @print_title_cols.setter

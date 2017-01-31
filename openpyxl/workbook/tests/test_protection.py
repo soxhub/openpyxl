@@ -25,11 +25,23 @@ class TestWorkbookProtection:
 
     def test_from_xml(self, WorkbookProtection):
         src = """
-        <workbookPr />
+        <workbookProtection
+          workbookAlgorithmName="SHA-512"
+          workbookHashValue="wDZaZrfM8uKpKghbfws7rY7pmVoOwHjy5qg5d2ABHdSMtH1y0IIkgwJT5Hl2lacSw1sNusImGBUQs/sHcql3hw=="
+          workbookSaltValue="ah1OevWahpb3tQiJO3qrnQ=="
+          workbookSpinCount="100000"
+          lockStructure="1"
+        />
         """
         node = fromstring(src)
         prot = WorkbookProtection.from_tree(node)
-        assert prot == WorkbookProtection()
+        assert prot == WorkbookProtection(
+            workbookAlgorithmName="SHA-512",
+            workbookHashValue="wDZaZrfM8uKpKghbfws7rY7pmVoOwHjy5qg5d2ABHdSMtH1y0IIkgwJT5Hl2lacSw1sNusImGBUQs/sHcql3hw==",
+            workbookSaltValue="ah1OevWahpb3tQiJO3qrnQ==",
+            workbookSpinCount=100000,
+            lockStructure="1"
+        )
 
 
 @pytest.fixture
@@ -41,10 +53,10 @@ def FileSharing():
 class TestFileSharing:
 
     def test_ctor(self, FileSharing):
-        share = FileSharing(userName="bob")
+        share = FileSharing(readOnlyRecommended=True)
         xml = tostring(share.to_tree())
         expected = """
-        <fileSharing userName="bob" />
+        <fileSharing readOnlyRecommended="1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

@@ -169,7 +169,7 @@ def test_write_root_rels():
 def Unicode_Workbook():
     wb = Workbook()
     ws = wb.active
-    ws.title = u"D\xfcsseldorf"
+    ws.title = u"D\xfcsseldorf Sheet"
     return wb
 
 
@@ -187,10 +187,10 @@ def test_print_area(Unicode_Workbook):
       <workbookView activeTab="0"/>
     </bookViews>
     <sheets>
-      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+      <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
     </sheets>
     <definedNames>
-      <definedName localSheetId="0" name="_xlnm.Print_Area">D&#xFC;sseldorf!$A$1:$D$4</definedName>
+      <definedName localSheetId="0" name="_xlnm.Print_Area">'D&#xFC;sseldorf Sheet'!$A$1:$D$4</definedName>
     </definedNames>
     <calcPr calcId="124519" fullCalcOnLoad="1"/>
     </workbook>
@@ -213,10 +213,10 @@ def test_print_titles(Unicode_Workbook):
       <workbookView activeTab="0"/>
     </bookViews>
     <sheets>
-      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+      <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
     </sheets>
     <definedNames>
-      <definedName localSheetId="0" name="_xlnm.Print_Titles">D&#xFC;sseldorf!1:5</definedName>
+      <definedName localSheetId="0" name="_xlnm.Print_Titles">'D&#xFC;sseldorf Sheet'!1:5</definedName>
     </definedNames>
     <calcPr calcId="124519" fullCalcOnLoad="1"/>
     </workbook>
@@ -242,10 +242,10 @@ def test_print_autofilter(Unicode_Workbook):
       <workbookView activeTab="0"/>
     </bookViews>
     <sheets>
-      <sheet name="D&#xFC;sseldorf" sheetId="1" state="visible" r:id="rId1"/>
+      <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
     </sheets>
     <definedNames>
-    <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">D&#xFC;sseldorf!$A$1:$A$10</definedName>
+    <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">'D&#xFC;sseldorf Sheet'!$A$1:$A$10</definedName>
     </definedNames>
     <calcPr calcId="124519" fullCalcOnLoad="1"/>
     </workbook>

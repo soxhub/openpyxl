@@ -41,6 +41,10 @@ def pytest_runtest_setup(item):
             from lxml.etree import LIBXML_VERSION
             if LIBXML_VERSION < (3, 4, 0, 0):
                 pytest.skip("LXML >= 3.4 is required")
+        elif item.get_marker("no_lxml"):
+            from openpyxl import LXML
+            if LXML:
+                pytest.skip("LXML has a different interface")
         elif item.get_marker("numpy_required"):
             from openpyxl import NUMPY
             if not NUMPY:

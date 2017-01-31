@@ -1,3 +1,27 @@
+2.4.2 (2017-01-31)
+==================
+
+
+Bug fixes
+---------
+
+* `#727 <https://bitbucket.org/openpyxl/openpyxl/issues/727>`_ DeprecationWarning is incorrect
+* `#734 <https://bitbucket.org/openpyxl/openpyxl/issues/734>`_ Exception raised if userName is missing
+* `#739 <https://bitbucket.org/openpyxl/openpyxl/issues/739>`_ Always provide a date1904 attribute
+* `#740 <https://bitbucket.org/openpyxl/openpyxl/issues/740>`_ Hashes should be stored as Base64
+* `#743 <https://bitbucket.org/openpyxl/openpyxl/issues/743>`_ Print titles broken on sheetnames with spaces
+* `#748 <https://bitbucket.org/openpyxl/openpyxl/issues/748>`_ Workbook breaks when active sheet is removed
+* `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
+* `#756 <https://bitbucket.org/openpyxl/openpyxl/issues/756>`_ Potential XXE vulerability
+* `#758 <https://bitbucket.org/openpyxl/openpyxl/issues/758>`_ Cannot create files with page breaks and charts
+
+
+Minor Changes
+-------------
+
+* Add unicode support for sheet name incrementation.
+
+
 2.4.1 (2016-11-23)
 ==================
 

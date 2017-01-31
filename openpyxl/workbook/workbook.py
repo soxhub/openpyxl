@@ -126,8 +126,11 @@ class Workbook(object):
 
     @property
     def active(self):
-        """Get the currently active sheet"""
-        return self._sheets[self._active_sheet_index]
+        """Get the currently active sheet or None"""
+        try:
+            return self._sheets[self._active_sheet_index]
+        except IndexError:
+            pass
 
     @active.setter
     def active(self, value):

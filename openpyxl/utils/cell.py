@@ -10,19 +10,19 @@ from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
 
 # constants
-COORD_RE = re.compile('^[$]?([A-Z]+)[$]?(\d+)$')
+COORD_RE = re.compile(r'^[$]?([A-Z]+)[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
-ROW_RANGE = """\d+:\d+:"""
-RANGE_EXPR = """
+ROW_RANGE = r"""\d+:\d+:"""
+RANGE_EXPR = r"""
 [$]?(?P<min_col>[A-Za-z]{1,3})?
 [$]?(?P<min_row>\d+)?
 (:[$]?(?P<max_col>[A-Za-z]{1,3})?
 [$]?(?P<max_row>\d+)?)?
 """
 ABSOLUTE_RE = re.compile('^' + RANGE_EXPR +'$', re.VERBOSE)
-SHEET_TITLE = """
-(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^']*))!"""
-SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})$""".format(
+SHEET_TITLE = r"""
+(('(?P<quoted>([^']|'')*)')|(?P<notquoted>[^'^ ^!]*))!"""
+SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})(?=,?)""".format(
     SHEET_TITLE, RANGE_EXPR), re.VERBOSE)
 
 
