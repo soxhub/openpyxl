@@ -136,6 +136,8 @@ class Stylesheet(Serialisable):
         for style in wb._named_styles:
             self.cellStyles.cellStyle.append(style.as_name())
             self.cellStyleXfs.xf.append(style.as_xf())
+            if style.as_xf().fillId == 21:
+                style.name
 
 
     @property
@@ -169,13 +171,9 @@ def apply_stylesheet(archive, wb):
         src = archive.read(ARC_STYLE)
     except KeyError:
         return wb
+
     node = fromstring(src)
     stylesheet = Stylesheet.from_tree(node)
-
-    wb._cell_styles = stylesheet.cell_styles
-    wb._named_styles = stylesheet.named_styles
-    for ns in wb._named_styles:
-        ns.bind(wb)
 
     wb._borders = IndexedList(stylesheet.borders)
     wb._fonts = IndexedList(stylesheet.fonts)
@@ -184,6 +182,14 @@ def apply_stylesheet(archive, wb):
     wb._number_formats = stylesheet.number_formats
     wb._protections = stylesheet.protections
     wb._alignments = stylesheet.alignments
+
+    # need to overwrite openpyxl defaults in case workbook has different ones
+    wb._cell_styles = stylesheet.cell_styles
+    wb._named_styles = stylesheet.named_styles
+
+    for ns in wb._named_styles:
+        ns.bind(wb)
+
     if stylesheet.colors is not None:
         wb._colors = stylesheet.colors.index
 
