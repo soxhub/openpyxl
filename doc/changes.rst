@@ -1,5 +1,11 @@
+2.4.4 (unreleased)
+==================
+* `#762 <https://bitbucket.org/openpyxl/openpyxl/issues/762>`_ openpyxl can create files with invalid style indices
+
+
 2.4.3 (unreleased)
 ==================
+bad release
 
 
 2.4.2 (2017-01-31)
