@@ -1,6 +1,17 @@
 2.4.4 (unreleased)
 ==================
+
+
+Bugfixes
+--------
+
 * `#762 <https://bitbucket.org/openpyxl/openpyxl/issues/762>`_ openpyxl can create files with invalid style indices
+
+
+Pull requests
+-------------
+
+* `160 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/160>`_ Don't init mimetypes more than once.
 
 
 2.4.3 (unreleased)
@@ -24,6 +35,7 @@ Bug fixes
 * `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
 * `#756 <https://bitbucket.org/openpyxl/openpyxl/issues/756>`_ Potential XXE vulerability
 * `#758 <https://bitbucket.org/openpyxl/openpyxl/issues/758>`_ Cannot create files with page breaks and charts
+* `#759 <https://bitbucket.org/openpyxl/openpyxl/issues/759>`_ Problems with worksheets with commas in their titles
 
 
 Minor Changes
