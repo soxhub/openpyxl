@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#762 <https://bitbucket.org/openpyxl/openpyxl/issues/762>`_ openpyxl can create files with invalid style indices
+* `#764 <https://bitbucket.org/openpyxl/openpyxl/issues/764>`_ Hashing function is incorrect
 
 
 Pull requests
