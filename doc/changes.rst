@@ -5,9 +5,10 @@
 Bugfixes
 --------
 
+* `#673 <https://bitbucket.org/openpyxl/openpyxl/issues/673>`_ Add close method to workbooks
 * `#762 <https://bitbucket.org/openpyxl/openpyxl/issues/762>`_ openpyxl can create files with invalid style indices
 * `#764 <https://bitbucket.org/openpyxl/openpyxl/issues/764>`_ Hashing function is incorrect
-* `#7729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Allow images in write-only mode
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Allow images in write-only mode
 
 
 Pull requests
