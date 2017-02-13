@@ -68,6 +68,26 @@ def test_style_assignment(datadir, load_workbook):
     assert len(wb._protections) == 1
 
 
+@pytest.mark.parametrize("ro", [False, True])
+def test_close_read(datadir, load_workbook, ro):
+    datadir.chdir()
+
+    wb = load_workbook("complex-styles.xlsx", read_only=ro)
+    assert hasattr(wb, '_archive') is ro
+
+    wb.close()
+
+    if ro:
+        assert wb._archive.fp is None
+
+
+@pytest.mark.parametrize("wo", [False, True])
+def test_close_write(wo):
+    from openpyxl.workbook import Workbook
+    wb = Workbook(write_only=wo)
+    wb.close()
+
+
 def test_read_stringio(load_workbook):
     filelike = BytesIO(b"certainly not a valid XSLX content")
     # Test invalid file-like objects are detected and not handled as regular files

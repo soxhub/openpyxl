@@ -52,7 +52,7 @@ class ExcelWriter(object):
     """Write a workbook object to an Excel file."""
 
     def __init__(self, workbook, archive):
-        self.archive = archive
+        self._archive = archive
         self.workbook = workbook
         self.manifest = Manifest()
         self.vba_modified = set()
@@ -66,7 +66,7 @@ class ExcelWriter(object):
     def write_data(self):
         """Write the various xml files into the zip archive."""
         # cleanup all worksheets
-        archive = self.archive
+        archive = self._archive
 
         archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
         props = ExtendedProperties()
@@ -83,7 +83,7 @@ class ExcelWriter(object):
         self._write_images()
         self._write_charts()
 
-        self.archive.writestr(ARC_SHARED_STRINGS,
+        self._archive.writestr(ARC_SHARED_STRINGS,
                               write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
@@ -111,7 +111,7 @@ class ExcelWriter(object):
         if self.workbook.vba_archive:
             for name in set(self.workbook.vba_archive.namelist()) - self.vba_modified:
                 if ARC_VBA.match(name):
-                    self.archive.writestr(name, self.workbook.vba_archive.read(name))
+                    self._archive.writestr(name, self.workbook.vba_archive.read(name))
 
 
     def _write_images(self):
@@ -119,13 +119,13 @@ class ExcelWriter(object):
         for img in self._images:
             buf = BytesIO()
             img.image.save(buf, format='PNG')
-            self.archive.writestr(img.path[1:], buf.getvalue())
+            self._archive.writestr(img.path[1:], buf.getvalue())
 
 
     def _write_charts(self):
         # delegate to object
         for chart in self._charts:
-            self.archive.writestr(chart.path[1:], tostring(chart._write()))
+            self._archive.writestr(chart.path[1:], tostring(chart._write()))
             self.manifest.append(chart)
 
 
@@ -142,8 +142,8 @@ class ExcelWriter(object):
             self._images.append(img)
             img._id = len(self._images)
         rels_path = get_rels_path(drawing.path)[1:]
-        self.archive.writestr(drawing.path[1:], tostring(drawing._write()))
-        self.archive.writestr(rels_path, tostring(drawing._write_rels()))
+        self._archive.writestr(drawing.path[1:], tostring(drawing._write()))
+        self._archive.writestr(rels_path, tostring(drawing._write_rels()))
         self.manifest.append(drawing)
 
 
@@ -153,7 +153,7 @@ class ExcelWriter(object):
             sheet._id = idx
             xml = tostring(sheet.to_tree())
 
-            self.archive.writestr(sheet.path[1:], xml)
+            self._archive.writestr(sheet.path[1:], xml)
             self.manifest.append(sheet)
 
             if sheet._drawing:
@@ -165,7 +165,7 @@ class ExcelWriter(object):
                 tree = rels.to_tree()
 
                 rels_path = get_rels_path(sheet.path[1:])
-                self.archive.writestr(rels_path, tostring(tree))
+                self._archive.writestr(rels_path, tostring(tree))
 
 
     def _write_comment(self, ws):
@@ -173,7 +173,7 @@ class ExcelWriter(object):
         cs = CommentSheet.from_comments(ws._comments)
         self._comments.append(cs)
         cs._id = len(self._comments)
-        self.archive.writestr(cs.path[1:], tostring(cs.to_tree()))
+        self._archive.writestr(cs.path[1:], tostring(cs.to_tree()))
         self.manifest.append(cs)
 
         if ws.legacy_drawing is None:
@@ -184,7 +184,7 @@ class ExcelWriter(object):
 
         vml = cs.write_shapes(vml)
 
-        self.archive.writestr(ws.legacy_drawing, vml)
+        self._archive.writestr(ws.legacy_drawing, vml)
         self.vba_modified.add(ws.legacy_drawing)
 
         comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
@@ -199,7 +199,7 @@ class ExcelWriter(object):
             xml = ws._write()
             rels_path = get_rels_path(ws.path)[1:]
 
-            self.archive.writestr(ws.path[1:], xml)
+            self._archive.writestr(ws.path[1:], xml)
             self.manifest.append(ws)
 
             if ws._drawing:
@@ -220,13 +220,13 @@ class ExcelWriter(object):
             for t in ws._tables:
                 self._tables.append(t)
                 t.id = len(self._tables)
-                t._write(self.archive)
+                t._write(self._archive)
                 self.manifest.append(t)
                 ws._rels[t._rel_id].Target = t.path
 
             if ws._rels:
                 tree = ws._rels.to_tree()
-                self.archive.writestr(rels_path, tostring(tree))
+                self._archive.writestr(rels_path, tostring(tree))
 
 
     def _write_external_links(self):
@@ -238,17 +238,17 @@ class ExcelWriter(object):
             rels_path = get_rels_path(link.path[1:])
 
             xml = link.to_tree()
-            self.archive.writestr(link.path[1:], tostring(xml))
+            self._archive.writestr(link.path[1:], tostring(xml))
             rels = RelationshipList()
             rels.append(link.file_link)
-            self.archive.writestr(rels_path, tostring(rels.to_tree()))
+            self._archive.writestr(rels_path, tostring(rels.to_tree()))
             self.manifest.append(link)
 
 
     def save(self, filename):
         """Write data into the archive."""
         self.write_data()
-        self.archive.close()
+        self._archive.close()
 
 
 def save_workbook(workbook, filename,):

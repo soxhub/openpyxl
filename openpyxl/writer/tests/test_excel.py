@@ -104,7 +104,7 @@ def test_chartsheet(ExcelWriter, archive):
     writer._write_chartsheets()
 
     assert cs.path in writer.manifest.filenames
-    assert cs.path[1:] in writer.archive.namelist()
+    assert cs.path[1:] in writer._archive.namelist()
 
 
 def test_comment(ExcelWriter, archive):
