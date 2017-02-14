@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2016 openpyxl
 
+from copy import copy
 from warnings import warn
 
 from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
@@ -80,7 +81,7 @@ class NamedStyleDescriptor(object):
                 raise ValueError("{0} is not a known style".format(value))
         else:
             style = coll[value]
-        instance._style = style.as_tuple()
+        instance._style = copy(style.as_tuple())
 
 
     def __get__(self, instance, cls):
