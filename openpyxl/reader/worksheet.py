@@ -87,6 +87,7 @@ class WorkSheetParser(object):
         self.keep_vba = ws.parent.vba_archive is not None
         self.shared_formula_masters = {}  # {si_str: Translator()}
         self._row_count = self._col_count = 0
+        self.tables = []
 
     def parse(self):
         dispatcher = {
@@ -324,5 +325,6 @@ class WorkSheetParser(object):
 
 
     def parse_tables(self, element):
-        self.tables = TablePartList.from_tree(element)
-        #return tables
+        for t in TablePartList.from_tree(element).tablePart:
+            rel = self.ws._rels[t.id]
+            self.tables.append(rel.Target)
