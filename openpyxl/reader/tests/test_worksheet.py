@@ -645,3 +645,19 @@ def test_sheet_format(WorkSheetParser):
 
     assert parser.ws.sheet_format.defaultRowHeight == 14.25
     assert parser.ws.sheet_format.baseColWidth == 15
+
+
+def test_tables(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+      xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+      <tableParts count="1">
+        <tablePart r:id="rId1"/>
+      </tableParts>
+    </sheet>
+    """
+    parser = WorkSheetParser
+    parser.source = src
+    parser.parse()
+
+    assert [t.id for t in parser.tables.tablePart] == ['rId1']
