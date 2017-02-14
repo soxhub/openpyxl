@@ -131,9 +131,6 @@ class TestNamedStyle:
         s1 = StyleableObject
         wb = s1.parent.parent
 
-        red = NamedStyle(name='Red')
-        wb.add_named_style(red)
-
         from copy import copy
         s2 = copy(s1)
         s1.style = "Hyperlink"
