@@ -10,6 +10,7 @@ Bugfixes
 * `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Allow images in write-only mode
 * `#744 <https://bitbucket.org/openpyxl/openpyxl/issues/744>`_ Rounded corners for charts
 * `#764 <https://bitbucket.org/openpyxl/openpyxl/issues/764>`_ Hashing function is incorrect
+* `#765 <https://bitbucket.org/openpyxl/openpyxl/issues/765>`_ Named styles share underlying array
 
 
 Pull requests
