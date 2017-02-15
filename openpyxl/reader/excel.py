@@ -252,7 +252,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     parser.assign_names()
 
-    #wb._differential_styles.styles =  []
+    #wb._differential_styles.styles =  [] # tables may depened upon dxf
 
     archive.close()
     return wb
