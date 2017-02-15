@@ -13,6 +13,12 @@ Bugfixes
 * `#765 <https://bitbucket.org/openpyxl/openpyxl/issues/765>`_ Named styles share underlying array
 
 
+Minor Changes
+-------------
+
+* Add roundtrip support for worksheet tables.
+
+
 Pull requests
 -------------
 
