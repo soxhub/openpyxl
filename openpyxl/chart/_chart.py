@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
     Integer,
     Alias,
     MinMax,
+    Bool,
 )
 from openpyxl.descriptors.nested import Nested
 from openpyxl.descriptors.serialisable import Serialisable
@@ -44,6 +45,7 @@ class ChartBase(Serialisable):
 
     legend = Typed(expected_type=Legend, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
+    roundedCorners = Bool(allow_none=True)
 
     _series_type = ""
     ser = ()
@@ -64,6 +66,7 @@ class ChartBase(Serialisable):
         self._charts = [self]
         self.title = None
         self.layout = None
+        self.roundedCorners = None
         self.legend = Legend()
         self.graphical_properties = None
         self.style = None
@@ -124,6 +127,7 @@ class ChartBase(Serialisable):
             container.backWall = chart.backWall
         cs = ChartSpace(chart=container)
         cs.style = self.style
+        cs.roundedCorners = self.roundedCorners
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree

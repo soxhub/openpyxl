@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 # Python stdlib imports
 from io import BytesIO
+from warnings import warn
 
 from openpyxl import LXML
 
@@ -161,21 +162,35 @@ def write_worksheet(worksheet):
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
 
-            tables = TablePartList()
-
-            for table in ws._tables:
-                row = ws[table.ref][0]
-                for cell, col in zip(row, table.tableColumns):
-                    if cell.value:
-                        col.name = str(cell.value)
-                rel = Relationship(type=table._rel_type, Target="")
-                ws._rels.append(rel)
-                table._rel_id = rel.Id
-                tables.append(Related(id=rel.Id))
-
+            tables = _add_table_headers(ws)
             if tables:
                 xf.write(tables.to_tree())
 
     xml = out.getvalue()
     out.close()
     return xml
+
+
+def _add_table_headers(ws):
+    """
+    Check if tables have tableColumns and create them and autoFilter if necessary.
+    Column headers will be taken from the first row of the table.
+    """
+
+    tables = TablePartList()
+
+    for table in ws._tables:
+        if not table.tableColumns:
+            table._initialise_columns()
+            if table.headerRowCount:
+                row = ws[table.ref][0]
+                for cell, col in zip(row, table.tableColumns):
+                    if cell.data_type != "s":
+                        warn("File may not be readable: column headings must be strings.")
+                    col.name = str(cell.value)
+        rel = Relationship(type=table._rel_type, Target="")
+        ws._rels.append(rel)
+        table._rel_id = rel.Id
+        tables.append(Related(id=rel.Id))
+
+    return tables

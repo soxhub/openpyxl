@@ -125,3 +125,14 @@ class TestNamedStyle:
         so = StyleableObject
         so.style = "Hyperlink"
         assert so.style == "Hyperlink"
+
+
+    def test_copy_not_share(self, StyleableObject):
+        s1 = StyleableObject
+        wb = s1.parent.parent
+
+        from copy import copy
+        s2 = copy(s1)
+        s1.style = "Hyperlink"
+        s2.style = "Hyperlink"
+        assert s1._style is not s2._style

@@ -30,6 +30,7 @@ class TestChartsheetProtection:
         assert chartsheetProtection.algorithmName == "SHA-512"
         assert chartsheetProtection.saltValue == "Bo89+SCcqbFEcOS/6LcjBw=="
 
+
     def test_write(self, ChartsheetProtection):
         chartsheetProtection = ChartsheetProtection()
         chartsheetProtection.saltValue = "Bo89+SCcqbFEcOS/6LcjBw=="
@@ -37,11 +38,9 @@ class TestChartsheetProtection:
         chartsheetProtection.objects = "1"
         chartsheetProtection.algorithmName = "SHA-512"
         chartsheetProtection.spinCount = "100000"
-        chartsheetProtection.hash_password('Openpyxl_password')
         expected = """
         <sheetProtection
         algorithmName="SHA-512"
-        hashValue="a7749ffe7ad38e41fa458d7b1b75b2ba98c94c334033dfb97896d4323a08b06b"
         saltValue="Bo89+SCcqbFEcOS/6LcjBw=="
         spinCount="100000" content="1"
         objects="1"
@@ -51,3 +50,9 @@ class TestChartsheetProtection:
         xml = tostring(chartsheetProtection.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_password(self, ChartsheetProtection):
+        prot = ChartsheetProtection()
+        prot.password = "secret"
+        assert prot.password == "DAA7"

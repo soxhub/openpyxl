@@ -86,7 +86,6 @@ class SheetProtection(Serialisable, _Protected):
     algorithmName = String(allow_none=True)
     hashValue = Base64Binary(allow_none=True)
 
-    _password = None
 
     __attrs__ = ('selectLockedCells', 'selectUnlockedCells', 'algorithmName',
               'sheet', 'objects', 'insertRows', 'insertHyperlinks', 'autoFilter',

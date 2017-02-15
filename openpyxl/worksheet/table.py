@@ -19,6 +19,7 @@ from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
+from openpyxl.utils import range_boundaries
 from openpyxl.utils.escape import escape, unescape
 
 from .related import Related
@@ -243,7 +244,7 @@ class Table(Serialisable):
                  name=None,
                  comment=None,
                  tableType=None,
-                 headerRowCount=None,
+                 headerRowCount=1,
                  insertRow=None,
                  insertRowShift=None,
                  totalsRowCount=None,
@@ -289,12 +290,8 @@ class Table(Serialisable):
         self.dataCellStyle = dataCellStyle
         self.totalsRowCellStyle = totalsRowCellStyle
         self.connectionId = connectionId
-        if autoFilter is None:
-            autoFilter = AutoFilter(ref=ref)
         self.autoFilter = autoFilter
         self.sortState = sortState
-        if not tableColumns:
-            tableColumns = list(_initialise_columns(ref))
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
 
@@ -321,15 +318,19 @@ class Table(Serialisable):
         archive.writestr(self.path[1:], tostring(xml))
 
 
-def _initialise_columns(ref):
-    """
-    Create a list of table columns from a cell range
-    """
+    def _initialise_columns(self):
+        """
+        Create a list of table columns from a cell range
+        Always set a ref if we have headers (the default)
+        Column headings must be strings and must match cells in the worksheet.
+        """
 
-    from openpyxl.utils import range_boundaries
-    min_col, min_row, max_col, max_row = range_boundaries(ref)
-    for idx in range(min_col, max_col+1):
-        yield TableColumn(id=idx, name="Column{0}".format(idx))
+        min_col, min_row, max_col, max_row = range_boundaries(self.ref)
+        for idx in range(min_col, max_col+1):
+            col = TableColumn(id=idx, name="Column{0}".format(idx))
+            self.tableColumns.append(col)
+        if self.headerRowCount:
+            self.autoFilter = AutoFilter(ref=self.ref)
 
 
 class TablePartList(Serialisable):

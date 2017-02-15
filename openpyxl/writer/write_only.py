@@ -69,6 +69,8 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._add_row = Worksheet._add_row.__get__(self)
         self._add_column = Worksheet._add_column.__get__(self)
         self.add_chart = Worksheet.add_chart.__get__(self)
+        self.add_image = Worksheet.add_image.__get__(self)
+        self.add_table = Worksheet.add_table.__get__(self)
 
         setup = Worksheet._setup.__get__(self)
         setup()

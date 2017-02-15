@@ -80,13 +80,14 @@ def guess_types(request):
                              ('3.1%', 0.031),
                              ('03:40:16', time(3, 40, 16)),
                              ('03:40', time(3, 40)),
-                             ('30:33.865633336', time(0, 30, 33, 865633))
+                             ('30:33.865633336', time(0, 30, 33, 865633)),
                          ]
                         )
 def test_infer_numeric(dummy_cell, guess_types, value, expected):
     cell = dummy_cell
-    cell.parent.parent._guess_types = guess_types
+    cell.parent.parent.guess_types = guess_types
     cell.value = value
+    assert cell.guess_types == guess_types
     if cell.guess_types:
         assert cell.value == expected
     else:

@@ -368,3 +368,11 @@ class Workbook(object):
         cp = WorksheetCopy(source_worksheet=from_worksheet, target_worksheet=to_worksheet)
         cp.copy_worksheet()
         return to_worksheet
+
+
+    def close(self):
+        """
+        Close workbook file if open. Only affects read-only and write-only modes.
+        """
+        if hasattr(self, '_archive'):
+            self._archive.close()

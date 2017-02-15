@@ -45,6 +45,7 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     )
 from openpyxl.descriptors.excel import ExtensionList, Extension
+from openpyxl.worksheet.table import TablePartList
 
 
 def _get_xml_iter(xml_source):
@@ -86,6 +87,7 @@ class WorkSheetParser(object):
         self.keep_vba = ws.parent.vba_archive is not None
         self.shared_formula_masters = {}  # {si_str: Translator()}
         self._row_count = self._col_count = 0
+        self.tables = []
 
     def parse(self):
         dispatcher = {
@@ -97,6 +99,7 @@ class WorkSheetParser(object):
             '{%s}sheetProtection' % SHEET_MAIN_NS: self.parse_sheet_protection,
             '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
             '{%s}hyperlink' % SHEET_MAIN_NS: self.parse_hyperlinks,
+            '{%s}tableParts' % SHEET_MAIN_NS: self.parse_tables,
                       }
 
         properties = {
@@ -319,3 +322,9 @@ class WorkSheetParser(object):
                     cell.hyperlink = link
         else:
             self.ws[link.ref].hyperlink = link
+
+
+    def parse_tables(self, element):
+        for t in TablePartList.from_tree(element).tablePart:
+            rel = self.ws._rels[t.id]
+            self.tables.append(rel.Target)
