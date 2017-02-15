@@ -48,6 +48,8 @@ from openpyxl.packaging.workbook import WorkbookParser
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+from openpyxl.worksheet.table import Table
+
 from openpyxl.xml.functions import fromstring
 
 from .worksheet import WorkSheetParser
@@ -239,12 +241,18 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                     ):
                     ws.legacy_drawing = rels[ws.legacy_drawing].target
 
+                for t in ws_parser.tables:
+                    src = archive.read(t)
+                    xml = fromstring(src)
+                    table = Table.from_tree(xml)
+                    ws.add_table(table)
+
         ws.sheet_state = sheet.state
         ws._rels = [] # reset
 
     parser.assign_names()
 
-    wb._differential_styles.styles =  []
+    #wb._differential_styles.styles =  []
 
     archive.close()
     return wb
