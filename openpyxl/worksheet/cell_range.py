@@ -139,7 +139,7 @@ class CellRange(object):
         __str__ = _get_range_string
 
     else:
-        __unicode__ = get_range_string
+        __unicode__ = _get_range_string
 
         def __str__(self):
             title = self.title or ''
