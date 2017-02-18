@@ -7,8 +7,6 @@ from __future__ import absolute_import
 from io import BytesIO
 from warnings import warn
 
-from openpyxl import LXML
-
 # package imports
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
