@@ -1,13 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 """Write worksheets to xml representations."""
 
 # Python stdlib imports
 from io import BytesIO
 from warnings import warn
-
-from openpyxl import LXML
 
 # package imports
 from openpyxl.xml.functions import xmlfile
@@ -60,7 +58,7 @@ def write_hyperlinks(worksheet):
         if link.target:
             rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
             worksheet._rels.append(rel)
-            link.id = "rId{0}".format(len(worksheet._rels))
+            link.id = rel.id
         links.hyperlink.append(link)
 
     return links
@@ -74,7 +72,7 @@ def write_drawing(worksheet):
         rel = Relationship(type="drawing", Target="")
         worksheet._rels.append(rel)
         drawing = Related()
-        drawing.id = "rId%s" % len(worksheet._rels)
+        drawing.id = rel.id
         return drawing.to_tree("drawing")
 
 

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -32,3 +32,37 @@ class TestHyperlink:
         node = fromstring(src)
         hyperlink = Hyperlink.from_tree(node)
         assert hyperlink == Hyperlink(display="http://test.com", ref="A1", id="rId1")
+
+
+@pytest.fixture
+def HyperlinkList():
+    from ..hyperlink import HyperlinkList
+    return HyperlinkList
+
+
+class TestHyperlinkList:
+
+    def test_ctor(self, HyperlinkList):
+        fut = HyperlinkList()
+        xml = tostring(fut.to_tree())
+        expected = """
+        <hyperlinks />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, HyperlinkList):
+        src = """
+        <hyperlinks />
+        """
+        node = fromstring(src)
+        fut = HyperlinkList.from_tree(node)
+        assert fut == HyperlinkList()
+
+
+    def test_append(self, HyperlinkList, Hyperlink):
+        link = Hyperlink(ref="I'm a link")
+        links = HyperlinkList()
+        links.append(link)
+        assert link.id == "rId1"
