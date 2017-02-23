@@ -43,10 +43,6 @@ def test_safe_repr():
     assert safe_repr(s) == s.encode("ascii", "backslashreplace")
 
 
-@pytest.fixture
-def dictionary():
-    return {'1':1, 'a':'b', 3:'d'}
-
 from .. import deprecated
 
 def test_deprecated_function(recwarn):
