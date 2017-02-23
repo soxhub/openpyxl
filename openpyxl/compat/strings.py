@@ -42,6 +42,6 @@ def safe_repr(value):
     """
     Safely convert unicode to ASCII for Python 2
     """
-    if VER[0] >= 3:
-        return repr(value)
+    if VER[0] == 3:
+        return value
     return value.encode("ascii", errors='backslashreplace')
