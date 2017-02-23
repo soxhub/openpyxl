@@ -247,6 +247,20 @@ def test_repr(dummy_cell):
     assert repr(cell) == "<Cell 'Dummy Worksheet'.A1>"
 
 
+def test_repr_object(dummy_cell):
+
+    class Dummy:
+
+        def __str__(self):
+            return "something"
+
+    cell = dummy_cell
+    try:
+        cell._bind_value(Dummy())
+    except ValueError as err:
+        assert "something" not in str(err)
+
+
 def test_comment_assignment(dummy_cell):
     assert dummy_cell.comment is None
     comm = Comment("text", "author")
