@@ -244,7 +244,21 @@ def test_timedelta(dummy_cell):
 
 def test_repr(dummy_cell):
     cell = dummy_cell
-    assert repr(cell), '<Cell Sheet1.A1>' == 'Got bad repr: %s' % repr(cell)
+    assert repr(cell) == "<Cell 'Dummy Worksheet'.A1>"
+
+
+def test_repr_object(dummy_cell):
+
+    class Dummy:
+
+        def __str__(self):
+            return "something"
+
+    cell = dummy_cell
+    try:
+        cell._bind_value(Dummy())
+    except ValueError as err:
+        assert "something" not in str(err)
 
 
 def test_comment_assignment(dummy_cell):

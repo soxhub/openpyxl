@@ -139,7 +139,7 @@ class Cell(StyleableObject):
         return getattr(self.parent.parent, 'guess_types', False)
 
     def __repr__(self):
-        return unicode("<Cell %s.%s>") % (self.parent.title, self.coordinate)
+        return "<Cell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
     def check_string(self, value):
         """Check string coding, length, and line break character"""
@@ -198,7 +198,7 @@ class Cell(StyleableObject):
                 value = self._infer_value(value)
 
         elif value is not None:
-            raise ValueError("Cannot convert {0} to Excel".format(value))
+            raise ValueError("Cannot convert {0!r} to Excel".format(value))
 
         self._value = value
 
