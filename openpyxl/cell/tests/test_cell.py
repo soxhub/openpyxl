@@ -244,7 +244,7 @@ def test_timedelta(dummy_cell):
 
 def test_repr(dummy_cell):
     cell = dummy_cell
-    assert repr(cell), '<Cell Sheet1.A1>' == 'Got bad repr: %s' % repr(cell)
+    assert repr(cell) == "<Cell 'Dummy Worksheet'.A1>"
 
 
 def test_comment_assignment(dummy_cell):
