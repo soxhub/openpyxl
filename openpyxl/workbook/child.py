@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import re
 import warnings
 
-from openpyxl.compat import unicode
+from openpyxl.compat import unicode, safe_repr
 
 from openpyxl.worksheet.header_footer import HeaderFooter
 
@@ -50,8 +50,9 @@ class _WorkbookChild(object):
         self.title = title or self._default_title
         self.HeaderFooter = HeaderFooter()
 
+
     def __repr__(self):
-        return u'<{0} "{1}">'.format(self.__class__.__name__, self.title)
+        return '<{0} "{1}">'.format(self.__class__.__name__, safe_repr(self.title))
 
 
     @property

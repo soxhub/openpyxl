@@ -36,3 +36,12 @@ def safe_string(value):
     elif not isinstance(value, basestring):
         value = str(value)
     return value
+
+
+def safe_repr(value):
+    """
+    Safely convert unicode to ASCII for Python 2
+    """
+    if VER[0] == 3:
+        return repr(value)
+    return value.encode("ascii", errors='backslashreplace')

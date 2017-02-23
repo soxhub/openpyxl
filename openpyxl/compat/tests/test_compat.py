@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
+import sys
 
 
 @pytest.mark.parametrize("value, result",
@@ -33,6 +34,13 @@ def test_numpy_tostring():
     assert safe_string(float_(5.1)) == "5.1"
     assert safe_string(int(5)) == "5"
     assert safe_string(bool_(True)) == "1"
+
+
+@pytest.mark.skipif("sys.version_info[0]>=3")
+def test_safe_repr():
+    from ..strings import safe_repr
+    s = u"D\xfcsseldorf"
+    assert safe_repr(s) == s.encode("ascii", "backslashreplace")
 
 
 @pytest.fixture

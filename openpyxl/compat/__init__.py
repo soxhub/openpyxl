@@ -8,7 +8,8 @@ from .strings import (
     bytes,
     file,
     tempfile,
-    safe_string
+    safe_string,
+    safe_repr,
     )
 from .numbers import long, NUMERIC_TYPES
 
