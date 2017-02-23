@@ -55,3 +55,11 @@ class HyperlinkList(Serialisable):
 
     def __len__(self):
         return len(self.hyperlink)
+
+
+    def append(self, value):
+        values = self.hyperlink[:]
+        values.append(value)
+        if not value.id:
+            value.id = "rId{0}".format(len(values))
+        self.hyperlink = values

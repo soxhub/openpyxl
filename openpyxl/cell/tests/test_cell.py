@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 
 # Python stdlib imports
@@ -80,13 +80,14 @@ def guess_types(request):
                              ('3.1%', 0.031),
                              ('03:40:16', time(3, 40, 16)),
                              ('03:40', time(3, 40)),
-                             ('30:33.865633336', time(0, 30, 33, 865633))
+                             ('30:33.865633336', time(0, 30, 33, 865633)),
                          ]
                         )
 def test_infer_numeric(dummy_cell, guess_types, value, expected):
     cell = dummy_cell
-    cell.parent.parent._guess_types = guess_types
+    cell.parent.parent.guess_types = guess_types
     cell.value = value
+    assert cell.guess_types == guess_types
     if cell.guess_types:
         assert cell.value == expected
     else:
@@ -243,7 +244,21 @@ def test_timedelta(dummy_cell):
 
 def test_repr(dummy_cell):
     cell = dummy_cell
-    assert repr(cell), '<Cell Sheet1.A1>' == 'Got bad repr: %s' % repr(cell)
+    assert repr(cell) == "<Cell 'Dummy Worksheet'.A1>"
+
+
+def test_repr_object(dummy_cell):
+
+    class Dummy:
+
+        def __str__(self):
+            return "something"
+
+    cell = dummy_cell
+    try:
+        cell._bind_value(Dummy())
+    except ValueError as err:
+        assert "something" not in str(err)
 
 
 def test_comment_assignment(dummy_cell):

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 import pytest
+import sys
 
 
 @pytest.mark.parametrize("value, result",
@@ -35,9 +36,12 @@ def test_numpy_tostring():
     assert safe_string(bool_(True)) == "1"
 
 
-@pytest.fixture
-def dictionary():
-    return {'1':1, 'a':'b', 3:'d'}
+@pytest.mark.skipif("sys.version_info[0]>=3")
+def test_safe_repr():
+    from ..strings import safe_repr
+    s = u"D\xfcsseldorf"
+    assert safe_repr(s) == s.encode("ascii", "backslashreplace")
+
 
 from .. import deprecated
 

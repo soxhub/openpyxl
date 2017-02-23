@@ -43,7 +43,8 @@ class TestWorkbookParser:
         datadir.chdir()
 
         archive = ZipFile(BytesIO(), "a")
-        archive.write("workbook_1904.xml", ARC_WORKBOOK)
+        with open("workbook_1904.xml") as src:
+            archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
         parser = WorkbookParser(archive)
@@ -113,7 +114,8 @@ class TestWorkbookParser:
         datadir.chdir()
 
         archive = ZipFile(BytesIO(), "a")
-        archive.write("workbook_links.xml", ARC_WORKBOOK)
+        with open("workbook_links.xml") as src:
+            archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
         parser = WorkbookParser(archive)

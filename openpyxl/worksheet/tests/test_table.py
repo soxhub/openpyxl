@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 import pytest
 
 from io import BytesIO
@@ -49,7 +49,20 @@ class TestTable:
         xml = tostring(table.to_tree())
         expected = """
         <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-           displayName="A_Sample_Table" name="A_Sample_Table" id="1" ref="A1:D5">
+           displayName="A_Sample_Table" headerRowCount="1" name="A_Sample_Table" id="1" ref="A1:D5">
+        </table>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_ctor(self, Table, TableColumn):
+        table = Table(displayName="A_Sample_Table", ref="A1:D5")
+        table._initialise_columns()
+        xml = tostring(table.to_tree())
+        expected = """
+        <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           displayName="A_Sample_Table" headerRowCount="1" name="A_Sample_Table" id="1" ref="A1:D5">
            <autoFilter ref="A1:D5" />
         <tableColumns count="4">
           <tableColumn id="1" name="Column1" />
@@ -61,6 +74,7 @@ class TestTable:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
 
 
     def test_from_xml(self, Table):

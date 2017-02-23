@@ -1,3 +1,36 @@
+2.4.4 (unreleased)
+==================
+
+
+Bugfixes
+--------
+
+* `#673 <https://bitbucket.org/openpyxl/openpyxl/issues/673>`_ Add close method to workbooks
+* `#762 <https://bitbucket.org/openpyxl/openpyxl/issues/762>`_ openpyxl can create files with invalid style indices
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Allow images in write-only mode
+* `#744 <https://bitbucket.org/openpyxl/openpyxl/issues/744>`_ Rounded corners for charts
+* `#747 <https://bitbucket.org/openpyxl/openpyxl/issues/747>`_ Use repr when handling non-convertible objects
+* `#764 <https://bitbucket.org/openpyxl/openpyxl/issues/764>`_ Hashing function is incorrect
+* `#765 <https://bitbucket.org/openpyxl/openpyxl/issues/765>`_ Named styles share underlying array
+
+
+Minor Changes
+-------------
+
+* Add roundtrip support for worksheet tables.
+
+
+Pull requests
+-------------
+
+* `160 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/160>`_ Don't init mimetypes more than once.
+
+
+2.4.3 (unreleased)
+==================
+bad release
+
+
 2.4.2 (2017-01-31)
 ==================
 
@@ -14,6 +47,7 @@ Bug fixes
 * `#754 <https://bitbucket.org/openpyxl/openpyxl/issues/754>`_ Incorrect descriptor for Filter values
 * `#756 <https://bitbucket.org/openpyxl/openpyxl/issues/756>`_ Potential XXE vulerability
 * `#758 <https://bitbucket.org/openpyxl/openpyxl/issues/758>`_ Cannot create files with page breaks and charts
+* `#759 <https://bitbucket.org/openpyxl/openpyxl/issues/759>`_ Problems with worksheets with commas in their titles
 
 
 Minor Changes

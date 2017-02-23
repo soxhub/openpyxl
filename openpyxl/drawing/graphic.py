@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 from openpyxl.xml.functions import NS_REGEX, Element
 from openpyxl.xml.constants import CHART_NS, REL_NS, DRAWING_NS

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 from openpyxl.descriptors import (
     Bool,
@@ -86,7 +86,6 @@ class SheetProtection(Serialisable, _Protected):
     algorithmName = String(allow_none=True)
     hashValue = Base64Binary(allow_none=True)
 
-    _password = None
 
     __attrs__ = ('selectLockedCells', 'selectUnlockedCells', 'algorithmName',
               'sheet', 'objects', 'insertRows', 'insertHyperlinks', 'autoFilter',

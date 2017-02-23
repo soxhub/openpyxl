@@ -232,6 +232,14 @@ Filtering and Sorting
     filters
 
 
+Worksheet Tables
+++++++++++++++++
+
+.. toctree::
+
+    worksheet_tables.rst
+
+
 Data Validation
 +++++++++++++++
 

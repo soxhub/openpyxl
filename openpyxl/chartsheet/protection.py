@@ -40,6 +40,3 @@ class ChartsheetProtection(Serialisable, _Protected):
         self.algorithmName = algorithmName
         if password is not None:
             self.password = password
-
-    def hash_password(self, password):
-        self.hashValue = hashlib.sha256((self.saltValue + password).encode("utf-8")).hexdigest()

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 
 from .strings import (
@@ -8,7 +8,8 @@ from .strings import (
     bytes,
     file,
     tempfile,
-    safe_string
+    safe_string,
+    safe_repr,
     )
 from .numbers import long, NUMERIC_TYPES
 
@@ -71,10 +72,3 @@ class deprecated(object):
         _code.co_filename = obj.__module__
         _code.co_firstlineno = 0
         return _code
-
-
-def removed_method(*args, **kw):
-    """
-    Disallow methods in inherited classes.
-    """
-    raise NotImplementedError

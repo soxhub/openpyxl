@@ -1,12 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 """Write worksheets to xml representations."""
 
 # Python stdlib imports
 from io import BytesIO
-
-from openpyxl import LXML
+from warnings import warn
 
 # package imports
 from openpyxl.xml.functions import xmlfile
@@ -59,7 +58,7 @@ def write_hyperlinks(worksheet):
         if link.target:
             rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
             worksheet._rels.append(rel)
-            link.id = "rId{0}".format(len(worksheet._rels))
+            link.id = rel.id
         links.hyperlink.append(link)
 
     return links
@@ -73,7 +72,7 @@ def write_drawing(worksheet):
         rel = Relationship(type="drawing", Target="")
         worksheet._rels.append(rel)
         drawing = Related()
-        drawing.id = "rId%s" % len(worksheet._rels)
+        drawing.id = rel.id
         return drawing.to_tree("drawing")
 
 
@@ -161,21 +160,35 @@ def write_worksheet(worksheet):
                 xml = legacyDrawing.to_tree("legacyDrawing")
                 xf.write(xml)
 
-            tables = TablePartList()
-
-            for table in ws._tables:
-                row = ws[table.ref][0]
-                for cell, col in zip(row, table.tableColumns):
-                    if cell.value:
-                        col.name = str(cell.value)
-                rel = Relationship(type=table._rel_type, Target="")
-                ws._rels.append(rel)
-                table._rel_id = rel.Id
-                tables.append(Related(id=rel.Id))
-
+            tables = _add_table_headers(ws)
             if tables:
                 xf.write(tables.to_tree())
 
     xml = out.getvalue()
     out.close()
     return xml
+
+
+def _add_table_headers(ws):
+    """
+    Check if tables have tableColumns and create them and autoFilter if necessary.
+    Column headers will be taken from the first row of the table.
+    """
+
+    tables = TablePartList()
+
+    for table in ws._tables:
+        if not table.tableColumns:
+            table._initialise_columns()
+            if table.headerRowCount:
+                row = ws[table.ref][0]
+                for cell, col in zip(row, table.tableColumns):
+                    if cell.data_type != "s":
+                        warn("File may not be readable: column headings must be strings.")
+                    col.name = str(cell.value)
+        rel = Relationship(type=table._rel_type, Target="")
+        ws._rels.append(rel)
+        table._rel_id = rel.Id
+        tables.append(Related(id=rel.Id))
+
+    return tables

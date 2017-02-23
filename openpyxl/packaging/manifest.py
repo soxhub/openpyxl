@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2016 openpyxl
+# Copyright (c) 2010-2017 openpyxl
 
 """
 File manifest
@@ -37,7 +37,8 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring
 
 # initialise mime-types
-mimetypes.init()
+if not mimetypes.inited:
+    mimetypes.init()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 mimetypes.add_type("application/vnd.ms-office.vbaProject", ".bin")
