@@ -44,4 +44,4 @@ def safe_repr(value):
     """
     if VER[0] == 3:
         return value
-    return value.encode("ascii", errors='backslashreplace')
+    return value.encode("ascii", 'backslashreplace')
