@@ -8,7 +8,7 @@ VER = sys.version_info
 
 from .numbers import NUMERIC_TYPES
 
-if VER[0] == 3:
+if VER[0] >= 3:
     basestring = str
     unicode = str
     from io import BufferedReader
@@ -42,6 +42,6 @@ def safe_repr(value):
     """
     Safely convert unicode to ASCII for Python 2
     """
-    if VER[0] == 3:
+    if VER[0] >= 3:
         return repr(value)
     return value.encode("ascii", errors='backslashreplace')
