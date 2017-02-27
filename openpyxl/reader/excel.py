@@ -175,6 +175,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     wb._read_only = read_only
     wb._keep_links = keep_links
     wb.guess_types = guess_types
+    wb.template = wb_part.ContentType in (XLTX, XLTM)
     parser.parse()
     wb._sheets = []
 
@@ -199,8 +200,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
 
-    # is workbook a template or note
-    wb.template = wb_part.ContentType in (XLTX, XLTM)
 
     shared_strings = []
     ct = package.find(SHARED_STRINGS)
