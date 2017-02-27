@@ -65,8 +65,8 @@ def test_find_standard_workbook_part(datadir, wb_type, wb_name):
 
     src = """
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-        <Override ContentType="{}"
-          PartName="{}"/>
+        <Override ContentType="{0}"
+          PartName="{1}"/>
         </Types>
         """.format(wb_type, wb_name)
     node = fromstring(src)
