@@ -33,7 +33,7 @@ class TestWorkbookParser:
         datadir.chdir()
         archive = ZipFile("bug137.xlsx")
 
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
 
         assert parser.archive is archive
         assert parser.sheets == []
@@ -47,7 +47,7 @@ class TestWorkbookParser:
             archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
         assert parser.wb.excel_base_date == CALENDAR_WINDOWS_1900
 
         parser.parse()
@@ -58,7 +58,7 @@ class TestWorkbookParser:
     def test_find_sheets(self, datadir, WorkbookParser):
         datadir.chdir()
         archive = ZipFile("bug137.xlsx")
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
 
         parser.parse()
 
@@ -85,7 +85,7 @@ class TestWorkbookParser:
         archive.write("workbook_links.xml", ARC_WORKBOOK)
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
         parser.sheets = wb.sheets
         sheets = parser.find_sheets()
         list(sheets)
@@ -96,7 +96,7 @@ class TestWorkbookParser:
     def test_assign_names(self, datadir, WorkbookParser):
         datadir.chdir()
         archive = ZipFile("print_settings.xlsx")
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
         parser.parse()
 
         wb = parser.wb
@@ -118,7 +118,7 @@ class TestWorkbookParser:
             archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
-        parser = WorkbookParser(archive)
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
         assert parser.wb.keep_links is True
 
         with pytest.raises(KeyError):
