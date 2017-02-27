@@ -1,6 +1,11 @@
 2.4.5 (unreleased)
 ==================
 
+Pull requests
+-------------
+
+* `160 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/161>`_ Support for non-standard names for Workbook part.
+
 
 2.4.4 (2017-02-23)
 ==================
