@@ -11,6 +11,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Stefan Behnel
 * Bernt R. Brenna
 * Sven Burk
+* Max Bolingbroke
 * Anders Chrigstrom
 * ccoacley
 * Maarten De Paepe

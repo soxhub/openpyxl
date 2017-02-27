@@ -85,6 +85,12 @@ def test_calculate_dimension(datadir):
     sheet2 = wb['Sheet2 - Numbers']
     assert sheet2.calculate_dimension() == 'D1:AA30'
 
+def test_nonstandard_name(datadir):
+    datadir.join('reader').chdir()
+
+    wb = load_workbook(filename="nonstandard_workbook_name.xlsx", read_only=True)
+    assert wb.sheetnames == ['Sheet1']
+
 
 @pytest.mark.parametrize("filename",
                          ["sheet2.xml",

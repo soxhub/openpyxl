@@ -5,7 +5,16 @@ from io import BytesIO
 from tempfile import NamedTemporaryFile
 from zipfile import BadZipfile, ZipFile
 
+from openpyxl.packaging.manifest import Manifest, Override
 from openpyxl.utils.exceptions import InvalidFileException
+from openpyxl.xml.functions import fromstring
+from openpyxl.xml.constants import (
+    ARC_WORKBOOK,
+    XLSM,
+    XLSX,
+    XLTM,
+    XLTX,
+)
 
 import pytest
 
@@ -45,6 +54,32 @@ def test_repair_central_directory():
 
     f = repair_central_directory(BytesIO(data_b), True)
     assert f.read() == data_b
+
+
+@pytest.mark.parametrize('wb_type, wb_name', [
+    (ct, name) for ct in [XLSX, XLSM, XLTX, XLTM]
+               for name in ['/' + ARC_WORKBOOK, '/xl/spqr.xml']
+])
+def test_find_standard_workbook_part(datadir, wb_type, wb_name):
+    from ..excel import _find_workbook_part
+
+    src = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+        <Override ContentType="{0}"
+          PartName="{1}"/>
+        </Types>
+        """.format(wb_type, wb_name)
+    node = fromstring(src)
+    package = Manifest.from_tree(node)
+
+    assert _find_workbook_part(package) == Override(wb_name, wb_type)
+
+
+def test_no_workbook():
+    from ..excel import _find_workbook_part
+
+    with pytest.raises(IOError):
+        part = _find_workbook_part(Manifest())
 
 
 @pytest.mark.parametrize("extension",

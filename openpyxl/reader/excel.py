@@ -27,13 +27,14 @@ from openpyxl.xml.constants import (
     ARC_CORE,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
-    ARC_WORKBOOK_RELS,
     ARC_THEME,
     COMMENTS_NS,
     SHARED_STRINGS,
     EXTERNAL_LINK,
     XLTM,
     XLTX,
+    XLSM,
+    XLSX,
 )
 
 from openpyxl.comments.comment_sheet import CommentSheet
@@ -121,6 +122,15 @@ def _validate_archive(filename):
     return archive
 
 
+def _find_workbook_part(package):
+    for ct in [XLTM, XLTX, XLSM, XLSX]:
+        part = package.find(ct)
+        if part:
+            return part
+
+    raise IOError("File contains no valid workbook part")
+
+
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                   data_only=False, guess_types=False, keep_links=True):
     """Open the given filename and return the workbook
@@ -154,12 +164,18 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     archive = _validate_archive(filename)
     read_only = read_only
 
-    parser = WorkbookParser(archive)
+    src = archive.read(ARC_CONTENT_TYPES)
+    root = fromstring(src)
+    package = Manifest.from_tree(root)
+
+    wb_part = _find_workbook_part(package)
+    parser = WorkbookParser(archive, wb_part.PartName[1:])
     wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only
     wb._keep_links = keep_links
     wb.guess_types = guess_types
+    wb.template = wb_part.ContentType in (XLTX, XLTM)
     parser.parse()
     wb._sheets = []
 
@@ -184,11 +200,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
 
-    # is workbook a template or note
-    src = archive.read(ARC_CONTENT_TYPES)
-    root = fromstring(src)
-    package = Manifest.from_tree(root)
-    wb.template = XLTX in package or XLTM in package
 
     shared_strings = []
     ct = package.find(SHARED_STRINGS)
