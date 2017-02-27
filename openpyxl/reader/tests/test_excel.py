@@ -5,7 +5,7 @@ from io import BytesIO
 from tempfile import NamedTemporaryFile
 from zipfile import BadZipfile, ZipFile
 
-from openpyxl.packaging.manifest import Manifest
+from openpyxl.packaging.manifest import Manifest, Override
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import (
@@ -58,25 +58,25 @@ def test_repair_central_directory():
 
 @pytest.mark.parametrize('wb_type, wb_name', [
     (ct, name) for ct in [XLSX, XLSM, XLTX, XLTM]
-               for name in [ARC_WORKBOOK, 'xl/spqr.xml']
+               for name in ['/' + ARC_WORKBOOK, '/xl/spqr.xml']
 ])
-def test_find_standard_workbook_part_name(datadir, wb_type, wb_name):
-    from ..excel import _find_workbook_part_name
+def test_find_standard_workbook_part(datadir, wb_type, wb_name):
+    from ..excel import _find_workbook_part
 
     src = """
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
         <Override ContentType="{}"
-          PartName="/{}"/>
+          PartName="{}"/>
         </Types>
         """.format(wb_type, wb_name)
     node = fromstring(src)
     package = Manifest.from_tree(node)
 
-    assert _find_workbook_part_name(package) == wb_name
+    assert _find_workbook_part(package) == Override(wb_name, wb_type)
 
-def test_find_workbook_part_name_fallback():
-    from ..excel import _find_workbook_part_name
-    assert _find_workbook_part_name(Manifest()) == ARC_WORKBOOK
+def test_find_workbook_part_fallback():
+    from ..excel import _find_workbook_part
+    assert _find_workbook_part(Manifest()) == Override('/' + ARC_WORKBOOK, XLSX)
 
 
 @pytest.mark.parametrize("extension",

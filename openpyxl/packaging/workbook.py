@@ -30,7 +30,11 @@ class WorkbookParser:
         self.workbook_part_name = workbook_part_name
         self.wb = Workbook()
         self.sheets = []
-        self.rels = get_dependents(self.archive, get_rels_path(workbook_part_name))
+
+
+    @property
+    def rels(self):
+        return get_dependents(self.archive, get_rels_path(self.workbook_part_name))
 
 
     def parse(self):
