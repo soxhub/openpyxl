@@ -121,17 +121,14 @@ def _validate_archive(filename):
         archive = ZipFile(f, 'r', ZIP_DEFLATED)
     return archive
 
+
 def _find_workbook_part(package):
     for ct in [XLTM, XLTX, XLSM, XLSX]:
         part = package.find(ct)
         if part:
             return part
 
-    # We expect exactly one of the above tests to succeed. I'm not sure if there any files
-    # in the wild where no file with a suitable content type might exist, but just in case
-    # we will have this fallback where we assume the workbook name that is overwhelmingly
-    # the most common choice in practice
-    return Override('/' + ARC_WORKBOOK, XLSX)
+    raise IOError("File contains no valid workbook part")
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,

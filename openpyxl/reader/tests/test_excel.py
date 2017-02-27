@@ -74,9 +74,12 @@ def test_find_standard_workbook_part(datadir, wb_type, wb_name):
 
     assert _find_workbook_part(package) == Override(wb_name, wb_type)
 
-def test_find_workbook_part_fallback():
+
+def test_no_workbook():
     from ..excel import _find_workbook_part
-    assert _find_workbook_part(Manifest()) == Override('/' + ARC_WORKBOOK, XLSX)
+
+    with pytest.raises(IOError):
+        part = _find_workbook_part(Manifest())
 
 
 @pytest.mark.parametrize("extension",
