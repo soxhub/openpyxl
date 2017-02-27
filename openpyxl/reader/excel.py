@@ -27,13 +27,14 @@ from openpyxl.xml.constants import (
     ARC_CORE,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
-    ARC_WORKBOOK_RELS,
     ARC_THEME,
     COMMENTS_NS,
     SHARED_STRINGS,
     EXTERNAL_LINK,
     XLTM,
     XLTX,
+    XLSM,
+    XLSX,
 )
 
 from openpyxl.comments.comment_sheet import CommentSheet
@@ -120,6 +121,18 @@ def _validate_archive(filename):
         archive = ZipFile(f, 'r', ZIP_DEFLATED)
     return archive
 
+def _find_workbook_part_name(package):
+    for ct in [XLTM, XLTX, XLSM, XLSX]:
+        part = package.find(ct)
+        if part:
+            return part.PartName[1:]
+
+    # We expect exactly one of the above tests to succeed. I'm not sure if there any files
+    # in the wild where no file with a suitable content type might exist, but just in case
+    # we will have this fallback where we assume the workbook name that is overwhelmingly
+    # the most common choice in practice
+    return ARC_WORKBOOK
+
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                   data_only=False, guess_types=False, keep_links=True):
@@ -154,7 +167,11 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     archive = _validate_archive(filename)
     read_only = read_only
 
-    parser = WorkbookParser(archive)
+    src = archive.read(ARC_CONTENT_TYPES)
+    root = fromstring(src)
+    package = Manifest.from_tree(root)
+
+    parser = WorkbookParser(archive, _find_workbook_part_name(package))
     wb = parser.wb
     wb._data_only = data_only
     wb._read_only = read_only
@@ -185,9 +202,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         wb.properties = DocumentProperties.from_tree(src)
 
     # is workbook a template or note
-    src = archive.read(ARC_CONTENT_TYPES)
-    root = fromstring(src)
-    package = Manifest.from_tree(root)
     wb.template = XLTX in package or XLTM in package
 
     shared_strings = []

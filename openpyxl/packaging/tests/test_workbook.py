@@ -18,20 +18,14 @@ from openpyxl.utils.datetime import (
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
-    ARC_ROOT_RELS,
 )
 
 
 @pytest.fixture
 def WorkbookParser():
     from .. workbook import WorkbookParser
-    return WorkbookParser
+    return lambda archive: WorkbookParser(archive, ARC_WORKBOOK)
 
-
-DUMMY_ROOT_RELS = b'''<?xml version="1.0" encoding="utf-8"?>
-        <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-        <Relationship Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="''' + ARC_WORKBOOK.encode('ascii') + b'''" Id="rId1" />
-        </Relationships>'''
 
 class TestWorkbookParser:
 
@@ -52,7 +46,6 @@ class TestWorkbookParser:
         with open("workbook_1904.xml") as src:
             archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
-        archive.writestr(ARC_ROOT_RELS, DUMMY_ROOT_RELS)
 
         parser = WorkbookParser(archive)
         assert parser.wb.excel_base_date == CALENDAR_WINDOWS_1900
@@ -91,7 +84,6 @@ class TestWorkbookParser:
         archive = ZipFile(BytesIO(), "a")
         archive.write("workbook_links.xml", ARC_WORKBOOK)
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
-        archive.writestr(ARC_ROOT_RELS, DUMMY_ROOT_RELS)
 
         parser = WorkbookParser(archive)
         parser.sheets = wb.sheets
@@ -125,7 +117,6 @@ class TestWorkbookParser:
         with open("workbook_links.xml") as src:
             archive.writestr(ARC_WORKBOOK, src.read())
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
-        archive.writestr(ARC_ROOT_RELS, DUMMY_ROOT_RELS)
 
         parser = WorkbookParser(archive)
         assert parser.wb.keep_links is True

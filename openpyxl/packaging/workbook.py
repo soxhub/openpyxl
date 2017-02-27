@@ -8,10 +8,6 @@ OO-based reader
 import posixpath
 from warnings import warn
 
-from openpyxl.xml.constants import (
-    ARC_ROOT_RELS,
-    ARC_WORKBOOK
-)
 from openpyxl.xml.functions import fromstring
 
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
@@ -27,24 +23,18 @@ from openpyxl.workbook.external_link.external import read_external_link
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
 
-RELATIONSHIPS_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-
 class WorkbookParser:
 
-    def __init__(self, archive):
+    def __init__(self, archive, workbook_part_name):
         self.archive = archive
+        self.workbook_part_name = workbook_part_name
         self.wb = Workbook()
         self.sheets = []
-
-        root_rels = get_dependents(self.archive, ARC_ROOT_RELS)
-        root_rel_targets = [rel.target for rel in root_rels.find('{}/officeDocument'.format(RELATIONSHIPS_NS))]
-
-        self.wb_name = root_rel_targets[0] if root_rel_targets else ARC_WORKBOOK
-        self.rels = get_dependents(self.archive, get_rels_path(self.wb_name))
+        self.rels = get_dependents(self.archive, get_rels_path(workbook_part_name))
 
 
     def parse(self):
-        src = self.archive.read(self.wb_name)
+        src = self.archive.read(self.workbook_part_name)
         node = fromstring(src)
         package = WorkbookPackage.from_tree(node)
         if package.properties.date1904:
