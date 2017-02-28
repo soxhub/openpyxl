@@ -4,6 +4,7 @@ from __future__ import division
 
 from io import BytesIO
 from .drawing import Drawing
+from openpyxl.compat import deprecated
 
 
 def bounding_box(bw, bh, w, h):
@@ -51,8 +52,8 @@ class Image(object):
         # don't keep the image open
         image = _import_image(img)
         self.format = image.format.lower()
-        self.nochangeaspect = nochangeaspect
-        self.nochangearrowheads = nochangearrowheads
+        self.nochangeaspect = nochangeaspect # deprecated
+        self.nochangearrowheads = nochangearrowheads # deprecated
 
         newsize = bounding_box(
             size[0], size[1],
@@ -62,10 +63,12 @@ class Image(object):
 
         # the containing drawing
         self.drawing = Drawing()
-        self.drawing.coordinates = coordinates
+        self.drawing.coordinates = coordinates # deprecated
         self.drawing.width = size[0]
         self.drawing.height = size[1]
 
+
+    @deprecated("Anchors can be passed in when an image is added to a worksheet")
     def anchor(self, cell, anchortype="absolute"):
         """ anchors the image to the given cell
             optional parameter anchortype supports 'absolute' or 'oneCell'"""
