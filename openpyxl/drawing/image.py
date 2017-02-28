@@ -96,8 +96,6 @@ class Image(object):
                 fp = img.fp
         if not fp:
             fp = BytesIO()
-            if not self.format:
-                self.format = 'png'
             img.save(fp, format=self.format)
 
         return fp.read()
