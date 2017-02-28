@@ -8,6 +8,12 @@ Compatibility
 * Dropped support for Python 2.6 and 3.3. openpyxl will not run with Python 2.6
 
 
+Deprecations
+------------
+
+Dropped the anchor method from images and additional constructor arguments
+
+
 Minor changes
 -------------
 
