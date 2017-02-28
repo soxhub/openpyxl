@@ -117,9 +117,7 @@ class ExcelWriter(object):
     def _write_images(self):
         # delegate to object
         for img in self._images:
-            buf = BytesIO()
-            img.image.save(buf, format='PNG')
-            self._archive.writestr(img.path[1:], buf.getvalue())
+            self._archive.writestr(img.path[1:], img._data())
 
 
     def _write_charts(self):
