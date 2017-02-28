@@ -50,6 +50,7 @@ class TestImage:
     def test_ctor(self, Image, datadir):
         datadir.chdir()
         i = Image(img="plain.png")
+        assert i.format == "png"
         assert i.nochangearrowheads == True
         assert i.nochangeaspect == True
         d = i.drawing
@@ -65,6 +66,7 @@ class TestImage:
         c = DummyCell()
         vals = i.anchor(c)
         assert vals == (('A', 1), (118, 118))
+
 
     @pytest.mark.pil_required
     def test_anchor_onecell(self, Image, datadir):
