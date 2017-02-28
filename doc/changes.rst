@@ -2,6 +2,11 @@
 ==================
 
 
+Bugfixes
+--------
+* `#750 <https://bitbucket.org/openpyxl/openpyxl/issues/750>`_ Image files can
+
+
 Pull requests
 -------------
 
