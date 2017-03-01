@@ -662,6 +662,7 @@ class Worksheet(_WorkbookChild):
         """
         self.data_validations.append(data_validation)
 
+
     def add_chart(self, chart, anchor=None):
         """
         Add a chart to the sheet
@@ -671,14 +672,14 @@ class Worksheet(_WorkbookChild):
             chart.anchor = anchor
         self._charts.append(chart)
 
+
     def add_image(self, img, anchor=None):
         """
         Add an image to the sheet.
         Optionally provide a cell for the top-left anchor
         """
         if anchor is not None:
-            cell = self[anchor]
-            img.anchor(cell, anchortype="oneCell")
+            img.anchor = anchor
         self._images.append(img)
 
 

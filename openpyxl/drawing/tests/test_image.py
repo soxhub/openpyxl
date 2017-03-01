@@ -51,9 +51,8 @@ class TestImage:
         datadir.chdir()
         i = Image(img="plain.png")
         assert i.format == "png"
-        d = i.drawing
-        assert d.width == 118
-        assert d.height == 118
+        assert i.width == 118
+        assert i.height == 118
 
 
     @pytest.mark.pil_required
