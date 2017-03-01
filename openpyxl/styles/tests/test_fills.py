@@ -55,7 +55,7 @@ class TestGradientFill:
                              ]
                              )
     def test_positioned_sequence(self, GradientFill, colors):
-        gf = GradientFill(stop=list(zip([0, .3, 1], colors)))
+        gf = GradientFill(stop=list(zip(colors, [0, .3, 1])))
         assert gf.stop[0].color.rgb == BLACK
         assert gf.stop[1].color.rgb == WHITE
         assert gf.stop[2].color.rgb == BLACK
@@ -103,7 +103,8 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == [Stop(Color(theme=0)), Stop(Color(theme=4))]
+        assert fill.stop == [Stop(Color(theme=0), position=0),
+                             Stop(Color(theme=4), position=1)]
 
 
 @pytest.fixture

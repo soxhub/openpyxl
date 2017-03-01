@@ -123,27 +123,36 @@ DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 class Stop(Serialisable):
     tagname = "stop"
+
+    __elements__ = ('color',)
+    __attrs__ = ('position',)
+
     position = Min(min=0, allow_none=True)  # or MinMax(0, 1)?
     color = ColorDescriptor()
 
-    def __init__(self, value):
-        if isinstance(value, tuple):
-            self.position, self.color = value
+    def __init__(self, color, position=None):
+        if isinstance(color, tuple):
+            self.color, self.position = color
         else:
-            self.position, self.color = None, value
+            self.position = position
+            self.color = color
+
+    def __iter__(self):
+        yield 'position', safe_string(self.position)
 
 
-def _serialise_stop(tagname, sequence, namespace=None):
-    idx = 0
-    for stop in sequence:
-        if stop.position is None:
-            position = idx
-            idx += 1
-        else:
-            position = stop.position
-        element = Element("stop", position=str(position))
-        element.append(stop.color.to_tree())
-        yield element
+class StopSequenceDescriptor(ValueSequence):
+    def __init__(self, *args, **kwargs):
+        super(StopSequenceDescriptor, self).__init__(expected_type=Stop)
+
+    def __set__(self, instance, value):
+        super(StopSequenceDescriptor, self).__set__(instance, value)
+        value = getattr(instance, self.name)
+        idx = 0
+        for stop in value:
+            if stop.position is None:
+                stop.position = idx
+                idx += 1
 
 
 class GradientFill(Fill):
@@ -157,7 +166,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = ValueSequence(expected_type=Stop, to_tree=_serialise_stop)
+    stop = StopSequenceDescriptor()
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,
@@ -182,10 +191,10 @@ class GradientFill(Fill):
 
     @classmethod
     def _from_tree(cls, node):
-        colors = []
-        for color in safe_iterator(node, "{%s}color" % SHEET_MAIN_NS):
-            colors.append(Color.from_tree(color))
-        return cls(stop=colors, **node.attrib)
+        stops = []
+        for stop in safe_iterator(node, "{%s}stop" % SHEET_MAIN_NS):
+            stops.append(Stop.from_tree(stop))
+        return cls(stop=stops, **node.attrib)
 
 
     def to_tree(self, tagname=None, namespace=None, idx=None):
