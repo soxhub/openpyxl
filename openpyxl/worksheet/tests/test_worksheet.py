@@ -553,6 +553,7 @@ def test_add_chart(Worksheet):
     assert chart.anchor == "A1"
 
 
+@pytest.mark.pil_required
 def test_add_image(Worksheet):
     from openpyxl.drawing.image import Image
     from PIL.Image import Image as PILImage
