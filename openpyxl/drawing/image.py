@@ -3,7 +3,6 @@ from __future__ import division
 # Copyright (c) 2010-2017 openpyxl
 
 from io import BytesIO
-from .drawing import Drawing
 
 
 def bounding_box(bw, bh, w, h):
@@ -53,11 +52,6 @@ class Image(object):
         self.height = image.size[0]
         self.width = image.size[1]
         self.format = image.format.lower()
-
-        # the containing drawing
-        #self.drawing = Drawing()
-        #self.drawing.width = image.size[0]
-        #self.drawing.height = image.size[1]
 
 
     def _data(self):

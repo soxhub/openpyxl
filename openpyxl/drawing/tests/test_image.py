@@ -17,25 +17,6 @@ def Image():
     return Image
 
 
-class DummySheet:
-    """Required for images"""
-
-    def point_pos(self, vertical, horizontal):
-        return vertical, horizontal
-
-
-class DummyCell:
-    """Required for images"""
-
-    column = "A"
-    col_idx = 1
-    row = 1
-    anchor = (0, 0)
-
-    def __init__(self):
-        self.parent = DummySheet()
-
-
 class TestImage:
 
     @pytest.mark.pil_not_installed
