@@ -8,6 +8,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Sequence,
     Integer,
+    Min,
 )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import ValueSequence
@@ -120,11 +121,29 @@ DEFAULT_EMPTY_FILL = PatternFill()
 DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
+class Stop(Serialisable):
+    tagname = "stop"
+    position = Min(min=0, allow_none=True)  # or MinMax(0, 1)?
+    color = ColorDescriptor()
+
+    def __init__(self, value):
+        if isinstance(value, tuple):
+            self.position, self.color = value
+        else:
+            self.position, self.color = None, value
+
+
 def _serialise_stop(tagname, sequence, namespace=None):
-    for idx, color in enumerate(sequence):
-        stop = Element("stop", position=str(idx))
-        stop.append(color.to_tree())
-        yield stop
+    idx = 0
+    for stop in sequence:
+        if stop.position is None:
+            position = idx
+            idx += 1
+        else:
+            position = stop.position
+        element = Element("stop", position=str(position))
+        element.append(stop.color.to_tree())
+        yield element
 
 
 class GradientFill(Fill):
@@ -138,7 +157,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = ValueSequence(expected_type=Color, to_tree=_serialise_stop)
+    stop = ValueSequence(expected_type=Stop, to_tree=_serialise_stop)
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,

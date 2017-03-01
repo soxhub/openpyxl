@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.styles.colors import BLACK, WHITE, Color
+from openpyxl.styles.fills import Stop
 from openpyxl.xml.functions import tostring, fromstring
 
 from openpyxl.tests.helper import compare_xml
@@ -44,9 +45,23 @@ class TestGradientFill:
                              )
     def test_sequence(self, GradientFill, colors):
         gf = GradientFill(stop=colors)
-        assert gf.stop[0].rgb == BLACK
-        assert gf.stop[1].rgb == WHITE
+        assert gf.stop[0].color.rgb == BLACK
+        assert gf.stop[1].color.rgb == WHITE
 
+    @pytest.mark.parametrize("colors",
+                             [
+                                 [Color(BLACK), Color(WHITE), Color(BLACK)],
+                                 [BLACK, WHITE, BLACK],
+                             ]
+                             )
+    def test_positioned_sequence(self, GradientFill, colors):
+        gf = GradientFill(stop=list(zip([0, .3, 1], colors)))
+        assert gf.stop[0].color.rgb == BLACK
+        assert gf.stop[1].color.rgb == WHITE
+        assert gf.stop[2].color.rgb == BLACK
+        assert gf.stop[0].position == 0
+        assert gf.stop[1].position == .3
+        assert gf.stop[2].position == 1
 
     def test_dict_interface(self, GradientFill):
         gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4)
@@ -88,7 +103,7 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == [Color(theme=0), Color(theme=4)]
+        assert fill.stop == [Stop(Color(theme=0)), Stop(Color(theme=4))]
 
 
 @pytest.fixture
