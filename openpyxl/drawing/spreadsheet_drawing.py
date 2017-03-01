@@ -21,7 +21,10 @@ from openpyxl.packaging.relationship import (
     RelationshipList,
 )
 from openpyxl.utils import coordinate_to_tuple
-from openpyxl.utils.units import cm_to_EMU
+from openpyxl.utils.units import (
+    cm_to_EMU,
+    pixels_to_EMU,
+)
 from openpyxl.drawing.image import Image
 
 from openpyxl.xml.constants import SHEET_DRAWING_NS
@@ -223,8 +226,12 @@ def _check_anchor(obj):
         anchor = OneCellAnchor()
         anchor._from.row = row -1
         anchor._from.col = col -1
-        anchor.ext.width = cm_to_EMU(obj.width)
-        anchor.ext.height = cm_to_EMU(obj.height)
+        if isinstance(obj, ChartBase):
+            anchor.ext.width = cm_to_EMU(obj.width)
+            anchor.ext.height = cm_to_EMU(obj.height)
+        elif isinstance(obj, Image):
+            anchor.ext.width = pixels_to_EMU(obj.width)
+            anchor.ext.height = pixels_to_EMU(obj.height)
     return anchor
 
 
