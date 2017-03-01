@@ -25,6 +25,8 @@ from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
 class WorkbookParser:
 
+    _rels = None
+
     def __init__(self, archive, workbook_part_name):
         self.archive = archive
         self.workbook_part_name = workbook_part_name
@@ -34,7 +36,9 @@ class WorkbookParser:
 
     @property
     def rels(self):
-        return get_dependents(self.archive, get_rels_path(self.workbook_part_name))
+        if self._rels is None:
+            self._rels = get_dependents(self.archive, get_rels_path(self.workbook_part_name))
+        return self._rels
 
 
     def parse(self):
