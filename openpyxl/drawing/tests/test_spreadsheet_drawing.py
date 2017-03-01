@@ -5,6 +5,9 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.drawing.image import Image
+from openpyxl.chart import BarChart
+
 
 @pytest.fixture
 def TwoCellAnchor():
@@ -336,3 +339,26 @@ class TestSpreadsheetDrawing:
         drawing = SpreadsheetDrawing()
         getattr(drawing, attr).append(1)
         assert bool(drawing) is True
+
+
+def test_check_anchor_chart():
+    from ..spreadsheet_drawing import _check_anchor
+    c = BarChart()
+    anc = _check_anchor(c)
+    assert anc._from.row == 14
+    assert anc._from.col == 4
+    assert anc.ext.width == 5400000
+    assert anc.ext.height == 2700000
+
+
+@pytest.mark.pil_required()
+def test_check_anchor_image(datadir):
+    datadir.chdir()
+    from ..spreadsheet_drawing import _check_anchor
+    from PIL.Image import Image as PILImage
+    im = Image(PILImage())
+    anc = _check_anchor(im)
+    assert anc._from.row == 0
+    assert anc._from.col == 0
+    assert anc.ext.height == 0
+    assert anc.ext.width == 0
