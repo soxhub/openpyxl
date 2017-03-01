@@ -51,7 +51,10 @@ class Image(object):
         image = _import_image(img)
         self.width = image.size[0]
         self.height = image.size[1]
-        self.format = image.format.lower()
+        try:
+            self.format = image.format.lower()
+        except AttributeError:
+            self.format = "png"
 
 
     def _data(self):
