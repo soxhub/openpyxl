@@ -41,7 +41,7 @@ class Image(object):
 
     _id = 1
     _path = "/xl/media/image{0}.{1}"
-    anchor = "E15"
+    anchor = "A1"
 
     def __init__(self, img):
 
@@ -49,8 +49,8 @@ class Image(object):
 
         # don't keep the image open
         image = _import_image(img)
-        self.height = image.size[0]
-        self.width = image.size[1]
+        self.width = image.size[0]
+        self.height = image.size[1]
         self.format = image.format.lower()
 
 
