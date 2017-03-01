@@ -141,7 +141,7 @@ class Stop(Serialisable):
         yield 'position', safe_string(self.position)
 
 
-class StopSequenceDescriptor(ValueSequence):
+class StopSequenceDescriptor(Sequence):
     def __init__(self, *args, **kwargs):
         super(StopSequenceDescriptor, self).__init__(expected_type=Stop)
 
