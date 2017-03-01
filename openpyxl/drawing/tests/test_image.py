@@ -34,6 +34,7 @@ class TestImage:
         assert i.format == "png"
         assert i.width == 118
         assert i.height == 118
+        assert i.anchor == "A1"
 
 
     @pytest.mark.pil_required
