@@ -8,7 +8,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Sequence,
     Integer,
-    Min,
+    MinMax,
 )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import ValueSequence
@@ -127,7 +127,7 @@ class Stop(Serialisable):
     __elements__ = ('color',)
     __attrs__ = ('position',)
 
-    position = Min(min=0, allow_none=True)  # or MinMax(0, 1)?
+    position = MinMax(min=0, max=1, allow_none=True)
     color = ColorDescriptor()
 
     def __init__(self, color, position=None):

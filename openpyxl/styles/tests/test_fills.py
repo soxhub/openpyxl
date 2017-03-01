@@ -4,7 +4,6 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.styles.colors import BLACK, WHITE, Color
-from openpyxl.styles.fills import Stop
 from openpyxl.xml.functions import tostring, fromstring
 
 from openpyxl.tests.helper import compare_xml
@@ -13,6 +12,12 @@ from openpyxl.tests.helper import compare_xml
 def GradientFill():
     from openpyxl.styles.fills import GradientFill
     return GradientFill
+
+
+@pytest.fixture
+def Stop():
+    from openpyxl.styles.fills import Stop
+    return Stop
 
 
 class TestGradientFill:
@@ -103,8 +108,8 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == [Stop(Color(theme=0), position=0),
-                             Stop(Color(theme=4), position=1)]
+        assert fill.stop == [Stop()(Color(theme=0), position=0),
+                             Stop()(Color(theme=4), position=1)]
 
 
 @pytest.fixture
@@ -194,3 +199,28 @@ def test_create_empty_fill():
 
     src = fromstring("<fill/>")
     assert Fill.from_tree(src) is None
+
+
+class TestStop:
+
+    def test_ctor(self, Stop):
+        stop = Stop('999999', .5)
+        xml = tostring(stop.to_tree())
+        expected = """
+        <stop position="0.5">
+              <color rgb="00999999"></color>
+        </stop>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Stop):
+        src = """
+        <stop position=".5">
+              <color rgb="00999999"></color>
+        </stop>
+        """
+        node = fromstring(src)
+        stop = Stop.from_tree(node)
+        assert stop == Stop('999999', .5)
