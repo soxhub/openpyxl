@@ -351,7 +351,7 @@ def test_check_anchor_chart():
     assert anc.ext.height == 2700000
 
 
-@pytest.mark.pil_required()
+@pytest.mark.pil_required
 def test_check_anchor_image(datadir):
     datadir.chdir()
     from ..spreadsheet_drawing import _check_anchor
