@@ -543,3 +543,20 @@ def test_max_row(Worksheet):
     ws.append([])
     ws.append([4])
     assert ws.max_row == 4
+
+
+def test_add_chart(Worksheet):
+    from openpyxl.chart import BarChart
+    ws = Worksheet(DummyWorkbook())
+    chart = BarChart()
+    ws.add_chart(chart, "A1")
+    assert chart.anchor == "A1"
+
+
+def test_add_image(Worksheet):
+    from openpyxl.drawing.image import Image
+    from PIL.Image import Image as PILImage
+
+    ws = Worksheet(DummyWorkbook())
+    im = Image(PILImage())
+    ws.add_image(im, "D5")
