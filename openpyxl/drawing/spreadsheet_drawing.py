@@ -212,6 +212,22 @@ class TwoCellAnchor(_AnchorBase):
         super(TwoCellAnchor, self).__init__(**kw)
 
 
+def _check_anchor(obj):
+    """
+    Check whether an object has an existing Anchor object
+    If not create a OneCellAnchor using the provided coordinate
+    """
+    anchor = obj.anchor
+    if not isinstance(anchor, _AnchorBase):
+        row, col = coordinate_to_tuple(anchor)
+        anchor = OneCellAnchor()
+        anchor._from.row = row -1
+        anchor._from.col = col -1
+        anchor.ext.width = cm_to_EMU(obj.width)
+        anchor.ext.height = cm_to_EMU(obj.height)
+    return anchor
+
+
 class SpreadsheetDrawing(Serialisable):
 
     tagname = "wsDr"
@@ -257,20 +273,12 @@ class SpreadsheetDrawing(Serialisable):
         """
         anchors = []
         for idx, obj in enumerate(self.charts + self.images, 1):
+            anchor = _check_anchor(obj)
             if isinstance(obj, ChartBase):
                 rel = Relationship(type="chart", Target=obj.path)
-                anchor = obj.anchor
-                if not isinstance(anchor, _AnchorBase):
-                    row, col = coordinate_to_tuple(anchor)
-                    anchor = OneCellAnchor()
-                    anchor._from.row = row -1
-                    anchor._from.col = col -1
-                    anchor.ext.width = cm_to_EMU(obj.width)
-                    anchor.ext.height = cm_to_EMU(obj.height)
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
-                rel = Relationship(type="image", Target='../media/image%s.png' % obj._id)
-                anchor = obj.drawing.anchor
+                rel = Relationship(type="image", Target=obj.path)
                 anchor.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
