@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 # Copyright (c) 2010-2017 openpyxl
 
 from openpyxl.descriptors import (
@@ -148,14 +148,57 @@ class StopSequenceDescriptor(Sequence):
     def __set__(self, instance, value):
         super(StopSequenceDescriptor, self).__set__(instance, value)
         value = getattr(instance, self.name)
-        idx = 0
-        for stop in value:
-            if stop.position is None:
-                stop.position = idx
-                idx += 1
+        if not value:
+            return
+        if value[0].position is None:
+            value[0].position = 0
+        if value[-1].position is None:
+            value[-1].position = 1
+
+        specified_idx = []
+        for i, stop in enumerate(value):
+            if stop.position is not None:
+                specified_idx.append(i)
+
+        print([stop.position for stop in value], specified_idx)
+
+        for start, stop in zip(specified_idx, specified_idx[1:]):
+            if stop - start > 1:
+                start_pos = value[start].position
+                stop_pos = value[stop].position
+                d = (stop_pos - start_pos) / (stop - start)
+                for i, stop in enumerate(value[start + 1:stop]):
+                    stop.position = start_pos + d * (i + 1)
+
+        # TODO: should we check monotonicity?
 
 
 class GradientFill(Fill):
+    """Fill areas with gradient
+
+    Two types of gradient fill are supported:
+
+        - A type='linear' gradient interpolates colours between
+          a set of specified stops, across the length of an area.
+          The gradient is left-to-right by default, but this
+          orientation can be modified with the degree
+          attribute. The stop parameter can be specified as a
+          sequence of colors or (color, position) pairs. position should
+          be in the range [0, 1] and should be monotonic (but not strictly)
+          increasing. If colors are provided without position, it will be
+          inferred according to the following rules:
+
+              - if the first stop has no position, it is set to 0
+              - if the last stop has no position, it is set to 1
+              - all other unspecified positions are calculated by linear
+                interpolation with the nearest specified positions
+
+        - A type='path' gradient applies a linear gradient from each
+          edge of the area. Attributes top, right, bottom, left specify
+          the extent of fill from the respective borders. Thus top="0.2"
+          will fill the top 20% of the cell.
+
+    """
 
     tagname = "gradientFill"
 

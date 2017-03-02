@@ -52,6 +52,29 @@ class TestGradientFill:
         gf = GradientFill(stop=colors)
         assert gf.stop[0].color.rgb == BLACK
         assert gf.stop[1].color.rgb == WHITE
+        assert gf.stop[0].position == 0
+        assert gf.stop[1].position == 1
+
+    def test_unspecified_position(self, GradientFill):
+        gf = GradientFill(stop=[BLACK, WHITE, BLACK])
+        assert gf.stop[0].position == 0
+        assert round(gf.stop[1].position - .5) == 0
+        assert gf.stop[2].position == 1
+
+    def test_partial_position(self, GradientFill):
+        gf = GradientFill(stop=[BLACK, (WHITE, .3), BLACK, WHITE, BLACK, WHITE])
+        assert gf.stop[0].position == 0
+        assert gf.stop[1].position == .3
+        assert round(gf.stop[2].position - .475, 5) == 0
+        assert round(gf.stop[3].position - .65, 5) == 0
+        assert round(gf.stop[4].position - .825, 5) == 0
+        assert gf.stop[5].position == 1
+
+    def test_first_position_nonzero(self, GradientFill):
+        gf = GradientFill(stop=[(BLACK, .3), WHITE, BLACK])
+        assert gf.stop[0].position == .3
+        assert round(gf.stop[1].position - .65, 5) == 0
+        assert gf.stop[2].position == 1
 
     @pytest.mark.parametrize("colors",
                              [
@@ -224,3 +247,15 @@ class TestStop:
         node = fromstring(src)
         stop = Stop.from_tree(node)
         assert stop == Stop('999999', .5)
+
+
+    def test_position_valid_range(self, Stop):
+        # valid
+        Stop('999999', 0)
+        Stop('999999', .5)
+        Stop('999999', 1)
+        # invalid
+        with pytest.raises(ValueError):
+            Stop('999999', -.1)
+        with pytest.raises(ValueError):
+            Stop('999999', -1.1)
