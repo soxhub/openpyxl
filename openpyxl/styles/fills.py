@@ -160,8 +160,6 @@ class StopSequenceDescriptor(Sequence):
             if stop.position is not None:
                 specified_idx.append(i)
 
-        print([stop.position for stop in value], specified_idx)
-
         for start, stop in zip(specified_idx, specified_idx[1:]):
             if stop - start > 1:
                 start_pos = value[start].position
