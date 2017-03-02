@@ -131,11 +131,8 @@ class Stop(Serialisable):
     color = ColorDescriptor()
 
     def __init__(self, color, position=None):
-        if isinstance(color, tuple):
-            self.color, self.position = color
-        else:
-            self.position = position
-            self.color = color
+        self.position = position
+        self.color = color
 
     def __iter__(self):
         yield 'position', safe_string(self.position)
@@ -146,6 +143,8 @@ class StopSequenceDescriptor(Sequence):
         super(StopSequenceDescriptor, self).__init__(expected_type=Stop)
 
     def __set__(self, instance, value):
+        value = [Stop(*x) if isinstance(x, tuple) else x
+                 for x in value]
         super(StopSequenceDescriptor, self).__set__(instance, value)
         value = getattr(instance, self.name)
         if not value:
