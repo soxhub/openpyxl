@@ -4,7 +4,8 @@
 
 Bugfixes
 --------
-* `#750 <https://bitbucket.org/openpyxl/openpyxl/issues/750>`_ Image files can
+* `#750 <https://bitbucket.org/openpyxl/openpyxl/issues/750>`_ Adding images keeps file handles open
+* `#772 <https://bitbucket.org/openpyxl/openpyxl/issues/772>`_ Exception for column-only ranges
 
 
 Pull requests
