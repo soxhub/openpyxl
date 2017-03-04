@@ -187,6 +187,7 @@ class TestCellRange():
     @pytest.mark.parametrize("value",
                              ["A1",
                               "A1:H5",
+                              "A:B",
                               ]
                              )
     def test_valid(self, CellRange, value):
