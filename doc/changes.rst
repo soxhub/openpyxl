@@ -27,7 +27,9 @@ Minor changes
 
 Bugfixes
 --------
-* `#750 <https://bitbucket.org/openpyxl/openpyxl/issues/750>`_ Image files can
+* `#750 <https://bitbucket.org/openpyxl/openpyxl/issues/750>`_ Adding images keeps file handles open
+* `#772 <https://bitbucket.org/openpyxl/openpyxl/issues/772>`_ Exception for column-only ranges
+* `#773 <https://bitbucket.org/openpyxl/openpyxl/issues/773>`_ Cannot copy worksheets with non-ascii titles on Python 2
 
 
 Pull requests
