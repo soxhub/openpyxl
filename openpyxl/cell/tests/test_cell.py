@@ -173,7 +173,7 @@ def test_error_codes(dummy_cell, error_string):
                              )
                          ]
                          )
-def test_insert_date(dummy_cell, value, internal, number_format):
+def test_insert_date(dummy_cell, value, number_format):
     cell = dummy_cell
     cell.value = value
     assert cell.data_type == 'n'
@@ -239,13 +239,13 @@ def test_time_regex(value, expected):
     assert m == expected
 
 
-def test_timedelta(dummy_cell):
-    cell = dummy_cell
-    cell.value = timedelta(days=1, hours=3)
-    assert cell.value == 1.125
-    assert cell.data_type == 'n'
-    assert cell.is_date is False
-    assert cell.number_format == "[hh]:mm:ss"
+#def test_timedelta(dummy_cell):
+    #cell = dummy_cell
+    #cell.value = timedelta(days=1, hours=3)
+    #assert cell.value == 1.125
+    #assert cell.data_type == 'n'
+    #assert cell.is_date is False
+    #assert cell.number_format == "[hh]:mm:ss"
 
 
 def test_repr(dummy_cell):
