@@ -46,6 +46,7 @@ class Workbook(object):
 
     def __init__(self,
                  write_only=False,
+                 iso_dates=False,
                  ):
         self._sheets = []
         self._active_sheet_index = 0
@@ -65,6 +66,7 @@ class Workbook(object):
         self.code_name = None
         self.excel_base_date = CALENDAR_WINDOWS_1900
         self.encoding = "utf-8"
+        self.iso_dates = iso_dates
 
         if not self.write_only:
             self._sheets.append(Worksheet(self))
