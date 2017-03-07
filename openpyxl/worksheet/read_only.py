@@ -197,6 +197,10 @@ class ReadOnlyWorksheet(object):
         return self.iter_rows()
 
 
+    def __iter__(self):
+        return self.iter_rows()
+
+
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
             if force:
