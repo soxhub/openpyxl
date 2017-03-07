@@ -190,14 +190,18 @@ class TestCopy:
         assert ws2 is not None
 
 
-    def test_worksheet_copy_name(self):
+    @pytest.mark.parametrize("title, copy",
+                             [
+                                 ("TestSheet", "TestSheet Copy"),
+                                 (u"D\xfcsseldorf", u"D\xfcsseldorf Copy")
+                                 ]
+                             )
+    def test_worksheet_copy_name(self, title, copy):
         wb = Workbook()
         ws1 = wb.active
-        ws1.title = "TestSheet"
+        ws1.title = title
         ws2 = wb.copy_worksheet(ws1)
-        ws3 = wb.copy_worksheet(ws1)
-        assert ws2.title == 'TestSheet Copy'
-        assert ws3.title == 'TestSheet Copy1'
+        assert ws2.title == copy
 
 
     def test_cannot_copy_readonly(self):

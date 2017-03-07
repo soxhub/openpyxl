@@ -49,7 +49,7 @@ client and the following URL.
 Specification
 -------------
 
-The file specification for OOXML was released jointly as `ECMA 476
+The file specification for OOXML was released jointly as `ECMA 376
 <http://www.ecma-international.org/publications/standards/Ecma-376.htm>`_ and
 `ISO 29500 <http://standards.iso.org/ittf/PubliclyAvailableStandards/index.html>`_.
 

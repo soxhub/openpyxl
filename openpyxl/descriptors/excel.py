@@ -84,7 +84,7 @@ class Guid(MatchPattern):
 
 class CellRange(MatchPattern):
 
-    pattern = """^[$]?(?P<min_col>[A-Za-z]{1,3})[$]?(?P<min_row>\d+)(:[$]?(?P<max_col>[A-Za-z]{1,3})[$]?(?P<max_row>\d+)?)?$"""
+    pattern = """^[$]?([A-Za-z]{1,3})[$]?(\d+)(:[$]?([A-Za-z]{1,3})[$]?(\d+)?)?$|^[A-Za-z]{1,3}:[A-Za-z]{1,3}$"""
     allow_none = True
 
     def __set__(self, instance, value):

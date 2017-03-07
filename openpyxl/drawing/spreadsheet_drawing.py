@@ -269,7 +269,7 @@ class SpreadsheetDrawing(Serialisable):
                     anchor.ext.height = cm_to_EMU(obj.height)
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
-                rel = Relationship(type="image", Target='../media/image%s.png' % obj._id)
+                rel = Relationship(type="image", Target=obj.path)
                 anchor = obj.drawing.anchor
                 anchor.pic = self._picture_frame(idx)
 

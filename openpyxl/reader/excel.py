@@ -44,7 +44,7 @@ from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
-from openpyxl.packaging.manifest import Override, Manifest
+from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.workbook import WorkbookParser
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
@@ -121,17 +121,14 @@ def _validate_archive(filename):
         archive = ZipFile(f, 'r', ZIP_DEFLATED)
     return archive
 
+
 def _find_workbook_part(package):
     for ct in [XLTM, XLTX, XLSM, XLSX]:
         part = package.find(ct)
         if part:
             return part
 
-    # We expect exactly one of the above tests to succeed. I'm not sure if there any files
-    # in the wild where no file with a suitable content type might exist, but just in case
-    # we will have this fallback where we assume the workbook name that is overwhelmingly
-    # the most common choice in practice
-    return Override('/' + ARC_WORKBOOK, XLSX)
+    raise IOError("File contains no valid workbook part")
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
@@ -178,6 +175,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     wb._read_only = read_only
     wb._keep_links = keep_links
     wb.guess_types = guess_types
+    wb.template = wb_part.ContentType in (XLTX, XLTM)
     parser.parse()
     wb._sheets = []
 
@@ -202,8 +200,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         src = fromstring(archive.read(ARC_CORE))
         wb.properties = DocumentProperties.from_tree(src)
 
-    # is workbook a template or note
-    wb.template = wb_part.ContentType in (XLTX, XLTM)
 
     shared_strings = []
     ct = package.find(SHARED_STRINGS)

@@ -361,7 +361,7 @@ class Workbook(object):
         if self.__write_only or self._read_only:
             raise ValueError("Cannot copy worksheets in read-only or write-only mode")
 
-        new_title = "{0} Copy".format(from_worksheet.title)
+        new_title = u"{0} Copy".format(from_worksheet.title)
         to_worksheet = self.create_sheet(title=new_title)
         cp = WorksheetCopy(source_worksheet=from_worksheet, target_worksheet=to_worksheet)
         cp.copy_worksheet()

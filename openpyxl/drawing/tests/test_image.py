@@ -45,16 +45,19 @@ class TestImage:
         with pytest.raises(ImportError):
             _import_image("plain.png")
 
+
     @pytest.mark.pil_required
     def test_ctor(self, Image, datadir):
         datadir.chdir()
         i = Image(img="plain.png")
+        assert i.format == "png"
         assert i.nochangearrowheads == True
         assert i.nochangeaspect == True
         d = i.drawing
         assert d.coordinates == ((0, 0), (1, 1))
         assert d.width == 118
         assert d.height == 118
+
 
     @pytest.mark.pil_required
     def test_anchor(self, Image, datadir):
@@ -64,6 +67,7 @@ class TestImage:
         vals = i.anchor(c)
         assert vals == (('A', 1), (118, 118))
 
+
     @pytest.mark.pil_required
     def test_anchor_onecell(self, Image, datadir):
         datadir.chdir()
@@ -71,3 +75,11 @@ class TestImage:
         c = DummyCell()
         vals = i.anchor(c, anchortype="oneCell")
         assert vals == ((0, 0), None)
+
+
+    @pytest.mark.pil_required
+    def test_write_image(self, Image, datadir):
+        datadir.chdir()
+        i = Image("plain.png")
+        with open("plain.png", "rb") as src:
+            assert i._data() == src.read()
