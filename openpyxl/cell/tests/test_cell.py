@@ -176,7 +176,7 @@ def test_error_codes(dummy_cell, error_string):
 def test_insert_date(dummy_cell, value, number_format):
     cell = dummy_cell
     cell.value = value
-    assert cell.data_type == 'n'
+    assert cell.data_type == 'd'
     assert cell.is_date
     assert cell.number_format == number_format
 

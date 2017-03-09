@@ -186,6 +186,7 @@ class Cell(StyleableObject):
 
         elif isinstance(value, TIME_TYPES):
             value = self._set_time_format(value)
+            self.data_type = "d"
 
         elif isinstance(value, STRING_TYPES):
             value = self.check_string(value)
@@ -326,9 +327,10 @@ class Cell(StyleableObject):
 
         :rtype: bool
         """
-        if self.data_type == "n" and self.number_format != "General":
-            return is_date_format(self.number_format)
-        return False
+        return self.data_type == 'd' or (
+            self.data_type == 'n' and is_date_format(self.number_format)
+            )
+
 
     def offset(self, row=0, column=0):
         """Returns a cell location relative to this cell.
