@@ -42,6 +42,10 @@ def W3CDTF_to_datetime(formatted_string):
 
 
 def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
+    if isinstance(dt, datetime.time):
+        return time_to_days(dt)
+    if isinstance(dt, datetime.timedelta):
+        return timedelta_to_days(dt)
     if isnan(dt.year): # Pandas supports Not a Date
         return
     jul = sum(gcal2jd(dt.year, dt.month, dt.day)) - offset
@@ -107,7 +111,7 @@ def timedelta_to_days(value):
         secs = (value.microseconds +
                 (value.seconds + value.days * SECS_PER_DAY) * 10**6) / 10**6
     else:
-        secs =value.total_seconds()
+        secs = value.total_seconds()
     return secs / SECS_PER_DAY
 
 
