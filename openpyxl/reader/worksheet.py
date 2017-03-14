@@ -219,7 +219,7 @@ class WorkSheetParser(object):
             if data_type == 'n':
                 value = _cast_number(value)
                 if is_date_format(cell.number_format):
-                    cell.data_type = 'd'
+                    data_type = 'd'
                     value = from_excel(value)
             elif data_type == 'b':
                 value = bool(int(value))
