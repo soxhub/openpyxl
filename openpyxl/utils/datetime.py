@@ -26,7 +26,10 @@ SECS_PER_DAY = 86400
 
 EPOCH = datetime.datetime.utcfromtimestamp(0)
 W3CDTF_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-W3CDTF_REGEX = re.compile(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(.(\d{2}))?Z?', re.VERBOSE)
+W3CDTF_REGEX = re.compile(r'''
+(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})T
+(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(.(?P<ms>\d{2}))?Z?''',
+                                       re.VERBOSE)
 
 
 def datetime_to_W3CDTF(dt):
@@ -46,8 +49,23 @@ def W3CDTF_to_datetime(formatted_string):
     There is no concept of timedeltas
     """
     match = W3CDTF_REGEX.match(formatted_string)
-    dt = [int(v) for v in match.groups()[:6]]
-    return datetime.datetime(*dt)
+    if not match:
+        raise ValueError("Invalid datetime value {}".format(formatted_string))
+
+    parts = {k:int(v) for k, v in match.groupdict().items() if v is not None and v.isdigit()}
+    if 'year' not in parts:
+        dt = datetime.time()
+    elif 'hour' not in parts:
+        dt = datetime.date()
+    else:
+        dt = datetime.datetime(year=parts['year'], month=parts['month'],
+                               day=parts['day'], hour=parts['hour'], minute=parts['minute'],
+                               second=parts['second'])
+        if 'ms' in parts:
+            dt = datetime.datetime(year=parts['year'], month=parts['month'],
+                                       day=parts['day'], hour=parts['hour'], minute=parts['minute'],
+                                       second=parts['second'], microsecond=parts['ms'])
+    return dt
 
 
 def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
