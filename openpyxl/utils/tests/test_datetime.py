@@ -13,9 +13,9 @@ from datetime import (
 import pytest
 
 
-def test_datetime_to_ISO():
-    from ..datetime import datetime_to_ISO
-    assert datetime_to_ISO(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
+def test_to_iso():
+    from ..datetime import to_ISO8601
+    assert to_ISO8601(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
 
 
 @pytest.mark.parametrize("value, group, expected",
@@ -39,9 +39,9 @@ def test_iso_regex(value, group, expected):
                              ("12:19:01", time(12, 19, 1)),
                          ]
                          )
-def test_ISO_to_datetime(value, expected):
-    from ..datetime  import ISO_to_datetime
-    assert ISO_to_datetime(value) == expected
+def test_from_iso(value, expected):
+    from ..datetime  import from_ISO8601
+    assert from_ISO8601(value) == expected
 
 
 @pytest.mark.parametrize("value, expected",

@@ -32,12 +32,12 @@ ISO_REGEX = re.compile(r'''
                                        re.VERBOSE)
 
 
-def datetime_to_ISO(dt):
+def to_ISO8601(dt):
     """Convert from a datetime to a timestamp string."""
     return datetime.datetime.strftime(dt, ISO_FORMAT)
 
 
-def ISO_to_datetime(formatted_string):
+def from_ISO8601(formatted_string):
     """Convert from a timestamp string to a datetime object. According to §
     18.17.4 in the specification the following ISO 8601 formats are
     supported.
