@@ -35,7 +35,16 @@ def datetime_to_W3CDTF(dt):
 
 
 def W3CDTF_to_datetime(formatted_string):
-    """Convert from a timestamp string to a datetime object."""
+    """Convert from a timestamp string to a datetime object. According to §
+    18.17.4 in the specification the following ISO 8601 formats are
+    supported.
+
+    Dates §B.1.1 and §B.2.1
+    Times §B.1.2 and §B.2.2
+    Datetimes §B.1.3 and §B.2.3
+
+    There is no concept of timedeltas
+    """
     match = W3CDTF_REGEX.match(formatted_string)
     dt = [int(v) for v in match.groups()[:6]]
     return datetime.datetime(*dt)
