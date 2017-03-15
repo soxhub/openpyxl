@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
+import datetime
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -296,6 +297,23 @@ def test_number(WorkSheetParser):
     parser.parse_cell(element)
     assert ws['A1'].data_type == 'n'
     assert ws['A1'].value == 1
+
+
+
+def test_datetime(WorkSheetParser):
+    parser = WorkSheetParser
+    ws = parser.ws
+
+    src = """
+    <x:c r="A1" t="d" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <x:v>2011-12-25T14:23:55</x:v>
+    </x:c>
+    """
+    element = fromstring(src)
+
+    parser.parse_cell(element)
+    assert ws['A1'].data_type == 'd'
+    assert ws['A1'].value == datetime.datetime(2011, 12, 25, 14, 23, 55)
 
 
 def test_string(WorkSheetParser):
