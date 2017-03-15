@@ -38,13 +38,13 @@ def to_ISO8601(dt):
 
 
 def from_ISO8601(formatted_string):
-    """Convert from a timestamp string to a datetime object. According to §
+    """Convert from a timestamp string to a datetime object. According to
     18.17.4 in the specification the following ISO 8601 formats are
     supported.
 
-    Dates §B.1.1 and §B.2.1
-    Times §B.1.2 and §B.2.2
-    Datetimes §B.1.3 and §B.2.3
+    Dates B.1.1 and B.2.1
+    Times B.1.2 and B.2.2
+    Datetimes B.1.3 and B.2.3
 
     There is no concept of timedeltas
     """
