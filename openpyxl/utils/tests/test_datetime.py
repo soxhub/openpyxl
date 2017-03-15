@@ -13,9 +13,9 @@ from datetime import (
 import pytest
 
 
-def test_datetime_to_W3CDTF():
-    from ..datetime import datetime_to_W3CDTF
-    assert datetime_to_W3CDTF(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
+def test_datetime_to_ISO():
+    from ..datetime import datetime_to_ISO
+    assert datetime_to_ISO(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
 
 
 @pytest.mark.parametrize("value, group, expected",
@@ -25,8 +25,8 @@ def test_datetime_to_W3CDTF():
                          ]
                          )
 def test_iso_regex(value, group, expected):
-    from ..datetime import W3CDTF_REGEX
-    match = W3CDTF_REGEX.match(value)
+    from ..datetime import ISO_REGEX
+    match = ISO_REGEX.match(value)
     assert match is not None
     assert match.groupdict()[group] == expected
 
@@ -39,9 +39,9 @@ def test_iso_regex(value, group, expected):
                              ("12:19:01", time(12, 19, 1)),
                          ]
                          )
-def test_W3CDTF_to_datetime(value, expected):
-    from ..datetime  import W3CDTF_to_datetime
-    assert W3CDTF_to_datetime(value) == expected
+def test_ISO_to_datetime(value, expected):
+    from ..datetime  import ISO_to_datetime
+    assert ISO_to_datetime(value) == expected
 
 
 @pytest.mark.parametrize("value, expected",

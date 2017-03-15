@@ -25,19 +25,19 @@ CALENDAR_MAC_1904 = sum(gcal2jd(MAC_EPOCH.year, MAC_EPOCH.month, MAC_EPOCH.day))
 SECS_PER_DAY = 86400
 
 EPOCH = datetime.datetime.utcfromtimestamp(0)
-W3CDTF_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-W3CDTF_REGEX = re.compile(r'''
+ISO_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+ISO_REGEX = re.compile(r'''
 (?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
 (?P<time>(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(.(?P<ms>\d{2}))?)?Z?''',
                                        re.VERBOSE)
 
 
-def datetime_to_W3CDTF(dt):
+def datetime_to_ISO(dt):
     """Convert from a datetime to a timestamp string."""
-    return datetime.datetime.strftime(dt, W3CDTF_FORMAT)
+    return datetime.datetime.strftime(dt, ISO_FORMAT)
 
 
-def W3CDTF_to_datetime(formatted_string):
+def ISO_to_datetime(formatted_string):
     """Convert from a timestamp string to a datetime object. According to §
     18.17.4 in the specification the following ISO 8601 formats are
     supported.
@@ -48,7 +48,7 @@ def W3CDTF_to_datetime(formatted_string):
 
     There is no concept of timedeltas
     """
-    match = W3CDTF_REGEX.match(formatted_string)
+    match = ISO_REGEX.match(formatted_string)
     if not match:
         raise ValueError("Invalid datetime value {}".format(formatted_string))
 

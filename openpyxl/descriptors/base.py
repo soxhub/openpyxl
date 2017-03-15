@@ -11,7 +11,7 @@ import datetime
 import re
 
 from openpyxl.compat import basestring, bytes, long
-from openpyxl.utils.datetime import W3CDTF_to_datetime
+from openpyxl.utils.datetime import ISO_to_datetime
 
 from .namespace import namespaced
 
@@ -264,7 +264,7 @@ class DateTime(Typed):
     def __set__(self, instance, value):
         if value is not None and isinstance(value, basestring):
             try:
-                value = W3CDTF_to_datetime(value)
+                value = ISO_to_datetime(value)
             except ValueError:
                 raise ValueError("Value must be ISO datetime format")
         super(DateTime, self).__set__(instance, value)
