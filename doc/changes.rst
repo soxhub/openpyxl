@@ -11,7 +11,7 @@ Compatibility
 Deprecations
 ------------
 
-Dropped the anchor method from images and additional constructor arguments
+* Dropped the anchor method from images and additional constructor arguments
 
 
 Minor changes
@@ -19,6 +19,7 @@ Minor changes
 
 * Remove deprecated methods from Cell
 * Remove deprecated methods from Worksheet
+* Added read/write support for the datetime type for cells
 
 
 2.4.6 (unreleased)
