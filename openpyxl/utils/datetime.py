@@ -27,8 +27,8 @@ SECS_PER_DAY = 86400
 EPOCH = datetime.datetime.utcfromtimestamp(0)
 W3CDTF_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 W3CDTF_REGEX = re.compile(r'''
-(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})T
-(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(.(?P<ms>\d{2}))?Z?''',
+(?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
+(?P<time>(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(.(?P<ms>\d{2}))?)?Z?''',
                                        re.VERBOSE)
 
 
@@ -54,17 +54,15 @@ def W3CDTF_to_datetime(formatted_string):
 
     parts = {k:int(v) for k, v in match.groupdict().items() if v is not None and v.isdigit()}
     if 'year' not in parts:
-        dt = datetime.time()
+        dt = datetime.time(parts['hour'], parts['minute'], parts['second'])
     elif 'hour' not in parts:
-        dt = datetime.date()
+        dt = datetime.date(parts['year'], parts['month'], parts['day'])
     else:
         dt = datetime.datetime(year=parts['year'], month=parts['month'],
                                day=parts['day'], hour=parts['hour'], minute=parts['minute'],
                                second=parts['second'])
-        if 'ms' in parts:
-            dt = datetime.datetime(year=parts['year'], month=parts['month'],
-                                       day=parts['day'], hour=parts['hour'], minute=parts['minute'],
-                                       second=parts['second'], microsecond=parts['ms'])
+    if 'ms' in parts:
+        dt += timedelta(microseconds=parts['ms'])
     return dt
 
 
