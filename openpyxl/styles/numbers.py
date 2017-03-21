@@ -92,7 +92,8 @@ FORMAT_CURRENCY_EUR_SIMPLE = '[$EUR ]#,##0.00_-'
 
 
 DATE_INDICATORS = 'dmyhs'
-BAD_DATE_RE = re.compile(r'((?<=\[)|").*[dmhys]+.*(\]|")', re.UNICODE)
+COLORS = "(\[BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW\])"
+BAD_DATE_RE = re.compile(r'(\[{0}\])|((?<=)#).*[dmhys]+.*#?'.format(COLORS), re.UNICODE)
 
 def is_date_format(fmt):
     if fmt is None:
@@ -101,6 +102,27 @@ def is_date_format(fmt):
     if any([x in fmt for x in DATE_INDICATORS]):
         return not BAD_DATE_RE.search(fmt)
     return False
+
+
+def is_datetime(fmt):
+    """
+    Return date, time or datetime
+    """
+    if not is_date_format(fmt):
+        return
+
+    DATE = TIME = False
+
+    if any((x in fmt for x in 'dy')):
+        DATE = True
+    if any((x in fmt for x in 'hs')):
+        TIME = True
+
+    if DATE and TIME:
+        return "datetime"
+    if DATE:
+        return "date"
+    return "time"
 
 
 def is_builtin(fmt):
