@@ -14,6 +14,11 @@ Deprecations
 * Dropped the anchor method from images and additional constructor arguments
 
 
+Bugfixes
+--------
+* `#779 <https://bitbucket.org/openpyxl/openpyxl/issues/779>`_ Fails to recognise Chinese date format`
+
+
 Minor changes
 -------------
 
