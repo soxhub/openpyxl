@@ -107,3 +107,96 @@ class TestRelation:
         node = fromstring(src)
         obj = Relation.from_tree(node)
         assert obj.rId == "rId1"
+
+
+@pytest.fixture
+def KeywordAttribute(Serialisable):
+    from ..base import Bool
+
+    class SomeElement(Serialisable):
+
+        tagname = "dummy"
+        _from = Bool()
+
+        def __init__(self, _from):
+            self._from = _from
+
+    return SomeElement
+
+
+class TestKeywordAttribute:
+
+
+    def test_to_tree(self, KeywordAttribute):
+
+        dummy = KeywordAttribute(_from=True)
+
+        xml = tostring(dummy.to_tree())
+        expected = """<dummy from="1" />"""
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, KeywordAttribute):
+        src = """<dummy from="1" />"""
+
+        el = fromstring(src)
+        dummy = KeywordAttribute.from_tree(el)
+        assert dummy._from is True
+
+
+@pytest.fixture
+def Node(Serialisable):
+
+    from ..base import Bool
+
+    class SomeNode(Serialisable):
+
+        tagname = "from"
+        val = Bool()
+
+        def __init__(self, val):
+            self.val = val
+
+    return SomeNode
+
+
+@pytest.fixture
+def KeywordNode(Serialisable, Node):
+
+    from ..base import Typed
+
+    class SomeElement(Serialisable):
+
+        tagname = "dummy"
+        _from = Typed(expected_type=Node)
+
+        def __init__(self, _from):
+            self._from = _from
+
+    return SomeElement
+
+
+class TestKeywordNode:
+
+
+    def test_to_tree(self, KeywordNode, Node):
+
+        n = Node(val=True)
+        dummy = KeywordNode(_from=n)
+
+        xml = tostring(dummy.to_tree())
+
+        expected = """<dummy><from val="1" /></dummy>"""
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, KeywordNode):
+        src = """<dummy><from val="1" /></dummy>"""
+
+        el = fromstring(src)
+        dummy = KeywordNode.from_tree(el)
+        assert dummy._from.val is True

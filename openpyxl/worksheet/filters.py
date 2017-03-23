@@ -157,7 +157,7 @@ class CustomFilter(Serialisable):
 
     tagname = "customFilter"
 
-    operator = Set(values=(['equal', 'lessThan', 'lessThanOrEqual',
+    operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
     val = String()
 
