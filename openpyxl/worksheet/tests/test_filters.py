@@ -283,10 +283,10 @@ def CustomFilters():
 class TestCustomFilters:
 
     def test_ctor(self, CustomFilters):
-        fut = CustomFilters()
+        fut = CustomFilters(_and=True)
         xml = tostring(fut.to_tree())
         expected = """
-        <customFilters />
+        <customFilters and="1" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -294,11 +294,11 @@ class TestCustomFilters:
 
     def test_from_xml(self, CustomFilters):
         src = """
-        <customFilters />
+        <customFilters and="1" />
         """
         node = fromstring(src)
         fut = CustomFilters.from_tree(node)
-        assert fut == CustomFilters()
+        assert fut == CustomFilters(_and=True)
 
 
 @pytest.fixture

@@ -55,6 +55,9 @@ class Serialisable(_Serialiasable):
         for key in list(attrib):
             if key.startswith('{'):
                 del attrib[key]
+            elif key in KEYWORDS:
+                attrib["_" + key] = attrib[key]
+                del attrib[key]
 
         if node.text and "attr_text" in cls.__attrs__:
             attrib["attr_text"] = node.text
@@ -144,6 +147,8 @@ class Serialisable(_Serialiasable):
     def __iter__(self):
         for attr in self.__attrs__:
             value = getattr(self, attr)
+            if attr.startswith("_"):
+                attr = attr[1:]
             if attr != "attr_text" and value is not None:
                 yield attr, safe_string(value)
 
