@@ -23,7 +23,7 @@ from .text import RichText
 
 class _DataLabelBase(Serialisable):
 
-    numFmt = NestedString(allow_none=True)
+    numFmt = NestedString(allow_none=True, attribute="formatCode")
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     graphicalProperties = Alias('spPr')
     txPr = Typed(expected_type=RichText, allow_none=True)
@@ -41,12 +41,11 @@ class _DataLabelBase(Serialisable):
     separator = NestedString(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ("delete", "numFmt", "spPr", "txPr", "dLblPos",
-                    "showLegendKey", "showVal", "showCatName", "showSerName", "showPercent",
-                    "showBubbleSize", "showLeaderLines", "separator")
+    __elements__ = ("numFmt", "spPr", "txPr", "dLblPos", "showLegendKey",
+                    "showVal", "showCatName", "showSerName", "showPercent", "showBubbleSize",
+                    "showLeaderLines", "separator")
 
     def __init__(self,
-                 delete=None,
                  numFmt=None,
                  spPr=None,
                  txPr=None,
@@ -61,7 +60,6 @@ class _DataLabelBase(Serialisable):
                  separator=None,
                  extLst=None,
                  ):
-        self.delete = delete
         self.numFmt = numFmt
         self.spPr = spPr
         self.txPr = txPr
@@ -109,6 +107,7 @@ class DataLabelList(_DataLabelBase):
 
     dLbl = Sequence(expected_type=DataLabel, allow_none=True)
 
+    delete = NestedBool(allow_none=True)
     numFmt = _DataLabelBase.numFmt
     spPr = _DataLabelBase.spPr
     txPr = _DataLabelBase.txPr
@@ -123,8 +122,9 @@ class DataLabelList(_DataLabelBase):
     separator = _DataLabelBase.separator
     extLst = _DataLabelBase.extLst
 
-    __elements__ = ("dLbl",) + _DataLabelBase.__elements__
+    __elements__ = ("delete", "dLbl",) + _DataLabelBase.__elements__
 
-    def __init__(self, dLbl=(), **kw ):
+    def __init__(self, dLbl=(), delete=None,  **kw):
         self.dLbl = dLbl
+        self.delete = delete
         super(DataLabelList, self).__init__(**kw)
