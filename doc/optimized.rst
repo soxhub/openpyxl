@@ -27,7 +27,7 @@ Cells returned are not regular :class:`openpyxl.cell.cell.Cell` but
 Worksheet dimensions
 --------------------
 
-Read-only mode relies applications and libraries that created the file
+Read-only mode relies on applications and libraries that created the file
 providing correct information about the worksheets, specifically the used
 part of it, known as the dimensions. Some applications set this incorrectly.
 You can check the apparent dimensions of a worksheet using
