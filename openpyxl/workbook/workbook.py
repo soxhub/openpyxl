@@ -9,6 +9,7 @@ from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
 
+from openpyxl.utils import quote_sheetname
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
@@ -264,7 +265,7 @@ class Workbook(object):
         """Create a new named_range on a worksheet"""
         defn = DefinedName(name=name, localSheetId=scope)
         if worksheet is not None:
-            defn.value = "{0}!{1}".format(worksheet.title, value)
+            defn.value = "{0}!{1}".format(quote_sheetname(worksheet.title), value)
         else:
             defn.value = value
 
