@@ -115,12 +115,13 @@ def test_write_workbook(datadir):
 def test_write_named_range():
     wb = Workbook()
     ws = wb.active
+    ws.title = "Test Sheet"
     wb.create_named_range("test_range", ws, value="A1:B5")
 
     xml = tostring(wb.defined_names.to_tree())
     expected = """
     <definedNames>
-     <definedName name="test_range">Sheet!A1:B5</definedName>
+     <definedName name="test_range">'Test Sheet'!A1:B5</definedName>
     </definedNames>
     """
     diff = compare_xml(xml, expected)
