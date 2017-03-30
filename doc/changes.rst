@@ -7,6 +7,7 @@ Bugfixes
 * `#776 <https://bitbucket.org/openpyxl/openpyxl/issues/776>`_ Cannot apply formatting to plot area`
 * `#780 <https://bitbucket.org/openpyxl/openpyxl/issues/780>`_ Exception when element attributes are Python keywords`
 * `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect`
+* `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names`
 
 
 2.4.5 (2017-03-07)
