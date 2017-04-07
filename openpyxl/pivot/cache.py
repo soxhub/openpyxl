@@ -14,7 +14,11 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
 
-from .pivot import T
+from .pivot import (
+    PivotArea,
+    PivotAreaReference,
+    PivotAreaReferenceList,
+)
 from .records import (
     Boolean,
     Error,
@@ -1109,7 +1113,7 @@ class CacheField(Serialisable):
     memberPropertyField = Bool(allow_none=True)
     sharedItems = Typed(expected_type=SharedItems, allow_none=True)
     fieldGroup = Typed(expected_type=FieldGroup, allow_none=True)
-    mpMap = Typed(expected_type=X, allow_none=True)
+    mpMap = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('sharedItems', 'fieldGroup', 'mpMap', 'extLst')

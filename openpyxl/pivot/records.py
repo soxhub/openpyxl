@@ -261,7 +261,7 @@ class PivotCacheRecords(Serialisable):
     r = Typed(expected_type=Record, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('r', 'extLst')
+    __elements__ = ('r', )
 
     def __init__(self,
                  count=None,

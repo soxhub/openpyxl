@@ -14,6 +14,7 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.nested import NestedInteger
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
@@ -222,7 +223,7 @@ class MemberProperty(Serialisable):
         self.field = field
 
 
-class MemberProperties(Serialisable):
+class MemberPropertyList(Serialisable):
 
     count = Integer()
     mp = Typed(expected_type=MemberProperty, )
@@ -250,7 +251,7 @@ class PivotHierarchy(Serialisable):
     dragOff = Bool()
     includeNewItemsInFilter = Bool()
     caption = String(allow_none=True)
-    mps = Typed(expected_type=MemberProperties, allow_none=True)
+    mps = Typed(expected_type=MemberPropertyList, allow_none=True)
     members = Typed(expected_type=Members, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -288,7 +289,7 @@ class PivotHierarchy(Serialisable):
         self.extLst = extLst
 
 
-class PivotHierarchies(Serialisable):
+class PivotHierarchyList(Serialisable):
 
     count = Integer()
     pivotHierarchy = Typed(expected_type=PivotHierarchy, )
@@ -324,7 +325,7 @@ class ChartFormat(Serialisable):
         self.pivotArea = pivotArea
 
 
-class ChartFormats(Serialisable):
+class ChartFormatList(Serialisable):
 
     count = Integer()
     chartFormat = Typed(expected_type=ChartFormat, )
@@ -338,11 +339,142 @@ class ChartFormats(Serialisable):
         self.count = count
         self.chartFormat = chartFormat
 
+class PivotAreaReference(Serialisable):
 
-class PivotAreas(Serialisable):
+    field = Integer(allow_none=True)
+    count = Integer()
+    selected = Bool()
+    byPosition = Bool()
+    relative = Bool()
+    defaultSubtotal = Bool()
+    sumSubtotal = Bool()
+    countASubtotal = Bool()
+    avgSubtotal = Bool()
+    maxSubtotal = Bool()
+    minSubtotal = Bool()
+    productSubtotal = Bool()
+    countSubtotal = Bool()
+    stdDevSubtotal = Bool()
+    stdDevPSubtotal = Bool()
+    varSubtotal = Bool()
+    varPSubtotal = Bool()
+    x = NestedInteger(allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('x', 'extLst')
+
+    def __init__(self,
+                 field=None,
+                 count=None,
+                 selected=None,
+                 byPosition=None,
+                 relative=None,
+                 defaultSubtotal=None,
+                 sumSubtotal=None,
+                 countASubtotal=None,
+                 avgSubtotal=None,
+                 maxSubtotal=None,
+                 minSubtotal=None,
+                 productSubtotal=None,
+                 countSubtotal=None,
+                 stdDevSubtotal=None,
+                 stdDevPSubtotal=None,
+                 varSubtotal=None,
+                 varPSubtotal=None,
+                 x=None,
+                 extLst=None,
+                ):
+        self.field = field
+        self.count = count
+        self.selected = selected
+        self.byPosition = byPosition
+        self.relative = relative
+        self.defaultSubtotal = defaultSubtotal
+        self.sumSubtotal = sumSubtotal
+        self.countASubtotal = countASubtotal
+        self.avgSubtotal = avgSubtotal
+        self.maxSubtotal = maxSubtotal
+        self.minSubtotal = minSubtotal
+        self.productSubtotal = productSubtotal
+        self.countSubtotal = countSubtotal
+        self.stdDevSubtotal = stdDevSubtotal
+        self.stdDevPSubtotal = stdDevPSubtotal
+        self.varSubtotal = varSubtotal
+        self.varPSubtotal = varPSubtotal
+        self.x = x
+        self.extLst = extLst
+
+
+class PivotAreaReferenceList(Serialisable):
 
     count = Integer()
-    #pivotArea = Typed(expected_type=PivotArea, allow_none=True)
+    reference = Typed(expected_type=PivotAreaReference, )
+
+    __elements__ = ('reference',)
+
+    def __init__(self,
+                 count=None,
+                 reference=None,
+                ):
+        self.count = count
+        self.reference = reference
+
+
+class PivotArea(Serialisable):
+
+    field = Integer(allow_none=True)
+    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button', 'topEnd', 'topRight']))
+    dataOnly = Bool()
+    labelOnly = Bool()
+    grandRow = Bool()
+    grandCol = Bool()
+    cacheIndex = Bool()
+    outline = Bool()
+    offset = String()
+    collapsedLevelsAreSubtotals = Bool()
+    axis = Set(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
+    fieldPosition = Integer(allow_none=True)
+    references = Typed(expected_type=PivotAreaReferenceList, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
+    __elements__ = ('references', 'extLst')
+
+    def __init__(self,
+                 field=None,
+                 type=None,
+                 dataOnly=None,
+                 labelOnly=None,
+                 grandRow=None,
+                 grandCol=None,
+                 cacheIndex=None,
+                 outline=None,
+                 offset=None,
+                 collapsedLevelsAreSubtotals=None,
+                 axis=None,
+                 fieldPosition=None,
+                 references=None,
+                 extLst=None,
+                ):
+        self.field = field
+        self.type = type
+        self.dataOnly = dataOnly
+        self.labelOnly = labelOnly
+        self.grandRow = grandRow
+        self.grandCol = grandCol
+        self.cacheIndex = cacheIndex
+        self.outline = outline
+        self.offset = offset
+        self.collapsedLevelsAreSubtotals = collapsedLevelsAreSubtotals
+        self.axis = axis
+        self.fieldPosition = fieldPosition
+        self.references = references
+        self.extLst = extLst
+
+
+class PivotAreaList(Serialisable):
+
+    count = Integer()
+    pivotArea = Typed(expected_type=PivotArea, allow_none=True)
 
     __elements__ = ('pivotArea',)
 
@@ -359,7 +491,7 @@ class ConditionalFormat(Serialisable):
     scope = Set(values=(['selection', 'data', 'field']))
     type = NoneSet(values=(['all', 'row', 'column']))
     priority = Integer()
-    pivotAreas = Typed(expected_type=PivotAreas, )
+    pivotAreas = Typed(expected_type=PivotAreaList, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('pivotAreas', 'extLst')
@@ -378,7 +510,7 @@ class ConditionalFormat(Serialisable):
         self.extLst = extLst
 
 
-class ConditionalFormats(Serialisable):
+class ConditionalFormatList(Serialisable):
 
     count = Integer()
     conditionalFormat = Typed(expected_type=ConditionalFormat, )
@@ -414,7 +546,7 @@ class Format(Serialisable):
         self.extLst = extLst
 
 
-class Formats(Serialisable):
+class FormatList(Serialisable):
 
     count = Integer()
     format = Typed(expected_type=Format, )
@@ -462,7 +594,7 @@ class DataField(Serialisable):
         self.extLst = extLst
 
 
-class DataFields(Serialisable):
+class DataFieldList(Serialisable):
 
     count = Integer()
     dataField = Typed(expected_type=DataField, )
@@ -612,171 +744,6 @@ class RowFields(Serialisable):
                 ):
         self.count = count
         self.field = field
-
-
-class Extension(Serialisable):
-
-    uri = String()
-
-    def __init__(self,
-                 uri=None,
-                ):
-        self.uri = uri
-
-
-class ExtensionList(Serialisable):
-
-    # uses element group EG_ExtensionList
-    ext = Typed(expected_type=Extension, allow_none=True)
-
-    __elements__ = ('ext',)
-
-    def __init__(self,
-                 ext=None,
-                ):
-        self.ext = ext
-
-
-class Index(Serialisable):
-
-    v = Integer()
-
-    def __init__(self,
-                 v=None,
-                ):
-        self.v = v
-
-
-class PivotAreaReference(Serialisable):
-
-    field = Integer(allow_none=True)
-    count = Integer()
-    selected = Bool()
-    byPosition = Bool()
-    relative = Bool()
-    defaultSubtotal = Bool()
-    sumSubtotal = Bool()
-    countASubtotal = Bool()
-    avgSubtotal = Bool()
-    maxSubtotal = Bool()
-    minSubtotal = Bool()
-    productSubtotal = Bool()
-    countSubtotal = Bool()
-    stdDevSubtotal = Bool()
-    stdDevPSubtotal = Bool()
-    varSubtotal = Bool()
-    varPSubtotal = Bool()
-    x = Typed(expected_type=Index, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('x', 'extLst')
-
-    def __init__(self,
-                 field=None,
-                 count=None,
-                 selected=None,
-                 byPosition=None,
-                 relative=None,
-                 defaultSubtotal=None,
-                 sumSubtotal=None,
-                 countASubtotal=None,
-                 avgSubtotal=None,
-                 maxSubtotal=None,
-                 minSubtotal=None,
-                 productSubtotal=None,
-                 countSubtotal=None,
-                 stdDevSubtotal=None,
-                 stdDevPSubtotal=None,
-                 varSubtotal=None,
-                 varPSubtotal=None,
-                 x=None,
-                 extLst=None,
-                ):
-        self.field = field
-        self.count = count
-        self.selected = selected
-        self.byPosition = byPosition
-        self.relative = relative
-        self.defaultSubtotal = defaultSubtotal
-        self.sumSubtotal = sumSubtotal
-        self.countASubtotal = countASubtotal
-        self.avgSubtotal = avgSubtotal
-        self.maxSubtotal = maxSubtotal
-        self.minSubtotal = minSubtotal
-        self.productSubtotal = productSubtotal
-        self.countSubtotal = countSubtotal
-        self.stdDevSubtotal = stdDevSubtotal
-        self.stdDevPSubtotal = stdDevPSubtotal
-        self.varSubtotal = varSubtotal
-        self.varPSubtotal = varPSubtotal
-        self.x = x
-        self.extLst = extLst
-
-
-class PivotAreaReferences(Serialisable):
-
-    count = Integer()
-    reference = Typed(expected_type=PivotAreaReference, )
-
-    __elements__ = ('reference',)
-
-    def __init__(self,
-                 count=None,
-                 reference=None,
-                ):
-        self.count = count
-        self.reference = reference
-
-
-class PivotArea(Serialisable):
-
-    field = Integer(allow_none=True)
-    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button', 'topEnd', 'topRight']))
-    dataOnly = Bool()
-    labelOnly = Bool()
-    grandRow = Bool()
-    grandCol = Bool()
-    cacheIndex = Bool()
-    outline = Bool()
-    offset = String()
-    collapsedLevelsAreSubtotals = Bool()
-    axis = Set(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
-    fieldPosition = Integer(allow_none=True)
-    references = Typed(expected_type=PivotAreaReferences, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('references', 'extLst')
-
-    def __init__(self,
-                 field=None,
-                 type=None,
-                 dataOnly=None,
-                 labelOnly=None,
-                 grandRow=None,
-                 grandCol=None,
-                 cacheIndex=None,
-                 outline=None,
-                 offset=None,
-                 collapsedLevelsAreSubtotals=None,
-                 axis=None,
-                 fieldPosition=None,
-                 references=None,
-                 extLst=None,
-                ):
-        self.field = field
-        self.type = type
-        self.dataOnly = dataOnly
-        self.labelOnly = labelOnly
-        self.grandRow = grandRow
-        self.grandCol = grandCol
-        self.cacheIndex = cacheIndex
-        self.outline = outline
-        self.offset = offset
-        self.collapsedLevelsAreSubtotals = collapsedLevelsAreSubtotals
-        self.axis = axis
-        self.fieldPosition = fieldPosition
-        self.references = references
-        self.extLst = extLst
 
 
 class AutoSortScope(Serialisable):
@@ -1126,11 +1093,11 @@ class PivotTableDefinition(Serialisable):
     colFields = Typed(expected_type=ColFields, allow_none=True)
     colItems = Typed(expected_type=colItems, allow_none=True)
     pageFields = Typed(expected_type=PageFields, allow_none=True)
-    dataFields = Typed(expected_type=DataFields, allow_none=True)
-    formats = Typed(expected_type=Formats, allow_none=True)
-    conditionalFormats = Typed(expected_type=ConditionalFormats, allow_none=True)
-    chartFormats = Typed(expected_type=ChartFormats, allow_none=True)
-    pivotHierarchies = Typed(expected_type=PivotHierarchies, allow_none=True)
+    dataFields = Typed(expected_type=DataFieldList, allow_none=True)
+    formats = Typed(expected_type=FormatList, allow_none=True)
+    conditionalFormats = Typed(expected_type=ConditionalFormatList, allow_none=True)
+    chartFormats = Typed(expected_type=ChartFormatList, allow_none=True)
+    pivotHierarchies = Typed(expected_type=PivotHierarchyList, allow_none=True)
     pivotTableStyleInfo = Typed(expected_type=PivotTableStyle, allow_none=True)
     filters = Typed(expected_type=PivotFilters, allow_none=True)
     rowHierarchiesUsage = Typed(expected_type=RowHierarchiesUsage, allow_none=True)
