@@ -7,28 +7,28 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def PivotCacheRecord():
-    from ..records import PivotCacheRecord
-    return PivotCacheRecord
+def Record():
+    from ..records import Record
+    return Record
 
 
-class TestPivotCacheRecord:
+class TestRecord:
 
-    def test_ctor(self, PivotCacheRecord):
-        field = PivotCacheRecord()
+    def test_ctor(self, Record):
+        field = Record()
         xml = tostring(field.to_tree())
         expected = """
-        <root />
+        <r />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def test_from_xml(self, PivotCacheRecord):
+    def test_from_xml(self, Record):
         src = """
-        <root />
+        <r />
         """
         node = fromstring(src)
-        field = PivotCacheRecord.from_tree(node)
-        assert field == PivotCacheRecord()
+        field = Record.from_tree(node)
+        assert field == Record()
 

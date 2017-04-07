@@ -25,7 +25,9 @@ from .records import (
     ExtensionList,
     Missing,
     Number,
-    TupleList
+    TupleList,
+    PivotDateTime,
+    Text,
 )
 
 class MeasureDimensionMap(Serialisable):
@@ -305,208 +307,6 @@ class OLAPSets(Serialisable):
         self.set = set
 
 
-class Missing(Serialisable):
-
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self._in = _in
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-
-class Number(Serialisable):
-
-    v = Float()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self._in = _in
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-
-
-
-
-class Number(Serialisable):
-
-    v = Float()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self._in = _in
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-
-
-class Error(Serialisable):
-
-    v = String()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self._in = _in
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-
-
 class PCDSDTCEntries(Serialisable):
 
     count = Integer()
@@ -514,7 +314,7 @@ class PCDSDTCEntries(Serialisable):
     m = Typed(expected_type=Missing, )
     n = Typed(expected_type=Number, )
     e = Typed(expected_type=Error, )
-    s = Typed(expected_type=String, )
+    s = Typed(expected_type=Text)
 
     __elements__ = ('m', 'n', 'e', 's')
 
@@ -855,8 +655,8 @@ class GroupItems(Serialisable):
     n = Typed(expected_type=Number, )
     b = Bool(nested=True, )
     e = Typed(expected_type=Error, )
-    s = Typed(expected_type=String, )
-    d = Typed(expected_type=DateTime, )
+    s = Typed(expected_type=Text)
+    d = Typed(xpected_type=PivotDateTime,)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
 
@@ -948,84 +748,6 @@ class FieldGroup(Serialisable):
         self.groupItems = groupItems
 
 
-class PivotDateTime(Serialisable):
-
-    v = DateTime()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('x',)
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self.x = x
-
-
-class Text(Serialisable):
-
-    v = String(allow_none=True)
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self._in = _in
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-
-
 class SharedItems(Serialisable):
 
     containsSemiMixedTypes = Bool(allow_none=True)
@@ -1047,8 +769,8 @@ class SharedItems(Serialisable):
     n = Typed(expected_type=Number, )
     b = Bool(nested=True, )
     e = Typed(expected_type=Error, )
-    s = Typed(expected_type=String, )
-    d = Typed(expected_type=DateTime, )
+    s = Typed(expected_type=Text)
+    d = Typed(xpected_type=PivotDateTime,)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
 
