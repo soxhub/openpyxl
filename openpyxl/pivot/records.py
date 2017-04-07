@@ -33,7 +33,7 @@ class Tuple(Serialisable):
         self.item = item
 
 
-class Tuples(Serialisable):
+class TupleList(Serialisable):
 
     c = Integer(allow_none=True)
     tpl = Typed(expected_type=Tuple, )
@@ -62,7 +62,7 @@ class Error(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -139,7 +139,7 @@ class Number(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -189,7 +189,7 @@ class Missing(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')

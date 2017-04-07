@@ -21,7 +21,7 @@ from .records import (
     ExtensionList,
     Missing,
     Number,
-    Tuples
+    TupleList
 )
 
 class MeasureDimensionMap(Serialisable):
@@ -229,7 +229,7 @@ class ServerFormats(Serialisable):
 class Query(Serialisable):
 
     mdx = String()
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
 
     __elements__ = ('tpls',)
 
@@ -263,8 +263,8 @@ class OLAPSet(Serialisable):
     setDefinition = String()
     sortType = NoneSet(values=(['ascending', 'descending', 'ascendingAlpha', 'descendingAlpha', 'ascendingNatural', 'descendingNatural']))
     queryFailed = Bool()
-    tpls = Typed(expected_type=Tuples, allow_none=True)
-    sortByTuple = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
+    sortByTuple = Typed(expected_type=TupleList, allow_none=True)
 
     __elements__ = ('tpls', 'sortByTuple')
 
@@ -314,7 +314,7 @@ class Missing(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -362,7 +362,7 @@ class Number(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -415,7 +415,7 @@ class Number(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -466,7 +466,7 @@ class Error(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
@@ -985,7 +985,7 @@ class Text(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=Tuples, allow_none=True)
+    tpls = Typed(expected_type=TupleList, allow_none=True)
     x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
