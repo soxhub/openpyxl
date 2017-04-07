@@ -13,20 +13,40 @@ from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
 
 from .cache import (
-    Tuples,
     DateTime,
     String,
 )
 
+class Tuple(Serialisable):
 
-class Index(Serialisable):
-
-    v = Integer()
+    fld = Integer()
+    hier = Integer()
+    item = Integer()
 
     def __init__(self,
-                 v=None,
+                 fld=None,
+                 hier=None,
+                 item=None,
                 ):
-        self.v = v
+        self.fld = fld
+        self.hier = hier
+        self.item = item
+
+
+class Tuples(Serialisable):
+
+    c = Integer(allow_none=True)
+    tpl = Typed(expected_type=Tuple, )
+
+    __elements__ = ('tpl',)
+
+    def __init__(self,
+                 c=None,
+                 tpl=None,
+                ):
+        self.c = c
+        self.tpl = tpl
+
 
 class Error(Serialisable):
 

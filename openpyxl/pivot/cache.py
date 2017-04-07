@@ -21,8 +21,7 @@ from .records import (
     ExtensionList,
     Missing,
     Number,
-    Serialisable,
-    Tuples,
+    Tuples
 )
 
 class MeasureDimensionMap(Serialisable):

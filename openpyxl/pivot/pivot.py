@@ -521,7 +521,9 @@ class PageFields(Serialisable):
 
 class I(Serialisable):
 
-    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min', 'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand', 'blank']))
+    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
+                     'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
+                     'blank']))
     r = Integer()
     i = Integer()
     x = NestedInteger(allow_none=True)
