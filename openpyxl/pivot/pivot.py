@@ -611,6 +611,7 @@ class DataFieldList(Serialisable):
 
 class PageField(Serialisable):
 
+
     fld = Integer()
     item = Integer(allow_none=True)
     hier = Integer()
@@ -815,6 +816,8 @@ class Items(Serialisable):
 
 class PivotField(Serialisable):
 
+    tagname = "pivotField"
+
     name = String(allow_none=True)
     axis = NoneSet(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
     dataField = Bool()
@@ -867,57 +870,57 @@ class PivotField(Serialisable):
     autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('items', 'autoSortScope', 'extLst')
+    __elements__ = ('items', 'autoSortScope', )
 
     def __init__(self,
                  name=None,
                  axis=None,
-                 dataField=None,
+                 dataField=False,
                  subtotalCaption=None,
-                 showDropDowns=None,
-                 hiddenLevel=None,
+                 showDropDowns=True,
+                 hiddenLevel=False,
                  uniqueMemberProperty=None,
-                 compact=None,
-                 allDrilled=None,
+                 compact=True,
+                 allDrilled=False,
                  numFmtId=None,
-                 outline=None,
-                 subtotalTop=None,
-                 dragToRow=None,
-                 dragToCol=None,
-                 multipleItemSelectionAllowed=None,
-                 dragToPage=None,
-                 dragToData=None,
-                 dragOff=None,
-                 showAll=None,
-                 insertBlankRow=None,
-                 serverField=None,
-                 insertPageBreak=None,
-                 autoShow=None,
-                 topAutoShow=None,
+                 outline=True,
+                 subtotalTop=True,
+                 dragToRow=True,
+                 dragToCol=True,
+                 multipleItemSelectionAllowed=False,
+                 dragToPage=True,
+                 dragToData=True,
+                 dragOff=True,
+                 showAll=True,
+                 insertBlankRow=False,
+                 serverField=False,
+                 insertPageBreak=False,
+                 autoShow=False,
+                 topAutoShow=False,
                  hideNewItems=None,
-                 measureFilter=None,
-                 includeNewItemsInFilter=None,
-                 itemPageCount=None,
-                 sortType=None,
+                 measureFilter=False,
+                 includeNewItemsInFilter=False,
+                 itemPageCount=10,
+                 sortType="manual",
                  dataSourceSort=None,
-                 nonAutoSortDefault=None,
+                 nonAutoSortDefault=False,
                  rankBy=None,
-                 defaultSubtotal=None,
-                 sumSubtotal=None,
-                 countASubtotal=None,
-                 avgSubtotal=None,
-                 maxSubtotal=None,
-                 minSubtotal=None,
-                 productSubtotal=None,
-                 countSubtotal=None,
-                 stdDevSubtotal=None,
-                 stdDevPSubtotal=None,
-                 varSubtotal=None,
-                 varPSubtotal=None,
-                 showPropCell=None,
-                 showPropTip=None,
-                 showPropAsCaption=None,
-                 defaultAttributeDrillState=None,
+                 defaultSubtotal=True,
+                 sumSubtotal=False,
+                 countASubtotal=False,
+                 avgSubtotal=False,
+                 maxSubtotal=False,
+                 minSubtotal=False,
+                 productSubtotal=False,
+                 countSubtotal=False,
+                 stdDevSubtotal=False,
+                 stdDevPSubtotal=False,
+                 varSubtotal=False,
+                 varPSubtotal=False,
+                 showPropCell=False,
+                 showPropTip=False,
+                 showPropAsCaption=False,
+                 defaultAttributeDrillState=False,
                  items=None,
                  autoSortScope=None,
                  extLst=None,
