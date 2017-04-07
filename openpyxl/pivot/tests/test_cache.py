@@ -15,10 +15,10 @@ def CacheField():
 class TestCacheField:
 
     def test_ctor(self, CacheField):
-        field = CacheField()
+        field = CacheField(name="ID")
         xml = tostring(field.to_tree())
         expected = """
-        <root />
+        <cacheField databaseField="0" hierarchy="0" level="0" memberPropertyField="0" name="ID" serverField="0" sqlType="0" uniqueList="1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -26,8 +26,8 @@ class TestCacheField:
 
     def test_from_xml(self, CacheField):
         src = """
-        <root />
+        <cacheField name="ID"/>
         """
         node = fromstring(src)
         field = CacheField.from_tree(node)
-        assert field == CacheField()
+        assert field == CacheField(name="ID")

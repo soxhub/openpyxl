@@ -9,6 +9,7 @@ from openpyxl.descriptors import (
     String,
     Integer,
     DateTime,
+    Sequence,
 )
 
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
@@ -769,7 +770,7 @@ class SharedItems(Serialisable):
     n = Typed(expected_type=Number, )
     b = Bool(nested=True, )
     e = Typed(expected_type=Error, )
-    s = Typed(expected_type=Text)
+    s = Sequence(expected_type=Text)
     d = Typed(xpected_type=PivotDateTime,)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
@@ -793,7 +794,7 @@ class SharedItems(Serialisable):
                  n=None,
                  b=None,
                  e=None,
-                 s=None,
+                 s=(),
                  d=None,
                 ):
         self.containsSemiMixedTypes = containsSemiMixedTypes
@@ -820,16 +821,18 @@ class SharedItems(Serialisable):
 
 class CacheField(Serialisable):
 
+    tagname = "cacheField"
+
     name = String()
     caption = String(allow_none=True)
     propertyName = String(allow_none=True)
-    serverField = Bool(allow_none=True)
+    serverField = Bool()
     uniqueList = Bool(allow_none=True)
-    numFmtId = Integer()
+    numFmtId = Integer(allow_none=True)
     formula = String(allow_none=True)
-    sqlType = Integer(allow_none=True)
-    hierarchy = Integer(allow_none=True)
-    level = Integer(allow_none=True)
+    sqlType = Integer()
+    hierarchy = Integer()
+    level = Integer()
     databaseField = Bool()
     mappingCount = Integer(allow_none=True)
     memberPropertyField = Bool(allow_none=True)
@@ -838,22 +841,22 @@ class CacheField(Serialisable):
     mpMap = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('sharedItems', 'fieldGroup', 'mpMap', 'extLst')
+    __elements__ = ('sharedItems', 'fieldGroup', 'mpMap',)
 
     def __init__(self,
                  name=None,
                  caption=None,
                  propertyName=None,
-                 serverField=None,
-                 uniqueList=None,
+                 serverField=False,
+                 uniqueList=True,
                  numFmtId=None,
                  formula=None,
-                 sqlType=None,
-                 hierarchy=None,
-                 level=None,
+                 sqlType=0,
+                 hierarchy=0,
+                 level=0,
                  databaseField=None,
                  mappingCount=None,
-                 memberPropertyField=None,
+                 memberPropertyField=False,
                  sharedItems=None,
                  fieldGroup=None,
                  mpMap=None,
@@ -878,7 +881,7 @@ class CacheField(Serialisable):
         self.extLst = extLst
 
 
-class CacheFields(Serialisable):
+class CacheFieldList(Serialisable):
 
     count = Integer()
     cacheField = Typed(expected_type=CacheField, allow_none=True)
@@ -1056,7 +1059,7 @@ class PivotCacheDefinition(Serialisable):
     supportSubquery = Bool(allow_none=True)
     supportAdvancedDrill = Bool(allow_none=True)
     cacheSource = Typed(expected_type=CacheSource, )
-    cacheFields = Typed(expected_type=CacheFields, )
+    cacheFields = Typed(expected_type=CacheFieldList, )
     cacheHierarchies = Typed(expected_type=CacheHierarchies, allow_none=True)
     kpis = Typed(expected_type=PCDKPIs, allow_none=True)
     tupleCache = Typed(expected_type=TupleCache, allow_none=True)
