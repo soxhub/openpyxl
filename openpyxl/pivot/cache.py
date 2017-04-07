@@ -12,20 +12,17 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.nested import NestedInteger
 
-from .cache import (
+from .pivot import T
+from .records import (
     Boolean,
-    DateTime,
     Error,
     ExtensionList,
-    Index,
     Missing,
     Number,
     Serialisable,
-    String,
-    Tuple,
     Tuples,
-    X,
 )
 
 class MeasureDimensionMap(Serialisable):
@@ -164,16 +161,6 @@ class CalculatedMembers(Serialisable):
                 ):
         self.count = count
         self.calculatedMember = calculatedMember
-
-
-class Index(Serialisable):
-
-    v = Integer()
-
-    def __init__(self,
-                 v=None,
-                ):
-        self.v = v
 
 
 class CalculatedItem(Serialisable):
@@ -315,16 +302,6 @@ class OLAPSets(Serialisable):
         self.set = set
 
 
-class X(Serialisable):
-
-    v = Integer()
-
-    def __init__(self,
-                 v=None,
-                ):
-        self.v = v
-
-
 class Missing(Serialisable):
 
     u = Bool()
@@ -339,7 +316,7 @@ class Missing(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -387,7 +364,7 @@ class Number(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -440,7 +417,7 @@ class Number(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -491,7 +468,7 @@ class Error(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -901,7 +878,7 @@ class GroupItems(Serialisable):
 class DiscretePr(Serialisable):
 
     count = Integer()
-    x = Typed(expected_type=Index, )
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('x',)
 
@@ -975,7 +952,7 @@ class PivotDateTime(Serialisable):
     f = Bool()
     c = String()
     cp = Integer()
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('x',)
 
@@ -1010,7 +987,7 @@ class Text(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 

@@ -10,9 +10,9 @@ from openpyxl.descriptors import (
 )
 
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.nested import NestedInteger
 
 from .cache import (
-    X,
     Tuples,
     DateTime,
     String,
@@ -43,7 +43,7 @@ class Error(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -85,7 +85,7 @@ class Boolean(Serialisable):
     f = Bool()
     c = String()
     cp = Integer()
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('x',)
 
@@ -120,7 +120,7 @@ class Number(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -170,7 +170,7 @@ class Missing(Serialisable):
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
     tpls = Typed(expected_type=Tuples, allow_none=True)
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
@@ -213,7 +213,7 @@ class Record(Serialisable):
     e = Typed(expected_type=Error, )
     s = Typed(expected_type=String, )
     d = Typed(expected_type=DateTime, )
-    x = Typed(expected_type=Index, )
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd', 'x')
 
@@ -251,4 +251,3 @@ class PivotCacheRecords(Serialisable):
         self.count = count
         self.r = r
         self.extLst = extLst
-

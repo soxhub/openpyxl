@@ -519,22 +519,12 @@ class PageFields(Serialisable):
         self.pageField = pageField
 
 
-class X(Serialisable):
-
-    v = Integer()
-
-    def __init__(self,
-                 v=None,
-                ):
-        self.v = v
-
-
 class I(Serialisable):
 
     t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min', 'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand', 'blank']))
     r = Integer()
     i = Integer()
-    x = Typed(expected_type=X, allow_none=True)
+    x = NestedInteger(allow_none=True)
 
     __elements__ = ('x',)
 
