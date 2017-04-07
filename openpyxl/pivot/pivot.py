@@ -12,6 +12,7 @@ from openpyxl.descriptors import (
     Alias,
     Bool,
 )
+
 from openpyxl.descriptors.excel import ExtensionList
 
 from openpyxl.worksheet.filters import (

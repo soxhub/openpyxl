@@ -8,7 +8,9 @@ from openpyxl.descriptors import (
     String,
     Integer,
 )
-from openpyxl.descriptors.excel import HexBinary as hexBinary, ExtensionList
+
+from openpyxl.descriptors.excel import HexBinary, ExtensionList
+
 from .cache import (
     X,
     Tuples,
@@ -34,8 +36,8 @@ class Error(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -111,8 +113,8 @@ class Number(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -154,47 +156,6 @@ class Number(Serialisable):
         self._in = _in
 
 
-class X(Serialisable):
-
-    v = Integer()
-
-    def __init__(self,
-                 v=None,
-                ):
-        self.v = v
-
-
-class Tuple(Serialisable):
-
-    fld = Integer()
-    hier = Integer()
-    item = Integer()
-
-    def __init__(self,
-                 fld=None,
-                 hier=None,
-                 item=None,
-                ):
-        self.fld = fld
-        self.hier = hier
-        self.item = item
-
-
-class Tuples(Serialisable):
-
-    c = Integer(allow_none=True)
-    tpl = Typed(expected_type=Tuple, )
-
-    __elements__ = ('tpl',)
-
-    def __init__(self,
-                 c=None,
-                 tpl=None,
-                ):
-        self.c = c
-        self.tpl = tpl
-
-
 class Missing(Serialisable):
 
     u = Bool()
@@ -202,8 +163,8 @@ class Missing(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)

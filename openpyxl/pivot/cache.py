@@ -11,9 +11,22 @@ from openpyxl.descriptors import (
     DateTime,
 )
 
-from openpyxl.descriptors.excel import HexBinary as hexBinary, ExtensionList
+from openpyxl.descriptors.excel import HexBinary, ExtensionList
 
-#from scratchpad.pivot import *
+from .cache import (
+    Boolean,
+    DateTime,
+    Error,
+    ExtensionList,
+    Index,
+    Missing,
+    Number,
+    Serialisable,
+    String,
+    Tuple,
+    Tuples,
+    X,
+)
 
 class MeasureDimensionMap(Serialisable):
 
@@ -163,138 +176,6 @@ class Index(Serialisable):
         self.v = v
 
 
-class PivotAreaReference(Serialisable):
-
-    field = Integer(allow_none=True)
-    count = Integer()
-    selected = Bool()
-    byPosition = Bool()
-    relative = Bool()
-    defaultSubtotal = Bool()
-    sumSubtotal = Bool()
-    countASubtotal = Bool()
-    avgSubtotal = Bool()
-    maxSubtotal = Bool()
-    minSubtotal = Bool()
-    productSubtotal = Bool()
-    countSubtotal = Bool()
-    stdDevSubtotal = Bool()
-    stdDevPSubtotal = Bool()
-    varSubtotal = Bool()
-    varPSubtotal = Bool()
-    x = Typed(expected_type=Index, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('x', 'extLst')
-
-    def __init__(self,
-                 field=None,
-                 count=None,
-                 selected=None,
-                 byPosition=None,
-                 relative=None,
-                 defaultSubtotal=None,
-                 sumSubtotal=None,
-                 countASubtotal=None,
-                 avgSubtotal=None,
-                 maxSubtotal=None,
-                 minSubtotal=None,
-                 productSubtotal=None,
-                 countSubtotal=None,
-                 stdDevSubtotal=None,
-                 stdDevPSubtotal=None,
-                 varSubtotal=None,
-                 varPSubtotal=None,
-                 x=None,
-                 extLst=None,
-                ):
-        self.field = field
-        self.count = count
-        self.selected = selected
-        self.byPosition = byPosition
-        self.relative = relative
-        self.defaultSubtotal = defaultSubtotal
-        self.sumSubtotal = sumSubtotal
-        self.countASubtotal = countASubtotal
-        self.avgSubtotal = avgSubtotal
-        self.maxSubtotal = maxSubtotal
-        self.minSubtotal = minSubtotal
-        self.productSubtotal = productSubtotal
-        self.countSubtotal = countSubtotal
-        self.stdDevSubtotal = stdDevSubtotal
-        self.stdDevPSubtotal = stdDevPSubtotal
-        self.varSubtotal = varSubtotal
-        self.varPSubtotal = varPSubtotal
-        self.x = x
-        self.extLst = extLst
-
-
-class PivotAreaReferences(Serialisable):
-
-    count = Integer()
-    reference = Typed(expected_type=PivotAreaReference, )
-
-    __elements__ = ('reference',)
-
-    def __init__(self,
-                 count=None,
-                 reference=None,
-                ):
-        self.count = count
-        self.reference = reference
-
-
-class PivotArea(Serialisable):
-
-    field = Integer(allow_none=True)
-    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button', 'topEnd', 'topRight']))
-    dataOnly = Bool()
-    labelOnly = Bool()
-    grandRow = Bool()
-    grandCol = Bool()
-    cacheIndex = Bool()
-    outline = Bool()
-    offset = String()
-    collapsedLevelsAreSubtotals = Bool()
-    axis = Set(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
-    fieldPosition = Integer(allow_none=True)
-    references = Typed(expected_type=PivotAreaReferences, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('references', 'extLst')
-
-    def __init__(self,
-                 field=None,
-                 type=None,
-                 dataOnly=None,
-                 labelOnly=None,
-                 grandRow=None,
-                 grandCol=None,
-                 cacheIndex=None,
-                 outline=None,
-                 offset=None,
-                 collapsedLevelsAreSubtotals=None,
-                 axis=None,
-                 fieldPosition=None,
-                 references=None,
-                 extLst=None,
-                ):
-        self.field = field
-        self.type = type
-        self.dataOnly = dataOnly
-        self.labelOnly = labelOnly
-        self.grandRow = grandRow
-        self.grandCol = grandCol
-        self.cacheIndex = cacheIndex
-        self.outline = outline
-        self.offset = offset
-        self.collapsedLevelsAreSubtotals = collapsedLevelsAreSubtotals
-        self.axis = axis
-        self.fieldPosition = fieldPosition
-        self.references = references
-        self.extLst = extLst
-
-
 class CalculatedItem(Serialisable):
 
     field = Integer(allow_none=True)
@@ -357,37 +238,6 @@ class ServerFormats(Serialisable):
                 ):
         self.count = count
         self.serverFormat = serverFormat
-
-
-class Tuple(Serialisable):
-
-    fld = Integer()
-    hier = Integer()
-    item = Integer()
-
-    def __init__(self,
-                 fld=None,
-                 hier=None,
-                 item=None,
-                ):
-        self.fld = fld
-        self.hier = hier
-        self.item = item
-
-
-class Tuples(Serialisable):
-
-    c = Integer(allow_none=True)
-    tpl = Typed(expected_type=Tuple, )
-
-    __elements__ = ('tpl',)
-
-    def __init__(self,
-                 c=None,
-                 tpl=None,
-                ):
-        self.c = c
-        self.tpl = tpl
 
 
 class Query(Serialisable):
@@ -482,8 +332,8 @@ class Missing(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -530,8 +380,8 @@ class Number(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -583,8 +433,8 @@ class Number(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -634,8 +484,8 @@ class Error(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -1153,8 +1003,8 @@ class Text(Serialisable):
     c = String()
     cp = Integer()
     _in = Integer(allow_none=True)
-    bc = hexBinary()
-    fc = hexBinary()
+    bc = HexBinary()
+    fc = HexBinary()
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
@@ -1193,33 +1043,6 @@ class Text(Serialisable):
         self.st = st
         self.b = b
         self.tpls = tpls
-        self.x = x
-
-
-class Boolean(Serialisable):
-
-    v = Bool()
-    u = Bool()
-    f = Bool()
-    c = Typed(expected_type=Text, allow_none=True)
-    cp = Integer()
-    x = Typed(expected_type=X, allow_none=True)
-
-    __elements__ = ('x',)
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
         self.x = x
 
 
@@ -1366,29 +1189,6 @@ class CacheFields(Serialisable):
                 ):
         self.count = count
         self.cacheField = cacheField
-
-
-class Extension(Serialisable):
-
-    uri = String()
-
-    def __init__(self,
-                 uri=None,
-                ):
-        self.uri = uri
-
-
-class ExtensionList(Serialisable):
-
-    # uses element group EG_ExtensionList
-    ext = Typed(expected_type=Extension, allow_none=True)
-
-    __elements__ = ('ext',)
-
-    def __init__(self,
-                 ext=None,
-                ):
-        self.ext = ext
 
 
 class RangeSet(Serialisable):
