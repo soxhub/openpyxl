@@ -549,7 +549,6 @@ class Format(Serialisable):
 
 class FormatList(Serialisable):
 
-    count = Integer()
     format = Typed(expected_type=Format, )
 
     __elements__ = ('format',)
@@ -559,7 +558,11 @@ class FormatList(Serialisable):
                  format=None,
                 ):
         self.count = count
-        self.format = format
+
+
+    @property
+    def count(self):
+        return len(self.format)
 
 
 class DataField(Serialisable):
@@ -647,7 +650,6 @@ class PageField(Serialisable):
 
 class PageFields(Serialisable):
 
-    count = Integer()
     pageField = Typed(expected_type=PageField, )
 
     __elements__ = ('pageField',)
@@ -656,8 +658,12 @@ class PageFields(Serialisable):
                  count=None,
                  pageField=None,
                 ):
-        self.count = count
         self.pageField = pageField
+
+
+    @property
+    def count(self):
+        return len(self.pageField)
 
 
 class RowItem(Serialisable):
@@ -1007,9 +1013,8 @@ class PivotField(Serialisable):
         self.extLst = extLst
 
 
-class PivotFields(Serialisable):
+class PivotFieldList(Serialisable):
 
-    count = Integer()
     pivotField = Typed(expected_type=PivotField, )
 
     __elements__ = ('pivotField',)
@@ -1020,6 +1025,11 @@ class PivotFields(Serialisable):
                 ):
         self.count = count
         self.pivotField = pivotField
+
+
+    @property
+    def count(self):
+        return len(self.pivotField)
 
 
 class Location(Serialisable):
@@ -1119,7 +1129,7 @@ class PivotTableDefinition(Serialisable):
     applyAlignmentFormats = Bool()
     applyWidthHeightFormats = Bool()
     location = Typed(expected_type=Location, )
-    pivotFields = Typed(expected_type=PivotFields, allow_none=True)
+    pivotFields = Typed(expected_type=PivotFieldList, allow_none=True)
     rowFields = Typed(expected_type=RowFields, allow_none=True)
     rowItems = Typed(expected_type=RowItems, allow_none=True)
     colFields = Typed(expected_type=ColFields, allow_none=True)
