@@ -611,6 +611,7 @@ class DataFieldList(Serialisable):
     def __init__(self,
                  count=None,
                  dataField=None,
+
                 ):
         self.dataField = dataField
 
@@ -1034,6 +1035,8 @@ class PivotFieldList(Serialisable):
 
 class Location(Serialisable):
 
+    tagname = "location"
+
     ref = String()
     firstHeaderRow = Integer()
     firstDataRow = Integer()
@@ -1059,21 +1062,23 @@ class Location(Serialisable):
 
 class PivotTableDefinition(Serialisable):
 
+    tagname = "pivotTableDefinition"
+
     #Using attribute groupAG_AutoFormat
-    name = String(allow_none=True)
+    name = String()
     cacheId = Integer()
     dataOnRows = Bool()
     dataPosition = Integer(allow_none=True)
     dataCaption = String()
-    grandTotalCaption = String()
-    errorCaption = String()
+    grandTotalCaption = String(allow_none=True)
+    errorCaption = String(allow_none=True)
     showError = Bool()
-    missingCaption = String()
+    missingCaption = String(allow_none=True)
     showMissing = Bool()
-    pageStyle = String()
-    pivotTableStyle = String()
-    vacatedStyle = String()
-    tag = String()
+    pageStyle = String(allow_none=True)
+    pivotTableStyle = String(allow_none=True)
+    vacatedStyle = String(allow_none=True)
+    tag = String(allow_none=True)
     updatedVersion = Integer()
     minRefreshableVersion = Integer()
     asteriskTotals = Bool()
@@ -1116,12 +1121,12 @@ class PivotTableDefinition(Serialisable):
     immersive = Bool()
     multipleFieldFilters = Bool()
     chartFormat = Integer()
-    rowHeaderCaption = String()
-    colHeaderCaption = String()
+    rowHeaderCaption = String(allow_none=True)
+    colHeaderCaption = String(allow_none=True)
     fieldListSortAscending = Bool()
     mdxSubqueries = Bool()
     customListSort = Bool(allow_none=True)
-    autoFormatId = Integer()
+    autoFormatId = Integer(allow_none=True)
     applyNumberFormats = Bool()
     applyBorderFormats = Bool()
     applyFontFormats = Bool()
@@ -1151,72 +1156,72 @@ class PivotTableDefinition(Serialisable):
     def __init__(self,
                  name=None,
                  cacheId=None,
-                 dataOnRows=None,
+                 dataOnRows=False,
                  dataPosition=None,
                  dataCaption=None,
                  grandTotalCaption=None,
                  errorCaption=None,
-                 showError=None,
+                 showError=False,
                  missingCaption=None,
-                 showMissing=None,
+                 showMissing=True,
                  pageStyle=None,
                  pivotTableStyle=None,
                  vacatedStyle=None,
                  tag=None,
-                 updatedVersion=None,
-                 minRefreshableVersion=None,
-                 asteriskTotals=None,
-                 showItems=None,
-                 editData=None,
-                 disableFieldList=None,
-                 showCalcMbrs=None,
-                 visualTotals=None,
-                 showMultipleLabel=None,
-                 showDataDropDown=None,
-                 showDrill=None,
-                 printDrill=None,
-                 showMemberPropertyTips=None,
-                 showDataTips=None,
-                 enableWizard=None,
-                 enableDrill=None,
-                 enableFieldProperties=None,
-                 preserveFormatting=None,
-                 useAutoFormatting=None,
-                 pageWrap=None,
-                 pageOverThenDown=None,
-                 subtotalHiddenItems=None,
-                 rowGrandTotals=None,
-                 colGrandTotals=None,
-                 fieldPrintTitles=None,
-                 itemPrintTitles=None,
-                 mergeItem=None,
-                 showDropZones=None,
-                 createdVersion=None,
-                 indent=None,
-                 showEmptyRow=None,
-                 showEmptyCol=None,
+                 updatedVersion=0,
+                 minRefreshableVersion=0,
+                 asteriskTotals=False,
+                 showItems=True,
+                 editData=False,
+                 disableFieldList=False,
+                 showCalcMbrs=True,
+                 visualTotals=True,
+                 showMultipleLabel=True,
+                 showDataDropDown=True,
+                 showDrill=True,
+                 printDrill=False,
+                 showMemberPropertyTips=True,
+                 showDataTips=True,
+                 enableWizard=True,
+                 enableDrill=True,
+                 enableFieldProperties=True,
+                 preserveFormatting=True,
+                 useAutoFormatting=False,
+                 pageWrap=0,
+                 pageOverThenDown=False,
+                 subtotalHiddenItems=False,
+                 rowGrandTotals=True,
+                 colGrandTotals=True,
+                 fieldPrintTitles=False,
+                 itemPrintTitles=False,
+                 mergeItem=False,
+                 showDropZones=True,
+                 createdVersion=0,
+                 indent=1,
+                 showEmptyRow=False,
+                 showEmptyCol=False,
                  showHeaders=None,
-                 compact=None,
-                 outline=None,
-                 outlineData=None,
-                 compactData=None,
-                 published=None,
-                 gridDropZones=None,
-                 immersive=None,
+                 compact=True,
+                 outline=False,
+                 outlineData=False,
+                 compactData=True,
+                 published=False,
+                 gridDropZones=False,
+                 immersive=True,
                  multipleFieldFilters=None,
-                 chartFormat=None,
+                 chartFormat=0,
                  rowHeaderCaption=None,
                  colHeaderCaption=None,
                  fieldListSortAscending=None,
                  mdxSubqueries=None,
                  customListSort=None,
                  autoFormatId=None,
-                 applyNumberFormats=None,
-                 applyBorderFormats=None,
-                 applyFontFormats=None,
-                 applyPatternFormats=None,
-                 applyAlignmentFormats=None,
-                 applyWidthHeightFormats=None,
+                 applyNumberFormats=False,
+                 applyBorderFormats=False,
+                 applyFontFormats=False,
+                 applyPatternFormats=False,
+                 applyAlignmentFormats=False,
+                 applyWidthHeightFormats=False,
                  location=None,
                  pivotFields=None,
                  rowFields=None,

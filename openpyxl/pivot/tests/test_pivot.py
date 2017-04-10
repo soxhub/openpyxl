@@ -115,3 +115,71 @@ class TestDateField:
         node = fromstring(src)
         df = DataField.from_tree(node)
         assert df == DataField(fld=4, name="Sum of impressions", baseField=0, baseItem=0)
+
+
+@pytest.fixture
+def Location():
+    from ..pivot import Location
+    return Location
+
+
+class TestLocation:
+
+    def test_ctor(self, Location):
+        loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
+        xml = tostring(loc.to_tree())
+        expected = """
+        <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Location):
+        src = """
+        <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+        """
+        node = fromstring(src)
+        loc = Location.from_tree(node)
+        assert loc == Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
+
+
+@pytest.fixture
+def PivotTableDefinition():
+    from ..pivot import PivotTableDefinition
+    return PivotTableDefinition
+
+
+class TestPivotTableDefinition:
+
+    def test_ctor(self, PivotTableDefinition, Location):
+        loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
+        defn = PivotTableDefinition(name="PivotTable1", cacheId=68,
+                                    applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
+                                    createdVersion=4, gridDropZones=True, minRefreshableVersion=3,
+                                    outlineData=True, useAutoFormatting=True, location=loc, indent=0,
+                                    itemPrintTitles=True, outline=True)
+        xml = tostring(defn.to_tree())
+        expected = """
+        <pivotTableDefinition name="PivotTable1"  applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" cacheId="68" asteriskTotals="0" chartFormat="0" colGrandTotals="1" compact="1" compactData="1" dataCaption="Values" dataOnRows="0" disableFieldList="0" editData="0" enableDrill="1" enableFieldProperties="1" enableWizard="1" fieldListSortAscending="0" fieldPrintTitles="0" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" immersive="1"  mdxSubqueries="0" mergeItem="0" multipleFieldFilters="0" pageOverThenDown="0" pageWrap="0" preserveFormatting="1" printDrill="0" published="0" rowGrandTotals="1" showCalcMbrs="1" showDataDropDown="1" showDataTips="1" showDrill="1" showDropZones="1" showEmptyCol="0" showEmptyRow="0" showError="0" showHeaders="0" showItems="1" showMemberPropertyTips="1" showMissing="1" showMultipleLabel="1" subtotalHiddenItems="0" visualTotals="1">
+           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+        </pivotTableDefinition>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotTableDefinition, Location):
+        src = """
+        <pivotTableDefinition name="PivotTable1" cacheId="74" applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" dataCaption="Values" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" multipleFieldFilters="0">
+           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+        </pivotTableDefinition>
+        """
+        node = fromstring(src)
+        defn = PivotTableDefinition.from_tree(node)
+        loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
+        assert defn == PivotTableDefinition(name="PivotTable1", cacheId=74,
+                                            applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
+                                            minRefreshableVersion=3, outlineData=True, useAutoFormatting=True,
+                                            location=loc, indent=0, itemPrintTitles=True, outline=True,
+                                            gridDropZones=True, createdVersion=4)
