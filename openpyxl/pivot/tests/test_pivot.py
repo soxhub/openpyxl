@@ -34,15 +34,15 @@ class TestPivotField:
 
 
 @pytest.fixture
-def Item():
-    from ..pivot import Item
-    return Item
+def FieldItem():
+    from ..pivot import FieldItem
+    return FieldItem
 
 
-class TestItem:
+class TestFieldItem:
 
-    def test_ctor(self, Item):
-        item = Item()
+    def test_ctor(self, FieldItem):
+        item = FieldItem()
         xml = tostring(item.to_tree())
         expected = """
         <item c="0" d="0" e="0" f="0" h="0" m="0" s="0" sd="1" t="data" />
@@ -51,10 +51,10 @@ class TestItem:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Item):
+    def test_from_xml(self, FieldItem):
         src = """
         <item m="1" x="2"/>
         """
         node = fromstring(src)
-        item = Item.from_tree(node)
-        assert item == Item(m=True, x=2)
+        item = FieldItem.from_tree(node)
+        assert item == FieldItem(m=True, x=2)

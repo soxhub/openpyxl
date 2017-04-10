@@ -759,7 +759,7 @@ class AutoSortScope(Serialisable):
         self.pivotArea = pivotArea
 
 
-class Item(Serialisable):
+class FieldItem(Serialisable):
 
     tagname = "item"
 
@@ -803,12 +803,12 @@ class Item(Serialisable):
         self.e = e
 
 
-class Items(Serialisable):
+class FieldItems(Serialisable):
 
     tagname = "items"
 
     count = Integer()
-    item = Sequence(expected_type=Item, )
+    item = Sequence(expected_type=FieldItem, )
 
     __elements__ = ('item',)
 
@@ -877,7 +877,7 @@ class PivotField(Serialisable):
     showPropTip = Bool(allow_none=True)
     showPropAsCaption = Bool(allow_none=True)
     defaultAttributeDrillState = Bool(allow_none=True)
-    items = Typed(expected_type=Items, allow_none=True)
+    items = Typed(expected_type=FieldItems, allow_none=True)
     autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
