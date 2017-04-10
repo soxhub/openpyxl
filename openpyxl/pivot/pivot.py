@@ -653,21 +653,23 @@ class PageFields(Serialisable):
         self.pageField = pageField
 
 
-class I(Serialisable):
+class RowItem(Serialisable):
+
+    tagname = "i"
 
     t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
                      'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
                      'blank']))
     r = Integer()
     i = Integer()
-    x = NestedInteger(allow_none=True)
+    x = NestedInteger(allow_none=True, attribute="v")
 
     __elements__ = ('x',)
 
     def __init__(self,
-                 t=None,
-                 r=None,
-                 i=None,
+                 t="data",
+                 r=0,
+                 i=0,
                  x=None,
                 ):
         self.t = t
@@ -678,8 +680,7 @@ class I(Serialisable):
 
 class colItems(Serialisable):
 
-    count = Integer()
-    i = Typed(expected_type=I, )
+    i = Typed(expected_type=RowItem, )
 
     __elements__ = ('i',)
 
@@ -687,8 +688,12 @@ class colItems(Serialisable):
                  count=None,
                  i=None,
                 ):
-        self.count = count
         self.i = i
+
+
+    @property
+    def count(self):
+        return len(self.i)
 
 
 class Field(Serialisable):
@@ -699,7 +704,6 @@ class Field(Serialisable):
                  x=None,
                 ):
         self.x = x
-
 
 
 class ColFields(Serialisable):
@@ -720,7 +724,7 @@ class ColFields(Serialisable):
 class RowItems(Serialisable):
 
     count = Integer()
-    i = Typed(expected_type=I, )
+    i = Typed(expected_type=RowItem, )
 
     __elements__ = ('i',)
 

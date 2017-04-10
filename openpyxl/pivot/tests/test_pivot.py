@@ -58,3 +58,33 @@ class TestFieldItem:
         node = fromstring(src)
         item = FieldItem.from_tree(node)
         assert item == FieldItem(m=True, x=2)
+
+@pytest.fixture
+def RowItem():
+    from ..pivot import RowItem
+    return RowItem
+
+
+class TestRowItem:
+
+    def test_ctor(self, RowItem):
+        fut = RowItem(x=4)
+        xml = tostring(fut.to_tree())
+        expected = """
+        <i i="0" r="0" t="data">
+          <x v="4" />
+        </i>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, RowItem):
+        src = """
+        <i r="1">
+          <x v="2"/>
+        </i>
+        """
+        node = fromstring(src)
+        fut = RowItem.from_tree(node)
+        assert fut == RowItem(r=1, x=2)
