@@ -55,7 +55,6 @@ class ColHierarchiesUsage(Serialisable):
                  count=None,
                  colHierarchyUsage=None,
                 ):
-        self.count = count
         self.colHierarchyUsage = colHierarchyUsage
 
 
@@ -70,7 +69,6 @@ class RowHierarchiesUsage(Serialisable):
                  count=None,
                  rowHierarchyUsage=None,
                 ):
-        self.count = count
         self.rowHierarchyUsage = rowHierarchyUsage
 
 
@@ -133,7 +131,6 @@ class PivotFilters(Serialisable):
                  count=None,
                  filter=None,
                 ):
-        self.count = count
         self.filter = filter
 
 
@@ -172,9 +169,8 @@ class Member(Serialisable):
         self.name = name
 
 
-class Members(Serialisable):
+class MemberList(Serialisable):
 
-    count = Integer()
     level = Integer(allow_none=True)
     member = Typed(expected_type=Member, )
 
@@ -185,9 +181,12 @@ class Members(Serialisable):
                  level=None,
                  member=None,
                 ):
-        self.count = count
         self.level = level
         self.member = member
+
+    @property
+    def count(self):
+        return len(self.member)
 
 
 class MemberProperty(Serialisable):
@@ -226,7 +225,6 @@ class MemberProperty(Serialisable):
 
 class MemberPropertyList(Serialisable):
 
-    count = Integer()
     mp = Typed(expected_type=MemberProperty, )
 
     __elements__ = ('mp',)
@@ -235,8 +233,12 @@ class MemberPropertyList(Serialisable):
                  count=None,
                  mp=None,
                 ):
-        self.count = count
         self.mp = mp
+
+
+    @property
+    def count(self):
+        return len(self.mp)
 
 
 class PivotHierarchy(Serialisable):
@@ -253,7 +255,7 @@ class PivotHierarchy(Serialisable):
     includeNewItemsInFilter = Bool()
     caption = String(allow_none=True)
     mps = Typed(expected_type=MemberPropertyList, allow_none=True)
-    members = Typed(expected_type=Members, allow_none=True)
+    members = Typed(expected_type=MemberList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('mps', 'members', 'extLst')
@@ -292,7 +294,6 @@ class PivotHierarchy(Serialisable):
 
 class PivotHierarchyList(Serialisable):
 
-    count = Integer()
     pivotHierarchy = Typed(expected_type=PivotHierarchy, )
 
     __elements__ = ('pivotHierarchy',)
@@ -301,8 +302,12 @@ class PivotHierarchyList(Serialisable):
                  count=None,
                  pivotHierarchy=None,
                 ):
-        self.count = count
         self.pivotHierarchy = pivotHierarchy
+
+
+    @property
+    def count(self):
+        return len(self.pivotHierarchy)
 
 
 class ChartFormat(Serialisable):
@@ -328,7 +333,6 @@ class ChartFormat(Serialisable):
 
 class ChartFormatList(Serialisable):
 
-    count = Integer()
     chartFormat = Typed(expected_type=ChartFormat, )
 
     __elements__ = ('chartFormat',)
@@ -337,13 +341,17 @@ class ChartFormatList(Serialisable):
                  count=None,
                  chartFormat=None,
                 ):
-        self.count = count
         self.chartFormat = chartFormat
+
+
+    @property
+    def count(self):
+        return len(self.chartFormat)
+
 
 class PivotAreaReference(Serialisable):
 
     field = Integer(allow_none=True)
-    count = Integer()
     selected = Bool()
     byPosition = Bool()
     relative = Bool()
@@ -362,7 +370,7 @@ class PivotAreaReference(Serialisable):
     x = NestedInteger(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('x', 'extLst')
+    __elements__ = ('x',)
 
     def __init__(self,
                  field=None,
@@ -386,7 +394,6 @@ class PivotAreaReference(Serialisable):
                  extLst=None,
                 ):
         self.field = field
-        self.count = count
         self.selected = selected
         self.byPosition = byPosition
         self.relative = relative
@@ -406,9 +413,13 @@ class PivotAreaReference(Serialisable):
         self.extLst = extLst
 
 
+    @property
+    def count(self):
+        return len(self.field)
+
+
 class PivotAreaReferenceList(Serialisable):
 
-    count = Integer()
     reference = Typed(expected_type=PivotAreaReference, )
 
     __elements__ = ('reference',)
@@ -417,8 +428,12 @@ class PivotAreaReferenceList(Serialisable):
                  count=None,
                  reference=None,
                 ):
-        self.count = count
         self.reference = reference
+
+
+    @property
+    def count(self):
+        return len(self.reference)
 
 
 class PivotArea(Serialisable):
@@ -474,7 +489,6 @@ class PivotArea(Serialisable):
 
 class PivotAreaList(Serialisable):
 
-    count = Integer()
     pivotArea = Typed(expected_type=PivotArea, allow_none=True)
 
     __elements__ = ('pivotArea',)
@@ -483,8 +497,12 @@ class PivotAreaList(Serialisable):
                  count=None,
                  pivotArea=None,
                 ):
-        self.count = count
         self.pivotArea = pivotArea
+
+
+    @property
+    def count(self):
+        return len(self.pivotArea)
 
 
 class ConditionalFormat(Serialisable):
@@ -513,7 +531,6 @@ class ConditionalFormat(Serialisable):
 
 class ConditionalFormatList(Serialisable):
 
-    count = Integer()
     conditionalFormat = Typed(expected_type=ConditionalFormat, )
 
     __elements__ = ('conditionalFormat',)
@@ -522,8 +539,12 @@ class ConditionalFormatList(Serialisable):
                  count=None,
                  conditionalFormat=None,
                 ):
-        self.count = count
         self.conditionalFormat = conditionalFormat
+
+
+    @property
+    def count(self):
+        return len(self.conditionalFormat)
 
 
 class Format(Serialisable):
@@ -557,7 +578,7 @@ class FormatList(Serialisable):
                  count=None,
                  format=None,
                 ):
-        self.count = count
+        self.format = format
 
 
     @property
@@ -746,6 +767,7 @@ class RowItems(Serialisable):
 
     def __init__(self,
                  i=None,
+                 count=None,
                 ):
         self.i = i
 
@@ -828,11 +850,10 @@ class FieldItem(Serialisable):
         self.e = e
 
 
-class FieldItems(Serialisable):
+class FieldItemList(Serialisable):
 
     tagname = "items"
 
-    count = Integer()
     item = Sequence(expected_type=FieldItem, )
 
     __elements__ = ('item',)
@@ -841,7 +862,6 @@ class FieldItems(Serialisable):
                  count=None,
                  item=None,
                 ):
-        self.count = count
         self.item = item
 
 
@@ -902,7 +922,7 @@ class PivotField(Serialisable):
     showPropTip = Bool(allow_none=True)
     showPropAsCaption = Bool(allow_none=True)
     defaultAttributeDrillState = Bool(allow_none=True)
-    items = Typed(expected_type=FieldItems, allow_none=True)
+    items = Typed(expected_type=FieldItemList, allow_none=True)
     autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -1024,7 +1044,6 @@ class PivotFieldList(Serialisable):
                  count=None,
                  pivotField=None,
                 ):
-        self.count = count
         self.pivotField = pivotField
 
 

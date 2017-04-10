@@ -183,3 +183,11 @@ class TestPivotTableDefinition:
                                             minRefreshableVersion=3, outlineData=True, useAutoFormatting=True,
                                             location=loc, indent=0, itemPrintTitles=True, outline=True,
                                             gridDropZones=True, createdVersion=4)
+
+
+    def test_read_file(self, datadir, PivotTableDefinition):
+        datadir.chdir()
+        with open("pivotTable.xml", "rb") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        defn = PivotTableDefinition.from_tree(node)
