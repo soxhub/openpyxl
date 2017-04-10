@@ -708,7 +708,6 @@ class Field(Serialisable):
 
 class ColFields(Serialisable):
 
-    count = Integer()
     field = Typed(expected_type=Field, )
 
     __elements__ = ('field',)
@@ -717,28 +716,32 @@ class ColFields(Serialisable):
                  count=None,
                  field=None,
                 ):
-        self.count = count
         self.field = field
+
+
+    @property
+    def count(self):
+        return len(self.field)
 
 
 class RowItems(Serialisable):
 
-    count = Integer()
     i = Typed(expected_type=RowItem, )
 
     __elements__ = ('i',)
 
     def __init__(self,
-                 count=None,
                  i=None,
                 ):
-        self.count = count
         self.i = i
+
+    @property
+    def count(self):
+        return len(self.i)
 
 
 class RowFields(Serialisable):
 
-    count = Integer()
     field = Typed(expected_type=Field, )
 
     __elements__ = ('field',)
@@ -747,8 +750,12 @@ class RowFields(Serialisable):
                  count=None,
                  field=None,
                 ):
-        self.count = count
         self.field = field
+
+
+    @property
+    def count(self):
+        return len(self.field)
 
 
 class AutoSortScope(Serialisable):
