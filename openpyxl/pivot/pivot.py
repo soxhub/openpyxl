@@ -716,8 +716,7 @@ class ColFields(Serialisable):
         self.field = field
 
 
-
-class rowItems(Serialisable):
+class RowItems(Serialisable):
 
     count = Integer()
     i = Typed(expected_type=I, )
@@ -1092,7 +1091,7 @@ class PivotTableDefinition(Serialisable):
     location = Typed(expected_type=Location, )
     pivotFields = Typed(expected_type=PivotFields, allow_none=True)
     rowFields = Typed(expected_type=RowFields, allow_none=True)
-    rowItems = Typed(expected_type=rowItems, allow_none=True)
+    rowItems = Typed(expected_type=RowItems, allow_none=True)
     colFields = Typed(expected_type=ColFields, allow_none=True)
     colItems = Typed(expected_type=colItems, allow_none=True)
     pageFields = Typed(expected_type=PageFields, allow_none=True)
