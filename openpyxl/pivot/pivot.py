@@ -11,6 +11,7 @@ from openpyxl.descriptors import (
     String,
     Alias,
     Bool,
+    Sequence,
 )
 
 from openpyxl.descriptors.excel import ExtensionList
@@ -760,8 +761,12 @@ class AutoSortScope(Serialisable):
 
 class Item(Serialisable):
 
-    n = String()
-    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min', 'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand', 'blank']))
+    tagname = "item"
+
+    n = String(allow_none=True)
+    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
+                     'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
+                     'blank']))
     h = Bool()
     s = Bool()
     sd = Bool()
@@ -774,16 +779,16 @@ class Item(Serialisable):
 
     def __init__(self,
                  n=None,
-                 t=None,
-                 h=None,
-                 s=None,
-                 sd=None,
-                 f=None,
-                 m=None,
-                 c=None,
+                 t="data",
+                 h=False,
+                 s=False,
+                 sd=True,
+                 f=False,
+                 m=False,
+                 c=False,
                  x=None,
-                 d=None,
-                 e=None,
+                 d=False,
+                 e=False,
                 ):
         self.n = n
         self.t = t
@@ -800,8 +805,10 @@ class Item(Serialisable):
 
 class Items(Serialisable):
 
+    tagname = "items"
+
     count = Integer()
-    item = Typed(expected_type=Item, )
+    item = Sequence(expected_type=Item, )
 
     __elements__ = ('item',)
 
@@ -811,6 +818,11 @@ class Items(Serialisable):
                 ):
         self.count = count
         self.item = item
+
+
+    @property
+    def count(self):
+        return len(self(item))
 
 
 class PivotField(Serialisable):
