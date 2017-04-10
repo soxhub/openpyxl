@@ -88,3 +88,30 @@ class TestRowItem:
         node = fromstring(src)
         fut = RowItem.from_tree(node)
         assert fut == RowItem(r=1, x=2)
+
+
+@pytest.fixture
+def DataField():
+    from ..pivot import DataField
+    return DataField
+
+
+class TestDateField:
+
+    def test_ctor(self, DataField):
+        df = DataField(fld=1)
+        xml = tostring(df.to_tree())
+        expected = """
+        <dataField baseField="-1" baseItem="1048832" fld="1" showDataAs="normal" subtotal="sum" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DataField):
+        src = """
+        <dataField name="Sum of impressions" fld="4" baseField="0" baseItem="0"/>
+        """
+        node = fromstring(src)
+        df = DataField.from_tree(node)
+        assert df == DataField(fld=4, name="Sum of impressions", baseField=0, baseItem=0)

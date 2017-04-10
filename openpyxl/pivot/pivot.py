@@ -564,24 +564,28 @@ class FormatList(Serialisable):
 
 class DataField(Serialisable):
 
+    tagname = "dataField"
+
     name = String(allow_none=True)
     fld = Integer()
-    subtotal = Set(values=(['average', 'count', 'countNums', 'max', 'min', 'product', 'stdDev', 'stdDevp', 'sum', 'var', 'varp']))
-    showDataAs = Set(values=(['normal', 'difference', 'percent', 'percentDiff', 'runTotal', 'percentOfRow', 'percentOfCol', 'percentOfTotal', 'index']))
+    subtotal = Set(values=(['average', 'count', 'countNums', 'max', 'min',
+                            'product', 'stdDev', 'stdDevp', 'sum', 'var', 'varp']))
+    showDataAs = Set(values=(['normal', 'difference', 'percent',
+                              'percentDiff', 'runTotal', 'percentOfRow', 'percentOfCol',
+                              'percentOfTotal', 'index']))
     baseField = Integer()
     baseItem = Integer()
-    numFmtId = Integer()
+    numFmtId = Integer(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
 
     def __init__(self,
                  name=None,
                  fld=None,
-                 subtotal=None,
-                 showDataAs=None,
-                 baseField=None,
-                 baseItem=None,
+                 subtotal="sum",
+                 showDataAs="normal",
+                 baseField=-1,
+                 baseItem=1048832,
                  numFmtId=None,
                  extLst=None,
                 ):
@@ -597,7 +601,6 @@ class DataField(Serialisable):
 
 class DataFieldList(Serialisable):
 
-    count = Integer()
     dataField = Typed(expected_type=DataField, )
 
     __elements__ = ('dataField',)
@@ -606,8 +609,12 @@ class DataFieldList(Serialisable):
                  count=None,
                  dataField=None,
                 ):
-        self.count = count
         self.dataField = dataField
+
+
+    @property
+    def count(self):
+        return len(self.dataField)
 
 
 class PageField(Serialisable):
