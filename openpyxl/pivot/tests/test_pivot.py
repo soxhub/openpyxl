@@ -145,6 +145,33 @@ class TestLocation:
         loc = Location.from_tree(node)
         assert loc == Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
 
+@pytest.fixture
+def PivotTableStyle():
+    from ..pivot import PivotTableStyle
+    return PivotTableStyle
+
+
+class TestPivotTableStyle:
+
+    def test_ctor(self, PivotTableStyle):
+        style = PivotTableStyle(name="PivotStyleMedium4")
+        xml = tostring(style.to_tree())
+        expected = """
+        <pivotTableStyleInfo name="PivotStyleMedium4" showRowHeaders="0" showColHeaders="0" showRowStripes="0" showColStripes="0"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotTableStyle):
+        src = """
+        <pivotTableStyleInfo name="PivotStyleMedium4" showRowHeaders="1" showColHeaders="1" showRowStripes="0" showColStripes="0" showLastColumn="1"/>
+        """
+        node = fromstring(src)
+        style = PivotTableStyle.from_tree(node)
+        assert style == PivotTableStyle(name="PivotStyleMedium4",
+                                        showRowHeaders=True, showColHeaders=True, showLastColumn=True)
+
 
 @pytest.fixture
 def PivotTableDefinition():

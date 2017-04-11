@@ -138,6 +138,8 @@ class PivotFilters(Serialisable):
 
 class PivotTableStyle(Serialisable):
 
+    tagname = "pivotTableStyleInfo"
+
     name = String()
     showRowHeaders = Bool()
     showColHeaders = Bool()
