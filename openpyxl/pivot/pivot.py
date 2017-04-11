@@ -294,24 +294,6 @@ class PivotHierarchy(Serialisable):
         self.extLst = extLst
 
 
-class PivotHierarchyList(Serialisable):
-
-    pivotHierarchy = Typed(expected_type=PivotHierarchy, )
-
-    __elements__ = ('pivotHierarchy',)
-
-    def __init__(self,
-                 count=None,
-                 pivotHierarchy=None,
-                ):
-        self.pivotHierarchy = pivotHierarchy
-
-
-    @property
-    def count(self):
-        return len(self.pivotHierarchy)
-
-
 class ChartFormat(Serialisable):
 
     chart = Integer()
@@ -331,24 +313,6 @@ class ChartFormat(Serialisable):
         self.format = format
         self.series = series
         self.pivotArea = pivotArea
-
-
-class ChartFormatList(Serialisable):
-
-    chartFormat = Typed(expected_type=ChartFormat, )
-
-    __elements__ = ('chartFormat',)
-
-    def __init__(self,
-                 count=None,
-                 chartFormat=None,
-                ):
-        self.chartFormat = chartFormat
-
-
-    @property
-    def count(self):
-        return len(self.chartFormat)
 
 
 class PivotAreaReference(Serialisable):
@@ -531,25 +495,9 @@ class ConditionalFormat(Serialisable):
         self.extLst = extLst
 
 
-class ConditionalFormatList(Serialisable):
-
-    conditionalFormat = Typed(expected_type=ConditionalFormat, )
-
-    __elements__ = ('conditionalFormat',)
-
-    def __init__(self,
-                 count=None,
-                 conditionalFormat=None,
-                ):
-        self.conditionalFormat = conditionalFormat
-
-
-    @property
-    def count(self):
-        return len(self.conditionalFormat)
-
-
 class Format(Serialisable):
+
+    tagname = "format"
 
     action = Set(values=(['blank', 'formatting', 'drill', 'formula']))
     dxfId = Integer()
@@ -568,24 +516,6 @@ class Format(Serialisable):
         self.dxfId = dxfId
         self.pivotArea = pivotArea
         self.extLst = extLst
-
-
-class FormatList(Serialisable):
-
-    format = Typed(expected_type=Format, )
-
-    __elements__ = ('format',)
-
-    def __init__(self,
-                 count=None,
-                 format=None,
-                ):
-        self.format = format
-
-
-    @property
-    def count(self):
-        return len(self.format)
 
 
 class DataField(Serialisable):
@@ -625,27 +555,9 @@ class DataField(Serialisable):
         self.extLst = extLst
 
 
-class DataFieldList(Serialisable):
-
-    dataField = Typed(expected_type=DataField, )
-
-    __elements__ = ('dataField',)
-
-    def __init__(self,
-                 count=None,
-                 dataField=None,
-
-                ):
-        self.dataField = dataField
-
-
-    @property
-    def count(self):
-        return len(self.dataField)
-
-
 class PageField(Serialisable):
 
+    tagname = "PageField"
 
     fld = Integer()
     item = Integer(allow_none=True)
@@ -672,25 +584,7 @@ class PageField(Serialisable):
         self.extLst = extLst
 
 
-class PageFields(Serialisable):
-
-    pageField = Typed(expected_type=PageField, )
-
-    __elements__ = ('pageField',)
-
-    def __init__(self,
-                 count=None,
-                 pageField=None,
-                ):
-        self.pageField = pageField
-
-
-    @property
-    def count(self):
-        return len(self.pageField)
-
-
-class RowItem(Serialisable):
+class RowColItem(Serialisable):
 
     tagname = "i"
 
@@ -717,7 +611,7 @@ class RowItem(Serialisable):
 
 class colItems(Serialisable):
 
-    i = Typed(expected_type=RowItem, )
+    i = Typed(expected_type=RowColItem, )
 
     __elements__ = ('i',)
 
@@ -733,7 +627,9 @@ class colItems(Serialisable):
         return len(self.i)
 
 
-class Field(Serialisable):
+class RowColField(Serialisable):
+
+    tagname = "field"
 
     x = Integer()
 
@@ -741,59 +637,6 @@ class Field(Serialisable):
                  x=None,
                 ):
         self.x = x
-
-
-class ColFields(Serialisable):
-
-    field = Typed(expected_type=Field, )
-
-    __elements__ = ('field',)
-
-    def __init__(self,
-                 count=None,
-                 field=None,
-                ):
-        self.field = field
-
-
-    @property
-    def count(self):
-        return len(self.field)
-
-
-class RowItems(Serialisable):
-
-    i = Typed(expected_type=RowItem, )
-
-    __elements__ = ('i',)
-
-    def __init__(self,
-                 i=None,
-                 count=None,
-                ):
-        self.i = i
-
-    @property
-    def count(self):
-        return len(self.i)
-
-
-class RowFields(Serialisable):
-
-    field = Typed(expected_type=Field, )
-
-    __elements__ = ('field',)
-
-    def __init__(self,
-                 count=None,
-                 field=None,
-                ):
-        self.field = field
-
-
-    @property
-    def count(self):
-        return len(self.field)
 
 
 class AutoSortScope(Serialisable):
@@ -852,26 +695,6 @@ class FieldItem(Serialisable):
         self.e = e
 
 
-class FieldItemList(Serialisable):
-
-    tagname = "items"
-
-    item = Sequence(expected_type=FieldItem, )
-
-    __elements__ = ('item',)
-
-    def __init__(self,
-                 count=None,
-                 item=None,
-                ):
-        self.item = item
-
-
-    @property
-    def count(self):
-        return len(self(item))
-
-
 class PivotField(Serialisable):
 
     tagname = "pivotField"
@@ -924,7 +747,7 @@ class PivotField(Serialisable):
     showPropTip = Bool(allow_none=True)
     showPropAsCaption = Bool(allow_none=True)
     defaultAttributeDrillState = Bool(allow_none=True)
-    items = Typed(expected_type=FieldItemList, allow_none=True)
+    items = NestedSequence(expected_type=FieldItem, count=True)
     autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -979,7 +802,7 @@ class PivotField(Serialisable):
                  showPropTip=False,
                  showPropAsCaption=False,
                  defaultAttributeDrillState=False,
-                 items=None,
+                 items=(),
                  autoSortScope=None,
                  extLst=None,
                 ):
@@ -1138,18 +961,18 @@ class PivotTableDefinition(Serialisable):
     applyWidthHeightFormats = Bool()
     location = Typed(expected_type=Location, )
     pivotFields = NestedSequence(expected_type=PivotField, count=True)
-    rowFields = Typed(expected_type=RowFields, allow_none=True)
-    rowItems = Typed(expected_type=RowItems, allow_none=True)
-    colFields = Typed(expected_type=ColFields, allow_none=True)
-    colItems = Typed(expected_type=colItems, allow_none=True)
-    pageFields = Typed(expected_type=PageFields, allow_none=True)
-    dataFields = Typed(expected_type=DataFieldList, allow_none=True)
-    formats = Typed(expected_type=FormatList, allow_none=True)
-    conditionalFormats = Typed(expected_type=ConditionalFormatList, allow_none=True)
-    chartFormats = Typed(expected_type=ChartFormatList, allow_none=True)
-    pivotHierarchies = Typed(expected_type=PivotHierarchyList, allow_none=True)
+    rowFields = NestedSequence(expected_type=RowColField, count=True)
+    rowItems = NestedSequence(expected_type=RowColItem, count=True)
+    colFields = NestedSequence(expected_type=RowColField, count=True)
+    colItems = NestedSequence(expected_type=RowColItem, count=True)
+    pageFields = NestedSequence(expected_type=RowColField, count=True)
+    dataFields = NestedSequence(expected_type=DataField, count=True)
+    formats = NestedSequence(expected_type=Format, count=True)
+    conditionalFormats = NestedSequence(expected_type=ConditionalFormat, count=True)
+    chartFormats = NestedSequence(expected_type=ChartFormat, count=True)
+    pivotHierarchies = NestedSequence(expected_type=PivotHierarchy, count=True)
     pivotTableStyleInfo = Typed(expected_type=PivotTableStyle, allow_none=True)
-    filters = Typed(expected_type=PivotFilters, allow_none=True)
+    filters = NestedSequence(expected_type=PivotFilter, count=True)
     rowHierarchiesUsage = Typed(expected_type=RowHierarchiesUsage, allow_none=True)
     colHierarchiesUsage = Typed(expected_type=ColHierarchiesUsage, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -1231,18 +1054,18 @@ class PivotTableDefinition(Serialisable):
                  applyWidthHeightFormats=False,
                  location=None,
                  pivotFields=(),
-                 rowFields=None,
-                 rowItems=None,
-                 colFields=None,
-                 colItems=None,
-                 pageFields=None,
-                 dataFields=None,
-                 formats=None,
-                 conditionalFormats=None,
-                 chartFormats=None,
-                 pivotHierarchies=None,
+                 rowFields=(),
+                 rowItems=(),
+                 colFields=(),
+                 colItems=(),
+                 pageFields=(),
+                 dataFields=(),
+                 formats=(),
+                 conditionalFormats=(),
+                 chartFormats=(),
+                 pivotHierarchies=(),
                  pivotTableStyleInfo=None,
-                 filters=None,
+                 filters=(),
                  rowHierarchiesUsage=None,
                  colHierarchiesUsage=None,
                  extLst=None,
