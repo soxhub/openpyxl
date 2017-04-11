@@ -155,6 +155,12 @@ class TestColDimension:
         assert dict(cd1) == dict(cd2)
 
 
+    def test_no_named_style(self, ColumnDimension):
+        cd = ColumnDimension(worksheet=DummyWorksheet())
+        with pytest.raises(AttributeError):
+            cd.style = "Normal"
+
+
 class TestGrouping:
 
     def test_group_columns_simple(self):

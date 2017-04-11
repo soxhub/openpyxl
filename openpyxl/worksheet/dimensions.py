@@ -36,6 +36,8 @@ class Dimension(Strict, StyleableObject):
     outlineLevel = Integer(allow_none=True)
     outline_level = Alias('outlineLevel')
     collapsed = Bool()
+    style = Alias('style_id')
+
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
@@ -49,8 +51,6 @@ class Dimension(Strict, StyleableObject):
     def __iter__(self):
         for key in self.__fields__:
             value = getattr(self, key, None)
-            if key in ('style', 's'):
-                value = self.style_id
             if value:
                 yield key, safe_string(value)
 
