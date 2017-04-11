@@ -501,10 +501,10 @@ class Format(Serialisable):
 
     action = Set(values=(['blank', 'formatting', 'drill', 'formula']))
     dxfId = Integer()
-    #pivotArea = Typed(expected_type=PivotArea, )
+    pivotArea = Typed(expected_type=PivotArea, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('pivotArea', 'extLst')
+    __elements__ = ('pivotArea',)
 
     def __init__(self,
                  action=None,
