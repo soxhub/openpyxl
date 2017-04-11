@@ -609,24 +609,6 @@ class RowColItem(Serialisable):
         self.x = x
 
 
-class colItems(Serialisable):
-
-    i = Typed(expected_type=RowColItem, )
-
-    __elements__ = ('i',)
-
-    def __init__(self,
-                 count=None,
-                 i=None,
-                ):
-        self.i = i
-
-
-    @property
-    def count(self):
-        return len(self.i)
-
-
 class RowColField(Serialisable):
 
     tagname = "field"
