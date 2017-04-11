@@ -16,6 +16,8 @@ from openpyxl.descriptors import (
 
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
+from openpyxl.descriptors.sequence import NestedSequence
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
@@ -1034,24 +1036,6 @@ class PivotField(Serialisable):
         self.extLst = extLst
 
 
-class PivotFieldList(Serialisable):
-
-    pivotField = Typed(expected_type=PivotField, )
-
-    __elements__ = ('pivotField',)
-
-    def __init__(self,
-                 count=None,
-                 pivotField=None,
-                ):
-        self.pivotField = pivotField
-
-
-    @property
-    def count(self):
-        return len(self.pivotField)
-
-
 class Location(Serialisable):
 
     tagname = "location"
@@ -1153,7 +1137,7 @@ class PivotTableDefinition(Serialisable):
     applyAlignmentFormats = Bool()
     applyWidthHeightFormats = Bool()
     location = Typed(expected_type=Location, )
-    pivotFields = Typed(expected_type=PivotFieldList, allow_none=True)
+    pivotFields = NestedSequence(expected_type=PivotField, count=True)
     rowFields = Typed(expected_type=RowFields, allow_none=True)
     rowItems = Typed(expected_type=RowItems, allow_none=True)
     colFields = Typed(expected_type=ColFields, allow_none=True)
@@ -1170,7 +1154,11 @@ class PivotTableDefinition(Serialisable):
     colHierarchiesUsage = Typed(expected_type=ColHierarchiesUsage, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('location', 'pivotFields', 'rowFields', 'rowItems', 'colFields', 'colItems', 'pageFields', 'dataFields', 'formats', 'conditionalFormats', 'chartFormats', 'pivotHierarchies', 'pivotTableStyleInfo', 'filters', 'rowHierarchiesUsage', 'colHierarchiesUsage', 'extLst')
+    __elements__ = ('location', 'pivotFields', 'rowFields', 'rowItems',
+                    'colFields', 'colItems', 'pageFields', 'dataFields', 'formats',
+                    'conditionalFormats', 'chartFormats', 'pivotHierarchies',
+                    'pivotTableStyleInfo', 'filters', 'rowHierarchiesUsage',
+                    'colHierarchiesUsage',)
 
     def __init__(self,
                  name=None,
@@ -1242,7 +1230,7 @@ class PivotTableDefinition(Serialisable):
                  applyAlignmentFormats=False,
                  applyWidthHeightFormats=False,
                  location=None,
-                 pivotFields=None,
+                 pivotFields=(),
                  rowFields=None,
                  rowItems=None,
                  colFields=None,
@@ -1344,3 +1332,9 @@ class PivotTableDefinition(Serialisable):
         self.rowHierarchiesUsage = rowHierarchiesUsage
         self.colHierarchiesUsage = colHierarchiesUsage
         self.extLst = extLst
+
+
+    def to_tree(self):
+        tree = super(PivotTableDefinition, self).to_tree()
+        tree.set("xmlns", SHEET_MAIN_NS)
+        return tree
