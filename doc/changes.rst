@@ -38,6 +38,7 @@ Bugfixes
 * `#781 <https://bitbucket.org/openpyxl/openpyxl/issues/781>`_ Exception raised when saving files with styled columns`
 * `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect`
 * `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names`
+* `#800 <https://bitbucket.org/openpyxl/openpyxl/issues/800>`_ Font underlines not read correctly`
 
 
 2.4.5 (2017-03-07)

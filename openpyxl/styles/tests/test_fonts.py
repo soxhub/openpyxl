@@ -50,7 +50,7 @@ class TestFont:
 
     def test_create(self, Font):
         src = """
-        <font xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <font >
           <charset val="204"></charset>
           <family val="2"></family>
           <name val="Calibri"></name>
@@ -58,10 +58,22 @@ class TestFont:
           <u val="single"/>
           <vertAlign val="superscript"></vertAlign>
           <color rgb="FF3300FF"></color>
-         </font>"""
+         </font>
+         """
         xml = fromstring(src)
         ft = Font.from_tree(xml)
         assert ft == Font(name='Calibri', charset=204, family=2, sz=11,
                           vertAlign='superscript', underline='single', color="FF3300FF")
 
 
+    def test_nested_empty(self, Font):
+        src = """
+        <font xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <b />
+          <u />
+          <vertAlign />
+        </font>
+        """
+        xml = fromstring(src)
+        ft = Font.from_tree(xml)
+        assert ft == Font(bold=True, underline="single")
