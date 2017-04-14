@@ -152,6 +152,7 @@ def classify(tagname, src=sheet_src, schema=None):
         s += """    # uses element group {0}\n""".format(ref)
         elements.extend(get_element_group(schema, ref))
 
+    els = []
     for el in elements:
         attr = {'name': el.get("name"), 'default':None}
 
@@ -183,7 +184,7 @@ def classify(tagname, src=sheet_src, schema=None):
         attr['use'] = ""
         if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
-        attrs.append(attr)
+        els.append(attr)
         if attr['type'] in complex_mapping:
             attr['type'] = complex_mapping[attr['type']]
             s += "    {name} = {type}(nested=True, {use})\n".format(**attr)
@@ -193,6 +194,8 @@ def classify(tagname, src=sheet_src, schema=None):
     if element_names:
         names = (c for c in element_names)
         s += "\n    __elements__ = {0}\n".format(tuple(names))
+
+    attrs = els + attrs
 
     if attrs:
         s += "\n    def __init__(self,\n"
