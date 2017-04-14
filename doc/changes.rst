@@ -27,7 +27,11 @@ Minor changes
 * Added read/write support for the datetime type for cells
 
 
-2.4.6 (unreleased)
+2.4.7 (unreleased)
+==================
+
+
+2.4.6 (2017-04-14)
 ==================
 
 
