@@ -101,6 +101,9 @@ def classify(tagname, src=sheet_src, schema=None):
 
     s = """\n\nclass %s(Serialisable):\n\n""" % tagname[3:]
     attrs = []
+    header = []
+    sig = []
+    body = []
 
     node = derived(node)
     node = extends(node)
@@ -130,17 +133,20 @@ def classify(tagname, src=sheet_src, schema=None):
         if attr.get("type").startswith("ST_"):
             attr['type'] = simple(attr.get("type"), schema, attr['use'])
             types.add(attr['type'].split("(")[0])
-            s += "    {name} = {type}\n".format(**attr)
+            defn = "{name} = {type}"
         else:
             if attr['type'] in simple_mapping:
                 attr['type'] = simple_mapping[attr['type']]
                 types.add(attr['type'])
-                s += "    {name} = {type}({use})\n".format(**attr)
+                defn = "{name} = {type}({use})"
             else:
-                s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
+                defn = "{name} = Typed(expected_type={type}, {use})"
+        header.append(defn.format(**attr))
+
+    s += "    " + "\n    ".join(header) + "\n"
 
     children = []
-    element_names =[]
+    element_names = []
     elements = node.findall(".//{%s}element" % XSD)
     choice = node.findall("{%s}choice" % XSD)
     if choice:
@@ -154,7 +160,8 @@ def classify(tagname, src=sheet_src, schema=None):
 
     els = []
     for el in elements:
-        attr = {'name': el.get("name"), 'default':None}
+        attr = dict(el.attrib)
+        attr['default'] = None
 
         typename = el.get("type")
         if typename is None:
@@ -195,7 +202,7 @@ def classify(tagname, src=sheet_src, schema=None):
         names = (c for c in element_names)
         s += "\n    __elements__ = {0}\n".format(tuple(names))
 
-    attrs = els + attrs
+    attrs = els + attrs # elements first
 
     if attrs:
         s += "\n    def __init__(self,\n"
