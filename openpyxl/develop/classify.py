@@ -73,6 +73,19 @@ def get_element_group(schema, tagname):
     return node.findall(".//{%s}element" % XSD)
 
 
+def convert_default(value):
+    """
+    Convert attribute defaults into Python
+    """
+    if value == "false":
+        value = False
+    elif value == "true":
+        value = True
+    elif value.isdigit():
+        value = int(value)
+    return value
+
+
 def classify(tagname, src=sheet_src, schema=None):
     """
     Generate a Python-class based on the schema definition
@@ -99,15 +112,21 @@ def classify(tagname, src=sheet_src, schema=None):
         s += "    #Using attribute group{0}\n".format(_group.get('ref'))
         attributes.extend(get_attribute_group(schema, _group.get('ref')))
     for el in attributes:
-        attr = el.attrib
+        attr = dict(el.attrib)
         if 'ref' in attr:
             continue
-        attrs.append(attr['name'])
+        attrs.append(attr)
 
-        if attr.get("use") == "optional":
+        # XML attributes are optional by default
+        if attr.get("use") != "required":
             attr["use"] = "allow_none=True"
         else:
             attr["use"] = ""
+        default = attr.get('default', None)
+        if default:
+            default = convert_default(default)
+        attr['default'] = default
+
         if attr.get("type").startswith("ST_"):
             attr['type'] = simple(attr.get("type"), schema, attr['use'])
             types.add(attr['type'].split("(")[0])
@@ -177,13 +196,13 @@ def classify(tagname, src=sheet_src, schema=None):
 
     if attrs:
         s += "\n    def __init__(self,\n"
-        for a in attrs:
-            s += "                 %s=None,\n" % a
+        for attr in attrs:
+            s += "                 {name}={default},\n".format(**attr)
         s += "                ):\n"
     else:
         s += "    pass"
     for attr in attrs:
-        s += "        self.{0} = {0}\n".format(attr)
+        s += "        self.{name} = {name}\n".format(**attr)
 
     return s, types, children
 
