@@ -98,15 +98,14 @@ class ChartBase(Serialisable):
 
     def _write(self):
         from .chartspace import ChartSpace, ChartContainer
-        self.plot_area = PlotArea()
         self.plot_area.layout = self.layout
-        self.plot_area.graphical_properties = self.graphical_properties
 
         idx_base = 0
         for chart in self._charts:
-            chart.idx_base = idx_base
-            self.plot_area._charts.append(chart)
-            idx_base += len(chart.series)
+            if chart not in self.plot_area._charts:
+                chart.idx_base = idx_base
+                self.plot_area._charts.append(chart)
+                idx_base += len(chart.series)
 
         axIds = []
         for axId in ("x_axis", "y_axis", 'z_axis'):

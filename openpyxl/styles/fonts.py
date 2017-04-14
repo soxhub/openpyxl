@@ -22,6 +22,7 @@ from .colors import ColorDescriptor, Color, BLACK
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
 
 def _no_value(tagname, value, namespace=None):
@@ -98,4 +99,16 @@ class Font(Serialisable):
         self.scheme = scheme
 
 
-DEFAULT_FONT = Font(name="Calibri", sz=11, family=2, b=False, i=False, color=Color(theme=1), scheme="minor")
+    @classmethod
+    def from_tree(cls, node):
+        """
+        Set default value for underline if child element is present
+        """
+        underline = node.find("{%s}u" % SHEET_MAIN_NS)
+        if underline is not None and underline.get('val') is None:
+            underline.set("val", "single")
+        return super(Font, cls).from_tree(node)
+
+
+DEFAULT_FONT = Font(name="Calibri", sz=11, family=2, b=False, i=False,
+                    color=Color(theme=1), scheme="minor")

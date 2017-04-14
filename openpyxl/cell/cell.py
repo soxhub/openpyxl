@@ -279,8 +279,10 @@ class Cell(StyleableObject):
     @property
     def value(self):
         """Get or set the value held in the cell.
-            ':rtype: depends on the value (string, float, int or '
-            ':class:`datetime.datetime`)'"""
+
+        :rtype: depends on the value (string, float, int or
+            :class:`datetime.datetime`)
+        """
         value = self._value
         if value is not None and self.is_date:
             value = from_excel(value, self.base_date)

@@ -16,10 +16,12 @@ def DataLabelList():
 class TestDataLabeList:
 
     def test_ctor(self, DataLabelList):
-        labels = DataLabelList()
+        labels = DataLabelList(numFmt="0.0%")
         xml = tostring(labels.to_tree())
         expected = """
-        <dLbls />
+        <dLbls>
+          <numFmt formatCode="0.0%" />
+        </dLbls>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
