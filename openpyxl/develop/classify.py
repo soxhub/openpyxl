@@ -153,7 +153,7 @@ def classify(tagname, src=sheet_src, schema=None):
         elements.extend(get_element_group(schema, ref))
 
     for el in elements:
-        attr = {'name': el.get("name"),}
+        attr = {'name': el.get("name"), 'default':None}
 
         typename = el.get("type")
         if typename is None:
@@ -183,7 +183,7 @@ def classify(tagname, src=sheet_src, schema=None):
         attr['use'] = ""
         if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
-        attrs.append(attr['name'])
+        attrs.append(attr)
         if attr['type'] in complex_mapping:
             attr['type'] = complex_mapping[attr['type']]
             s += "    {name} = {type}(nested=True, {use})\n".format(**attr)
