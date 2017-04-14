@@ -143,8 +143,6 @@ def classify(tagname, src=sheet_src, schema=None):
                 defn = "{name} = Typed(expected_type={type}, {use})"
         header.append(defn.format(**attr))
 
-    s += "    " + "\n    ".join(header) + "\n"
-
     children = []
     element_names = []
     elements = node.findall(".//{%s}element" % XSD)
@@ -159,6 +157,7 @@ def classify(tagname, src=sheet_src, schema=None):
         elements.extend(get_element_group(schema, ref))
 
     els = []
+    header_els = []
     for el in elements:
         attr = dict(el.attrib)
         attr['default'] = None
@@ -194,18 +193,23 @@ def classify(tagname, src=sheet_src, schema=None):
         els.append(attr)
         if attr['type'] in complex_mapping:
             attr['type'] = complex_mapping[attr['type']]
-            s += "    {name} = {type}(nested=True, {use})\n".format(**attr)
+            defn = "{name} = {type}(nested=True, {use})"
         else:
-            s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
+            defn = "{name} = Typed(expected_type={type}, {use})"
+        header_els.append(defn.format(**attr))
+
+    header = header_els + header
+
+    s += "    " + "\n    ".join(header) + "\n\n"
 
     if element_names:
         names = (c for c in element_names)
-        s += "\n    __elements__ = {0}\n".format(tuple(names))
+        s += "    __elements__ = {0}\n\n".format(tuple(names))
 
     attrs = els + attrs # elements first
 
     if attrs:
-        s += "\n    def __init__(self,\n"
+        s += "    def __init__(self,\n"
         for attr in attrs:
             s += "                 {name}={default},\n".format(**attr)
         s += "                ):\n"
