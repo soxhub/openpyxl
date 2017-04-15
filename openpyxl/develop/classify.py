@@ -196,6 +196,10 @@ def classify(tagname, src=sheet_src, schema=None):
             defn = "{name} = {type}(nested=True, {use})"
         else:
             defn = "{name} = Typed(expected_type={type}, {use})"
+            max = attr.get("maxOccurs")
+            if max and max != "1":
+                defn = "{name} = Sequence(expected_type={type})"
+                attr['default'] = ()
         header_els.append(defn.format(**attr))
 
     header = header_els + header
