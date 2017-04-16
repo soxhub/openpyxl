@@ -17,7 +17,7 @@ class TestCacheField:
         field = CacheField(name="ID")
         xml = tostring(field.to_tree())
         expected = """
-        <cacheField databaseField="0" hierarchy="0" level="0" memberPropertyField="0" name="ID" serverField="0" sqlType="0" uniqueList="1"/>
+        <cacheField databaseField="1" hierarchy="0" level="0" memberPropertyField="0" name="ID" serverField="0" sqlType="0" uniqueList="1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

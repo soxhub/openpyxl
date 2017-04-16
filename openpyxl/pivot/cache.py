@@ -823,27 +823,31 @@ class CacheField(Serialisable):
 
     tagname = "cacheField"
 
+    sharedItems = Typed(expected_type=SharedItems, allow_none=True)
+    fieldGroup = Typed(expected_type=FieldGroup, allow_none=True)
+    mpMap = NestedInteger(allow_none=True, attribute="v")
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
     name = String()
     caption = String(allow_none=True)
     propertyName = String(allow_none=True)
-    serverField = Bool()
+    serverField = Bool(allow_none=True)
     uniqueList = Bool(allow_none=True)
     numFmtId = Integer(allow_none=True)
     formula = String(allow_none=True)
-    sqlType = Integer()
-    hierarchy = Integer()
-    level = Integer()
-    databaseField = Bool()
+    sqlType = Integer(allow_none=True)
+    hierarchy = Integer(allow_none=True)
+    level = Integer(allow_none=True)
+    databaseField = Bool(allow_none=True)
     mappingCount = Integer(allow_none=True)
     memberPropertyField = Bool(allow_none=True)
-    sharedItems = Typed(expected_type=SharedItems, allow_none=True)
-    fieldGroup = Typed(expected_type=FieldGroup, allow_none=True)
-    mpMap = NestedInteger(allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('sharedItems', 'fieldGroup', 'mpMap',)
+    __elements__ = ('sharedItems', 'fieldGroup', 'mpMap')
 
     def __init__(self,
+                 sharedItems=None,
+                 fieldGroup=None,
+                 mpMap=None,
+                 extLst=None,
                  name=None,
                  caption=None,
                  propertyName=None,
@@ -854,14 +858,14 @@ class CacheField(Serialisable):
                  sqlType=0,
                  hierarchy=0,
                  level=0,
-                 databaseField=None,
+                 databaseField=True,
                  mappingCount=None,
                  memberPropertyField=False,
-                 sharedItems=None,
-                 fieldGroup=None,
-                 mpMap=None,
-                 extLst=None,
                 ):
+        self.sharedItems = sharedItems
+        self.fieldGroup = fieldGroup
+        self.mpMap = mpMap
+        self.extLst = extLst
         self.name = name
         self.caption = caption
         self.propertyName = propertyName
@@ -875,10 +879,6 @@ class CacheField(Serialisable):
         self.databaseField = databaseField
         self.mappingCount = mappingCount
         self.memberPropertyField = memberPropertyField
-        self.sharedItems = sharedItems
-        self.fieldGroup = fieldGroup
-        self.mpMap = mpMap
-        self.extLst = extLst
 
 
 class CacheFieldList(Serialisable):
