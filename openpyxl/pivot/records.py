@@ -7,6 +7,7 @@ from openpyxl.descriptors import (
     Float,
     String,
     Integer,
+    Sequence,
 )
 
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
@@ -14,6 +15,16 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedBool,
 )
+
+
+class X(Serialisable):
+
+    v = Integer(allow_none=True)
+
+    def __init__(self,
+                 v=0,
+                ):
+        self.v = v
 
 
 class Tuple(Serialisable):
@@ -47,12 +58,21 @@ class TupleList(Serialisable):
         self.tpl = tpl
 
 
-class Missing(Serialisable):
+class SharedItem(Serialisable):
 
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
+    pass
+
+
+class Missing(SharedItem):
+
+    tagname = "m"
+
+    tpls = Sequence(expected_type=TupleList)
+    x = Sequence(expected_type=X)
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
     _in = Integer(allow_none=True)
     bc = HexBinary()
     fc = HexBinary()
@@ -60,12 +80,12 @@ class Missing(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
     def __init__(self,
+                 tpls=(),
+                 x=(),
                  u=None,
                  f=None,
                  c=None,
@@ -73,13 +93,13 @@ class Missing(Serialisable):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
+                 i=False,
+                 un=False,
+                 st=False,
+                 b=False,
                 ):
+        self.tpls = tpls
+        self.x = x
         self.u = u
         self.f = f
         self.c = c
@@ -91,16 +111,18 @@ class Missing(Serialisable):
         self.un = un
         self.st = st
         self.b = b
-        self.tpls = tpls
-        self.x = x
 
-class Number(Serialisable):
+class Number(SharedItem):
 
+    tagname = "n"
+
+    tpls = Sequence(expected_type=TupleList)
+    x = Sequence(expected_type=X)
     v = Float()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
     _in = Integer(allow_none=True)
     bc = HexBinary()
     fc = HexBinary()
@@ -108,12 +130,12 @@ class Number(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
     def __init__(self,
+                 tpls=(),
+                 x=(),
                  v=None,
                  u=None,
                  f=None,
@@ -122,13 +144,13 @@ class Number(Serialisable):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
+                 i=False,
+                 un=False,
+                 st=False,
+                 b=False,
                 ):
+        self.tpls = tpls
+        self.x = x
         self.v = v
         self.u = u
         self.f = f
@@ -141,17 +163,19 @@ class Number(Serialisable):
         self.un = un
         self.st = st
         self.b = b
-        self.tpls = tpls
-        self.x = x
 
 
-class Error(Serialisable):
+class Error(SharedItem):
 
+    tagname = "e"
+
+    tpls = Typed(expected_type=TupleList, allow_none=True)
+    x = Sequence(expected_type=X)
     v = String()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
     _in = Integer(allow_none=True)
     bc = HexBinary()
     fc = HexBinary()
@@ -159,12 +183,12 @@ class Error(Serialisable):
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
     def __init__(self,
+                 tpls=None,
+                 x=(),
                  v=None,
                  u=None,
                  f=None,
@@ -173,13 +197,13 @@ class Error(Serialisable):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
+                 i=False,
+                 un=False,
+                 st=False,
+                 b=False,
                 ):
+        self.tpls = tpls
+        self.x = x
         self.v = v
         self.u = u
         self.f = f
@@ -192,135 +216,40 @@ class Error(Serialisable):
         self.un = un
         self.st = st
         self.b = b
-        self.tpls = tpls
-        self.x = x
 
-class Boolean(Serialisable):
 
+class Boolean(SharedItem):
+
+    tagname = "b"
+
+    x = Sequence(expected_type=X)
     v = Bool()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    x = NestedInteger(allow_none=True)
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
 
     __elements__ = ('x',)
 
     def __init__(self,
+                 x=(),
                  v=None,
                  u=None,
                  f=None,
                  c=None,
                  cp=None,
-                 x=None,
                 ):
+        self.x = x
         self.v = v
         self.u = u
         self.f = f
         self.c = c
         self.cp = cp
-        self.x = x
 
 
-class Number(Serialisable):
+class Text(SharedItem):
 
-    v = Float()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 v=None,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.v = v
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-        self._in = _in
-
-
-class Missing(Serialisable):
-
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
-    i = Bool(allow_none=True)
-    un = Bool(allow_none=True)
-    st = Bool(allow_none=True)
-    b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
-
-    __elements__ = ('tpls', 'x')
-
-    def __init__(self,
-                 u=None,
-                 f=None,
-                 c=None,
-                 cp=None,
-                 _in=None,
-                 bc=None,
-                 fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
-        self.u = u
-        self.f = f
-        self.c = c
-        self.cp = cp
-        self.bc = bc
-        self.fc = fc
-        self.i = i
-        self.un = un
-        self.st = st
-        self.b = b
-        self.tpls = tpls
-        self.x = x
-        self._in = _in
-
-class Text(Serialisable):
+    tagname = "s"
 
     v = String(allow_none=True)
     u = Bool()
