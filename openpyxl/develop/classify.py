@@ -40,6 +40,7 @@ simple_mapping = {
     'xsd:long':'Float',
     'xsd:token':'String',
     'xsd:dateTime':'DateTime',
+    'xsd:hexBinary':'HexBinary',
     's:ST_Panose':'HexBinary',
     's:ST_Lang':'String',
     'ST_Percentage':'String',
