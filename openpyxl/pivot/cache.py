@@ -23,7 +23,7 @@ from .pivot import (
     PivotAreaReference,
     PivotAreaReferenceList,
 )
-from .records import (
+from .record import (
     Error,
     Missing,
     Number,
