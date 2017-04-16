@@ -41,10 +41,10 @@ def Error():
 class TestError:
 
     def test_ctor(self, Error):
-        error = Error()
+        error = Error(v="error")
         xml = tostring(error.to_tree())
         expected = """
-        <root />
+        <e b="0" i="0" st="0" un="0" v="error" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -52,11 +52,11 @@ class TestError:
 
     def test_from_xml(self, Error):
         src = """
-        <root />
+        <e b="0" i="0" st="0" un="0" v="error" />
         """
         node = fromstring(src)
         error = Error.from_tree(node)
-        assert error == Error()
+        assert error == Error(v="error")
 
 
 @pytest.fixture
