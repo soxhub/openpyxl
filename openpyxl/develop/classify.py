@@ -21,6 +21,7 @@ from openpyxl.tests.schema import (
     drawing_src,
     shared_src,
     )
+from openpyxl.descriptors.serialisable import KEYWORDS
 
 from lxml.etree import parse
 
@@ -116,6 +117,8 @@ def classify(tagname, src=sheet_src, schema=None):
         attributes.extend(get_attribute_group(schema, _group.get('ref')))
     for el in attributes:
         attr = dict(el.attrib)
+        if attr['name'] in KEYWORDS:
+            attr['name'] = "_" + attr['name']
         if 'ref' in attr:
             continue
         attrs.append(attr)
