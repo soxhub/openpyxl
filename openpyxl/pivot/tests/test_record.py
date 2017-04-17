@@ -122,10 +122,10 @@ def Number():
 class TestNumber:
 
     def test_ctor(self, Number):
-        number = Number()
+        number = Number(v=24)
         xml = tostring(number.to_tree())
         expected = """
-        <root />
+        <n b="0" i="0" st="0" un="0" v="24"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -133,11 +133,11 @@ class TestNumber:
 
     def test_from_xml(self, Number):
         src = """
-        <root />
+        <n v="15" />
         """
         node = fromstring(src)
         number = Number.from_tree(node)
-        assert number == Number()
+        assert number == Number(v=15)
 
 
 @pytest.fixture
