@@ -6,33 +6,6 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def Record():
-    from ..record import Record
-    return Record
-
-
-class TestRecord:
-
-    def test_ctor(self, Record):
-        field = Record()
-        xml = tostring(field.to_tree())
-        expected = """
-        <r />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, Record):
-        src = """
-        <r />
-        """
-        node = fromstring(src)
-        field = Record.from_tree(node)
-        assert field == Record()
-
-
-@pytest.fixture
 def Error():
     from ..record import Error
     return Error
@@ -165,3 +138,66 @@ class TestText:
         node = fromstring(src)
         text = Text.from_tree(node)
         assert text == Text(v="UCLA")
+
+@pytest.fixture
+def X():
+    from ..record import X
+    return X
+
+
+class TestX:
+
+    def test_ctor(self, X):
+        record = X()
+        xml = tostring(record.to_tree())
+        expected = """
+        <x v="0" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, X):
+        src = """
+        <x v="1" />
+        """
+        node = fromstring(src)
+        record = X.from_tree(node)
+        assert record == X(v=1)
+
+
+@pytest.fixture
+def Record():
+    from ..record import Record
+    return Record
+
+
+class TestRecord:
+
+    def test_ctor(self, Record):
+        field = Record()
+        xml = tostring(field.to_tree())
+        expected = """
+        <r />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Record, Number, Text, X):
+        src = """
+        <r>
+          <n v="1"/>
+          <x v="0"/>
+          <s v="2014-03-24"/>
+          <x v="0"/>
+          <n v="25"/>
+          <x v="0"/>
+        </r>
+        """
+        node = fromstring(src)
+        n = [Number(v=1), Number(v=25)]
+        s = [Text(v="2014-03-24")]
+        x = [X(), X(), X()]
+        field = Record.from_tree(node)
+        assert field == Record(n=n, s=s, x=x)

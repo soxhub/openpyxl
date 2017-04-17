@@ -19,6 +19,8 @@ from openpyxl.descriptors.nested import (
 
 class X(Serialisable):
 
+    tagname = "x"
+
     v = Integer(allow_none=True)
 
     def __init__(self,
@@ -332,24 +334,24 @@ class Record(Serialisable):
     tagname = "r"
 
     # some elements are choice
-    m = Typed(expected_type=Missing, allow_none=True)
-    n = Typed(expected_type=Number, allow_none=True)
-    b = NestedBool(allow_none=True)
-    e = Typed(expected_type=Error, allow_none=True)
-    s = Typed(expected_type=Text, allow_none=True)
-    d = Typed(xpected_type=PivotDateTime, allow_none=True)
-    x = NestedInteger(allow_none=True,)
+    m = Sequence(expected_type=Missing)
+    n = Sequence(expected_type=Number)
+    b = Sequence(expected_type=Boolean)
+    e = Sequence(expected_type=Error)
+    s = Sequence(expected_type=Text)
+    d = Sequence(expected_type=PivotDateTime)
+    x = Sequence(expected_type=X)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd', 'x')
 
     def __init__(self,
-                 m=None,
-                 n=None,
-                 b=None,
-                 e=None,
-                 s=None,
-                 d=None,
-                 x=None,
+                 m=(),
+                 n=(),
+                 b=(),
+                 e=(),
+                 s=(),
+                 d=(),
+                 x=(),
                 ):
         self.m = m
         self.n = n
