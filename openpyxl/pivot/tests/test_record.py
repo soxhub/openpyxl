@@ -149,10 +149,10 @@ def Text():
 class TestText:
 
     def test_ctor(self, Text):
-        text = Text()
+        text = Text(v="UCLA")
         xml = tostring(text.to_tree())
         expected = """
-        <root />
+        <s b="0" i="0" st="0" un="0" v="UCLA" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -160,8 +160,8 @@ class TestText:
 
     def test_from_xml(self, Text):
         src = """
-        <root />
+        <s v="UCLA" />
         """
         node = fromstring(src)
         text = Text.from_tree(node)
-        assert text == Text()
+        assert text == Text(v="UCLA")

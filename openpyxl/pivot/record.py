@@ -251,24 +251,26 @@ class Text(SharedItem):
 
     tagname = "s"
 
-    v = String(allow_none=True)
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
+    tpls = Sequence(expected_type=TupleList)
+    x = Sequence(expected_type=X)
+    v = String()
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
     _in = Integer(allow_none=True)
-    bc = HexBinary()
-    fc = HexBinary()
+    bc = HexBinary(allow_none=True)
+    fc = HexBinary(allow_none=True)
     i = Bool(allow_none=True)
     un = Bool(allow_none=True)
     st = Bool(allow_none=True)
     b = Bool(allow_none=True)
-    tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = NestedInteger(allow_none=True)
 
     __elements__ = ('tpls', 'x')
 
     def __init__(self,
+                 tpls=(),
+                 x=(),
                  v=None,
                  u=None,
                  f=None,
@@ -277,13 +279,13 @@ class Text(SharedItem):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=None,
-                 un=None,
-                 st=None,
-                 b=None,
-                 tpls=None,
-                 x=None,
-                ):
+                 i=False,
+                 un=False,
+                 st=False,
+                 b=False,
+                 ):
+        self.tpls = tpls
+        self.x = x
         self.v = v
         self.u = u
         self.f = f
@@ -296,8 +298,6 @@ class Text(SharedItem):
         self.un = un
         self.st = st
         self.b = b
-        self.tpls = tpls
-        self.x = x
 
 
 class PivotDateTime(Serialisable):
