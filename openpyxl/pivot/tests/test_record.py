@@ -98,7 +98,7 @@ class TestMissing:
         missing = Missing()
         xml = tostring(missing.to_tree())
         expected = """
-        <root />
+        <m b="0" i="0" st="0" un="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -106,7 +106,7 @@ class TestMissing:
 
     def test_from_xml(self, Missing):
         src = """
-        <root />
+        <m />
         """
         node = fromstring(src)
         missing = Missing.from_tree(node)
