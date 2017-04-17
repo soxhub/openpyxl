@@ -71,7 +71,7 @@ class TestBoolean:
         boolean = Boolean()
         xml = tostring(boolean.to_tree())
         expected = """
-        <root />
+        <b v="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -79,7 +79,7 @@ class TestBoolean:
 
     def test_from_xml(self, Boolean):
         src = """
-        <root />
+        <b />
         """
         node = fromstring(src)
         boolean = Boolean.from_tree(node)
