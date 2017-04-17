@@ -140,15 +140,15 @@ class TestText:
         assert text == Text(v="UCLA")
 
 @pytest.fixture
-def X():
-    from ..record import X
-    return X
+def Index():
+    from ..record import Index
+    return Index
 
 
-class TestX:
+class TestIndex:
 
-    def test_ctor(self, X):
-        record = X()
+    def test_ctor(self, Index):
+        record = Index()
         xml = tostring(record.to_tree())
         expected = """
         <x v="0" />
@@ -157,13 +157,13 @@ class TestX:
         assert diff is None, diff
 
 
-    def test_from_xml(self, X):
+    def test_from_xml(self, Index):
         src = """
         <x v="1" />
         """
         node = fromstring(src)
-        record = X.from_tree(node)
-        assert record == X(v=1)
+        record = Index.from_tree(node)
+        assert record == Index(v=1)
 
 
 @pytest.fixture
@@ -184,7 +184,7 @@ class TestRecord:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Record, Number, Text, X):
+    def test_from_xml(self, Record, Number, Text, Index):
         src = """
         <r>
           <n v="1"/>
@@ -198,6 +198,6 @@ class TestRecord:
         node = fromstring(src)
         n = [Number(v=1), Number(v=25)]
         s = [Text(v="2014-03-24")]
-        x = [X(), X(), X()]
+        x = [Index(), Index(), Index()]
         field = Record.from_tree(node)
         assert field == Record(n=n, s=s, x=x)

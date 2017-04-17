@@ -17,7 +17,7 @@ from openpyxl.descriptors.nested import (
 )
 
 
-class X(Serialisable):
+class Index(Serialisable):
 
     tagname = "x"
 
@@ -70,7 +70,7 @@ class Missing(SharedItem):
     tagname = "m"
 
     tpls = Sequence(expected_type=TupleList)
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
     u = Bool(allow_none=True)
     f = Bool(allow_none=True)
     c = String(allow_none=True)
@@ -119,7 +119,7 @@ class Number(SharedItem):
     tagname = "n"
 
     tpls = Sequence(expected_type=TupleList)
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
     v = Float()
     u = Bool(allow_none=True)
     f = Bool(allow_none=True)
@@ -172,7 +172,7 @@ class Error(SharedItem):
     tagname = "e"
 
     tpls = Typed(expected_type=TupleList, allow_none=True)
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
     v = String()
     u = Bool(allow_none=True)
     f = Bool(allow_none=True)
@@ -224,7 +224,7 @@ class Boolean(SharedItem):
 
     tagname = "b"
 
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
     v = Bool()
     u = Bool(allow_none=True)
     f = Bool(allow_none=True)
@@ -254,7 +254,7 @@ class Text(SharedItem):
     tagname = "s"
 
     tpls = Sequence(expected_type=TupleList)
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
     v = String()
     u = Bool(allow_none=True)
     f = Bool(allow_none=True)
@@ -340,7 +340,7 @@ class Record(Serialisable):
     e = Sequence(expected_type=Error)
     s = Sequence(expected_type=Text)
     d = Sequence(expected_type=PivotDateTime)
-    x = Sequence(expected_type=X)
+    x = Sequence(expected_type=Index)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd', 'x')
 
