@@ -214,15 +214,17 @@ class TestStop:
         assert stop == Stop('999999', .5)
 
 
-    def test_position_valid_range(self, Stop):
-        # valid
-        Stop('999999', 0)
-        Stop('999999', .5)
-        Stop('999999', 1)
-        # invalid
-        with pytest.raises(ValueError):
-            Stop('999999', -.1)
-        with pytest.raises(ValueError):
-            Stop('999999', -1.1)
-        with pytest.raises(TypeError):
-            Stop('999999', None)
+    @pytest.mark.parametrize('position', [0, .5, 1])
+    def test_position_valid(self, Stop, position):
+        # smoke test
+        Stop('999999', position)
+
+
+    @pytest.mark.parametrize('position,exception', [
+        (-.1, ValueError),
+        (1.1, ValueError),
+        (None, TypeError)
+    ])
+    def test_position_invalid(self, Stop, position, exception):
+        with pytest.raises(exception):
+            Stop('999999', position)
