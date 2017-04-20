@@ -131,21 +131,23 @@ class Stop(Serialisable):
         self.color = color
 
 
-
 def _assign_position(values):
     """
     Automatically assign positions if a list of colours is provided.
 
     It is not permitted to mix colours and stops
     """
+    n_values = len(values)
     n_stops = sum(isinstance(value, Stop) for value in values)
+
     if n_stops == 0:
-        interval = 1. / (len(values) - 1) if len(values) > 1 else 0
+        interval = 1 / (n_values - 1) if n_values > 1 else 0
         values = [Stop(value, i * interval)
                   for i, value in enumerate(values)]
-    elif n_stops < len(values):
-        raise ValueError('Cannot interpret mix of Stops and Colors '
-                         'in GradientFill')
+
+    elif n_stops < n_values:
+        raise ValueError('Cannot interpret mix of Stops and Colors in GradientFill')
+
     return values
 
 
