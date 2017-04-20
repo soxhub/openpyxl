@@ -62,8 +62,7 @@ class Fill(Serialisable):
         child = children[0]
         if "patternFill" in child.tag:
             return PatternFill._from_tree(child)
-        else:
-            return GradientFill._from_tree(child)
+        return super(Fill, cls).from_tree(child)
 
 
 class PatternFill(Fill):
@@ -194,14 +193,6 @@ class GradientFill(Fill):
             value = getattr(self, attr)
             if value:
                 yield attr, safe_string(value)
-
-
-    @classmethod
-    def _from_tree(cls, node):
-        stops = []
-        for stop in safe_iterator(node, "{%s}stop" % SHEET_MAIN_NS):
-            stops.append(Stop.from_tree(stop))
-        return cls(stop=stops, **node.attrib)
 
 
     def to_tree(self, tagname=None, namespace=None, idx=None):
