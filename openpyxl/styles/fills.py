@@ -141,8 +141,8 @@ def _assign_position(values):
     n_stops = sum(isinstance(value, Stop) for value in values)
 
     if n_stops == 0:
-        interval = 0
-        if n_values > 1:
+        interval = 1
+        if n_values > 2:
             interval = 1 / (n_values - 1)
         values = [Stop(value, i * interval)
                   for i, value in enumerate(values)]
@@ -152,8 +152,8 @@ def _assign_position(values):
 
 
     total = sum(stop.position for stop in values)
-    if total > 2:
-        raise ValueError('Total position may not exceed 2')
+    if total >= 2:
+        raise ValueError('Total position must be less than 2')
 
     return values
 
