@@ -120,7 +120,9 @@ DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
 class Stop(Serialisable):
+
     tagname = "stop"
+
     position = MinMax(min=0, max=1)
     color = ColorDescriptor()
 
@@ -130,8 +132,8 @@ class Stop(Serialisable):
 
 
 class StopList(Sequence):
-    def __init__(self):
-        super(StopList, self).__init__(expected_type=Stop)
+
+    expected_type = Stop
 
     def __set__(self, obj, values):
         n_stops = sum(isinstance(value, Stop) for value in values)
