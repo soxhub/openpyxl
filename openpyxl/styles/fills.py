@@ -122,7 +122,7 @@ DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 class Stop(Serialisable):
     tagname = "stop"
-    position = MinMax(min=0, max=1, allow_none=True)
+    position = MinMax(min=0, max=1)
     color = ColorDescriptor()
 
     def __init__(self, color, position):

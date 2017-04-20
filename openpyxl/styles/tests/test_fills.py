@@ -224,3 +224,5 @@ class TestStop:
             Stop('999999', -.1)
         with pytest.raises(ValueError):
             Stop('999999', -1.1)
+        with pytest.raises(TypeError):
+            Stop('999999', None)
