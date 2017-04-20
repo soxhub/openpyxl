@@ -174,11 +174,21 @@ def Record():
 
 class TestRecord:
 
-    def test_ctor(self, Record):
-        field = Record()
+    def test_ctor(self, Record, Number, Text, Index):
+        n = [Number(v=1), Number(v=25)]
+        s = [Text(v="2014-03-24")]
+        x = [Index(), Index(), Index()]
+        field = Record(n=n, s=s, x=x)
         xml = tostring(field.to_tree())
         expected = """
-        <r />
+        <r>
+          <n b="0" i="0" st="0" un="0" v="1"/>
+          <n b="0" i="0" st="0" un="0" v="25"/>
+          <s b="0" i="0" st="0" un="0" v="2014-03-24"/>
+          <x v="0"/>
+          <x v="0"/>
+          <x v="0"/>
+        </r>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
