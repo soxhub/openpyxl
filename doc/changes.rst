@@ -19,6 +19,11 @@ Bugfixes
 * `#779 <https://bitbucket.org/openpyxl/openpyxl/issues/779>`_ Fails to recognise Chinese date format`
 
 
+Pull requests
+-------------
+* `162 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/163>`_ Improved GradientFill
+
+
 Minor changes
 -------------
 
@@ -27,7 +32,11 @@ Minor changes
 * Added read/write support for the datetime type for cells
 
 
-2.4.6 (unreleased)
+2.4.7 (unreleased)
+==================
+
+
+2.4.6 (2017-04-14)
 ==================
 
 
