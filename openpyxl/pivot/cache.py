@@ -24,6 +24,7 @@ from .pivot import (
     PivotAreaReferenceList,
 )
 from .record import (
+    Boolean,
     Error,
     Missing,
     Number,
@@ -753,13 +754,12 @@ class FieldGroup(Serialisable):
 
 class SharedItems(Serialisable):
 
-    #m = Typed(expected_type=Missing, )
-    #n = Typed(expected_type=Number, )
-    #b = Bool(nested=True, )
-    #e = Typed(expected_type=Error, )
-    #s = Typed(expected_type=String, )
-    #d = Typed(expected_type=DateTime, )
-    value = Sequence(expected_type=SharedItem)
+    m = Sequence(expected_type=Missing)
+    n = Sequence(expected_type=Number)
+    b = Sequence(expected_type=Boolean)
+    e = Sequence(expected_type=Error)
+    s = Typed(expected_type=Text)
+    d = Typed(expected_type=PivotDateTime)
     containsSemiMixedTypes = Bool(allow_none=True)
     containsNonDate = Bool(allow_none=True)
     containsDate = Bool(allow_none=True)
