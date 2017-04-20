@@ -167,12 +167,6 @@ class StopList(Sequence):
         super(StopList, self).__set__(obj, values)
 
 
-    def append(self, value):
-        values = self.Stop[:]
-        values.append(value)
-        self.values = values
-
-
 class GradientFill(Fill):
     """Fill areas with gradient
 
