@@ -131,19 +131,30 @@ class Stop(Serialisable):
         self.color = color
 
 
+
+def _assign_position(values):
+    """
+    Automatically assign positions if a list of colours is provided.
+
+    It is not permitted to mix colours and stops
+    """
+    n_stops = sum(isinstance(value, Stop) for value in values)
+    if n_stops == 0:
+        interval = 1. / (len(values) - 1) if len(values) > 1 else 0
+        values = [Stop(value, i * interval)
+                  for i, value in enumerate(values)]
+    elif n_stops < len(values):
+        raise ValueError('Cannot interpret mix of Stops and Colors '
+                         'in GradientFill')
+    return values
+
+
 class StopList(Sequence):
 
     expected_type = Stop
 
     def __set__(self, obj, values):
-        n_stops = sum(isinstance(value, Stop) for value in values)
-        if n_stops == 0:
-            interval = 1. / (len(values) - 1) if len(values) > 1 else 0
-            values = [Stop(value, i * interval)
-                      for i, value in enumerate(values)]
-        elif n_stops < len(values):
-            raise ValueError('Cannot interpret mix of Stops and Colors '
-                             'in GradientFill')
+        values = _assign_position(values)
         super(StopList, self).__set__(obj, values)
 
 
