@@ -62,15 +62,19 @@ class TestGradientFill:
         ([BLACK, WHITE, BLACK], [BLACK, WHITE, BLACK], [0, .5, 1]),
         ([WHITE], [WHITE], [0]),
     ])
-    def test_color_sequence(self, GradientFill, Stop, colors, rgbs, positions):
-        gf = GradientFill(stop=colors)
-        assert [stop.color.rgb for stop in gf.stop] == rgbs
-        assert [stop.position for stop in gf.stop] == positions
+    def test_color_sequence(self, Stop, colors, rgbs, positions):
+        from ..fills import _assign_position
+
+        stops = _assign_position(colors)
+
+        assert [stop.color.rgb for stop in stops] == rgbs
+        assert [stop.position for stop in stops] == positions
 
 
-    def test_invalid_stop_color_mix(self, GradientFill, Stop):
+    def test_invalid_stop_color_mix(self, Stop):
+        from ..fills import _assign_position
         with pytest.raises(ValueError):
-            GradientFill(stop=[Stop(BLACK, .1), WHITE])
+            _assign_position([Stop(BLACK, .1), WHITE])
 
 
     def test_dict_interface(self, GradientFill):
