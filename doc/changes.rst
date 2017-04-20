@@ -19,6 +19,11 @@ Bugfixes
 * `#779 <https://bitbucket.org/openpyxl/openpyxl/issues/779>`_ Fails to recognise Chinese date format`
 
 
+Pull requests
+-------------
+* `162 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/163>`_ Improved GradientFill
+
+
 Minor changes
 -------------
 
