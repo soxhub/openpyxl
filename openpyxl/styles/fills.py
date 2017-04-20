@@ -122,29 +122,12 @@ DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 class Stop(Serialisable):
     tagname = "stop"
-
-    __elements__ = ('color',)
-    __attrs__ = ('position',)
-
     position = MinMax(min=0, max=1, allow_none=True)
     color = ColorDescriptor()
 
-    def __init__(self, color, position=None):
+    def __init__(self, color, position):
         self.position = position
         self.color = color
-
-    def __iter__(self):
-        yield 'position', safe_string(self.position)
-
-
-class StopSequenceDescriptor(Sequence):
-    def __init__(self, *args, **kwargs):
-        super(StopSequenceDescriptor, self).__init__(expected_type=Stop)
-
-    def __set__(self, instance, value):
-        value = [Stop(*x) if isinstance(x, tuple) else x
-                 for x in value]
-        super(StopSequenceDescriptor, self).__set__(instance, value)
 
 
 class GradientFill(Fill):
@@ -153,20 +136,10 @@ class GradientFill(Fill):
     Two types of gradient fill are supported:
 
         - A type='linear' gradient interpolates colours between
-          a set of specified stops, across the length of an area.
+          a set of specified Stops, across the length of an area.
           The gradient is left-to-right by default, but this
           orientation can be modified with the degree
-          attribute. The stop parameter can be specified as a
-          sequence of colors or (color, position) pairs. position should
-          be in the range [0, 1] and should be monotonic (but not strictly)
-          increasing. If colors are provided without position, it will be
-          inferred according to the following rules:
-
-              - if the first stop has no position, it is set to 0
-              - if the last stop has no position, it is set to 1
-              - all other unspecified positions are calculated by linear
-                interpolation with the nearest specified positions
-
+          attribute.
         - A type='path' gradient applies a linear gradient from each
           edge of the area. Attributes top, right, bottom, left specify
           the extent of fill from the respective borders. Thus top="0.2"
@@ -183,7 +156,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = StopSequenceDescriptor()
+    stop = Sequence(expected_type=Stop)
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,

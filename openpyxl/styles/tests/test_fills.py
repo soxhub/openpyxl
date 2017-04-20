@@ -48,48 +48,12 @@ class TestGradientFill:
                                  [BLACK, WHITE],
                              ]
                              )
-    def test_sequence(self, GradientFill, colors):
-        gf = GradientFill(stop=colors)
+    def test_sequence(self, GradientFill, Stop, colors):
+        gf = GradientFill(stop=[Stop(colors[0], 0), Stop(colors[1], 1)])
         assert gf.stop[0].color.rgb == BLACK
         assert gf.stop[1].color.rgb == WHITE
         assert gf.stop[0].position == 0
         assert gf.stop[1].position == 1
-
-    def test_unspecified_position(self, GradientFill):
-        gf = GradientFill(stop=[BLACK, WHITE, BLACK])
-        assert gf.stop[0].position == 0
-        assert round(gf.stop[1].position - .5) == 0
-        assert gf.stop[2].position == 1
-
-    def test_partial_position(self, GradientFill):
-        gf = GradientFill(stop=[BLACK, (WHITE, .3), BLACK, WHITE, BLACK, WHITE])
-        assert gf.stop[0].position == 0
-        assert gf.stop[1].position == .3
-        assert round(gf.stop[2].position - .475, 5) == 0
-        assert round(gf.stop[3].position - .65, 5) == 0
-        assert round(gf.stop[4].position - .825, 5) == 0
-        assert gf.stop[5].position == 1
-
-    def test_first_position_nonzero(self, GradientFill):
-        gf = GradientFill(stop=[(BLACK, .3), WHITE, BLACK])
-        assert gf.stop[0].position == .3
-        assert round(gf.stop[1].position - .65, 5) == 0
-        assert gf.stop[2].position == 1
-
-    @pytest.mark.parametrize("colors",
-                             [
-                                 [Color(BLACK), Color(WHITE), Color(BLACK)],
-                                 [BLACK, WHITE, BLACK],
-                             ]
-                             )
-    def test_positioned_sequence(self, GradientFill, colors):
-        gf = GradientFill(stop=list(zip(colors, [0, .3, 1])))
-        assert gf.stop[0].color.rgb == BLACK
-        assert gf.stop[1].color.rgb == WHITE
-        assert gf.stop[2].color.rgb == BLACK
-        assert gf.stop[0].position == 0
-        assert gf.stop[1].position == .3
-        assert gf.stop[2].position == 1
 
     def test_dict_interface(self, GradientFill):
         gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4)
@@ -97,8 +61,9 @@ class TestGradientFill:
                             'right': "2", 'top': "3", 'type': 'linear'}
 
 
-    def test_serialise(self, GradientFill):
-        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4, stop=[BLACK, WHITE])
+    def test_serialise(self, GradientFill, Stop):
+        gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4,
+                          stop=[Stop(BLACK, 0), Stop(WHITE, 1)])
         xml = tostring(gf.to_tree())
         expected = """
         <fill>
@@ -116,7 +81,7 @@ class TestGradientFill:
         assert diff is None, diff
 
 
-    def test_create(self, GradientFill):
+    def test_create(self, GradientFill, Stop):
         src = """
         <fill>
         <gradientFill xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" degree="90">
@@ -131,8 +96,8 @@ class TestGradientFill:
         """
         xml = fromstring(src)
         fill = GradientFill.from_tree(xml)
-        assert fill.stop == [Stop()(Color(theme=0), position=0),
-                             Stop()(Color(theme=4), position=1)]
+        assert fill.stop == [Stop(Color(theme=0), position=0),
+                             Stop(Color(theme=4), position=1)]
 
 
 @pytest.fixture
