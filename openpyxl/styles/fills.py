@@ -152,8 +152,8 @@ def _assign_position(values):
 
 
     total = sum(stop.position for stop in values)
-    if total > 1:
-        raise ValueError('Total position may not exceed 1')
+    if total > 2:
+        raise ValueError('Total position may not exceed 2')
 
     return values
 
