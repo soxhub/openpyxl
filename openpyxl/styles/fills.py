@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 # Copyright (c) 2010-2017 openpyxl
 
 from openpyxl.descriptors import (
@@ -8,9 +8,9 @@ from openpyxl.descriptors import (
     NoneSet,
     Sequence,
     Integer,
+    MinMax,
 )
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors.sequence import ValueSequence
 from openpyxl.compat import safe_string
 
 from .colors import ColorDescriptor, Color
@@ -120,14 +120,49 @@ DEFAULT_EMPTY_FILL = PatternFill()
 DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
-def _serialise_stop(tagname, sequence, namespace=None):
-    for idx, color in enumerate(sequence):
-        stop = Element("stop", position=str(idx))
-        stop.append(color.to_tree())
-        yield stop
+class Stop(Serialisable):
+    tagname = "stop"
+    position = MinMax(min=0, max=1)
+    color = ColorDescriptor()
+
+    def __init__(self, color, position):
+        self.position = position
+        self.color = color
+
+
+class StopList(Sequence):
+    def __init__(self):
+        super(StopList, self).__init__(expected_type=Stop)
+
+    def __set__(self, obj, values):
+        n_stops = sum(isinstance(value, Stop) for value in values)
+        if n_stops == 0:
+            interval = 1. / (len(values) - 1) if len(values) > 1 else 0
+            values = [Stop(value, i * interval)
+                      for i, value in enumerate(values)]
+        elif n_stops < len(values):
+            raise ValueError('Cannot interpret mix of Stops and Colors '
+                             'in GradientFill')
+        super(StopList, self).__set__(obj, values)
 
 
 class GradientFill(Fill):
+    """Fill areas with gradient
+
+    Two types of gradient fill are supported:
+
+        - A type='linear' gradient interpolates colours between
+          a set of specified Stops, across the length of an area.
+          The gradient is left-to-right by default, but this
+          orientation can be modified with the degree
+          attribute.  A list of Colors can be provided instead
+          and they will be positioned with equal distance between them.
+        - A type='path' gradient applies a linear gradient from each
+          edge of the area. Attributes top, right, bottom, left specify
+          the extent of fill from the respective borders. Thus top="0.2"
+          will fill the top 20% of the cell.
+
+    """
 
     tagname = "gradientFill"
 
@@ -138,7 +173,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = ValueSequence(expected_type=Color, to_tree=_serialise_stop)
+    stop = StopList()
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,
@@ -163,10 +198,10 @@ class GradientFill(Fill):
 
     @classmethod
     def _from_tree(cls, node):
-        colors = []
-        for color in safe_iterator(node, "{%s}color" % SHEET_MAIN_NS):
-            colors.append(Color.from_tree(color))
-        return cls(stop=colors, **node.attrib)
+        stops = []
+        for stop in safe_iterator(node, "{%s}stop" % SHEET_MAIN_NS):
+            stops.append(Stop.from_tree(stop))
+        return cls(stop=stops, **node.attrib)
 
 
     def to_tree(self, tagname=None, namespace=None, idx=None):
