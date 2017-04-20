@@ -192,26 +192,3 @@ class GradientFill(Fill):
         el = super(GradientFill, self).to_tree()
         parent.append(el)
         return parent
-
-
-    def fill_unspecified_stops(self):
-        stops = self.stop
-        if not stops:
-            return
-        if stops[0].position is None:
-            stops[0].position = 0
-        if stops[-1].position is None:
-            stops[-1].position = 1
-
-        specified_idx = []
-        for i, stop in enumerate(stops):
-            if stop.position is not None:
-                specified_idx.append(i)
-
-        for start, stop in zip(specified_idx, specified_idx[1:]):
-            if stop - start > 1:
-                start_pos = stops[start].position
-                stop_pos = stops[stop].position
-                d = (stop_pos - start_pos) / (stop - start)
-                for i, stop in enumerate(stops[start + 1:stop]):
-                    stop.position = start_pos + d * (i + 1)
