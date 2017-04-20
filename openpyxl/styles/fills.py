@@ -167,6 +167,12 @@ class StopList(Sequence):
         super(StopList, self).__set__(obj, values)
 
 
+    def append(self, value):
+        values = self.Stop[:]
+        values.append(value)
+        self.values = values
+
+
 class GradientFill(Fill):
     """Fill areas with gradient
 
@@ -178,6 +184,7 @@ class GradientFill(Fill):
           orientation can be modified with the degree
           attribute.  A list of Colors can be provided instead
           and they will be positioned with equal distance between them.
+
         - A type='path' gradient applies a linear gradient from each
           edge of the area. Attributes top, right, bottom, left specify
           the extent of fill from the respective borders. Thus top="0.2"
