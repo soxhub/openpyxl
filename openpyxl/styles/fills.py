@@ -130,6 +130,22 @@ class Stop(Serialisable):
         self.color = color
 
 
+class StopList(Sequence):
+    def __init__(self):
+        super(StopList, self).__init__(expected_type=Stop)
+
+    def __set__(self, obj, values):
+        n_stops = sum(isinstance(value, Stop) for value in values)
+        if n_stops == 0:
+            interval = 1. / (len(values) - 1) if len(values) > 1 else 0
+            values = [Stop(value, i * interval)
+                      for i, value in enumerate(values)]
+        elif n_stops < len(values):
+            raise ValueError('Cannot interpret mix of Stops and Colors '
+                             'in GradientFill')
+        super(StopList, self).__set__(obj, values)
+
+
 class GradientFill(Fill):
     """Fill areas with gradient
 
@@ -139,7 +155,8 @@ class GradientFill(Fill):
           a set of specified Stops, across the length of an area.
           The gradient is left-to-right by default, but this
           orientation can be modified with the degree
-          attribute.
+          attribute.  A list of Colors can be provided instead
+          and they will be positioned with equal distance between them.
         - A type='path' gradient applies a linear gradient from each
           edge of the area. Attributes top, right, bottom, left specify
           the extent of fill from the respective borders. Thus top="0.2"
@@ -156,7 +173,7 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = Sequence(expected_type=Stop)
+    stop = StopList()
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,

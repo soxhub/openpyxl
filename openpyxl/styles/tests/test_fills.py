@@ -48,12 +48,30 @@ class TestGradientFill:
                                  [BLACK, WHITE],
                              ]
                              )
-    def test_sequence(self, GradientFill, Stop, colors):
-        gf = GradientFill(stop=[Stop(colors[0], 0), Stop(colors[1], 1)])
+    def test_stop_sequence(self, GradientFill, Stop, colors):
+        gf = GradientFill(stop=[Stop(colors[0], 0), Stop(colors[1], .5)])
         assert gf.stop[0].color.rgb == BLACK
         assert gf.stop[1].color.rgb == WHITE
         assert gf.stop[0].position == 0
-        assert gf.stop[1].position == 1
+        assert gf.stop[1].position == .5
+
+
+    @pytest.mark.parametrize("colors,rgbs,positions", [
+        ([Color(BLACK), Color(WHITE)], [BLACK, WHITE], [0, 1]),
+        ([BLACK, WHITE], [BLACK, WHITE], [0, 1]),
+        ([BLACK, WHITE, BLACK], [BLACK, WHITE, BLACK], [0, .5, 1]),
+        ([WHITE], [WHITE], [0]),
+    ])
+    def test_color_sequence(self, GradientFill, Stop, colors, rgbs, positions):
+        gf = GradientFill(stop=colors)
+        assert [stop.color.rgb for stop in gf.stop] == rgbs
+        assert [stop.position for stop in gf.stop] == positions
+
+
+    def test_invalid_stop_color_mix(self, GradientFill, Stop):
+        with pytest.raises(ValueError):
+            GradientFill(stop=[Stop(BLACK, .1), WHITE])
+
 
     def test_dict_interface(self, GradientFill):
         gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4)
