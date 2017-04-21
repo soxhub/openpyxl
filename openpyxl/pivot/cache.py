@@ -1072,7 +1072,9 @@ class PivotCacheDefinition(Serialisable):
     maps = Typed(expected_type=MeasureDimensionMaps, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis', 'tupleCache', 'calculatedItems', 'calculatedMembers', 'dimensions', 'measureGroups', 'maps',)
+    __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis',
+                    'tupleCache', 'calculatedItems', 'calculatedMembers', 'dimensions',
+                    'measureGroups', 'maps',)
 
     def __init__(self,
                  invalid=None,
