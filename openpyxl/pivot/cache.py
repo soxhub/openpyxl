@@ -636,21 +636,6 @@ class CacheHierarchy(Serialisable):
         self.extLst = extLst
 
 
-class CacheHierarchies(Serialisable):
-
-    count = Integer()
-    cacheHierarchy = Typed(expected_type=CacheHierarchy, allow_none=True)
-
-    __elements__ = ('cacheHierarchy',)
-
-    def __init__(self,
-                 count=None,
-                 cacheHierarchy=None,
-                ):
-        self.count = count
-        self.cacheHierarchy = cacheHierarchy
-
-
 class GroupItems(Serialisable):
 
     count = Integer()
@@ -1021,7 +1006,7 @@ class PivotCacheDefinition(Serialisable):
     supportAdvancedDrill = Bool(allow_none=True)
     cacheSource = Typed(expected_type=CacheSource, )
     cacheFields = NestedSequence(expected_type=CacheField, count=True)
-    cacheHierarchies = Typed(expected_type=CacheHierarchies, allow_none=True)
+    cacheHierarchies = NestedSequence(expected_type=CacheHierarchy, allow_none=True)
     kpis = Typed(expected_type=PCDKPIs, allow_none=True)
     tupleCache = Typed(expected_type=TupleCache, allow_none=True)
     calculatedItems = Typed(expected_type=CalculatedItems, allow_none=True)
