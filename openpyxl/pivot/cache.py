@@ -1022,7 +1022,7 @@ class CacheSource(Serialisable):
     consolidation = Typed(expected_type=Consolidation, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('worksheetSource', 'consolidation', 'extLst')
+    __elements__ = ('worksheetSource', 'consolidation',)
 
     def __init__(self,
                  type=None,
@@ -1035,7 +1035,6 @@ class CacheSource(Serialisable):
         self.connectionId = connectionId
         self.worksheetSource = worksheetSource
         self.consolidation = consolidation
-        self.extLst = extLst
 
 
 class PivotCacheDefinition(Serialisable):
