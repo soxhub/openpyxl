@@ -638,8 +638,6 @@ class CacheHierarchy(Serialisable):
 
 class GroupItems(Serialisable):
 
-    count = Integer()
-    # some elements are choice
     m = Typed(expected_type=Missing, )
     n = Typed(expected_type=Number, )
     b = Bool(nested=True, )
@@ -648,6 +646,7 @@ class GroupItems(Serialisable):
     d = Typed(xpected_type=PivotDateTime,)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
+    __attrs__ = ("count", )
 
     def __init__(self,
                  count=None,
@@ -658,13 +657,16 @@ class GroupItems(Serialisable):
                  s=None,
                  d=None,
                 ):
-        self.count = count
         self.m = m
         self.n = n
         self.b = b
         self.e = e
         self.s = s
         self.d = d
+
+    @property
+    def count(self):
+        return len(self.m, self.n, self.b, self.e, self.s, self.d)
 
 
 class DiscretePr(Serialisable):
