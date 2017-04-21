@@ -877,21 +877,6 @@ class CacheField(Serialisable):
         self.memberPropertyField = memberPropertyField
 
 
-class CacheFieldList(Serialisable):
-
-    count = Integer()
-    cacheField = Typed(expected_type=CacheField, allow_none=True)
-
-    __elements__ = ('cacheField',)
-
-    def __init__(self,
-                 count=None,
-                 cacheField=None,
-                ):
-        self.count = count
-        self.cacheField = cacheField
-
-
 class RangeSet(Serialisable):
 
     i1 = Integer(allow_none=True)
@@ -1060,7 +1045,7 @@ class PivotCacheDefinition(Serialisable):
     supportSubquery = Bool(allow_none=True)
     supportAdvancedDrill = Bool(allow_none=True)
     cacheSource = Typed(expected_type=CacheSource, )
-    cacheFields = Typed(expected_type=CacheFieldList, )
+    cacheFields = NestedSequence(expected_type=CacheField, count=True)
     cacheHierarchies = Typed(expected_type=CacheHierarchies, allow_none=True)
     kpis = Typed(expected_type=PCDKPIs, allow_none=True)
     tupleCache = Typed(expected_type=TupleCache, allow_none=True)

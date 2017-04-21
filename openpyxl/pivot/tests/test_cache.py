@@ -147,4 +147,4 @@ class TestPivotCacheDefinition:
 
         cache = PivotCacheDefinition.from_tree(xml)
         assert cache.recordCount == 17
-        assert cache.cacheFields.count == 6
+        assert len(cache.cacheFields) == 6
