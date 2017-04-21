@@ -47,21 +47,6 @@ class MeasureDimensionMap(Serialisable):
         self.dimension = dimension
 
 
-class MeasureDimensionMaps(Serialisable):
-
-    count = Integer()
-    map = Typed(expected_type=MeasureDimensionMap, allow_none=True)
-
-    __elements__ = ('map',)
-
-    def __init__(self,
-                 count=None,
-                 map=None,
-                ):
-        self.count = count
-        self.map = map
-
-
 class MeasureGroup(Serialisable):
 
     name = String()
@@ -73,21 +58,6 @@ class MeasureGroup(Serialisable):
                 ):
         self.name = name
         self.caption = caption
-
-
-class MeasureGroups(Serialisable):
-
-    count = Integer()
-    measureGroup = Typed(expected_type=MeasureGroup, allow_none=True)
-
-    __elements__ = ('measureGroup',)
-
-    def __init__(self,
-                 count=None,
-                 measureGroup=None,
-                ):
-        self.count = count
-        self.measureGroup = measureGroup
 
 
 class PivotDimension(Serialisable):
@@ -107,21 +77,6 @@ class PivotDimension(Serialisable):
         self.name = name
         self.uniqueName = uniqueName
         self.caption = caption
-
-
-class Dimensions(Serialisable):
-
-    count = Integer()
-    dimension = Typed(expected_type=PivotDimension, allow_none=True)
-
-    __elements__ = ('dimension',)
-
-    def __init__(self,
-                 count=None,
-                 dimension=None,
-                ):
-        self.count = count
-        self.dimension = dimension
 
 
 class CalculatedMember(Serialisable):
@@ -157,21 +112,6 @@ class CalculatedMember(Serialisable):
         self.extLst = extLst
 
 
-class CalculatedMembers(Serialisable):
-
-    count = Integer()
-    calculatedMember = Typed(expected_type=CalculatedMember, )
-
-    __elements__ = ('calculatedMember',)
-
-    def __init__(self,
-                 count=None,
-                 calculatedMember=None,
-                ):
-        self.count = count
-        self.calculatedMember = calculatedMember
-
-
 class CalculatedItem(Serialisable):
 
     field = Integer(allow_none=True)
@@ -191,21 +131,6 @@ class CalculatedItem(Serialisable):
         self.formula = formula
         self.pivotArea = pivotArea
         self.extLst = extLst
-
-
-class CalculatedItems(Serialisable):
-
-    count = Integer()
-    calculatedItem = Typed(expected_type=CalculatedItem, )
-
-    __elements__ = ('calculatedItem',)
-
-    def __init__(self,
-                 count=None,
-                 calculatedItem=None,
-                ):
-        self.count = count
-        self.calculatedItem = calculatedItem
 
 
 class ServerFormat(Serialisable):
@@ -271,7 +196,8 @@ class OLAPSet(Serialisable):
     count = Integer()
     maxRank = Integer()
     setDefinition = String()
-    sortType = NoneSet(values=(['ascending', 'descending', 'ascendingAlpha', 'descendingAlpha', 'ascendingNatural', 'descendingNatural']))
+    sortType = NoneSet(values=(['ascending', 'descending', 'ascendingAlpha',
+                                'descendingAlpha', 'ascendingNatural', 'descendingNatural']))
     queryFailed = Bool()
     tpls = Typed(expected_type=TupleList, allow_none=True)
     sortByTuple = Typed(expected_type=TupleList, allow_none=True)
@@ -398,21 +324,6 @@ class PCDKPI(Serialisable):
         self.trend = trend
         self.weight = weight
         self.time = time
-
-
-class PCDKPIs(Serialisable):
-
-    count = Integer()
-    kpi = Typed(expected_type=PCDKPI, allow_none=True)
-
-    __elements__ = ('kpi',)
-
-    def __init__(self,
-                 count=None,
-                 kpi=None,
-                ):
-        self.count = count
-        self.kpi = kpi
 
 
 class GroupMember(Serialisable):
@@ -1009,13 +920,13 @@ class PivotCacheDefinition(Serialisable):
     cacheSource = Typed(expected_type=CacheSource, )
     cacheFields = NestedSequence(expected_type=CacheField, count=True)
     cacheHierarchies = NestedSequence(expected_type=CacheHierarchy, allow_none=True)
-    kpis = Typed(expected_type=PCDKPIs, allow_none=True)
+    kpis = NestedSequence(expected_type=PCDKPI, allow_none=True)
     tupleCache = Typed(expected_type=TupleCache, allow_none=True)
-    calculatedItems = Typed(expected_type=CalculatedItems, allow_none=True)
-    calculatedMembers = Typed(expected_type=CalculatedMembers, allow_none=True)
-    dimensions = Typed(expected_type=Dimensions, allow_none=True)
-    measureGroups = Typed(expected_type=MeasureGroups, allow_none=True)
-    maps = Typed(expected_type=MeasureDimensionMaps, allow_none=True)
+    calculatedItems = NestedSequence(expected_type=CalculatedItem, count=True)
+    calculatedMembers = NestedSequence(expected_type=CalculatedMember, count=True)
+    dimensions = NestedSequence(expected_type=PivotDimension, allow_none=True)
+    measureGroups = NestedSequence(expected_type=MeasureGroup, count=True)
+    maps = NestedSequence(expected_type=MeasureDimensionMap, count=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis',
@@ -1043,13 +954,13 @@ class PivotCacheDefinition(Serialisable):
                  supportAdvancedDrill=None,
                  cacheSource=None,
                  cacheFields=(),
-                 cacheHierarchies=None,
-                 kpis=None,
-                 calculatedItems=None,
-                 calculatedMembers=None,
-                 dimensions=None,
-                 measureGroups=None,
-                 maps=None,
+                 cacheHierarchies=(),
+                 kpis=(),
+                 calculatedItems=(),
+                 calculatedMembers=(),
+                 dimensions=(),
+                 measureGroups=(),
+                 maps=(),
                  extLst=None,
                 ):
         self.invalid = invalid
