@@ -16,7 +16,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
-
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from .pivot import (
     PivotArea,
@@ -1080,7 +1080,7 @@ class PivotCacheDefinition(Serialisable):
                  supportSubquery=None,
                  supportAdvancedDrill=None,
                  cacheSource=None,
-                 cacheFields=None,
+                 cacheFields=(),
                  cacheHierarchies=None,
                  kpis=None,
                  calculatedItems=None,
@@ -1118,3 +1118,9 @@ class PivotCacheDefinition(Serialisable):
         self.dimensions = dimensions
         self.measureGroups = measureGroups
         self.maps = maps
+
+
+    def to_tree(self):
+        node = super(PivotCacheDefinition, self).to_tree()
+        node.set("xmlns", SHEET_MAIN_NS)
+        return node

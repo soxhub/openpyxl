@@ -148,3 +148,26 @@ class TestPivotCacheDefinition:
         cache = PivotCacheDefinition.from_tree(xml)
         assert cache.recordCount == 17
         assert len(cache.cacheFields) == 6
+
+
+    def test_write(self, PivotCacheDefinition, CacheSource, WorksheetSource, CacheField):
+        ws = WorksheetSource(name="Sheet1")
+        source = CacheSource(type="worksheet", worksheetSource=ws)
+        fields = [CacheField(name="field1")]
+        cache = PivotCacheDefinition(cacheSource=source, cacheFields=fields)
+
+        expected = """
+        <pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" backgroundQuery="0">
+               <cacheSource type="worksheet">
+                       <worksheetSource name="Sheet1"/>
+               </cacheSource>
+               <cacheFields count="1">
+                       <cacheField databaseField="1" hierarchy="0" level="0" memberPropertyField="0" name="field1" serverField="0" sqlType="0" uniqueList="1"/>
+               </cacheFields>
+       </pivotCacheDefinition>
+       """
+
+        xml = tostring(cache.to_tree())
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, xml
