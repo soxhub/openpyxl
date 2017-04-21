@@ -754,12 +754,14 @@ class FieldGroup(Serialisable):
 
 class SharedItems(Serialisable):
 
+    tagname = "sharedItems"
+
     m = Sequence(expected_type=Missing)
     n = Sequence(expected_type=Number)
     b = Sequence(expected_type=Boolean)
     e = Sequence(expected_type=Error)
-    s = Typed(expected_type=Text)
-    d = Typed(expected_type=PivotDateTime)
+    s = Sequence(expected_type=Text)
+    d = Sequence(expected_type=PivotDateTime)
     # attributes are optional and must be derived from associated cache records
     containsSemiMixedTypes = Bool(allow_none=True)
     containsNonDate = Bool(allow_none=True)
@@ -776,14 +778,15 @@ class SharedItems(Serialisable):
     longText = Bool(allow_none=True)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
+    __attrs__ = ('count',)
 
     def __init__(self,
-                 m=None,
-                 n=None,
-                 b=None,
-                 e=None,
-                 s=None,
-                 d=None,
+                 m=(),
+                 n=(),
+                 b=(),
+                 e=(),
+                 s=(),
+                 d=(),
                  containsSemiMixedTypes=True,
                  containsNonDate=True,
                  containsDate=False,
@@ -809,7 +812,7 @@ class SharedItems(Serialisable):
 
     @property
     def count(self):
-        return len(m + n + b + e + s + d)
+        return len(self.m + self.n + self.b + self.e + self.s + self.d)
 
 
 class CacheField(Serialisable):
