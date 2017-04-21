@@ -150,10 +150,11 @@ def _assign_position(values):
     elif n_stops < n_values:
         raise ValueError('Cannot interpret mix of Stops and Colors in GradientFill')
 
-
-    total = sum(stop.position for stop in values)
-    if total >= 2:
-        raise ValueError('Total position must be less than 2')
+    pos = set()
+    for stop in values:
+        if stop.position in pos:
+            raise ValueError("Duplicate position {0}".format(stop.position))
+        pos.add(stop.position)
 
     return values
 
@@ -199,15 +200,13 @@ class GradientFill(Fill):
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,
-                 bottom=0, stop=(), fill_type=None):
+                 bottom=0, stop=()):
         self.degree = degree
         self.left = left
         self.right = right
         self.top = top
         self.bottom = bottom
         self.stop = stop
-        if fill_type is not None:
-            type = fill_type
         self.type = type
 
 

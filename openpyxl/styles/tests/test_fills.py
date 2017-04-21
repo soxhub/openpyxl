@@ -77,12 +77,11 @@ class TestGradientFill:
             _assign_position([Stop(BLACK, .1), WHITE])
 
 
-    def test_invalid_position_total(self, Stop):
+    def test_duplicate_position(self, Stop):
         from ..fills import _assign_position
 
         with pytest.raises(ValueError):
-            values = [Stop(BLACK, 1), Stop(WHITE, 1)]
-            _assign_position(values)
+            _assign_position([Stop(BLACK, 0.5), Stop(BLACK, 0.5)])
 
 
     def test_dict_interface(self, GradientFill):
