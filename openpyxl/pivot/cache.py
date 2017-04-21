@@ -760,6 +760,7 @@ class SharedItems(Serialisable):
     e = Sequence(expected_type=Error)
     s = Typed(expected_type=Text)
     d = Typed(expected_type=PivotDateTime)
+    # attributes are optional and must be derived from associated cache records
     containsSemiMixedTypes = Bool(allow_none=True)
     containsNonDate = Bool(allow_none=True)
     containsDate = Bool(allow_none=True)
@@ -772,7 +773,6 @@ class SharedItems(Serialisable):
     maxValue = Float(allow_none=True)
     minDate = DateTime(allow_none=True)
     maxDate = DateTime(allow_none=True)
-    count = Integer(allow_none=True)
     longText = Bool(allow_none=True)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
@@ -805,20 +805,11 @@ class SharedItems(Serialisable):
         self.e = e
         self.s = s
         self.d = d
-        self.containsSemiMixedTypes = containsSemiMixedTypes
-        self.containsNonDate = containsNonDate
-        self.containsDate = containsDate
-        self.containsString = containsString
-        self.containsBlank = containsBlank
-        self.containsMixedTypes = containsMixedTypes
-        self.containsNumber = containsNumber
-        self.containsInteger = containsInteger
-        self.minValue = minValue
-        self.maxValue = maxValue
-        self.minDate = minDate
-        self.maxDate = maxDate
-        self.count = count
-        self.longText = longText
+
+
+    @property
+    def count(self):
+        return len(m + n + b + e + s + d)
 
 
 class CacheField(Serialisable):
