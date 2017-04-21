@@ -77,14 +77,6 @@ class TestGradientFill:
             _assign_position([Stop(BLACK, .1), WHITE])
 
 
-    def test_invalid_position_total(self, Stop):
-        from ..fills import _assign_position
-
-        with pytest.raises(ValueError):
-            values = [Stop(BLACK, 1), Stop(WHITE, 1)]
-            _assign_position(values)
-
-
     def test_dict_interface(self, GradientFill):
         gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4)
         assert dict(gf) == {'bottom': "4", 'degree': "90", 'left':"1",

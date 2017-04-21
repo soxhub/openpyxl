@@ -150,11 +150,6 @@ def _assign_position(values):
     elif n_stops < n_values:
         raise ValueError('Cannot interpret mix of Stops and Colors in GradientFill')
 
-
-    total = sum(stop.position for stop in values)
-    if total >= 2:
-        raise ValueError('Total position must be less than 2')
-
     return values
 
 
