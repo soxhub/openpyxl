@@ -70,3 +70,21 @@ class TestSharedItems:
         items = SharedItems.from_tree(node)
         s = [Text(v="Stanford"), Text(v="Cal"), Text(v="UCLA")]
         assert items == SharedItems(s=s)
+
+
+@pytest.fixture
+def PivotCacheDefinition():
+    from ..cache import PivotCacheDefinition
+    return PivotCacheDefinition
+
+
+class TestPivotCacheDefinition:
+
+    def test_read(self, PivotCacheDefinition, datadir):
+        datadir.chdir()
+        with open("pivotCacheDefinition.xml", "rb") as src:
+            xml = fromstring(src.read())
+
+        cache = PivotCacheDefinition.from_tree(xml)
+        assert cache.recordCount == 17
+        assert cache.cacheFields.count == 6

@@ -995,7 +995,7 @@ class Consolidation(Serialisable):
 
 class WorksheetSource(Serialisable):
 
-    ref = String()
+    ref = String(allow_none=True)
     name = String(allow_none=True)
     sheet = String(allow_none=True)
 
@@ -1015,7 +1015,7 @@ class CacheSource(Serialisable):
     connectionId = Integer(allow_none=True)
     # some elements are choice
     worksheetSource = Typed(expected_type=WorksheetSource, )
-    consolidation = Typed(expected_type=Consolidation, )
+    consolidation = Typed(expected_type=Consolidation, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('worksheetSource', 'consolidation', 'extLst')
@@ -1035,6 +1035,8 @@ class CacheSource(Serialisable):
 
 
 class PivotCacheDefinition(Serialisable):
+
+    tagname = "pivotCacheDefinition"
 
     invalid = Bool(allow_none=True)
     saveData = Bool(allow_none=True)
@@ -1066,7 +1068,7 @@ class PivotCacheDefinition(Serialisable):
     maps = Typed(expected_type=MeasureDimensionMaps, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis', 'tupleCache', 'calculatedItems', 'calculatedMembers', 'dimensions', 'measureGroups', 'maps', 'extLst')
+    __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis', 'tupleCache', 'calculatedItems', 'calculatedMembers', 'dimensions', 'measureGroups', 'maps',)
 
     def __init__(self,
                  invalid=None,
@@ -1126,5 +1128,3 @@ class PivotCacheDefinition(Serialisable):
         self.dimensions = dimensions
         self.measureGroups = measureGroups
         self.maps = maps
-        self.extLst = extLst
-
