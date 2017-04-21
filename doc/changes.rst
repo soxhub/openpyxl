@@ -21,7 +21,7 @@ Bugfixes
 
 Pull requests
 -------------
-* `162 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/163>`_ Improved GradientFill
+* `163 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/163>`_ Improved GradientFill
 
 
 Minor changes
