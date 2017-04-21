@@ -905,21 +905,6 @@ class RangeSet(Serialisable):
         self.sheet = sheet
 
 
-class RangeSets(Serialisable):
-
-    count = Integer(allow_none=True)
-    rangeSet = Typed(expected_type=RangeSet, )
-
-    __elements__ = ('rangeSet',)
-
-    def __init__(self,
-                 count=None,
-                 rangeSet=None,
-                ):
-        self.count = count
-        self.rangeSet = rangeSet
-
-
 class PageItem(Serialisable):
 
     name = String()
@@ -930,10 +915,11 @@ class PageItem(Serialisable):
         self.name = name
 
 
-class PCDSCPage(Serialisable):
+class Page(Serialisable):
 
-    count = Integer(allow_none=True)
-    pageItem = Typed(expected_type=PageItem, allow_none=True)
+    # PCDSCPage
+
+    pageItem = Sequence(expected_type=PageItem)
 
     __elements__ = ('pageItem',)
 
@@ -941,37 +927,26 @@ class PCDSCPage(Serialisable):
                  count=None,
                  pageItem=None,
                 ):
-        self.count = count
         self.pageItem = pageItem
 
 
-class Pages(Serialisable):
-
-    count = Integer(allow_none=True)
-    page = Typed(expected_type=PCDSCPage, )
-
-    __elements__ = ('page',)
-
-    def __init__(self,
-                 count=None,
-                 page=None,
-                ):
-        self.count = count
-        self.page = page
+    @property
+    def count(self):
+        return len(self.pageItem)
 
 
 class Consolidation(Serialisable):
 
     autoPage = Bool(allow_none=True)
-    pages = Typed(expected_type=Pages, allow_none=True)
-    rangeSets = Typed(expected_type=RangeSets, )
+    pages = NestedSequence(expected_type=Page, count=True)
+    rangeSets = NestedSequence(expected_type=RangeSet, count=True)
 
     __elements__ = ('pages', 'rangeSets')
 
     def __init__(self,
                  autoPage=None,
-                 pages=None,
-                 rangeSets=None,
+                 pages=(),
+                 rangeSets=(),
                 ):
         self.autoPage = autoPage
         self.pages = pages
