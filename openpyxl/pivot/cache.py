@@ -1013,6 +1013,8 @@ class WorksheetSource(Serialisable):
 
 class CacheSource(Serialisable):
 
+    tagname = "cacheSource"
+
     type = Set(values=(['worksheet', 'external', 'consolidation', 'scenario']))
     connectionId = Integer(allow_none=True)
     # some elements are choice

@@ -100,6 +100,39 @@ class TestWorksheetSource:
 
 
 @pytest.fixture
+def CacheSource():
+    from ..cache import CacheSource
+    return CacheSource
+
+
+class TestCacheSource:
+
+    def test_ctor(self, CacheSource, WorksheetSource):
+        ws = WorksheetSource(name="mydata")
+        source = CacheSource(type="worksheet", worksheetSource=ws)
+        xml = tostring(source.to_tree())
+        expected = """
+        <cacheSource type="worksheet">
+          <worksheetSource name="mydata"/>
+        </cacheSource>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, CacheSource, WorksheetSource):
+        src = """
+        <cacheSource type="worksheet">
+          <worksheetSource name="mydata"/>
+        </cacheSource>
+        """
+        node = fromstring(src)
+        source = CacheSource.from_tree(node)
+        ws = WorksheetSource(name="mydata")
+        assert source == CacheSource(type="worksheet", worksheetSource=ws)
+
+
+@pytest.fixture
 def PivotCacheDefinition():
     from ..cache import PivotCacheDefinition
     return PivotCacheDefinition
