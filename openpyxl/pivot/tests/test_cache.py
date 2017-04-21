@@ -73,6 +73,33 @@ class TestSharedItems:
 
 
 @pytest.fixture
+def WorksheetSource():
+    from ..cache import WorksheetSource
+    return WorksheetSource
+
+
+class TestWorksheetSource:
+
+    def test_ctor(self, WorksheetSource):
+        ws = WorksheetSource(name="mydata")
+        xml = tostring(ws.to_tree())
+        expected = """
+        <worksheetSource name="mydata"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, WorksheetSource):
+        src = """
+        <worksheetSource name="mydata"/>
+        """
+        node = fromstring(src)
+        ws = WorksheetSource.from_tree(node)
+        assert ws == WorksheetSource(name="mydata")
+
+
+@pytest.fixture
 def PivotCacheDefinition():
     from ..cache import PivotCacheDefinition
     return PivotCacheDefinition

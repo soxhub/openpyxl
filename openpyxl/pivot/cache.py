@@ -995,6 +995,8 @@ class Consolidation(Serialisable):
 
 class WorksheetSource(Serialisable):
 
+    tagname = "worksheetSource"
+
     ref = String(allow_none=True)
     name = String(allow_none=True)
     sheet = String(allow_none=True)
