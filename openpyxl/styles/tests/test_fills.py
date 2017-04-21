@@ -77,6 +77,13 @@ class TestGradientFill:
             _assign_position([Stop(BLACK, .1), WHITE])
 
 
+    def test_duplicate_position(self, Stop):
+        from ..fills import _assign_position
+
+        with pytest.raises(ValueError):
+            _assign_position([Stop(BLACK, 0.5), Stop(BLACK, 0.5)])
+
+
     def test_dict_interface(self, GradientFill):
         gf = GradientFill(degree=90, left=1, right=2, top=3, bottom=4)
         assert dict(gf) == {'bottom': "4", 'degree': "90", 'left':"1",

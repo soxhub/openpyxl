@@ -150,6 +150,12 @@ def _assign_position(values):
     elif n_stops < n_values:
         raise ValueError('Cannot interpret mix of Stops and Colors in GradientFill')
 
+    pos = set()
+    for stop in values:
+        if stop.position in pos:
+            raise ValueError("Duplicate position {0}".format(stop.position))
+        pos.add(stop.position)
+
     return values
 
 
