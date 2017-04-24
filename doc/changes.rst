@@ -1,5 +1,8 @@
-2.4.7 (unreleased)
+2.4.7 (2017-04-24)
 ==================
+
+
+* `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist`
 
 
 2.4.6 (2017-04-14)
