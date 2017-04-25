@@ -872,6 +872,10 @@ class Location(Serialisable):
 
 class PivotTableDefinition(Serialisable):
 
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml"
+    _id = 1
+    _path = "/xl/pivotTables/pivotTable{0}.xml"
+
     tagname = "pivotTableDefinition"
 
     #Using attribute groupAG_AutoFormat

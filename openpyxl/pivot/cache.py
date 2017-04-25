@@ -897,6 +897,10 @@ class CacheSource(Serialisable):
 
 class PivotCacheDefinition(Serialisable):
 
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml"
+    _id = 1
+    _path = "/xl/pivotCache/pivotCacheDefinition{0}.xml"
+
     tagname = "pivotCacheDefinition"
 
     invalid = Bool(allow_none=True)

@@ -364,7 +364,12 @@ class Record(Serialisable):
 
 class PivotCacheRecordList(Serialisable):
 
-    count = Integer()
+    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml"
+    _id = 1
+    _path = "/xl/pivotCache/pivotCacheRecords{0}.xml"
+
+    tagname ="pivotCacheRecords"
+
     r = Typed(expected_type=Record, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -375,6 +380,5 @@ class PivotCacheRecordList(Serialisable):
                  r=None,
                  extLst=None,
                 ):
-        self.count = count
         self.r = r
         self.extLst = extLst
