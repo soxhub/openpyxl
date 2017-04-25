@@ -211,3 +211,31 @@ class TestRecord:
         x = [Index(), Index(), Index()]
         field = Record.from_tree(node)
         assert field == Record(n=n, s=s, x=x)
+
+
+@pytest.fixture
+def RecordList():
+    from ..record import RecordList
+    return RecordList
+
+
+class TestRecordList:
+
+    def test_ctor(self, RecordList):
+        cache = RecordList()
+        xml = tostring(cache.to_tree())
+        expected = """
+        <pivotCacheRecords xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           count="0" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, RecordList):
+        src = """
+        <pivotCacheRecords count="0" />
+        """
+        node = fromstring(src)
+        cache = RecordList.from_tree(node)
+        assert cache == RecordList()

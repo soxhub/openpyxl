@@ -16,6 +16,8 @@ from openpyxl.descriptors.nested import (
     NestedBool,
 )
 
+from openpyxl.xml.constants import SHEET_MAIN_NS
+
 
 class Index(Serialisable):
 
@@ -362,7 +364,7 @@ class Record(Serialisable):
         self.x = x
 
 
-class PivotCacheRecordList(Serialisable):
+class RecordList(Serialisable):
 
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml"
     _id = 1
@@ -370,15 +372,27 @@ class PivotCacheRecordList(Serialisable):
 
     tagname ="pivotCacheRecords"
 
-    r = Typed(expected_type=Record, allow_none=True)
+    r = Sequence(expected_type=Record, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('r', )
+    __attrs__ = ('count', )
 
     def __init__(self,
                  count=None,
-                 r=None,
+                 r=(),
                  extLst=None,
                 ):
         self.r = r
         self.extLst = extLst
+
+
+    @property
+    def count(self):
+        return len(self.r)
+
+
+    def to_tree(self):
+        tree = super(RecordList, self).to_tree()
+        tree.set("xmlns", SHEET_MAIN_NS)
+        return tree
