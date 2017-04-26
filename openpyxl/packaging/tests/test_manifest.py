@@ -18,6 +18,8 @@ from openpyxl.xml.constants import (
     XLTX,
 )
 
+from ..manifest import WORKSHEET_TYPE
+
 @pytest.fixture
 def FileExtension():
     from ..manifest import FileExtension
@@ -255,7 +257,7 @@ class TestManifest:
         assert partnames == expected
 
 
-    def test_no_defaults(self, datadir, Manifest):
+    def test_no_defaults(self, Manifest):
         """
         LibreOffice does not use the Default element
         """
@@ -270,3 +272,28 @@ class TestManifest:
         exts = manifest.extensions
 
         assert exts == []
+
+
+    def test_find(self, datadir, Manifest):
+        datadir.chdir()
+        with open("manifest.xml", "rb") as src:
+            xml = src.read()
+        tree = fromstring(xml)
+        manifest = Manifest.from_tree(tree)
+        ws = manifest.find(WORKSHEET_TYPE)
+        assert ws.PartName == "/xl/worksheets/sheet1.xml"
+
+
+    def test_find_none(self, Manifest):
+        manifest = Manifest()
+        assert manifest.find(WORKSHEET_TYPE) is None
+
+
+    def test_findall(self, datadir, Manifest):
+        datadir.chdir()
+        with open("manifest.xml", "rb") as src:
+            xml = src.read()
+        tree = fromstring(xml)
+        manifest = Manifest.from_tree(tree)
+        sheets = manifest.findall(WORKSHEET_TYPE)
+        assert len(list(sheets)) == 1
