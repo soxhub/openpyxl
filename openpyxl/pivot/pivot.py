@@ -14,7 +14,7 @@ from openpyxl.descriptors import (
     Sequence,
 )
 
-from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.descriptors.excel import ExtensionList, Relation
 from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -964,6 +964,7 @@ class PivotTableDefinition(Serialisable):
     rowHierarchiesUsage = Typed(expected_type=RowHierarchiesUsage, allow_none=True)
     colHierarchiesUsage = Typed(expected_type=ColHierarchiesUsage, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    id = Relation()
 
     __elements__ = ('location', 'pivotFields', 'rowFields', 'rowItems',
                     'colFields', 'colItems', 'pageFields', 'dataFields', 'formats',
@@ -1057,6 +1058,7 @@ class PivotTableDefinition(Serialisable):
                  rowHierarchiesUsage=None,
                  colHierarchiesUsage=None,
                  extLst=None,
+                 id=None,
                 ):
         self.name = name
         self.cacheId = cacheId
@@ -1143,6 +1145,7 @@ class PivotTableDefinition(Serialisable):
         self.rowHierarchiesUsage = rowHierarchiesUsage
         self.colHierarchiesUsage = colHierarchiesUsage
         self.extLst = extLst
+        self.id = id
 
 
     def to_tree(self):

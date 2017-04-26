@@ -200,8 +200,8 @@ class TestPivotTableDefinition:
 
     def test_from_xml(self, PivotTableDefinition, Location):
         src = """
-        <pivotTableDefinition name="PivotTable1" cacheId="74" applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" dataCaption="Values" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" multipleFieldFilters="0">
-           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+        <pivotTableDefinition name="PivotTable1" cacheId="74" applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" dataCaption="Values" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" multipleFieldFilters="0" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1">
+           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1" />
         </pivotTableDefinition>
         """
         node = fromstring(src)
@@ -211,7 +211,7 @@ class TestPivotTableDefinition:
                                             applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
                                             minRefreshableVersion=3, outlineData=True, useAutoFormatting=True,
                                             location=loc, indent=0, itemPrintTitles=True, outline=True,
-                                            gridDropZones=True, createdVersion=4)
+                                            gridDropZones=True, createdVersion=4, id="rId1")
 
 
     def test_validate(self, datadir, PivotTableDefinition):

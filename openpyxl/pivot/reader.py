@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from openpyxl.xml.constants import ARC_CONTENT_TYPES
 from openpyxl.xml.functions import fromstring
 from openpyxl.packaging.manifest import Manifest
-from openpyxl.packaging.relationship import get_dependents
+from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from .pivot import PivotTableDefinition
 from .cache import PivotCacheDefinition
@@ -24,7 +24,27 @@ def read_pivot(file):
     table = list(tables)[0]
     path = table.PartName[1:]
     src = archive.read(path)
-    table = PivotTableDefinition.from_tree(fromstring(src))
-    deps = get_dependents(archive, path)
+    tree = fromstring(src)
+    table = PivotTableDefinition.from_tree(tree)
 
-    return table, deps
+    rels_path = get_rels_path(path)
+    deps = get_dependents(archive, rels_path)
+
+    table.cache = read_cache(archive, deps, table.id)
+
+    return table
+
+
+def read_cache(archive, deps, id):
+    """
+    Get cache corresponding to pivot table
+    """
+    if id is not None:
+        cache = deps[id]
+    else:
+        cache = next(deps.find(PivotCacheDefinition.rel_type))
+
+    src = archive.read(cache.target)
+    tree = fromstring(src)
+    cache = PivotCacheDefinition.from_tree(tree)
+    return cache
