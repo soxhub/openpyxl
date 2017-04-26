@@ -13,7 +13,7 @@ from openpyxl.descriptors import (
     Sequence,
 )
 
-from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.excel import HexBinary, ExtensionList, Relation
 from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
@@ -933,6 +933,7 @@ class PivotCacheDefinition(Serialisable):
     measureGroups = NestedSequence(expected_type=MeasureGroup, count=True)
     maps = NestedSequence(expected_type=MeasureDimensionMap, count=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    id = Relation()
 
     __elements__ = ('cacheSource', 'cacheFields', 'cacheHierarchies', 'kpis',
                     'tupleCache', 'calculatedItems', 'calculatedMembers', 'dimensions',
@@ -967,6 +968,7 @@ class PivotCacheDefinition(Serialisable):
                  measureGroups=(),
                  maps=(),
                  extLst=None,
+                 id = None,
                 ):
         self.invalid = invalid
         self.saveData = saveData
@@ -996,6 +998,7 @@ class PivotCacheDefinition(Serialisable):
         self.dimensions = dimensions
         self.measureGroups = measureGroups
         self.maps = maps
+        self.id = id
 
 
     def to_tree(self):

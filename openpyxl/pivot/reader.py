@@ -44,7 +44,30 @@ def read_cache(archive, deps, id):
     else:
         cache = next(deps.find(PivotCacheDefinition.rel_type))
 
-    src = archive.read(cache.target)
+    path = cache.target
+    src = archive.read(path)
     tree = fromstring(src)
     cache = PivotCacheDefinition.from_tree(tree)
+
+    rels_path = get_rels_path(path)
+    deps = get_dependents(archive, rels_path)
+
+    cache.records = read_records(archive, deps, cache.id)
+
     return cache
+
+
+def read_records(archive, deps, id):
+    """
+    Get cache records
+    """
+
+    rel = deps[id]
+    path = rel.target
+    src = archive.read(path)
+    tree = fromstring(src)
+    records = RecordList.from_tree(tree)
+
+    return records
+
+
