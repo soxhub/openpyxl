@@ -13,6 +13,31 @@ from .cache import PivotCacheDefinition
 from .record import RecordList
 
 
+def get_rel(archive, deps, id=None, cls=None):
+    """
+    Get related object based on id or rel_type
+    """
+    if not any([id, cls]):
+        raise ValueError("Either the id or the content type are required")
+    if id is not None:
+        rel = deps[id]
+    else:
+        rel = next(deps.find(cls.rel_type))
+
+    path = rel.target
+    src = archive.read(path)
+    tree = fromstring(src)
+    obj = cls.from_tree(tree)
+
+    rels_path = get_rels_path(path)
+    try:
+        obj.deps = get_dependents(archive, rels_path)
+    except KeyError:
+        obj.deps = []
+
+    return obj
+
+
 def read_pivot(file):
     archive = ZipFile(file)
 
@@ -30,44 +55,10 @@ def read_pivot(file):
     rels_path = get_rels_path(path)
     deps = get_dependents(archive, rels_path)
 
-    table.cache = read_cache(archive, deps, table.id)
+    cache = get_rel(archive, deps, table.id, PivotCacheDefinition)
+    table.cache = cache
+
+    records = get_rel(archive, cache.deps, cache.id, RecordList)
+    cache.records = records
 
     return table
-
-
-def read_cache(archive, deps, id):
-    """
-    Get cache corresponding to pivot table
-    """
-    if id is not None:
-        cache = deps[id]
-    else:
-        cache = next(deps.find(PivotCacheDefinition.rel_type))
-
-    path = cache.target
-    src = archive.read(path)
-    tree = fromstring(src)
-    cache = PivotCacheDefinition.from_tree(tree)
-
-    rels_path = get_rels_path(path)
-    deps = get_dependents(archive, rels_path)
-
-    cache.records = read_records(archive, deps, cache.id)
-
-    return cache
-
-
-def read_records(archive, deps, id):
-    """
-    Get cache records
-    """
-
-    rel = deps[id]
-    path = rel.target
-    src = archive.read(path)
-    tree = fromstring(src)
-    records = RecordList.from_tree(tree)
-
-    return records
-
-
