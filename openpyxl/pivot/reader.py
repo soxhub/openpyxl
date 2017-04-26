@@ -19,8 +19,6 @@ def read_pivot(file):
     root = fromstring(src)
     package = Manifest.from_tree(root)
 
-    tables = [package.find(PivotTableDefinition.mime_type)]
-    caches = [package.find(PivotCacheDefinition.mime_type)]
-    records = [package.find(RecordList.mime_type)]
+    tables = package.findall(PivotTableDefinition.mime_type)
 
-    return tables, caches, records
+    return tables
