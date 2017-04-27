@@ -892,6 +892,7 @@ class Location(Serialisable):
 class PivotTableDefinition(Serialisable):
 
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml"
+    rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
     _id = 1
     _path = "/xl/pivotTables/pivotTable{0}.xml"
 
