@@ -2,6 +2,10 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
 
+from io import BytesIO
+from zipfile import ZipFile
+
+from openpyxl.packaging.manifest import Manifest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -239,3 +243,17 @@ class TestRecordList:
         node = fromstring(src)
         cache = RecordList.from_tree(node)
         assert cache == RecordList()
+
+
+    def test_write(self, RecordList):
+        out = BytesIO()
+        archive = ZipFile(out, mode="w")
+        manifest = Manifest()
+
+        records = RecordList()
+        xml = tostring(records.to_tree())
+        records._write(archive, manifest)
+        manifest.append(records)
+
+        assert archive.namelist() == [records.path[1:]]
+        assert manifest.find(records.mime_type)
