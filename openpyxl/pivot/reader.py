@@ -1,11 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 
-from zipfile import ZipFile
 
-from openpyxl.xml.constants import ARC_CONTENT_TYPES
 from openpyxl.xml.functions import fromstring
-from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from .pivot import PivotTableDefinition
@@ -38,16 +35,11 @@ def get_rel(archive, deps, id=None, cls=None):
     return obj
 
 
-def read_pivot(file):
-    archive = ZipFile(file)
+def read_pivot(archive, path):
+    """
+    Extract pivot table and cache for a worksheet
+    """
 
-    src = archive.read(ARC_CONTENT_TYPES)
-    root = fromstring(src)
-    package = Manifest.from_tree(root)
-
-    tables = package.findall(PivotTableDefinition.mime_type)
-    table = list(tables)[0]
-    path = table.PartName[1:]
     src = archive.read(path)
     tree = fromstring(src)
     table = PivotTableDefinition.from_tree(tree)
