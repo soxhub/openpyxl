@@ -367,6 +367,7 @@ class Record(Serialisable):
 class RecordList(Serialisable):
 
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml"
+    rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheRecords"
     _id = 1
     _path = "/xl/pivotCache/pivotCacheRecords{0}.xml"
 
