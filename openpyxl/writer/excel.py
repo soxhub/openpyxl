@@ -228,6 +228,8 @@ class ExcelWriter(object):
                 p._id = len(self._pivots)
                 p._write(self._archive, self.manifest)
                 self.workbook._pivots.append(p)
+                r = Relationship(Type=p.rel_type, Target=p.path[1:])
+                ws._rels.append(r)
 
             if ws._rels:
                 tree = ws._rels.to_tree()
