@@ -2,9 +2,15 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
 
+from io import BytesIO
+from zipfile import ZipFile
+
+from openpyxl.packaging.manifest import Manifest
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 from openpyxl.tests.schema import sheet_schema
+
 
 
 @pytest.fixture
@@ -179,15 +185,24 @@ def PivotTableDefinition():
     return PivotTableDefinition
 
 
+@pytest.fixture
+def DummyPivotTable(PivotTableDefinition, Location):
+    """
+    Create a minimal pivot table
+    """
+    loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
+    defn = PivotTableDefinition(name="PivotTable1", cacheId=68,
+                                applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
+                                createdVersion=4, gridDropZones=True, minRefreshableVersion=3,
+                                outlineData=True, useAutoFormatting=True, location=loc, indent=0,
+                                itemPrintTitles=True, outline=True)
+    return defn
+
+
 class TestPivotTableDefinition:
 
-    def test_ctor(self, PivotTableDefinition, Location):
-        loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
-        defn = PivotTableDefinition(name="PivotTable1", cacheId=68,
-                                    applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
-                                    createdVersion=4, gridDropZones=True, minRefreshableVersion=3,
-                                    outlineData=True, useAutoFormatting=True, location=loc, indent=0,
-                                    itemPrintTitles=True, outline=True)
+    def test_ctor(self, DummyPivotTable):
+        defn = DummyPivotTable
         xml = tostring(defn.to_tree())
         expected = """
         <pivotTableDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" name="PivotTable1"  applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" cacheId="68" asteriskTotals="0" chartFormat="0" colGrandTotals="1" compact="1" compactData="1" dataCaption="Values" dataOnRows="0" disableFieldList="0" editData="0" enableDrill="1" enableFieldProperties="1" enableWizard="1" fieldListSortAscending="0" fieldPrintTitles="0" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" immersive="1"  mdxSubqueries="0" mergeItem="0" multipleFieldFilters="0" pageOverThenDown="0" pageWrap="0" preserveFormatting="1" printDrill="0" published="0" rowGrandTotals="1" showCalcMbrs="1" showDataDropDown="1" showDataTips="1" showDrill="1" showDropZones="1" showEmptyCol="0" showEmptyRow="0" showError="0" showHeaders="0" showItems="1" showMemberPropertyTips="1" showMissing="1" showMultipleLabel="1" subtotalHiddenItems="0" visualTotals="1">
@@ -198,20 +213,15 @@ class TestPivotTableDefinition:
         assert diff is None, diff
 
 
-    def test_from_xml(self, PivotTableDefinition, Location):
+    def test_from_xml(self, DummyPivotTable, PivotTableDefinition):
         src = """
-        <pivotTableDefinition name="PivotTable1" cacheId="74" applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" dataCaption="Values" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" multipleFieldFilters="0" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1">
-           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1" />
+        <pivotTableDefinition name="PivotTable1"  applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" cacheId="68" asteriskTotals="0" chartFormat="0" colGrandTotals="1" compact="1" compactData="1" dataCaption="Values" dataOnRows="0" disableFieldList="0" editData="0" enableDrill="1" enableFieldProperties="1" enableWizard="1" fieldListSortAscending="0" fieldPrintTitles="0" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" immersive="1"  mdxSubqueries="0" mergeItem="0" multipleFieldFilters="0" pageOverThenDown="0" pageWrap="0" preserveFormatting="1" printDrill="0" published="0" rowGrandTotals="1" showCalcMbrs="1" showDataDropDown="1" showDataTips="1" showDrill="1" showDropZones="1" showEmptyCol="0" showEmptyRow="0" showError="0" showHeaders="0" showItems="1" showMemberPropertyTips="1" showMissing="1" showMultipleLabel="1" subtotalHiddenItems="0" visualTotals="1">
+           <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
         </pivotTableDefinition>
         """
         node = fromstring(src)
         defn = PivotTableDefinition.from_tree(node)
-        loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
-        assert defn == PivotTableDefinition(name="PivotTable1", cacheId=74,
-                                            applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
-                                            minRefreshableVersion=3, outlineData=True, useAutoFormatting=True,
-                                            location=loc, indent=0, itemPrintTitles=True, outline=True,
-                                            gridDropZones=True, createdVersion=4, id="rId1")
+        assert defn == DummyPivotTable
 
 
     def test_validate(self, datadir, PivotTableDefinition):
@@ -227,3 +237,14 @@ class TestPivotTableDefinition:
         tree = fromstring(generated)
 
         sheet_schema.assertValid(tree)
+
+
+    def test_write(self, DummyPivotTable):
+        out = BytesIO()
+        archive = ZipFile(out, "w")
+        manifest = Manifest()
+
+        defn = DummyPivotTable
+        defn._write(archive, manifest)
+        assert archive.namelist() == [defn.path[1:]]
+        assert manifest.find(defn.mime_type)
