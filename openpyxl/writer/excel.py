@@ -61,6 +61,7 @@ class ExcelWriter(object):
         self._images = []
         self._drawings = []
         self._comments = []
+        self._pivots = []
 
 
     def write_data(self):
@@ -221,6 +222,11 @@ class ExcelWriter(object):
                 t._write(self._archive)
                 self.manifest.append(t)
                 ws._rels[t._rel_id].Target = t.path
+
+            for p in ws._pivots:
+                self._pivots.append(p)
+                p._id = len(self._pivots)
+                p._write(self._archive, self.manifest)
 
             if ws._rels:
                 tree = ws._rels.to_tree()
