@@ -142,6 +142,15 @@ def write_workbook(workbook):
 
     root.definedNames = defined_names
 
+    # pivots
+    from openpyxl.workbook.pivot import PivotCacheList, PivotCache
+    root.pivotCaches = PivotCacheList()
+    for pivot in wb._pivots:
+        c = PivotCache(cacheId=pivot.cacheId)
+        root.pivotCaches.pivotCache.append(c)
+        rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
+        wb.rels.append(rel)
+
     root.calcPr = wb.calculation
 
     return tostring(root.to_tree())

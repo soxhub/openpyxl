@@ -227,6 +227,7 @@ class ExcelWriter(object):
                 self._pivots.append(p)
                 p._id = len(self._pivots)
                 p._write(self._archive, self.manifest)
+                self.workbook._pivots.append(p)
 
             if ws._rels:
                 tree = ws._rels.to_tree()

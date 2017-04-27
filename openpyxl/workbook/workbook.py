@@ -50,6 +50,7 @@ class Workbook(object):
                  iso_dates=False,
                  ):
         self._sheets = []
+        self._pivots = []
         self._active_sheet_index = 0
         self.defined_names = DefinedNameList()
         self._external_links = []
