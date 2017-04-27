@@ -134,6 +134,7 @@ class Worksheet(_WorkbookChild):
         self._comments = []
         self._merged_cells = []
         self._tables = []
+        self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
         self.sheet_state = 'visible'
@@ -685,6 +686,10 @@ class Worksheet(_WorkbookChild):
 
     def add_table(self, table):
         self._tables.append(table)
+
+
+    def add_pivot(self, pivot):
+        self._pivots.append(pivot)
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
