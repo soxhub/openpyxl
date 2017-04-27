@@ -2,6 +2,10 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
 
+from io import BytesIO
+from zipfile import ZipFile
+
+from openpyxl.packaging.manifest import Manifest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -138,6 +142,15 @@ def PivotCacheDefinition():
     return PivotCacheDefinition
 
 
+@pytest.fixture
+def DummyCache(PivotCacheDefinition, WorksheetSource, CacheSource, CacheField):
+    ws = WorksheetSource(name="Sheet1")
+    source = CacheSource(type="worksheet", worksheetSource=ws)
+    fields = [CacheField(name="field1")]
+    cache = PivotCacheDefinition(cacheSource=source, cacheFields=fields)
+    return cache
+
+
 class TestPivotCacheDefinition:
 
     def test_read(self, PivotCacheDefinition, datadir):
@@ -150,11 +163,8 @@ class TestPivotCacheDefinition:
         assert len(cache.cacheFields) == 6
 
 
-    def test_write(self, PivotCacheDefinition, CacheSource, WorksheetSource, CacheField):
-        ws = WorksheetSource(name="Sheet1")
-        source = CacheSource(type="worksheet", worksheetSource=ws)
-        fields = [CacheField(name="field1")]
-        cache = PivotCacheDefinition(cacheSource=source, cacheFields=fields)
+    def test_to_tree(self, DummyCache):
+        cache = DummyCache
 
         expected = """
         <pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" backgroundQuery="0">
@@ -171,3 +181,19 @@ class TestPivotCacheDefinition:
 
         diff = compare_xml(xml, expected)
         assert diff is None, xml
+
+
+    def test_path(self, DummyCache):
+        assert DummyCache.path == "/xl/pivotCache/pivotCacheDefinition1.xml"
+
+
+    def test_write(self, DummyCache):
+        out = BytesIO()
+        archive = ZipFile(out, mode="w")
+        manifest = Manifest()
+
+        xml = tostring(DummyCache.to_tree())
+        DummyCache._write(archive, manifest)
+
+        assert archive.namelist() == [DummyCache.path[1:]]
+        assert manifest.find(DummyCache.mime_type)

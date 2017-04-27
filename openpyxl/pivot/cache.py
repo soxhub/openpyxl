@@ -17,6 +17,7 @@ from openpyxl.descriptors.excel import HexBinary, ExtensionList, Relation
 from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
 
 from .pivot import (
     PivotArea,
@@ -1005,3 +1006,17 @@ class PivotCacheDefinition(Serialisable):
         node = super(PivotCacheDefinition, self).to_tree()
         node.set("xmlns", SHEET_MAIN_NS)
         return node
+
+
+    @property
+    def path(self):
+        return self._path.format(self._id)
+
+
+    def _write(self, archive, manifest):
+        """
+        Add to zipfile and update manifest
+        """
+        xml = tostring(self.to_tree())
+        archive.writestr(self.path[1:], xml)
+        manifest.append(self)
