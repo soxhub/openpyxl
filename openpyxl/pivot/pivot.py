@@ -18,6 +18,11 @@ from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
+from openpyxl.packaging.relationship import (
+    RelationshipList,
+    Relationship,
+    get_rels_path
+)
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
@@ -1177,6 +1182,26 @@ class PivotTableDefinition(Serialisable):
         """
         Add to zipfile and update manifest
         """
+        self._write_rels(archive, manifest)
         xml = tostring(self.to_tree())
         archive.writestr(self.path[1:], xml)
         manifest.append(self)
+
+
+    def _write_rels(self, archive, manifest):
+        """
+        Write the relevant child objects and add links
+        """
+        if self.cache is None:
+            return
+
+        rels = RelationshipList()
+        r = Relationship(Type=self.cache.rel_type)
+        rels.append(r)
+        self.id = r.id
+        self.cache._id = self._id
+        self.cache._write(archive, manifest)
+
+        path = get_rels_path(self.path)
+        xml = tostring(rels.to_tree())
+        archive._writestr(path, xml)
