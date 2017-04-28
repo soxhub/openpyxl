@@ -410,6 +410,7 @@ class RecordList(Serialisable):
         """
         xml = tostring(self.to_tree())
         archive.writestr(self.path[1:], xml)
+        manifest.append(self)
 
 
     def _write_rels(self, archive, manifest):
