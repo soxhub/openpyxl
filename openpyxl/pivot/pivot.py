@@ -1040,7 +1040,7 @@ class PivotTableDefinition(Serialisable):
                  indent=1,
                  showEmptyRow=False,
                  showEmptyCol=False,
-                 showHeaders=None,
+                 showHeaders=True,
                  compact=True,
                  outline=False,
                  outlineData=False,
