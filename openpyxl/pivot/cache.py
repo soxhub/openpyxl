@@ -953,7 +953,7 @@ class PivotCacheDefinition(Serialisable):
     def __init__(self,
                  invalid=None,
                  saveData=None,
-                 refreshOnLoad=None,
+                 refreshOnLoad=True,
                  optimizeMemory=None,
                  enableRefresh=None,
                  refreshedBy=None,
