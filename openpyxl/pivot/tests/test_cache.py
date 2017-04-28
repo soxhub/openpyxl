@@ -180,7 +180,7 @@ class TestPivotCacheDefinition:
         xml = tostring(cache.to_tree())
 
         diff = compare_xml(xml, expected)
-        assert diff is None, xml
+        assert diff is None, diff
 
 
     def test_path(self, DummyCache):
