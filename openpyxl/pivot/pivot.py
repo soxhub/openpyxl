@@ -425,39 +425,42 @@ class PivotAreaReferenceList(Serialisable):
 
 class PivotArea(Serialisable):
 
-    field = Integer(allow_none=True)
-    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button', 'topEnd', 'topRight']))
-    dataOnly = Bool()
-    labelOnly = Bool()
-    grandRow = Bool()
-    grandCol = Bool()
-    cacheIndex = Bool()
-    outline = Bool()
-    offset = String()
-    collapsedLevelsAreSubtotals = Bool()
-    axis = Set(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
-    fieldPosition = Integer(allow_none=True)
     references = Typed(expected_type=PivotAreaReferenceList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    field = Integer(allow_none=True)
+    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button',
+                            'topEnd', 'topRight']))
+    dataOnly = Bool(allow_none=True)
+    labelOnly = Bool(allow_none=True)
+    grandRow = Bool(allow_none=True)
+    grandCol = Bool(allow_none=True)
+    cacheIndex = Bool(allow_none=True)
+    outline = Bool(allow_none=True)
+    offset = String(allow_none=True)
+    collapsedLevelsAreSubtotals = Bool(allow_none=True)
+    axis = NoneSet(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
+    fieldPosition = Integer(allow_none=True)
 
     __elements__ = ('references', 'extLst')
 
     def __init__(self,
-                 field=None,
-                 type=None,
-                 dataOnly=None,
-                 labelOnly=None,
-                 grandRow=None,
-                 grandCol=None,
-                 cacheIndex=None,
-                 outline=None,
-                 offset=None,
-                 collapsedLevelsAreSubtotals=None,
-                 axis=None,
-                 fieldPosition=None,
                  references=None,
                  extLst=None,
+                 field=None,
+                 type="normal",
+                 dataOnly=True,
+                 labelOnly=False,
+                 grandRow=False,
+                 grandCol=False,
+                 cacheIndex=False,
+                 outline=True,
+                 offset=None,
+                 collapsedLevelsAreSubtotals=False,
+                 axis=None,
+                 fieldPosition=None,
                 ):
+        self.references = references
+        self.extLst = extLst
         self.field = field
         self.type = type
         self.dataOnly = dataOnly
@@ -470,8 +473,6 @@ class PivotArea(Serialisable):
         self.collapsedLevelsAreSubtotals = collapsedLevelsAreSubtotals
         self.axis = axis
         self.fieldPosition = fieldPosition
-        self.references = references
-        self.extLst = extLst
 
 
 class PivotAreaList(Serialisable):
@@ -520,7 +521,7 @@ class Format(Serialisable):
 
     tagname = "format"
 
-    action = Set(values=(['blank', 'formatting', 'drill', 'formula']))
+    action = NoneSet(values=(['blank', 'formatting', 'drill', 'formula']))
     dxfId = Integer()
     pivotArea = Typed(expected_type=PivotArea, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
