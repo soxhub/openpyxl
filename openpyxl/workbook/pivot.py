@@ -6,17 +6,21 @@ from openpyxl.descriptors import (
     Integer,
     Sequence,
 )
+from openpyxl.descriptors.excel import Relation
 
 class PivotCache(Serialisable):
 
     tagname = "pivotCache"
 
     cacheId = Integer()
+    id = Relation()
 
     def __init__(self,
                  cacheId=None,
+                 id=None
                 ):
         self.cacheId = cacheId
+        self.id = id
 
 
 class PivotCacheList(Serialisable):

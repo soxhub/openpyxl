@@ -14,10 +14,11 @@ def PivotCache():
 class TestPivotCache:
 
     def test_ctor(self, PivotCache):
-        pivot = PivotCache(1)
+        pivot = PivotCache(cacheId=1, id="rId1")
         xml = tostring(pivot.to_tree())
         expected = """
-        <pivotCache cacheId="1" />
+        <pivotCache cacheId="1" r:id="rId1"
+          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
