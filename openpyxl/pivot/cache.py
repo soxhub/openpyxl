@@ -1041,7 +1041,7 @@ class PivotCacheDefinition(Serialisable):
             return
 
         rels = RelationshipList()
-        r = Relationship(Type=self.records.rel_type, Target=self.records.path[1:])
+        r = Relationship(Type=self.records.rel_type, Target=self.records.path)
         rels.append(r)
         self.id = r.id
         self.records._id = self._id

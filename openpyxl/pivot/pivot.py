@@ -1197,7 +1197,7 @@ class PivotTableDefinition(Serialisable):
             return
 
         rels = RelationshipList()
-        r = Relationship(Type=self.cache.rel_type, Target=self.cache.path[1:])
+        r = Relationship(Type=self.cache.rel_type, Target=self.cache.path)
         rels.append(r)
         self.id = r.id
         self.cache._id = self._id
