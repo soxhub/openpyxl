@@ -248,3 +248,30 @@ class TestPivotTableDefinition:
         defn._write(archive, manifest)
         assert archive.namelist() == [defn.path[1:]]
         assert manifest.find(defn.mime_type)
+
+
+@pytest.fixture
+def PageField():
+    from ..pivot import PageField
+    return PageField
+
+
+class TestPageField:
+
+    def test_ctor(self, PageField):
+        pf = PageField(fld=64, hier=-1)
+        xml = tostring(pf.to_tree())
+        expected = """
+        <pageField fld="64" hier="-1"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PageField):
+        src = """
+        <pageField fld="64" hier="-1"/>
+        """
+        node = fromstring(src)
+        pf = PageField.from_tree(node)
+        assert pf == PageField(fld=64, hier=-1)

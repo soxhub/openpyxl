@@ -579,13 +579,13 @@ class DataField(Serialisable):
 
 class PageField(Serialisable):
 
-    tagname = "PageField"
+    tagname = "pageField"
 
     fld = Integer()
     item = Integer(allow_none=True)
     hier = Integer()
-    name = String()
-    cap = String()
+    name = String(allow_none=True)
+    cap = String(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('extLst',)
