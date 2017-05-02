@@ -195,14 +195,14 @@ class Member(Serialisable):
 class MemberList(Serialisable):
 
     level = Integer(allow_none=True)
-    member = Typed(expected_type=Member, )
+    member = Sequence(expected_type=Member, )
 
     __elements__ = ('member',)
 
     def __init__(self,
                  count=None,
                  level=None,
-                 member=None,
+                 member=(),
                 ):
         self.level = level
         self.member = member
@@ -246,24 +246,6 @@ class MemberProperty(Serialisable):
         self.field = field
 
 
-class MemberPropertyList(Serialisable):
-
-    mp = Typed(expected_type=MemberProperty, )
-
-    __elements__ = ('mp',)
-
-    def __init__(self,
-                 count=None,
-                 mp=None,
-                ):
-        self.mp = mp
-
-
-    @property
-    def count(self):
-        return len(self.mp)
-
-
 class PivotHierarchy(Serialisable):
 
     outline = Bool()
@@ -277,11 +259,11 @@ class PivotHierarchy(Serialisable):
     dragOff = Bool()
     includeNewItemsInFilter = Bool()
     caption = String(allow_none=True)
-    mps = Typed(expected_type=MemberPropertyList, allow_none=True)
+    mps = NestedSequence(expected_type=MemberProperty, count=True)
     members = Typed(expected_type=MemberList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('mps', 'members', 'extLst')
+    __elements__ = ('mps', 'members',)
 
     def __init__(self,
                  outline=None,
@@ -295,7 +277,7 @@ class PivotHierarchy(Serialisable):
                  dragOff=None,
                  includeNewItemsInFilter=None,
                  caption=None,
-                 mps=None,
+                 mps=(),
                  members=None,
                  extLst=None,
                 ):
