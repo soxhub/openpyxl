@@ -30,8 +30,7 @@ from openpyxl.packaging.relationship import (
 
 from .pivot import (
     PivotArea,
-    PivotAreaReference,
-    PivotAreaReferenceList,
+    Reference,
 )
 from .record import (
     Boolean,

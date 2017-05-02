@@ -275,3 +275,94 @@ class TestPageField:
         node = fromstring(src)
         pf = PageField.from_tree(node)
         assert pf == PageField(fld=64, hier=-1)
+
+
+@pytest.fixture
+def Reference():
+    from ..pivot import Reference
+    return Reference
+
+
+class TestReference:
+
+    def test_ctor(self, Reference):
+        ref = Reference(field=4294967294, x=0, selected=False)
+        xml = tostring(ref.to_tree())
+        expected = """
+        <reference field="4294967294" selected="0">
+          <x v="0"/>
+        </reference>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Reference):
+        src = """
+        <reference field="4294967294" count="1" selected="0">
+          <x v="0"/>
+        </reference>
+        """
+        node = fromstring(src)
+        ref = Reference.from_tree(node)
+        assert ref == Reference(field=4294967294, x=0, selected=False)
+
+
+@pytest.fixture
+def PivotArea():
+    from ..pivot import PivotArea
+    return PivotArea
+
+
+class TestPivotArea:
+
+    def test_ctor(self, PivotArea):
+        area = PivotArea(type="data", outline=False, fieldPosition=False)
+        xml = tostring(area.to_tree())
+        expected = """
+        <pivotArea type="data" outline="0" fieldPosition="0" dataOnly="1"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotArea):
+        src = """
+        <pivotArea type="data" outline="0" fieldPosition="0" />
+        """
+        node = fromstring(src)
+        area = PivotArea.from_tree(node)
+        assert area == PivotArea(type="data", outline=False, fieldPosition=False)
+
+
+@pytest.fixture
+def ChartFormat():
+    from ..pivot import ChartFormat
+    return ChartFormat
+
+
+class TestChartFormat:
+
+    def test_ctor(self, ChartFormat, PivotArea):
+        area = PivotArea()
+        fmt = ChartFormat(chart=0, format=12, series=1, pivotArea=area)
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <chartFormat chart="0" format="12" series="1">
+          <pivotArea type="normal" outline="1" dataOnly="1"/>
+        </chartFormat>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ChartFormat, PivotArea):
+        src = """
+        <chartFormat chart="0" format="12" series="1">
+          <pivotArea type="normal" outline="1" dataOnly="1"/>
+        </chartFormat>
+        """
+        node = fromstring(src)
+        fmt = ChartFormat.from_tree(node)
+        area = PivotArea()
+        assert fmt == ChartFormat(chart=0, format=12, series=1, pivotArea=area)
