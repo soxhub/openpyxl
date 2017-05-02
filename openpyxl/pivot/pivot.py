@@ -182,20 +182,12 @@ class PivotTableStyle(Serialisable):
         self.showLastColumn = showLastColumn
 
 
-class Member(Serialisable):
-
-    name = String()
-
-    def __init__(self,
-                 name=None,
-                ):
-        self.name = name
-
-
 class MemberList(Serialisable):
 
+    tagname = "members"
+
     level = Integer(allow_none=True)
-    member = Sequence(expected_type=Member, )
+    member = NestedSequence(expected_type=String, attribute="name")
 
     __elements__ = ('member',)
 
@@ -213,6 +205,8 @@ class MemberList(Serialisable):
 
 
 class MemberProperty(Serialisable):
+
+    tagname = "mps"
 
     name = String(allow_none=True)
     showCell = Bool(allow_none=True)
