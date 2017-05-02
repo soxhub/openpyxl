@@ -104,7 +104,7 @@ def DataField():
     return DataField
 
 
-class TestDateField:
+class TestDataField:
 
     def test_ctor(self, DataField):
         df = DataField(fld=1)
