@@ -974,7 +974,7 @@ class PivotTableDefinition(Serialisable):
     rowItems = NestedSequence(expected_type=RowColItem, count=True)
     colFields = NestedSequence(expected_type=RowColField, count=True)
     colItems = NestedSequence(expected_type=RowColItem, count=True)
-    pageFields = NestedSequence(expected_type=RowColField, count=True)
+    pageFields = NestedSequence(expected_type=PageField, count=True)
     dataFields = NestedSequence(expected_type=DataField, count=True)
     formats = NestedSequence(expected_type=Format, count=True)
     conditionalFormats = NestedSequence(expected_type=ConditionalFormat, count=True)
