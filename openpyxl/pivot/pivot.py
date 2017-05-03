@@ -1161,8 +1161,9 @@ class PivotTableDefinition(Serialisable):
         r = Relationship(Type=self.cache.rel_type, Target=self.cache.path)
         rels.append(r)
         self.id = r.id
-        self.cache._id = self._id
-        self.cache._write(archive, manifest)
+        if self.cache.path[1:] not in archive.namelist():
+            self.cache._write(archive, manifest)
+            print(self.cache.path[1:])
 
         path = get_rels_path(self.path)
         xml = tostring(rels.to_tree())
