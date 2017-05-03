@@ -43,6 +43,8 @@ from openpyxl.worksheet.filters import (
 
 class HierarchyUsage(Serialisable):
 
+    tagname = "hierarchyUsage"
+
     hierarchyUsage = Integer()
 
     def __init__(self,
@@ -53,30 +55,43 @@ class HierarchyUsage(Serialisable):
 
 class ColHierarchiesUsage(Serialisable):
 
-    count = Integer()
-    colHierarchyUsage = Typed(expected_type=HierarchyUsage, )
+    tagname = "colHierarchiesUsage"
+
+    colHierarchyUsage = Sequence(expected_type=HierarchyUsage, )
 
     __elements__ = ('colHierarchyUsage',)
+    __attrs__ = ('count', )
 
     def __init__(self,
                  count=None,
-                 colHierarchyUsage=None,
+                 colHierarchyUsage=(),
                 ):
         self.colHierarchyUsage = colHierarchyUsage
 
 
+    @property
+    def count(self):
+        return len(self.colHierarchyUsage)
+
+
 class RowHierarchiesUsage(Serialisable):
 
-    count = Integer()
-    rowHierarchyUsage = Typed(expected_type=HierarchyUsage, )
+    tagname = "rowHierarchiesUsage"
+
+    rowHierarchyUsage = Sequence(expected_type=HierarchyUsage, )
 
     __elements__ = ('rowHierarchyUsage',)
+    __attrs__ = ('count', )
 
     def __init__(self,
                  count=None,
-                 rowHierarchyUsage=None,
+                 rowHierarchyUsage=(),
                 ):
         self.rowHierarchyUsage = rowHierarchyUsage
+
+    @property
+    def count(self):
+        return len(self.colHierarchyUsage)
 
 
 class PivotFilter(Serialisable):
