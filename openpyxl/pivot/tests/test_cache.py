@@ -24,7 +24,7 @@ class TestCacheField:
         field = CacheField(name="ID")
         xml = tostring(field.to_tree())
         expected = """
-        <cacheField databaseField="1" hierarchy="0" level="0" memberPropertyField="0" name="ID" serverField="0" sqlType="0" uniqueList="1"/>
+        <cacheField databaseField="1" hierarchy="0" level="0" name="ID" sqlType="0" uniqueList="1"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -172,7 +172,7 @@ class TestPivotCacheDefinition:
                        <worksheetSource name="Sheet1"/>
                </cacheSource>
                <cacheFields count="1">
-                       <cacheField databaseField="1" hierarchy="0" level="0" memberPropertyField="0" name="field1" serverField="0" sqlType="0" uniqueList="1"/>
+                       <cacheField databaseField="1" hierarchy="0" level="0" name="field1" sqlType="0" uniqueList="1"/>
                </cacheFields>
        </pivotCacheDefinition>
        """

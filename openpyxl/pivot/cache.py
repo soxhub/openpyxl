@@ -754,7 +754,7 @@ class CacheField(Serialisable):
                  name=None,
                  caption=None,
                  propertyName=None,
-                 serverField=False,
+                 serverField=None,
                  uniqueList=True,
                  numFmtId=None,
                  formula=None,
@@ -763,7 +763,7 @@ class CacheField(Serialisable):
                  level=0,
                  databaseField=True,
                  mappingCount=None,
-                 memberPropertyField=False,
+                 memberPropertyField=None,
                 ):
         self.sharedItems = sharedItems
         self.fieldGroup = fieldGroup
