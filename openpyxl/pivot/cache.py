@@ -684,8 +684,10 @@ class SharedItems(Serialisable):
     maxDate = DateTime(allow_none=True)
     longText = Bool(allow_none=True)
 
-    __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
-    __attrs__ = ('count',)
+    __elements__ = ('n', 'b', 'e', 's', 'd', 'm')
+    __attrs__ = ('count', 'containsBlank', 'containsDate', 'containsInteger',
+                 'containsMixedTypes', 'containsNonDate', 'containsNumber',
+                 'containsSemiMixedTypes', 'containsString')
 
     def __init__(self,
                  m=(),
@@ -694,14 +696,14 @@ class SharedItems(Serialisable):
                  e=(),
                  s=(),
                  d=(),
-                 containsSemiMixedTypes=True,
-                 containsNonDate=True,
-                 containsDate=False,
-                 containsString=True,
-                 containsBlank=False,
-                 containsMixedTypes=False,
-                 containsNumber=False,
-                 containsInteger=False,
+                 containsSemiMixedTypes=None,
+                 containsNonDate=None,
+                 containsDate=None,
+                 containsString=None,
+                 containsBlank=None,
+                 containsMixedTypes=None,
+                 containsNumber=None,
+                 containsInteger=None,
                  minValue=None,
                  maxValue=None,
                  minDate=None,
@@ -715,6 +717,13 @@ class SharedItems(Serialisable):
         self.e = e
         self.s = s
         self.d = d
+        self.containsBlank = containsBlank
+        self.containsDate = containsDate
+        self.containsNonDate = self.containsNonDate
+        self.containsString = self.containsString
+        self.containsMixedTypes = self.containsMixedTypes
+        self.containsNumber = self.containsNumber
+        self.containsInteger = self.containsInteger
 
 
     @property
