@@ -144,12 +144,15 @@ def write_workbook(workbook):
     root.definedNames = defined_names
 
     # pivots
+    pivot_caches = set()
     for pivot in wb._pivots:
-        c = PivotCache(cacheId=pivot.cacheId)
-        root.pivotCaches.append(c)
-        rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
-        wb.rels.append(rel)
-        c.id = rel.id
+        if pivot.cache not in pivot_caches:
+            pivot_caches.add(pivot.cache)
+            c = PivotCache(cacheId=pivot.cacheId)
+            root.pivotCaches.append(c)
+            rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
+            wb.rels.append(rel)
+            c.id = rel.id
     wb._pivots = [] # reset
 
     root.calcPr = wb.calculation
