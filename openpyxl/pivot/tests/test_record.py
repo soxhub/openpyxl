@@ -21,7 +21,7 @@ class TestError:
         error = Error(v="error")
         xml = tostring(error.to_tree())
         expected = """
-        <e b="0" i="0" st="0" un="0" v="error" />
+        <e v="error" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -29,7 +29,7 @@ class TestError:
 
     def test_from_xml(self, Error):
         src = """
-        <e b="0" i="0" st="0" un="0" v="error" />
+        <e v="error" />
         """
         node = fromstring(src)
         error = Error.from_tree(node)
@@ -75,7 +75,7 @@ class TestMissing:
         missing = Missing()
         xml = tostring(missing.to_tree())
         expected = """
-        <m b="0" i="0" st="0" un="0" />
+        <m />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -102,7 +102,7 @@ class TestNumber:
         number = Number(v=24)
         xml = tostring(number.to_tree())
         expected = """
-        <n b="0" i="0" st="0" un="0" v="24"/>
+        <n v="24"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -129,7 +129,7 @@ class TestText:
         text = Text(v="UCLA")
         xml = tostring(text.to_tree())
         expected = """
-        <s b="0" i="0" st="0" un="0" v="UCLA" />
+        <s v="UCLA" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -186,9 +186,9 @@ class TestRecord:
         xml = tostring(field.to_tree())
         expected = """
         <r>
-          <n b="0" i="0" st="0" un="0" v="1"/>
-          <n b="0" i="0" st="0" un="0" v="25"/>
-          <s b="0" i="0" st="0" un="0" v="2014-03-24"/>
+          <n v="1"/>
+          <n v="25"/>
+          <s v="2014-03-24"/>
           <x v="0"/>
           <x v="0"/>
           <x v="0"/>

@@ -97,10 +97,10 @@ class Missing(SharedItem):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=False,
-                 un=False,
-                 st=False,
-                 b=False,
+                 i=None,
+                 un=None,
+                 st=None,
+                 b=None,
                 ):
         self.tpls = tpls
         self.x = x
@@ -148,10 +148,10 @@ class Number(SharedItem):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=False,
-                 un=False,
-                 st=False,
-                 b=False,
+                 i=None,
+                 un=None,
+                 st=None,
+                 b=None,
                 ):
         self.tpls = tpls
         self.x = x
@@ -201,10 +201,10 @@ class Error(SharedItem):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=False,
-                 un=False,
-                 st=False,
-                 b=False,
+                 i=None,
+                 un=None,
+                 st=None,
+                 b=None,
                 ):
         self.tpls = tpls
         self.x = x
@@ -283,10 +283,10 @@ class Text(SharedItem):
                  _in=None,
                  bc=None,
                  fc=None,
-                 i=False,
-                 un=False,
-                 st=False,
-                 b=False,
+                 i=None,
+                 un=None,
+                 st=None,
+                 b=None,
                  ):
         self.tpls = tpls
         self.x = x

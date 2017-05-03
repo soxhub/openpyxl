@@ -53,9 +53,9 @@ class TestSharedItems:
         xml = tostring(items.to_tree())
         expected = """
         <sharedItems count="3">
-          <s b="0" i="0" st="0" un="0" v="Stanford"/>
-          <s b="0" i="0" st="0" un="0" v="Cal"/>
-          <s b="0" i="0" st="0" un="0" v="UCLA"/>
+          <s v="Stanford"/>
+          <s v="Cal"/>
+          <s v="UCLA"/>
         </sharedItems>
         """
         diff = compare_xml(xml, expected)
