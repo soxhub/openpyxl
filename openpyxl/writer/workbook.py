@@ -146,7 +146,7 @@ def write_workbook(workbook):
     # pivots
     for pivot in wb._pivots:
         c = PivotCache(cacheId=pivot.cacheId)
-        root.pivotCaches.pivotCache.append(c)
+        root.pivotCaches.append(c)
         rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
         wb.rels.append(rel)
         c.id = rel.id
