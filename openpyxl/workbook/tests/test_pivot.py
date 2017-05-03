@@ -31,30 +31,3 @@ class TestPivotCache:
         node = fromstring(src)
         pivot = PivotCache.from_tree(node)
         assert pivot == PivotCache(2)
-
-
-@pytest.fixture
-def PivotCacheList():
-    from ..pivot import PivotCacheList
-    return PivotCacheList
-
-
-class TestPivotCacheList:
-
-    def test_ctor(self, PivotCacheList):
-        pivot = PivotCacheList()
-        xml = tostring(pivot.to_tree())
-        expected = """
-        <pivotCaches />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PivotCacheList):
-        src = """
-        <pivotCaches />
-        """
-        node = fromstring(src)
-        pivot = PivotCacheList.from_tree(node)
-        assert pivot == PivotCacheList()
