@@ -1163,7 +1163,6 @@ class PivotTableDefinition(Serialisable):
         self.id = r.id
         if self.cache.path[1:] not in archive.namelist():
             self.cache._write(archive, manifest)
-            print(self.cache.path[1:])
 
         path = get_rels_path(self.path)
         xml = tostring(rels.to_tree())
