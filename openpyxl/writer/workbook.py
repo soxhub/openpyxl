@@ -151,6 +151,7 @@ def write_workbook(workbook):
         rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
         wb.rels.append(rel)
         c.id = rel.id
+    wb._pivots = []
 
     root.calcPr = wb.calculation
 
