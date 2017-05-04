@@ -306,29 +306,29 @@ class Text(SharedItem):
 
 class PivotDateTime(Serialisable):
 
+    x = Sequence(expected_type=Index)
     v = DateTime()
-    u = Bool()
-    f = Bool()
-    c = String()
-    cp = Integer()
-    x = NestedInteger(allow_none=True)
+    u = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    c = String(allow_none=True)
+    cp = Integer(allow_none=True)
 
     __elements__ = ('x',)
 
     def __init__(self,
+                 x=(),
                  v=None,
                  u=None,
                  f=None,
                  c=None,
                  cp=None,
-                 x=None,
-                ):
+                 ):
+        self.x = x
         self.v = v
         self.u = u
         self.f = f
         self.c = c
         self.cp = cp
-        self.x = x
 
 
 class Record(Serialisable):
