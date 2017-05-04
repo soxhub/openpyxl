@@ -304,7 +304,9 @@ class Text(SharedItem):
         self.b = b
 
 
-class PivotDateTime(Serialisable):
+class DateTimeField(Serialisable):
+
+    tagname = "d"
 
     x = Sequence(expected_type=Index)
     v = DateTime()
@@ -341,7 +343,7 @@ class Record(Serialisable):
     b = Sequence(expected_type=Boolean)
     e = Sequence(expected_type=Error)
     s = Sequence(expected_type=Text)
-    d = Sequence(expected_type=PivotDateTime)
+    d = Sequence(expected_type=DateTimeField)
     x = Sequence(expected_type=Index)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd', 'x')

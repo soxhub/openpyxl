@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
 
+from datetime import datetime
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -257,3 +258,30 @@ class TestRecordList:
 
         assert archive.namelist() == [records.path[1:]]
         assert manifest.find(records.mime_type)
+
+
+@pytest.fixture
+def DateTimeField():
+    from ..record import DateTimeField
+    return DateTimeField
+
+
+class TestDateTimeField:
+
+    def test_ctor(self, DateTimeField):
+        record = DateTimeField(v=datetime(2016, 3, 24))
+        xml = tostring(record.to_tree())
+        expected = """
+        <d v="2016-03-24T00:00:00"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DateTimeField):
+        src = """
+        <d v="2016-03-24T00:00:00"/>
+        """
+        node = fromstring(src)
+        record = DateTimeField.from_tree(node)
+        assert record == DateTimeField(v=datetime(2016, 3, 24))

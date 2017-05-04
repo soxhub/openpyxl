@@ -39,7 +39,7 @@ from .record import (
     Number,
     Text,
     TupleList,
-    PivotDateTime,
+    DateTimeField,
     SharedItem,
 )
 
@@ -565,7 +565,7 @@ class GroupItems(Serialisable):
     b = Sequence(expected_type=Boolean)
     e = Sequence(expected_type=Error)
     s = Sequence(expected_type=Text)
-    d = Sequence(expected_type=PivotDateTime,)
+    d = Sequence(expected_type=DateTimeField,)
 
     __elements__ = ('m', 'n', 'b', 'e', 's', 'd')
     __attrs__ = ("count", )
@@ -674,7 +674,7 @@ class SharedItems(Serialisable):
     b = Sequence(expected_type=Boolean)
     e = Sequence(expected_type=Error)
     s = Sequence(expected_type=Text)
-    d = Sequence(expected_type=PivotDateTime)
+    d = Sequence(expected_type=DateTimeField)
     # attributes are optional and must be derived from associated cache records
     containsSemiMixedTypes = Bool(allow_none=True)
     containsNonDate = Bool(allow_none=True)
