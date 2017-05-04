@@ -606,24 +606,27 @@ class DiscretePr(Serialisable):
 
 class RangePr(Serialisable):
 
-    autoStart = Bool()
-    autoEnd = Bool()
-    groupBy = Set(values=(['range', 'seconds', 'minutes', 'hours', 'days', 'months', 'quarters', 'years']))
-    startNum = Float()
-    endNum = Float()
-    startDate = DateTime()
-    endDate = DateTime()
-    groupInterval = Float()
+    tagname = "rangePr"
+
+    autoStart = Bool(allow_none=True)
+    autoEnd = Bool(allow_none=True)
+    groupBy = Set(values=(['range', 'seconds', 'minutes', 'hours', 'days',
+                           'months', 'quarters', 'years']))
+    startNum = Float(allow_none=True)
+    endNum = Float(allow_none=True)
+    startDate = DateTime(allow_none=True)
+    endDate = DateTime(allow_none=True)
+    groupInterval = Float(allow_none=True)
 
     def __init__(self,
-                 autoStart=None,
-                 autoEnd=None,
-                 groupBy=None,
+                 autoStart=True,
+                 autoEnd=True,
+                 groupBy=range,
                  startNum=None,
                  endNum=None,
                  startDate=None,
                  endDate=None,
-                 groupInterval=None,
+                 groupInterval=1,
                 ):
         self.autoStart = autoStart
         self.autoEnd = autoEnd
