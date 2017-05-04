@@ -36,10 +36,17 @@ Minor changes
 ==================
 
 
+Bugfixes
+--------
+* AutoFilter.sortState being assignd to the ws.sortState
+
+
 2.4.7 (2017-04-24)
 ==================
 
 
+Bugfixes
+--------
 * `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist`
 
 

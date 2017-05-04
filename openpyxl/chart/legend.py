@@ -3,6 +3,7 @@ from openpyxl.descriptors import (
     Typed,
     Integer,
     Alias,
+    Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
@@ -44,7 +45,7 @@ class Legend(Serialisable):
 
     legendPos = NestedSet(values=(['b', 'tr', 'l', 'r', 't']))
     position = Alias('legendPos')
-    legendEntry = Typed(expected_type=LegendEntry, allow_none=True)
+    legendEntry = Sequence(expected_type=LegendEntry)
     layout = Typed(expected_type=Layout, allow_none=True)
     overlay = NestedBool(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
@@ -57,7 +58,7 @@ class Legend(Serialisable):
 
     def __init__(self,
                  legendPos="r",
-                 legendEntry=None,
+                 legendEntry=(),
                  layout=None,
                  overlay=None,
                  spPr=None,

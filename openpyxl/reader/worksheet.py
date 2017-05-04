@@ -111,7 +111,7 @@ class WorkSheetParser(object):
             '{%s}headerFooter' % SHEET_MAIN_NS: ('HeaderFooter', HeaderFooter),
             '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
             '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
-            '{%s}sortState' % SHEET_MAIN_NS: ('sort_state', SortState),
+            #'{%s}sheet/{%s}sortState' % (SHEET_MAIN_NS, SHEET_MAIN_NS): ('sort_state', SortState),
             '{%s}sheetPr' % SHEET_MAIN_NS: ('sheet_properties', WorksheetProperties),
             '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
             '{%s}sheetFormatPr' % SHEET_MAIN_NS: ('sheet_format', SheetFormatProperties)
