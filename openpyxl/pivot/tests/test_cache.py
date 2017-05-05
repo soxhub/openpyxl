@@ -167,7 +167,7 @@ class TestPivotCacheDefinition:
         cache = DummyCache
 
         expected = """
-        <pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" backgroundQuery="0">
+        <pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
                <cacheSource type="worksheet">
                        <worksheetSource name="Sheet1"/>
                </cacheSource>
