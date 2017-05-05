@@ -850,7 +850,7 @@ class Location(Serialisable):
         self.colPageCount = colPageCount
 
 
-class PivotTableDefinition(Serialisable):
+class TableDefinition(Serialisable):
 
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml"
     rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
@@ -1130,7 +1130,7 @@ class PivotTableDefinition(Serialisable):
 
 
     def to_tree(self):
-        tree = super(PivotTableDefinition, self).to_tree()
+        tree = super(TableDefinition, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
 

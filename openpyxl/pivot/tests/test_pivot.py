@@ -180,18 +180,18 @@ class TestPivotTableStyle:
 
 
 @pytest.fixture
-def PivotTableDefinition():
-    from ..pivot import PivotTableDefinition
-    return PivotTableDefinition
+def TableDefinition():
+    from ..pivot import TableDefinition
+    return TableDefinition
 
 
 @pytest.fixture
-def DummyPivotTable(PivotTableDefinition, Location):
+def DummyPivotTable(TableDefinition, Location):
     """
     Create a minimal pivot table
     """
     loc = Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
-    defn = PivotTableDefinition(name="PivotTable1", cacheId=68,
+    defn = TableDefinition(name="PivotTable1", cacheId=68,
                                 applyWidthHeightFormats=True, dataCaption="Values", updatedVersion=4,
                                 createdVersion=4, gridDropZones=True, minRefreshableVersion=3,
                                 outlineData=True, useAutoFormatting=True, location=loc, indent=0,
@@ -213,25 +213,25 @@ class TestPivotTableDefinition:
         assert diff is None, diff
 
 
-    def test_from_xml(self, DummyPivotTable, PivotTableDefinition):
+    def test_from_xml(self, DummyPivotTable, TableDefinition):
         src = """
         <pivotTableDefinition name="PivotTable1"  applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" cacheId="68" asteriskTotals="0" chartFormat="0" colGrandTotals="1" compact="1" compactData="1" dataCaption="Values" dataOnRows="0" disableFieldList="0" editData="0" enableDrill="1" enableFieldProperties="1" enableWizard="1" fieldListSortAscending="0" fieldPrintTitles="0" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" immersive="1"  mdxSubqueries="0" mergeItem="0" multipleFieldFilters="0" pageOverThenDown="0" pageWrap="0" preserveFormatting="1" printDrill="0" published="0" rowGrandTotals="1" showCalcMbrs="1" showDataDropDown="1" showDataTips="1" showDrill="1" showDropZones="1" showEmptyCol="0" showEmptyRow="0" showError="0" showHeaders="1" showItems="1" showMemberPropertyTips="1" showMissing="1" showMultipleLabel="1" subtotalHiddenItems="0" visualTotals="1">
            <location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
         </pivotTableDefinition>
         """
         node = fromstring(src)
-        defn = PivotTableDefinition.from_tree(node)
+        defn = TableDefinition.from_tree(node)
         assert defn == DummyPivotTable
 
 
-    def test_validate(self, datadir, PivotTableDefinition):
+    def test_validate(self, datadir, TableDefinition):
         datadir.chdir()
         with open("pivotTable.xml", "rb") as src:
             xml = src.read()
         node = fromstring(xml)
 
         # need to convert to and from string to get namespace
-        defn = PivotTableDefinition.from_tree(node)
+        defn = TableDefinition.from_tree(node)
         tree = defn.to_tree()
         generated = tostring(tree)
         tree = fromstring(generated)

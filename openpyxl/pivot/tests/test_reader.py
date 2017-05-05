@@ -8,7 +8,7 @@ from openpyxl.packaging.manifest import Manifest
 from ..reader import read_pivot
 from ..cache import CacheDefinition
 from ..record import RecordList
-from ..pivot import PivotTableDefinition
+from ..pivot import TableDefinition
 
 
 def test_read_package(datadir):
@@ -18,10 +18,10 @@ def test_read_package(datadir):
     src = archive.read(ARC_CONTENT_TYPES)
     tree = fromstring(src)
     manifest = Manifest.from_tree(tree)
-    ct = manifest.find(PivotTableDefinition.mime_type)
+    ct = manifest.find(TableDefinition.mime_type)
     path = ct.PartName[1:]
     pivot = read_pivot(archive, path)
 
-    assert isinstance(pivot, PivotTableDefinition)
+    assert isinstance(pivot, TableDefinition)
     assert isinstance(pivot.cache, CacheDefinition)
     assert isinstance(pivot.cache.records, RecordList)

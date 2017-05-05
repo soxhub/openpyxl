@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from openpyxl.xml.functions import fromstring
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
-from .pivot import PivotTableDefinition
+from .pivot import TableDefinition
 from .cache import CacheDefinition
 from .record import RecordList
 
@@ -42,7 +42,7 @@ def read_pivot(archive, path):
 
     src = archive.read(path)
     tree = fromstring(src)
-    table = PivotTableDefinition.from_tree(tree)
+    table = TableDefinition.from_tree(tree)
 
     rels_path = get_rels_path(path)
     deps = get_dependents(archive, rels_path)

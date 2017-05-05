@@ -213,7 +213,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     apply_stylesheet(archive, wb) # bind styles to workbook
 
-    from openpyxl.pivot.pivot import PivotTableDefinition
+    from openpyxl.pivot.pivot import TableDefinition
     from openpyxl.pivot.reader import read_pivot
 
     # get worksheets
@@ -261,7 +261,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                     table = Table.from_tree(xml)
                     ws.add_table(table)
 
-                pivot_rel = rels.find(PivotTableDefinition.rel_type)
+                pivot_rel = rels.find(TableDefinition.rel_type)
                 for r in pivot_rel:
                     pivot_path = r.Target
                     pivot = read_pivot(archive, pivot_path)
