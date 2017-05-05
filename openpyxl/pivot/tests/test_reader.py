@@ -6,7 +6,7 @@ from openpyxl.xml.functions import fromstring
 from openpyxl.packaging.manifest import Manifest
 
 from ..reader import read_pivot
-from ..cache import PivotCacheDefinition
+from ..cache import CacheDefinition
 from ..record import RecordList
 from ..pivot import PivotTableDefinition
 
@@ -23,5 +23,5 @@ def test_read_package(datadir):
     pivot = read_pivot(archive, path)
 
     assert isinstance(pivot, PivotTableDefinition)
-    assert isinstance(pivot.cache, PivotCacheDefinition)
+    assert isinstance(pivot.cache, CacheDefinition)
     assert isinstance(pivot.cache.records, RecordList)

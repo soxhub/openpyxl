@@ -6,7 +6,7 @@ from openpyxl.xml.functions import fromstring
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from .pivot import PivotTableDefinition
-from .cache import PivotCacheDefinition
+from .cache import CacheDefinition
 from .record import RecordList
 
 
@@ -47,7 +47,7 @@ def read_pivot(archive, path):
     rels_path = get_rels_path(path)
     deps = get_dependents(archive, rels_path)
 
-    cache = get_rel(archive, deps, table.id, PivotCacheDefinition)
+    cache = get_rel(archive, deps, table.id, CacheDefinition)
     table.cache = cache
 
     records = get_rel(archive, cache.deps, cache.id, RecordList)

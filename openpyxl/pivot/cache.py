@@ -926,7 +926,7 @@ class CacheSource(Serialisable):
         self.consolidation = consolidation
 
 
-class PivotCacheDefinition(Serialisable):
+class CacheDefinition(Serialisable):
 
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml"
     rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition"
@@ -1034,7 +1034,7 @@ class PivotCacheDefinition(Serialisable):
 
 
     def to_tree(self):
-        node = super(PivotCacheDefinition, self).to_tree()
+        node = super(CacheDefinition, self).to_tree()
         node.set("xmlns", SHEET_MAIN_NS)
         return node
 

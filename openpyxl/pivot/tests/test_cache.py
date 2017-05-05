@@ -137,28 +137,28 @@ class TestCacheSource:
 
 
 @pytest.fixture
-def PivotCacheDefinition():
-    from ..cache import PivotCacheDefinition
-    return PivotCacheDefinition
+def CacheDefinition():
+    from ..cache import CacheDefinition
+    return CacheDefinition
 
 
 @pytest.fixture
-def DummyCache(PivotCacheDefinition, WorksheetSource, CacheSource, CacheField):
+def DummyCache(CacheDefinition, WorksheetSource, CacheSource, CacheField):
     ws = WorksheetSource(name="Sheet1")
     source = CacheSource(type="worksheet", worksheetSource=ws)
     fields = [CacheField(name="field1")]
-    cache = PivotCacheDefinition(cacheSource=source, cacheFields=fields)
+    cache = CacheDefinition(cacheSource=source, cacheFields=fields)
     return cache
 
 
 class TestPivotCacheDefinition:
 
-    def test_read(self, PivotCacheDefinition, datadir):
+    def test_read(self, CacheDefinition, datadir):
         datadir.chdir()
         with open("pivotCacheDefinition.xml", "rb") as src:
             xml = fromstring(src.read())
 
-        cache = PivotCacheDefinition.from_tree(xml)
+        cache = CacheDefinition.from_tree(xml)
         assert cache.recordCount == 17
         assert len(cache.cacheFields) == 6
 
