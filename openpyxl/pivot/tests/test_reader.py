@@ -8,7 +8,7 @@ from openpyxl.packaging.manifest import Manifest
 from ..reader import read_pivot
 from ..cache import CacheDefinition
 from ..record import RecordList
-from ..pivot import TableDefinition
+from ..table import TableDefinition
 
 
 def test_read_package(datadir):

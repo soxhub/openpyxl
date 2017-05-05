@@ -28,7 +28,7 @@ from openpyxl.packaging.relationship import (
     get_rels_path
 )
 
-from .pivot import (
+from .table import (
     PivotArea,
     Reference,
 )

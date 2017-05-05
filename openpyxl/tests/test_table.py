@@ -15,7 +15,7 @@ from openpyxl.tests.schema import sheet_schema
 
 @pytest.fixture
 def PivotField():
-    from ..pivot import PivotField
+    from ..table import PivotField
     return PivotField
 
 
@@ -42,7 +42,7 @@ class TestPivotField:
 
 @pytest.fixture
 def FieldItem():
-    from ..pivot import FieldItem
+    from ..table import FieldItem
     return FieldItem
 
 
@@ -69,7 +69,7 @@ class TestFieldItem:
 
 @pytest.fixture
 def RowColItem():
-    from ..pivot import RowColItem
+    from ..table import RowColItem
     return RowColItem
 
 
@@ -100,7 +100,7 @@ class TestRowColItem:
 
 @pytest.fixture
 def DataField():
-    from ..pivot import DataField
+    from ..table import DataField
     return DataField
 
 
@@ -127,7 +127,7 @@ class TestDataField:
 
 @pytest.fixture
 def Location():
-    from ..pivot import Location
+    from ..table import Location
     return Location
 
 
@@ -153,7 +153,7 @@ class TestLocation:
 
 @pytest.fixture
 def PivotTableStyle():
-    from ..pivot import PivotTableStyle
+    from ..table import PivotTableStyle
     return PivotTableStyle
 
 
@@ -181,7 +181,7 @@ class TestPivotTableStyle:
 
 @pytest.fixture
 def TableDefinition():
-    from ..pivot import TableDefinition
+    from ..table import TableDefinition
     return TableDefinition
 
 
@@ -252,7 +252,7 @@ class TestPivotTableDefinition:
 
 @pytest.fixture
 def PageField():
-    from ..pivot import PageField
+    from ..table import PageField
     return PageField
 
 
@@ -279,7 +279,7 @@ class TestPageField:
 
 @pytest.fixture
 def Reference():
-    from ..pivot import Reference
+    from ..table import Reference
     return Reference
 
 
@@ -310,7 +310,7 @@ class TestReference:
 
 @pytest.fixture
 def PivotArea():
-    from ..pivot import PivotArea
+    from ..table import PivotArea
     return PivotArea
 
 
@@ -337,7 +337,7 @@ class TestPivotArea:
 
 @pytest.fixture
 def ChartFormat():
-    from ..pivot import ChartFormat
+    from ..table import ChartFormat
     return ChartFormat
 
 
