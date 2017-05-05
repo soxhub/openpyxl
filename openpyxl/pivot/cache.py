@@ -32,7 +32,7 @@ from .table import (
     PivotArea,
     Reference,
 )
-from .record import (
+from .fields import (
     Boolean,
     Error,
     Missing,
