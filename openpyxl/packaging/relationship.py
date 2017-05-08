@@ -139,3 +139,28 @@ def get_dependents(archive, filename):
             pth = posixpath.join(parent, r.target)
             r.target = posixpath.normpath(pth)
     return rels
+
+
+def get_rel(archive, deps, id=None, cls=None):
+    """
+    Get related object based on id or rel_type
+    """
+    if not any([id, cls]):
+        raise ValueError("Either the id or the content type are required")
+    if id is not None:
+        rel = deps[id]
+    else:
+        rel = next(deps.find(cls.rel_type))
+
+    path = rel.target
+    src = archive.read(path)
+    tree = fromstring(src)
+    obj = cls.from_tree(tree)
+
+    rels_path = get_rels_path(path)
+    try:
+        obj.deps = get_dependents(archive, rels_path)
+    except KeyError:
+        obj.deps = []
+
+    return obj
