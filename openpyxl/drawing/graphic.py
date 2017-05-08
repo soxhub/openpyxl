@@ -292,7 +292,7 @@ class GraphicData(Serialisable):
                  chart=None,
                 ):
         self.uri = uri
-        self.chart = None
+        self.chart = chart
 
 
 class GraphicObject(Serialisable):

@@ -121,6 +121,17 @@ class TestGraphicData:
         assert graphic == GraphicData()
 
 
+    def test_contains_chart(self, GraphicData):
+        src = """
+        <graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId2"/>
+        </graphicData>
+        """
+        node = fromstring(src)
+        graphic = GraphicData.from_tree(node)
+        assert graphic.chart is not None
+
+
 @pytest.fixture
 def GraphicObject():
     from ..graphic import GraphicObject
