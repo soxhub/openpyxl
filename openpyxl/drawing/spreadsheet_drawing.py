@@ -239,6 +239,7 @@ class SpreadsheetDrawing(Serialisable):
 
     tagname = "wsDr"
     mime_type = "application/vnd.openxmlformats-officedocument.drawing+xml"
+    _rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
     _path = PartName="/xl/drawings/drawing{0}.xml"
     _id = None
 
