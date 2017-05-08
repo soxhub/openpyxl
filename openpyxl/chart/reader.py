@@ -8,6 +8,9 @@ Read a chart
 from .chartspace import ChartSpace, PlotArea
 from openpyxl.xml.functions import fromstring
 
+from openpyxl.packaging.relationship import get_rel, get_rels_path, get_dependents
+from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
+
 _types = ('areaChart', 'area3DChart', 'lineChart', 'line3DChart',
          'stockChart', 'radarChart', 'scatterChart', 'pieChart', 'pie3DChart',
          'doughnutChart', 'barChart', 'bar3DChart', 'ofPieChart', 'surfaceChart',
@@ -16,7 +19,7 @@ _types = ('areaChart', 'area3DChart', 'lineChart', 'line3DChart',
 _axes = ('valAx', 'catAx', 'dateAx', 'serAx',)
 
 
-def reader(src):
+def read_chart(src):
     node = fromstring(src)
     cs = ChartSpace.from_tree(node)
     plot = cs.chart.plotArea
@@ -39,3 +42,31 @@ def reader(src):
             else:
                 chart.x_axis = ax[0]
     return chart
+
+
+def find_charts(archive, path):
+    """
+    Given the path to a drawing file extract anchors with charts
+    """
+
+    src = archive.read(path)
+    tree = fromstring(src)
+    drawing = SpreadsheetDrawing.from_tree(tree)
+
+    rels_path = get_rels_path(path)
+    deps = get_dependents(archive, rels_path)
+
+    charts = []
+
+    for anchor in drawing.twoCellAnchor:
+        if anchor.graphicFrame is not None:
+            graphic = anchor.graphicFrame.graphic
+            if graphic.graphicData is not None:
+                id = graphic.graphicData.chart.id
+
+            chart = get_rel(archive, deps, id, ChartSpace)
+            charts.append(chart)
+            anchor.graphicFrame = None
+            chart.anchor = anchor
+
+    return charts
