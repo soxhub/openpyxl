@@ -57,16 +57,9 @@ def find_charts(archive, path):
     deps = get_dependents(archive, rels_path)
 
     charts = []
-
-    for anchor in drawing.twoCellAnchor:
-        if anchor.graphicFrame is not None:
-            graphic = anchor.graphicFrame.graphic
-            if graphic.graphicData is not None:
-                id = graphic.graphicData.chart.id
-
-            chart = get_rel(archive, deps, id, ChartSpace)
-            charts.append(chart)
-            anchor.graphicFrame = None
-            chart.anchor = anchor
+    for rel in drawing._chart_rels:
+        chart = get_rel(archive, deps, rel.id, ChartSpace)
+        chart.anchor = rel.anchor
+        charts.append(chart)
 
     return charts
