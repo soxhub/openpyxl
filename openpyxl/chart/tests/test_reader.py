@@ -3,8 +3,11 @@ from __future__ import absolute_import
 
 from zipfile import ZipFile
 
+from openpyxl.xml.functions import fromstring
+
 from .. line_chart import LineChart
 from .. axis import NumericAxis, DateAxis
+from .. chartspace import ChartSpace
 
 
 def test_read(datadir):
@@ -13,8 +16,10 @@ def test_read(datadir):
 
     with open("chart1.xml") as src:
         xml = src.read()
+    tree = fromstring(xml)
+    cs = ChartSpace.from_tree(tree)
+    chart = read_chart(cs)
 
-    chart = read_chart(xml)
     assert isinstance(chart, LineChart)
     assert chart.title.tx.rich.p[0].r.t == "Website Performance"
 

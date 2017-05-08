@@ -19,9 +19,8 @@ _types = ('areaChart', 'area3DChart', 'lineChart', 'line3DChart',
 _axes = ('valAx', 'catAx', 'dateAx', 'serAx',)
 
 
-def read_chart(src):
-    node = fromstring(src)
-    cs = ChartSpace.from_tree(node)
+def read_chart(chartspace):
+    cs = chartspace
     plot = cs.chart.plotArea
     for t in _types:
         chart = getattr(plot, t, None)
@@ -58,7 +57,8 @@ def find_charts(archive, path):
 
     charts = []
     for rel in drawing._chart_rels:
-        chart = get_rel(archive, deps, rel.id, ChartSpace)
+        cs = get_rel(archive, deps, rel.id, ChartSpace)
+        chart = read_chart(cs)
         chart.anchor = rel.anchor
         charts.append(chart)
 
