@@ -303,9 +303,7 @@ class TestSpreadsheetDrawing:
         node = fromstring(xml)
 
         drawing = SpreadsheetDrawing.from_tree(node)
-        anchor = drawing.oneCellAnchor[0]
-        assert anchor._from.row == 28
-        assert anchor._from.col == 1
+        assert len(drawing._chart_rels) == 1
 
 
     def test_write_rels(self, SpreadsheetDrawing):
