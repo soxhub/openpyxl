@@ -50,6 +50,8 @@ from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.table import Table
+from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
+from openpyxl.chart.reader import find_charts
 
 from openpyxl.xml.functions import fromstring
 
@@ -257,6 +259,12 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                     xml = fromstring(src)
                     table = Table.from_tree(xml)
                     ws.add_table(table)
+
+                drawings = rels.find(SpreadsheetDrawing._rel_type)
+                for rel in drawings:
+                    for c in find_charts(archive, rel.target):
+                        ws.add_chart(c, c.anchor)
+
 
         ws.sheet_state = sheet.state
         ws._rels = [] # reset
