@@ -12,7 +12,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import NestedBool
 
-from .text import Text, RichTextProperties
+from .text import Text, RichText
 from .layout import Layout
 from .shapes import GraphicalProperties
 
@@ -32,7 +32,7 @@ class Title(Serialisable):
     overlay = NestedBool(allow_none=True)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
     graphicalProperties = Alias('spPr')
-    txPr = Typed(expected_type=RichTextProperties, allow_none=True)
+    txPr = Typed(expected_type=RichText, allow_none=True)
     body = Alias('txPr')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

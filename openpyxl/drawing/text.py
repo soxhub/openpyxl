@@ -164,10 +164,10 @@ class CharacterProperties(Serialisable):
     uFillTx = EmptyTag()
     uFill = EmptyTag()
 
-    __elements__ = ('ln', 'highlight', 'latin', 'ea', 'cs', 'sym',
-                    'hlinkClick', 'hlinkMouseOver', 'rtl', 'noFill', 'solidFill', 'gradFill',
-                    'blipFill', 'pattFill', 'grpFill', 'effectLst', 'effectDag', 'uLnTx',
-                    'uLn', 'uFillTx', 'uFill')
+    __elements__ = ('ln', 'noFill', 'solidFill', 'gradFill', 'blipFill',
+                    'pattFill', 'grpFill', 'effectLst', 'effectDag', 'highlight','uLnTx',
+                    'uLn', 'uFillTx', 'uFill', 'latin', 'ea', 'cs', 'sym', 'hlinkClick',
+                    'hlinkMouseOver', 'rtl', )
 
     def __init__(self,
                  kumimoji=None,
