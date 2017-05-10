@@ -229,6 +229,7 @@ class RGBPercent(Serialisable):
 class SchemeColor(Serialisable):
 
     tagname = "schemeClr"
+    namespace = DRAWING_NS
 
     tint = NestedInteger(allow_none=True)
     shade = NestedInteger(allow_none=True)
@@ -245,8 +246,8 @@ class SchemeColor(Serialisable):
     satOff = NestedInteger(allow_none=True)
     satMod = NestedInteger(allow_none=True)
     lum = NestedInteger(allow_none=True)
-    lumOff = NestedInteger(allow_none=True)
-    lumMod = NestedInteger(allow_none=True)
+    lumOff = NestedInteger(allow_none=True, namespace=DRAWING_NS)
+    lumMod = NestedInteger(allow_none=True, namespace=DRAWING_NS)
     red = NestedInteger(allow_none=True)
     redOff = NestedInteger(allow_none=True)
     redMod = NestedInteger(allow_none=True)
