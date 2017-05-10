@@ -22,10 +22,14 @@ _axes = ('valAx', 'catAx', 'dateAx', 'serAx',)
 def read_chart(chartspace):
     cs = chartspace
     plot = cs.chart.plotArea
+    charts = []
     for t in _types:
         chart = getattr(plot, t, None)
         if chart is not None:
-            break # this ignores multiple charts
+            charts.append(chart)
+
+    chart = charts[0]
+    chart._charts = charts
 
     chart.title = cs.chart.title
     chart.layout = plot.layout
