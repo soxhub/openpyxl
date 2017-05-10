@@ -69,6 +69,8 @@ class TestBarChart:
                 </scaling>
                 <axPos val="l" />
                 <majorGridlines />
+                <majorTickMark val="none" />
+                <minorTickMark val="none" />
                 <crossAx val="10"></crossAx>
               </valAx>
               <catAx>
@@ -77,6 +79,8 @@ class TestBarChart:
                   <orientation val="minMax"></orientation>
                 </scaling>
                 <axPos val="l" />
+                <majorTickMark val="none" />
+                <minorTickMark val="none" />
                 <crossAx val="100"></crossAx>
                 <lblOffset val="100"></lblOffset>
               </catAx>

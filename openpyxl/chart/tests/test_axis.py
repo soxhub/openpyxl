@@ -44,6 +44,8 @@ class TestAxis:
               <orientation val="minMax"></orientation>
             </scaling>
             <axPos val="l" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
             <crossAx val="100" />
         </baseAxis>
         """
@@ -70,6 +72,8 @@ class TestTextAxis:
               <orientation val="minMax"></orientation>
             </scaling>
             <axPos val="l" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
             <crossAx val="100" />
             <lblOffset val="100" />
         </catAx>
@@ -125,6 +129,8 @@ class TestValAx:
           </scaling>
           <axPos val="l" />
           <majorGridlines />
+          <majorTickMark val="none" />
+          <minorTickMark val="none" />
           <crossAx val="10" />
         </valAx>
         """
@@ -177,7 +183,9 @@ class TestDateAx:
              <orientation val="minMax"></orientation>
            </scaling>
            <axPos val="l" />
-           <crossAx val="10" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
+            <crossAx val="10" />
            <majorUnit val="1" />
         </dateAx>
         """
@@ -233,7 +241,9 @@ class TestSeriesAxis:
             <orientation val="minMax"></orientation>
           </scaling>
           <axPos val="l" />
-          <crossAx val="10" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
+            <crossAx val="10" />
         </serAx>
         """
         diff = compare_xml(xml, expected)
