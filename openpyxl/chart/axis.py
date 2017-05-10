@@ -329,7 +329,7 @@ class DateAxis(_BaseAxis):
                  auto=None,
                  lblOffset=None,
                  baseTimeUnit=None,
-                 majorUnit=1,
+                 majorUnit=None,
                  majorTimeUnit=None,
                  minorUnit=None,
                  minorTimeUnit=None,

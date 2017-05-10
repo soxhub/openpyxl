@@ -186,7 +186,6 @@ class TestDateAx:
             <majorTickMark val="none" />
             <minorTickMark val="none" />
             <crossAx val="10" />
-           <majorUnit val="1" />
         </dateAx>
         """
         diff = compare_xml(xml, expected)
