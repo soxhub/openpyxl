@@ -230,12 +230,9 @@ class SchemeColor(Serialisable):
 
     tagname = "schemeClr"
 
-    val = Set(values=(['bg1', 'tx1', 'bg2', 'tx2', 'accent1', 'accent2',
-                       'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink', 'phClr',
-                       'dk1', 'lt1', 'dk2', 'lt2']))
     tint = NestedInteger(allow_none=True)
     shade = NestedInteger(allow_none=True)
-    comp = NestedInteger(allow_none=True)
+    comp = EmptyTag(allow_none=True)
     inv = NestedInteger(allow_none=True)
     gray = NestedInteger(allow_none=True)
     alpha = NestedInteger(allow_none=True)
@@ -261,6 +258,9 @@ class SchemeColor(Serialisable):
     blueMod = NestedInteger(allow_none=True)
     gamma = EmptyTag(allow_none=True)
     invGamma = EmptyTag(allow_none=True)
+    val = Set(values=(['bg1', 'tx1', 'bg2', 'tx2', 'accent1', 'accent2',
+                       'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink', 'phClr',
+                       'dk1', 'lt1', 'dk2', 'lt2']))
 
     __elements__ = ('tint', 'shade', 'comp', 'inv', 'gray', 'alpha',
                     'alphaOff', 'alphaMod', 'hue', 'hueOff', 'hueMod', 'sat', 'satOff',
@@ -269,7 +269,6 @@ class SchemeColor(Serialisable):
                     'invGamma')
 
     def __init__(self,
-                 val=None,
                  tint=None,
                  shade=None,
                  comp=None,
@@ -298,8 +297,8 @@ class SchemeColor(Serialisable):
                  blueMod=None,
                  gamma=None,
                  invGamma=None,
+                 val=None,
                 ):
-        self.val = val
         self.tint = tint
         self.shade = shade
         self.comp = comp
@@ -328,8 +327,7 @@ class SchemeColor(Serialisable):
         self.blueMod = blueMod
         self.gamma = gamma
         self.invGamma = invGamma
-
-
+        self.val = val
 
 class ColorChoice(Serialisable):
 
