@@ -152,7 +152,7 @@ class PlotArea(Serialisable):
     # at least one chart
     areaChart = Typed(expected_type=AreaChart, allow_none=True)
     area3DChart = Typed(expected_type=AreaChart3D, allow_none=True)
-    lineChart = Typed(expected_type=LineChart, allow_none=True)
+    lineChart = Sequence(expected_type=LineChart)
     line3DChart = Typed(expected_type=LineChart3D, allow_none=True)
     stockChart = Typed(expected_type=StockChart, allow_none=True)
     radarChart = Typed(expected_type=RadarChart, allow_none=True)
@@ -185,7 +185,7 @@ class PlotArea(Serialisable):
                  spPr=None,
                  areaChart=None,
                  area3DChart=None,
-                 lineChart=None,
+                 lineChart=(),
                  line3DChart=None,
                  stockChart=None,
                  radarChart=None,
