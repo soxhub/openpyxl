@@ -5,7 +5,7 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring, Element
 from openpyxl.tests.helper import compare_xml
 from ..serialisable import Serialisable
-from ..base import Integer
+from ..base import Integer, Alias
 
 @pytest.fixture
 def Sequence():
@@ -269,3 +269,80 @@ class TestNestedSequence:
         style = ComplexObject.from_tree(node)
         assert len(style.fonts) == 2
         assert style.fonts[1].bold is True
+
+
+class Larry(SomeType):
+
+    tagname = "l"
+    value = Integer()
+
+    def __init__(self, value):
+        self.value = value
+
+class Curly(SomeType):
+
+    tagname = "c"
+    hair = Integer()
+
+    def __init__(self, hair):
+        self.hair = hair
+
+
+class Mo(SomeType):
+
+    tagname = "m"
+    cap = Integer()
+
+    def __init__(self, cap):
+        self.cap = cap
+
+from ..sequence import MultiSequence
+
+class Stooge(Serialisable):
+
+    _stooges = MultiSequence(expected_type=SomeType, name="_stooges")
+    l = Alias("_stooges")
+    c = Alias("_stooges")
+    m = Alias("_stooges")
+
+    def __init__(self, stooges=()):
+        self._stooges = stooges
+
+
+class TestMultiSequence:
+
+    def test_to_tree(self):
+
+        dummy = Stooge()
+        dummy._stooges = [Larry(1), Curly(2), Larry(3), Mo(4)]
+
+        root = Element("root")
+        for node in Stooge._stooges.to_tree("el", dummy._stooges):
+            root.append(node)
+
+        xml = tostring(root)
+        expected = """
+        <root>
+            <l value="1"></l>
+            <c hair="2"></c>
+            <l value="3"></l>
+            <m cap="4"></m>
+        </root>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Sequence):
+        src = """
+        <root>
+            <l value="1"></l>
+            <c hair="2"></c>
+            <l value="3"></l>
+            <m cap="4"></m>
+        </root>
+        """
+        node = fromstring(src)
+
+        dummy = Stooge.from_tree(node)
+        assert dummy._stooges == [Larry(1), Curly(2), Larry(3), Mo(4)]

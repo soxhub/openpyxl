@@ -84,3 +84,17 @@ class NestedSequence(Sequence):
 
     def from_tree(self, node):
         return [self.expected_type.from_tree(el) for el in node]
+
+
+class MultiSequence(Sequence):
+    """
+    Sequences can contain objects with different tags
+    """
+
+    def to_tree(self, tagname, obj, namespace=None):
+        """
+        Convert the sequence represented by the descriptor to an XML element
+        """
+        for v in obj:
+            el = v.to_tree(namespace=namespace)
+            yield el
