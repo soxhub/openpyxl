@@ -4,7 +4,10 @@ from openpyxl.descriptors import (
     Integer,
     Sequence,
 )
-
+from openpyxl.descriptors.sequence import (
+    MultiSequence,
+    MultiSequencePart,
+)
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
     NestedInteger,
@@ -32,17 +35,19 @@ class Record(Serialisable):
     tagname = "r"
 
     # some elements are choice
-    m = Sequence(expected_type=Missing)
-    n = Sequence(expected_type=Number)
-    b = Sequence(expected_type=Boolean)
-    e = Sequence(expected_type=Error)
-    s = Sequence(expected_type=Text)
-    d = Sequence(expected_type=DateTimeField)
-    x = Sequence(expected_type=Index)
+    _fields = MultiSequence()
+    m = MultiSequencePart(expected_type=Missing, store="_fields")
+    n = MultiSequencePart(expected_type=Number, store="_fields")
+    b = MultiSequencePart(expected_type=Boolean, store="_fields")
+    e = MultiSequencePart(expected_type=Error, store="_fields")
+    s = MultiSequencePart(expected_type=Text,  store="_fields")
+    d = MultiSequencePart(expected_type=DateTimeField, store="_fields")
+    x = MultiSequencePart(expected_type=Index, store="_fields")
 
-    __elements__ = ('m', 'n', 'b', 'e', 's', 'd', 'x')
+    __elements__ = ('_fields', )
 
     def __init__(self,
+                 _fields=(),
                  m=(),
                  n=(),
                  b=(),
@@ -51,6 +56,7 @@ class Record(Serialisable):
                  d=(),
                  x=(),
                 ):
+        self._fields = _fields
         self.m = m
         self.n = n
         self.b = b
