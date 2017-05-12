@@ -6,7 +6,11 @@ KEYWORDS = frozenset(kwlist)
 
 from . import Descriptor
 from . import _Serialiasable
-from .sequence import Sequence, NestedSequence
+from .sequence import (
+    Sequence,
+    NestedSequence,
+    MultiSequencePart,
+)
 from .namespace import namespaced
 
 from openpyxl.compat import safe_string
@@ -67,6 +71,7 @@ class Serialisable(_Serialiasable):
             if tag in KEYWORDS:
                 tag = "_" + tag
             desc = getattr(cls, tag, None)
+            print(tag, desc)
             if desc is None or isinstance(desc, property):
                 continue
 
@@ -86,6 +91,9 @@ class Serialisable(_Serialiasable):
             elif isinstance(desc, Sequence):
                 attrib.setdefault(tag, [])
                 attrib[tag].append(obj)
+            elif isinstance(desc, MultiSequencePart):
+                attrib.setdefault(desc.store, [])
+                attrib[desc.store].append(obj)
             else:
                 attrib[tag] = obj
 

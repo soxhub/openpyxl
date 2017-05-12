@@ -296,17 +296,17 @@ class Mo(SomeType):
     def __init__(self, cap):
         self.cap = cap
 
-from ..sequence import MultiSequence
+from ..sequence import MultiSequence, MultiSequencePart
 
 class Stooge(Serialisable):
 
-    _stooges = MultiSequence(expected_type=SomeType, name="_stooges")
-    l = Alias("_stooges")
-    c = Alias("_stooges")
-    m = Alias("_stooges")
+    _stooges = MultiSequence(expected_type=SomeType)
+    l = MultiSequencePart(expected_type=Larry, store="_stooges")
+    c = MultiSequencePart(expected_type=Curly, store="_stooges")
+    m = MultiSequencePart(expected_type=Mo, store="_stooges")
 
-    def __init__(self, stooges=()):
-        self._stooges = stooges
+    def __init__(self, _stooges=()):
+        self._stooges = _stooges
 
 
 class TestMultiSequence:
@@ -333,7 +333,7 @@ class TestMultiSequence:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Sequence):
+    def test_from_xml(self):
         src = """
         <root>
             <l value="1"></l>
