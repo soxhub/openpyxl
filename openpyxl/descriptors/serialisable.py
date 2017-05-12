@@ -71,7 +71,6 @@ class Serialisable(_Serialiasable):
             if tag in KEYWORDS:
                 tag = "_" + tag
             desc = getattr(cls, tag, None)
-            print(tag, desc)
             if desc is None or isinstance(desc, property):
                 continue
 
