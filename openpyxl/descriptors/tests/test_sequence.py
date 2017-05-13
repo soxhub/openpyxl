@@ -271,7 +271,7 @@ class TestNestedSequence:
         assert style.fonts[1].bold is True
 
 
-class Larry(SomeType):
+class Larry(Serialisable):
 
     tagname = "l"
     value = Integer()
@@ -279,7 +279,7 @@ class Larry(SomeType):
     def __init__(self, value):
         self.value = value
 
-class Curly(SomeType):
+class Curly(Serialisable):
 
     tagname = "c"
     hair = Integer()
@@ -288,7 +288,7 @@ class Curly(SomeType):
         self.hair = hair
 
 
-class Mo(SomeType):
+class Mo(Serialisable):
 
     tagname = "m"
     cap = Integer()
@@ -296,22 +296,51 @@ class Mo(SomeType):
     def __init__(self, cap):
         self.cap = cap
 
-from ..sequence import MultiSequence, MultiSequencePart
 
-class Stooge(Serialisable):
+@pytest.fixture
+def MultiSequence():
+    from ..sequence import MultiSequence
+    return MultiSequence
 
-    _stooges = MultiSequence(expected_type=SomeType)
-    l = MultiSequencePart(expected_type=Larry, store="_stooges")
-    c = MultiSequencePart(expected_type=Curly, store="_stooges")
-    m = MultiSequencePart(expected_type=Mo, store="_stooges")
 
-    def __init__(self, _stooges=()):
-        self._stooges = _stooges
+@pytest.fixture
+def MultiSequencePart():
+    from ..sequence import MultiSequencePart
+    return MultiSequencePart
+
+
+@pytest.fixture
+def Stooge(MultiSequence, MultiSequencePart):
+
+    class Stooge(Serialisable):
+
+        _stooges = MultiSequence(expected_type=SomeType)
+        l = MultiSequencePart(expected_type=Larry, store="_stooges")
+        c = MultiSequencePart(expected_type=Curly, store="_stooges")
+        m = MultiSequencePart(expected_type=Mo, store="_stooges")
+
+        def __init__(self, _stooges=()):
+            self._stooges = _stooges
+
+    return Stooge
 
 
 class TestMultiSequence:
 
-    def test_to_tree(self):
+
+    def test_elements(self, Stooge):
+
+        assert Stooge.__elements__ == ("_stooges",)
+
+
+    def test_attrs(self, Stooge):
+
+        dummy = Stooge()
+
+        assert Stooge.__attrs__ == ()
+
+
+    def test_to_tree(self, Stooge):
 
         dummy = Stooge()
         dummy._stooges = [Larry(1), Curly(2), Larry(3), Mo(4)]
@@ -320,6 +349,7 @@ class TestMultiSequence:
         for node in Stooge._stooges.to_tree("el", dummy._stooges):
             root.append(node)
 
+        tree = dummy.to_tree("root")
         xml = tostring(root)
         expected = """
         <root>
@@ -333,7 +363,7 @@ class TestMultiSequence:
         assert diff is None, diff
 
 
-    def test_from_xml(self):
+    def test_from_xml(self, Stooge):
         src = """
         <root>
             <l value="1"></l>
