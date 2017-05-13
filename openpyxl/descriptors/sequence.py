@@ -5,7 +5,7 @@ from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
 from openpyxl.utils.indexed_list import IndexedList
 
-from .base import Descriptor, _convert
+from .base import Descriptor, Alias, _convert
 from .namespace import namespaced
 
 
@@ -86,7 +86,7 @@ class NestedSequence(Sequence):
         return [self.expected_type.from_tree(el) for el in node]
 
 
-class MultiSequence(Descriptor):
+class MultiSequence(Sequence):
     """
     Sequences can contain objects with different tags
     """
@@ -94,7 +94,7 @@ class MultiSequence(Descriptor):
     def __set__(self, instance, seq):
         if not isinstance(seq, (tuple, list)):
             raise ValueError("Value must be a sequence")
-        super(MultiSequence, self).__set__(instance, seq)
+        Descriptor.__set__(self, instance, seq)
 
 
     def to_tree(self, tagname, obj, namespace=None):
@@ -106,14 +106,22 @@ class MultiSequence(Descriptor):
             yield el
 
 
-class MultiSequencePart(Descriptor):
+class MultiSequencePart(Alias):
+    """
+    Allow a multisequence to be built up from parts
 
+    Excluded from the instance __elements__ or __attrs__ as is effectively an Alias
+    """
 
     def __init__(self, expected_type, store):
         self.expected_type = expected_type
         self.store = store
 
 
-    def __set__(self, instance, seq):
-        seq = [_convert(self.expected_type, value) for value in seq]
-        instance.__dict__[self.store].append(seq)
+    def __set__(self, instance, value):
+        value = _convert(self.expected_type, value)
+        instance.__dict__[self.store].append(value)
+
+
+    def __get__(self, instance, cls):
+        return self
