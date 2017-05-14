@@ -19,7 +19,11 @@ from openpyxl.descriptors.excel import (
     Relation,
 )
 from openpyxl.descriptors.nested import NestedInteger
-from openpyxl.descriptors.sequence import NestedSequence
+from openpyxl.descriptors.sequence import (
+    NestedSequence,
+    MultiSequence,
+    MultiSequencePart,
+)
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
 from openpyxl.packaging.relationship import (
@@ -40,7 +44,6 @@ from .fields import (
     Text,
     TupleList,
     DateTimeField,
-    SharedItem,
 )
 
 class MeasureDimensionMap(Serialisable):
@@ -669,12 +672,13 @@ class SharedItems(Serialisable):
 
     tagname = "sharedItems"
 
-    m = Sequence(expected_type=Missing)
-    n = Sequence(expected_type=Number)
-    b = Sequence(expected_type=Boolean)
-    e = Sequence(expected_type=Error)
-    s = Sequence(expected_type=Text)
-    d = Sequence(expected_type=DateTimeField)
+    _fields = MultiSequence()
+    m = MultiSequencePart(expected_type=Missing, store="_fields")
+    n = MultiSequencePart(expected_type=Number, store="_fields")
+    b = MultiSequencePart(expected_type=Boolean, store="_fields")
+    e = MultiSequencePart(expected_type=Error, store="_fields")
+    s = MultiSequencePart(expected_type=Text,  store="_fields")
+    d = MultiSequencePart(expected_type=DateTimeField, store="_fields")
     # attributes are optional and must be derived from associated cache records
     containsSemiMixedTypes = Bool(allow_none=True)
     containsNonDate = Bool(allow_none=True)
@@ -690,19 +694,13 @@ class SharedItems(Serialisable):
     maxDate = DateTime(allow_none=True)
     longText = Bool(allow_none=True)
 
-    __elements__ = ('n', 'b', 'e', 's', 'd', 'm')
     __attrs__ = ('count', 'containsBlank', 'containsDate', 'containsInteger',
                  'containsMixedTypes', 'containsNonDate', 'containsNumber',
                  'containsSemiMixedTypes', 'containsString', 'minValue', 'maxValue',
                  'minDate', 'maxDate', 'longText')
 
     def __init__(self,
-                 m=(),
-                 n=(),
-                 b=(),
-                 e=(),
-                 s=(),
-                 d=(),
+                 _fields=(),
                  containsSemiMixedTypes=None,
                  containsNonDate=None,
                  containsDate=None,
@@ -718,12 +716,7 @@ class SharedItems(Serialisable):
                  count=None,
                  longText=None,
                 ):
-        self.m = m
-        self.n = n
-        self.b = b
-        self.e = e
-        self.s = s
-        self.d = d
+        self._fields = _fields
         self.containsBlank = containsBlank
         self.containsDate = containsDate
         self.containsNonDate = containsNonDate
@@ -741,7 +734,7 @@ class SharedItems(Serialisable):
 
     @property
     def count(self):
-        return len(self.m + self.n + self.b + self.e + self.s + self.d)
+        return len(self._fields)
 
 
 class CacheField(Serialisable):

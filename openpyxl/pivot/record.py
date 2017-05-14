@@ -25,7 +25,6 @@ from .fields import (
     Text,
     TupleList,
     DateTimeField,
-    SharedItem,
     Index,
 )
 
@@ -34,7 +33,6 @@ class Record(Serialisable):
 
     tagname = "r"
 
-    # some elements are choice
     _fields = MultiSequence()
     m = MultiSequencePart(expected_type=Missing, store="_fields")
     n = MultiSequencePart(expected_type=Number, store="_fields")
@@ -44,26 +42,18 @@ class Record(Serialisable):
     d = MultiSequencePart(expected_type=DateTimeField, store="_fields")
     x = MultiSequencePart(expected_type=Index, store="_fields")
 
-    __elements__ = ('_fields', )
 
     def __init__(self,
                  _fields=(),
-                 m=(),
-                 n=(),
-                 b=(),
-                 e=(),
-                 s=(),
-                 d=(),
-                 x=(),
+                 m=None,
+                 n=None,
+                 b=None,
+                 e=None,
+                 s=None,
+                 d=None,
+                 x=None,
                 ):
         self._fields = _fields
-        self.m = m
-        self.n = n
-        self.b = b
-        self.e = e
-        self.s = s
-        self.d = d
-        self.x = x
 
 
 class RecordList(Serialisable):

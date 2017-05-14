@@ -30,7 +30,8 @@ class TestRecord:
         n = [Number(v=1), Number(v=25)]
         s = [Text(v="2014-03-24")]
         x = [Index(), Index(), Index()]
-        field = Record(n=n, s=s, x=x)
+        fields = n + s + x
+        field = Record(_fields=fields)
         xml = tostring(field.to_tree())
         expected = """
         <r>
@@ -61,8 +62,16 @@ class TestRecord:
         n = [Number(v=1), Number(v=25)]
         s = [Text(v="2014-03-24")]
         x = [Index(), Index(), Index()]
+        fields = [
+            Number(v=1),
+            Index(),
+            Text(v="2014-03-24"),
+            Index(),
+            Number(v=25),
+            Index(),
+        ]
         field = Record.from_tree(node)
-        assert field == Record(n=n, s=s, x=x)
+        assert field == Record(_fields=fields)
 
 
 @pytest.fixture

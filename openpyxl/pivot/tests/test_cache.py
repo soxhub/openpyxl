@@ -49,7 +49,7 @@ class TestSharedItems:
 
     def test_ctor(self, SharedItems):
         s = [Text(v="Stanford"), Text(v="Cal"), Text(v="UCLA")]
-        items = SharedItems(s=s)
+        items = SharedItems(_fields=s)
         xml = tostring(items.to_tree())
         expected = """
         <sharedItems count="3">
@@ -73,7 +73,7 @@ class TestSharedItems:
         node = fromstring(src)
         items = SharedItems.from_tree(node)
         s = [Text(v="Stanford"), Text(v="Cal"), Text(v="UCLA")]
-        assert items == SharedItems(s=s)
+        assert items == SharedItems(_fields=s)
 
 
 @pytest.fixture

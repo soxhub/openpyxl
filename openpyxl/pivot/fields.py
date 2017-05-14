@@ -53,12 +53,7 @@ class TupleList(Serialisable):
         self.tpl = tpl
 
 
-class SharedItem(Serialisable):
-
-    pass
-
-
-class Missing(SharedItem):
+class Missing(Serialisable):
 
     tagname = "m"
 
@@ -108,7 +103,7 @@ class Missing(SharedItem):
         self.b = b
 
 
-class Number(SharedItem):
+class Number(Serialisable):
 
     tagname = "n"
 
@@ -161,7 +156,7 @@ class Number(SharedItem):
         self.b = b
 
 
-class Error(SharedItem):
+class Error(Serialisable):
 
     tagname = "e"
 
@@ -214,7 +209,7 @@ class Error(SharedItem):
         self.b = b
 
 
-class Boolean(SharedItem):
+class Boolean(Serialisable):
 
     tagname = "b"
 
@@ -243,7 +238,7 @@ class Boolean(SharedItem):
         self.cp = cp
 
 
-class Text(SharedItem):
+class Text(Serialisable):
 
     tagname = "s"
 
