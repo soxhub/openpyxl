@@ -663,37 +663,40 @@ class PivotField(Serialisable):
 
     tagname = "pivotField"
 
+    items = NestedSequence(expected_type=FieldItem, count=True)
+    autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
+    extLst = Typed(expected_type=ExtensionList, allow_none=True)
     name = String(allow_none=True)
     axis = NoneSet(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
-    dataField = Bool()
+    dataField = Bool(allow_none=True)
     subtotalCaption = String(allow_none=True)
-    showDropDowns = Bool()
-    hiddenLevel = Bool()
+    showDropDowns = Bool(allow_none=True)
+    hiddenLevel = Bool(allow_none=True)
     uniqueMemberProperty = String(allow_none=True)
-    compact = Bool()
-    allDrilled = Bool()
+    compact = Bool(allow_none=True)
+    allDrilled = Bool(allow_none=True)
     numFmtId = Integer(allow_none=True)
-    outline = Bool()
-    subtotalTop = Bool()
-    dragToRow = Bool()
-    dragToCol = Bool()
-    multipleItemSelectionAllowed = Bool()
-    dragToPage = Bool()
-    dragToData = Bool()
-    dragOff = Bool()
-    showAll = Bool()
-    insertBlankRow = Bool()
-    serverField = Bool()
-    insertPageBreak = Bool()
-    autoShow = Bool()
-    topAutoShow = Bool()
-    hideNewItems = Bool()
-    measureFilter = Bool()
-    includeNewItemsInFilter = Bool()
+    outline = Bool(allow_none=True)
+    subtotalTop = Bool(allow_none=True)
+    dragToRow = Bool(allow_none=True)
+    dragToCol = Bool(allow_none=True)
+    multipleItemSelectionAllowed = Bool(allow_none=True)
+    dragToPage = Bool(allow_none=True)
+    dragToData = Bool(allow_none=True)
+    dragOff = Bool(allow_none=True)
+    showAll = Bool(allow_none=True)
+    insertBlankRow = Bool(allow_none=True)
+    serverField = Bool(allow_none=True)
+    insertPageBreak = Bool(allow_none=True)
+    autoShow = Bool(allow_none=True)
+    topAutoShow = Bool(allow_none=True)
+    hideNewItems = Bool(allow_none=True)
+    measureFilter = Bool(allow_none=True)
+    includeNewItemsInFilter = Bool(allow_none=True)
     itemPageCount = Integer(allow_none=True)
     sortType = Set(values=(['manual', 'ascending', 'descending']))
     dataSourceSort = Bool(allow_none=True)
-    nonAutoSortDefault = Bool()
+    nonAutoSortDefault = Bool(allow_none=True)
     rankBy = Integer(allow_none=True)
     defaultSubtotal = Bool(allow_none=True)
     sumSubtotal = Bool(allow_none=True)
@@ -711,65 +714,63 @@ class PivotField(Serialisable):
     showPropTip = Bool(allow_none=True)
     showPropAsCaption = Bool(allow_none=True)
     defaultAttributeDrillState = Bool(allow_none=True)
-    items = NestedSequence(expected_type=FieldItem, count=True)
-    autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('items', 'autoSortScope', )
+    __elements__ = ('items', 'autoSortScope',)
 
     def __init__(self,
+                 items=(),
+                 autoSortScope=None,
                  name=None,
                  axis=None,
-                 dataField=False,
+                 dataField=None,
                  subtotalCaption=None,
                  showDropDowns=True,
-                 hiddenLevel=False,
+                 hiddenLevel=None,
                  uniqueMemberProperty=None,
                  compact=True,
-                 allDrilled=False,
+                 allDrilled=None,
                  numFmtId=None,
                  outline=True,
                  subtotalTop=True,
                  dragToRow=True,
                  dragToCol=True,
-                 multipleItemSelectionAllowed=False,
+                 multipleItemSelectionAllowed=None,
                  dragToPage=True,
                  dragToData=True,
                  dragOff=True,
                  showAll=True,
-                 insertBlankRow=False,
-                 serverField=False,
-                 insertPageBreak=False,
-                 autoShow=False,
-                 topAutoShow=False,
+                 insertBlankRow=None,
+                 serverField=None,
+                 insertPageBreak=None,
+                 autoShow=None,
+                 topAutoShow=True,
                  hideNewItems=None,
-                 measureFilter=False,
-                 includeNewItemsInFilter=False,
+                 measureFilter=None,
+                 includeNewItemsInFilter=None,
                  itemPageCount=10,
                  sortType="manual",
                  dataSourceSort=None,
-                 nonAutoSortDefault=False,
+                 nonAutoSortDefault=None,
                  rankBy=None,
                  defaultSubtotal=True,
-                 sumSubtotal=False,
-                 countASubtotal=False,
-                 avgSubtotal=False,
-                 maxSubtotal=False,
-                 minSubtotal=False,
-                 productSubtotal=False,
-                 countSubtotal=False,
-                 stdDevSubtotal=False,
-                 stdDevPSubtotal=False,
-                 varSubtotal=False,
-                 varPSubtotal=False,
-                 showPropCell=False,
-                 showPropTip=False,
-                 showPropAsCaption=False,
-                 defaultAttributeDrillState=False,
-                 items=(),
-                 autoSortScope=None,
-                 extLst=None,
+                 sumSubtotal=None,
+                 countASubtotal=None,
+                 avgSubtotal=None,
+                 maxSubtotal=None,
+                 minSubtotal=None,
+                 productSubtotal=None,
+                 countSubtotal=None,
+                 stdDevSubtotal=None,
+                 stdDevPSubtotal=None,
+                 varSubtotal=None,
+                 varPSubtotal=None,
+                 showPropCell=None,
+                 showPropTip=None,
+                 showPropAsCaption=None,
+                 defaultAttributeDrillState=None,
                 ):
+        self.items = items
+        self.autoSortScope = autoSortScope
         self.name = name
         self.axis = axis
         self.dataField = dataField
@@ -818,9 +819,6 @@ class PivotField(Serialisable):
         self.showPropTip = showPropTip
         self.showPropAsCaption = showPropAsCaption
         self.defaultAttributeDrillState = defaultAttributeDrillState
-        self.items = items
-        self.autoSortScope = autoSortScope
-        self.extLst = extLst
 
 
 class Location(Serialisable):
