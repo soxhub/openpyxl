@@ -52,7 +52,7 @@ class TestFieldItem:
         item = FieldItem()
         xml = tostring(item.to_tree())
         expected = """
-        <item c="0" d="0" e="0" f="0" h="0" m="0" s="0" sd="1" t="data" />
+        <item sd="1" t="data" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

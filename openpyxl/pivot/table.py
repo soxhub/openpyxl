@@ -623,28 +623,28 @@ class FieldItem(Serialisable):
     t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
                      'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
                      'blank']))
-    h = Bool()
-    s = Bool()
-    sd = Bool()
-    f = Bool()
-    m = Bool()
-    c = Bool()
+    h = Bool(allow_none=True)
+    s = Bool(allow_none=True)
+    sd = Bool(allow_none=True)
+    f = Bool(allow_none=True)
+    m = Bool(allow_none=True)
+    c = Bool(allow_none=True)
     x = Integer(allow_none=True)
-    d = Bool()
-    e = Bool()
+    d = Bool(allow_none=True)
+    e = Bool(allow_none=True)
 
     def __init__(self,
                  n=None,
                  t="data",
-                 h=False,
-                 s=False,
+                 h=None,
+                 s=None,
                  sd=True,
-                 f=False,
-                 m=False,
-                 c=False,
+                 f=None,
+                 m=None,
+                 c=None,
                  x=None,
-                 d=False,
-                 e=False,
+                 d=None,
+                 e=None,
                 ):
         self.n = n
         self.t = t
