@@ -12,6 +12,8 @@ import warnings
 
 # compatibility imports
 from openpyxl.compat import unicode, file
+from openpyxl.pivot.table import TableDefinition
+from openpyxl.pivot.reader import read_pivot
 
 # Allow blanket setting of KEEP_VBA for testing
 try:
@@ -212,9 +214,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
-
-    from openpyxl.pivot.pivot import TableDefinition
-    from openpyxl.pivot.reader import read_pivot
 
     # get worksheets
     for sheet, rel in parser.find_sheets():
