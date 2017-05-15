@@ -127,3 +127,12 @@ class TestWorkbookParser:
         parser.wb._keep_links = False
         parser.parse()
         assert parser.wb._external_links == []
+
+
+    def test_pivot_caches(self, datadir, WorkbookParser):
+        datadir.chdir()
+
+        archive = ZipFile("pivot.xlsx")
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+        parser.parse()
+        assert parser.pivot_caches.keys() == set([68])

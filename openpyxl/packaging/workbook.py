@@ -117,8 +117,10 @@ class WorkbookParser:
         """
         Get PivotCache objects
         """
-        for cache in self.caches:
-            c = get_rel(self.archive, self.rels, id=cache.id, cls=CacheDefinition)
-            records = get_rel(archive, cache.deps, cache.id, RecordList)
+        d = {}
+        for c in self.caches:
+            cache = get_rel(self.archive, self.rels, id=c.id, cls=CacheDefinition)
+            records = get_rel(self.archive, cache.deps, cache.id, RecordList)
             cache.records = records
-            yield c.cacheId, c
+            d[c.cacheId]  = cache
+        return d

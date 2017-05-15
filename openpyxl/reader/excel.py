@@ -264,7 +264,10 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                 pivot_rel = rels.find(TableDefinition.rel_type)
                 for r in pivot_rel:
                     pivot_path = r.Target
-                    pivot = read_pivot(archive, pivot_path, pivot_caches)
+                    src = archive.read(pivot_path)
+                    tree = fromstring(src)
+                    pivot = TableDefinition.from_tree(tree)
+                    pivot.cache = pivot_caches[pivot.cacheId]
                     ws.add_pivot(pivot)
 
         ws.sheet_state = sheet.state
