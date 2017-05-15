@@ -23,5 +23,3 @@ def test_read_package(datadir):
     pivot = read_pivot(archive, path)
 
     assert isinstance(pivot, TableDefinition)
-    assert isinstance(pivot.cache, CacheDefinition)
-    assert isinstance(pivot.cache.records, RecordList)

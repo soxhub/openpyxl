@@ -214,6 +214,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
+    pivot_caches = parser.pivot_caches
 
     # get worksheets
     for sheet, rel in parser.find_sheets():
@@ -263,7 +264,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                 pivot_rel = rels.find(TableDefinition.rel_type)
                 for r in pivot_rel:
                     pivot_path = r.Target
-                    pivot = read_pivot(archive, pivot_path)
+                    pivot = read_pivot(archive, pivot_path, pivot_caches)
                     ws.add_pivot(pivot)
 
         ws.sheet_state = sheet.state
