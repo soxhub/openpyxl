@@ -21,7 +21,6 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from .defined_name import DefinedName, DefinedNameList
 from .external_reference import ExternalReference
 from .function_group import FunctionGroupList
-from .pivot import PivotCache
 from .properties import WorkbookProperties, CalcProperties, FileVersion
 from .protection import WorkbookProtection, FileSharing
 from .smart_tags import SmartTagList, SmartTagProperties
@@ -74,6 +73,21 @@ class ChildSheet(Serialisable):
         self.name = name
         self.sheetId = sheetId
         self.state = state
+        self.id = id
+
+
+class PivotCache(Serialisable):
+
+    tagname = "pivotCache"
+
+    cacheId = Integer()
+    id = Relation()
+
+    def __init__(self,
+                 cacheId=None,
+                 id=None
+                ):
+        self.cacheId = cacheId
         self.id = id
 
 
