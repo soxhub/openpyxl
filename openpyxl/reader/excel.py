@@ -13,7 +13,6 @@ import warnings
 # compatibility imports
 from openpyxl.compat import unicode, file
 from openpyxl.pivot.table import TableDefinition
-from openpyxl.pivot.reader import read_pivot
 
 # Allow blanket setting of KEEP_VBA for testing
 try:
