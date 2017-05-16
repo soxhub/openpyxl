@@ -53,7 +53,7 @@ TIME_TYPES = (datetime.datetime, datetime.date, datetime.time, datetime.timedelt
 STRING_TYPES = (basestring, unicode, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
-PERCENT_REGEX = re.compile(r'^\-?(?P<number>[0-9]*\.?[0-9]*\s?)\%$')
+PERCENT_REGEX = re.compile(r'^(?P<number>\-?[0-9]*\.?[0-9]*\s?)\%$')
 TIME_REGEX = re.compile(r"""
 ^(?: # HH:MM and HH:MM:SS
 (?P<hour>[0-1]{0,1}[0-9]{2}):
