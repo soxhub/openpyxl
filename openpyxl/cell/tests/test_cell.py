@@ -85,10 +85,17 @@ def test_cast_numeric(dummy_cell, value, expected):
     assert result == expected
 
 
-def test_cast_percent(dummy_cell):
+@pytest.mark.parametrize("value, expected",
+                         [
+                         ('-3.1%', -0.031),
+                         ('3.1%', 0.031),
+                         ('4.5 %', 0.045),
+                         ]
+                         )
+def test_cast_percent(dummy_cell, value, expected):
     cell = dummy_cell
-    result = cell._cast_percentage('3.1%')
-    assert result == 0.031
+    result = cell._cast_percentage(value)
+    assert result == expected
 
 
 @pytest.mark.parametrize("value, expected",
