@@ -98,8 +98,8 @@ class _BaseAxis(Serialisable):
     # crosses & crossesAt are mutually exclusive
 
     __elements__ = ('axId', 'scaling', 'delete', 'axPos', 'majorGridlines',
-                    'minorGridlines', 'numFmt', 'majorTickMark', 'minorTickMark',
-                    'tickLblPos', 'spPr', 'title', 'txPr', 'crossAx', 'crosses', 'crossesAt')
+                    'minorGridlines', 'title', 'numFmt', 'majorTickMark', 'minorTickMark',
+                    'tickLblPos', 'spPr', 'txPr', 'crossAx', 'crosses', 'crossesAt')
 
     def __init__(self,
                  axId=None,
