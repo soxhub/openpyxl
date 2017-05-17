@@ -104,7 +104,7 @@ class ChartBase(Serialisable):
         for chart in self._charts:
             if chart not in self.plot_area._charts:
                 chart.idx_base = idx_base
-                self.plot_area._charts.append(chart)
+                setattr(self.plot_area, chart.__class__.__name__, chart)
                 idx_base += len(chart.series)
 
         axIds = []

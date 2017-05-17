@@ -25,7 +25,6 @@ from openpyxl.descriptors.excel import (
     ExtensionList,
     Relation
 )
-
 from openpyxl.descriptors.nested import (
     NestedBool,
     NestedNoneSet,
@@ -33,6 +32,10 @@ from openpyxl.descriptors.nested import (
     NestedString,
     NestedMinMax,
     NestedText,
+)
+from openpyxl.descriptors.sequence import (
+    MultiSequence,
+    MultiSequencePart,
 )
 
 from openpyxl.drawing.colors import ColorMapping
@@ -150,22 +153,23 @@ class PlotArea(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     # at least one chart
-    areaChart = Typed(expected_type=AreaChart, allow_none=True)
-    area3DChart = Typed(expected_type=AreaChart3D, allow_none=True)
-    lineChart = Sequence(expected_type=LineChart)
-    line3DChart = Typed(expected_type=LineChart3D, allow_none=True)
-    stockChart = Typed(expected_type=StockChart, allow_none=True)
-    radarChart = Typed(expected_type=RadarChart, allow_none=True)
-    scatterChart = Typed(expected_type=ScatterChart, allow_none=True)
-    pieChart = Typed(expected_type=PieChart, allow_none=True)
-    pie3DChart = Typed(expected_type=PieChart3D, allow_none=True)
-    doughnutChart = Typed(expected_type=DoughnutChart, allow_none=True)
-    barChart = Typed(expected_type=BarChart, allow_none=True)
-    bar3DChart = Typed(expected_type=BarChart3D, allow_none=True)
-    ofPieChart = Typed(expected_type=ProjectedPieChart, allow_none=True)
-    surfaceChart = Typed(expected_type=SurfaceChart, allow_none=True)
-    surface3DChart = Typed(expected_type=SurfaceChart3D, allow_none=True)
-    bubbleChart = Typed(expected_type=BubbleChart, allow_none=True)
+    _charts = MultiSequence()
+    areaChart = MultiSequencePart(expected_type=AreaChart, store="_charts")
+    area3DChart = MultiSequencePart(expected_type=AreaChart3D, store="_charts")
+    lineChart = MultiSequencePart(expected_type=LineChart, store="_charts")
+    line3DChart = MultiSequencePart(expected_type=LineChart3D, store="_charts")
+    stockChart = MultiSequencePart(expected_type=StockChart, store="_charts")
+    radarChart = MultiSequencePart(expected_type=RadarChart, store="_charts")
+    scatterChart = MultiSequencePart(expected_type=ScatterChart, store="_charts")
+    pieChart = MultiSequencePart(expected_type=PieChart, store="_charts")
+    pie3DChart = MultiSequencePart(expected_type=PieChart3D, store="_charts")
+    doughnutChart = MultiSequencePart(expected_type=DoughnutChart, store="_charts")
+    barChart = MultiSequencePart(expected_type=BarChart, store="_charts")
+    bar3DChart = MultiSequencePart(expected_type=BarChart3D, store="_charts")
+    ofPieChart = MultiSequencePart(expected_type=ProjectedPieChart, store="_charts")
+    surfaceChart = MultiSequencePart(expected_type=SurfaceChart, store="_charts")
+    surface3DChart = MultiSequencePart(expected_type=SurfaceChart3D, store="_charts")
+    bubbleChart = MultiSequencePart(expected_type=BubbleChart, store="_charts")
 
     # maybe axes
     valAx = Sequence(expected_type=NumericAxis, allow_none=True)
@@ -173,32 +177,14 @@ class PlotArea(Serialisable):
     dateAx = Sequence(expected_type=DateAxis, allow_none=True)
     serAx = Sequence(expected_type=SeriesAxis, allow_none=True)
 
-    __elements__ = ('layout', 'areaChart', 'area3DChart', 'lineChart',
-                    'line3DChart', 'stockChart', 'radarChart', 'scatterChart', 'pieChart',
-                    'pie3DChart', 'doughnutChart', 'barChart', 'bar3DChart', 'ofPieChart',
-                    'surfaceChart', 'surface3DChart', 'bubbleChart', 'valAx', 'catAx', 'dateAx', 'serAx',
+    __elements__ = ('layout', '_charts', 'valAx', 'catAx', 'dateAx', 'serAx',
                     'dTable', 'spPr')
 
     def __init__(self,
                  layout=None,
                  dTable=None,
                  spPr=None,
-                 areaChart=None,
-                 area3DChart=None,
-                 lineChart=(),
-                 line3DChart=None,
-                 stockChart=None,
-                 radarChart=None,
-                 scatterChart=None,
-                 pieChart=None,
-                 pie3DChart=None,
-                 doughnutChart=None,
-                 barChart=None,
-                 bar3DChart=None,
-                 ofPieChart=None,
-                 surfaceChart=None,
-                 surface3DChart=None,
-                 bubbleChart=None,
+                 _charts=(),
                  valAx=(),
                  catAx=(),
                  serAx=(),
@@ -208,27 +194,11 @@ class PlotArea(Serialisable):
         self.layout = layout
         self.dTable = dTable
         self.spPr = spPr
-        self.areaChart = areaChart
-        self.area3DChart = area3DChart
-        self.lineChart = lineChart
-        self.line3DChart = line3DChart
-        self.stockChart = stockChart
-        self.radarChart = radarChart
-        self.scatterChart = scatterChart
-        self.pieChart = pieChart
-        self.pie3DChart = pie3DChart
-        self.doughnutChart = doughnutChart
-        self.barChart = barChart
-        self.bar3DChart = bar3DChart
-        self.ofPieChart = ofPieChart
-        self.surfaceChart = surfaceChart
-        self.surface3DChart = surface3DChart
-        self.bubbleChart = bubbleChart
+        self._charts = _charts
         self.valAx = valAx
         self.catAx = catAx
         self.dateAx = dateAx
         self.serAx = serAx
-        self._charts = []
 
 
     def to_tree(self, tagname=None, idx=None):
