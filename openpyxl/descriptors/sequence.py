@@ -94,6 +94,7 @@ class MultiSequence(Sequence):
     def __set__(self, instance, seq):
         if not isinstance(seq, (tuple, list)):
             raise ValueError("Value must be a sequence")
+        seq = list(seq)
         Descriptor.__set__(self, instance, seq)
 
 
