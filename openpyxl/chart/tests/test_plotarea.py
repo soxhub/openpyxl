@@ -6,6 +6,9 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
+from ..line_chart import LineChart
+from ..bar_chart import BarChart
+
 
 @pytest.fixture
 def PlotArea():
@@ -32,6 +35,20 @@ class TestPlotArea:
         node = fromstring(src)
         plot = PlotArea.from_tree(node)
         assert plot == PlotArea()
+
+
+    def test_multi_chart(self, PlotArea):
+        plot = PlotArea()
+        plot.lineChart = LineChart()
+        plot.barChart = BarChart()
+        plot.lineChart = LineChart()
+        expected = """
+        <plotArea>
+          <lineChart />
+          <barChart />
+          <lineChart />
+        </plotArea>
+        """
 
 
 @pytest.fixture
