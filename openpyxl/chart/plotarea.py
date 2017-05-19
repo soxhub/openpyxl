@@ -132,21 +132,12 @@ class PlotArea(Serialisable):
         self._axes = _axes
 
 
-    #def to_tree(self, tagname=None, idx=None):
-        #if tagname is None:
-            #tagname = self.tagname
-        #el = Element(tagname)
-        #if self.layout is not None:
-            #el.append(self.layout.to_tree())
-        #for chart in self._charts:
-            #el.append(chart.to_tree())
-        #for ax in ['valAx', 'catAx', 'dateAx', 'serAx',]:
-            #seq = getattr(self, ax)
-            #if seq:
-                #for obj in seq:
-                    #el.append(obj.to_tree())
-        #for attr in ['dTable', 'spPr']:
-            #obj = getattr(self, attr)
-            #if obj is not None:
-                #el.append(obj.to_tree())
-        #return el
+    def to_tree(self, tagname=None, idx=None):
+        axIds = set()
+        for chart in self._charts:
+            for x in ('x_axis', 'y_axis', 'z_axis'):
+                ax = getattr(chart, x, None)
+                if ax is not None and ax.axId not in axIds:
+                    setattr(self, ax.tagname, ax)
+                    axIds.add(ax.axId)
+        return super(PlotArea, self).to_tree(tagname)

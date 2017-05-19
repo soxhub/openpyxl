@@ -61,6 +61,28 @@ class TestPlotArea:
           <axId val="10"></axId>
           <axId val="100"></axId>
         </lineChart>
+          <catAx>
+           <axId val="10"></axId>
+           <scaling>
+             <orientation val="minMax"></orientation>
+           </scaling>
+           <axPos val="l"></axPos>
+           <majorTickMark val="none"></majorTickMark>
+           <minorTickMark val="none"></minorTickMark>
+           <crossAx val="100"></crossAx>
+           <lblOffset val="100"></lblOffset>
+         </catAx>
+         <valAx>
+           <axId val="100"></axId>
+           <scaling>
+             <orientation val="minMax"></orientation>
+           </scaling>
+           <axPos val="l"></axPos>
+           <majorGridlines></majorGridlines>
+           <majorTickMark val="none"></majorTickMark>
+           <minorTickMark val="none"></minorTickMark>
+           <crossAx val="10"></crossAx>
+          </valAx>
         </plotArea>
         """
         xml = tostring(plot.to_tree())
