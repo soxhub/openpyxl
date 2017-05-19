@@ -81,7 +81,7 @@ class TestPlotArea:
         with open("plotarea.xml", "rb") as src:
             tree = fromstring(src.read())
         plot = PlotArea.from_tree(tree)
-        assert len(plot.valAx) == 2
+        assert len(plot._axes) == 4
 
 
 @pytest.fixture

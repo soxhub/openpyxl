@@ -108,51 +108,45 @@ class PlotArea(Serialisable):
     surface3DChart = MultiSequencePart(expected_type=SurfaceChart3D, store="_charts")
     bubbleChart = MultiSequencePart(expected_type=BubbleChart, store="_charts")
 
-    # maybe axes
-    valAx = Sequence(expected_type=NumericAxis, allow_none=True)
-    catAx = Sequence(expected_type=TextAxis, allow_none=True)
-    dateAx = Sequence(expected_type=DateAxis, allow_none=True)
-    serAx = Sequence(expected_type=SeriesAxis, allow_none=True)
+    # axes
+    _axes = MultiSequence()
+    valAx = MultiSequencePart(expected_type=NumericAxis, store="_axes")
+    catAx = MultiSequencePart(expected_type=TextAxis, store="_axes")
+    dateAx = MultiSequencePart(expected_type=DateAxis, store="_axes")
+    serAx = MultiSequencePart(expected_type=SeriesAxis, store="_axes")
 
-    __elements__ = ('layout', '_charts', 'valAx', 'catAx', 'dateAx', 'serAx',
-                    'dTable', 'spPr')
+    __elements__ = ('layout', '_charts', '_axes', 'dTable', 'spPr')
 
     def __init__(self,
                  layout=None,
                  dTable=None,
                  spPr=None,
                  _charts=(),
-                 valAx=(),
-                 catAx=(),
-                 serAx=(),
-                 dateAx=(),
+                 _axes=(),
                  extLst=None,
                 ):
         self.layout = layout
         self.dTable = dTable
         self.spPr = spPr
         self._charts = _charts
-        self.valAx = valAx
-        self.catAx = catAx
-        self.dateAx = dateAx
-        self.serAx = serAx
+        self._axes = _axes
 
 
-    def to_tree(self, tagname=None, idx=None):
-        if tagname is None:
-            tagname = self.tagname
-        el = Element(tagname)
-        if self.layout is not None:
-            el.append(self.layout.to_tree())
-        for chart in self._charts:
-            el.append(chart.to_tree())
-        for ax in ['valAx', 'catAx', 'dateAx', 'serAx',]:
-            seq = getattr(self, ax)
-            if seq:
-                for obj in seq:
-                    el.append(obj.to_tree())
-        for attr in ['dTable', 'spPr']:
-            obj = getattr(self, attr)
-            if obj is not None:
-                el.append(obj.to_tree())
-        return el
+    #def to_tree(self, tagname=None, idx=None):
+        #if tagname is None:
+            #tagname = self.tagname
+        #el = Element(tagname)
+        #if self.layout is not None:
+            #el.append(self.layout.to_tree())
+        #for chart in self._charts:
+            #el.append(chart.to_tree())
+        #for ax in ['valAx', 'catAx', 'dateAx', 'serAx',]:
+            #seq = getattr(self, ax)
+            #if seq:
+                #for obj in seq:
+                    #el.append(obj.to_tree())
+        #for attr in ['dTable', 'spPr']:
+            #obj = getattr(self, attr)
+            #if obj is not None:
+                #el.append(obj.to_tree())
+        #return el
