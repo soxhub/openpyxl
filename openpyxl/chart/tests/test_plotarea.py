@@ -44,11 +44,44 @@ class TestPlotArea:
         plot.lineChart = LineChart()
         expected = """
         <plotArea>
-          <lineChart />
-          <barChart />
-          <lineChart />
+        <lineChart>
+          <grouping val="standard"></grouping>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
+        </lineChart>
+        <barChart>
+          <barDir val="col"></barDir>
+          <grouping val="clustered"></grouping>
+          <gapWidth val="150"></gapWidth>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
+        </barChart>
+        <lineChart>
+          <grouping val="standard"></grouping>
+          <axId val="10"></axId>
+          <axId val="100"></axId>
+        </lineChart>
         </plotArea>
         """
+        xml = tostring(plot.to_tree())
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_read_multi_chart(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("plotarea.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        assert len(plot._charts) == 2
+
+
+    def test_read_multi_axes(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("plotarea.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        assert len(plot.valAx) == 2
 
 
 @pytest.fixture
