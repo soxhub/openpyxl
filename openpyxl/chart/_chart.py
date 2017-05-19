@@ -89,7 +89,7 @@ class ChartBase(Serialisable):
         return self
 
 
-    def to_tree(self, tagname=None, idx=None):
+    def to_tree(self, namespace=None, tagname=None, idx=None):
         if self.ser is not None:
             for s in self.ser:
                 s.__elements__ = attribute_mapping[self._series_type]
