@@ -42,6 +42,11 @@ class TestLineChart:
         assert chart.grouping == "stacked"
 
 
+    def test_axes(self, LineChart):
+        chart = LineChart()
+        assert chart._axes.keys() == set([10, 100])
+
+
 @pytest.fixture
 def LineChart3D():
     from ..line_chart import LineChart3D

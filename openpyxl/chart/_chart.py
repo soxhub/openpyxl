@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 
+from collections import OrderedDict
+
 from openpyxl.compat import basestring
 
 from openpyxl.descriptors import (
@@ -134,12 +136,15 @@ class ChartBase(Serialisable):
 
     @property
     def axId(self):
+        return [AxId(id) for id in self._axes]
+
+
+    @property
+    def _axes(self):
         x = getattr(self, "x_axis", None)
         y = getattr(self, "y_axis", None)
         z = getattr(self, "z_axis", None)
-        ids = dict([(axId, axis) for axis in (x, y, z) if axis])
-
-        return ids
+        return OrderedDict([(axis.axId, axis) for axis in (x, y, z) if axis])
 
 
     def set_categories(self, labels):
