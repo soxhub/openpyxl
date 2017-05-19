@@ -13,6 +13,7 @@ from openpyxl.descriptors import (
     Bool,
 )
 from openpyxl.descriptors.nested import Nested
+from openpyxl.descriptors.sequence import NestedSequence, Sequence
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import CHART_NS, PACKAGE_CHARTS
 
@@ -48,6 +49,7 @@ class ChartBase(Serialisable):
     legend = Typed(expected_type=Legend, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
     roundedCorners = Bool(allow_none=True)
+    axId = Sequence(expected_type=AxId)
 
     _series_type = ""
     ser = ()
@@ -73,6 +75,7 @@ class ChartBase(Serialisable):
         self.graphical_properties = None
         self.style = None
         self.plot_area = PlotArea()
+        self.axId = ()
         super(ChartBase, self).__init__(**kw)
 
     def __hash__(self):
@@ -92,6 +95,7 @@ class ChartBase(Serialisable):
 
 
     def to_tree(self, namespace=None, tagname=None, idx=None):
+        self.axId = [AxId(id) for id in self._axes]
         if self.ser is not None:
             for s in self.ser:
                 s.__elements__ = attribute_mapping[self._series_type]
@@ -106,19 +110,8 @@ class ChartBase(Serialisable):
         for chart in self._charts:
             if chart not in self.plot_area._charts:
                 chart.idx_base = idx_base
-                setattr(self.plot_area, chart.__class__.__name__, chart)
+                setattr(self.plot_area, chart.tagname)
                 idx_base += len(chart.series)
-
-        #axIds = []
-        #for axId in ("x_axis", "y_axis", 'z_axis'):
-            #for chart in self._charts:
-                #axis = getattr(chart, axId, None)
-                #if axis is None:
-                    #continue
-                #if axis.axId not in axIds:
-                    #ax = getattr(self.plot_area, axis.tagname)
-                    #ax.append(axis)
-                    #axIds.append(axis.axId)
 
         container = ChartContainer(plotArea=self.plot_area, legend=self.legend, title=self.title)
         if isinstance(chart, _3DBase):
@@ -132,11 +125,6 @@ class ChartBase(Serialisable):
         tree = cs.to_tree()
         tree.set("xmlns", CHART_NS)
         return tree
-
-
-    @property
-    def axId(self):
-        return [AxId(id) for id in self._axes]
 
 
     @property
