@@ -102,3 +102,8 @@ class TestChartBase:
         assert len(area.valAx) == 0
         assert len(area.dateAx) == 0
         assert len(area.serAx) == 0
+
+
+    def test_axIds(self, ChartBase):
+        chart = ChartBase()
+        assert chart.axId == {}

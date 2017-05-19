@@ -107,16 +107,16 @@ class ChartBase(Serialisable):
                 setattr(self.plot_area, chart.__class__.__name__, chart)
                 idx_base += len(chart.series)
 
-        axIds = []
-        for axId in ("x_axis", "y_axis", 'z_axis'):
-            for chart in self._charts:
-                axis = getattr(chart, axId, None)
-                if axis is None:
-                    continue
-                if axis.axId not in axIds:
-                    ax = getattr(self.plot_area, axis.tagname)
-                    ax.append(axis)
-                    axIds.append(axis.axId)
+        #axIds = []
+        #for axId in ("x_axis", "y_axis", 'z_axis'):
+            #for chart in self._charts:
+                #axis = getattr(chart, axId, None)
+                #if axis is None:
+                    #continue
+                #if axis.axId not in axIds:
+                    #ax = getattr(self.plot_area, axis.tagname)
+                    #ax.append(axis)
+                    #axIds.append(axis.axId)
 
         container = ChartContainer(plotArea=self.plot_area, legend=self.legend, title=self.title)
         if isinstance(chart, _3DBase):
@@ -137,7 +137,7 @@ class ChartBase(Serialisable):
         x = getattr(self, "x_axis", None)
         y = getattr(self, "y_axis", None)
         z = getattr(self, "z_axis", None)
-        ids = [AxId(axis.axId) for axis in (x, y, z) if axis]
+        ids = dict([(axId, axis) for axis in (x, y, z) if axis])
 
         return ids
 
