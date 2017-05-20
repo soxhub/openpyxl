@@ -141,3 +141,20 @@ class PlotArea(Serialisable):
                     setattr(self, ax.tagname, ax)
                     axIds.add(ax.axId)
         return super(PlotArea, self).to_tree(tagname)
+
+
+    @classmethod
+    def from_tree(cls, node):
+        self = super(PlotArea, cls).from_tree(node)
+        axes = dict((axis.axId, axis) for axis in self._axes)
+        for chart in self._charts:
+            for axId in chart.axId:
+                axis = axes[axId.val]
+                if axis.tagname == "catAx":
+                    chart.x_axis = axis
+                elif axis.tagname == "valAx":
+                    chart.y_axis = axis
+                elif axis.tagname == "serAx":
+                    chart.z_axis = axis
+
+        return self

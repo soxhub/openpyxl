@@ -103,7 +103,11 @@ class TestPlotArea:
         with open("plotarea.xml", "rb") as src:
             tree = fromstring(src.read())
         plot = PlotArea.from_tree(tree)
-        assert len(plot._axes) == 4
+        assert [ax.tagname for ax in plot._axes]  == ["catAx", "valAx", "valAx", "catAx"]
+        assert plot._charts[0].x_axis == plot._axes[0]
+        assert plot._charts[0].y_axis == plot._axes[1]
+        assert plot._charts[1].x_axis == plot._axes[3]
+        assert plot._charts[1].y_axis == plot._axes[2]
 
 
 @pytest.fixture

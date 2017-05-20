@@ -66,7 +66,7 @@ class ChartBase(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self, **kw):
+    def __init__(self, axId=(), **kw):
         self._charts = [self]
         self.title = None
         self.layout = None
@@ -75,7 +75,7 @@ class ChartBase(Serialisable):
         self.graphical_properties = None
         self.style = None
         self.plot_area = PlotArea()
-        self.axId = ()
+        self.axId = axId
         super(ChartBase, self).__init__(**kw)
 
     def __hash__(self):
