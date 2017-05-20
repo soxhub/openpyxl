@@ -74,9 +74,6 @@ class TestLineChart3D:
         src = """
         <line3DChart>
           <grouping val="standard"></grouping>
-          <axId val="10"></axId>
-          <axId val="100"></axId>
-          <axId val="1000"></axId>
         </line3DChart>
         """
         node = fromstring(src)
