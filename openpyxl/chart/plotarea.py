@@ -149,7 +149,7 @@ class PlotArea(Serialisable):
         axes = dict((axis.axId, axis) for axis in self._axes)
         for chart in self._charts:
             for axId in chart.axId:
-                axis = axes[axId.val]
+                axis = axes[axId]
                 if axis.tagname == "catAx":
                     chart.x_axis = axis
                 elif axis.tagname == "valAx":
