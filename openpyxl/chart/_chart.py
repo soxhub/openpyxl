@@ -110,8 +110,8 @@ class ChartBase(Serialisable):
         for chart in self._charts:
             if chart not in self.plot_area._charts:
                 chart.idx_base = idx_base
-                setattr(self.plot_area, chart.tagname)
                 idx_base += len(chart.series)
+        self.plot_area._charts = self._charts
 
         container = ChartContainer(plotArea=self.plot_area, legend=self.legend, title=self.title)
         if isinstance(chart, _3DBase):
