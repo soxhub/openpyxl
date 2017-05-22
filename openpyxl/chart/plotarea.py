@@ -43,8 +43,6 @@ from .axis import (
     DateAxis,
 )
 
-from openpyxl.xml.functions import Element
-
 
 class DataTable(Serialisable):
 
@@ -135,11 +133,11 @@ class PlotArea(Serialisable):
     def to_tree(self, tagname=None, idx=None):
         axIds = set()
         for chart in self._charts:
-            for x in ('x_axis', 'y_axis', 'z_axis'):
-                ax = getattr(chart, x, None)
-                if ax is not None and ax.axId not in axIds:
-                    setattr(self, ax.tagname, ax)
-                    axIds.add(ax.axId)
+            for id, axis in chart._axes.items():
+                if id not in axIds:
+                    setattr(self, axis.tagname, axis)
+                    axIds.add(id)
+
         return super(PlotArea, self).to_tree(tagname)
 
 
