@@ -23,27 +23,13 @@ def read_chart(chartspace):
     cs = chartspace
     plot = cs.chart.plotArea
 
-    for t in _types:
-        charts = getattr(plot, t, None)
-        if charts is not None:
-            break
-
-    chart = charts[0]
-    chart._charts = charts
+    chart = plot._charts[0]
+    chart._charts = plot._charts
 
     chart.title = cs.chart.title
     chart.layout = plot.layout
     chart.legend = cs.chart.legend
 
-    for x in _axes:
-        ax = getattr(plot, x)
-        if ax:
-            if x == 'valAx':
-                chart.y_axis = ax[0]
-            elif x == 'serAx':
-                chart.z_axis = ax[0]
-            else:
-                chart.x_axis = ax[0]
     return chart
 
 
