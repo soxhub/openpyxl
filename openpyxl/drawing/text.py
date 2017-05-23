@@ -534,7 +534,7 @@ class Paragraph(Serialisable):
     br = Typed(expected_type=LineBreak, allow_none=True)
     fld = Typed(expected_type=TextField, allow_none=True)
 
-    __elements__ = ('pPr', 'endParaRPr', 'r', 'br', 'fld')
+    __elements__ = ('pPr', 'r', 'br', 'fld', 'endParaRPr')
 
     def __init__(self,
                  pPr=None,
