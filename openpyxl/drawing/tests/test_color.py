@@ -48,7 +48,7 @@ class TestSystemColor:
         colors = SystemColor()
         xml = tostring(colors.to_tree())
         expected = """
-        <sysClr val="windowText"></sysClr>
+        <sysClr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" val="windowText"></sysClr>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -164,7 +164,7 @@ class TestSchemeColor:
         sclr = SchemeColor(val="tx1")
         xml = tostring(sclr.to_tree())
         expected = """
-        <schemeClr val="tx1" />
+        <schemeClr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" val="tx1" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
