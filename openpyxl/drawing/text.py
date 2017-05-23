@@ -471,14 +471,14 @@ class RegularTextRun(Serialisable):
 
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
     properties = Alias("rPr")
-    t = NestedText(expected_type=unicode, allow_none=True)
+    t = NestedText(expected_type=unicode)
     value = Alias("t")
 
     __elements__ = ('rPr', 't')
 
     def __init__(self,
                  rPr=None,
-                 t=None,
+                 t="",
                 ):
         self.rPr = rPr
         self.t = t

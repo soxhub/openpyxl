@@ -20,7 +20,9 @@ class TestParagraph:
         xml = tostring(text.to_tree())
         expected = """
         <p xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
-          <r />
+          <r>
+          <t/>
+          </r>
         </p>
         """
         diff = compare_xml(xml, expected)
