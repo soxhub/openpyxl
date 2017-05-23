@@ -232,7 +232,6 @@ class NumericAxis(_BaseAxis):
         self.majorUnit = majorUnit
         self.minorUnit = minorUnit
         self.dispUnits = dispUnits
-        kw.setdefault('majorGridlines', ChartLines())
         kw.setdefault('axId', 100)
         kw.setdefault('crossAx', 10)
         super(NumericAxis, self).__init__(**kw)
