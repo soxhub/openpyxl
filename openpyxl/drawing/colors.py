@@ -110,10 +110,16 @@ class SystemColor(Serialisable):
     gamma = Typed(expected_type=Transform, allow_none=True)
     invGamma = Typed(expected_type=Transform, allow_none=True)
 
-    val = Set(values=(["bg1", "tx1", "bg2", "tx2", "accent1", "accent2",
-                       "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink", "phClr",
-                       "dk1", "lt1", "dk2", "lt2", ]))
-    lastClr = Typed(expected_type=RGB, allow_none=True)
+    val = Set(values=( ['scrollBar', 'background', 'activeCaption',
+                        'inactiveCaption', 'menu', 'window', 'windowFrame', 'menuText',
+                        'windowText', 'captionText', 'activeBorder', 'inactiveBorder',
+                        'appWorkspace', 'highlight', 'highlightText', 'btnFace', 'btnShadow',
+                        'grayText', 'btnText', 'inactiveCaptionText', 'btnHighlight',
+                        '3dDkShadow', '3dLight', 'infoText', 'infoBk', 'hotLight',
+                        'gradientActiveCaption', 'gradientInactiveCaption', 'menuHighlight',
+                        'menuBar'] )
+              )
+    lastClr = RGB(allow_none=True)
 
     __elements__ = ('tint', 'shade', 'comp', 'inv', 'gray', "alpha",
                     "alphaOff", "alphaMod", "hue", "hueOff", "hueMod", "hueOff", "sat",
@@ -122,7 +128,7 @@ class SystemColor(Serialisable):
                     "invGamma")
 
     def __init__(self,
-                 val="bg1",
+                 val="windowText",
                  lastClr=None,
                  tint=None,
                  shade=None,
@@ -229,7 +235,6 @@ class RGBPercent(Serialisable):
 class SchemeColor(Serialisable):
 
     tagname = "schemeClr"
-    namespace = DRAWING_NS
 
     tint = NestedInteger(allow_none=True)
     shade = NestedInteger(allow_none=True)

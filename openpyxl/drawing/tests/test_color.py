@@ -48,7 +48,7 @@ class TestSystemColor:
         colors = SystemColor()
         xml = tostring(colors.to_tree())
         expected = """
-        <sysClr val="bg1"></sysClr>
+        <sysClr val="windowText"></sysClr>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -56,11 +56,11 @@ class TestSystemColor:
 
     def test_from_xml(self, SystemColor):
         src = """
-        <sysClr val="tx1"></sysClr>
+        <sysClr val="windowText"></sysClr>
         """
         node = fromstring(src)
         colors = SystemColor.from_tree(node)
-        assert colors == SystemColor(val="tx1")
+        assert colors == SystemColor(val="windowText")
 
 
 @pytest.fixture
