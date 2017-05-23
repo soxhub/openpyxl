@@ -79,6 +79,7 @@ class Transform(Serialisable):
 class SystemColor(Serialisable):
 
     tagname = "sysClr"
+    namespace = DRAWING_NS
 
     # color transform options
     tint = NestedInteger(allow_none=True)
@@ -235,6 +236,7 @@ class RGBPercent(Serialisable):
 class SchemeColor(Serialisable):
 
     tagname = "schemeClr"
+    namespace = DRAWING_NS
 
     tint = NestedInteger(allow_none=True)
     shade = NestedInteger(allow_none=True)
@@ -430,4 +432,7 @@ class ColorChoiceDescriptor(Typed):
     def __set__(self, instance, value):
         if isinstance(value, basestring):
             value = ColorChoice(srgbClr=value)
+        else:
+            if hasattr(self, "namespace") and value is not None:
+                value.namespace = self.namespace
         super(ColorChoiceDescriptor, self).__set__(instance, value)
