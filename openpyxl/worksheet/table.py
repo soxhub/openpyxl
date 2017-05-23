@@ -46,7 +46,7 @@ class TableStyleInfo(Serialisable):
 
     tagname = "tableStyleInfo"
 
-    name = NoneSet(values=TABLESTYLES + PIVOTSTYLES)
+    name = NoneSet(values=TABLESTYLES + PIVOTSTYLES + ("TableStyleQueryResult",))
     showFirstColumn = Bool(allow_none=True)
     showLastColumn = Bool(allow_none=True)
     showRowStripes = Bool(allow_none=True)
