@@ -130,7 +130,7 @@ class PlotArea(Serialisable):
         self._axes = _axes
 
 
-    def to_tree(self, tagname=None, idx=None):
+    def to_tree(self, tagname=None, idx=None, namespace=None):
         axIds = set()
         for chart in self._charts:
             for id, axis in chart._axes.items():
