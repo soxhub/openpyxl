@@ -29,6 +29,7 @@ from openpyxl.descriptors.nested import (
     NestedInteger,
     NestedMinMax,
 )
+from openpyxl.xml.constants import CHART_NS
 
 from .descriptors import NumberFormatDescriptor
 from .layout import Layout
@@ -232,9 +233,23 @@ class NumericAxis(_BaseAxis):
         self.majorUnit = majorUnit
         self.minorUnit = minorUnit
         self.dispUnits = dispUnits
+        kw.setdefault('majorGridlines', ChartLines())
         kw.setdefault('axId', 100)
         kw.setdefault('crossAx', 10)
         super(NumericAxis, self).__init__(**kw)
+
+
+    @classmethod
+    def from_tree(cls, node):
+        """
+        Special case value axes with no gridlines
+        """
+        self = super(NumericAxis, cls).from_tree(node)
+        gridlines = node.find("{%s}majorGridlines" % CHART_NS)
+        if gridlines is None:
+            self.majorGridlines = None
+        return self
+
 
 
 class TextAxis(_BaseAxis):
