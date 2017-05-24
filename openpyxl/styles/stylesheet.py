@@ -182,6 +182,7 @@ def apply_stylesheet(archive, wb):
     wb._number_formats = stylesheet.number_formats
     wb._protections = stylesheet.protections
     wb._alignments = stylesheet.alignments
+    wb._table_styles = stylesheet.tableStyles
 
     # need to overwrite openpyxl defaults in case workbook has different ones
     wb._cell_styles = stylesheet.cell_styles
@@ -222,7 +223,7 @@ def write_stylesheet(wb):
     stylesheet.cellXfs = CellStyleList(xf=xfs)
 
     stylesheet._split_named_styles(wb)
-    stylesheet.tableStyles = TableStyleList()
+    stylesheet.tableStyles = wb._table_styles
 
     tree = stylesheet.to_tree()
     tree.set("xmlns", SHEET_MAIN_NS)

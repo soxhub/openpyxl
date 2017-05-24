@@ -67,7 +67,6 @@ class TableStyleList(Serialisable):
 
     tagname = "tableStyles"
 
-    count = Integer(allow_none=True)
     defaultTableStyle = String(allow_none=True)
     defaultPivotStyle = String(allow_none=True)
     tableStyle = Sequence(expected_type=TableStyle, allow_none=True)
