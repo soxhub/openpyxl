@@ -163,6 +163,12 @@ class Stylesheet(Serialisable):
                 style.numFmtId = formats.index(fmt) + 164
 
 
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        tree = super(Stylesheet, self).to_tree(tagname, idx, namespace)
+        tree.set("xmlns", SHEET_MAIN_NS)
+        return tree
+
+
 def apply_stylesheet(archive, wb):
     """
     Add styles to workbook if present
@@ -225,6 +231,4 @@ def write_stylesheet(wb):
     stylesheet._split_named_styles(wb)
     stylesheet.tableStyles = wb._table_styles
 
-    tree = stylesheet.to_tree()
-    tree.set("xmlns", SHEET_MAIN_NS)
-    return tree
+    return stylesheet.to_tree()
