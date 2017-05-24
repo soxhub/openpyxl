@@ -148,7 +148,7 @@ class PlotArea(Serialisable):
         for chart in self._charts:
             for axId in chart.axId:
                 axis = axes[axId]
-                if axis.tagname == "catAx":
+                if axis.tagname in ("catAx", "dateAx"):
                     chart.x_axis = axis
                 elif axis.tagname == "valAx":
                     chart.y_axis = axis
