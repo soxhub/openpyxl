@@ -36,5 +36,4 @@ class TestBubbleChart:
         """
         node = fromstring(src)
         bubble_chart = BubbleChart.from_tree(node)
-        assert dict(bubble_chart) == {}
-
+        assert bubble_chart.axId == [10, 20]
