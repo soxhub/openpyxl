@@ -12,7 +12,7 @@ def RadarChart():
     return RadarChart
 
 
-class TestStockChart:
+class TestRadarChart:
 
     def test_ctor(self, RadarChart):
         chart = RadarChart()
