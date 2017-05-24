@@ -98,12 +98,9 @@ class TestChartBase:
         chart._write()
         area = chart.plot_area
         assert len(area._charts) == 1
-        assert len(area.catAx) == 0
-        assert len(area.valAx) == 0
-        assert len(area.dateAx) == 0
-        assert len(area.serAx) == 0
+        assert area._axes == []
 
 
     def test_axIds(self, ChartBase):
         chart = ChartBase()
-        assert chart.axId == {}
+        assert chart.axId == []
