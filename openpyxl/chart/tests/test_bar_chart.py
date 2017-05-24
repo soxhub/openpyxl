@@ -44,7 +44,8 @@ class TestBarChart:
         """
         node = fromstring(src)
         bc = BarChart.from_tree(node)
-        assert bc == BarChart(varyColors=False)
+        assert bc == BarChart(varyColors=False,axId=(10, 100))
+        assert bc.axId == [10, 100]
         assert bc.grouping == "clustered"
 
 
@@ -183,4 +184,4 @@ class TestBarChart3D:
         """
         node = fromstring(src)
         bc = BarChart3D.from_tree(node)
-        assert [x.val for x in bc.axId] == [10, 100, 1000]
+        assert bc.axId == [10, 100, 0]
