@@ -247,3 +247,37 @@ class TestExternalData:
         node = fromstring(src)
         data = ExternalData.from_tree(node)
         assert data == ExternalData(id="rId1")
+
+
+@pytest.fixture
+def ChartSpace():
+    from ..chartspace import ChartSpace
+    return ChartSpace
+
+
+class TestChartSpace:
+
+    def test_ctor(self, ChartSpace, ChartContainer):
+        cs = ChartSpace(chart=ChartContainer())
+        xml = tostring(cs.to_tree())
+        expected = """
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
+          <chart>
+          <plotArea></plotArea>
+            <dispBlanksAs val="gap"></dispBlanksAs>
+          </chart>
+        </chartSpace>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ChartSpace, ChartContainer):
+        src = """
+        <chartSpace>
+          <chart />
+        </chartSpace>
+        """
+        node = fromstring(src)
+        cs = ChartSpace.from_tree(node)
+        assert cs == ChartSpace(chart=ChartContainer())

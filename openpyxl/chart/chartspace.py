@@ -34,6 +34,7 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedText,
 )
+from openpyxl.xml.constants import CHART_NS
 
 from openpyxl.drawing.colors import ColorMapping
 from .text import Text, RichText
@@ -259,3 +260,9 @@ class ChartSpace(Serialisable):
         self.externalData = externalData
         self.printSettings = printSettings
         self.userShapes = userShapes
+
+
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        tree = super(ChartSpace, self).to_tree()
+        tree.set("xmlns", CHART_NS)
+        return tree
