@@ -76,7 +76,6 @@ class LineChart(_LineChartBase):
                  upDownBars=None,
                  marker=None,
                  smooth=None,
-                 #axId=(),
                  extLst=None,
                  **kw
                 ):

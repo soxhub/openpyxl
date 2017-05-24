@@ -38,7 +38,7 @@ class TestLineChart:
         """
         node = fromstring(src)
         chart = LineChart.from_tree(node)
-        assert dict(chart) == {}
+        assert chart.axId == [10, 100]
         assert chart.grouping == "stacked"
 
 
