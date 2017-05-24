@@ -12,7 +12,7 @@ def ScatterChart():
     return ScatterChart
 
 
-class TestLineChart:
+class TestScatterChart:
 
     def test_ctor(self, ScatterChart):
         chart = ScatterChart()
@@ -36,4 +36,4 @@ class TestLineChart:
         """
         node = fromstring(src)
         chart = ScatterChart.from_tree(node)
-        assert dict(chart) == {}
+        assert chart.axId == [10, 20]
