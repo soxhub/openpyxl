@@ -23,7 +23,9 @@ class TestTitle:
             <rich>
               <a:bodyPr></a:bodyPr>
               <a:p>
-                <a:r></a:r>
+                <a:r>
+                <a:t />
+                </a:r>
               </a:p>
             </rich>
           </tx>
