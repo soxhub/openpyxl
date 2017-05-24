@@ -43,6 +43,11 @@ Bugfixes
 * `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock`
 
 
+Minor changes
+-------------
+* Preserve any table styles
+
+
 2.4.7 (2017-04-24)
 ==================
 
