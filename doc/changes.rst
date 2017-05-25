@@ -8,6 +8,12 @@ Compatibility
 * Dropped support for Python 2.6 and 3.3. openpyxl will not run with Python 2.6
 
 
+Major Changes
+------------
+
+* Read/write support for pivot tables
+
+
 Deprecations
 ------------
 
