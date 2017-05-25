@@ -224,6 +224,7 @@ class TestPivotTableDefinition:
         assert defn == DummyPivotTable
 
 
+    @pytest.mark.lxml_required
     def test_validate(self, datadir, TableDefinition):
         datadir.chdir()
         with open("pivotTable.xml", "rb") as src:
