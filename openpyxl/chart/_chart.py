@@ -46,6 +46,7 @@ class ChartBase(Serialisable):
     legend = Typed(expected_type=Legend, allow_none=True)
     layout = Typed(expected_type=Layout, allow_none=True)
     roundedCorners = Bool(allow_none=True)
+    visible_cells_only = Bool()
 
     _series_type = ""
     ser = ()
@@ -62,7 +63,7 @@ class ChartBase(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self, **kw):
+    def __init__(self, visible_cells_only=True, **kw):
         self._charts = [self]
         self.title = None
         self.layout = None
@@ -124,6 +125,7 @@ class ChartBase(Serialisable):
             container.floor = chart.floor
             container.sideWall = chart.sideWall
             container.backWall = chart.backWall
+        container.plotVisOnly = self.visible_cells_only
         cs = ChartSpace(chart=container)
         cs.style = self.style
         cs.roundedCorners = self.roundedCorners

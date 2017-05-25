@@ -20,6 +20,7 @@ class TestChartContainer:
         expected = """
         <chart>
           <plotArea></plotArea>
+          <plotVisOnly val="1" />
           <dispBlanksAs val="gap"></dispBlanksAs>
         </chart>
         """
