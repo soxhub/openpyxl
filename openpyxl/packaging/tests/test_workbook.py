@@ -135,4 +135,4 @@ class TestWorkbookParser:
         archive = ZipFile("pivot.xlsx")
         parser = WorkbookParser(archive, ARC_WORKBOOK)
         parser.parse()
-        assert parser.pivot_caches.keys() == set([68])
+        assert list(parser.pivot_caches.keys()) == [68]
