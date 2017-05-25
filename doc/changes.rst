@@ -17,6 +17,7 @@ Deprecations
 Bugfixes
 --------
 * `#779 <https://bitbucket.org/openpyxl/openpyxl/issues/779>`_ Fails to recognise Chinese date format`
+* `#828 <https://bitbucket.org/openpyxl/openpyxl/issues/828>`_ Include hidden cells in charts`
 
 
 Pull requests
