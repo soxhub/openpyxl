@@ -5,6 +5,7 @@
 Bugfixes
 --------
 * AutoFilter.sortState being assignd to the ws.sortState
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics`
 * `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly`
 * `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock`
 
