@@ -44,7 +44,7 @@ from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
-from openpyxl.packaging.manifest import Manifest
+from openpyxl.packaging.manifest import Manifest, Override
 from openpyxl.packaging.workbook import WorkbookParser
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
@@ -123,10 +123,17 @@ def _validate_archive(filename):
 
 
 def _find_workbook_part(package):
-    for ct in [XLTM, XLTX, XLSM, XLSX]:
+    workbook_types = [XLTM, XLTX, XLSM, XLSX]
+    for ct in workbook_types:
         part = package.find(ct)
         if part:
             return part
+
+    # some applications reassign the default for application/xml
+    defaults = set((p.ContentType for p in package.Default))
+    workbook_type = defaults & set(workbook_types)
+    if workbook_type:
+        return Override("/" + ARC_WORKBOOK, workbook_type.pop())
 
     raise IOError("File contains no valid workbook part")
 

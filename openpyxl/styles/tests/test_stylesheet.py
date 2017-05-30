@@ -20,7 +20,7 @@ class TestStylesheet:
         parser = Stylesheet()
         xml = tostring(parser.to_tree())
         expected = """
-        <styleSheet>
+        <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <numFmts count="0"></numFmts>
           <cellStyleXfs count="0"></cellStyleXfs>
           <cellXfs count="0"></cellXfs>
@@ -163,7 +163,7 @@ class TestStylesheet:
     def test_assign_number_formats(self, Stylesheet):
 
         node = fromstring("""
-        <styleSheet>
+        <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <numFmts count="1">
           <numFmt numFmtId="43" formatCode='_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ' />
         </numFmts>

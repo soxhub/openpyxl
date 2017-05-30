@@ -1,7 +1,26 @@
+2.4.8 (unreleased)
+==================
+
+
+Bugfixes
+--------
+* AutoFilter.sortState being assignd to the ws.sortState
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics`
+* `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly`
+* `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock`
+
+
+Minor changes
+-------------
+* Preserve any table styles
+
+
 2.4.7 (2017-04-24)
 ==================
 
 
+Bugfixes
+--------
 * `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist`
 
 
