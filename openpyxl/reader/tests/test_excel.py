@@ -82,6 +82,20 @@ def test_no_workbook():
         part = _find_workbook_part(Manifest())
 
 
+def test_overwritten_default():
+    from ..excel import _find_workbook_part
+
+    src = """
+    <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+      <Default Extension="xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+    </Types>
+    """
+    node = fromstring(src)
+    package = Manifest.from_tree(node)
+
+    assert _find_workbook_part(package) == Override("/xl/workbook.xml", XLSX)
+
+
 @pytest.mark.parametrize("extension",
                          ['.xlsb', '.xls', 'no-format']
                          )
