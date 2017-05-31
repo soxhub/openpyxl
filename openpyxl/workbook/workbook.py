@@ -178,6 +178,10 @@ class Workbook(object):
 
     def remove(self, worksheet):
         """Remove a worksheet from this workbook."""
+        idx = self._sheets.index(worksheet)
+        localnames = self.defined_names.localnames(scope=idx)
+        for name in localnames:
+            self.defined_names.delete(name, scope=idx)
         self._sheets.remove(worksheet)
 
 

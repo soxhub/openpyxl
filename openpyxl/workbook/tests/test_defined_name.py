@@ -311,3 +311,11 @@ class TestDefinitionList:
         dl._cleanup()
         assert len(dl) == 2
 
+
+    def test_localnames(self, DefinedNameList, datadir):
+        datadir.chdir()
+        with open("workbook.xml", "rb") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        assert dl.localnames(0) == ['MySheetRef', 'MySheetValue']
