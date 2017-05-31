@@ -2,6 +2,11 @@
 ==================
 
 
+Bugfixes
+--------
+* `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted`
+
+
 2.4.8 (2017-05-30)
 ==================
 
