@@ -165,6 +165,14 @@ def test_remove_named_range():
     assert 'test_nr' not in named_ranges_list
 
 
+def test_remove_sheet_with_names():
+    wb = Workbook()
+    new_sheet = wb.create_sheet()
+    wb.create_named_range('test_nr', new_sheet, 'A1', 1)
+    del wb['Sheet1']
+    assert wb.defined_names.definedName == []
+
+
 def test_add_invalid_worksheet_class_instance():
 
     class AlternativeWorksheet(object):
