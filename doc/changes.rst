@@ -19,7 +19,7 @@ Compatibility
 
 
 Major Changes
-------------
+-------------
 
 * Read/write support for pivot tables
 
