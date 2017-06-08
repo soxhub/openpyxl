@@ -136,3 +136,12 @@ class TestWorkbookParser:
         parser = WorkbookParser(archive, ARC_WORKBOOK)
         parser.parse()
         assert list(parser.pivot_caches.keys()) == [68]
+
+
+    def test_book_views(self, datadir, WorkbookParser):
+        datadir.chdir()
+        archive = ZipFile("bug137.xlsx")
+
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+        parser.parse()
+        assert parser.wb.views[0].activeTab == 1

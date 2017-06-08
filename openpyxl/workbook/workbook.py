@@ -34,6 +34,7 @@ from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.relationship import RelationshipList
 from .protection import DocumentSecurity
 from .properties import CalcProperties
+from .views import BookView
 
 
 from openpyxl.xml.constants import (
@@ -83,6 +84,7 @@ class Workbook(object):
 
         self.rels = RelationshipList()
         self.calculation = CalcProperties()
+        self.views = [BookView()]
 
 
     def _setup_styles(self):

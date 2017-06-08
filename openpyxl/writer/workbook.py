@@ -89,8 +89,8 @@ def write_workbook(workbook):
 
     # book views
     active = get_active_sheet(wb)
-    view = BookView(activeTab=active)
-    root.bookViews =[view]
+    wb.views[0].activeTab = active
+    root.bookViews = wb.views
 
     # worksheets
     for idx, sheet in enumerate(wb._sheets, 1):
