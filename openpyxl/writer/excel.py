@@ -9,6 +9,7 @@ import re
 from zipfile import ZipFile, ZIP_DEFLATED
 
 # package imports
+from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
     ARC_CONTENT_TYPES,
@@ -122,6 +123,8 @@ class ExcelWriter(object):
 
     def _write_charts(self):
         # delegate to object
+        if len(self._charts) != len(set(self._charts)):
+            raise InvalidFileException("The same chart cannot be used in more than one worksheet")
         for chart in self._charts:
             self._archive.writestr(chart.path[1:], tostring(chart._write()))
             self.manifest.append(chart)
