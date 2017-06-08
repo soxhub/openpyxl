@@ -4,8 +4,8 @@
 
 Bugfixes
 --------
-* `#833 <https://bitbucket.org/openpyxl/openpyxl/issues/833>`_ Cannot access chartsheets by title`
-* `#834 <https://bitbucket.org/openpyxl/openpyxl/issues/834>`_ Preserve workbook views`
+* `#833 <https://bitbucket.org/openpyxl/openpyxl/issues/833>`_ Cannot access chartsheets by title
+* `#834 <https://bitbucket.org/openpyxl/openpyxl/issues/834>`_ Preserve workbook views
 
 
 2.5.0-a1 (2017-05-30)
@@ -55,7 +55,8 @@ Minor changes
 
 Bugfixes
 --------
-* `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted`
+* `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted
+* `#824 <https://bitbucket.org/openpyxl/openpyxl/issues/824>`_ Raise an exception if a chart is used in multiple sheets
 
 
 2.4.8 (2017-05-30)
@@ -65,9 +66,9 @@ Bugfixes
 Bugfixes
 --------
 * AutoFilter.sortState being assignd to the ws.sortState
-* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics`
-* `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly`
-* `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock`
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics
+* `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly
+* `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock
 
 
 Minor changes
@@ -81,7 +82,7 @@ Minor changes
 
 Bugfixes
 --------
-* `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist`
+* `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist
 
 
 2.4.6 (2017-04-14)
@@ -90,12 +91,12 @@ Bugfixes
 
 Bugfixes
 --------
-* `#776 <https://bitbucket.org/openpyxl/openpyxl/issues/776>`_ Cannot apply formatting to plot area`
-* `#780 <https://bitbucket.org/openpyxl/openpyxl/issues/780>`_ Exception when element attributes are Python keywords`
-* `#781 <https://bitbucket.org/openpyxl/openpyxl/issues/781>`_ Exception raised when saving files with styled columns`
-* `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect`
-* `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names`
-* `#800 <https://bitbucket.org/openpyxl/openpyxl/issues/800>`_ Font underlines not read correctly`
+* `#776 <https://bitbucket.org/openpyxl/openpyxl/issues/776>`_ Cannot apply formatting to plot area
+* `#780 <https://bitbucket.org/openpyxl/openpyxl/issues/780>`_ Exception when element attributes are Python keywords
+* `#781 <https://bitbucket.org/openpyxl/openpyxl/issues/781>`_ Exception raised when saving files with styled columns
+* `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect
+* `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names
+* `#800 <https://bitbucket.org/openpyxl/openpyxl/issues/800>`_ Font underlines not read correctly
 
 
 2.4.5 (2017-03-07)
