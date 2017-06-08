@@ -5,6 +5,7 @@
 Bugfixes
 --------
 * `#833 <https://bitbucket.org/openpyxl/openpyxl/issues/833>`_ Cannot access chartsheets by title`
+* `#834 <https://bitbucket.org/openpyxl/openpyxl/issues/834>`_ Preserve workbook views`
 
 
 2.5.0-a1 (2017-05-30)
