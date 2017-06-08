@@ -236,7 +236,7 @@ class Workbook(object):
         :type name: string
 
         """
-        for sheet in self.worksheets:
+        for sheet in self.worksheets + self.chartsheets:
             if sheet.title == key:
                 return sheet
         raise KeyError("Worksheet {0} does not exist.".format(key))
