@@ -71,6 +71,7 @@ def test_is_date_format(format, result):
                              (u'#,##0\\ [$\u20bd-46D]', True),
                              ('"$"#,##0_);[Red]("$"#,##0)', True),
                              (u'[$-404]e"\xfc"m"\xfc"d"\xfc"', False),
+                             (r"0_ ;[Red]\-0\ ", True)
                          ]
                          )
 def test_datetime_regex(fmt, result):
