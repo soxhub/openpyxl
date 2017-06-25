@@ -89,6 +89,7 @@ class TestBarChart:
            <legend>
              <legendPos val="r"></legendPos>
            </legend>
+           <plotVisOnly val="1" />
            <dispBlanksAs val="gap"></dispBlanksAs>
           </chart>
         </chartSpace>

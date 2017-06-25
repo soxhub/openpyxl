@@ -106,7 +106,7 @@ class ChartContainer(Serialisable):
     backWall = _3DBase.backWall
     plotArea = Typed(expected_type=PlotArea, )
     legend = Typed(expected_type=Legend, allow_none=True)
-    plotVisOnly = NestedBool(allow_none=True)
+    plotVisOnly = NestedBool()
     dispBlanksAs = NestedNoneSet(values=(['span', 'gap', 'zero']))
     showDLblsOverMax = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -125,7 +125,7 @@ class ChartContainer(Serialisable):
                  backWall=None,
                  plotArea=None,
                  legend=None,
-                 plotVisOnly=None,
+                 plotVisOnly=True,
                  dispBlanksAs="gap",
                  showDLblsOverMax=None,
                  extLst=None,

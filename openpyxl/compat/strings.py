@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 
+from datetime import datetime
 from math import isnan
 import sys
 
@@ -33,6 +34,8 @@ def safe_string(value):
             value = "%.16g" % value
     elif value is None:
         value = "none"
+    elif isinstance(value, datetime):
+        value = value.isoformat()
     elif not isinstance(value, basestring):
         value = str(value)
     return value

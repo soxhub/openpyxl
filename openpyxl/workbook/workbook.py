@@ -34,6 +34,7 @@ from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.relationship import RelationshipList
 from .protection import DocumentSecurity
 from .properties import CalcProperties
+from .views import BookView
 
 
 from openpyxl.xml.constants import (
@@ -58,6 +59,7 @@ class Workbook(object):
                  iso_dates=False,
                  ):
         self._sheets = []
+        self._pivots = []
         self._active_sheet_index = 0
         self.defined_names = DefinedNameList()
         self._external_links = []
@@ -82,6 +84,7 @@ class Workbook(object):
 
         self.rels = RelationshipList()
         self.calculation = CalcProperties()
+        self.views = [BookView()]
 
 
     def _setup_styles(self):
@@ -182,6 +185,10 @@ class Workbook(object):
 
     def remove(self, worksheet):
         """Remove a worksheet from this workbook."""
+        idx = self._sheets.index(worksheet)
+        localnames = self.defined_names.localnames(scope=idx)
+        for name in localnames:
+            self.defined_names.delete(name, scope=idx)
         self._sheets.remove(worksheet)
 
 
@@ -231,7 +238,7 @@ class Workbook(object):
         :type name: string
 
         """
-        for sheet in self.worksheets:
+        for sheet in self.worksheets + self.chartsheets:
             if sheet.title == key:
                 return sheet
         raise KeyError("Worksheet {0} does not exist.".format(key))

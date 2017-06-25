@@ -12,6 +12,7 @@ import warnings
 
 # compatibility imports
 from openpyxl.compat import unicode, file
+from openpyxl.pivot.table import TableDefinition
 
 # Allow blanket setting of KEEP_VBA for testing
 try:
@@ -44,7 +45,7 @@ from .strings import read_string_table
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
-from openpyxl.packaging.manifest import Manifest
+from openpyxl.packaging.manifest import Manifest, Override
 from openpyxl.packaging.workbook import WorkbookParser
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
@@ -125,10 +126,17 @@ def _validate_archive(filename):
 
 
 def _find_workbook_part(package):
-    for ct in [XLTM, XLTX, XLSM, XLSX]:
+    workbook_types = [XLTM, XLTX, XLSM, XLSX]
+    for ct in workbook_types:
         part = package.find(ct)
         if part:
             return part
+
+    # some applications reassign the default for application/xml
+    defaults = set((p.ContentType for p in package.Default))
+    workbook_type = defaults & set(workbook_types)
+    if workbook_type:
+        return Override("/" + ARC_WORKBOOK, workbook_type.pop())
 
     raise IOError("File contains no valid workbook part")
 
@@ -214,6 +222,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
+    pivot_caches = parser.pivot_caches
 
     # get worksheets
     for sheet, rel in parser.find_sheets():
@@ -265,6 +274,14 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                     for c in find_charts(archive, rel.target):
                         ws.add_chart(c, c.anchor)
 
+                pivot_rel = rels.find(TableDefinition.rel_type)
+                for r in pivot_rel:
+                    pivot_path = r.Target
+                    src = archive.read(pivot_path)
+                    tree = fromstring(src)
+                    pivot = TableDefinition.from_tree(tree)
+                    pivot.cache = pivot_caches[pivot.cacheId]
+                    ws.add_pivot(pivot)
 
         ws.sheet_state = sheet.state
         ws._rels = [] # reset

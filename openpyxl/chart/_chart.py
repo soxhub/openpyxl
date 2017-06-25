@@ -50,6 +50,7 @@ class ChartBase(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     roundedCorners = Bool(allow_none=True)
     axId = ValueSequence(expected_type=int)
+    visible_cells_only = Bool()
 
     _series_type = ""
     ser = ()
@@ -65,6 +66,7 @@ class ChartBase(Serialisable):
     graphical_properties = Typed(expected_type=GraphicalProperties, allow_none=True)
 
     __elements__ = ()
+
 
     def __init__(self, axId=(), **kw):
         self._charts = [self]
@@ -119,6 +121,7 @@ class ChartBase(Serialisable):
             container.floor = chart.floor
             container.sideWall = chart.sideWall
             container.backWall = chart.backWall
+        container.plotVisOnly = self.visible_cells_only
         cs = ChartSpace(chart=container)
         cs.style = self.style
         cs.roundedCorners = self.roundedCorners

@@ -47,10 +47,10 @@ class FileRecoveryPr(Serialisable):
     repairLoad = Bool(allow_none=True)
 
     def __init__(self,
-                 autoRecover=None,
-                 crashSave=None,
-                 dataExtractLoad=None,
-                 repairLoad=None,
+                 autoRecover=True,
+                 crashSave=False,
+                 dataExtractLoad=False,
+                 repairLoad=False,
                 ):
         self.autoRecover = autoRecover
         self.crashSave = crashSave
@@ -105,14 +105,14 @@ class DefinedName(Serialisable):
                  help=None,
                  statusBar=None,
                  localSheetId=None,
-                 hidden=None,
-                 function=None,
-                 vbProcedure=None,
-                 xlm=None,
+                 hidden=False,
+                 function=False,
+                 vbProcedure=False,
+                 xlm=False,
                  functionGroupId=None,
                  shortcutKey=None,
-                 publishToServer=None,
-                 workbookParameter=None,
+                 publishToServer=False,
+                 workbookParameter=False,
                 ):
         self.name = name
         self.comment = comment

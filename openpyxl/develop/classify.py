@@ -21,6 +21,7 @@ from openpyxl.tests.schema import (
     drawing_src,
     shared_src,
     )
+from openpyxl.descriptors.serialisable import KEYWORDS
 
 from lxml.etree import parse
 
@@ -39,6 +40,7 @@ simple_mapping = {
     'xsd:long':'Float',
     'xsd:token':'String',
     'xsd:dateTime':'DateTime',
+    'xsd:hexBinary':'HexBinary',
     's:ST_Panose':'HexBinary',
     's:ST_Lang':'String',
     'ST_Percentage':'String',
@@ -73,6 +75,19 @@ def get_element_group(schema, tagname):
     return node.findall(".//{%s}element" % XSD)
 
 
+def convert_default(value):
+    """
+    Convert attribute defaults into Python
+    """
+    if value == "false":
+        value = False
+    elif value == "true":
+        value = True
+    elif value.isdigit():
+        value = int(value)
+    return value
+
+
 def classify(tagname, src=sheet_src, schema=None):
     """
     Generate a Python-class based on the schema definition
@@ -88,6 +103,9 @@ def classify(tagname, src=sheet_src, schema=None):
 
     s = """\n\nclass %s(Serialisable):\n\n""" % tagname[3:]
     attrs = []
+    header = []
+    sig = []
+    body = []
 
     node = derived(node)
     node = extends(node)
@@ -99,29 +117,38 @@ def classify(tagname, src=sheet_src, schema=None):
         s += "    #Using attribute group{0}\n".format(_group.get('ref'))
         attributes.extend(get_attribute_group(schema, _group.get('ref')))
     for el in attributes:
-        attr = el.attrib
+        attr = dict(el.attrib)
+        if attr['name'] in KEYWORDS:
+            attr['name'] = "_" + attr['name']
         if 'ref' in attr:
             continue
-        attrs.append(attr['name'])
+        attrs.append(attr)
 
-        if attr.get("use") == "optional":
+        # XML attributes are optional by default
+        if attr.get("use") != "required":
             attr["use"] = "allow_none=True"
         else:
             attr["use"] = ""
+        default = attr.get('default', None)
+        if default:
+            default = convert_default(default)
+        attr['default'] = default
+
         if attr.get("type").startswith("ST_"):
             attr['type'] = simple(attr.get("type"), schema, attr['use'])
             types.add(attr['type'].split("(")[0])
-            s += "    {name} = {type}\n".format(**attr)
+            defn = "{name} = {type}"
         else:
             if attr['type'] in simple_mapping:
                 attr['type'] = simple_mapping[attr['type']]
                 types.add(attr['type'])
-                s += "    {name} = {type}({use})\n".format(**attr)
+                defn = "{name} = {type}({use})"
             else:
-                s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
+                defn = "{name} = Typed(expected_type={type}, {use})"
+        header.append(defn.format(**attr))
 
     children = []
-    element_names =[]
+    element_names = []
     elements = node.findall(".//{%s}element" % XSD)
     choice = node.findall("{%s}choice" % XSD)
     if choice:
@@ -133,8 +160,11 @@ def classify(tagname, src=sheet_src, schema=None):
         s += """    # uses element group {0}\n""".format(ref)
         elements.extend(get_element_group(schema, ref))
 
+    els = []
+    header_els = []
     for el in elements:
-        attr = {'name': el.get("name"),}
+        attr = dict(el.attrib)
+        attr['default'] = None
 
         typename = el.get("type")
         if typename is None:
@@ -164,26 +194,37 @@ def classify(tagname, src=sheet_src, schema=None):
         attr['use'] = ""
         if el.get("minOccurs") == "0" or el in choice:
             attr['use'] = "allow_none=True"
-        attrs.append(attr['name'])
+        els.append(attr)
         if attr['type'] in complex_mapping:
             attr['type'] = complex_mapping[attr['type']]
-            s += "    {name} = {type}(nested=True, {use})\n".format(**attr)
+            defn = "{name} = {type}(nested=True, {use})"
         else:
-            s += "    {name} = Typed(expected_type={type}, {use})\n".format(**attr)
+            defn = "{name} = Typed(expected_type={type}, {use})"
+            max = attr.get("maxOccurs")
+            if max and max != "1":
+                defn = "{name} = Sequence(expected_type={type})"
+                attr['default'] = ()
+        header_els.append(defn.format(**attr))
+
+    header = header_els + header
+
+    s += "    " + "\n    ".join(header) + "\n\n"
 
     if element_names:
         names = (c for c in element_names)
-        s += "\n    __elements__ = {0}\n".format(tuple(names))
+        s += "    __elements__ = {0}\n\n".format(tuple(names))
+
+    attrs = els + attrs # elements first
 
     if attrs:
-        s += "\n    def __init__(self,\n"
-        for a in attrs:
-            s += "                 %s=None,\n" % a
+        s += "    def __init__(self,\n"
+        for attr in attrs:
+            s += "                 {name}={default},\n".format(**attr)
         s += "                ):\n"
     else:
         s += "    pass"
     for attr in attrs:
-        s += "        self.{0} = {0}\n".format(attr)
+        s += "        self.{name} = {name}\n".format(**attr)
 
     return s, types, children
 

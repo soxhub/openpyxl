@@ -43,7 +43,9 @@ def find_charts(archive, path):
     drawing = SpreadsheetDrawing.from_tree(tree)
 
     rels_path = get_rels_path(path)
-    deps = get_dependents(archive, rels_path)
+    deps = []
+    if rels_path in archive.namelist():
+        deps = get_dependents(archive, rels_path)
 
     charts = []
     for rel in drawing._chart_rels:

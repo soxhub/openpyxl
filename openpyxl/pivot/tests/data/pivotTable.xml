@@ -1,0 +1,103 @@
+<?xml version="1.0" standalone="yes"?>
+<pivotTableDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" name="PivotTable1" cacheId="68" applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1" dataCaption="Values" updatedVersion="4" minRefreshableVersion="3" useAutoFormatting="1" itemPrintTitles="1" createdVersion="4" indent="0" outline="1" outlineData="1" gridDropZones="1" multipleFieldFilters="0">
+	<location ref="A3:E14" firstHeaderRow="1" firstDataRow="2" firstDataCol="1"/>
+	<pivotFields count="6">
+		<pivotField showAll="0" defaultSubtotal="0"/>
+		<pivotField axis="axisRow" showAll="0">
+			<items count="11">
+				<item m="1" x="8"/>
+				<item m="1" x="5"/>
+				<item m="1" x="9"/>
+				<item m="1" x="6"/>
+				<item m="1" x="7"/>
+				<item m="1" x="4"/>
+				<item m="1" x="3"/>
+				<item x="0"/>
+				<item x="1"/>
+				<item x="2"/>
+				<item t="default"/>
+			</items>
+		</pivotField>
+		<pivotField showAll="0"/>
+		<pivotField axis="axisCol" showAll="0">
+			<items count="4">
+				<item x="2"/>
+				<item x="0"/>
+				<item x="1"/>
+				<item t="default"/>
+			</items>
+		</pivotField>
+		<pivotField dataField="1" showAll="0"/>
+		<pivotField axis="axisRow" showAll="0">
+			<items count="5">
+				<item m="1" x="3"/>
+				<item m="1" x="2"/>
+				<item x="0"/>
+				<item x="1"/>
+				<item t="default"/>
+			</items>
+		</pivotField>
+	</pivotFields>
+	<rowFields count="2">
+		<field x="1"/>
+		<field x="5"/>
+	</rowFields>
+	<rowItems count="10">
+		<i>
+			<x v="7"/>
+		</i>
+		<i r="1">
+			<x v="2"/>
+		</i>
+		<i r="1">
+			<x v="3"/>
+		</i>
+		<i>
+			<x v="8"/>
+		</i>
+		<i r="1">
+			<x v="2"/>
+		</i>
+		<i r="1">
+			<x v="3"/>
+		</i>
+		<i>
+			<x v="9"/>
+		</i>
+		<i r="1">
+			<x v="2"/>
+		</i>
+		<i r="1">
+			<x v="3"/>
+		</i>
+		<i t="grand">
+			<x/>
+		</i>
+	</rowItems>
+	<colFields count="1">
+		<field x="3"/>
+	</colFields>
+	<colItems count="4">
+		<i>
+			<x/>
+		</i>
+		<i>
+			<x v="1"/>
+		</i>
+		<i>
+			<x v="2"/>
+		</i>
+		<i t="grand">
+			<x/>
+		</i>
+	</colItems>
+	<dataFields count="1">
+		<dataField name="Sum of impressions" fld="4" baseField="0" baseItem="0"/>
+	</dataFields>
+	<pivotTableStyleInfo name="PivotStyleMedium4" showRowHeaders="1" showColHeaders="1" showRowStripes="0" showColStripes="0" showLastColumn="1"/>
+	<extLst>
+		<ext xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" uri="{962EF5D1-5CA2-4c93-8EF4-DBF5C05439D2}">
+			<x14:pivotTableDefinition xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main" hideValuesRow="1"/>
+		</ext>
+	</extLst>
+</pivotTableDefinition>

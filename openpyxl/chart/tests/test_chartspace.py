@@ -20,6 +20,7 @@ class TestChartContainer:
         expected = """
         <chart>
           <plotArea></plotArea>
+          <plotVisOnly val="1" />
           <dispBlanksAs val="gap"></dispBlanksAs>
         </chart>
         """
@@ -264,7 +265,8 @@ class TestChartSpace:
         <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
           <chart>
           <plotArea></plotArea>
-            <dispBlanksAs val="gap"></dispBlanksAs>
+          <plotVisOnly val="1" />
+          <dispBlanksAs val="gap"></dispBlanksAs>
           </chart>
         </chartSpace>
         """

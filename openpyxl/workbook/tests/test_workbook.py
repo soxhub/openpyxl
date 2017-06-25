@@ -102,10 +102,23 @@ def test_getitem(Workbook, Worksheet):
         wb['NotThere']
 
 
-def test_delitem(Workbook):
+def test_get_chartsheet(Workbook):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+    assert wb[cs.title] is cs
+
+
+def test_del_worksheet(Workbook):
     wb = Workbook()
     del wb['Sheet']
     assert wb.worksheets == []
+
+
+def test_del_chartsheet(Workbook):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+    del wb[cs.title]
+    assert wb.chartsheets == []
 
 
 def test_contains(Workbook):
@@ -163,6 +176,14 @@ def test_remove_named_range():
     del wb.defined_names['test_nr']
     named_ranges_list = wb.get_named_ranges()
     assert 'test_nr' not in named_ranges_list
+
+
+def test_remove_sheet_with_names():
+    wb = Workbook()
+    new_sheet = wb.create_sheet()
+    wb.create_named_range('test_nr', new_sheet, 'A1', 1)
+    del wb['Sheet1']
+    assert wb.defined_names.definedName == []
 
 
 def test_add_invalid_worksheet_class_instance():
