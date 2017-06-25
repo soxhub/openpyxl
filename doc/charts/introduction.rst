@@ -1,11 +1,6 @@
 Charts
 ======
 
-.. warning::
-
-    Openpyxl currently supports chart creation within a worksheet only. Charts in
-    existing workbooks will be lost.
-
 
 Chart types
 -----------

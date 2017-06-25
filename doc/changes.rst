@@ -1,5 +1,11 @@
-2.5.0 (unreleased)
-==================
+2.5.0-a2 (2015-06-25)
+=====================
+
+
+Major Changes
+-------------
+
+* Read support for charts
 
 
 Bugfixes
