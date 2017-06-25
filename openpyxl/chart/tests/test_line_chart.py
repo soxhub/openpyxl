@@ -44,7 +44,7 @@ class TestLineChart:
 
     def test_axes(self, LineChart):
         chart = LineChart()
-        assert chart._axes.keys() == set([10, 100])
+        assert set(chart._axes.keys()) == set([10, 100])
 
 
 @pytest.fixture
