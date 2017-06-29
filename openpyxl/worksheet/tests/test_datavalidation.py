@@ -84,7 +84,7 @@ class TestDataValidation:
         dv.sqref = "A1"
         assert dv.cells == set(["A1"])
         dv.add(DummyCell())
-        assert dv.cells == {"A1", "A2"}
+        assert dv.cells == set(["A1", "A2"])
 
 
     def test_read_formula(self, DataValidation):
