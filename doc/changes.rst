@@ -8,6 +8,11 @@ Bugfixes
 * `#824 <https://bitbucket.org/openpyxl/openpyxl/issues/824>`_ Raise an exception if a chart is used in multiple sheets
 
 
+Pull requests
+-------------
+* `#179 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/179>`_ Cells kept in a set
+
+
 2.4.8 (2017-05-30)
 ==================
 
