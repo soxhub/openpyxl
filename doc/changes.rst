@@ -1,3 +1,12 @@
+2.5.0 (unreleased)
+==================
+
+
+Bugfixes
+--------
+* `#848 <https://bitbucket.org/openpyxl/openpyxl/issues/848>`_ Reading workbooks with Pie Charts raises an exception
+
+
 2.5.0-a2 (2015-06-25)
 =====================
 
