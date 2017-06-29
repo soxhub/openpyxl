@@ -65,7 +65,7 @@ def expand_cell_ranges(range_string):
     cells = []
     for rs in range_string.split():
         cells.extend(rows_from_range(rs))
-    return list(chain.from_iterable(cells))
+    return set(chain.from_iterable(cells))
 
 
 class DataValidation(Serialisable):
@@ -127,7 +127,7 @@ class DataValidation(Serialisable):
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
         self.type = type
-        self.cells = []
+        self.cells = set()
         self.ranges = []
         if sqref is not None:
             self.sqref = sqref
@@ -141,8 +141,7 @@ class DataValidation(Serialisable):
 
     def add(self, cell):
         """Adds a openpyxl.cell to this validator"""
-        if cell.coordinate not in self.cells:
-            self.cells.append(cell.coordinate)
+        self.cells.add(cell.coordinate)
 
 
     @property
