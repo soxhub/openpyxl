@@ -71,7 +71,7 @@ class PieChart(_PieChartBase):
                  **kw
                 ):
         self.firstSliceAng = firstSliceAng
-        super(PieChart, self).__init__(*kw)
+        super(PieChart, self).__init__(**kw)
 
 
 class PieChart3D(_PieChartBase):
