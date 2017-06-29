@@ -72,7 +72,19 @@ class TestDataValidation:
     def test_sqref(self, DataValidation):
         dv = DataValidation()
         dv.sqref = "A1"
-        assert dv.cells == ["A1"]
+        assert dv.cells == set(["A1"])
+
+
+    def test_add_after_sqref(self, DataValidation):
+        class DummyCell:
+
+            coordinate = "A2"
+
+        dv = DataValidation()
+        dv.sqref = "A1"
+        assert dv.cells == set(["A1"])
+        dv.add(DummyCell())
+        assert dv.cells == set(["A1", "A2"])
 
 
     def test_read_formula(self, DataValidation):
@@ -83,7 +95,7 @@ class TestDataValidation:
         """
         xml = fromstring(xml)
         dv = DataValidation.from_tree(xml)
-        assert dv.cells == ['A1']
+        assert dv.cells == set(["A1"])
         assert dv.type == "list"
         assert dv.formula1 == '"Dog,Cat,Fish"'
 
@@ -163,4 +175,4 @@ def test_collapse_cell_addresses(cells, expected):
 def test_expand_cell_ranges():
     from .. datavalidation import expand_cell_ranges
     rs = "A1:A3 B1:B3"
-    assert expand_cell_ranges(rs) == ["A1", "A2", "A3", "B1", "B2", "B3"]
+    assert expand_cell_ranges(rs) == set(["A1", "A2", "A3", "B1", "B2", "B3"])
