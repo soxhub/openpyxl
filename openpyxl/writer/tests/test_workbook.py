@@ -46,6 +46,7 @@ def test_write_hidden_worksheet():
     expected = """
     <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
     <workbookPr/>
+    <workbookProtection/>
     <bookViews>
       <workbookView activeTab="1"/>
     </bookViews>
@@ -136,6 +137,7 @@ def test_write_workbook_code_name():
     expected = """
     <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
     <workbookPr codeName="MyWB"/>
+    <workbookProtection/>
     <bookViews>
       <workbookView activeTab="0"/>
     </bookViews>
@@ -166,6 +168,19 @@ def test_write_root_rels():
     assert diff is None, diff
 
 
+def test_write_workbook_protection(datadir):
+    from ...workbook.protection import WorkbookProtection
+
+    datadir.chdir()
+    wb = Workbook()
+    wb.security = WorkbookProtection(workbookPassword='ABCD', lockStructure=True)
+
+    content = write_workbook(wb)
+    with open('workbook_protection.xml') as expected:
+        diff = compare_xml(content, expected.read())
+        assert diff is None, diff
+
+
 @pytest.fixture
 def Unicode_Workbook():
     wb = Workbook()
@@ -184,6 +199,7 @@ def test_print_area(Unicode_Workbook):
     <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
     xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <workbookPr/>
+    <workbookProtection/>
     <bookViews>
       <workbookView activeTab="0"/>
     </bookViews>
@@ -210,6 +226,7 @@ def test_print_titles(Unicode_Workbook):
     <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
     xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <workbookPr/>
+    <workbookProtection/>
     <bookViews>
       <workbookView activeTab="0"/>
     </bookViews>
@@ -239,6 +256,7 @@ def test_print_autofilter(Unicode_Workbook):
     <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
     xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <workbookPr/>
+    <workbookProtection/>
     <bookViews>
       <workbookView activeTab="0"/>
     </bookViews>

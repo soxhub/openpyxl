@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" >
   <workbookPr />
-  <workbookProtection/>
+  <workbookProtection workbookPassword="ABCD" lockStructure="1" />
   <bookViews>
     <workbookView activeTab="0"/>
   </bookViews>

@@ -19,6 +19,7 @@ from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
 )
+from openpyxl.worksheet.protection import hash_password
 
 
 @pytest.fixture
@@ -127,3 +128,17 @@ class TestWorkbookParser:
         parser.wb._keep_links = False
         parser.parse()
         assert parser.wb._external_links == []
+
+    def test_workbook_security(self, datadir, WorkbookParser):
+        datadir.chdir()
+
+        archive = ZipFile("workbook_security.xlsx")
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+        parser.parse()
+
+        wb = parser.wb
+        assert wb.security is not None
+        assert wb.security.workbookPassword == hash_password('test')
+        assert wb.security.lockStructure == True
+        assert wb.security.lockWindows is None
+        assert wb.security.lockRevision is None
