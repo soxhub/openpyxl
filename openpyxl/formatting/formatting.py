@@ -18,7 +18,7 @@ class ConditionalFormatting(Serialisable):
 
     tagname = "conditionalFormatting"
 
-    sqref = String()
+    sqref = String(allow_none=True)
     pivot = Bool(allow_none=True)
     cfRule = Sequence(expected_type=Rule)
     rules = Alias("cfRule")
