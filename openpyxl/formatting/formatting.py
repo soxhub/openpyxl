@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from collections import OrderedDict
 
+from openpyxl.compat import basestring
 from openpyxl.descriptors import (
     Bool,
     String,
@@ -31,12 +32,18 @@ class ConditionalFormatting(Serialisable):
         self.cfRule = cfRule
 
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.sqref == other.sqref
+
+
     def __hash__(self):
         return hash(self.sqref)
 
 
     def __repr__(self):
-        return repr(self.sqref)
+        return self.sqref
 
 
 class ConditionalFormattingList(object):
@@ -53,7 +60,9 @@ class ConditionalFormattingList(object):
 
          The priority will be added automatically.
         """
-        cf = ConditionalFormatting(range_string)
+        cf = range_string
+        if isinstance(range_string, basestring):
+            cf = ConditionalFormatting(range_string)
         if not isinstance(cfRule, Rule):
             raise ValueError("Only instances of openpyxl.formatting.rule.Rule may be added")
         rule = cfRule
@@ -84,8 +93,8 @@ class ConditionalFormattingList(object):
         """
         Get the rules for a cell range
         """
-        if isinstance(key, str):
-            key = ConditionalFormatting(key)
+        if isinstance(key, basestring):
+            key = ConditionalFormatting(sqref=key)
         return self._cf_rules[key]
 
 

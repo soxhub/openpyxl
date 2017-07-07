@@ -292,7 +292,7 @@ class WorkSheetParser(object):
         for rule in cf.rules:
             if rule.dxfId is not None:
                 rule.dxf = self.differential_styles[rule.dxfId]
-            self.ws.conditional_formatting.add(cf.sqref, rule)
+            self.ws.conditional_formatting[cf] = rule
 
 
     def parse_sheet_protection(self, element):

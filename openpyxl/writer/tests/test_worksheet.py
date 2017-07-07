@@ -371,8 +371,8 @@ def test_conditional_font(worksheet_with_cf, write_conditional_formatting):
                                              formula=['"Fail"'],
                                              stopIfTrue=False,
                                              font=whiteFont,
-                                             fill=redFill))
-
+                                             fill=redFill)
+                                  )
     cfs = write_conditional_formatting(ws)
     xml = b""
     for cf in cfs:
