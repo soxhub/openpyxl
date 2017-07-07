@@ -455,6 +455,8 @@ class ChartFormat(Serialisable):
 
 class ConditionalFormat(Serialisable):
 
+    tagname = "conditionalFormat"
+
     scope = Set(values=(['selection', 'data', 'field']))
     type = NoneSet(values=(['all', 'row', 'column']))
     priority = Integer()

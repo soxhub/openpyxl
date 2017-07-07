@@ -627,7 +627,7 @@ def test_conditonal_formatting(WorkSheetParser):
 
     parser.parse()
 
-    assert parser.ws.conditional_formatting.cf_rules['T1:T10'][-1].dxf == dxf
+    assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
 
 def test_sheet_properties(WorkSheetParser):
