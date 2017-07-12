@@ -86,9 +86,13 @@ class GroupLocking(Serialisable):
     noSelect = Bool(allow_none=True)
     noRot = Bool(allow_none=True)
     noChangeAspect = Bool(allow_none=True)
-    noChangeArrowheads = Bool(allow_none=True)
     noMove = Bool(allow_none=True)
     noResize = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noEditPoints = Bool(allow_none=True)
+    noAdjustHandles = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noChangeShapeType = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
     def __init__(self,
@@ -100,6 +104,9 @@ class GroupLocking(Serialisable):
                  noChangeArrowheads=None,
                  noMove=None,
                  noResize=None,
+                 noEditPoints=None,
+                 noAdjustHandles=None,
+                 noChangeShapeType=None,
                  extLst=None,
                 ):
         self.noGrp = noGrp
@@ -110,7 +117,6 @@ class GroupLocking(Serialisable):
         self.noChangeArrowheads = noChangeArrowheads
         self.noMove = noMove
         self.noResize = noResize
-        self.extLst = extLst
 
 
 class NonVisualGroupDrawingShapeProps(Serialisable):
