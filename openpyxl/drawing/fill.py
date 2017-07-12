@@ -72,13 +72,13 @@ class RelativeRect(Serialisable):
     tagname = "rect"
     namespace = DRAWING_NS
 
-    l = MinMax(min=0, max=100, allow_none=True)
+    l = MinMax(min=0, max=100000, allow_none=True)
     left = Alias('l')
-    t = MinMax(min=0, max=100, allow_none=True)
+    t = MinMax(min=0, max=100000, allow_none=True)
     top = Alias('t')
-    r = MinMax(min=0, max=100, allow_none=True)
+    r = MinMax(min=0, max=100000, allow_none=True)
     right = Alias('r')
-    b = MinMax(min=0, max=100, allow_none=True)
+    b = MinMax(min=0, max=100000, allow_none=True)
     bottom = Alias('b')
 
     def __init__(self,
