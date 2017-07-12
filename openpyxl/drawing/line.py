@@ -140,7 +140,7 @@ class LineProperties(Serialisable):
                  custDash=None,
                  round=None,
                  bevel=None,
-                 mitre=None,
+                 miter=None,
                  headEnd=None,
                  tailEnd=None,
                  extLst=None,
