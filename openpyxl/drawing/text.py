@@ -279,8 +279,8 @@ class TabStopList(Serialisable):
 
 class Spacing(Serialisable):
 
-    spcPct = NestedInteger()
-    spcPts = NestedInteger()
+    spcPct = NestedInteger(allow_none=True)
+    spcPts = NestedInteger(allow_none=True)
 
     __elements__ = ('spcPct', 'spcPts')
 
