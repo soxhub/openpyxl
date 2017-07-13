@@ -13,7 +13,10 @@ from openpyxl.descriptors import (
     MinMax,
     Sequence,
 )
-from openpyxl.descriptors.excel import Relation
+from openpyxl.descriptors.excel import (
+    Relation,
+    Percentage,
+)
 from openpyxl.descriptors.nested import NestedNoneSet, NestedValue
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import DRAWING_NS
