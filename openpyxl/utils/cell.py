@@ -201,6 +201,7 @@ def quote_sheetname(sheetname):
     if "'" in sheetname:
         sheetname = sheetname.replace("'", "''")
     if (" " in sheetname
-        or "-" in sheetname):
+        or "-" in sheetname
+        or "'" in sheetname):
         sheetname = u"'{0}'".format(sheetname)
     return sheetname
