@@ -198,6 +198,8 @@ def quote_sheetname(sheetname):
     """
     Add quotes around sheetnames if they contain spaces.
     """
+    if "'" in sheetname:
+        sheetname = sheetname.replace("'", "''")
     if (" " in sheetname
         or "-" in sheetname):
         sheetname = u"'{0}'".format(sheetname)
