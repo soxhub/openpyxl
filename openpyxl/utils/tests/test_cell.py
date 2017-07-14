@@ -26,7 +26,10 @@ def test_invalid_coordinate(value):
 @pytest.mark.parametrize("coord, result",
                          [
                              ("ZF51",'$ZF$51',),
-                             ('ZF51:ZF53', '$ZF$51:$ZF$53')
+                             ('ZF51:ZF53', '$ZF$51:$ZF$53'),
+                             ("A:G", "$A:$G"),
+                             ("A", "$A"),
+                             ("1", "$1"),
                          ]
                          )
 def test_absolute(coord, result):
