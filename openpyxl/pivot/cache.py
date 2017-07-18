@@ -503,7 +503,7 @@ class CacheHierarchy(Serialisable):
     groupLevels = Typed(expected_type=GroupLevels, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('fieldsUsage', 'groupLevels', 'extLst')
+    __elements__ = ('fieldsUsage', 'groupLevels')
 
     def __init__(self,
                  uniqueName=None,
