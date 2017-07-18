@@ -900,7 +900,7 @@ class CacheSource(Serialisable):
     type = Set(values=(['worksheet', 'external', 'consolidation', 'scenario']))
     connectionId = Integer(allow_none=True)
     # some elements are choice
-    worksheetSource = Typed(expected_type=WorksheetSource, )
+    worksheetSource = Typed(expected_type=WorksheetSource, allow_none=True)
     consolidation = Typed(expected_type=Consolidation, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
