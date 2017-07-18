@@ -124,7 +124,7 @@ class PivotFilter(Serialisable):
     autoFilter = Typed(expected_type=AutoFilter, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('autoFilter', 'extLst')
+    __elements__ = ('autoFilter',)
 
     def __init__(self,
                  fld=None,
@@ -463,7 +463,7 @@ class ConditionalFormat(Serialisable):
     pivotAreas = NestedSequence(expected_type=PivotArea)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('pivotAreas', 'extLst')
+    __elements__ = ('pivotAreas',)
 
     def __init__(self,
                  scope=None,
@@ -518,6 +518,8 @@ class DataField(Serialisable):
     numFmtId = Integer(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
+    __elements__ = ()
+
 
     def __init__(self,
                  name=None,
@@ -550,7 +552,7 @@ class PageField(Serialisable):
     cap = String(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
+    __elements__ = ()
 
     def __init__(self,
                  fld=None,
