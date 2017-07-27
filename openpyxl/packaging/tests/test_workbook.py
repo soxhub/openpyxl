@@ -139,6 +139,6 @@ class TestWorkbookParser:
         wb = parser.wb
         assert wb.security is not None
         assert wb.security.workbookPassword == hash_password('test')
-        assert wb.security.lockStructure == True
+        assert wb.security.lockStructure is True
         assert wb.security.lockWindows is None
         assert wb.security.lockRevision is None

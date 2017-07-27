@@ -173,7 +173,8 @@ def test_write_workbook_protection(datadir):
 
     datadir.chdir()
     wb = Workbook()
-    wb.security = WorkbookProtection(workbookPassword='ABCD', lockStructure=True)
+    wb.security = WorkbookProtection(lockStructure=True)
+    wb.security.set_workbook_password('ABCD', already_hashed=True)
 
     content = write_workbook(wb)
     with open('workbook_protection.xml') as expected:
