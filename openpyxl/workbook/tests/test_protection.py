@@ -22,6 +22,10 @@ class TestWorkbookProtection:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+    def test_ctor_with_passwords(self, WorkbookProtection):
+        prot = WorkbookProtection(workbookPassword="secret", revisionsPassword="secret")
+        assert prot.workbookPassword == "DAA7"
+        assert prot.revisionsPassword == "DAA7"
 
     def test_from_xml(self, WorkbookProtection):
         src = """
@@ -31,17 +35,22 @@ class TestWorkbookProtection:
           workbookSaltValue="ah1OevWahpb3tQiJO3qrnQ=="
           workbookSpinCount="100000"
           lockStructure="1"
+          workbookPassword="1234"
+          revisionsPassword="ABCD"
         />
         """
         node = fromstring(src)
         prot = WorkbookProtection.from_tree(node)
-        assert prot == WorkbookProtection(
+        expectedProt = WorkbookProtection(
             workbookAlgorithmName="SHA-512",
             workbookHashValue="wDZaZrfM8uKpKghbfws7rY7pmVoOwHjy5qg5d2ABHdSMtH1y0IIkgwJT5Hl2lacSw1sNusImGBUQs/sHcql3hw==",
             workbookSaltValue="ah1OevWahpb3tQiJO3qrnQ==",
             workbookSpinCount=100000,
-            lockStructure="1"
+            lockStructure="1",
         )
+        expectedProt.set_workbook_password("1234", already_hashed=True)
+        expectedProt.set_revisions_password("ABCD", already_hashed=True)
+        assert prot == expectedProt
 
 
 @pytest.fixture

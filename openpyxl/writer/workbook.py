@@ -87,6 +87,9 @@ def write_workbook(workbook):
         props.date1904 = True
     root.workbookPr = props
 
+    # workbook protection
+    root.workbookProtection = wb.security
+
     # book views
     active = get_active_sheet(wb)
     view = BookView(activeTab=active)
