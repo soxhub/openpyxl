@@ -15,11 +15,11 @@ from openpyxl.utils.datetime import (
     CALENDAR_MAC_1904,
     CALENDAR_WINDOWS_1900,
 )
+from openpyxl.workbook.protection import WorkbookProtection
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
 )
-from openpyxl.worksheet.protection import hash_password
 
 
 @pytest.fixture
@@ -130,15 +130,13 @@ class TestWorkbookParser:
         assert parser.wb._external_links == []
 
     def test_workbook_security(self, datadir, WorkbookParser):
+        expected_protection = WorkbookProtection()
+        expected_protection.workbookPassword = 'test'
+        expected_protection.lockStructure = True
         datadir.chdir()
-
         archive = ZipFile("workbook_security.xlsx")
         parser = WorkbookParser(archive, ARC_WORKBOOK)
+
         parser.parse()
 
-        wb = parser.wb
-        assert wb.security is not None
-        assert wb.security.workbookPassword == hash_password('test')
-        assert wb.security.lockStructure is True
-        assert wb.security.lockWindows is None
-        assert wb.security.lockRevision is None
+        assert parser.wb.security == expected_protection
