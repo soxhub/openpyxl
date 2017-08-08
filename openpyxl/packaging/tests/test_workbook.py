@@ -15,6 +15,7 @@ from openpyxl.utils.datetime import (
     CALENDAR_MAC_1904,
     CALENDAR_WINDOWS_1900,
 )
+from openpyxl.workbook.protection import WorkbookProtection
 from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
@@ -145,3 +146,16 @@ class TestWorkbookParser:
         parser = WorkbookParser(archive, ARC_WORKBOOK)
         parser.parse()
         assert parser.wb.views[0].activeTab == 1
+
+
+    def test_workbook_security(self, datadir, WorkbookParser):
+        expected_protection = WorkbookProtection()
+        expected_protection.workbookPassword = 'test'
+        expected_protection.lockStructure = True
+        datadir.chdir()
+        archive = ZipFile("workbook_security.xlsx")
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+
+        parser.parse()
+
+        assert parser.wb.security == expected_protection

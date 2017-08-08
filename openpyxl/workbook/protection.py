@@ -19,16 +19,17 @@ from openpyxl.descriptors.excel import (
     Relation,
     Base64Binary,
 )
+from openpyxl.utils.protection import hash_password
 
 
 class WorkbookProtection(Serialisable):
 
+    _workbook_password, _revisions_password = None, None
+
     tagname = "workbookPr"
 
-    workbookPassword = HexBinary(allow_none=True)
     workbook_password = Alias("workbookPassword")
     workbookPasswordCharacterSet = String(allow_none=True)
-    revisionsPassword = HexBinary(allow_none=True)
     revision_password = Alias("revisionsPassword")
     revisionsPasswordCharacterSet = String(allow_none=True)
     lockStructure = Bool(allow_none=True)
@@ -45,6 +46,12 @@ class WorkbookProtection(Serialisable):
     workbookHashValue = Base64Binary(allow_none=True)
     workbookSaltValue = Base64Binary(allow_none=True)
     workbookSpinCount = Integer(allow_none=True)
+
+    __attrs__ = ('workbookPassword', 'workbookPasswordCharacterSet', 'revisionsPassword',
+                 'revisionsPasswordCharacterSet', 'lockStructure', 'lockWindows', 'lockRevision',
+                 'revisionsAlgorithmName', 'revisionsHashValue', 'revisionsSaltValue',
+                 'revisionsSpinCount', 'workbookAlgorithmName', 'workbookHashValue',
+                 'workbookSaltValue', 'workbookSpinCount')
 
     def __init__(self,
                  workbookPassword=None,
@@ -63,9 +70,11 @@ class WorkbookProtection(Serialisable):
                  workbookSaltValue=None,
                  workbookSpinCount=None,
                 ):
-        self.workbookPassword = workbookPassword
+        if workbookPassword is not None:
+            self.workbookPassword = workbookPassword
         self.workbookPasswordCharacterSet = workbookPasswordCharacterSet
-        self.revisionsPassword = revisionsPassword
+        if revisionsPassword is not None:
+            self.revisionsPassword = revisionsPassword
         self.revisionsPasswordCharacterSet = revisionsPasswordCharacterSet
         self.lockStructure = lockStructure
         self.lockWindows = lockWindows
@@ -79,6 +88,47 @@ class WorkbookProtection(Serialisable):
         self.workbookSaltValue = workbookSaltValue
         self.workbookSpinCount = workbookSpinCount
 
+    def set_workbook_password(self, value='', already_hashed=False):
+        """Set a password on this workbook."""
+        if not already_hashed:
+            value = hash_password(value)
+        self._workbook_password = value
+
+    @property
+    def workbookPassword(self):
+        """Return the workbook password value, regardless of hash."""
+        return self._workbook_password
+
+    @workbookPassword.setter
+    def workbookPassword(self, value):
+        """Set a workbook password directly, forcing a hash step."""
+        self.set_workbook_password(value)
+
+    def set_revisions_password(self, value='', already_hashed=False):
+        """Set a revision password on this workbook."""
+        if not already_hashed:
+            value = hash_password(value)
+        self._revisions_password = value
+
+    @property
+    def revisionsPassword(self):
+        """Return the revisions password value, regardless of hash."""
+        return self._revisions_password
+
+    @revisionsPassword.setter
+    def revisionsPassword(self, value):
+        """Set a revisions password directly, forcing a hash step."""
+        self.set_revisions_password(value)
+
+    @classmethod
+    def from_tree(cls, node):
+        """Don't hash passwords when deserialising from XML"""
+        self = super(WorkbookProtection, cls).from_tree(node)
+        if self.workbookPassword:
+            self.set_workbook_password(node.get('workbookPassword'), already_hashed=True)
+        if self.revisionsPassword:
+            self.set_revisions_password(node.get('revisionsPassword'), already_hashed=True)
+        return self
 
 # Backwards compatibility
 DocumentSecurity = WorkbookProtection

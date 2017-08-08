@@ -75,6 +75,8 @@ class WorkbookParser:
             package.definedNames._cleanup()
             self.wb.defined_names = package.definedNames
 
+        self.wb.security = package.workbookProtection
+
 
     def find_sheets(self):
         """

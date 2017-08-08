@@ -80,6 +80,8 @@ Bugfixes
 Pull requests
 -------------
 * `#179 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/179>`_ Cells kept in a set
+* `#180 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/180>`_ Support for Workbook protection
+* `#182 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/182>`_ Read support for page breaks
 
 
 2.4.8 (2017-05-30)
