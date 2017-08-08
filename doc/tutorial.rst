@@ -54,7 +54,7 @@ You can loop through worksheets ::
     >>> for sheet in wb:
     ...     print(sheet.title)
 
-You can create copies of worksheets within a single workbook:
+You can create copies of worksheets *within a single workbook*:
 
 :func:`openpyxl.workbook.Workbook.copy_worksheet` method::
 
@@ -63,8 +63,16 @@ You can create copies of worksheets within a single workbook:
 
 .. note::
 
-    Only cells and styles can be copied. You cannot copy worksheets between
-    workbooks.
+    Only cells (including values, styles, hyperlinks and comments) and
+    certain worksheet attribues (including dimensions, format and
+    properties) are copied. All other workbook / worksheet attributes 
+    are not copied - e.g. Images, Charts.
+
+.. note::
+
+    You cannot copy worksheets between workbooks. You also cannot copy
+    a worksheet if the workbook is open in `read-only` or `write-only`
+    mode.
 
 
 Playing with data
