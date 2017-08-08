@@ -67,9 +67,6 @@ You can create copies of worksheets within a single workbook:
     workbooks.
 
 
-You can copy worksheets in a workbook with the
-
-
 Playing with data
 ------------------
 
