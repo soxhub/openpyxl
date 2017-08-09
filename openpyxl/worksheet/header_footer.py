@@ -24,7 +24,7 @@ from openpyxl.utils.escape import escape, unescape
 
 FONT_PATTERN = '&"(?P<font>.+)"'
 COLOR_PATTERN  = "&K(?P<color>[A-F0-9]{6})"
-SIZE_REGEX = r"&(?P<size>\d\s?)"
+SIZE_REGEX = r"&(?P<size>\d+\s?)"
 FORMAT_REGEX = re.compile("{0}|{1}|{2}".format(FONT_PATTERN, COLOR_PATTERN,
                                                SIZE_REGEX)
                           )
