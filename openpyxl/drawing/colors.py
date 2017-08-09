@@ -272,7 +272,7 @@ class SchemeColor(Serialisable):
 
     __elements__ = ('tint', 'shade', 'comp', 'inv', 'gray', 'alpha',
                     'alphaOff', 'alphaMod', 'hue', 'hueOff', 'hueMod', 'sat', 'satOff',
-                    'satMod', 'lum', 'lumOff', 'lumMod', 'red', 'redOff', 'redMod', 'green',
+                    'satMod', 'lum', 'lumMod', 'lumOff', 'red', 'redOff', 'redMod', 'green',
                     'greenOff', 'greenMod', 'blue', 'blueOff', 'blueMod', 'gamma',
                     'invGamma')
 
