@@ -398,4 +398,33 @@ def test_data_validations(WriteOnlyWorksheet):
 
 
 def test_conditional_formatting(WriteOnlyWorksheet):
-    pass
+    from openpyxl.formatting.rule import CellIsRule
+    ws = WriteOnlyWorksheet
+    rule = CellIsRule(operator='lessThan', formula=['C$1'], stopIfTrue=True)
+    ws.conditional_formatting.add("C", rule)
+    ws.close()
+
+    with open(ws.filename) as src:
+        xml = src.read()
+
+    expected = """
+    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+       </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+     <sheetData />
+     <conditionalFormatting sqref="C">
+       <cfRule operator="lessThan" priority="1" stopIfTrue="1" type="cellIs">
+         <formula>C$1</formula>
+       </cfRule>
+     </conditionalFormatting>
+    </worksheet>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
