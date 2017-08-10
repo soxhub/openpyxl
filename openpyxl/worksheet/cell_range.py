@@ -66,7 +66,18 @@ class CellRange(object):
 
 
     @property
+    def bounds(self):
+        """
+        Vertices of the range as a tuple
+        """
+        return self.min_col, self.min_row, self.max_col, self.max_row
+
+
+    @property
     def coord(self):
+        """
+        Excel style representation of the range
+        """
         fmt = "{min_col}{min_row}:{max_col}{max_row}"
         if (self.min_col == self.max_col
             and self.min_row == self.max_row):
@@ -297,7 +308,7 @@ class CellRange(object):
         return self.__copy__().__iand__(other)
 
 
-    def union(self, *others):
+    def union(self, other):
         """
         Return a new range with elements from the range and all *others*.
 
@@ -305,15 +316,13 @@ class CellRange(object):
         :param others: Other sheet ranges.
         :return: the current sheet range.
         """
-        for other in others:
-            if isinstance(other, CellRange):
-                self.min_row = min(self.min_row, other.min_row)
-                self.max_row = max(self.max_row, other.max_row)
-                self.min_col = min(self.min_col, other.min_col)
-                self.max_col = max(self.max_col, other.max_col)
-                return self
-            raise TypeError(repr(type(other)))
-        return self
+        if isinstance(other, CellRange):
+            self.min_row = min(self.min_row, other.min_row)
+            self.max_row = max(self.max_row, other.max_row)
+            self.min_col = min(self.min_col, other.min_col)
+            self.max_col = max(self.max_col, other.max_col)
+            return self
+        raise TypeError(repr(type(other)))
 
     __ior__ = union
 

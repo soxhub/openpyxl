@@ -77,6 +77,13 @@ class TestCellRange:
         assert cr.coord == "B4:C7"
 
 
+    def test_union(self, CellRange):
+        cr1 = CellRange("A1:D4")
+        cr2 = CellRange("E5:J10")
+        cr1.union(cr2)
+        assert cr1.bounds == ()
+
+
     def test_bottom(self, CellRange):
         pass
 
@@ -131,8 +138,4 @@ class TestCellRange:
 
 
     def test_top(self, CellRange):
-        pass
-
-
-    def test_union(self, CellRange):
         pass
