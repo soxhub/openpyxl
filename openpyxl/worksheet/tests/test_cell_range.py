@@ -19,8 +19,19 @@ class TestCellRange:
 
 
     def test_from_string(self, CellRange):
-        cr = CellRange("$A$1:B4")
+        cr = CellRange("Sheet1!$A$1:B4")
         assert cr.coord == "A1:B4"
+        assert cr.title == "Sheet1"
+
+
+    def test_repr(self, CellRange):
+        cr = CellRange("Sheet1!$A$1:B4")
+        assert repr(cr) == "'Sheet1'!A1:B4"
+
+
+    def test_str(self, CellRange):
+        cr = CellRange("'Sheet 1'!$A$1:B4")
+        assert str(cr) == "'Sheet 1'!A1:B4"
 
 
     def test_bottom(self, CellRange):

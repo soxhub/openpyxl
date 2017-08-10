@@ -1,7 +1,12 @@
 from __future__ import absolute_import
 
 from openpyxl.compat.strings import VER
-from openpyxl.utils import range_boundaries, get_column_letter
+
+from openpyxl.utils import (
+    range_to_tuple,
+    get_column_letter,
+    quote_sheetname,
+)
 
 
 ### Notes
@@ -33,9 +38,10 @@ class CellRange(object):
     """
 
 
-    def __init__(self, range_string=None, min_col=None, min_row=None, max_col=None, max_row=None):
+    def __init__(self, range_string=None, min_col=None, min_row=None,
+                 max_col=None, max_row=None, title=None):
         if range_string is not None:
-            min_col, min_row, max_col, max_row = range_boundaries(range_string)
+            title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
         # None > 0 is False
         if not all(idx > 0 for idx in (min_col, min_row, max_col, max_row)):
             msg = "Values for 'min_col', 'min_row', 'max_col' *and* 'max_row_' " \
@@ -52,6 +58,7 @@ class CellRange(object):
         self.min_row = min_row
         self.max_col = max_col
         self.max_row = max_row
+        self.title = title
 
 
     @property
@@ -70,19 +77,18 @@ class CellRange(object):
 
 
     def __repr__(self):
-        title = self.title or ''
-        coord = self.coord
-        fmt = "{title!r}!{coord}"
-        return fmt.format(title=title, coord=coord)
+        fmt = "{coord}"
+        if self.title:
+            fmt = "{title!r}!{coord}"
+        return fmt.format(title=self.title, coord=self.coord)
 
 
     def _get_range_string(self):
-        title = self.title or ''
-        if u"'" in title:
-            title = u"'{0}'".format(title.replace(u"'", u"''"))
-        coord = self.coord
-        fmt = u"{title}!{coord}" if title else u"{coord}"
-        return fmt.format(title=title, coord=coord)
+        fmt = "{coord}"
+        if self.title:
+            fmt = u"{title}!{coord}"
+
+        return fmt.format(title=quote_sheetname(self.title), coord=self.coord)
 
     if VER[0] == 3:
         __str__ = _get_range_string
