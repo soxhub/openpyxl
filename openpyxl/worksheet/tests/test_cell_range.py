@@ -71,6 +71,12 @@ class TestCellRange:
             cr.shift(-1, 2)
 
 
+    def test_iadd(self, CellRange):
+        cr = CellRange("A1:B4")
+        cr += (1, 3)
+        assert cr.coord == "B4:C7"
+
+
     def test_bottom(self, CellRange):
         pass
 

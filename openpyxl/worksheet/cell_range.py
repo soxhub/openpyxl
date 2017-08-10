@@ -138,7 +138,10 @@ class CellRange(object):
         self.max_row += row_shift
 
 
-    __iadd__ = shift
+    def __iadd__(self, value):
+        col_shift, row_shift = value
+        self.shift(col_shift, row_shift)
+        return self
 
 
     def __add__(self, other):
