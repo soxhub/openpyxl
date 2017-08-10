@@ -19,10 +19,16 @@ class TestCellRange:
         assert cr.coord == "A1:E7"
 
 
-    def test_from_string(self, CellRange):
-        cr = CellRange("Sheet1!$A$1:B4")
-        assert cr.coord == "A1:B4"
-        assert cr.title == "Sheet1"
+    @pytest.mark.parametrize("range_string, title, coord",
+                             [
+                                 ("Sheet1!$A$1:B4", "Sheet1", "A1:B4"),
+                                 ("A1:B4", None, "A1:B4"),
+                             ]
+                             )
+    def test_from_string(self, CellRange, range_string, title, coord):
+        cr = CellRange(range_string)
+        assert cr.coord == coord
+        assert cr.title == title
 
 
     def test_repr(self, CellRange):

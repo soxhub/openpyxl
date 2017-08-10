@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from openpyxl.compat.strings import VER
 
 from openpyxl.utils import (
+    range_boundaries,
     range_to_tuple,
     get_column_letter,
     quote_sheetname,
@@ -41,7 +42,10 @@ class CellRange(object):
     def __init__(self, range_string=None, min_col=None, min_row=None,
                  max_col=None, max_row=None, title=None):
         if range_string is not None:
-            title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
+            try:
+                title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
+            except ValueError:
+                min_col, min_row, max_col, max_row = range_boundaries(range_string)
         # None > 0 is False
         if not all(idx > 0 for idx in (min_col, min_row, max_col, max_row)):
             msg = "Values for 'min_col', 'min_row', 'max_col' *and* 'max_row_' " \
