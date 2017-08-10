@@ -75,6 +75,7 @@ Bugfixes
 * `#809 <https://bitbucket.org/openpyxl/openpyxl/issues/809>`_ Incomplete documentation of `copy_worksheet` method
 * `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted
 * `#824 <https://bitbucket.org/openpyxl/openpyxl/issues/824>`_ Raise an exception if a chart is used in multiple sheets
+* `#846 <https://bitbucket.org/openpyxl/openpyxl/issues/846>`_ Conditional formats not supported in write-only mode
 * `#849 <https://bitbucket.org/openpyxl/openpyxl/issues/849>`_ Conditional formats with no sqref cause an exception
 * `#859 <https://bitbucket.org/openpyxl/openpyxl/issues/859>`_ Headers that start with a number conflict with font size
 
