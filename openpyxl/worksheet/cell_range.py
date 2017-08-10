@@ -118,25 +118,25 @@ class CellRange(object):
                               title=self.title)
 
 
-    def shift(self, other):
+    def shift(self, col_shift=0, row_shift=0):
         """
         Shift the range according to the shift values (*col_shift*, *row_shift*).
 
-        :type other: (int, int)
-        :param other: shift values (*col_shift*, *row_shift*).
-        :return: the current sheet range.
-        :raise: :class:`ValueError` if any index is negative or nul.
+        :type col_shift: int
+        :param col_shift: number of columns to be moved by, can be negative
+        :type row_shift: int
+        :param row_shift: number of rows to be moved by, can be negative
+        :raise: :class:`ValueError` if any row or column index < 1
         """
-        if isinstance(other, tuple):
-            col_shift, row_shift = other
-            if self.min_col + col_shift <= 0 or self.min_row + row_shift <= 0:
-                raise ValueError("Invalid shift value: {0}".format(other))
-            self.min_col += col_shift
-            self.min_row += row_shift
-            self.max_col += col_shift
-            self.max_row += row_shift
-            return self
-        raise TypeError(repr(type(other)))
+
+        if (self.min_col + col_shift <= 0
+            or self.min_row + row_shift <= 0):
+            raise ValueError("Invalid shift value: col_shift={0}, row_shift={1}".format(col_shift, row_shift))
+        self.min_col += col_shift
+        self.min_row += row_shift
+        self.max_col += col_shift
+        self.max_row += row_shift
+
 
     __iadd__ = shift
 

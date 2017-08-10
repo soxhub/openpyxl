@@ -59,6 +59,18 @@ class TestCellRange:
         assert cr2 is not cr1
 
 
+    def test_shift(self, CellRange):
+        cr = CellRange("A1:B4")
+        cr.shift(1, 2)
+        assert cr.coord == "B3:C6"
+
+
+    def test_shift_negative(self, CellRange):
+        cr = CellRange("A1:B4")
+        with pytest.raises(ValueError):
+            cr.shift(-1, 2)
+
+
     def test_bottom(self, CellRange):
         pass
 
