@@ -14,11 +14,12 @@ class TestCellRange:
 
     def test_ctor(self, CellRange):
         cr = CellRange(min_col=1, min_row=1, max_col=5, max_row=7)
+        assert (cr.min_col, cr.min_row, cr.max_col, cr.max_row) == (1, 1, 5, 7)
         assert cr.coord == "A1:E7"
 
 
     def test_from_string(self, CellRange):
-        cr = CellRange.from_string("$A$1:B4")
+        cr = CellRange("$A$1:B4")
         assert cr.coord == "A1:B4"
 
 

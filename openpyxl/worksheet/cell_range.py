@@ -1,34 +1,8 @@
 from __future__ import absolute_import
 
-import re
-
 from openpyxl.compat.strings import VER
-from openpyxl.utils import (
-    column_index_from_string,
-    get_column_letter
-)
+from openpyxl.utils import range_boundaries, get_column_letter
 
-#: RegEx used to math a sheet range (without title), e.g.: '$A1:$C7'.
-RANGE_EXPR = r"""
-(?P<min_col_p>\$?)(?P<min_col>[A-Za-z]{1,3})
-(?P<min_row_p>\$?)(?P<min_row>\d+)
-(?:
-    :
-    (?P<max_col_p>\$?)(?P<max_col>[A-Za-z]{1,3})
-    (?P<max_row_p>\$?)(?P<max_row>\d+)
-)?
-"""
-
-#: RegEx used to math a sheet range with title, e.g.: 'Sheet1!$A1:$C7'.
-SHEET_TITLE = r"""
-(?:
-    (?:'(?P<quoted>([^']|'')*)') |
-    (?P<notquoted>[^']*)
-)!
-"""
-
-match_sheet_range = re.compile(r'^(?:{0})?{1}$'.format(SHEET_TITLE, RANGE_EXPR), flags=re.VERBOSE).match
-sub_sheet_range = re.compile(r'(?:{0})?{1}'.format(SHEET_TITLE, RANGE_EXPR), flags=re.VERBOSE).sub
 
 ### Notes
 # focus on range functions
@@ -59,7 +33,9 @@ class CellRange(object):
     """
 
 
-    def __init__(self, min_col, min_row, max_col, max_row):
+    def __init__(self, range_string=None, min_col=None, min_row=None, max_col=None, max_row=None):
+        if range_string is not None:
+            min_col, min_row, max_col, max_row = range_boundaries(range_string)
         # None > 0 is False
         if not all(idx > 0 for idx in (min_col, min_row, max_col, max_row)):
             msg = "Values for 'min_col', 'min_row', 'max_col' *and* 'max_row_' " \
@@ -78,46 +54,19 @@ class CellRange(object):
         self.max_row = max_row
 
 
-    @classmethod
-    def from_string(cls, range_string):
-        mo = match_sheet_range(range_string)
-        if mo is None:
-            raise ValueError("Value must be of the form sheetname!A1:E4")
-        if mo.group("quoted"):
-            title = mo.group("quoted").replace("''", "'")
-        elif mo.group("notquoted"):
-            title = mo.group("notquoted")
-        else:
-            title = None
-        min_col_p = mo.group('min_col_p')
-        min_col = column_index_from_string(mo.group('min_col'))
-        min_row_p = mo.group('min_row_p')
-        min_row = int(mo.group('min_row'))
-        if mo.group('max_col'):
-            max_col_p = mo.group('max_col_p')
-            max_col = column_index_from_string(mo.group('max_col'))
-            max_row_p = mo.group('max_row_p')
-            max_row = int(mo.group('max_row'))
-        else:
-            max_col_p = min_col_p
-            max_col = min_col
-            max_row_p = min_row_p
-            max_row = min_row
-        return cls(min_col, min_row, max_col, max_row)
-
-
     @property
     def coord(self):
-        if self.min_col == self.max_col and self.min_row == self.max_row:
-            col = get_column_letter(self.min_col)
-            row = str(self.min_row)
-            return col + row
-        else:
-            min_col = get_column_letter(self.min_col)
-            min_row = str(self.min_row)
-            max_col = get_column_letter(self.max_col)
-            max_row = str(self.max_row)
-            return min_col + min_row + ':' + max_col + max_row
+        fmt = "{min_col}{min_row}:{max_col}{max_row}"
+        if (self.min_col == self.max_col
+            and self.min_row == self.max_row):
+            fmt = "{min_col}{min_row}"
+
+        return fmt.format(
+            min_col=get_column_letter(self.min_col),
+            min_row=self.min_row,
+            max_col=get_column_letter(self.max_col),
+            max_row=self.max_row
+        )
 
 
     def __repr__(self):
