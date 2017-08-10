@@ -43,7 +43,7 @@ Write-only mode
 
 Here again, the regular :class:`openpyxl.worksheet.worksheet.Worksheet` has been replaced
 by a faster alternative, the :class:`openpyxl.writer.write_only.WriteOnlyWorksheet`.
-When you want to dump large amounts of data, you might find write-only helpful.
+When you want to dump large amounts of data make sure you have `lxml` installed.
 
 .. :: doctest
 
