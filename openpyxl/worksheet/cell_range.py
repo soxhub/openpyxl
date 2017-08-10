@@ -109,8 +109,9 @@ class CellRange(object):
 
 
     def __copy__(self):
-        return self.__class__(self.title, self.min_col, self.min_row,
-                              self.max_col, self.max_row)
+        return self.__class__(min_col=self.min_col, min_row=self.min_row,
+                              max_col=self.max_col, max_row=self.max_row,
+                              title=self.title)
 
 
     def shift(self, other):
@@ -144,11 +145,11 @@ class CellRange(object):
         """
         Test whether the ranges are not equal.
 
-        :type other: SheetRange
+        :type other: CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* != *other*.
         """
-        if isinstance(other, SheetRange):
+        if isinstance(other, CellRange):
             # Test whether sheet titles are different and not empty.
             this_title = self.title
             that_title = other.title
@@ -163,7 +164,7 @@ class CellRange(object):
         """
         Test whether the ranges are equal.
 
-        :type other: SheetRange
+        :type other: CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* == *other*.
         """
@@ -178,7 +179,7 @@ class CellRange(object):
         :param other: Other sheet range
         :return: ``True`` if *range* <= *other*.
         """
-        if isinstance(other, SheetRange):
+        if isinstance(other, CellRange):
             # Test whether sheet titles are equals (or if one of them is empty).
             this_title = self.title
             that_title = other.title
@@ -195,7 +196,7 @@ class CellRange(object):
         """
         Test whether every element in the range is in *other*, but not all.
 
-        :type other: SheetRange
+        :type other: CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* < *other*.
         """
@@ -206,11 +207,11 @@ class CellRange(object):
         """
         Test whether every element in *other* is in the range.
 
-        :type other: SheetRange or tuple[int, int]
+        :type other: CellRange or tuple[int, int]
         :param other: Other sheet range or cell index (*row_idx*, *col_idx*).
         :return: ``True`` if *range* >= *other* (or *other* in *range*).
         """
-        if isinstance(other, SheetRange):
+        if isinstance(other, CellRange):
             # Test whether sheet titles are equals (or if one of them is empty).
             this_title = self.title
             that_title = other.title
@@ -231,7 +232,7 @@ class CellRange(object):
         """
         Test whether every element in *other* is in the range, but not all.
 
-        :type other: SheetRange
+        :type other: CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* > *other*.
         """
@@ -243,11 +244,11 @@ class CellRange(object):
         Return ``True`` if the range has no elements in common with other.
         Ranges are disjoint if and only if their intersection is the empty range.
 
-        :type other: SheetRange
+        :type other: CellRange
         :param other: Other sheet range.
         :return: `True`` if the range has no elements in common with other.
         """
-        if isinstance(other, SheetRange):
+        if isinstance(other, CellRange):
             # Test whether sheet titles are different and not empty.
             this_title = self.title
             that_title = other.title
@@ -264,14 +265,14 @@ class CellRange(object):
         """
         Return a new range with elements common to the range and all *others*.
 
-        :type others: tuple[SheetRange]
+        :type others: tuple[CellRange]
         :param others: Other sheet ranges.
         :return: the current sheet range.
         :raise: :class:`ValueError` if an *other* range don't intersect
             with the current range.
         """
         for other in others:
-            if isinstance(other, SheetRange):
+            if isinstance(other, CellRange):
                 if self.isdisjoint(other):
                     raise ValueError("Range {0} don't intersect {0}".format(self, other))
                 self.min_row = max(self.min_row, other.min_row)
@@ -293,12 +294,12 @@ class CellRange(object):
         """
         Return a new range with elements from the range and all *others*.
 
-        :type others: tuple[SheetRange]
+        :type others: tuple[CellRange]
         :param others: Other sheet ranges.
         :return: the current sheet range.
         """
         for other in others:
-            if isinstance(other, SheetRange):
+            if isinstance(other, CellRange):
                 self.min_row = min(self.min_row, other.min_row)
                 self.max_row = max(self.max_row, other.max_row)
                 self.min_col = min(self.min_col, other.min_col)

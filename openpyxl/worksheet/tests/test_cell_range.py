@@ -2,6 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 import pytest
 
+from copy import copy
 
 @pytest.fixture
 def CellRange():
@@ -32,6 +33,24 @@ class TestCellRange:
     def test_str(self, CellRange):
         cr = CellRange("'Sheet 1'!$A$1:B4")
         assert str(cr) == "'Sheet 1'!A1:B4"
+
+
+    def test_eq(self, CellRange):
+        cr1 = CellRange("'Sheet 1'!$A$1:B4")
+        cr2 = CellRange("'Sheet 1'!$A$1:B4")
+        assert cr1 == cr2
+
+
+    def test_ne(self, CellRange):
+        cr1 = CellRange("'Sheet 1'!$A$1:B4")
+        cr2 = CellRange("Sheet1!$A$1:B4")
+        assert cr1 != cr2
+
+
+    def test_copy(self, CellRange):
+        cr1 = CellRange("Sheet1!$A$1:B4")
+        cr2 = copy(cr1)
+        assert cr2 is not cr1
 
 
     def test_bottom(self, CellRange):
