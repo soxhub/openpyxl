@@ -300,3 +300,15 @@ def save_virtual_workbook(workbook,):
     virtual_workbook = temp_buffer.getvalue()
     temp_buffer.close()
     return virtual_workbook
+
+
+def save_dump(workbook, filename):
+    """
+    Save a write-only workbook
+    """
+    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
+    if workbook.worksheets == []:
+        workbook.create_sheet()
+    writer = ExcelWriter(workbook, archive)
+    writer.save(filename)
+    return True

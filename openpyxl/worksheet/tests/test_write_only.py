@@ -322,15 +322,6 @@ def test_write_empty_row(WriteOnlyWorksheet):
     assert diff is None, diff
 
 
-def test_save():
-    from tempfile import NamedTemporaryFile
-    filename = NamedTemporaryFile(delete=False)
-    from openpyxl.workbook import Workbook
-    from ..write_only import save_dump
-    wb = Workbook(write_only=True)
-    save_dump(wb, filename)
-
-
 def test_write_height(WriteOnlyWorksheet):
     from openpyxl.worksheet.dimensions import RowDimension
     ws = WriteOnlyWorksheet
