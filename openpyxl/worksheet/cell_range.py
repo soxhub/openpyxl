@@ -316,13 +316,17 @@ class CellRange(object):
         :param others: Other sheet ranges.
         :return: the current sheet range.
         """
-        if isinstance(other, CellRange):
-            self.min_row = min(self.min_row, other.min_row)
-            self.max_row = max(self.max_row, other.max_row)
-            self.min_col = min(self.min_col, other.min_col)
-            self.max_col = max(self.max_col, other.max_col)
-            return self
-        raise TypeError(repr(type(other)))
+        if not isinstance(other, CellRange):
+            raise TypeError(repr(type(other)))
+        if self.title != other.title:
+            raise ValueError("Cannot merge ranges from different worksheets")
+        min_row = min(self.min_row, other.min_row)
+        max_row = max(self.max_row, other.max_row)
+        min_col = min(self.min_col, other.min_col)
+        max_col = max(self.max_col, other.max_col)
+        return CellRange(min_col=min_col, min_row=min_row, max_col=max_col,
+                         max_row=max_row, title=self.title)
+
 
     __ior__ = union
 
@@ -359,27 +363,46 @@ class CellRange(object):
             self.min_col = self.max_col
 
 
-    def expand(self, min_col_idx, min_row_idx, max_col_idx, max_row_idx, direction):
+    def expand(self, right=0, down=0, left=0, up=0):
         """
-        Expand the range to the given direction in the bounding range.
+        Expand the range by the dimensions provided.
 
-        :type direction: str
-        :param direction: Expansion direction: a combinaison of "left", "right", "top" or "bottom".
+        :type right: int
+        :param right: expand range to the right by this number of cells
+        :type down: int
+        :param down: expand range down by this number of cells
+        :type left: int
+        :param left: expand range to the left by this number of cells
+        :type up: int
+        :param up: expand range up by this number of cells
         """
-        parts = direction.split("-")
-        if "top" in parts:
-            self.min_row = min_row_idx
-        if "bottom" in parts:
-            self.max_row = max_row_idx
-        if "left" in parts:
-            self.min_col = min_col_idx
-        if "right" in parts:
-            self.max_col = max_col_idx
-        if self.min_row > self.max_row or self.min_col > self.max_col:
-            raise ValueError("Invalid expanded range: {0}".format(self))
+        self.min_col -= left
+        self.min_row -= up
+        self.max_col += right
+        self.max_row += down
 
 
-    def get_size(self):
+    def shrink(self, right=0, bottom=0, left=0, top=0):
+        """
+        Shrink the range by the dimensions provided.
+
+        :type right: int
+        :param right: shrink range from the right by this number of cells
+        :type down: int
+        :param down: shrink range from the top by this number of cells
+        :type left: int
+        :param left: shrink range from the left by this number of cells
+        :type up: int
+        :param up: shrink range from the bottown by this number of cells
+        """
+        self.min_col += left
+        self.min_row += top
+        self.max_col -= right
+        self.max_row -= bottom
+
+
+    @property
+    def size(self):
         """ Return the size of the range (*count_cols*, *count_rows*). """
         count_cols = self.max_col + 1 - self.min_col
         count_rows = self.max_row + 1 - self.min_row

@@ -79,34 +79,33 @@ class TestCellRange:
 
     def test_union(self, CellRange):
         cr1 = CellRange("A1:D4")
-        cr2 = CellRange("E5:J10")
-        cr1.union(cr2)
-        assert cr1.bounds == ()
+        cr2 = CellRange("E5:K10")
+        cr3 = cr1.union(cr2)
+        assert cr3.bounds == (1, 1, 11, 10)
 
 
-    def test_bottom(self, CellRange):
-        pass
-
-
-    def test_collapse(self, CellRange):
-        pass
-
-
-
-    def test_coord(self, CellRange):
-        pass
+    def test_no_union(self, CellRange):
+        cr1 = CellRange("Sheet1!A1:D4")
+        cr2 = CellRange("E5:K10")
+        with pytest.raises(ValueError):
+            cr3 = cr1.union(cr2)
 
 
     def test_expand(self, CellRange):
-        pass
+        cr = CellRange("E5:K10")
+        cr.expand(right=2, down=2, left=1, up=2)
+        assert cr.coord == "D3:M12"
 
 
-    def test_from_string(self, CellRange):
-        pass
+    def test_shrink(self, CellRange):
+        cr = CellRange("E5:K10")
+        cr.shrink(right=2, bottom=2, left=1, top=2)
+        assert cr.coord == "F7:I8"
 
 
-    def test_get_size(self, CellRange):
-        pass
+    def test_size(self, CellRange):
+        cr = CellRange("E5:K10")
+        assert cr.size == (7, 6)
 
 
     def test_intersection(self, CellRange):
@@ -122,20 +121,4 @@ class TestCellRange:
 
 
     def test_issuperset(self, CellRange):
-        pass
-
-
-    def test_left(self, CellRange):
-        pass
-
-
-    def test_right(self, CellRange):
-        pass
-
-
-    def test_shift(self, CellRange):
-        pass
-
-
-    def test_top(self, CellRange):
         pass
