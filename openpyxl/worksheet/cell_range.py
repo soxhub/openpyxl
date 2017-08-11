@@ -403,10 +403,10 @@ class CellRange(object):
 
     @property
     def size(self):
-        """ Return the size of the range (*count_cols*, *count_rows*). """
-        count_cols = self.max_col + 1 - self.min_col
-        count_rows = self.max_row + 1 - self.min_row
-        return count_cols, count_rows
+        """ Return the size of the range as a dicitionary of rows and columns. """
+        cols = self.max_col + 1 - self.min_col
+        rows = self.max_row + 1 - self.min_row
+        return {'columns':cols, 'rows':rows}
 
 
     @property

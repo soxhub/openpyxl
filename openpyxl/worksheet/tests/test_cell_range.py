@@ -105,7 +105,7 @@ class TestCellRange:
 
     def test_size(self, CellRange):
         cr = CellRange("E5:K10")
-        assert cr.size == (7, 6)
+        assert cr.size == {'columns':7, 'rows':6}
 
 
     def test_intersection(self, CellRange):
