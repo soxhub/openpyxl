@@ -335,34 +335,6 @@ class CellRange(object):
         return self.__copy__().__ior__(other)
 
 
-    def collapse(self, direction="top-left"):
-        """
-        Collapse the range to the given direction.
-
-        :type direction: str
-        :param direction: Collapsing direction:
-
-            - to a single cell: "top-left", "top-right", "bottom-left", "bottom-right",
-            - to a column: "left", "right",
-            - to a row: "top", bottom".
-        """
-        parts = direction.split("-")
-        # top and bottom are exclusive
-        if "top" in parts:
-            self.max_row_p = self.min_row_p
-            self.max_row = self.min_row
-        elif "bottom" in parts:
-            self.min_row_p = self.max_row_p
-            self.min_row = self.max_row
-        # left and right are exclusive
-        if "left" in parts:
-            self.max_col_p = self.min_col_p
-            self.max_col = self.min_col
-        elif "right" in parts:
-            self.min_col_p = self.max_col_p
-            self.min_col = self.max_col
-
-
     def expand(self, right=0, down=0, left=0, up=0):
         """
         Expand the range by the dimensions provided.
