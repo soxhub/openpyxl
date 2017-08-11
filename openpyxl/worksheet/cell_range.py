@@ -100,10 +100,12 @@ class CellRange(object):
 
     def _get_range_string(self):
         fmt = "{coord}"
+        title = self.title
         if self.title:
             fmt = u"{title}!{coord}"
+            title = quote_sheetname(self.title)
 
-        return fmt.format(title=quote_sheetname(self.title), coord=self.coord)
+        return fmt.format(title=title, coord=self.coord)
 
     if VER[0] == 3:
         __str__ = _get_range_string
@@ -268,15 +270,17 @@ class CellRange(object):
         """
         if not isinstance(other, CellRange):
             raise TypeError(repr(type(other)))
-            # Test whether sheet titles are different and not empty.
-        this_title = self.title
-        that_title = other.title
-        ne_sheet_title = this_title and that_title and this_title.upper() != that_title.upper()
-        return (ne_sheet_title or
-                (not (self.min_row <= other.min_row <= self.max_row) and
-                 not (other.min_row <= self.max_row <= other.max_row)) or
-                (not (self.min_col <= other.min_col <= self.max_col) and
-                 not (other.min_col <= self.max_col <= other.max_col)))
+
+        if self.title != other.title:
+            raise ValueError("Cannot compare ranges from different worksheets")
+
+        # sort by top-left vertex
+        if self.bounds > other.bounds:
+            i = self
+            self = other
+            other = i
+
+        return (self.max_col, self.max_row) < (other.min_col, other.max_row)
 
 
     def intersection(self, other):
@@ -295,8 +299,8 @@ class CellRange(object):
         if self.title != other.title:
             raise ValueError("Cannot compare ranges from different worksheets")
 
-        #if self.isdisjoint(other):
-            #raise ValueError("Range {0} don't intersect {0}".format(self, other))
+        if self.isdisjoint(other):
+            raise ValueError("Range {0} don't intersect {0}".format(self, other))
 
         min_row = max(self.min_row, other.min_row)
         max_row = min(self.max_row, other.max_row)

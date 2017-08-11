@@ -39,6 +39,8 @@ class TestCellRange:
     def test_str(self, CellRange):
         cr = CellRange("'Sheet 1'!$A$1:B4")
         assert str(cr) == "'Sheet 1'!A1:B4"
+        cr = CellRange("A1")
+        assert str(cr) == "A1"
 
 
     def test_eq(self, CellRange):
@@ -116,8 +118,15 @@ class TestCellRange:
 
 
     def test_isdisjoint(self, CellRange):
-        pass
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("A1:C12")
+        assert cr1.isdisjoint(cr2) is True
 
+
+    def test_is_not_disjoint(self, CellRange):
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("D2:F7")
+        assert cr1.isdisjoint(cr2) is False
 
     def test_issubset(self, CellRange):
         pass
