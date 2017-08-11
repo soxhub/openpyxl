@@ -109,7 +109,10 @@ class TestCellRange:
 
 
     def test_intersection(self, CellRange):
-        pass
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("D2:F7")
+        cr3 = cr1.intersection(cr2)
+        assert cr3.coord == "E5:F7"
 
 
     def test_isdisjoint(self, CellRange):

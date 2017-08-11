@@ -266,22 +266,22 @@ class CellRange(object):
         :param other: Other sheet range.
         :return: `True`` if the range has no elements in common with other.
         """
-        if isinstance(other, CellRange):
+        if not isinstance(other, CellRange):
+            raise TypeError(repr(type(other)))
             # Test whether sheet titles are different and not empty.
-            this_title = self.title
-            that_title = other.title
-            ne_sheet_title = this_title and that_title and this_title.upper() != that_title.upper()
-            return (ne_sheet_title or
-                    (not (self.min_row <= other.min_row <= self.max_row) and
-                     not (other.min_row <= self.max_row <= other.max_row)) or
-                    (not (self.min_col <= other.min_col <= self.max_col) and
-                     not (other.min_col <= self.max_col <= other.max_col)))
-        raise TypeError(repr(type(other)))
+        this_title = self.title
+        that_title = other.title
+        ne_sheet_title = this_title and that_title and this_title.upper() != that_title.upper()
+        return (ne_sheet_title or
+                (not (self.min_row <= other.min_row <= self.max_row) and
+                 not (other.min_row <= self.max_row <= other.max_row)) or
+                (not (self.min_col <= other.min_col <= self.max_col) and
+                 not (other.min_col <= self.max_col <= other.max_col)))
 
 
-    def intersection(self, *others):
+    def intersection(self, other):
         """
-        Return a new range with elements common to the range and all *others*.
+        Return a new range with elements common to the range and another
 
         :type others: tuple[CellRange]
         :param others: Other sheet ranges.
@@ -289,17 +289,21 @@ class CellRange(object):
         :raise: :class:`ValueError` if an *other* range don't intersect
             with the current range.
         """
-        for other in others:
-            if isinstance(other, CellRange):
-                if self.isdisjoint(other):
-                    raise ValueError("Range {0} don't intersect {0}".format(self, other))
-                self.min_row = max(self.min_row, other.min_row)
-                self.max_row = min(self.max_row, other.max_row)
-                self.min_col = max(self.min_col, other.min_col_idx)
-                self.max_col = min(self.max_col, other.max_col)
-                return self
+        if not isinstance(other, CellRange):
             raise TypeError(repr(type(other)))
-        return self
+
+        if self.title != other.title:
+            raise ValueError("Cannot compare ranges from different worksheets")
+
+        #if self.isdisjoint(other):
+            #raise ValueError("Range {0} don't intersect {0}".format(self, other))
+
+        min_row = max(self.min_row, other.min_row)
+        max_row = min(self.max_row, other.max_row)
+        min_col = max(self.min_col, other.min_col)
+        max_col = min(self.max_col, other.max_col)
+
+        return CellRange(min_col=min_col, min_row=min_row, max_col=max_col, max_row=max_row)
 
     __iand__ = intersection
 
@@ -318,8 +322,10 @@ class CellRange(object):
         """
         if not isinstance(other, CellRange):
             raise TypeError(repr(type(other)))
+
         if self.title != other.title:
             raise ValueError("Cannot merge ranges from different worksheets")
+
         min_row = min(self.min_row, other.min_row)
         max_row = max(self.max_row, other.max_row)
         min_col = min(self.min_col, other.min_col)
