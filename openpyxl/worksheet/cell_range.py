@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from openpyxl.compat.strings import VER
+from openpyxl.compat.strings import safe_repr
 
 from openpyxl.utils import (
     range_boundaries,
@@ -92,10 +92,10 @@ class CellRange(object):
 
 
     def __repr__(self):
-        fmt = "{coord}"
+        fmt = u"{coord}"
         if self.title:
-            fmt = "{title!r}!{coord}"
-        return fmt.format(title=self.title, coord=self.coord)
+            fmt = u"{title!r}!{coord}"
+        return safe_repr(fmt.format(title=self.title, coord=self.coord))
 
 
     def _get_range_string(self):
@@ -104,25 +104,14 @@ class CellRange(object):
         if self.title:
             fmt = u"{title}!{coord}"
             title = quote_sheetname(self.title)
-
         return fmt.format(title=title, coord=self.coord)
 
-    if VER[0] == 3:
-        __str__ = _get_range_string
+    __unicode__ = _get_range_string
 
-    else:
-        __unicode__ = _get_range_string
 
-        def __str__(self):
-            title = self.title or ''
-            title = title.encode('ascii', errors='backslashreplace')
-            if b"'" in title:
-                title = b"'" + title.replace(b"'", b"''") + b"'"
-            coord = self.coord
-            if title:
-                return title + b"!" + coord
-            else:
-                return coord
+    def __str__(self):
+        coord = self._get_range_string()
+        return safe_repr(coord)
 
 
     def __copy__(self):
