@@ -233,19 +233,7 @@ class CellRange(object):
         :param other: Other sheet range or cell index (*row_idx*, *col_idx*).
         :return: ``True`` if *range* >= *other* (or *other* in *range*).
         """
-        if isinstance(other, CellRange):
-            # Test whether sheet titles are equals (or if one of them is empty).
-            this_title = self.title
-            that_title = other.title
-            eq_sheet_title = not this_title or not that_title or this_title.upper() == that_title.upper()
-            return (eq_sheet_title and
-                    (self.min_row <= other.min_row <= other.max_row <= self.max_row) and
-                    (self.min_col <= other.min_col <= other.max_col <= self.max_col))
-        elif isinstance(other, tuple):
-            row_idx, col_idx = other  # cell index in worksheet._cells
-            return ((self.min_row <= row_idx <= self.max_row) and
-                    (self.min_col <= col_idx <= self.max_col))
-        raise TypeError(repr(type(other)))
+        return not self.issubset(other)
 
     __contains__ = __ge__ = issuperset
 
