@@ -199,15 +199,17 @@ class CellRange(object):
         :param other: Other sheet range
         :return: ``True`` if *range* <= *other*.
         """
-        if isinstance(other, CellRange):
-            # Test whether sheet titles are equals (or if one of them is empty).
-            this_title = self.title
-            that_title = other.title
-            eq_sheet_title = not this_title or not that_title or this_title.upper() == that_title.upper()
-            return (eq_sheet_title and
-                    (other.min_row <= self.min_row <= self.max_row <= other.max_row) and
-                    (other.min_col <= self.min_col <= self.max_col <= other.max_col))
-        raise TypeError(repr(type(other)))
+        if not isinstance(other, CellRange):
+            raise TypeError(repr(type(other)))
+
+        # Test whether sheet titles are equals (or if one of them is empty).
+        this_title = self.title
+        that_title = other.title
+        eq_sheet_title = not this_title or not that_title or this_title.upper() == that_title.upper()
+        return (eq_sheet_title and
+                (other.min_row <= self.min_row <= self.max_row <= other.max_row) and
+                (other.min_col <= self.min_col <= self.max_col <= other.max_col))
+
 
     __le__ = issubset
 

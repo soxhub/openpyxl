@@ -128,9 +128,20 @@ class TestCellRange:
         cr2 = CellRange("D2:F7")
         assert cr1.isdisjoint(cr2) is False
 
+
     def test_issubset(self, CellRange):
-        pass
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("F6:J8")
+        assert cr2.issubset(cr1) is True
+
+
+    def test_is_not_subset(self, CellRange):
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("D4:M8")
+        assert cr2.issubset(cr1) is False
 
 
     def test_issuperset(self, CellRange):
-        pass
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("F6:J8")
+        assert cr1.issuperset(cr2) is True
