@@ -224,7 +224,7 @@ class CellRange(object):
         """
         return not self.issubset(other)
 
-    __contains__ = __ge__ = issuperset
+    __ge__ = issuperset
 
 
     def __gt__(self, other):
