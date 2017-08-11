@@ -389,28 +389,3 @@ class CellRange(object):
         cols = self.max_col + 1 - self.min_col
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
-
-
-    @property
-    def top(self):
-        """
-        Returns the cells for the top row
-        """
-
-    @property
-    def left(self):
-        """
-        Returns the cells for the left column
-        """
-
-    @property
-    def right(self):
-        """
-        Returns the cells for the right column
-        """
-
-    @property
-    def bottom(self):
-        """
-        Returns the cells for the bottom row
-        """
