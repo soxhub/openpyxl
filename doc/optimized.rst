@@ -97,3 +97,7 @@ anyway).
       that, every attempt to save the workbook or append() to an existing
       worksheet will raise an :class:`openpyxl.utils.exceptions.WorkbookAlreadySaved`
       exception.
+      
+    * Everything that appears in the file before the actual cell data must be created
+      before cells are added because it must written to the file before then.
+      For example, `freeze_panes` should be set before cells are added.
