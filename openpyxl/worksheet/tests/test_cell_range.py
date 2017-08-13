@@ -88,7 +88,7 @@ class TestCellRange:
 
     def test_no_union(self, CellRange):
         cr1 = CellRange("Sheet1!A1:D4")
-        cr2 = CellRange("E5:K10")
+        cr2 = CellRange("Sheet2!E5:K10")
         with pytest.raises(ValueError):
             cr3 = cr1.union(cr2)
 
@@ -145,3 +145,32 @@ class TestCellRange:
         cr1 = CellRange("E5:K10")
         cr2 = CellRange("F6:J8")
         assert cr1.issuperset(cr2) is True
+
+
+    def test_contains(self, CellRange):
+        cr = CellRange("A1:F10")
+        assert "B3" in cr
+
+
+    @pytest.mark.parametrize("r1, r2, expected",
+                             [
+                                 ("Sheet1!A1:B4", "Sheet1!D5:E5", None),
+                                 ("Sheet1!A1:B4", "D5:E5", None),
+                             ]
+    )
+    def test_check_title(self, CellRange,r1, r2, expected):
+        cr1 = CellRange(r1)
+        cr2 = CellRange(r2)
+        assert cr1._check_title(cr2) is expected
+
+    @pytest.mark.parametrize("r1, r2",
+                             [
+                                 ("A1:B4", "Sheet1!D5:E5"),
+                                 ("Sheet1!A1:B4", "Sheet2!D5:E5"),
+                             ]
+                             )
+    def test_different_worksheets(self, CellRange, r1, r2):
+        cr1 = CellRange(r1)
+        cr2 = CellRange(r2)
+        with pytest.raises(ValueError):
+            cr1._check_title(cr2)

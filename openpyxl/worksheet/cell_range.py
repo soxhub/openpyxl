@@ -10,9 +10,6 @@ from openpyxl.utils import (
 )
 
 
-### Notes
-# focus on range functions
-
 
 class CellRange(object):
     """
@@ -91,6 +88,19 @@ class CellRange(object):
         )
 
 
+    def _check_title(self, other):
+        """
+        Check whether comparisons between ranges are possible.
+        Cannot compare ranges from different worksheets
+        Skip if the range passed in has no title.
+        """
+        if not isinstance(other, CellRange):
+            raise TypeError(repr(type(other)))
+
+        if other.title and self.title != other.title:
+            raise ValueError("Cannot work with ranges from different worksheets")
+
+
     def __repr__(self):
         fmt = u"{coord}"
         if self.title:
@@ -158,15 +168,17 @@ class CellRange(object):
         :param other: Other sheet range
         :return: ``True`` if *range* != *other*.
         """
-        if isinstance(other, CellRange):
-            # Test whether sheet titles are different and not empty.
-            this_title = self.title
-            that_title = other.title
-            ne_sheet_title = this_title and that_title and this_title.upper() != that_title.upper()
-            return (ne_sheet_title or
-                    other.min_row != self.min_row or self.max_row != other.max_row or
-                    other.min_col != self.min_col or self.max_col != other.max_col)
-        raise TypeError(repr(type(other)))
+        try:
+            self._check_title(other)
+        except ValueError:
+            return True
+
+        return (
+            other.min_row != self.min_row
+            or self.max_row != other.max_row
+            or other.min_col != self.min_col
+            or self.max_col != other.max_col
+                )
 
 
     def __eq__(self, other):
@@ -188,17 +200,13 @@ class CellRange(object):
         :param other: Other sheet range
         :return: ``True`` if *range* <= *other*.
         """
-        if not isinstance(other, CellRange):
-            raise TypeError(repr(type(other)))
+        self._check_title(other)
 
-        # Test whether sheet titles are equals (or if one of them is empty).
-        this_title = self.title
-        that_title = other.title
-        eq_sheet_title = not this_title or not that_title or this_title.upper() == that_title.upper()
-        return (eq_sheet_title and
-                (other.min_row <= self.min_row <= self.max_row <= other.max_row) and
-                (other.min_col <= self.min_col <= self.max_col <= other.max_col))
-
+        return (
+            (other.min_row <= self.min_row <= self.max_row <= other.max_row)
+            and
+            (other.min_col <= self.min_col <= self.max_col <= other.max_col)
+        )
 
     __le__ = issubset
 
@@ -227,6 +235,16 @@ class CellRange(object):
     __ge__ = issuperset
 
 
+    def __contains__(self, coord):
+        """
+        Check whether the range contains a particular cell coordinate
+        """
+        cr = self.__class__(coord)
+        if cr.title is None:
+            cr.title = self.title
+        return self.issuperset(cr)
+
+
     def __gt__(self, other):
         """
         Test whether every element in *other* is in the range, but not all.
@@ -247,11 +265,7 @@ class CellRange(object):
         :param other: Other sheet range.
         :return: `True`` if the range has no elements in common with other.
         """
-        if not isinstance(other, CellRange):
-            raise TypeError(repr(type(other)))
-
-        if self.title != other.title:
-            raise ValueError("Cannot compare ranges from different worksheets")
+        self._check_title(other)
 
         # sort by top-left vertex
         if self.bounds > other.bounds:
@@ -272,12 +286,6 @@ class CellRange(object):
         :raise: :class:`ValueError` if an *other* range don't intersect
             with the current range.
         """
-        if not isinstance(other, CellRange):
-            raise TypeError(repr(type(other)))
-
-        if self.title != other.title:
-            raise ValueError("Cannot compare ranges from different worksheets")
-
         if self.isdisjoint(other):
             raise ValueError("Range {0} don't intersect {0}".format(self, other))
 
@@ -286,7 +294,8 @@ class CellRange(object):
         min_col = max(self.min_col, other.min_col)
         max_col = min(self.max_col, other.max_col)
 
-        return CellRange(min_col=min_col, min_row=min_row, max_col=max_col, max_row=max_row)
+        return CellRange(min_col=min_col, min_row=min_row, max_col=max_col,
+                         max_row=max_row)
 
     __iand__ = intersection
 
@@ -303,11 +312,7 @@ class CellRange(object):
         :param others: Other sheet ranges.
         :return: the current sheet range.
         """
-        if not isinstance(other, CellRange):
-            raise TypeError(repr(type(other)))
-
-        if self.title != other.title:
-            raise ValueError("Cannot merge ranges from different worksheets")
+        self._check_title(other)
 
         min_row = min(self.min_row, other.min_row)
         max_row = max(self.max_row, other.max_row)
