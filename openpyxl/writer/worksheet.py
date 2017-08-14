@@ -10,6 +10,7 @@ from warnings import warn
 # package imports
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.compat import unicode
 
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.packaging.relationship import Relationship, RelationshipList
@@ -185,7 +186,7 @@ def _add_table_headers(ws):
                 for cell, col in zip(row, table.tableColumns):
                     if cell.data_type != "s":
                         warn("File may not be readable: column headings must be strings.")
-                    col.name = str(cell.value)
+                    col.name = unicode(cell.value)
         rel = Relationship(type=table._rel_type, Target="")
         ws._rels.append(rel)
         table._rel_id = rel.Id
