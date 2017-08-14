@@ -520,8 +520,8 @@ def test_write_drawing(worksheet):
 def test_write_tables(worksheet, write_worksheet):
     from openpyxl.worksheet.table import Table
 
-    worksheet.append(list("ABCDEF"))
-    worksheet._tables = [Table(displayName="Table1", ref="A1:D6")]
+    worksheet.append(list(u"ABCDEF\xfc"))
+    worksheet._tables = [Table(displayName="Table1", ref="A1:G6")]
     xml = write_worksheet(worksheet)
     assert len(worksheet._rels) == 1
 
@@ -531,7 +531,7 @@ def test_write_tables(worksheet, write_worksheet):
         <outlinePr summaryRight="1" summaryBelow="1"/>
         <pageSetUpPr/>
       </sheetPr>
-      <dimension ref="A1:F1"/>
+      <dimension ref="A1:G1"/>
       <sheetViews>
         <sheetView workbookViewId="0">
           <selection sqref="A1" activeCell="A1"/>
@@ -539,7 +539,7 @@ def test_write_tables(worksheet, write_worksheet):
       </sheetViews>
       <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData>
-        <row r="1" spans="1:6">
+        <row r="1" spans="1:7">
         <c r="A1" t="s">
           <v>0</v>
         </c>
@@ -557,6 +557,9 @@ def test_write_tables(worksheet, write_worksheet):
         </c>
         <c r="F1" t="s">
           <v>5</v>
+        </c>
+        <c r="G1" t="s">
+          <v>6</v>
         </c>
         </row>
     </sheetData>
