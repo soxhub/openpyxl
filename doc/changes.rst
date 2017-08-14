@@ -1,5 +1,5 @@
-2.5.0 (unreleased)
-==================
+2.5.0-a3 (2017-08-14)
+=====================
 
 
 Bugfixes
@@ -8,7 +8,7 @@ Bugfixes
 * `#857 <https://bitbucket.org/openpyxl/openpyxl/issues/857>`_ Pivot Tables without Worksheet Sources raise an exception
 
 
-2.5.0-a2 (2015-06-25)
+2.5.0-a2 (2017-06-25)
 =====================
 
 
