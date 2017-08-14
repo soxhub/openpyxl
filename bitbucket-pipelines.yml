@@ -5,3 +5,4 @@ pipelines:
     - step:
         script:
           - /tools/clean-launch.sh tox --skip-missing-interpreters -- -qrf
+		  - curl -sSL https://download.sourceclear.com/ci.sh | sh
