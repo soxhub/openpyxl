@@ -1,6 +1,12 @@
 2.5.0-b1 (unreleased)
 =====================
 
+
+Bugfixes
+--------
+* `#876 <https://bitbucket.org/openpyxl/openpyxl/issues/876>`_ Unicode in chart axes not handled correctly in Python 2
+
+
 2.5.0-a3 (2017-08-14)
 =====================
 
