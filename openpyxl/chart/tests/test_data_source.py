@@ -37,10 +37,9 @@ class TestNumRef:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-        
-        
-    def test_from_tree_degree_sign(self):
-        from ..series import NumRef
+
+
+    def test_from_tree_degree_sign(self, NumRef):
 
         src = u"""
             <numRef>
@@ -60,8 +59,6 @@ class TestNumRef:
         node = fromstring(src)
         numRef = NumRef.from_tree(node)
         assert numRef.numCache.formatCode == u"'0\\\xb0'"
-
-
 
 
 @pytest.fixture
