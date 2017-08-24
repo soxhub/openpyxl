@@ -64,7 +64,7 @@ class NumVal(Serialisable):
 
 class NumData(Serialisable):
 
-    formatCode = NestedText(expected_type=str, allow_none=True)
+    formatCode = NestedText(expected_type=unicode, allow_none=True)
     ptCount = NestedInteger(allow_none=True)
     pt = Sequence(expected_type=NumVal)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
