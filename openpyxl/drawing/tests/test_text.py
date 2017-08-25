@@ -15,6 +15,7 @@ def Paragraph():
 
 class TestParagraph:
 
+
     def test_ctor(self, Paragraph):
         text = Paragraph()
         xml = tostring(text.to_tree())
@@ -36,6 +37,22 @@ class TestParagraph:
         node = fromstring(src)
         text = Paragraph.from_tree(node)
         assert text == Paragraph()
+
+
+    def test_multiline(self, Paragraph):
+        src = """
+        <p>
+            <r>
+                <t>Adjusted Absorbance vs.</t>
+            </r>
+            <r>
+                <t> Concentration</t>
+            </r>
+        </p>
+        """
+        node = fromstring(src)
+        para = Paragraph.from_tree(node)
+        assert len(para.text) == 2
 
 
 @pytest.fixture

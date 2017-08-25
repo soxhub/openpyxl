@@ -529,7 +529,7 @@ class Paragraph(Serialisable):
     pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
     properties = Alias("pPr")
     endParaRPr = Typed(expected_type=CharacterProperties, allow_none=True)
-    r = Typed(expected_type=RegularTextRun, allow_none=True)
+    r = Sequence(expected_type=RegularTextRun)
     text = Alias('r')
     br = Typed(expected_type=LineBreak, allow_none=True)
     fld = Typed(expected_type=TextField, allow_none=True)
@@ -546,7 +546,7 @@ class Paragraph(Serialisable):
         self.pPr = pPr
         self.endParaRPr = endParaRPr
         if r is None:
-            r = RegularTextRun()
+            r = [RegularTextRun()]
         self.r = r
         self.br = br
         self.fld = fld
