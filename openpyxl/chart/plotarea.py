@@ -146,6 +146,12 @@ class PlotArea(Serialisable):
         self = super(PlotArea, cls).from_tree(node)
         axes = dict((axis.axId, axis) for axis in self._axes)
         for chart in self._charts:
+            if isinstance(chart, ScatterChart):
+                x, y = (axes[axId] for axId in chart.axId)
+                chart.x_axis = x
+                chart.y_axis = y
+                continue
+
             for axId in chart.axId:
                 axis = axes[axId]
                 if axis.tagname in ("catAx", "dateAx"):

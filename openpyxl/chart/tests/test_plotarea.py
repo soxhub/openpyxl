@@ -110,6 +110,17 @@ class TestPlotArea:
         assert plot._charts[1].y_axis == plot._axes[2]
 
 
+    def test_read_scatter_chart(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("scatterchart_plot_area.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        chart = plot._charts[0]
+        assert chart.axId == [211326240, 211330000]
+        assert chart.x_axis.axId == 211326240
+        assert chart.y_axis.axId == 211330000
+
+
 @pytest.fixture
 def DataTable():
     from ..plotarea import DataTable
