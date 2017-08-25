@@ -35,11 +35,11 @@ class Sequence(Descriptor):
         """
         Convert the sequence represented by the descriptor to an XML element
         """
-        tagname = namespaced(obj, tagname, namespace)
         for idx, v in enumerate(obj, self.idx_base):
             if hasattr(v, "to_tree"):
                 el = v.to_tree(tagname, idx)
             else:
+                tagname = namespaced(obj, tagname, namespace)
                 el = Element(tagname)
                 el.text = safe_string(v)
             yield el
