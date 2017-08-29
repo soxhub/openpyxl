@@ -126,10 +126,10 @@ worksheet. See :ref:`styling-merged-cells` for information on formatting merged 
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
->>> ws.merge_cells('A1:B1')
->>> ws.unmerge_cells('A1:B1')
+>>> ws.merge_cells('A2:D2')
+>>> ws.unmerge_cells('A2:D2')
 >>>
->>> # or
+>>> # or equivalently
 >>> ws.merge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
 >>> ws.unmerge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
 
