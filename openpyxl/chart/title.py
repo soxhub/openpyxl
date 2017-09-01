@@ -57,7 +57,7 @@ class Title(Serialisable):
 
 def title_maker(text):
     title = Title()
-    paras = [Paragraph(r=RegularTextRun(t=s)) for s in text.split("\n")]
+    paras = [Paragraph(r=[RegularTextRun(t=s)]) for s in text.split("\n")]
 
     title.tx.rich.paragraphs = paras
     return title
