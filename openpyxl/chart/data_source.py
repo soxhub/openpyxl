@@ -38,6 +38,8 @@ class NumberValueDescriptor(NestedText):
     Data should be numerical but isn't always :-/
     """
 
+    allow_none = True
+
     def __set__(self, instance, value):
         if value == "#N/A":
             self.expected_type = unicode
