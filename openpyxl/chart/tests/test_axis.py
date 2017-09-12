@@ -13,17 +13,33 @@ def Scaling():
     return Scaling
 
 
-def test_scaling(Scaling):
+class TestScale:
 
-    scale = Scaling()
-    xml = tostring(scale.to_tree())
-    expected = """
-    <scaling>
-       <orientation val="minMax"></orientation>
-    </scaling>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+
+    def test_ctor(self, Scaling):
+
+        scale = Scaling()
+        xml = tostring(scale.to_tree())
+        expected = """
+        <scaling>
+           <orientation val="minMax"></orientation>
+        </scaling>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Scaling):
+
+        xml = """
+        <scaling>
+         <logBase val="10"/>
+         <orientation val="minMax"/>
+        </scaling>
+        """
+        node = fromstring(xml)
+        scale = Scaling.from_tree(node)
+        assert scale == Scaling(logBase=10)
 
 
 @pytest.fixture
