@@ -7,6 +7,7 @@ Bugfixes
 * `#876 <https://bitbucket.org/openpyxl/openpyxl/issues/876>`_ Unicode in chart axes not handled correctly in Python 2
 * `#882 <https://bitbucket.org/openpyxl/openpyxl/issues/882>`_ ScatterCharts have defective axes
 * `#885 <https://bitbucket.org/openpyxl/openpyxl/issues/885>`_ Charts with empty numVal elements cannot be read
+* `#894 <https://bitbucket.org/openpyxl/openpyxl/issues/894>`_ Scaling options from existing files ignored
 * `#895 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Charts with PivotSource cannot be read
 
 
