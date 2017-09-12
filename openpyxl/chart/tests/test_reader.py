@@ -21,10 +21,10 @@ def test_read(datadir):
     chart = read_chart(cs)
 
     assert isinstance(chart, LineChart)
-    assert chart.title.tx.rich.p[0].r.t == "Website Performance"
+    assert chart.title.tx.rich.p[0].r[0].t == "Website Performance"
 
     assert isinstance(chart.y_axis, NumericAxis)
-    assert chart.y_axis.title.tx.rich.p[0].r.t == "Time in seconds"
+    assert chart.y_axis.title.tx.rich.p[0].r[0].t == "Time in seconds"
 
     assert isinstance(chart.x_axis, DateAxis)
     assert chart.x_axis.title is None
