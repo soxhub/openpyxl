@@ -204,7 +204,7 @@ class TestPivotSource:
         expected = """
         <pivotSource>
           <name>pivot source</name>
-          <fmtId>1</fmtId>
+          <fmtId val="1" />
         </pivotSource>
         """
         diff = compare_xml(xml, expected)
@@ -215,7 +215,7 @@ class TestPivotSource:
         src = """
         <pivotSource>
           <name>pivot source</name>
-          <fmtId>1</fmtId>
+          <fmtId val="1" />
         </pivotSource>
         """
         node = fromstring(src)

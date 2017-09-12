@@ -177,7 +177,7 @@ class PivotSource(Serialisable):
     tagname = "pivotSource"
 
     name = NestedText(expected_type=unicode)
-    fmtId = NestedText(expected_type=int)
+    fmtId = NestedInteger(expected_type=int)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('name', 'fmtId')
