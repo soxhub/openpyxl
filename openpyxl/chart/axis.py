@@ -123,7 +123,7 @@ class _BaseAxis(Serialisable):
         self.axId = axId
         if scaling is None:
             scaling = Scaling()
-        self.scaling = Scaling()
+        self.scaling = scaling
         self.delete = delete
         self.axPos = axPos
         self.majorGridlines = majorGridlines

@@ -159,6 +159,7 @@ class TestValAx:
         <valAx>
             <axId val="2056619928"/>
             <scaling>
+                <logBase val="10" />
                 <orientation val="minMax"/>
             </scaling>
             <delete val="0"/>
@@ -178,6 +179,7 @@ class TestValAx:
         assert axis.delete is False
         assert axis.crossAx == 2065276984
         assert axis.crossBetween == "between"
+        assert axis.scaling.logBase == 10
 
 
 @pytest.fixture
@@ -232,10 +234,10 @@ class TestDateAx:
         """
         node = fromstring(src)
         axis = DateAxis.from_tree(node)
-        assert axis == DateAxis(axId=20, crossAx=10, axPos="b",
-                              scaling="minMax", delete=False, numFmt=NumFmt("d-mmm", True),
-                              majorTickMark="out", crosses="autoZero", tickLblPos="nextTo",
-                              auto=True, lblOffset=100, baseTimeUnit="months")
+        assert axis == DateAxis(axId=20, crossAx=10, axPos="b", delete=False,
+                                numFmt=NumFmt("d-mmm", True), majorTickMark="out",
+                                crosses="autoZero", tickLblPos="nextTo", auto=True, lblOffset=100,
+                                baseTimeUnit="months")
 
 
 @pytest.fixture
