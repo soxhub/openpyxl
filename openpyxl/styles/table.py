@@ -15,6 +15,8 @@ from .colors import Color
 
 class TableStyleElement(Serialisable):
 
+    tagname = "tableStyleElement"
+
     type = Set(values=(['wholeTable', 'headerRow', 'totalRow', 'firstColumn',
                         'lastColumn', 'firstRowStripe', 'secondRowStripe', 'firstColumnStripe',
                         'secondColumnStripe', 'firstHeaderCell', 'lastHeaderCell',
@@ -25,7 +27,7 @@ class TableStyleElement(Serialisable):
                         'thirdColumnSubheading', 'firstRowSubheading', 'secondRowSubheading',
                         'thirdRowSubheading', 'pageFieldLabels', 'pageFieldValues']))
     size = Integer(allow_none=True)
-    dxfId = Integer()
+    dxfId = Integer(allow_none=True)
 
     def __init__(self,
                  type=None,
