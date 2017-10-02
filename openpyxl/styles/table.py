@@ -15,6 +15,8 @@ from .colors import Color
 
 class TableStyleElement(Serialisable):
 
+    tagname = "tableStyleElement"
+
     type = Set(values=(['wholeTable', 'headerRow', 'totalRow', 'firstColumn',
                         'lastColumn', 'firstRowStripe', 'secondRowStripe', 'firstColumnStripe',
                         'secondColumnStripe', 'firstHeaderCell', 'lastHeaderCell',
