@@ -27,7 +27,7 @@ class TableStyleElement(Serialisable):
                         'thirdColumnSubheading', 'firstRowSubheading', 'secondRowSubheading',
                         'thirdRowSubheading', 'pageFieldLabels', 'pageFieldValues']))
     size = Integer(allow_none=True)
-    dxfId = Integer()
+    dxfId = Integer(allow_none=True)
 
     def __init__(self,
                  type=None,
