@@ -9,6 +9,7 @@ Bugfixes
 * `#885 <https://bitbucket.org/openpyxl/openpyxl/issues/885>`_ Charts with empty numVal elements cannot be read
 * `#894 <https://bitbucket.org/openpyxl/openpyxl/issues/894>`_ Scaling options from existing files ignored
 * `#895 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Charts with PivotSource cannot be read
+* `#903 <https://bitbucket.org/openpyxl/openpyxl/issues/903>`_ Cannot read gradient fills
 
 
 2.5.0-a3 (2017-08-14)
