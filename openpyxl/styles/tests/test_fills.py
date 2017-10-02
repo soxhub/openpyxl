@@ -257,3 +257,33 @@ class TestStop:
     def test_position_invalid(self, Stop, position, exception):
         with pytest.raises(exception):
             Stop('999999', position)
+
+
+
+def test_read_fills():
+    # Make sure we pass the right class
+
+    from ..fills import Fill
+    s = """
+    <fills count="3" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <fill>
+      <patternFill patternType="none" />
+    </fill>
+    <fill>
+      <patternFill patternType="gray125" />
+    </fill>
+    <fill>
+      <gradientFill type="path" left="0.5" right="0.5" top="0.5" bottom="0.5">
+        <stop position="0">
+          <color theme="0" tint="-5.0935392315439317E-2" />
+        </stop>
+        <stop position="1">
+          <color theme="0" tint="-0.25098422193060094" />
+        </stop>
+      </gradientFill>
+    </fill>
+    </fills>
+    """
+    xml = fromstring(s)
+    for node in xml:
+        fill = Fill.from_tree(node)

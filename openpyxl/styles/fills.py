@@ -62,7 +62,7 @@ class Fill(Serialisable):
         child = children[0]
         if "patternFill" in child.tag:
             return PatternFill._from_tree(child)
-        return super(Fill, cls).from_tree(child)
+        return super(Fill, GradientFill).from_tree(child)
 
 
 class PatternFill(Fill):
