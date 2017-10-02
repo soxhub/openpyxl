@@ -11,6 +11,8 @@ Bugfixes
 * `#846 <https://bitbucket.org/openpyxl/openpyxl/issues/846>`_ Conditional formats not supported in write-only mode
 * `#849 <https://bitbucket.org/openpyxl/openpyxl/issues/849>`_ Conditional formats with no sqref cause an exception
 * `#859 <https://bitbucket.org/openpyxl/openpyxl/issues/859>`_ Headers that start with a number conflict with font size
+* `#902 <https://bitbucket.org/openpyxl/openpyxl/issues/902>`_ TableStyleElements don't always have a condtional format
+
 
 
 Pull requests
