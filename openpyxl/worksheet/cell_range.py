@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
-from openpyxl.descriptors import MinMax
+from openpyxl.descriptors import MinMax, Sequence
 
 from openpyxl.utils import (
     range_boundaries,
@@ -231,7 +231,9 @@ class CellRange(Strict):
         """
         Check whether the range contains a particular cell coordinate
         """
-        cr = self.__class__(coord)
+        cr = coord
+        if not isinstance(coord, CellRange):
+            cr = self.__class__(coord)
         if cr.title is None:
             cr.title = self.title
         return self.issuperset(cr)
@@ -357,3 +359,39 @@ class CellRange(Strict):
         cols = self.max_col + 1 - self.min_col
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
+
+
+class MultiCellRange(Strict):
+
+
+    ranges = Sequence(expected_type=CellRange)
+
+
+    def __init__(self, ranges=()):
+        self.ranges = ranges
+
+
+    def __contains__(self, coord):
+        cr = CellRange(coord)
+        for r in self.ranges:
+            return cr in r
+        return False
+
+
+    def __repr__(self):
+        ranges = [repr(r) for r in self.ranges]
+        return u" ".join(ranges)
+
+
+    __unicode__ = __str__ = __repr__
+
+
+    def add(self, coord):
+        cr = CellRange(coord)
+        ranges = self.ranges
+        ranges.append(cr)
+        self.ranges = ranges
+        return self
+
+
+    __iadd__ = add

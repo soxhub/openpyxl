@@ -19,6 +19,16 @@ class TestCellRange:
         assert cr.coord == "A1:E7"
 
 
+    def test_max_row_too_small(self, CellRange):
+        with pytest.raises(ValueError):
+            cr = CellRange("A4:B1")
+
+
+    def test_max_col_too_small(self, CellRange):
+        with pytest.raises(ValueError):
+            cr = CellRange("F1:B5")
+
+
     @pytest.mark.parametrize("range_string, title, coord",
                              [
                                  ("Sheet1!$A$1:B4", "Sheet1", "A1:B4"),
@@ -111,6 +121,13 @@ class TestCellRange:
         assert cr3.coord == "E5:F7"
 
 
+    def test_no_intersection(self, CellRange):
+        cr1 = CellRange("A1:F5")
+        cr2 = CellRange("M5:P17")
+        with pytest.raises(ValueError):
+            assert cr1 & cr2 == CellRange("A1")
+
+
     def test_isdisjoint(self, CellRange):
         cr1 = CellRange("E5:K10")
         cr2 = CellRange("A1:C12")
@@ -168,3 +185,50 @@ class TestCellRange:
         cr2 = CellRange(r2)
         with pytest.raises(ValueError):
             cr1._check_title(cr2)
+
+
+    def test_lt(self, CellRange):
+        cr1 = CellRange("A1:F5")
+        cr2 = CellRange("A2:F4")
+        assert cr2 < cr1
+
+
+    def test_gt(self, CellRange):
+        cr1 = CellRange("A1:F5")
+        cr2 = CellRange("A2:F4")
+        assert cr1 > cr2
+
+
+@pytest.fixture
+def MultiCellRange():
+    from ..cell_range import MultiCellRange
+    return MultiCellRange
+
+
+class TestMultiCellRange:
+
+
+    def test_ctor(self, MultiCellRange, CellRange):
+        cr = CellRange("A1")
+        cells = MultiCellRange(ranges=[cr])
+        assert cells.ranges == [cr]
+
+
+    def test_add(self, MultiCellRange, CellRange):
+        cr = CellRange("A1")
+        cells = MultiCellRange(ranges=[cr])
+        cells += "B2"
+        assert cells.ranges == [cr, CellRange("B2")]
+
+
+    def test_repr(self, MultiCellRange, CellRange):
+        cr1 = CellRange("a1")
+        cr2 = CellRange("B2")
+        cells = MultiCellRange(ranges=[cr1, cr2])
+        assert repr(cells) == "A1 B2"
+
+
+    def test_contains(self, MultiCellRange, CellRange):
+        cr = CellRange("A1:E4")
+        cells = MultiCellRange([cr])
+        assert "C3" in cells
