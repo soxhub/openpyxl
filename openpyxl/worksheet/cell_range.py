@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 
 from openpyxl.compat.strings import safe_repr
+from openpyxl.descriptors import Strict
+from openpyxl.descriptors import MinMax
 
 from openpyxl.utils import (
     range_boundaries,
@@ -10,8 +12,7 @@ from openpyxl.utils import (
 )
 
 
-
-class CellRange(object):
+class CellRange(Strict):
     """
     Represents a range in a sheet: title and coordinates.
 
@@ -35,6 +36,11 @@ class CellRange(object):
 
     """
 
+    min_col = MinMax(min=1, max=18278, expected_type=int)
+    min_row = MinMax(min=1, max=1048576, expected_type=int)
+    max_col = MinMax(min=1, max=18278, expected_type=int)
+    max_row = MinMax(min=1, max=1048576, expected_type=int)
+
 
     def __init__(self, range_string=None, min_col=None, min_row=None,
                  max_col=None, max_row=None, title=None):
@@ -43,23 +49,19 @@ class CellRange(object):
                 title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
             except ValueError:
                 min_col, min_row, max_col, max_row = range_boundaries(range_string)
-        # None > 0 is False
-        if not all(idx > 0 for idx in (min_col, min_row, max_col, max_row)):
-            msg = "Values for 'min_col', 'min_row', 'max_col' *and* 'max_row_' " \
-                  "must be strictly positive"
-            raise ValueError(msg)
-        # Intervals are inclusive
-        if not min_col <= max_col:
-            fmt = "{max_col} must be greater than {min_col}"
-            raise ValueError(fmt.format(min_col=min_col, max_col=max_col))
-        if not min_row <= max_row:
-            fmt = "{max_row} must be greater than {min_row}"
-            raise ValueError(fmt.format(min_row=min_row, max_row=max_row))
+
         self.min_col = min_col
         self.min_row = min_row
         self.max_col = max_col
         self.max_row = max_row
         self.title = title
+
+        if min_col > max_col:
+            fmt = "{max_col} must be greater than {min_col}"
+            raise ValueError(fmt.format(min_col=min_col, max_col=max_col))
+        if min_row > max_row:
+            fmt = "{max_row} must be greater than {min_row}"
+            raise ValueError(fmt.format(min_row=min_row, max_row=max_row))
 
 
     @property
