@@ -15,12 +15,10 @@ class CellRange(object):
     """
     Represents a range in a sheet: title and coordinates.
 
-    This object is used to perform calculations on ranges, like:
+    This object is used to perform operations on ranges, like:
 
-    - shifting to a direction,
+    - shift, expand or shrink
     - union/intersection with another sheet range,
-    - collapsing to a 1 x 1 range,
-    - expanding to a given size.
 
     We can check whether a range is:
 
@@ -30,9 +28,11 @@ class CellRange(object):
 
     We can get:
 
-    - the string representation,
-    - the coordinates,
     - the size of a range.
+    - the range bounds (vertices)
+    - the coordinates,
+    - the string representation,
+
     """
 
 
