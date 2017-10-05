@@ -150,16 +150,6 @@ class CellRange(object):
         self.max_row += row_shift
 
 
-    def __iadd__(self, value):
-        col_shift, row_shift = value
-        self.shift(col_shift, row_shift)
-        return self
-
-
-    def __add__(self, other):
-        return self.__copy__().__iadd__(other)
-
-
     def __ne__(self, other):
         """
         Test whether the ranges are not equal.
@@ -297,11 +287,7 @@ class CellRange(object):
         return CellRange(min_col=min_col, min_row=min_row, max_col=max_col,
                          max_row=max_row)
 
-    __iand__ = intersection
-
-
-    def __and__(self, other):
-        return self.__copy__().__iand__(other)
+    __and__ = intersection
 
 
     def union(self, other):
@@ -322,11 +308,7 @@ class CellRange(object):
                          max_row=max_row, title=self.title)
 
 
-    __ior__ = union
-
-
-    def __or__(self, other):
-        return self.__copy__().__ior__(other)
+    __or__ = union
 
 
     def expand(self, right=0, down=0, left=0, up=0):
