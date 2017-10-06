@@ -288,3 +288,8 @@ class TestConditionalFormatting:
     def test_repr(self, ConditionalFormatting):
         c1 = ConditionalFormatting("A1:B5")
         assert repr(c1) == "<ConditionalFormatting A1:B5>"
+
+
+    def test_contains(self, ConditionalFormatting):
+        c2 = ConditionalFormatting("A1:A5 B1:B5")
+        assert "B2" in c2

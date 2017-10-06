@@ -23,6 +23,7 @@ class ConditionalFormatting(Serialisable):
     tagname = "conditionalFormatting"
 
     sqref = Convertible(expected_type=MultiCellRange)
+    cells = Alias("sqref")
     pivot = Bool(allow_none=True)
     cfRule = Sequence(expected_type=Rule)
     rules = Alias("cfRule")
@@ -46,6 +47,13 @@ class ConditionalFormatting(Serialisable):
 
     def __repr__(self):
         return "<{cls} {cells}>".format(cls=self.__class__.__name__, cells=self.sqref)
+
+
+    def __contains__(self, coord):
+        """
+        Check whether a certain cell is affected by the formatting
+        """
+        return coord in self.sqref
 
 
 class ConditionalFormattingList(object):
