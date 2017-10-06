@@ -25,6 +25,7 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     get_column_letter,
 )
+from openpyxl.cell import Cell
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -125,7 +126,7 @@ class DataValidation(Serialisable):
                  imeMode=None,
                  operator=None,
                  ):
-
+        self.sqref = sqref
         self.showDropDown = showDropDown
         self.imeMode = imeMode
         self.operator = operator
@@ -146,11 +147,15 @@ class DataValidation(Serialisable):
 
 
     def add(self, cell):
-        """Adds a openpyxl.cell to this validator"""
+        """Adds a cell or cell coordinate to this validator"""
+        if hasattr(cell, "coordinate"):
+            cell = cell.coordinate
         self.sqref += cell
 
 
     def __contains__(self, cell):
+        if hasattr(cell, "coordinate"):
+            cell = cell.coordinate
         return cell in self.sqref
 
 
