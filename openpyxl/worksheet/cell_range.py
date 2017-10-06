@@ -395,6 +395,9 @@ class MultiCellRange(Strict):
 
 
     def add(self, coord):
+        """
+        Add a cell coordinate. Will create a new CellRange
+        """
         cr = CellRange(coord)
         ranges = self.ranges
         ranges.append(cr)
