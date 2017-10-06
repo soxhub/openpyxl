@@ -118,6 +118,10 @@ class TestDataValidation:
             showInputMessage="1"
             )
 
+    def test_contains(self, DataValidation):
+        dv = DataValidation(sqref="A1:D4 E5")
+        assert "C2" in dv
+
 
 @pytest.fixture
 def DataValidationList():
