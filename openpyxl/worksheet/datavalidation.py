@@ -195,3 +195,14 @@ class DataValidationList(Serialisable):
 
     def append(self, dv):
         self.dataValidation.append(dv)
+
+
+    def to_tree(self, tagname=None):
+        """
+        Need to skip validations that have no cell ranges
+        """
+        ranges = self.dataValidation # copy
+        self.dataValidation = [r for r in self.dataValidation if r.sqref != ""]
+        xml = super(DataValidationList, self).to_tree(tagname)
+        self.dataValidation = ranges
+        return xml

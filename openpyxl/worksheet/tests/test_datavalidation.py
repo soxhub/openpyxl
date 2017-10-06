@@ -150,6 +150,15 @@ class TestDataValidationList:
         assert dvs == DataValidationList()
 
 
+    def test_empty_dv(self, DataValidationList, DataValidation):
+        dv = DataValidation()
+        dvs = DataValidationList(dataValidation=[dv])
+        xml = tostring(dvs.to_tree())
+        expected = '<dataValidations count="0"/>'
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
 COLLAPSE_TEST_DATA = [
     (
         ["A1"], "A1"

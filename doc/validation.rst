@@ -46,6 +46,10 @@ Examples
 True
 
 
+.. note ::
+
+    Validations without any cell ranges will be ignored when saving a workbook.
+
 Other validation examples
 -------------------------
 
