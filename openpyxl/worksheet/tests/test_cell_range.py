@@ -158,9 +158,20 @@ class TestCellRange:
         assert cr1.issuperset(cr2) is True
 
 
+    def test_is_not_superset(self, CellRange):
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("A1:D4")
+        assert cr1.issuperset(cr2) is False
+
+
     def test_contains(self, CellRange):
         cr = CellRange("A1:F10")
         assert "B3" in cr
+
+
+    def test_doesnt_contain(self, CellRange):
+        cr = CellRange("A1:F10")
+        assert not "M1" in cr
 
 
     @pytest.mark.parametrize("r1, r2, expected",
@@ -214,6 +225,11 @@ class TestMultiCellRange:
         assert cells.ranges == [cr]
 
 
+    def test_from_string(self, MultiCellRange, CellRange):
+        cells = MultiCellRange("A1 B2:B5")
+        assert cells.ranges == [CellRange("A1"), CellRange("B2:B5")]
+
+
     def test_add(self, MultiCellRange, CellRange):
         cr = CellRange("A1")
         cells = MultiCellRange(ranges=[cr])
@@ -232,3 +248,8 @@ class TestMultiCellRange:
         cr = CellRange("A1:E4")
         cells = MultiCellRange([cr])
         assert "C3" in cells
+
+
+    def test_doesnt_contain(self, MultiCellRange):
+        cells = MultiCellRange("A1:D5")
+        assert "F6" not in cells
