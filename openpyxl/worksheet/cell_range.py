@@ -387,11 +387,15 @@ class MultiCellRange(Strict):
 
 
     def __repr__(self):
-        ranges = [repr(r) for r in self.ranges]
-        return u" ".join(ranges)
+        ranges = " ".join([repr(r) for r in self.ranges])
+        return "<{0} [{1}]>".format(self.__class__.__name__, ranges)
 
 
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        ranges = u" ".join([str(r) for r in self.ranges])
+        return ranges
+
+    __unicode__ = __str__
 
 
     def add(self, coord):
@@ -405,7 +409,6 @@ class MultiCellRange(Strict):
             self.ranges = ranges
         return self
 
-
     __iadd__ = add
 
 
@@ -417,3 +420,9 @@ class MultiCellRange(Strict):
 
     def __ne__(self, other):
         return not self == other
+
+
+    def __bool__(self):
+        return bool(self.ranges)
+
+    __nonzero__ = __bool__

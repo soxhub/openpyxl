@@ -202,7 +202,7 @@ class DataValidationList(Serialisable):
         Need to skip validations that have no cell ranges
         """
         ranges = self.dataValidation # copy
-        self.dataValidation = [r for r in self.dataValidation if r.sqref != ""]
+        self.dataValidation = [r for r in self.dataValidation if bool(r.sqref)]
         xml = super(DataValidationList, self).to_tree(tagname)
         self.dataValidation = ranges
         return xml

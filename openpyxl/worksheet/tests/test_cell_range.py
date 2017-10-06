@@ -247,7 +247,7 @@ class TestMultiCellRange:
         cr1 = CellRange("a1")
         cr2 = CellRange("B2")
         cells = MultiCellRange(ranges=[cr1, cr2])
-        assert repr(cells) == "A1 B2"
+        assert repr(cells) == "<MultiCellRange [A1 B2]>"
 
 
     def test_contains(self, MultiCellRange, CellRange):
@@ -269,3 +269,13 @@ class TestMultiCellRange:
     def test_ne(self, MultiCellRange):
         cells = MultiCellRange("A1")
         assert cells != "B4"
+
+
+    def test_empty(self, MultiCellRange):
+        cells = MultiCellRange()
+        assert bool(cells) is False
+
+
+    def test_not_empty(self, MultiCellRange):
+        cells = MultiCellRange("A1")
+        assert bool(cells) is True
