@@ -237,6 +237,12 @@ class TestMultiCellRange:
         assert cells.ranges == [cr, CellRange("B2")]
 
 
+    def test_avoid_duplicates(self, MultiCellRange):
+        cells = MultiCellRange("A1:D4")
+        cells.add("A3")
+        assert cells == "A1:D4"
+
+
     def test_repr(self, MultiCellRange, CellRange):
         cr1 = CellRange("a1")
         cr2 = CellRange("B2")

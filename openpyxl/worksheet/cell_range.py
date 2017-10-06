@@ -398,10 +398,11 @@ class MultiCellRange(Strict):
         """
         Add a cell coordinate. Will create a new CellRange
         """
-        cr = CellRange(coord)
-        ranges = self.ranges
-        ranges.append(cr)
-        self.ranges = ranges
+        if coord not in self:
+            cr = CellRange(coord)
+            ranges = self.ranges
+            ranges.append(cr)
+            self.ranges = ranges
         return self
 
 
