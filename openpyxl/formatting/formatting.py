@@ -9,24 +9,26 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     Alias,
+    Convertible,
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
 from .rule import Rule
 
+from openpyxl.worksheet.cell_range import MultiCellRange
 
 class ConditionalFormatting(Serialisable):
 
     tagname = "conditionalFormatting"
 
-    sqref = String(allow_none=True)
+    sqref = Convertible(expected_type=MultiCellRange)
     pivot = Bool(allow_none=True)
     cfRule = Sequence(expected_type=Rule)
     rules = Alias("cfRule")
 
 
-    def __init__(self, sqref=None, pivot=None, cfRule=(), extLst=None):
+    def __init__(self, sqref=(), pivot=None, cfRule=(), extLst=None):
         self.sqref = sqref
         self.pivot = pivot
         self.cfRule = cfRule
@@ -39,11 +41,11 @@ class ConditionalFormatting(Serialisable):
 
 
     def __hash__(self):
-        return hash(self.sqref)
+        return hash(str(self.sqref))
 
 
     def __repr__(self):
-        return self.sqref
+        return "<{cls} {cells}>".format(cls=self.__class__.__name__, cells=self.sqref)
 
 
 class ConditionalFormattingList(object):
