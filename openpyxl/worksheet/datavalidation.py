@@ -116,7 +116,7 @@ class DataValidation(Serialisable):
                  showInputMessage=True,
                  showDropDown=None,
                  allowBlank=None,
-                 sqref=None,
+                 sqref=(),
                  promptTitle=None,
                  errorStyle=None,
                  error=None,
@@ -138,8 +138,6 @@ class DataValidation(Serialisable):
         self.showInputMessage = showInputMessage
         self.type = type
         self.ranges = []
-        if sqref is not None:
-            self.sqref = sqref
         self.promptTitle = promptTitle
         self.errorStyle = errorStyle
         self.error = error
