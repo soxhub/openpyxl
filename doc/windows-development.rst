@@ -58,8 +58,8 @@ openpyxl needs `lxml` in order to run the tests. Unfortunately, automatic instal
 
     Releases for legacy versions of Python:
 
-    * `lxml 4.0.0 for Python 2.7 <http://www.lfd.uci.edu/~gohlke/pythonlibs/bofhrmxk/lxml-4.0.0-cp27-none-win32.whl>`_
-    * `lxml 4.0.0 for Python 3.6 <http://www.lfd.uci.edu/~gohlke/pythonlibs/bofhrmxk/lxml-4.0.0-cp36-none-win32.whl>`_
+    * `lxml 4.0.0 for Python 2.7 <http://www.lfd.uci.edu/~gohlke/pythonlibs/zhckc95n/lxml-4.0.0-cp27-none-win32.whl>`_
+    * `lxml 4.0.0 for Python 3.6 <http://www.lfd.uci.edu/~gohlke/pythonlibs/zhckc95n/lxml-4.0.0-cp36-none-win32.whl>`_
 
 #. Move all these files to a folder called "downloads" in your openpyxl checkout
 
