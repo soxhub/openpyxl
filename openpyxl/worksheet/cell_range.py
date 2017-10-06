@@ -403,3 +403,13 @@ class MultiCellRange(Strict):
 
 
     __iadd__ = add
+
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError("Can only compare with MultiCellRanges")
+        return self.ranges == other.ranges
+
+
+    def __ne__(self, other):
+        return not self == other
