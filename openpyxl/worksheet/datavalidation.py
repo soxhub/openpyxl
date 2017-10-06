@@ -13,6 +13,7 @@ from openpyxl.descriptors import (
     Sequence,
     Alias,
     Integer,
+    Convertible,
 )
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.compat import (
@@ -71,9 +72,15 @@ def expand_cell_ranges(range_string):
     return set(chain.from_iterable(cells))
 
 
+from .cell_range import MultiCellRange
+
+
 class DataValidation(Serialisable):
 
     tagname = "dataValidation"
+
+    sqref = Convertible(expected_type=MultiCellRange)
+    cells = Alias("sqref")
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
@@ -130,7 +137,6 @@ class DataValidation(Serialisable):
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
         self.type = type
-        self.cells = set()
         self.ranges = []
         if sqref is not None:
             self.sqref = sqref
@@ -139,22 +145,15 @@ class DataValidation(Serialisable):
         self.error = error
         self.prompt = prompt
         self.errorTitle = errorTitle
-        self.__attrs__ = DataValidation.__attrs__ + ('sqref',)
 
 
     def add(self, cell):
         """Adds a openpyxl.cell to this validator"""
-        self.cells.add(cell.coordinate)
+        self.sqref += cell
 
 
-    @property
-    def sqref(self):
-        return collapse_cell_addresses(self.cells, self.ranges)
-
-
-    @sqref.setter
-    def sqref(self, range_string):
-        self.cells = expand_cell_ranges(range_string)
+    def __contains__(self, cell):
+        return cell in self.sqref
 
 
 class DataValidationList(Serialisable):
