@@ -409,8 +409,8 @@ class MultiCellRange(Strict):
 
 
     def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            raise TypeError("Can only compare with MultiCellRanges")
+        if  isinstance(other, unicode):
+            other = self.__class__(other)
         return self.ranges == other.ranges
 
 

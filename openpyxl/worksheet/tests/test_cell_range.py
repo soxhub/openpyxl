@@ -253,3 +253,13 @@ class TestMultiCellRange:
     def test_doesnt_contain(self, MultiCellRange):
         cells = MultiCellRange("A1:D5")
         assert "F6" not in cells
+
+
+    def test_eq(self, MultiCellRange):
+        cells = MultiCellRange("A1:D4 E5")
+        assert cells == "A1:D4 E5"
+
+
+    def test_ne(self, MultiCellRange):
+        cells = MultiCellRange("A1")
+        assert cells != "B4"
