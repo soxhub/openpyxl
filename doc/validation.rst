@@ -1,7 +1,7 @@
 Validating cells
 ================
 
-You can add data validation to a workbook but currently cannot read existing data validation.
+Data validators can be applied to ranges of cells but are not enforced or evaluated. Ranges do not have to be contiguous: eg. "A1 B2:B5" is contains A1 and the cells B2 to B5 but not A2 or B2.
 
 
 Examples
@@ -39,11 +39,11 @@ Examples
 >>> dv.add(c2)
 >>>
 >>> # Or, apply the validation to a range of cells
->>> dv.ranges.append('B1:B1048576')
->>>
->>> # Write the sheet out.  If you now open the sheet in Excel, you'll find that
->>> # the cells have data-validation applied.
->>> wb.save("test.xlsx")
+>>> dv.add('B1:B1048576') # This is the same as for the whole of column B
+>>> 
+>>> # Check with a cell is in the validator
+>>> "B4" in dv
+True
 
 
 Other validation examples
