@@ -392,7 +392,7 @@ def test_conditional_formatting(WriteOnlyWorksheet):
     from openpyxl.formatting.rule import CellIsRule
     ws = WriteOnlyWorksheet
     rule = CellIsRule(operator='lessThan', formula=['C$1'], stopIfTrue=True)
-    ws.conditional_formatting.add("C", rule)
+    ws.conditional_formatting.add("C1:C10", rule)
     ws.close()
 
     with open(ws.filename) as src:
@@ -411,7 +411,7 @@ def test_conditional_formatting(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
      <sheetData />
-     <conditionalFormatting sqref="C">
+     <conditionalFormatting sqref="C1:C10">
        <cfRule operator="lessThan" priority="1" stopIfTrue="1" type="cellIs">
          <formula>C$1</formula>
        </cfRule>
