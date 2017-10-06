@@ -4,6 +4,7 @@
 
 Bugfixes
 --------
+* `#812 <https://bitbucket.org/openpyxl/openpyxl/issues/812>`_ Explicitly support for multiple cell ranges in conditonal formatting
 * `#827 <https://bitbucket.org/openpyxl/openpyxl/issues/827>`_ Non-contiguous cell ranges in validators get merged
 * `#837 <https://bitbucket.org/openpyxl/openpyxl/issues/837>`_ Empty data validators create invalid Excel files
 * `#860 <https://bitbucket.org/openpyxl/openpyxl/issues/860>`_ Large validation ranges use lots of memory
