@@ -1,7 +1,7 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2017 openpyxl
 
-from openpyxl.compat.strings import safe_repr, unicode
+from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
 
@@ -374,7 +374,7 @@ class MultiCellRange(Strict):
 
 
     def __init__(self, ranges=()):
-        if isinstance(ranges, unicode):
+        if isinstance(ranges, str):
             ranges = [CellRange(r) for r in ranges.split()]
         self.ranges = ranges
 
@@ -410,7 +410,7 @@ class MultiCellRange(Strict):
 
 
     def __eq__(self, other):
-        if  isinstance(other, unicode):
+        if  isinstance(other, str):
             other = self.__class__(other)
         return self.ranges == other.ranges
 
