@@ -4,6 +4,7 @@
 
 Bugfixes
 --------
+* `#827 <https://bitbucket.org/openpyxl/openpyxl/issues/827>`_ Non-contiguous cell ranges in validators get merged
 * `#837 <https://bitbucket.org/openpyxl/openpyxl/issues/837>`_ Empty data validators create invalid Excel files
 * `#860 <https://bitbucket.org/openpyxl/openpyxl/issues/860>`_ Large validation ranges use lots of memory
 * `#876 <https://bitbucket.org/openpyxl/openpyxl/issues/876>`_ Unicode in chart axes not handled correctly in Python 2
