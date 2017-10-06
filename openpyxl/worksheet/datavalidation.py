@@ -82,6 +82,7 @@ class DataValidation(Serialisable):
 
     sqref = Convertible(expected_type=MultiCellRange)
     cells = Alias("sqref")
+    ranges = Alias("sqref")
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
@@ -138,7 +139,6 @@ class DataValidation(Serialisable):
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
         self.type = type
-        self.ranges = []
         self.promptTitle = promptTitle
         self.errorStyle = errorStyle
         self.error = error
