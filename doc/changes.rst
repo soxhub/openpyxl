@@ -13,6 +13,14 @@ Bugfixes
 * `#903 <https://bitbucket.org/openpyxl/openpyxl/issues/903>`_ Cannot read gradient fills
 
 
+Minor Changes
+-------------
+
+Added CellRange and MultiCellRange types (thanks to Laurent LaPorte for the
+suggestion) as a utility type for things like data validations, conditional
+formatting and merged cells.
+
+
 2.5.0-a3 (2017-08-14)
 =====================
 
