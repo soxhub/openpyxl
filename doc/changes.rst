@@ -4,6 +4,7 @@
 
 Bugfixes
 --------
+* `#860 <https://bitbucket.org/openpyxl/openpyxl/issues/860>`_ Large validation ranges use lots of memory
 * `#876 <https://bitbucket.org/openpyxl/openpyxl/issues/876>`_ Unicode in chart axes not handled correctly in Python 2
 * `#882 <https://bitbucket.org/openpyxl/openpyxl/issues/882>`_ ScatterCharts have defective axes
 * `#885 <https://bitbucket.org/openpyxl/openpyxl/issues/885>`_ Charts with empty numVal elements cannot be read
