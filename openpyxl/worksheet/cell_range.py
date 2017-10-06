@@ -105,10 +105,10 @@ class CellRange(Strict):
 
 
     def __repr__(self):
-        fmt = u"{coord}"
+        fmt = u"<{cls} {coord}>"
         if self.title:
-            fmt = u"{title!r}!{coord}"
-        return safe_repr(fmt.format(title=self.title, coord=self.coord))
+            fmt = u"<{cls} {title!r}!{coord}>"
+        return safe_repr(fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord))
 
 
     def _get_range_string(self):
@@ -387,7 +387,7 @@ class MultiCellRange(Strict):
 
 
     def __repr__(self):
-        ranges = " ".join([repr(r) for r in self.ranges])
+        ranges = " ".join([str(r) for r in self.ranges])
         return "<{0} [{1}]>".format(self.__class__.__name__, ranges)
 
 

@@ -43,7 +43,7 @@ class TestCellRange:
 
     def test_repr(self, CellRange):
         cr = CellRange("Sheet1!$A$1:B4")
-        assert repr(cr) == "'Sheet1'!A1:B4"
+        assert repr(cr) == "<CellRange 'Sheet1'!A1:B4>"
 
 
     def test_str(self, CellRange):
