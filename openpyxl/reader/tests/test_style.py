@@ -42,7 +42,7 @@ def test_read_complex_style(datadir):
     assert ws['A16'].number_format == 'mm-dd-yy'
     assert ws['A17'].number_format == '0.00%'
 
-    assert 'A18:B18' in ws._merged_cells
+    assert 'A18:B18' in ws.merged_cells
 
     assert ws['A19'].border == Border(
         left=Side(style='thin', color='FF006600'),
@@ -62,7 +62,7 @@ def test_read_complex_style(datadir):
                                          start_color='FFCCCCFF', end_color=(Color(indexed=64)))
     assert ws['A23'].border.top == Side(style='mediumDashed', color=Color(theme=6))
 
-    assert 'A23:B24' in ws._merged_cells
+    assert 'A23:B24' in ws.merged_cells
 
     assert ws['A25'].alignment == Alignment(wrapText=True)
     assert ws['A26'].alignment == Alignment(shrinkToFit=True)

@@ -605,7 +605,7 @@ def test_merge_cells(WorkSheetParser):
 
     parser.parse()
 
-    assert parser.ws._merged_cells == ["C2:F2", "B19:C20", "E19:G19"]
+    assert parser.ws.merged_cells == "C2:F2 B19:C20 E19:G19"
 
 
 def test_conditonal_formatting(WorkSheetParser):
