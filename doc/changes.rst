@@ -24,6 +24,12 @@ suggestion) as a utility type for things like data validations, conditional
 formatting and merged cells.
 
 
+Deprecations
+------------
+
+ws.merged_cell_ranges has been deprecated because MultiCellRange provides sufficient functionality
+
+
 2.5.0-a3 (2017-08-14)
 =====================
 
