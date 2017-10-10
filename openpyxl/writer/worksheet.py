@@ -31,10 +31,10 @@ from openpyxl.worksheet.dimensions import (
 from .etree_worksheet import write_rows
 
 
-def write_mergecells(worksheet):
+def write_mergecells(ws):
     """Write merged cells to xml."""
 
-    merged = [MergeCell(ref) for ref in worksheet._merged_cells]
+    merged = [MergeCell(str(ref)) for ref in ws.merged_cells]
 
     if merged:
         return MergeCells(mergeCell=merged).to_tree()
