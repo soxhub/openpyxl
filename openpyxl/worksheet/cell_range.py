@@ -432,3 +432,8 @@ class MultiCellRange(Strict):
         if not isinstance(coord, CellRange):
             coord = CellRange(coord)
         self.ranges.remove(coord)
+
+
+    def __iter__(self):
+        for cr in self.ranges:
+            yield cr

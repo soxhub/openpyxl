@@ -290,3 +290,8 @@ class TestMultiCellRange:
         cells = MultiCellRange("A1:D4")
         with pytest.raises(ValueError):
             cells.remove("A1")
+
+
+    def test_iter(self, MultiCellRange, CellRange):
+        cells = MultiCellRange("A1")
+        assert list(cells) == [CellRange("A1")]
