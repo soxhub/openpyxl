@@ -279,3 +279,14 @@ class TestMultiCellRange:
     def test_not_empty(self, MultiCellRange):
         cells = MultiCellRange("A1")
         assert bool(cells) is True
+
+
+    def test_remove(self, MultiCellRange):
+        cells = MultiCellRange("A1:D4")
+        cells.remove("A1:D4")
+
+
+    def test_remove_invalid(self, MultiCellRange):
+        cells = MultiCellRange("A1:D4")
+        with pytest.raises(ValueError):
+            cells.remove("A1")

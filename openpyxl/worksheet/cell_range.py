@@ -426,3 +426,9 @@ class MultiCellRange(Strict):
         return bool(self.ranges)
 
     __nonzero__ = __bool__
+
+
+    def remove(self, coord):
+        if not isinstance(coord, CellRange):
+            coord = CellRange(coord)
+        self.ranges.remove(coord)
