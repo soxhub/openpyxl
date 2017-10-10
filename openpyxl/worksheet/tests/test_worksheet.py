@@ -432,7 +432,7 @@ class TestWorksheet:
 
     def test_unmerge_range_string(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells = ["A1:D4"]
+        ws.merged_cells = ["A1:D4"]
         ws.unmerge_cells("A1:D4")
 
 

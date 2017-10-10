@@ -133,7 +133,7 @@ class Worksheet(_WorkbookChild):
         self._rels = RelationshipList()
         self._drawing = None
         self._comments = []
-        self._merged_cells = MultiCellRange()
+        self.merged_cells = MultiCellRange()
         self._tables = []
         self._pivots = []
         self.data_validations = DataValidationList()
@@ -698,7 +698,7 @@ class Worksheet(_WorkbookChild):
                       max_col=end_column, max_row=end_column)
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
 
-        self._merged_cells.add(cr.coord)
+        self.merged_cells.add(cr.coord)
 
         min_col, min_row, max_col, max_row = cr.bounds
         rows = range(min_row, max_row+1)
@@ -711,16 +711,10 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    def merged_cells(self):
-        """Utility for checking whether a cell has been merged or not"""
-        return self._merged_cells
-
-
     @deprecated("Use ws.merged_cells.ranges")
-    @property
     def merged_cell_ranges(self):
         """Return a copy of cell ranges"""
-        return self._merged_cells.ranges[:]
+        return self.merged_cells.ranges[:]
 
 
     def unmerge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
@@ -728,10 +722,10 @@ class Worksheet(_WorkbookChild):
         cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
 
-        if cr.coord not in self._merged_cells:
+        if cr.coord not in self.merged_cells:
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
-        self._merged_cells.remove(cr.coord)
+        self.merged_cells.remove(cr.coord)
 
 
     def append(self, iterable):
