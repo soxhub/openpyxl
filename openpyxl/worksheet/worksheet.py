@@ -716,6 +716,7 @@ class Worksheet(_WorkbookChild):
         return self._merged_cells
 
 
+    @deprecated("Use ws.merged_cells.ranges")
     @property
     def merged_cell_ranges(self):
         """Return a copy of cell ranges"""
