@@ -68,6 +68,7 @@ from .views import (
     Selection,
     SheetViewList,
 )
+from .cell_range import MultiCellRange, CellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
@@ -132,7 +133,7 @@ class Worksheet(_WorkbookChild):
         self._rels = RelationshipList()
         self._drawing = None
         self._comments = []
-        self._merged_cells = []
+        self._merged_cells = MultiCellRange()
         self._tables = []
         self._pivots = []
         self.data_validations = DataValidationList()
@@ -693,27 +694,13 @@ class Worksheet(_WorkbookChild):
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
+        cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
+                      max_col=end_column, max_row=end_column)
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
-        if not range_string and not all((start_row, start_column, end_row, end_column)):
-            msg = "You have to provide a value either for 'coordinate' or for\
-            'start_row', 'start_column', 'end_row' *and* 'end_column'"
-            raise ValueError(msg)
-        elif not range_string:
-            range_string = '%s%s:%s%s' % (get_column_letter(start_column),
-                                          start_row,
-                                          get_column_letter(end_column),
-                                          end_row)
-        elif ":" not in range_string:
-            if COORD_RE.match(range_string):
-                return  # Single cell, do nothing
-            raise ValueError("Range must be a cell range (e.g. A1:E1)")
-        else:
-            range_string = range_string.replace('$', '')
 
-        if range_string not in self._merged_cells:
-            self._merged_cells.append(range_string)
+        self._merged_cells.add(cr.coord)
 
-        min_col, min_row, max_col, max_row = range_boundaries(range_string)
+        min_col, min_row, max_col, max_row = cr.bounds
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
         cells = product(rows, cols)
@@ -726,40 +713,25 @@ class Worksheet(_WorkbookChild):
     @property
     def merged_cells(self):
         """Utility for checking whether a cell has been merged or not"""
-        cells = set()
-        for _range in self._merged_cells:
-            for row in rows_from_range(_range):
-                cells = cells.union(set(row))
-        return cells
+        return self._merged_cells
 
 
     @property
     def merged_cell_ranges(self):
         """Return a copy of cell ranges"""
-        return self._merged_cells[:]
+        return self._merged_cells.ranges[:]
 
 
     def unmerge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Remove merge on a cell range.  Range is a cell range (e.g. A1:E1) """
-        if not range_string:
-            if start_row is None or start_column is None or end_row is None or end_column is None:
-                msg = "You have to provide a value either for "\
-                    "'coordinate' or for 'start_row', 'start_column', 'end_row' *and* 'end_column'"
-                raise InsufficientCoordinatesException(msg)
-            else:
-                range_string = '%s%s:%s%s' % (get_column_letter(start_column), start_row, get_column_letter(end_column), end_row)
-        elif len(range_string.split(':')) != 2:
-            msg = "Range must be a cell range (e.g. A1:E1)"
-            raise InsufficientCoordinatesException(msg)
-        else:
-            range_string = range_string.replace('$', '')
+        cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
+                      max_col=end_column, max_row=end_row)
 
-        if range_string in self._merged_cells:
-            self._merged_cells.remove(range_string)
+        if cr.coord not in self._merged_cells:
+            raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
-        else:
-            msg = 'Cell range %s not known as merged.' % range_string
-            raise InsufficientCoordinatesException(msg)
+        self._merged_cells.remove(cr.coord)
+
 
     def append(self, iterable):
         """Appends a group of values at the bottom of the current sheet.

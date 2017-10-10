@@ -400,7 +400,7 @@ class TestWorksheet:
 
     def test_merged_cells_lookup(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells.append("A1:N50")
+        ws.merge_cells("A1:N50")
         merged = ws.merged_cells
         assert 'A1' in merged
         assert 'N50' in merged
@@ -419,7 +419,7 @@ class TestWorksheet:
         ws['D4'] = 16
         assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
-        assert ws._merged_cells == ["A1:D4"]
+        assert ws.merged_cells == "A1:D4"
         assert (4, 4) not in ws._cells
         assert (1, 1) in ws._cells
 
@@ -427,7 +427,7 @@ class TestWorksheet:
     def test_merge_coordinate(self, Worksheet):
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
-        assert ws._merged_cells == ["A1:D4"]
+        assert ws.merged_cells == "A1:D4"
 
 
     def test_unmerge_range_string(self, Worksheet):
@@ -438,8 +438,9 @@ class TestWorksheet:
 
     def test_unmerge_coordinate(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells = ["A1:D4"]
+        ws.merge_cells("A1:D4")
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
+        assert ws.merged_cells == ""
 
 
     @pytest.mark.parametrize("value, result, rows_cols",
