@@ -432,8 +432,9 @@ class TestWorksheet:
 
     def test_unmerge_range_string(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws.merged_cells = ["A1:D4"]
+        ws.merge_cells("A1:D4")
         ws.unmerge_cells("A1:D4")
+        assert ws.merged_cells == ""
 
 
     def test_unmerge_coordinate(self, Worksheet):

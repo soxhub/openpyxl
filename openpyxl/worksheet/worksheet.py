@@ -725,7 +725,7 @@ class Worksheet(_WorkbookChild):
         if cr.coord not in self.merged_cells:
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
-        self.merged_cells.remove(cr.coord)
+        self.merged_cells.remove(cr)
 
 
     def append(self, iterable):
