@@ -12,7 +12,6 @@ from openpyxl.utils import coordinate_from_string
 from openpyxl.comments import Comment
 from openpyxl.utils.exceptions import (
     SheetTitleException,
-    InsufficientCoordinatesException,
     NamedRangeException
     )
 
