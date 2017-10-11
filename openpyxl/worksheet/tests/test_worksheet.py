@@ -153,7 +153,7 @@ class TestWorksheet:
 
     def test_cell_insufficient_coordinates(self, Worksheet):
         ws = Worksheet(Workbook())
-        with pytest.raises(InsufficientCoordinatesException):
+        with pytest.raises(TypeError):
             ws.cell(row=8)
 
     def test_cell_range_name(self):

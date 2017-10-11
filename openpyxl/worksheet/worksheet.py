@@ -270,7 +270,7 @@ class Worksheet(_WorkbookChild):
             self.print_title_rows = '1:%d' % n
 
 
-    def cell(self, row=None, column=None, value=None):
+    def cell(self, row, column, value=None):
         """Returns a cell object based on the given coordinates.
 
         Usage: cell(row=15, column=1, value=5)
@@ -287,15 +287,9 @@ class Worksheet(_WorkbookChild):
         :param value: value of the cell (e.g. 5)
         :type value: numeric or time or string or bool or none
 
-        :raise: InsufficientCoordinatesException when neither row nor column are given
-
         :rtype: openpyxl.cell.Cell
 
         """
-
-        if row is None or column is None:
-            msg = "You have to provide a value for 'row' *and* 'column'"
-            raise InsufficientCoordinatesException(msg)
 
         if row < 1 or column < 1:
             raise ValueError("Row or column values must be at least 1")
