@@ -16,6 +16,12 @@ Bugfixes
 * `#903 <https://bitbucket.org/openpyxl/openpyxl/issues/903>`_ Cannot read gradient fills
 
 
+Major Changes
+-------------
+
+`worksheet.cell()` no longer accepts a `coordinate` parameter. The syntax is now `ws.cell(row, column, value=None)`
+
+
 Minor Changes
 -------------
 
