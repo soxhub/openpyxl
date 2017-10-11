@@ -239,8 +239,8 @@ def test_merge(worksheet):
     from .. worksheet import write_mergecells
 
     ws = worksheet
-    ws.cell('A1').value = 'Cell A1'
-    ws.cell('B1').value = 'Cell B1'
+    ws['A1'].value = 'Cell A1'
+    ws['B1'].value = 'Cell B1'
 
     ws.merge_cells('A1:B1')
     merge = write_mergecells(ws)
@@ -310,8 +310,8 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
     datadir.chdir()
     wb = Workbook()
     ws = wb.create_sheet()
-    ws.cell('A1').value = "test"
-    ws.cell('A1').hyperlink = "http://test.com/"
+    ws['A1'].value = "test"
+    ws['A1'].hyperlink = "http://test.com/"
     i = Image("plain.png")
     ws.add_image(i)
     raise ValueError("Resulting file is invalid")

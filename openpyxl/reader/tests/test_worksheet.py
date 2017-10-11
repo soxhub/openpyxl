@@ -523,16 +523,16 @@ def test_shared_formulae(WorkSheetParser, datadir):
     assert set(ws.formula_attributes.keys()) == set(['C10'])
 
     # Test shared forumlae
-    assert ws.cell('B7').data_type == 'f'
-    assert ws.cell('B7').value == '=B4*2'
-    assert ws.cell('C7').value == '=C4*2'
-    assert ws.cell('D7').value == '=D4*2'
-    assert ws.cell('E7').value == '=E4*2'
+    assert ws['B7'].data_type == 'f'
+    assert ws['B7'].value == '=B4*2'
+    assert ws['C7'].value == '=C4*2'
+    assert ws['D7'].value == '=D4*2'
+    assert ws['E7'].value == '=E4*2'
 
     # Test array forumlae
-    assert ws.cell('C10').data_type == 'f'
+    assert ws['C10'].data_type == 'f'
     assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
-    assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'
+    assert ws['C10'].value == '=SUM(A10:A14*B10:B14)'
 
 
 def test_cell_without_coordinates(WorkSheetParser, datadir):

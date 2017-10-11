@@ -28,7 +28,7 @@ def test_write_auto_filter(datadir):
     datadir.chdir()
     wb = Workbook()
     ws = wb.active
-    ws.cell('F42').value = 'hello'
+    ws['F42'].value = 'hello'
     ws.auto_filter.ref = 'A1:F1'
 
     content = write_workbook(wb)
