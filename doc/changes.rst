@@ -14,6 +14,7 @@ Bugfixes
 * `#894 <https://bitbucket.org/openpyxl/openpyxl/issues/894>`_ Scaling options from existing files ignored
 * `#895 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Charts with PivotSource cannot be read
 * `#903 <https://bitbucket.org/openpyxl/openpyxl/issues/903>`_ Cannot read gradient fills
+* `#904 <https://bitbucket.org/openpyxl/openpyxl/issues/904>`_ Quotes in number formats could be treated as datetimes
 
 
 Major Changes
