@@ -51,33 +51,36 @@ def test_number_descriptor():
     assert dummy.value == "General"
 
 
+@pytest.mark.parametrize("fmt, stripped",
+                         [
+                             ('"Y: "#.000"m"', "#.000"),
+                             ('[Red]', ""),
+                             (u'[$-404]e"\xfc"m"\xfc"d"\xfc"', "emd"),
+                             ('#,##0\\ [$\u20bd-46D]', "#,##0\\ "),
+                         ]
+                         )
+def test_strip_quotes(fmt, stripped):
+    from ..numbers import STRIP_RE
+    assert STRIP_RE.sub("", fmt) == stripped
+
+
 @pytest.mark.parametrize("format, result",
                          [
                              ("DD/MM/YY", True),
                              ("H:MM:SS;@", True),
                              (u'#,##0\\ [$\u20bd-46D]', False),
                              (u'm"M"d"D";@', True),
+                             ("[h]:mm:ss", True),
+                             ('"Y: "0.00"m";"Y: "-0.00"m";"Y: <num>m";@', False),
+                             (u'#,##0\\ [$\u20bd-46D]', False),
+                             ('"$"#,##0_);[Red]("$"#,##0)', False),
+                             (u'[$-404]e"\xfc"m"\xfc"d"\xfc"', True),
+                            (r"0_ ;[Red]\-0\ ", False)
                          ]
                          )
 def test_is_date_format(format, result):
     from ..numbers import is_date_format
     assert is_date_format(format) is result
-
-
-@pytest.mark.parametrize("fmt, result",
-                         [
-                             ("[h]:mm:ss", False),
-                             ("[hh]:mm:ss", False),
-                             (u'#,##0\\ [$\u20bd-46D]', True),
-                             ('"$"#,##0_);[Red]("$"#,##0)', True),
-                             (u'[$-404]e"\xfc"m"\xfc"d"\xfc"', False),
-                             (r"0_ ;[Red]\-0\ ", True)
-                         ]
-                         )
-def test_datetime_regex(fmt, result):
-    from ..numbers import BAD_DATE_RE
-    match = BAD_DATE_RE.search(fmt.lower()) is not None
-    assert match is result
 
 
 @pytest.mark.parametrize("fmt, typ",
