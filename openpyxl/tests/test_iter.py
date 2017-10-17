@@ -350,6 +350,39 @@ def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
     assert len(row) == 10
 
 
+def test_get_empty_cells_nonempty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
+    """Fix for issue #908.
+
+    Get row slice which only contains empty cells in a row containing non-empty
+    cells earlier in the row.
+    """
+    
+    datadir.join("reader").chdir()
+
+    src = b"""
+    <sheetData  xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
+    <row r="1" spans="4:27">
+      <c r="A4">
+        <v>1</v>
+      </c>
+    </row>
+    </sheetData>
+    """
+    
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+
+    xml = fromstring(src)
+
+    min_col = 8
+    max_col = 9
+    row = tuple(ws._get_row(xml, min_col=min_col, max_col=max_col))
+
+    assert len(row) == 2
+    assert all(cell is EMPTY_CELL for cell in row)
+    values = [cell.value for cell in row]
+    assert values == [None, None]
+
+
 @pytest.mark.parametrize("row, column",
                          [
                              (2, 1),

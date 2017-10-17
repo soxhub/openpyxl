@@ -119,6 +119,7 @@ Bugfixes
 * `#849 <https://bitbucket.org/openpyxl/openpyxl/issues/849>`_ Conditional formats with no sqref cause an exception
 * `#859 <https://bitbucket.org/openpyxl/openpyxl/issues/859>`_ Headers that start with a number conflict with font size
 * `#902 <https://bitbucket.org/openpyxl/openpyxl/issues/902>`_ TableStyleElements don't always have a condtional format
+* `#908 <https://bitbucket.org/openpyxl/openpyxl/issues/908>`_ Read-only mode sometimes returns too many cells
 
 
 
@@ -128,6 +129,7 @@ Pull requests
 * `#180 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/180>`_ Support for Workbook protection
 * `#182 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/182>`_ Read support for page breaks
 * `#183 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/183>`_ Improve documentation of `copy_worksheet` method
+* `#198 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/198>`_ Fix for #908
 
 
 2.4.8 (2017-05-30)

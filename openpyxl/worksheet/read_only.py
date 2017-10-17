@@ -180,7 +180,7 @@ class ReadOnlyWorksheet(object):
             col_counter = column + 1
 
         if max_col is not None:
-            for _ in range(col_counter, max_col+1):
+            for _ in range(max(min_col, col_counter), max_col+1):
                 yield EMPTY_CELL
 
 
