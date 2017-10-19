@@ -57,13 +57,19 @@ def coordinate_from_string(coord_string):
 def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
     m = ABSOLUTE_RE.match(coord_string.upper())
-    if m:
-        if all(m.groups()[-2:]):
-            fmt =  "${0}${1}:${3}${4}"
-        else:
-            fmt = "${0}${1}"
-        return fmt.format(*m.groups())
-    raise ValueError("Value is not a valid coordinate range")
+    if not m:
+        raise ValueError("Value is not a valid coordinate range")
+
+    d = m.groupdict('')
+    for k, v in d.items():
+        if v:
+            d[k] = "${0}".format(v)
+
+    if d['max_col'] or d['max_row']:
+        fmt =  "{min_col}{min_row}:{max_col}{max_row}"
+    else:
+        fmt = "{min_col}{min_row}"
+    return fmt.format(**d)
 
 
 def _get_column_letter(col_idx):
@@ -198,7 +204,10 @@ def quote_sheetname(sheetname):
     """
     Add quotes around sheetnames if they contain spaces.
     """
+    if "'" in sheetname:
+        sheetname = sheetname.replace("'", "''")
     if (" " in sheetname
-        or "-" in sheetname):
+        or "-" in sheetname
+        or "'" in sheetname):
         sheetname = u"'{0}'".format(sheetname)
     return sheetname

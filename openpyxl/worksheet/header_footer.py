@@ -24,7 +24,7 @@ from openpyxl.utils.escape import escape, unescape
 
 FONT_PATTERN = '&"(?P<font>.+)"'
 COLOR_PATTERN  = "&K(?P<color>[A-F0-9]{6})"
-SIZE_REGEX = r"&(?P<size>\d+)"
+SIZE_REGEX = r"&(?P<size>\d+\s?)"
 FORMAT_REGEX = re.compile("{0}|{1}|{2}".format(FONT_PATTERN, COLOR_PATTERN,
                                                SIZE_REGEX)
                           )
@@ -106,7 +106,7 @@ class _HeaderFooterPart(Strict):
         if self.font:
             fmt.append(u'&"{0}"'.format(self.font))
         if self.size:
-            fmt.append("&{0}".format(self.size))
+            fmt.append("&{0} ".format(self.size))
         if self.color:
             fmt.append("&K{0}".format(self.color))
         return u"".join(fmt + [self.text])

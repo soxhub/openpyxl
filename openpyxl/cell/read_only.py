@@ -45,6 +45,10 @@ class ReadOnlyCell(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
+    def __repr__(self):
+        return "<ReadOnlyCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
+
     @property
     def shared_strings(self):
         return self.parent.shared_strings
@@ -144,5 +148,8 @@ class EmptyCell(object):
     alignment = None
     data_type = 'n'
 
+
+    def __repr__(self):
+        return "<EmptyCell>"
 
 EMPTY_CELL = EmptyCell()

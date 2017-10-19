@@ -21,7 +21,7 @@ from openpyxl.utils.exceptions import WorkbookAlreadySaved
 
 from .etree_worksheet import write_cell
 from .excel import ExcelWriter
-from .worksheet import write_drawing
+from .worksheet import write_drawing, write_conditional_formatting
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile, Element
 
@@ -190,6 +190,11 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
                 if self.sort_state.ref:
                     xf.write(self.sort_state.to_tree())
+
+                if self.conditional_formatting:
+                    cfs = write_conditional_formatting(self)
+                    for cf in cfs:
+                        xf.write(cf)
 
                 if self.data_validations.count:
                     xf.write(self.data_validations.to_tree())

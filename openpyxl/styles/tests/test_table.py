@@ -57,3 +57,30 @@ class TestTableStyleList:
         node = fromstring(src)
         table = TableStyleList.from_tree(node)
         assert table == TableStyleList()
+
+
+@pytest.fixture
+def TableStyleElement():
+    from ..table import TableStyleElement
+    return TableStyleElement
+
+
+class TestTableStyleElement:
+
+    def test_ctor(self, TableStyleElement):
+        table = TableStyleElement(type="wholeTable", dxfId=4)
+        xml = tostring(table.to_tree())
+        expected = """
+        <tableStyleElement type="wholeTable" dxfId="4" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, TableStyleElement):
+        src = """
+        <tableStyleElement type="secondRowStripe" size="2" />
+        """
+        node = fromstring(src)
+        table = TableStyleElement.from_tree(node)
+        assert table == TableStyleElement(type="secondRowStripe", size=2)

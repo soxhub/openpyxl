@@ -252,3 +252,10 @@ class DefinedNameList(Serialisable):
             if defn.name == name and defn.localSheetId == scope:
                 del self.definedName[idx]
                 return True
+
+
+    def localnames(self, scope):
+        """
+        Provide a list of all names for a particular worksheet
+        """
+        return [defn.name for defn in self.definedName if defn.localSheetId == scope]

@@ -26,7 +26,10 @@ def test_invalid_coordinate(value):
 @pytest.mark.parametrize("coord, result",
                          [
                              ("ZF51",'$ZF$51',),
-                             ('ZF51:ZF53', '$ZF$51:$ZF$53')
+                             ('ZF51:ZF53', '$ZF$51:$ZF$53'),
+                             ("A:G", "$A:$G"),
+                             ("A", "$A"),
+                             ("1", "$1"),
                          ]
                          )
 def test_absolute(coord, result):
@@ -113,15 +116,17 @@ def test_invalid_range():
         range_to_tuple("A1:E5")
 
 
-@pytest.mark.parametrize("title",
+@pytest.mark.parametrize("title, quoted",
                          [
-                             u'In D\xfcsseldorf',
-                             u'My-Sheet'
+                             (u'In D\xfcsseldorf', u"'In D\xfcsseldorf'"),
+                             (u'My-Sheet', u"'My-Sheet'"),
+                             (u"Demande d'autorisation", "'Demande d''autorisation'"),
+                             (u"d'autorisation", "'d''autorisation'"),
                          ]
                          )
-def test_quote_sheetname(title):
+def test_quote_sheetname(title, quoted):
     from .. import quote_sheetname
-    assert quote_sheetname(title) == u"'{0}'".format(title)
+    assert quote_sheetname(title) == quoted
 
 
 def test_rows_from_range():

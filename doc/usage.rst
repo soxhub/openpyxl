@@ -111,7 +111,7 @@ openpyxl never evaluates formula but it is possible to check the name of a formu
 >>> "HEX2DEC" in FORMULAE
 True
 
-If you're trying to use a formula that isn't known this could be because you're using a formula that was not included in the initial specification. Such formulae must be prefixed with `xlfn.` to work.
+If you're trying to use a formula that isn't known this could be because you're using a formula that was not included in the initial specification. Such formulae must be prefixed with `_xlfn.` to work.
 
 Merge / Unmerge cells
 ---------------------
@@ -126,10 +126,10 @@ worksheet. See :ref:`styling-merged-cells` for information on formatting merged 
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
->>> ws.merge_cells('A1:B1')
->>> ws.unmerge_cells('A1:B1')
+>>> ws.merge_cells('A2:D2')
+>>> ws.unmerge_cells('A2:D2')
 >>>
->>> # or
+>>> # or equivalently
 >>> ws.merge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
 >>> ws.unmerge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
 

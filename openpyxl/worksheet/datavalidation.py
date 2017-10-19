@@ -65,7 +65,7 @@ def expand_cell_ranges(range_string):
     cells = []
     for rs in range_string.split():
         cells.extend(rows_from_range(rs))
-    return list(chain.from_iterable(cells))
+    return set(chain.from_iterable(cells))
 
 
 class DataValidation(Serialisable):

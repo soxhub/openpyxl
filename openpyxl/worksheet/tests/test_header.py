@@ -67,7 +67,7 @@ class TestHeaderFooterPart:
 
 
     def test_read(self, _HeaderFooterPart):
-        hf = _HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12')
+        hf = _HeaderFooterPart.from_str('&"Lucida Grande,Standard"&K22BBDDLeft top&12 ')
         assert hf.text == "Left top"
         assert hf.font == "Lucida Grande,Standard"
         assert hf.color == "22BBDD"
@@ -107,7 +107,7 @@ class TestHeaderFooterItem:
 
     def test_read(self, HeaderFooterItem):
         xml = """
-        <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
+        <oddHeader>&amp;L&amp;"Lucida Grande,Standard"&amp;K000000&amp;12 Left top&amp;C&amp;"Lucida Grande,Standard"&amp;K000000Middle top&amp;R&amp;"Lucida Grande,Standard"&amp;K000000Right top</oddHeader>
         """
         node = fromstring(xml)
         hf = HeaderFooterItem.from_tree(node)
@@ -122,7 +122,7 @@ class TestHeaderFooterItem:
         hf.left.size = 12
         xml = tostring(hf.to_tree("header_or_footer"))
         expected = """
-        <header_or_footer>&amp;L&amp;12A secret message</header_or_footer>
+        <header_or_footer>&amp;L&amp;12 A secret message</header_or_footer>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

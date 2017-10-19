@@ -364,3 +364,67 @@ def test_write_height(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_data_validations(WriteOnlyWorksheet):
+    from openpyxl.worksheet.datavalidation import DataValidation
+    ws = WriteOnlyWorksheet
+    dv = DataValidation(sqref="A1")
+    ws.data_validations.append(dv)
+    ws.close()
+
+    with open(ws.filename) as src:
+        xml = src.read()
+
+    expected = """
+    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+       </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+     <sheetData />
+     <dataValidations count="1">
+       <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" />
+     </dataValidations>
+    </worksheet>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_conditional_formatting(WriteOnlyWorksheet):
+    from openpyxl.formatting.rule import CellIsRule
+    ws = WriteOnlyWorksheet
+    rule = CellIsRule(operator='lessThan', formula=['C$1'], stopIfTrue=True)
+    ws.conditional_formatting.add("C", rule)
+    ws.close()
+
+    with open(ws.filename) as src:
+        xml = src.read()
+
+    expected = """
+    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+       </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+     <sheetData />
+     <conditionalFormatting sqref="C">
+       <cfRule operator="lessThan" priority="1" stopIfTrue="1" type="cellIs">
+         <formula>C$1</formula>
+       </cfRule>
+     </conditionalFormatting>
+    </worksheet>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff

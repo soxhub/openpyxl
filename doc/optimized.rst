@@ -43,7 +43,7 @@ Write-only mode
 
 Here again, the regular :class:`openpyxl.worksheet.worksheet.Worksheet` has been replaced
 by a faster alternative, the :class:`openpyxl.writer.write_only.WriteOnlyWorksheet`.
-When you want to dump large amounts of data, you might find write-only helpful.
+When you want to dump large amounts of data make sure you have `lxml` installed.
 
 .. :: doctest
 
@@ -97,3 +97,7 @@ anyway).
       that, every attempt to save the workbook or append() to an existing
       worksheet will raise an :class:`openpyxl.utils.exceptions.WorkbookAlreadySaved`
       exception.
+
+    * Everything that appears in the file before the actual cell data must be created
+      before cells are added because it must written to the file before then.
+      For example, `freeze_panes` should be set before cells are added.

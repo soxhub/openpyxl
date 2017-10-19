@@ -1,3 +1,30 @@
+2.4.9 (2017-10-19)
+==================
+
+
+Bugfixes
+--------
+* `#809 <https://bitbucket.org/openpyxl/openpyxl/issues/809>`_ Incomplete documentation of `copy_worksheet` method
+* `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted
+* `#824 <https://bitbucket.org/openpyxl/openpyxl/issues/824>`_ Raise an exception if a chart is used in multiple sheets
+* `#842 <https://bitbucket.org/openpyxl/openpyxl/issues/842>`_ Non-ASCII table column headings cause an exception in Python 2
+* `#846 <https://bitbucket.org/openpyxl/openpyxl/issues/846>`_ Conditional formats not supported in write-only mode
+* `#849 <https://bitbucket.org/openpyxl/openpyxl/issues/849>`_ Conditional formats with no sqref cause an exception
+* `#859 <https://bitbucket.org/openpyxl/openpyxl/issues/859>`_ Headers that start with a number conflict with font size
+* `#902 <https://bitbucket.org/openpyxl/openpyxl/issues/902>`_ TableStyleElements don't always have a condtional format
+* `#908 <https://bitbucket.org/openpyxl/openpyxl/issues/908>`_ Read-only mode sometimes returns too many cells
+
+
+
+Pull requests
+-------------
+* `#179 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/179>`_ Cells kept in a set
+* `#180 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/180>`_ Support for Workbook protection
+* `#182 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/182>`_ Read support for page breaks
+* `#183 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/183>`_ Improve documentation of `copy_worksheet` method
+* `#198 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/198>`_ Fix for #908
+
+
 2.4.8 (2017-05-30)
 ==================
 
@@ -5,9 +32,11 @@
 Bugfixes
 --------
 * AutoFilter.sortState being assignd to the ws.sortState
-* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics`
-* `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly`
-* `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock`
+* `#766 <https://bitbucket.org/openpyxl/openpyxl/issues/666>`_ Sheetnames with apostrophes need additional escaping
+* `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics
+* `#819 <https://bitbucket.org/openpyxl/openpyxl/issues/819>`_ Negative percents not case correctly
+* `#821 <https://bitbucket.org/openpyxl/openpyxl/issues/821>`_ Runtime imports can cause deadlock
+* `#855 <https://bitbucket.org/openpyxl/openpyxl/issues/855>`_ Print area containing only columns leads to corrupt file
 
 
 Minor changes
@@ -21,7 +50,7 @@ Minor changes
 
 Bugfixes
 --------
-* `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist`
+* `#807 <https://bitbucket.org/openpyxl/openpyxl/issues/807>`_ Sample files being included by mistake in sdist
 
 
 2.4.6 (2017-04-14)
@@ -30,12 +59,12 @@ Bugfixes
 
 Bugfixes
 --------
-* `#776 <https://bitbucket.org/openpyxl/openpyxl/issues/776>`_ Cannot apply formatting to plot area`
-* `#780 <https://bitbucket.org/openpyxl/openpyxl/issues/780>`_ Exception when element attributes are Python keywords`
-* `#781 <https://bitbucket.org/openpyxl/openpyxl/issues/781>`_ Exception raised when saving files with styled columns`
-* `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect`
-* `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names`
-* `#800 <https://bitbucket.org/openpyxl/openpyxl/issues/800>`_ Font underlines not read correctly`
+* `#776 <https://bitbucket.org/openpyxl/openpyxl/issues/776>`_ Cannot apply formatting to plot area
+* `#780 <https://bitbucket.org/openpyxl/openpyxl/issues/780>`_ Exception when element attributes are Python keywords
+* `#781 <https://bitbucket.org/openpyxl/openpyxl/issues/781>`_ Exception raised when saving files with styled columns
+* `#785 <https://bitbucket.org/openpyxl/openpyxl/issues/785>`_ Number formats for data labels are incorrect
+* `#788 <https://bitbucket.org/openpyxl/openpyxl/issues/788>`_ Worksheet titles not quoted in defined names
+* `#800 <https://bitbucket.org/openpyxl/openpyxl/issues/800>`_ Font underlines not read correctly
 
 
 2.4.5 (2017-03-07)
