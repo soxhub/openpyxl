@@ -174,12 +174,12 @@ class PivotTableStyle(Serialisable):
 
     tagname = "pivotTableStyleInfo"
 
-    name = String()
+    name = String(allow_none=True)
     showRowHeaders = Bool()
     showColHeaders = Bool()
     showRowStripes = Bool()
     showColStripes = Bool()
-    showLastColumn = Bool(allow_none=True)
+    showLastColumn = Bool()
 
     def __init__(self,
                  name=None,

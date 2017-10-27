@@ -163,7 +163,7 @@ class TestPivotTableStyle:
         style = PivotTableStyle(name="PivotStyleMedium4")
         xml = tostring(style.to_tree())
         expected = """
-        <pivotTableStyleInfo name="PivotStyleMedium4" showRowHeaders="0" showColHeaders="0" showRowStripes="0" showColStripes="0"/>
+        <pivotTableStyleInfo name="PivotStyleMedium4" showRowHeaders="0" showColHeaders="0" showRowStripes="0" showColStripes="0" showLastColumn="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -177,6 +177,15 @@ class TestPivotTableStyle:
         style = PivotTableStyle.from_tree(node)
         assert style == PivotTableStyle(name="PivotStyleMedium4",
                                         showRowHeaders=True, showColHeaders=True, showLastColumn=True)
+
+
+    def test_no_name(self, PivotTableStyle):
+        src = """
+        <pivotTableStyleInfo />
+        """
+        node = fromstring(src)
+        style = PivotTableStyle.from_tree(node)
+        assert style == PivotTableStyle()
 
 
 @pytest.fixture
