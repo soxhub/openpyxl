@@ -59,3 +59,30 @@ class TestTransform2D:
         node = fromstring(src)
         shapes = Transform2D.from_tree(node)
         assert shapes == Transform2D()
+
+
+@pytest.fixture
+def Camera():
+    from ..shapes import Camera
+    return Camera
+
+
+class TestCamera:
+
+    def test_ctor(self, Camera):
+        cam = Camera(prst="legacyObliqueFront")
+        xml = tostring(cam.to_tree())
+        expected = """
+        <camera prst="legacyObliqueFront" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Camera):
+        src = """
+        <camera prst="orthographicFront" />
+        """
+        node = fromstring(src)
+        cam = Camera.from_tree(node)
+        assert cam == Camera(prst="orthographicFront")

@@ -108,35 +108,33 @@ class SphereCoords(Serialisable):
 
 class Camera(Serialisable):
 
-    prst = Typed(expected_type=Set(values=(['legacyObliqueTopLeft',
-                                            'legacyObliqueTop', 'legacyObliqueTopRight', 'legacyObliqueLeft',
-                                            'legacyObliqueFront', 'legacyObliqueRight', 'legacyObliqueBottomLeft',
-                                            'legacyObliqueBottom', 'legacyObliqueBottomRight',
-                                            'legacyPerspectiveTopLeft', 'legacyPerspectiveTop',
-                                            'legacyPerspectiveTopRight', 'legacyPerspectiveLeft',
-                                            'legacyPerspectiveFront', 'legacyPerspectiveRight',
-                                            'legacyPerspectiveBottomLeft', 'legacyPerspectiveBottom',
-                                            'legacyPerspectiveBottomRight', 'orthographicFront', 'isometricTopUp',
-                                            'isometricTopDown', 'isometricBottomUp', 'isometricBottomDown',
-                                            'isometricLeftUp', 'isometricLeftDown', 'isometricRightUp',
-                                            'isometricRightDown', 'isometricOffAxis1Left', 'isometricOffAxis1Right',
-                                            'isometricOffAxis1Top', 'isometricOffAxis2Left',
-                                            'isometricOffAxis2Right', 'isometricOffAxis2Top',
-                                            'isometricOffAxis3Left', 'isometricOffAxis3Right',
-                                            'isometricOffAxis3Bottom', 'isometricOffAxis4Left',
-                                            'isometricOffAxis4Right', 'isometricOffAxis4Bottom', 'obliqueTopLeft',
-                                            'obliqueTop', 'obliqueTopRight', 'obliqueLeft', 'obliqueRight',
-                                            'obliqueBottomLeft', 'obliqueBottom', 'obliqueBottomRight',
-                                            'perspectiveFront', 'perspectiveLeft', 'perspectiveRight',
-                                            'perspectiveAbove', 'perspectiveBelow', 'perspectiveAboveLeftFacing',
-                                            'perspectiveAboveRightFacing', 'perspectiveContrastingLeftFacing',
-                                            'perspectiveContrastingRightFacing', 'perspectiveHeroicLeftFacing',
-                                            'perspectiveHeroicRightFacing', 'perspectiveHeroicExtremeLeftFacing',
-                                            'perspectiveHeroicExtremeRightFacing', 'perspectiveRelaxed',
-                                            'perspectiveRelaxedModerately'])))
-    fov = Typed(expected_type=Integer)
+    tagname = "camera"
+
+    prst = Set(values=(
+        ['legacyObliqueTopLeft', 'legacyObliqueTop', 'legacyObliqueTopRight', 'legacyObliqueLeft',
+         'legacyObliqueFront', 'legacyObliqueRight', 'legacyObliqueBottomLeft',
+         'legacyObliqueBottom', 'legacyObliqueBottomRight', 'legacyPerspectiveTopLeft',
+         'legacyPerspectiveTop', 'legacyPerspectiveTopRight', 'legacyPerspectiveLeft',
+         'legacyPerspectiveFront', 'legacyPerspectiveRight', 'legacyPerspectiveBottomLeft',
+         'legacyPerspectiveBottom', 'legacyPerspectiveBottomRight', 'orthographicFront',
+         'isometricTopUp', 'isometricTopDown', 'isometricBottomUp', 'isometricBottomDown',
+         'isometricLeftUp', 'isometricLeftDown', 'isometricRightUp', 'isometricRightDown',
+         'isometricOffAxis1Left', 'isometricOffAxis1Right', 'isometricOffAxis1Top',
+         'isometricOffAxis2Left', 'isometricOffAxis2Right', 'isometricOffAxis2Top',
+         'isometricOffAxis3Left', 'isometricOffAxis3Right', 'isometricOffAxis3Bottom',
+         'isometricOffAxis4Left', 'isometricOffAxis4Right', 'isometricOffAxis4Bottom',
+         'obliqueTopLeft',  'obliqueTop', 'obliqueTopRight', 'obliqueLeft', 'obliqueRight',
+         'obliqueBottomLeft', 'obliqueBottom', 'obliqueBottomRight', 'perspectiveFront',
+         'perspectiveLeft', 'perspectiveRight', 'perspectiveAbove', 'perspectiveBelow',
+         'perspectiveAboveLeftFacing', 'perspectiveAboveRightFacing',
+         'perspectiveContrastingLeftFacing', 'perspectiveContrastingRightFacing',
+         'perspectiveHeroicLeftFacing', 'perspectiveHeroicRightFacing',
+         'perspectiveHeroicExtremeLeftFacing', 'perspectiveHeroicExtremeRightFacing',
+         'perspectiveRelaxed', 'perspectiveRelaxedModerately']))
+    fov = Typed(expected_type=Integer, allow_none=True)
     zoom = Typed(expected_type=Percentage, allow_none=True)
     rot = Typed(expected_type=SphereCoords, allow_none=True)
+
 
     def __init__(self,
                  prst=None,
