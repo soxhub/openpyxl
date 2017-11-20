@@ -94,9 +94,9 @@ class Font(Serialisable):
     namespace = DRAWING_NS
 
     typeface = String()
-    panose = Typed(expected_type=HexBinary, allow_none=True)
-    pitchFamily = Typed(expected_type=MinMax, allow_none=True)
-    charset = Typed(expected_type=MinMax, allow_none=True)
+    panose = HexBinary(allow_none=True)
+    pitchFamily = MinMax(min=0, max=52, allow_none=True)
+    charset = Integer(allow_none=True)
 
     def __init__(self,
                  typeface=None,
