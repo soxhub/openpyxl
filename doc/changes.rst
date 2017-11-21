@@ -8,6 +8,7 @@ Bugfixes
 * `#915 <https://bitbucket.org/openpyxl/openpyxl/issues/915>`_ TableStyleInfo has no required attributes
 * `#925 <https://bitbucket.org/openpyxl/openpyxl/issues/925>`_ Cannot read files with 3D drawings
 * `#926 <https://bitbucket.org/openpyxl/openpyxl/issues/926>`_ Incorrect version check in installer
+* Cell merging uses transposed parameters
 
 
 2.5.0-b1 (2017-10-19)
@@ -120,6 +121,9 @@ Minor changes
 
 2.4.10 (unreleased)
 ===================
+
+* #921 <https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
+
 
 2.4.9 (2017-10-19)
 ==================
