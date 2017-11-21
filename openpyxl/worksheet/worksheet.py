@@ -680,7 +680,7 @@ class Worksheet(_WorkbookChild):
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
-                      max_col=end_column, max_row=end_column)
+                      max_col=end_column, max_row=end_row)
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
 
         self.merged_cells.add(cr.coord)

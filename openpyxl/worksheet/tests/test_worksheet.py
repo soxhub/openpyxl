@@ -427,6 +427,18 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
         assert ws.merged_cells == "A1:D4"
+    
+
+    def test_merge_more_columns_than_rows(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.merge_cells(start_row=1, start_column=1, end_row=2, end_column=4)
+        assert ws.merged_cells == "A1:D2"
+
+
+    def test_merge_more_rows_than_columns(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=2)
+        assert ws.merged_cells == "A1:B4"
 
 
     def test_unmerge_range_string(self, Worksheet):
