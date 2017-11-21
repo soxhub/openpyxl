@@ -1,6 +1,9 @@
 2.4.10 (unreleased)
 ===================
 
+* #921 <https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
+
+
 2.4.9 (2017-10-19)
 ==================
 
