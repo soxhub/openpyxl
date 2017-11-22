@@ -57,7 +57,6 @@ def deprecated(reason):
                     stacklevel=2
                 )
                 warnings.simplefilter('default', DeprecationWarning)
-                print('got here')
                 return func1(*args, **kwargs)
 
             # Enhance docstring with a deprecation note
