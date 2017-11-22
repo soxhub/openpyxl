@@ -106,6 +106,7 @@ class Cell(StyleableObject):
     def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, style_array=None):
         super(Cell, self).__init__(worksheet, style_array)
         self.row = row
+        """Row number of this cell (1-based)"""
         # _value is the stored value, while value is the displayed value
         self._value = None
         self._hyperlink = None
@@ -116,14 +117,17 @@ class Cell(StyleableObject):
         if column is not None:
             col_idx = column_index_from_string(column)
         self.col_idx = col_idx
+        """Column number of this cell (1-based)"""
 
 
     @property
     def coordinate(self):
+        """This cell's coordinate (ex. 'A5')"""
         return '%s%d' % (self.column, self.row)
 
     @property
     def column(self):
+        """The letter of this cell's column (ex. 'A')"""
         return get_column_letter(self.col_idx)
 
     @property
@@ -280,7 +284,7 @@ class Cell(StyleableObject):
     def value(self):
         """Get or set the value held in the cell.
 
-        :rtype: depends on the value (string, float, int or
+        :type: depends on the value (string, float, int or
             :class:`datetime.datetime`)
         """
         value = self._value
@@ -324,9 +328,9 @@ class Cell(StyleableObject):
 
     @property
     def is_date(self):
-        """Whether the value is formatted as a date
+        """True if the value is formatted as a date
 
-        :rtype: bool
+        :type: bool
         """
         if self.data_type == "n" and self.number_format != "General":
             return is_date_format(self.number_format)
@@ -353,7 +357,7 @@ class Cell(StyleableObject):
         """ returns the expected position of a cell in pixels from the top-left
             of the sheet. For example, A1 anchor should be (0,0).
 
-            :rtype: tuple(int, int)
+            :type: tuple(int, int)
         """
         left_columns = (column_index_from_string(self.column) - 1)
         column_dimensions = self.parent.column_dimensions
@@ -387,7 +391,7 @@ class Cell(StyleableObject):
     def comment(self):
         """ Returns the comment associated with this cell
 
-            :rtype: :class:`openpyxl.comments.Comment`
+            :type: :class:`openpyxl.comments.Comment`
         """
         return self._comment
 
