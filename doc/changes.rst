@@ -11,6 +11,7 @@ Pull requests
 -------------
 
 * 210 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/210/>`_ Some improvements to the API docs
+* 211 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/211/>`_ Improved deprecation decorator
 
 
 2.4.9 (2017-10-19)
