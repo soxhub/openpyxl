@@ -122,7 +122,17 @@ Minor changes
 2.4.10 (unreleased)
 ===================
 
-* #921 <https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
+Bugfixes
+--------
+
+* #921 `<https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
+
+
+Pull requests
+-------------
+
+* 210 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/210/>`_ Some improvements to the API docs
+* 211 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/211/>`_ Improved deprecation decorator
 
 
 2.4.9 (2017-10-19)
@@ -131,6 +141,7 @@ Minor changes
 
 Bugfixes
 --------
+
 * `#809 <https://bitbucket.org/openpyxl/openpyxl/issues/809>`_ Incomplete documentation of `copy_worksheet` method
 * `#811 <https://bitbucket.org/openpyxl/openpyxl/issues/811>`_ Scoped definedNames not removed when worksheet is deleted
 * `#824 <https://bitbucket.org/openpyxl/openpyxl/issues/824>`_ Raise an exception if a chart is used in multiple sheets
@@ -145,6 +156,7 @@ Bugfixes
 
 Pull requests
 -------------
+
 * `#179 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/179>`_ Cells kept in a set
 * `#180 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/180>`_ Support for Workbook protection
 * `#182 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/182>`_ Read support for page breaks
@@ -158,6 +170,7 @@ Pull requests
 
 Bugfixes
 --------
+
 * AutoFilter.sortState being assignd to the ws.sortState
 * `#766 <https://bitbucket.org/openpyxl/openpyxl/issues/666>`_ Sheetnames with apostrophes need additional escaping
 * `#729 <https://bitbucket.org/openpyxl/openpyxl/issues/729>`_ Cannot open files created by Microsoft Dynamics

@@ -270,7 +270,8 @@ class Worksheet(_WorkbookChild):
 
 
     def cell(self, row, column, value=None):
-        """Returns a cell object based on the given coordinates.
+        """
+        Returns a cell object based on the given coordinates.
 
         Usage: cell(row=15, column=1, value=5)
 
@@ -286,8 +287,7 @@ class Worksheet(_WorkbookChild):
         :param value: value of the cell (e.g. 5)
         :type value: numeric or time or string or bool or none
 
-        :rtype: openpyxl.cell.Cell
-
+        :rtype: openpyxl.cell.cell.Cell
         """
 
         if row < 1 or column < 1:
@@ -373,6 +373,10 @@ class Worksheet(_WorkbookChild):
 
     @property
     def min_row(self):
+        """The minimium row index containing data (1-based)
+
+        :type: int
+        """
         min_row = 1
         if self._cells:
             rows = set(c[0] for c in self._cells)
@@ -382,9 +386,9 @@ class Worksheet(_WorkbookChild):
 
     @property
     def max_row(self):
-        """Returns the maximum row index containing data
+        """The maximum row index containing data (1-based)
 
-        :rtype: int
+        :type: int
         """
         max_row = 1
         if self._cells:
@@ -395,6 +399,10 @@ class Worksheet(_WorkbookChild):
 
     @property
     def min_column(self):
+        """The minimum column index containing data (1-based)
+
+        :type: int
+        """
         min_col = 1
         if self._cells:
             cols = set(c[1] for c in self._cells)
@@ -404,9 +412,9 @@ class Worksheet(_WorkbookChild):
 
     @property
     def max_column(self):
-        """Get the largest value for column currently stored.
+        """The maximum column index containing data (1-based)
 
-        :rtype: int
+        :type: int
         """
         max_col = 1
         if self._cells:
@@ -416,7 +424,10 @@ class Worksheet(_WorkbookChild):
 
 
     def calculate_dimension(self):
-        """Return the minimum bounding range for all cells containing data."""
+        """Return the minimum bounding range for all cells containing data (ex. 'A1:M24')
+
+        :rtype: string
+        """
         if self._cells:
             rows = set()
             cols = set()
@@ -438,21 +449,19 @@ class Worksheet(_WorkbookChild):
 
     @property
     def dimensions(self):
+        """Returns the result of :func:`calculate_dimension`"""
         return self.calculate_dimension()
 
 
     def iter_rows(self, range_string=None, min_row=None, max_row=None, min_col=None, max_col=None,
                   row_offset=0, column_offset=0):
         """
-        Return cells from the worksheet as rows. Boundaries for the cells can
-        be passed in either as indices of rows and columns.
+        Produces cells from the worksheet, by row. Specify the iteration range
+        using indices of rows and columns.
 
-        If no boundaries are passed in the cells will start at A1.
+        If no indices are specified the range starts at A1.
 
         If no cells are in the worksheet an empty tuple will be returned.
-
-
-        Additional rows and columns can be created using offsets.
 
         :param range_string: range string (e.g. 'A1:B2') *deprecated*
         :type range_string: string
@@ -469,10 +478,10 @@ class Worksheet(_WorkbookChild):
         :param max_row: smallest row index (1-based index)
         :type max_row: int
 
-        :param row_offset: additional rows (e.g. 4)
+        :param row_offset: added to min_row and max_row (e.g. 4)
         :type row_offset: int
 
-        :param column_offset: additional columns (e.g. 3)
+        :param column_offset: added to min_col and max_col (e.g. 3)
         :type column_offset: int
 
         :rtype: generator
@@ -508,14 +517,18 @@ class Worksheet(_WorkbookChild):
 
     @property
     def rows(self):
-        """Iterate over all rows in the worksheet"""
+        """Produces all cells in the worksheet, by row (see :func:`iter_rows`)
+
+        :type: generator
+        """
         return self.iter_rows()
 
 
     @property
     def values(self):
-        """
-        Return the values of all the cells, row by row
+        """Produces all cell values in the worksheet, by row
+
+        :type: generator
         """
         for row in self.iter_rows():
             yield tuple(c.value for c in row)
@@ -523,9 +536,10 @@ class Worksheet(_WorkbookChild):
 
     def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None):
         """
-        Returns all cells in the worksheet from the first row as columns.
+        Produces cells from the worksheet, by column. Specify the iteration range
+        using indices of rows and columns.
 
-        If no boundaries are passed in the cells will start at A1.
+        If no indices are specified the range starts at A1.
 
         If no cells are in the worksheet an empty tuple will be returned.
 
@@ -568,7 +582,7 @@ class Worksheet(_WorkbookChild):
 
     @property
     def columns(self):
-        """Iterate over all columns in the worksheet"""
+        """Produces all cells in the worksheet, by column  (see :func:`iter_cols`)"""
         return self.iter_cols()
 
 
@@ -606,7 +620,7 @@ class Worksheet(_WorkbookChild):
         :param range_name: `named range` name
         :type range_name: string
 
-        :rtype: tuple[tuple[openpyxl.cell.Cell]]
+        :rtype: tuple[tuple[openpyxl.cell.cell.Cell]]
         """
         defn = self.parent.defined_names[range_name]
         if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
@@ -789,6 +803,7 @@ class Worksheet(_WorkbookChild):
 
     @property
     def print_title_rows(self):
+        """Rows to be printed at the top of every page (ex: '1:3')"""
         if self._print_rows:
             return self._print_rows
 
@@ -807,6 +822,7 @@ class Worksheet(_WorkbookChild):
 
     @property
     def print_title_cols(self):
+        """Columns to be printed at the left side of every page (ex: 'A:C')"""
         if self._print_cols:
             return self._print_cols
 
@@ -834,7 +850,8 @@ class Worksheet(_WorkbookChild):
     @property
     def print_area(self):
         """
-        Return the print area for the worksheet, if set
+        The print area for the worksheet, or None if not set. To set, supply a range
+        like 'A1:D4' or a list of ranges.
         """
         return self._print_area
 

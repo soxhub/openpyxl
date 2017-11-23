@@ -29,41 +29,44 @@ class DummyCode:
     pass
 
 
-class deprecated(object):
+# from https://github.com/tantale/deprecated/blob/master/deprecated/__init__.py
+# with an enhancement to update docstrings of deprecated functions
+string_types = (type(b''), type(u''))
+def deprecated(reason):
 
-    def __init__(self, reason):
-        if inspect.isclass(reason) or inspect.isfunction(reason):
-            raise TypeError("Reason for deprecation must be supplied")
-        self.reason = reason
+    if isinstance(reason, string_types):
 
-    def __call__(self, obj, *args, **kwargs):
-        @wraps(obj)
-        def new_func(*args, **kwargs):
-            msg = "Call to deprecated function or class {0} ({1})".format(obj.__name__,
-                                                               self.reason)
-            if inspect.isfunction(obj):
-                _code = self._wrap_function(obj)
-            elif inspect.isclass(obj):
-                _code = self._wrap_class(obj)
+        def decorator(func1):
 
-            warnings.warn_explicit(
-                '{0}.'.format(msg),
-                category=DeprecationWarning,
-                filename=_code.co_filename,
-                lineno=_code.co_firstlineno + 1
-            )
-            return obj(*args, **kwargs)
-        return new_func
+            if inspect.isclass(func1):
+                fmt1 = "Call to deprecated class {name} ({reason})."
+            else:
+                fmt1 = "Call to deprecated function {name} ({reason})."
 
-    def _wrap_function(self, obj):
-        if hasattr(obj, 'func_code'):
-            _code = obj.func_code
-        else:
-            _code = obj.__code__
-        return _code
+            @wraps(func1)
+            def new_func1(*args, **kwargs):
+                warnings.simplefilter('always', DeprecationWarning)
+                warnings.warn(
+                    fmt1.format(name=func1.__name__, reason=reason),
+                    category=DeprecationWarning,
+                    stacklevel=2
+                )
+                warnings.simplefilter('default', DeprecationWarning)
+                return func1(*args, **kwargs)
 
-    def _wrap_class(self, obj):
-        _code = DummyCode()
-        _code.co_filename = obj.__module__
-        _code.co_firstlineno = 0
-        return _code
+            # Enhance docstring with a deprecation note
+            deprecationNote = "\n\n.. note::\n    Deprecated: " + reason
+            if new_func1.__doc__:
+                new_func1.__doc__ += deprecationNote
+            else:
+                new_func1.__doc__ = deprecationNote
+            return new_func1
+
+        return decorator
+
+    elif inspect.isclass(reason) or inspect.isfunction(reason):
+        raise TypeError("Reason for deprecation must be supplied")
+        
+    else:
+        raise TypeError(repr(type(reason)))
+        

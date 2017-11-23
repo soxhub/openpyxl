@@ -136,7 +136,10 @@ class Workbook(object):
 
     @property
     def active(self):
-        """Get the currently active sheet or None"""
+        """Get the currently active sheet or None
+        
+        :type: :class:`openpyxl.worksheet.worksheet.Worksheet`
+        """
         try:
             return self._sheets[self._active_sheet_index]
         except IndexError:
@@ -151,7 +154,7 @@ class Workbook(object):
         """Create a worksheet (at an optional index).
 
         :param title: optional title of the sheet
-        :type tile: unicode
+        :type title: unicode
         :param index: optional position at which the sheet will be inserted
         :type index: int
 
@@ -184,7 +187,7 @@ class Workbook(object):
 
 
     def remove(self, worksheet):
-        """Remove a worksheet from this workbook."""
+        """Remove `worksheet` from this workbook."""
         idx = self._sheets.index(worksheet)
         localnames = self.defined_names.localnames(scope=idx)
         for name in localnames:
@@ -194,7 +197,7 @@ class Workbook(object):
 
     @deprecated("Use wb.remove(worksheet) or del wb[sheetname]")
     def remove_sheet(self, worksheet):
-        """Remove a worksheet from this workbook."""
+        """Remove `worksheet` from this workbook."""
         self.remove(worksheet)
 
 
@@ -257,19 +260,27 @@ class Workbook(object):
 
     @property
     def worksheets(self):
+        """A list of sheets in this workbook
+        
+        :type: list of :class:`openpyxl.worksheet.worksheet.Worksheet`
+        """
         return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet, WriteOnlyWorksheet))]
 
     @property
     def chartsheets(self):
+        """A list of Chartsheets in this workbook
+
+        :type: list of :class:`openpyxl.chartsheet.chartsheet.Chartsheet`
+        """
         return [s for s in self._sheets if isinstance(s, Chartsheet)]
 
     @property
     def sheetnames(self):
-        """Returns the list of the names of worksheets in the workbook.
+        """Returns the list of the names of worksheets in this workbook.
 
         Names are returned in the worksheets order.
 
-        :rtype: list of strings
+        :type: list of strings
 
         """
         return [s.title for s in self._sheets]
@@ -366,8 +377,10 @@ class Workbook(object):
 
     def copy_worksheet(self, from_worksheet):
         """Copy an existing worksheet in the current workbook
-        :warning: This function cannot copy worksheets between workbooks.
-        worksheets can only be copied within the workbook that they belong
+
+        .. warning::
+            This function cannot copy worksheets between workbooks.
+            worksheets can only be copied within the workbook that they belong
 
         :param from_worksheet: the worksheet to be copied from
         :return: copy of the initial worksheet
