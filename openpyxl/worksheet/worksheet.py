@@ -501,7 +501,7 @@ class Worksheet(_WorkbookChild):
         """
 
         if range_string is not None:
-            warn("Using a range string is deprecated. Use ws[range_string]")
+            warn("Using a range string with iter_rows is deprecated. Use ws[range_string]")
             min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
