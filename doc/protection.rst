@@ -6,7 +6,7 @@ Protection
     Password protecting a workbook or worksheet only provides a quite basic level of security.
     The data is not encrypted, so can be modified by any number of freely available tools. In
     fact the specification states: "Worksheet or workbook element protection should not be
-    confused with file security. It is not meant to make your workbook safe from unintentional
+    confused with file security. It is meant to make your workbook safe from unintentional
     modification, and cannot protect it from malicious modification."
 
 Openpyxl provides support for protecting a workbook and worksheet from modification. The Open XML
