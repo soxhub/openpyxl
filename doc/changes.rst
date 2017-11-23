@@ -131,6 +131,7 @@ Bugfixes
 Pull requests
 -------------
 
+* 203 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/203/>`_ Correction to worksheet protection description
 * 210 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/210/>`_ Some improvements to the API docs
 * 211 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/211/>`_ Improved deprecation decorator
 
