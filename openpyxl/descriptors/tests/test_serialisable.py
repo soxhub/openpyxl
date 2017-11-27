@@ -62,6 +62,13 @@ value='hello'"""
         assert d1 != d2
 
 
+    def test_copy(self, Immutable):
+        d1 = Immutable({})
+        from copy import copy
+        d2 = copy(d1)
+        assert d1.value is not d2.value
+
+
 @pytest.fixture
 def Relation(Serialisable):
     from ..excel import Relation

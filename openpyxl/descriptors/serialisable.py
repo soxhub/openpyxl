@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # copyright openpyxl 2010-2015
 
+from copy import deepcopy
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
@@ -216,3 +217,7 @@ class Serialisable(_Serialiasable):
             else:
                 vals[el] = a or b
         return self.__class__(**vals)
+
+
+    def __copy__(self):
+        return deepcopy(self)
