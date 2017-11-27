@@ -5,6 +5,7 @@ Bugfixes
 --------
 
 * #921 `<https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
+* #927 `<https://bitbucket.org/openpyxl/openpyxl/issues/927>`_ Exception raised when adding coloured borders together
 
 
 Pull requests
