@@ -4,6 +4,7 @@
 Bugfixes
 --------
 
+* #912 `<https://bitbucket.org/openpyxl/openpyxl/issues/912>`_ Copying objects uses shallow copy
 * #921 `<https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
 * #927 `<https://bitbucket.org/openpyxl/openpyxl/issues/927>`_ Exception raised when adding coloured borders together
 
