@@ -116,6 +116,15 @@ class Color(Serialisable):
         return self.value
 
 
+    def __add__(self, other):
+        """
+        Adding colours is undefined behaviour best do nothing
+        """
+        if not isinstance(other, Color):
+            return super(Color, self).__add__(other)
+        return self
+
+
 class ColorDescriptor(Typed):
 
     expected_type = Color
