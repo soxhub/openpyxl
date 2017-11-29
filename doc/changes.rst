@@ -9,6 +9,7 @@ Bugfixes
 * `#925 <https://bitbucket.org/openpyxl/openpyxl/issues/925>`_ Cannot read files with 3D drawings
 * `#926 <https://bitbucket.org/openpyxl/openpyxl/issues/926>`_ Incorrect version check in installer
 * Cell merging uses transposed parameters
+* `#928 <https://bitbucket.org/openpyxl/openpyxl/issues/928>`_ ExtLst missing keyword for PivotFields
 
 
 2.5.0-b1 (2017-10-19)
