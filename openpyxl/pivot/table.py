@@ -772,6 +772,7 @@ class PivotField(Serialisable):
                  showPropTip=None,
                  showPropAsCaption=None,
                  defaultAttributeDrillState=None,
+                 extLst=None,
                 ):
         self.items = items
         self.autoSortScope = autoSortScope
