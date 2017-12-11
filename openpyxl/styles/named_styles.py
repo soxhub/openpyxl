@@ -46,6 +46,8 @@ class NamedStyle(Serialisable):
     hidden = Bool(allow_none=True)
     xfId = Integer(allow_none=True)
     name = String()
+    _wb = None
+    _style = StyleArray()
 
 
     def __init__(self,
