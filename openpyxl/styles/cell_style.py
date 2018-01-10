@@ -62,6 +62,10 @@ class StyleArray(array):
         return StyleArray((self))
 
 
+    def __deepcopy__(self, memo):
+        return StyleArray((self))
+
+
 class CellStyle(Serialisable):
 
     tagname = "xf"
