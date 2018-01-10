@@ -152,12 +152,24 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
 
-        assert stylesheet.number_formats == [
+        assert set(stylesheet.number_formats) == set([
             '_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
             "#,##0.00_ ",
             "yyyy/m/d;@",
             "0.00000_ "
-        ]
+        ])
+
+
+    def test_remove_duplicate_number_formats(self, Stylesheet, datadir):
+        datadir.chdir()
+
+        with open("builtins_as_custom_number_formats.xml", "rb") as src:
+            xml = src.read()
+            node = fromstring(xml)
+
+        stylesheet = Stylesheet.from_tree(node)
+
+        assert stylesheet.number_formats == ['General', 'dd\\/mm']
 
 
     def test_assign_number_formats(self, Stylesheet):

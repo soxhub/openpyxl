@@ -66,6 +66,7 @@ class Stylesheet(Serialisable):
         if numFmts is None:
             numFmts = NumberFormatList()
         self.numFmts = numFmts
+        self.number_formats = IndexedList()
         self.fonts = fonts
         self.fills = fills
         self.borders = borders
@@ -141,12 +142,6 @@ class Stylesheet(Serialisable):
 
 
     @property
-    def number_formats(self):
-        fmts = [n.formatCode for n in self.numFmts.numFmt]
-        return IndexedList(fmts)
-
-
-    @property
     def custom_formats(self):
         return dict([(n.numFmtId, n.formatCode) for n in self.numFmts.numFmt])
 
@@ -160,7 +155,7 @@ class Stylesheet(Serialisable):
         for style in self.cell_styles:
             if style.numFmtId in custom:
                 fmt = custom[style.numFmtId]
-                style.numFmtId = formats.index(fmt) + 164
+                style.numFmtId = formats.add(fmt) + 164
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
