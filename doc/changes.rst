@@ -129,6 +129,7 @@ Bugfixes
 * #912 `<https://bitbucket.org/openpyxl/openpyxl/issues/912>`_ Copying objects uses shallow copy
 * #921 `<https://bitbucket.org/openpyxl/openpyxl/issues/921>`_ API documentation not generated automatically
 * #927 `<https://bitbucket.org/openpyxl/openpyxl/issues/927>`_ Exception raised when adding coloured borders together
+* #931 `<https://bitbucket.org/openpyxl/openpyxl/issues/931>`_ Number formats not correctly deduplicated
 
 
 Pull requests
@@ -137,6 +138,7 @@ Pull requests
 * 203 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/203/>`_ Correction to worksheet protection description
 * 210 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/210/>`_ Some improvements to the API docs
 * 211 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/211/>`_ Improved deprecation decorator
+* 218 `<https://bitbucket.org/openpyxl/openpyxl/pull-requests/218/>`_ Fix problems with deepcopy
 
 
 2.4.9 (2017-10-19)

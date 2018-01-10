@@ -122,14 +122,14 @@ class StrData(Serialisable):
     tagname = "strData"
 
     ptCount = NestedInteger(allow_none=True)
-    pt = Typed(expected_type=StrVal, allow_none=True)
+    pt = Sequence(expected_type=StrVal)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('ptCount', 'pt')
 
     def __init__(self,
                  ptCount=None,
-                 pt=None,
+                 pt=(),
                  extLst=None,
                 ):
         self.ptCount = ptCount
