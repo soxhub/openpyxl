@@ -155,6 +155,9 @@ class Stylesheet(Serialisable):
         for style in self.cell_styles:
             if style.numFmtId in custom:
                 fmt = custom[style.numFmtId]
+                if fmt in BUILTIN_FORMATS_REVERSE: # remove builtins
+                    style.numFmtId = BUILTIN_FORMATS_REVERSE[fmt]
+                    continue
                 style.numFmtId = formats.add(fmt) + 164
 
 

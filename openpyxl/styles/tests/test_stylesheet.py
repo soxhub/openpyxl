@@ -169,7 +169,7 @@ class TestStylesheet:
 
         stylesheet = Stylesheet.from_tree(node)
 
-        assert stylesheet.number_formats == ['General', 'dd\\/mm']
+        assert stylesheet.number_formats == ['dd\\/mm']
 
 
     def test_assign_number_formats(self, Stylesheet):
