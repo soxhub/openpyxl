@@ -17,7 +17,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange
 from openpyxl.descriptors.sequence import NestedSequence
-from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.xml.functions import tostring
 from openpyxl.utils import range_boundaries
 from openpyxl.utils.escape import escape, unescape
@@ -201,7 +201,7 @@ class Table(Serialisable):
 
     _path = "/tables/table{0}.xml"
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"
-    _rel_type = "table"
+    _rel_type = REL_NS + "/table"
     _rel_id = None
 
     tagname = "table"

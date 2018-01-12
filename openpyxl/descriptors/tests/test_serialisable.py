@@ -15,7 +15,7 @@ def Immutable(Serialisable):
 
     class Immutable(Serialisable):
 
-        __elements__ = ('value',)
+        __attrs__ = ('value',)
 
         def __init__(self, value=None):
             self.value = value
