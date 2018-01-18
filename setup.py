@@ -55,9 +55,7 @@ setup(name='openpyxl',
     author_email=__author_email__,
     url=__url__,
     license=__license__,
-    requires=[
-        'python (>=2.7.0)',
-        ],
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
         'jdcal', 'et_xmlfile',
         ],
