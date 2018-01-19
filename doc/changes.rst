@@ -10,6 +10,7 @@ Bugfixes
 * `#926 <https://bitbucket.org/openpyxl/openpyxl/issues/926>`_ Incorrect version check in installer
 * Cell merging uses transposed parameters
 * `#928 <https://bitbucket.org/openpyxl/openpyxl/issues/928>`_ ExtLst missing keyword for PivotFields
+* `#952 <https://bitbucket.org/openpyxl/openpyxl/issues/952>`_ Cannot load table styles with custom names
 
 
 Major Changes
