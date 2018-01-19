@@ -48,6 +48,8 @@ from .fields import (
 
 class MeasureDimensionMap(Serialisable):
 
+    tagname = "map"
+
     measureGroup = Integer(allow_none=True)
     dimension = Integer(allow_none=True)
 
@@ -61,6 +63,8 @@ class MeasureDimensionMap(Serialisable):
 
 class MeasureGroup(Serialisable):
 
+    tagname = "measureGroup"
+
     name = String()
     caption = String()
 
@@ -73,6 +77,8 @@ class MeasureGroup(Serialisable):
 
 
 class PivotDimension(Serialisable):
+
+    tagname = "dimension"
 
     measure = Bool()
     name = String()
@@ -92,6 +98,8 @@ class PivotDimension(Serialisable):
 
 
 class CalculatedMember(Serialisable):
+
+    tagname = "calculatedMember"
 
     name = String()
     mdx = String()
@@ -126,6 +134,8 @@ class CalculatedMember(Serialisable):
 
 class CalculatedItem(Serialisable):
 
+    tagname = "calculatedItem"
+
     field = Integer(allow_none=True)
     formula = String()
     pivotArea = Typed(expected_type=PivotArea, )
@@ -147,7 +157,8 @@ class CalculatedItem(Serialisable):
 
 class ServerFormat(Serialisable):
 
-    culture = String(allow_none=True)
+    tagname = "serverFormat"
+
     format = String(allow_none=True)
 
     def __init__(self,
@@ -175,6 +186,8 @@ class ServerFormats(Serialisable):
 
 class Query(Serialisable):
 
+    tagname = "query"
+
     mdx = String()
     tpls = Typed(expected_type=TupleList, allow_none=True)
 
@@ -190,6 +203,8 @@ class Query(Serialisable):
 
 class QueryCache(Serialisable):
 
+    tagname = "queryCache"
+
     count = Integer()
     query = Typed(expected_type=Query, )
 
@@ -204,6 +219,8 @@ class QueryCache(Serialisable):
 
 
 class OLAPSet(Serialisable):
+
+    tagname = "set"
 
     count = Integer()
     maxRank = Integer()
@@ -251,6 +268,8 @@ class OLAPSets(Serialisable):
 
 class PCDSDTCEntries(Serialisable):
 
+    tagname = "pCDSDTCEntries"
+
     count = Integer()
     # some elements are choice
     m = Typed(expected_type=Missing, )
@@ -276,6 +295,8 @@ class PCDSDTCEntries(Serialisable):
 
 class TupleCache(Serialisable):
 
+    tagname = "tupleCache"
+
     entries = Typed(expected_type=PCDSDTCEntries, allow_none=True)
     sets = Typed(expected_type=OLAPSets, allow_none=True)
     queryCache = Typed(expected_type=QueryCache, allow_none=True)
@@ -299,6 +320,8 @@ class TupleCache(Serialisable):
 
 
 class PCDKPI(Serialisable):
+
+    tagname = "pCDKPI"
 
     uniqueName = String()
     caption = String(allow_none=True)
@@ -340,6 +363,8 @@ class PCDKPI(Serialisable):
 
 class GroupMember(Serialisable):
 
+    tagname = "groupMember"
+
     uniqueName = String()
     group = Bool()
 
@@ -368,6 +393,8 @@ class GroupMembers(Serialisable):
 
 class LevelGroup(Serialisable):
 
+    tagname = "levelGroup"
+
     name = String()
     uniqueName = String()
     caption = String()
@@ -395,6 +422,8 @@ class LevelGroup(Serialisable):
 
 class Groups(Serialisable):
 
+    tagname = "groups"
+
     count = Integer()
     group = Typed(expected_type=LevelGroup, )
 
@@ -409,6 +438,8 @@ class Groups(Serialisable):
 
 
 class GroupLevel(Serialisable):
+
+    tagname = "groupLevel"
 
     uniqueName = String()
     caption = String()
@@ -452,6 +483,8 @@ class GroupLevels(Serialisable):
 
 class FieldUsage(Serialisable):
 
+    tagname = "fieldUsage"
+
     x = Integer()
 
     def __init__(self,
@@ -476,6 +509,8 @@ class FieldsUsage(Serialisable):
 
 
 class CacheHierarchy(Serialisable):
+
+    tagname = "cacheHierarchy"
 
     uniqueName = String()
     caption = String(allow_none=True)
@@ -597,6 +632,8 @@ class GroupItems(Serialisable):
 
 class DiscretePr(Serialisable):
 
+    tagname = "discretePr"
+
     count = Integer()
     x = NestedInteger(allow_none=True)
 
@@ -645,6 +682,8 @@ class RangePr(Serialisable):
 
 
 class FieldGroup(Serialisable):
+
+    tagname = "fieldGroup"
 
     par = Integer(allow_none=True)
     base = Integer(allow_none=True)
@@ -801,6 +840,8 @@ class CacheField(Serialisable):
 
 class RangeSet(Serialisable):
 
+    tagname = "rangeSet"
+
     i1 = Integer(allow_none=True)
     i2 = Integer(allow_none=True)
     i3 = Integer(allow_none=True)
@@ -829,6 +870,8 @@ class RangeSet(Serialisable):
 
 class PageItem(Serialisable):
 
+    tagname = "pageItem"
+
     name = String()
 
     def __init__(self,
@@ -840,6 +883,7 @@ class PageItem(Serialisable):
 class Page(Serialisable):
 
     # PCDSCPage
+    tagname = "PCDSCPage"
 
     pageItem = Sequence(expected_type=PageItem)
 
@@ -858,6 +902,8 @@ class Page(Serialisable):
 
 
 class Consolidation(Serialisable):
+
+    tagname = "consolidation"
 
     autoPage = Bool(allow_none=True)
     pages = NestedSequence(expected_type=Page, count=True)
