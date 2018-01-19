@@ -41,6 +41,8 @@ def test_class_no_deps(schema):
 
 class FileRecoveryPr(Serialisable):
 
+    tagname = "fileRecoveryPr"
+
     autoRecover = Bool(allow_none=True)
     crashSave = Bool(allow_none=True)
     dataExtractLoad = Bool(allow_none=True)
@@ -80,6 +82,8 @@ def test_simple_content(schema):
     assert cls == """
 
 class DefinedName(Serialisable):
+
+    tagname = "definedName"
 
     name = String()
     comment = String(allow_none=True)

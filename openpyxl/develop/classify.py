@@ -101,7 +101,11 @@ def classify(tagname, src=sheet_src, schema=None):
 
     types = set()
 
-    s = """\n\nclass %s(Serialisable):\n\n""" % tagname[3:]
+    clsname = tagname[3:]
+    tgname = clsname[0].lower() + clsname[1:]
+    s = """\n\nclass {0}(Serialisable):
+
+    tagname = "{1}"\n\n""".format(clsname, tgname)
     attrs = []
     header = []
     sig = []
