@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # copyright openpyxl 2010-2015
 
+from copy import copy
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
@@ -209,3 +210,15 @@ class Serialisable(_Serialiasable):
             else:
                 vals[el] = a or b
         return self.__class__(**vals)
+
+
+    def __copy__(self):
+        # serialise to xml and back to avoid shallow copies
+        xml = self.to_tree(tagname="dummy")
+        cp = self.__class__.from_tree(xml)
+        # copy any non-persisted attributed
+        for k in self.__dict__:
+            if k not in self.__attrs__ + self.__elements__:
+                v = copy(getattr(self, k))
+                setattr(cp, k, v)
+        return cp

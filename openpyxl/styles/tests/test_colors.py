@@ -56,6 +56,19 @@ class TestColor:
             c.value = 4
 
 
+    def test_adding(self):
+        c1 = Color(rgb="FF0000")
+        c2 = Color(rgb="00FF00")
+        c3 = c1 + c2
+        assert c3.rgb == "00FF0000"
+
+
+    def test_cannot_add_other_types(self):
+        c = Color()
+        with pytest.raises(TypeError):
+            c + 4
+
+
 def test_color_descriptor():
     from ..colors import ColorDescriptor
 

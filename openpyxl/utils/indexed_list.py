@@ -9,6 +9,8 @@ class IndexedList(list):
     http://code.activestate.com/recipes/52303-the-auxiliary-dictionary-idiom-for-sequences-with-/
     """
 
+    _dict = {}
+
     def __init__(self, iterable=None):
         self.clean = True
         self._dict = {}

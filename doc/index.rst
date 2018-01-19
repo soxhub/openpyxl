@@ -284,6 +284,16 @@ Information for Developers
 API Documentation
 ------------------
 
+Key Classes
++++++++++++ 
+
+* :class:`openpyxl.workbook.workbook.Workbook`
+* :class:`openpyxl.worksheet.worksheet.Worksheet`
+* :class:`openpyxl.cell.cell.Cell`
+
+Full API
+++++++++
+
 .. toctree::
     :maxdepth: 2
 

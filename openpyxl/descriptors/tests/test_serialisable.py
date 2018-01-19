@@ -15,7 +15,7 @@ def Immutable(Serialisable):
 
     class Immutable(Serialisable):
 
-        __elements__ = ('value',)
+        __attrs__ = ('value',)
 
         def __init__(self, value=None):
             self.value = value
@@ -60,6 +60,13 @@ value='hello'"""
         d1 = Immutable(1)
         d2 = Immutable(2)
         assert d1 != d2
+
+
+    def test_copy(self, Immutable):
+        d1 = Immutable({})
+        from copy import copy
+        d2 = copy(d1)
+        assert d1.value is not d2.value
 
 
 @pytest.fixture
