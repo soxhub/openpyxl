@@ -14,14 +14,7 @@ Thee manifest.in file is used for data files.
 
 """
 
-import sys
 import os
-import warnings
-
-if sys.version_info < (2, 7):
-    raise Exception("Python >= 2.7 is required.")
-elif sys.version_info[:2] == (3, 2):
-    warnings.warn("Python 3.2 is not supported")
 
 from setuptools import setup, find_packages
 
