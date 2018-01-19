@@ -12,6 +12,18 @@ Bugfixes
 * `#928 <https://bitbucket.org/openpyxl/openpyxl/issues/928>`_ ExtLst missing keyword for PivotFields
 
 
+Major Changes
+-------------
+
+* You can now insert and delete rows and columns in worksheets
+
+
+Minor Changes
+-------------
+
+* pip now handles which Python versions can be used.
+
+
 2.5.0-b1 (2017-10-19)
 =====================
 
