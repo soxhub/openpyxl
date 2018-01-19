@@ -6,6 +6,7 @@ from __future__ import absolute_import
 
 # Python stdlib imports
 from itertools import islice, product
+from operator import attrgetter
 import re
 from inspect import isgenerator
 from warnings import warn
@@ -773,6 +774,56 @@ class Worksheet(_WorkbookChild):
             self._invalid_row(iterable)
 
         self._current_row = row_idx
+
+
+    def _move_cells(self, min_row=None, min_col=None, offset=0, row_or_col="row"):
+        """
+        Move either rows or columns around by the offset
+        """
+        reverse = offset > 0 # start at the end if moving down
+
+        cells = sorted(self._cells.values(), key=attrgetter(row_or_col), reverse=reverse)
+
+        for cell in cells:
+            if min_row and cell.row < min_row:
+                continue
+            elif min_col and cell.col_idx < min_col:
+                continue
+
+            del self._cells[(cell.row, cell.col_idx)] # remove old ref
+
+            val = getattr(cell, row_or_col)
+            setattr(cell, row_or_col, val+offset) # calculate new coords
+
+            self._cells[(cell.row, cell.col_idx)] = cell # add new ref
+
+
+    def insert_rows(self, idx, amount=1):
+        """
+        Insert row or rows before row==idx
+        """
+        self._move_cells(min_row=idx, offset=amount, row_or_col="row")
+
+
+    def insert_cols(self, idx, amount=1):
+        """
+        Insert column or columns before col==idx
+        """
+        self._move_cells(min_col=idx, offset=amount, row_or_col="col_idx")
+
+
+    def delete_rows(self, idx, amount=1):
+        """
+        Delete row or rows from row==idx
+        """
+        self._move_cells(min_row=idx+amount, offset=-amount, row_or_col="row")
+
+
+    def delete_cols(self, idx, amount=1):
+        """
+        Delete column or columns from col==idx
+        """
+        self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
 
 
     def _invalid_row(self, iterable):

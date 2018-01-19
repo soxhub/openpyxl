@@ -427,7 +427,7 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
         assert ws.merged_cells == "A1:D4"
-    
+
 
     def test_merge_more_columns_than_rows(self, Worksheet):
         ws = Worksheet(Workbook())
@@ -574,3 +574,86 @@ def test_add_image(Worksheet):
     ws = Worksheet(DummyWorkbook())
     im = Image(PILImage())
     ws.add_image(im, "D5")
+
+
+@pytest.fixture
+def dummy_worksheet(Worksheet):
+    """
+    Creates a worksheet A1:H6 rows with values the same as cell coordinates
+    """
+    ws = Worksheet(DummyWorkbook())
+
+    for row in ws.iter_rows(max_row=6, max_col=8):
+        for cell in row:
+            cell.value = cell.coordinate
+
+    return ws
+
+
+class TestEditableWorksheet:
+
+
+    def test_move_row_down(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_row == 6
+
+        ws._move_cells(min_row=5, offset=1, row_or_col="row")
+
+        assert ws.max_row == 7
+        assert [c.value for c in ws[5]] == [None]*8
+
+
+    def test_move_col_right(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_column == 8
+
+        ws._move_cells(min_col=3, offset=2, row_or_col="col_idx")
+
+        assert ws.max_column == 10
+        assert [c.value for c in ws['D']] == [None]*6
+
+
+    def test_move_row_up(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_row == 6
+
+        ws._move_cells(min_row=4, offset=-1, row_or_col="row")
+
+        assert ws.max_row == 5
+        assert [c.value for c in ws['A']] == ["A1", "A2", "A4", "A5", "A6"]
+
+
+    def test_insert_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.insert_rows(2, 2)
+
+        assert ws.max_row == 8
+        assert [c.value for c in ws[2]] == [None]*8
+
+
+    def test_insert_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.insert_cols(3)
+
+        assert ws.max_column == 9
+        assert [c.value for c in ws['G']] == ['F1', 'F2', 'F3', 'F4', 'F5', 'F6']
+
+
+    def test_delete_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.delete_rows(2)
+
+        assert ws.max_row == 5
+        assert [c.value for c in ws[2]] == ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3']
+
+
+    def test_delete_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.delete_cols(3)
+
+        assert ws.max_column == 7
+        assert [c.value for c in ws['C']] == ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']
