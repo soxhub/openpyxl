@@ -91,7 +91,7 @@ class RowHierarchiesUsage(Serialisable):
 
     @property
     def count(self):
-        return len(self.colHierarchyUsage)
+        return len(self.rowHierarchyUsage)
 
 
 class PivotFilter(Serialisable):
@@ -256,6 +256,8 @@ class MemberProperty(Serialisable):
 
 
 class PivotHierarchy(Serialisable):
+
+    tagname = "pivotHierarchy"
 
     outline = Bool()
     multipleItemSelectionAllowed = Bool()
