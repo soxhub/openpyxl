@@ -1,6 +1,8 @@
 2.4.11 (unreleased)
 ===================
 
+* #957 `<https://bitbucket.org/openpyxl/openpyxl/issues/957>`_ Relationship type for tables is borked
+
 
 2.4.10 (2018-01-19)
 ===================
