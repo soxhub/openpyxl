@@ -395,12 +395,38 @@ class ConnectorNonVisual(Serialisable):
     cNvPr = Typed(expected_type=NonVisualDrawingProps, )
     cNvCxnSpPr = Typed(expected_type=NonVisualConnectorProperties, )
 
+    __elements__ = ("cNvPr", "cNvCxnSpPr",)
+
     def __init__(self,
                  cNvPr=None,
                  cNvCxnSpPr=None,
                 ):
         self.cNvPr = cNvPr
         self.cNvCxnSpPr = cNvCxnSpPr
+
+
+class ConnectorShape(Serialisable):
+
+    tagname = "cxnSp"
+
+    nvCxnSpPr = Typed(expected_type=ConnectorNonVisual, )
+    spPr = Typed(expected_type=GraphicalProperties)
+    style = Typed(expected_type=ShapeStyle, allow_none=True)
+    macro = String(allow_none=True)
+    fPublished = Bool(allow_none=True)
+
+    def __init__(self,
+                 nvCxnSpPr=None,
+                 spPr=None,
+                 style=None,
+                 macro=None,
+                 fPublished=None,
+                 ):
+        self.nvCxnSpPr = nvCxnSpPr
+        self.spPr = spPr
+        self.style = style
+        self.macro = macro
+        self.fPublished = fPublished
 
 
 class ShapeMeta(Serialisable):
@@ -420,7 +446,7 @@ class Shape(Serialisable):
     macro = String(allow_none=True)
     textlink = String(allow_none=True)
     fPublished = Bool(allow_none=True)
-    nvSpPr = Typed(expected_type=ShapeMeta)
+    nvSpPr = Typed(expected_type=ShapeMeta, allow_none=True)
     meta = Alias("nvSpPr")
     spPr = Typed(expected_type=GraphicalProperties)
     graphicalProperties = Alias("spPr")
@@ -439,7 +465,7 @@ class Shape(Serialisable):
         self.macro = macro
         self.textlink = textlink
         self.fPublished = fPublished
-        self.nvSpPr =nvSpPr
+        self.nvSpPr = nvSpPr
         self.spPr = spPr
         self.style = style
         self.txBody = txBody
