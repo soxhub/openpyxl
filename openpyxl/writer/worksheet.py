@@ -187,7 +187,7 @@ def _add_table_headers(ws):
                     if cell.data_type != "s":
                         warn("File may not be readable: column headings must be strings.")
                     col.name = unicode(cell.value)
-        rel = Relationship(type=table._rel_type, Target="")
+        rel = Relationship(Type=table._rel_type, Target="")
         ws._rels.append(rel)
         table._rel_id = rel.Id
         tables.append(Related(id=rel.Id))
