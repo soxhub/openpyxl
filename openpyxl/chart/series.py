@@ -136,7 +136,8 @@ class Series(Serialisable):
                  bubble3D=None,
                  marker=None,
                  smooth=None,
-                 explosion=None
+                 explosion=None,
+                 extLst=None,
                 ):
         self.idx = idx
         self.order = order

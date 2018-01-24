@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 # Copyright (c) 2010-2017 openpyxl
 
 from openpyxl.descriptors import (
@@ -8,9 +8,9 @@ from openpyxl.descriptors import (
     NoneSet,
     Sequence,
     Integer,
+    MinMax,
 )
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors.sequence import ValueSequence
 from openpyxl.compat import safe_string
 
 from .colors import ColorDescriptor, Color
@@ -62,8 +62,7 @@ class Fill(Serialisable):
         child = children[0]
         if "patternFill" in child.tag:
             return PatternFill._from_tree(child)
-        else:
-            return GradientFill._from_tree(child)
+        return super(Fill, GradientFill).from_tree(child)
 
 
 class PatternFill(Fill):
@@ -120,14 +119,73 @@ DEFAULT_EMPTY_FILL = PatternFill()
 DEFAULT_GRAY_FILL = PatternFill(patternType='gray125')
 
 
-def _serialise_stop(tagname, sequence, namespace=None):
-    for idx, color in enumerate(sequence):
-        stop = Element("stop", position=str(idx))
-        stop.append(color.to_tree())
-        yield stop
+class Stop(Serialisable):
+
+    tagname = "stop"
+
+    position = MinMax(min=0, max=1)
+    color = ColorDescriptor()
+
+    def __init__(self, color, position):
+        self.position = position
+        self.color = color
+
+
+def _assign_position(values):
+    """
+    Automatically assign positions if a list of colours is provided.
+
+    It is not permitted to mix colours and stops
+    """
+    n_values = len(values)
+    n_stops = sum(isinstance(value, Stop) for value in values)
+
+    if n_stops == 0:
+        interval = 1
+        if n_values > 2:
+            interval = 1 / (n_values - 1)
+        values = [Stop(value, i * interval)
+                  for i, value in enumerate(values)]
+
+    elif n_stops < n_values:
+        raise ValueError('Cannot interpret mix of Stops and Colors in GradientFill')
+
+    pos = set()
+    for stop in values:
+        if stop.position in pos:
+            raise ValueError("Duplicate position {0}".format(stop.position))
+        pos.add(stop.position)
+
+    return values
+
+
+class StopList(Sequence):
+
+    expected_type = Stop
+
+    def __set__(self, obj, values):
+        values = _assign_position(values)
+        super(StopList, self).__set__(obj, values)
 
 
 class GradientFill(Fill):
+    """Fill areas with gradient
+
+    Two types of gradient fill are supported:
+
+        - A type='linear' gradient interpolates colours between
+          a set of specified Stops, across the length of an area.
+          The gradient is left-to-right by default, but this
+          orientation can be modified with the degree
+          attribute.  A list of Colors can be provided instead
+          and they will be positioned with equal distance between them.
+
+        - A type='path' gradient applies a linear gradient from each
+          edge of the area. Attributes top, right, bottom, left specify
+          the extent of fill from the respective borders. Thus top="0.2"
+          will fill the top 20% of the cell.
+
+    """
 
     tagname = "gradientFill"
 
@@ -138,19 +196,17 @@ class GradientFill(Fill):
     right = Float()
     top = Float()
     bottom = Float()
-    stop = ValueSequence(expected_type=Color, to_tree=_serialise_stop)
+    stop = StopList()
 
 
     def __init__(self, type="linear", degree=0, left=0, right=0, top=0,
-                 bottom=0, stop=(), fill_type=None):
+                 bottom=0, stop=()):
         self.degree = degree
         self.left = left
         self.right = right
         self.top = top
         self.bottom = bottom
         self.stop = stop
-        if fill_type is not None:
-            type = fill_type
         self.type = type
 
 
@@ -159,14 +215,6 @@ class GradientFill(Fill):
             value = getattr(self, attr)
             if value:
                 yield attr, safe_string(value)
-
-
-    @classmethod
-    def _from_tree(cls, node):
-        colors = []
-        for color in safe_iterator(node, "{%s}color" % SHEET_MAIN_NS):
-            colors.append(Color.from_tree(color))
-        return cls(stop=colors, **node.attrib)
 
 
     def to_tree(self, tagname=None, namespace=None, idx=None):

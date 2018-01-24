@@ -11,6 +11,7 @@ import sys
                           (1, '1'),
                           (None, 'none'),
                           (float('NaN'), ''),
+                          (float('inf'), ''),
                          ]
                          )
 def test_safe_string(value, result):

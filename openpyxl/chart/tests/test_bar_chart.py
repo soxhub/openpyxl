@@ -44,7 +44,8 @@ class TestBarChart:
         """
         node = fromstring(src)
         bc = BarChart.from_tree(node)
-        assert bc == BarChart(varyColors=False)
+        assert bc == BarChart(varyColors=False,axId=(10, 100))
+        assert bc.axId == [10, 100]
         assert bc.grouping == "clustered"
 
 
@@ -62,6 +63,17 @@ class TestBarChart:
                 <axId val="10"></axId>
                 <axId val="100"></axId>
               </barChart>
+              <catAx>
+                <axId val="10"></axId>
+                <scaling>
+                  <orientation val="minMax"></orientation>
+                </scaling>
+                <axPos val="l" />
+                <majorTickMark val="none" />
+                <minorTickMark val="none" />
+                <crossAx val="100"></crossAx>
+                <lblOffset val="100"></lblOffset>
+              </catAx>
               <valAx>
                 <axId val="100"></axId>
                 <scaling>
@@ -69,21 +81,15 @@ class TestBarChart:
                 </scaling>
                 <axPos val="l" />
                 <majorGridlines />
+                <majorTickMark val="none" />
+                <minorTickMark val="none" />
                 <crossAx val="10"></crossAx>
               </valAx>
-              <catAx>
-                <axId val="10"></axId>
-                <scaling>
-                  <orientation val="minMax"></orientation>
-                </scaling>
-                <axPos val="l" />
-                <crossAx val="100"></crossAx>
-                <lblOffset val="100"></lblOffset>
-              </catAx>
            </plotArea>
            <legend>
              <legendPos val="r"></legendPos>
            </legend>
+           <plotVisOnly val="1" />
            <dispBlanksAs val="gap"></dispBlanksAs>
           </chart>
         </chartSpace>
@@ -179,4 +185,4 @@ class TestBarChart3D:
         """
         node = fromstring(src)
         bc = BarChart3D.from_tree(node)
-        assert [x.val for x in bc.axId] == [10, 100, 1000]
+        assert bc.axId == [10, 100, 0]

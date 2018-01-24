@@ -16,6 +16,7 @@ from openpyxl.descriptors.nested import (
     NestedNoneSet,
     NestedValue,
     NestedInteger,
+    EmptyTag,
 )
 
 from openpyxl.styles.colors import RGB
@@ -78,6 +79,7 @@ class Transform(Serialisable):
 class SystemColor(Serialisable):
 
     tagname = "sysClr"
+    namespace = DRAWING_NS
 
     # color transform options
     tint = NestedInteger(allow_none=True)
@@ -109,10 +111,16 @@ class SystemColor(Serialisable):
     gamma = Typed(expected_type=Transform, allow_none=True)
     invGamma = Typed(expected_type=Transform, allow_none=True)
 
-    val = Set(values=(["bg1", "tx1", "bg2", "tx2", "accent1", "accent2",
-                       "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink", "phClr",
-                       "dk1", "lt1", "dk2", "lt2", ]))
-    lastClr = Typed(expected_type=RGB, allow_none=True)
+    val = Set(values=( ['scrollBar', 'background', 'activeCaption',
+                        'inactiveCaption', 'menu', 'window', 'windowFrame', 'menuText',
+                        'windowText', 'captionText', 'activeBorder', 'inactiveBorder',
+                        'appWorkspace', 'highlight', 'highlightText', 'btnFace', 'btnShadow',
+                        'grayText', 'btnText', 'inactiveCaptionText', 'btnHighlight',
+                        '3dDkShadow', '3dLight', 'infoText', 'infoBk', 'hotLight',
+                        'gradientActiveCaption', 'gradientInactiveCaption', 'menuHighlight',
+                        'menuBar'] )
+              )
+    lastClr = RGB(allow_none=True)
 
     __elements__ = ('tint', 'shade', 'comp', 'inv', 'gray', "alpha",
                     "alphaOff", "alphaMod", "hue", "hueOff", "hueMod", "hueOff", "sat",
@@ -121,7 +129,7 @@ class SystemColor(Serialisable):
                     "invGamma")
 
     def __init__(self,
-                 val="bg1",
+                 val="windowText",
                  lastClr=None,
                  tint=None,
                  shade=None,
@@ -225,6 +233,110 @@ class RGBPercent(Serialisable):
         self.b = b
 
 
+class SchemeColor(Serialisable):
+
+    tagname = "schemeClr"
+    namespace = DRAWING_NS
+
+    tint = NestedInteger(allow_none=True)
+    shade = NestedInteger(allow_none=True)
+    comp = EmptyTag(allow_none=True)
+    inv = NestedInteger(allow_none=True)
+    gray = NestedInteger(allow_none=True)
+    alpha = NestedInteger(allow_none=True)
+    alphaOff = NestedInteger(allow_none=True)
+    alphaMod = NestedInteger(allow_none=True)
+    hue = NestedInteger(allow_none=True)
+    hueOff = NestedInteger(allow_none=True)
+    hueMod = NestedInteger(allow_none=True)
+    sat = NestedInteger(allow_none=True)
+    satOff = NestedInteger(allow_none=True)
+    satMod = NestedInteger(allow_none=True)
+    lum = NestedInteger(allow_none=True)
+    lumOff = NestedInteger(allow_none=True)
+    lumMod = NestedInteger(allow_none=True)
+    red = NestedInteger(allow_none=True)
+    redOff = NestedInteger(allow_none=True)
+    redMod = NestedInteger(allow_none=True)
+    green = NestedInteger(allow_none=True)
+    greenOff = NestedInteger(allow_none=True)
+    greenMod = NestedInteger(allow_none=True)
+    blue = NestedInteger(allow_none=True)
+    blueOff = NestedInteger(allow_none=True)
+    blueMod = NestedInteger(allow_none=True)
+    gamma = EmptyTag(allow_none=True)
+    invGamma = EmptyTag(allow_none=True)
+    val = Set(values=(['bg1', 'tx1', 'bg2', 'tx2', 'accent1', 'accent2',
+                       'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink', 'phClr',
+                       'dk1', 'lt1', 'dk2', 'lt2']))
+
+    __elements__ = ('tint', 'shade', 'comp', 'inv', 'gray', 'alpha',
+                    'alphaOff', 'alphaMod', 'hue', 'hueOff', 'hueMod', 'sat', 'satOff',
+                    'satMod', 'lum', 'lumMod', 'lumOff', 'red', 'redOff', 'redMod', 'green',
+                    'greenOff', 'greenMod', 'blue', 'blueOff', 'blueMod', 'gamma',
+                    'invGamma')
+
+    def __init__(self,
+                 tint=None,
+                 shade=None,
+                 comp=None,
+                 inv=None,
+                 gray=None,
+                 alpha=None,
+                 alphaOff=None,
+                 alphaMod=None,
+                 hue=None,
+                 hueOff=None,
+                 hueMod=None,
+                 sat=None,
+                 satOff=None,
+                 satMod=None,
+                 lum=None,
+                 lumOff=None,
+                 lumMod=None,
+                 red=None,
+                 redOff=None,
+                 redMod=None,
+                 green=None,
+                 greenOff=None,
+                 greenMod=None,
+                 blue=None,
+                 blueOff=None,
+                 blueMod=None,
+                 gamma=None,
+                 invGamma=None,
+                 val=None,
+                ):
+        self.tint = tint
+        self.shade = shade
+        self.comp = comp
+        self.inv = inv
+        self.gray = gray
+        self.alpha = alpha
+        self.alphaOff = alphaOff
+        self.alphaMod = alphaMod
+        self.hue = hue
+        self.hueOff = hueOff
+        self.hueMod = hueMod
+        self.sat = sat
+        self.satOff = satOff
+        self.satMod = satMod
+        self.lum = lum
+        self.lumOff = lumOff
+        self.lumMod = lumMod
+        self.red = red
+        self.redOff = redOff
+        self.redMod = redMod
+        self.green = green
+        self.greenOff = greenOff
+        self.greenMod = greenMod
+        self.blue = blue
+        self.blueOff = blueOff
+        self.blueMod = blueMod
+        self.gamma = gamma
+        self.invGamma = invGamma
+        self.val = val
+
 class ColorChoice(Serialisable):
 
     tagname = "colorChoice"
@@ -236,7 +348,7 @@ class ColorChoice(Serialisable):
     RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HSLColor, allow_none=True)
     sysClr = Typed(expected_type=SystemColor, allow_none=True)
-    schemeClr = NestedNoneSet(values=SCHEME_COLORS)
+    schemeClr = Typed(expected_type=SchemeColor, allow_none=True)
     prstClr = NestedNoneSet(values=PRESET_COLORS)
 
     __elements__ = ('scrgbClr', 'srgbClr', 'hslClr', 'sysClr', 'schemeClr', 'prstClr')
@@ -320,4 +432,7 @@ class ColorChoiceDescriptor(Typed):
     def __set__(self, instance, value):
         if isinstance(value, basestring):
             value = ColorChoice(srgbClr=value)
+        else:
+            if hasattr(self, "namespace") and value is not None:
+                value.namespace = self.namespace
         super(ColorChoiceDescriptor, self).__set__(instance, value)

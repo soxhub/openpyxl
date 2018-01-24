@@ -68,11 +68,12 @@ class _SurfaceChartBase(ChartBase):
                  wireframe=None,
                  ser=(),
                  bandFmts=None,
+                 **kw
                 ):
         self.wireframe = wireframe
         self.ser = ser
         self.bandFmts = bandFmts
-        super(_SurfaceChartBase, self).__init__()
+        super(_SurfaceChartBase, self).__init__(**kw)
 
 
 class SurfaceChart3D(_SurfaceChartBase, _3DBase):
@@ -91,7 +92,7 @@ class SurfaceChart3D(_SurfaceChartBase, _3DBase):
 
     __elements__ = _SurfaceChartBase.__elements__ + ('axId',)
 
-    def __init__(self, axId=None, **kw):
+    def __init__(self, **kw):
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
         self.z_axis = SeriesAxis()

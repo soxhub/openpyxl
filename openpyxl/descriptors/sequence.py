@@ -5,7 +5,7 @@ from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
 from openpyxl.utils.indexed_list import IndexedList
 
-from .base import Descriptor, _convert
+from .base import Descriptor, Alias, _convert
 from .namespace import namespaced
 
 
@@ -35,11 +35,11 @@ class Sequence(Descriptor):
         """
         Convert the sequence represented by the descriptor to an XML element
         """
-        tagname = namespaced(obj, tagname, namespace)
         for idx, v in enumerate(obj, self.idx_base):
             if hasattr(v, "to_tree"):
                 el = v.to_tree(tagname, idx)
             else:
+                tagname = namespaced(obj, tagname, namespace)
                 el = Element(tagname)
                 el.text = safe_string(v)
             yield el
@@ -84,3 +84,45 @@ class NestedSequence(Sequence):
 
     def from_tree(self, node):
         return [self.expected_type.from_tree(el) for el in node]
+
+
+class MultiSequence(Sequence):
+    """
+    Sequences can contain objects with different tags
+    """
+
+    def __set__(self, instance, seq):
+        if not isinstance(seq, (tuple, list)):
+            raise ValueError("Value must be a sequence")
+        seq = list(seq)
+        Descriptor.__set__(self, instance, seq)
+
+
+    def to_tree(self, tagname, obj, namespace=None):
+        """
+        Convert the sequence represented by the descriptor to an XML element
+        """
+        for v in obj:
+            el = v.to_tree(namespace=namespace)
+            yield el
+
+
+class MultiSequencePart(Alias):
+    """
+    Allow a multisequence to be built up from parts
+
+    Excluded from the instance __elements__ or __attrs__ as is effectively an Alias
+    """
+
+    def __init__(self, expected_type, store):
+        self.expected_type = expected_type
+        self.store = store
+
+
+    def __set__(self, instance, value):
+        value = _convert(self.expected_type, value)
+        instance.__dict__[self.store].append(value)
+
+
+    def __get__(self, instance, cls):
+        return self

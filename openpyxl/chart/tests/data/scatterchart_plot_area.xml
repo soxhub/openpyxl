@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<plotArea xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+    <layout>
+        <manualLayout>
+            <layoutTarget val="inner"/>
+            <xMode val="edge"/>
+            <yMode val="edge"/>
+            <x val="0.141090062486959"/>
+            <y val="0.165986426252933"/>
+            <w val="0.810374372659496"/>
+            <h val="0.695974679635634"/>
+        </manualLayout>
+    </layout>
+    <scatterChart>
+        <scatterStyle val="lineMarker"/>
+        <varyColors val="0"/>
+        <ser>
+            <idx val="0"/>
+            <order val="0"/>
+            <tx>
+                <strRef>
+                    <f>C_File_Calculations!$K$56</f>
+                </strRef>
+            </tx>
+            <spPr>
+                <a:ln w="28575">
+                    <a:noFill/>
+                </a:ln>
+            </spPr>
+            <trendline>
+                <trendlineType val="linear"/>
+                <intercept val="0.0"/>
+                <dispRSqr val="1"/>
+                <dispEq val="1"/>
+                <trendlineLbl>
+                    <layout>
+                        <manualLayout>
+                            <x val="-0.0291496721905578"/>
+                            <y val="0.224660182183109"/>
+                        </manualLayout>
+                    </layout>
+                    <numFmt formatCode="General" sourceLinked="0"/>
+                </trendlineLbl>
+            </trendline>
+            <xVal>
+                <numRef>
+                    <f>C_File_Calculations!$C$58:$C$64</f>
+                </numRef>
+            </xVal>
+            <yVal>
+                <numRef>
+                    <f>C_File_Calculations!$K$58:$K$64</f>
+                </numRef>
+            </yVal>
+            <smooth val="0"/>
+        </ser>
+        <dLbls>
+            <showLegendKey val="0"/>
+            <showVal val="0"/>
+            <showCatName val="0"/>
+            <showSerName val="0"/>
+            <showPercent val="0"/>
+            <showBubbleSize val="0"/>
+        </dLbls>
+        <axId val="211326240"/>
+        <axId val="211330000"/>
+    </scatterChart>
+    <valAx>
+        <axId val="211326240"/>
+        <scaling>
+            <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="b"/>
+        <title>
+            <tx>
+                <rich>
+                    <a:bodyPr/>
+                    <a:lstStyle/>
+                    <a:p>
+                        <a:pPr>
+                            <a:defRPr/>
+                        </a:pPr>
+                        <a:r>
+                            <a:rPr lang="en-CA"/>
+                            <a:t>Concentration (mg/L)</a:t>
+                        </a:r>
+                    </a:p>
+                </rich>
+            </tx>
+            <layout/>
+            <overlay val="0"/>
+        </title>
+        <numFmt formatCode="0.00" sourceLinked="1"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="211330000"/>
+        <crosses val="autoZero"/>
+        <crossBetween val="midCat"/>
+    </valAx>
+    <valAx>
+        <axId val="211330000"/>
+        <scaling>
+            <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="l"/>
+        <majorGridlines/>
+        <title>
+            <tx>
+                <rich>
+                    <a:bodyPr rot="-5400000" vert="horz"/>
+                    <a:lstStyle/>
+                    <a:p>
+                        <a:pPr>
+                            <a:defRPr/>
+                        </a:pPr>
+                        <a:r>
+                            <a:rPr lang="en-CA" baseline="0"/>
+                            <a:t> Absorbance (AU)</a:t>
+                        </a:r>
+                        <a:endParaRPr lang="en-CA"/>
+                    </a:p>
+                </rich>
+            </tx>
+            <layout/>
+            <overlay val="0"/>
+        </title>
+        <numFmt formatCode="0.000" sourceLinked="1"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="211326240"/>
+        <crosses val="autoZero"/>
+        <crossBetween val="midCat"/>
+    </valAx>
+    <spPr>
+        <a:ln>
+            <a:solidFill>
+                <a:schemeClr val="bg1">
+                    <a:lumMod val="50000"/>
+                </a:schemeClr>
+            </a:solidFill>
+        </a:ln>
+    </spPr>
+</plotArea>

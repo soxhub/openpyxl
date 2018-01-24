@@ -41,16 +41,18 @@ def test_class_no_deps(schema):
 
 class FileRecoveryPr(Serialisable):
 
+    tagname = "fileRecoveryPr"
+
     autoRecover = Bool(allow_none=True)
     crashSave = Bool(allow_none=True)
     dataExtractLoad = Bool(allow_none=True)
     repairLoad = Bool(allow_none=True)
 
     def __init__(self,
-                 autoRecover=None,
-                 crashSave=None,
-                 dataExtractLoad=None,
-                 repairLoad=None,
+                 autoRecover=True,
+                 crashSave=False,
+                 dataExtractLoad=False,
+                 repairLoad=False,
                 ):
         self.autoRecover = autoRecover
         self.crashSave = crashSave
@@ -81,6 +83,8 @@ def test_simple_content(schema):
 
 class DefinedName(Serialisable):
 
+    tagname = "definedName"
+
     name = String()
     comment = String(allow_none=True)
     customMenu = String(allow_none=True)
@@ -105,14 +109,14 @@ class DefinedName(Serialisable):
                  help=None,
                  statusBar=None,
                  localSheetId=None,
-                 hidden=None,
-                 function=None,
-                 vbProcedure=None,
-                 xlm=None,
+                 hidden=False,
+                 function=False,
+                 vbProcedure=False,
+                 xlm=False,
                  functionGroupId=None,
                  shortcutKey=None,
-                 publishToServer=None,
-                 workbookParameter=None,
+                 publishToServer=False,
+                 workbookParameter=False,
                 ):
         self.name = name
         self.comment = comment

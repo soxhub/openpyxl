@@ -13,17 +13,35 @@ from datetime import (
 import pytest
 
 
-def test_datetime_to_W3CDTF():
-    from ..datetime import datetime_to_W3CDTF
-    assert datetime_to_W3CDTF(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
+def test_to_iso():
+    from ..datetime import to_ISO8601
+    assert to_ISO8601(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
 
 
-def test_W3CDTF_to_datetime():
-    from ..datetime  import W3CDTF_to_datetime
-    value = "2011-06-30T13:35:26Z"
-    assert W3CDTF_to_datetime(value) == datetime(2011, 6, 30, 13, 35, 26)
-    value = "2013-03-04T12:19:01.00Z"
-    assert W3CDTF_to_datetime(value) == datetime(2013, 3, 4, 12, 19, 1)
+@pytest.mark.parametrize("value, group, expected",
+                         [
+                             ("2011-06-30", "date", "2011-06-30"),
+                             ("12:19:01", "time", "12:19:01"),
+                         ]
+                         )
+def test_iso_regex(value, group, expected):
+    from ..datetime import ISO_REGEX
+    match = ISO_REGEX.match(value)
+    assert match is not None
+    assert match.groupdict()[group] == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ("2011-06-30T13:35:26Z", datetime(2011, 6, 30, 13, 35, 26)),
+                             ("2013-03-04T12:19:01.00Z", datetime(2013, 3, 4, 12, 19, 1)),
+                             ("2011-06-30", date(2011, 6, 30)),
+                             ("12:19:01", time(12, 19, 1)),
+                         ]
+                         )
+def test_from_iso(value, expected):
+    from ..datetime  import from_ISO8601
+    assert from_ISO8601(value) == expected
 
 
 @pytest.mark.parametrize("value, expected",

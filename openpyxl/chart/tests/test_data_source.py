@@ -39,6 +39,28 @@ class TestNumRef:
         assert diff is None, diff
 
 
+    def test_from_tree_degree_sign(self, NumRef):
+
+        src = b"""
+            <numRef>
+                <f>Hoja1!$A$2:$B$2</f>
+                <numCache>
+                    <formatCode>0\xc2\xb0</formatCode>
+                    <ptCount val="2" />
+                    <pt idx="0">
+                        <v>3</v>
+                    </pt>
+                    <pt idx="1">
+                        <v>14</v>
+                    </pt>
+                </numCache>
+            </numRef>
+        """
+        node = fromstring(src)
+        numRef = NumRef.from_tree(node)
+        assert numRef.numCache.formatCode == u"0\xb0"
+
+
 @pytest.fixture
 def StrRef():
     from ..data_source import StrRef

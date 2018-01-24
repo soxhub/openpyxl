@@ -52,13 +52,14 @@ class _BarChartBase(ChartBase):
                  varyColors=None,
                  ser=(),
                  dLbls=None,
+                 **kw
                 ):
         self.barDir = barDir
         self.grouping = grouping
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
-        super(_BarChartBase, self).__init__()
+        super(_BarChartBase, self).__init__(**kw)
 
 
 class BarChart(_BarChartBase):
@@ -86,7 +87,6 @@ class BarChart(_BarChartBase):
                  gapWidth=150,
                  overlap=None,
                  serLines=None,
-                 axId=None,
                  extLst=None,
                  **kw
                 ):
@@ -131,7 +131,6 @@ class BarChart3D(_BarChartBase, _3DBase):
                  gapDepth=150,
                  shape=None,
                  serLines=None,
-                 axId=None,
                  extLst=None,
                  **kw
                 ):

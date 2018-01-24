@@ -22,7 +22,9 @@ class TestRichText:
         <rich xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <a:bodyPr />
           <a:p>
-             <a:r />
+             <a:r>
+               <a:t />
+             </a:r>
           </a:p>
         </rich>
         """

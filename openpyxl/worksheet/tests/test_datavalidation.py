@@ -5,6 +5,7 @@ import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from ..cell_range import MultiCellRange
 
 
 @pytest.fixture
@@ -70,9 +71,8 @@ class TestDataValidation:
 
 
     def test_sqref(self, DataValidation):
-        dv = DataValidation()
-        dv.sqref = "A1"
-        assert dv.cells == set(["A1"])
+        dv = DataValidation(sqref="A1")
+        assert dv.sqref == MultiCellRange("A1")
 
 
     def test_add_after_sqref(self, DataValidation):
@@ -82,9 +82,8 @@ class TestDataValidation:
 
         dv = DataValidation()
         dv.sqref = "A1"
-        assert dv.cells == set(["A1"])
         dv.add(DummyCell())
-        assert dv.cells == set(["A1", "A2"])
+        assert dv.cells == MultiCellRange("A1 A2")
 
 
     def test_read_formula(self, DataValidation):
@@ -95,7 +94,6 @@ class TestDataValidation:
         """
         xml = fromstring(xml)
         dv = DataValidation.from_tree(xml)
-        assert dv.cells == set(["A1"])
         assert dv.type == "list"
         assert dv.formula1 == '"Dog,Cat,Fish"'
 
@@ -119,6 +117,10 @@ class TestDataValidation:
             showErrorMessage="1",
             showInputMessage="1"
             )
+
+    def test_contains(self, DataValidation):
+        dv = DataValidation(sqref="A1:D4 E5")
+        assert "C2" in dv
 
 
 @pytest.fixture
@@ -146,6 +148,15 @@ class TestDataValidationList:
         node = fromstring(src)
         dvs = DataValidationList.from_tree(node)
         assert dvs == DataValidationList()
+
+
+    def test_empty_dv(self, DataValidationList, DataValidation):
+        dv = DataValidation()
+        dvs = DataValidationList(dataValidation=[dv])
+        xml = tostring(dvs.to_tree())
+        expected = '<dataValidations count="0"/>'
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
 COLLAPSE_TEST_DATA = [

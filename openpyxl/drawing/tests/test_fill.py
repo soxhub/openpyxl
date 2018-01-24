@@ -59,6 +59,15 @@ class TestRelativeRect:
         assert fill == RelativeRect(10, 15, 20, 25)
 
 
+    def test_from_src_rect(self, RelativeRect):
+        src = """
+        <srcRect l="71321" t="10170" r="4935" b="80270"/>
+        """
+        node = fromstring(src)
+        fill = RelativeRect.from_tree(node)
+        assert fill == RelativeRect(l=71321, t=10170, r=4935, b=80270)
+
+
 @pytest.fixture
 def StretchInfoProperties():
     from ..fill import StretchInfoProperties

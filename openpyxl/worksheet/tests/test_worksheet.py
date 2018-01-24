@@ -12,7 +12,6 @@ from openpyxl.utils import coordinate_from_string
 from openpyxl.comments import Comment
 from openpyxl.utils.exceptions import (
     SheetTitleException,
-    InsufficientCoordinatesException,
     NamedRangeException
     )
 
@@ -153,7 +152,7 @@ class TestWorksheet:
 
     def test_cell_insufficient_coordinates(self, Worksheet):
         ws = Worksheet(Workbook())
-        with pytest.raises(InsufficientCoordinatesException):
+        with pytest.raises(TypeError):
             ws.cell(row=8)
 
     def test_cell_range_name(self):
@@ -400,7 +399,7 @@ class TestWorksheet:
 
     def test_merged_cells_lookup(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells.append("A1:N50")
+        ws.merge_cells("A1:N50")
         merged = ws.merged_cells
         assert 'A1' in merged
         assert 'N50' in merged
@@ -419,7 +418,7 @@ class TestWorksheet:
         ws['D4'] = 16
         assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
-        assert ws._merged_cells == ["A1:D4"]
+        assert ws.merged_cells == "A1:D4"
         assert (4, 4) not in ws._cells
         assert (1, 1) in ws._cells
 
@@ -427,19 +426,33 @@ class TestWorksheet:
     def test_merge_coordinate(self, Worksheet):
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
-        assert ws._merged_cells == ["A1:D4"]
+        assert ws.merged_cells == "A1:D4"
+
+
+    def test_merge_more_columns_than_rows(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.merge_cells(start_row=1, start_column=1, end_row=2, end_column=4)
+        assert ws.merged_cells == "A1:D2"
+
+
+    def test_merge_more_rows_than_columns(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=2)
+        assert ws.merged_cells == "A1:B4"
 
 
     def test_unmerge_range_string(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells = ["A1:D4"]
+        ws.merge_cells("A1:D4")
         ws.unmerge_cells("A1:D4")
+        assert ws.merged_cells == ""
 
 
     def test_unmerge_coordinate(self, Worksheet):
         ws = Worksheet(Workbook())
-        ws._merged_cells = ["A1:D4"]
+        ws.merge_cells("A1:D4")
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
+        assert ws.merged_cells == ""
 
 
     @pytest.mark.parametrize("value, result, rows_cols",
@@ -480,27 +493,6 @@ class TestWorksheet:
         ws = wb.active
         ws.print_area = cell_range
         assert ws.print_area == result
-
-
-class TestPositioning(object):
-    def test_point(self):
-        wb = Workbook()
-        ws = wb.active
-        assert ws.point_pos(top=40, left=150), ('C' == 3)
-
-
-    @pytest.mark.parametrize("value", ('A1', 'D52', 'X11'))
-    def test_roundtrip(self, value):
-        wb = Workbook()
-        ws = wb.active
-        assert ws.point_pos(*ws.cell(value).anchor) == coordinate_from_string(value)
-
-
-    def test_point_negative(self):
-        wb = Workbook()
-        ws = wb.active
-        with pytest.raises(ValueError):
-            assert ws.point_pos(top=-1, left=-1)
 
 
 def test_freeze_panes_horiz(Worksheet):
@@ -564,3 +556,104 @@ def test_max_row(Worksheet):
     ws.append([])
     ws.append([4])
     assert ws.max_row == 4
+
+
+def test_add_chart(Worksheet):
+    from openpyxl.chart import BarChart
+    ws = Worksheet(DummyWorkbook())
+    chart = BarChart()
+    ws.add_chart(chart, "A1")
+    assert chart.anchor == "A1"
+
+
+@pytest.mark.pil_required
+def test_add_image(Worksheet):
+    from openpyxl.drawing.image import Image
+    from PIL.Image import Image as PILImage
+
+    ws = Worksheet(DummyWorkbook())
+    im = Image(PILImage())
+    ws.add_image(im, "D5")
+
+
+@pytest.fixture
+def dummy_worksheet(Worksheet):
+    """
+    Creates a worksheet A1:H6 rows with values the same as cell coordinates
+    """
+    ws = Worksheet(DummyWorkbook())
+
+    for row in ws.iter_rows(max_row=6, max_col=8):
+        for cell in row:
+            cell.value = cell.coordinate
+
+    return ws
+
+
+class TestEditableWorksheet:
+
+
+    def test_move_row_down(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_row == 6
+
+        ws._move_cells(min_row=5, offset=1, row_or_col="row")
+
+        assert ws.max_row == 7
+        assert [c.value for c in ws[5]] == [None]*8
+
+
+    def test_move_col_right(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_column == 8
+
+        ws._move_cells(min_col=3, offset=2, row_or_col="col_idx")
+
+        assert ws.max_column == 10
+        assert [c.value for c in ws['D']] == [None]*6
+
+
+    def test_move_row_up(self, dummy_worksheet):
+        ws = dummy_worksheet
+        assert ws.max_row == 6
+
+        ws._move_cells(min_row=4, offset=-1, row_or_col="row")
+
+        assert ws.max_row == 5
+        assert [c.value for c in ws['A']] == ["A1", "A2", "A4", "A5", "A6"]
+
+
+    def test_insert_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.insert_rows(2, 2)
+
+        assert ws.max_row == 8
+        assert [c.value for c in ws[2]] == [None]*8
+
+
+    def test_insert_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.insert_cols(3)
+
+        assert ws.max_column == 9
+        assert [c.value for c in ws['G']] == ['F1', 'F2', 'F3', 'F4', 'F5', 'F6']
+
+
+    def test_delete_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.delete_rows(2)
+
+        assert ws.max_row == 5
+        assert [c.value for c in ws[2]] == ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3']
+
+
+    def test_delete_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.delete_cols(3)
+
+        assert ws.max_column == 7
+        assert [c.value for c in ws['C']] == ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']

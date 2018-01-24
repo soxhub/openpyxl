@@ -1,12 +1,9 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 
-# compatibility imports
-from openpyxl.compat import OrderedDict
-
 # package imports
 from openpyxl.reader.excel import load_workbook
-from openpyxl.xml.functions import tostring
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.writer.worksheet import write_conditional_formatting
 from openpyxl.styles import Border, Side, PatternFill, Color, Font, fills, borders, colors
 from openpyxl.styles.differential import DifferentialStyle, DifferentialStyleList
@@ -31,7 +28,7 @@ class DummyWorksheet():
         self.parent = DummyWorkbook()
 
 
-class TestConditionalFormatting(object):
+class TestConditionalFormattingList(object):
 
 
     def setup(self):
@@ -127,7 +124,7 @@ def test_conditional_formatting_read(datadir):
     reference_file = 'conditional-formatting.xlsx'
     wb = load_workbook(reference_file)
     ws = wb.active
-    rules = ws.conditional_formatting.cf_rules
+    rules = ws.conditional_formatting
     assert len(rules) == 30
 
     # First test the conditional formatting rules read
@@ -247,3 +244,52 @@ def test_conditional_formatting_read(datadir):
 
     rule = rules['AD1:AD10'][0]
     assert dict(rule) == {'priority': '1', 'dxfId': '14', 'type': 'expression',}
+
+
+@pytest.fixture
+def ConditionalFormatting():
+    from ..formatting import ConditionalFormatting
+    return ConditionalFormatting
+
+
+class TestConditionalFormatting:
+
+
+    def test_ctor(self, ConditionalFormatting):
+        cf = ConditionalFormatting(sqref="A1:B5")
+        xml = tostring(cf.to_tree())
+        expected = """
+        <conditionalFormatting sqref="A1:B5" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, ConditionalFormatting):
+        src = """
+        <conditionalFormatting sqref="A1:B5" />
+        """
+        tree = fromstring(src)
+        cf = ConditionalFormatting.from_tree(tree)
+        assert cf.sqref == "A1:B5"
+
+
+    def test_eq(self, ConditionalFormatting):
+        c1 = ConditionalFormatting("A1:B5")
+        c2 = ConditionalFormatting("A1:B5", pivot=True)
+        assert c1 == c2
+
+
+    def test_hash(self, ConditionalFormatting):
+        c1 = ConditionalFormatting("A1:B5")
+        assert hash(c1) == hash("A1:B5")
+
+
+    def test_repr(self, ConditionalFormatting):
+        c1 = ConditionalFormatting("A1:B5")
+        assert repr(c1) == "<ConditionalFormatting A1:B5>"
+
+
+    def test_contains(self, ConditionalFormatting):
+        c2 = ConditionalFormatting("A1:A5 B1:B5")
+        assert "B2" in c2

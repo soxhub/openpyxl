@@ -103,6 +103,7 @@ def test_coordinate_tuple():
                          [
                         ("Sheet1!$A$1:$A$12", "Sheet1", (1,1, 1,12)),
                         ("'My Sheet'!A1:E6", "My Sheet", (1,1, 5,6)),
+                        ("'E,F'!$A$1:$B$3", "E,F", (1,1, 2,3)),
                          ]
                          )
 def test_range_to_tuple(range_string, sheetname, boundaries):

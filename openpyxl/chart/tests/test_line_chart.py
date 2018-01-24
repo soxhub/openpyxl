@@ -38,8 +38,13 @@ class TestLineChart:
         """
         node = fromstring(src)
         chart = LineChart.from_tree(node)
-        assert dict(chart) == {}
+        assert chart.axId == [10, 100]
         assert chart.grouping == "stacked"
+
+
+    def test_axes(self, LineChart):
+        chart = LineChart()
+        assert set(chart._axes.keys()) == set([10, 100])
 
 
 @pytest.fixture
@@ -69,9 +74,6 @@ class TestLineChart3D:
         src = """
         <line3DChart>
           <grouping val="standard"></grouping>
-          <axId val="10"></axId>
-          <axId val="100"></axId>
-          <axId val="1000"></axId>
         </line3DChart>
         """
         node = fromstring(src)

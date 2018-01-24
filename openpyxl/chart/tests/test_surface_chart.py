@@ -48,7 +48,7 @@ class TestSurfaceChart:
         """
         node = fromstring(src)
         chart = SurfaceChart.from_tree(node)
-        assert [a.val for a in chart.axId] == [10, 100, 1000]
+        assert chart.axId == [2086876920, 2078923400, 2079274408]
 
 
 @pytest.fixture
@@ -104,7 +104,7 @@ class TestSurfaceChart3D:
         node = fromstring(src)
         chart = SurfaceChart3D.from_tree(node)
         assert len(chart.ser) == 2
-        assert [a.val for a in chart.axId] == [10, 100, 1000]
+        assert chart.axId == [2082935272, 2082938248, 2082941288]
 
 
 @pytest.fixture

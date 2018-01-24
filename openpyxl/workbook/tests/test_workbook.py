@@ -102,10 +102,23 @@ def test_getitem(Workbook, Worksheet):
         wb['NotThere']
 
 
-def test_delitem(Workbook):
+def test_get_chartsheet(Workbook):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+    assert wb[cs.title] is cs
+
+
+def test_del_worksheet(Workbook):
     wb = Workbook()
     del wb['Sheet']
     assert wb.worksheets == []
+
+
+def test_del_chartsheet(Workbook):
+    wb = Workbook()
+    cs = wb.create_chartsheet()
+    del wb[cs.title]
+    assert wb.chartsheets == []
 
 
 def test_contains(Workbook):

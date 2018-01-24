@@ -22,10 +22,6 @@ class SheetTitleException(Exception):
     """Error for bad sheet names."""
 
 
-class InsufficientCoordinatesException(Exception):
-    """Error for partially specified cell coordinates."""
-
-
 class InvalidFileException(Exception):
     """Error for trying to open a non-ooxml file."""
 

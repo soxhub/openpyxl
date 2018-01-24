@@ -15,12 +15,15 @@ def Paragraph():
 
 class TestParagraph:
 
+
     def test_ctor(self, Paragraph):
         text = Paragraph()
         xml = tostring(text.to_tree())
         expected = """
         <p xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
-          <r />
+          <r>
+          <t/>
+          </r>
         </p>
         """
         diff = compare_xml(xml, expected)
@@ -34,6 +37,22 @@ class TestParagraph:
         node = fromstring(src)
         text = Paragraph.from_tree(node)
         assert text == Paragraph()
+
+
+    def test_multiline(self, Paragraph):
+        src = """
+        <p>
+            <r>
+                <t>Adjusted Absorbance vs.</t>
+            </r>
+            <r>
+                <t> Concentration</t>
+            </r>
+        </p>
+        """
+        node = fromstring(src)
+        para = Paragraph.from_tree(node)
+        assert len(para.text) == 2
 
 
 @pytest.fixture

@@ -14,13 +14,7 @@ Thee manifest.in file is used for data files.
 
 """
 
-import sys
 import os
-import warnings
-if sys.version_info < (2, 6):
-    raise Exception("Python >= 2.6 is required.")
-elif sys.version_info[:2] == (3, 2):
-    warnings.warn("Python 3.2 is not supported")
 
 from setuptools import setup, find_packages
 
@@ -54,9 +48,7 @@ setup(name='openpyxl',
     author_email=__author_email__,
     url=__url__,
     license=__license__,
-    requires=[
-        'python (>=2.6.0)',
-        ],
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
         'jdcal', 'et_xmlfile',
         ],
@@ -70,9 +62,7 @@ setup(name='openpyxl',
                  'Operating System :: POSIX',
                  'License :: OSI Approved :: MIT License',
                  'Programming Language :: Python',
-                 'Programming Language :: Python :: 2.6',
                  'Programming Language :: Python :: 2.7',
-                 'Programming Language :: Python :: 3.3',
                  'Programming Language :: Python :: 3.4',
                  'Programming Language :: Python :: 3.5',
                  'Programming Language :: Python :: 3.6',

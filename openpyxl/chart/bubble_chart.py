@@ -53,8 +53,8 @@ class BubbleChart(ChartBase):
                  bubbleScale=None,
                  showNegBubbles=None,
                  sizeRepresents=None,
-                 axId=None,
                  extLst=None,
+                 **kw
                 ):
         self.varyColors = varyColors
         self.ser = ser
@@ -65,4 +65,4 @@ class BubbleChart(ChartBase):
         self.sizeRepresents = sizeRepresents
         self.x_axis = NumericAxis(axId=10, crossAx=20)
         self.y_axis = NumericAxis(axId=20, crossAx=10)
-        super(BubbleChart, self).__init__()
+        super(BubbleChart, self).__init__(**kw)

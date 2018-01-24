@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
+import datetime
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -46,15 +47,12 @@ def test_get_xml_iter():
     z.writestr("test", "whatever")
     stream = FUT(z.open("test"))
     assert hasattr(stream, "read")
-    # z.close()
+
     try:
         z.close()
     except IOError:
         # you can't just close zipfiles in Windows
-        if z.fp is not None:
-            z.fp.close() # python 2.6
-        else:
-            z.close() # python 2.7
+        z.close() # python 2.7
 
 
 @pytest.fixture
@@ -302,6 +300,23 @@ def test_number(WorkSheetParser):
     assert ws['A1'].value == 1
 
 
+
+def test_datetime(WorkSheetParser):
+    parser = WorkSheetParser
+    ws = parser.ws
+
+    src = """
+    <x:c r="A1" t="d" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <x:v>2011-12-25T14:23:55</x:v>
+    </x:c>
+    """
+    element = fromstring(src)
+
+    parser.parse_cell(element)
+    assert ws['A1'].data_type == 'd'
+    assert ws['A1'].value == datetime.datetime(2011, 12, 25, 14, 23, 55)
+
+
 def test_string(WorkSheetParser):
     parser = WorkSheetParser
     ws = parser.ws
@@ -508,16 +523,16 @@ def test_shared_formulae(WorkSheetParser, datadir):
     assert set(ws.formula_attributes.keys()) == set(['C10'])
 
     # Test shared forumlae
-    assert ws.cell('B7').data_type == 'f'
-    assert ws.cell('B7').value == '=B4*2'
-    assert ws.cell('C7').value == '=C4*2'
-    assert ws.cell('D7').value == '=D4*2'
-    assert ws.cell('E7').value == '=E4*2'
+    assert ws['B7'].data_type == 'f'
+    assert ws['B7'].value == '=B4*2'
+    assert ws['C7'].value == '=C4*2'
+    assert ws['D7'].value == '=D4*2'
+    assert ws['E7'].value == '=E4*2'
 
     # Test array forumlae
-    assert ws.cell('C10').data_type == 'f'
+    assert ws['C10'].data_type == 'f'
     assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
-    assert ws.cell('C10').value == '=SUM(A10:A14*B10:B14)'
+    assert ws['C10'].value == '=SUM(A10:A14*B10:B14)'
 
 
 def test_cell_without_coordinates(WorkSheetParser, datadir):
@@ -590,7 +605,7 @@ def test_merge_cells(WorkSheetParser):
 
     parser.parse()
 
-    assert parser.ws._merged_cells == ["C2:F2", "B19:C20", "E19:G19"]
+    assert parser.ws.merged_cells == "C2:F2 B19:C20 E19:G19"
 
 
 def test_conditonal_formatting(WorkSheetParser):
@@ -613,7 +628,7 @@ def test_conditonal_formatting(WorkSheetParser):
 
     parser.parse()
 
-    assert parser.ws.conditional_formatting.cf_rules['T1:T10'][-1].dxf == dxf
+    assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
 
 def test_sheet_properties(WorkSheetParser):

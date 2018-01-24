@@ -42,8 +42,8 @@ class ScatterChart(ChartBase):
                  varyColors=None,
                  ser=(),
                  dLbls=None,
-                 axId=None,
                  extLst=None,
+                 **kw
                 ):
         self.scatterStyle = scatterStyle
         self.varyColors = varyColors
@@ -51,4 +51,4 @@ class ScatterChart(ChartBase):
         self.dLbls = dLbls
         self.x_axis = NumericAxis(axId=10, crossAx=20)
         self.y_axis = NumericAxis(axId=20, crossAx=10)
-        super(ScatterChart, self).__init__()
+        super(ScatterChart, self).__init__(**kw)

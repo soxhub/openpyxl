@@ -21,7 +21,6 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from .defined_name import DefinedName, DefinedNameList
 from .external_reference import ExternalReference
 from .function_group import FunctionGroupList
-from .pivot import PivotCacheList
 from .properties import WorkbookProperties, CalcProperties, FileVersion
 from .protection import WorkbookProtection, FileSharing
 from .smart_tags import SmartTagList, SmartTagProperties
@@ -77,6 +76,21 @@ class ChildSheet(Serialisable):
         self.id = id
 
 
+class PivotCache(Serialisable):
+
+    tagname = "pivotCache"
+
+    cacheId = Integer()
+    id = Relation()
+
+    def __init__(self,
+                 cacheId=None,
+                 id=None
+                ):
+        self.cacheId = cacheId
+        self.id = id
+
+
 class WorkbookPackage(Serialisable):
 
     """
@@ -99,7 +113,7 @@ class WorkbookPackage(Serialisable):
     calcPr = Typed(expected_type=CalcProperties, allow_none=True)
     oleSize = NestedString(allow_none=True, attribute="ref")
     customWorkbookViews = NestedSequence(expected_type=CustomWorkbookView)
-    pivotCaches = Typed(expected_type=PivotCacheList, allow_none=True)
+    pivotCaches = NestedSequence(expected_type=PivotCache, allow_none=True)
     smartTagPr = Typed(expected_type=SmartTagProperties, allow_none=True)
     smartTagTypes = Typed(expected_type=SmartTagList, allow_none=True)
     webPublishing = Typed(expected_type=WebPublishing, allow_none=True)
@@ -128,7 +142,7 @@ class WorkbookPackage(Serialisable):
                  calcPr=None,
                  oleSize=None,
                  customWorkbookViews=(),
-                 pivotCaches=None,
+                 pivotCaches=(),
                  smartTagPr=None,
                  smartTagTypes=None,
                  webPublishing=None,

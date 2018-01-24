@@ -12,7 +12,7 @@ def RadarChart():
     return RadarChart
 
 
-class TestStockChart:
+class TestRadarChart:
 
     def test_ctor(self, RadarChart):
         chart = RadarChart()
@@ -41,4 +41,4 @@ class TestStockChart:
         chart = RadarChart.from_tree(node)
         assert dict(chart) == {}
         assert chart.type == "marker"
-        assert [x.val for x in chart.axId] == [10, 100]
+        assert chart.axId == [2107159976, 2107207992]

@@ -182,7 +182,7 @@ class TestRead:
         wb = sample_workbook
         ws = wb['Sheet1 - Text']
         c1 = ws['A1']
-        c2 = ws.cell('A1')
+        c2 = ws['A1']
         assert c1 == c2
         assert c1.value == c2.value == 'This is cell A1 in Sheet 1'
 
@@ -265,7 +265,7 @@ def test_read_style_iter(tmpdir):
 
     wb = Workbook()
     ws = wb.worksheets[0]
-    cell = ws.cell('A1')
+    cell = ws['A1']
     cell.font = ft
 
     xlsx_file = "read_only_styles.xlsx"

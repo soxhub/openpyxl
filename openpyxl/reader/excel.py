@@ -12,6 +12,7 @@ import warnings
 
 # compatibility imports
 from openpyxl.compat import unicode, file
+from openpyxl.pivot.table import TableDefinition
 
 # Allow blanket setting of KEEP_VBA for testing
 try:
@@ -50,6 +51,8 @@ from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.table import Table
+from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
+from openpyxl.chart.reader import find_charts
 
 from openpyxl.xml.functions import fromstring
 
@@ -219,6 +222,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
         wb.loaded_theme = archive.read(ARC_THEME)
 
     apply_stylesheet(archive, wb) # bind styles to workbook
+    pivot_caches = parser.pivot_caches
 
     # get worksheets
     for sheet, rel in parser.find_sheets():
@@ -264,6 +268,20 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                     xml = fromstring(src)
                     table = Table.from_tree(xml)
                     ws.add_table(table)
+
+                drawings = rels.find(SpreadsheetDrawing._rel_type)
+                for rel in drawings:
+                    for c in find_charts(archive, rel.target):
+                        ws.add_chart(c, c.anchor)
+
+                pivot_rel = rels.find(TableDefinition.rel_type)
+                for r in pivot_rel:
+                    pivot_path = r.Target
+                    src = archive.read(pivot_path)
+                    tree = fromstring(src)
+                    pivot = TableDefinition.from_tree(tree)
+                    pivot.cache = pivot_caches[pivot.cacheId]
+                    ws.add_pivot(pivot)
 
         ws.sheet_state = sheet.state
         ws._rels = [] # reset

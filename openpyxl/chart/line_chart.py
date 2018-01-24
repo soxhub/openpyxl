@@ -40,13 +40,14 @@ class _LineChartBase(ChartBase):
                  ser=(),
                  dLbls=None,
                  dropLines=None,
+                 **kw
                 ):
         self.grouping = grouping
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
         self.dropLines = dropLines
-        super(_LineChartBase, self).__init__()
+        super(_LineChartBase, self).__init__(**kw)
 
 
 class LineChart(_LineChartBase):
@@ -75,7 +76,6 @@ class LineChart(_LineChartBase):
                  upDownBars=None,
                  marker=None,
                  smooth=None,
-                 axId=None,
                  extLst=None,
                  **kw
                 ):
@@ -119,7 +119,6 @@ class LineChart3D(_LineChartBase):
                  upDownBars=None,
                  marker=None,
                  smooth=None,
-                 axId=None,
                  **kw
                 ):
         self.gapDepth = gapDepth

@@ -98,7 +98,37 @@ class TestChartBase:
         chart._write()
         area = chart.plot_area
         assert len(area._charts) == 1
-        assert len(area.catAx) == 0
-        assert len(area.valAx) == 0
-        assert len(area.dateAx) == 0
-        assert len(area.serAx) == 0
+        assert area._axes == []
+
+
+    def test_axIds(self, ChartBase):
+        chart = ChartBase()
+        assert chart.axId == []
+
+
+    def test_plot_visible_cells(self, ChartBase):
+        chart = ChartBase()
+        assert chart.visible_cells_only is True
+
+
+    def test_plot_visible_cells(self, ChartBase):
+        chart = ChartBase()
+        chart.visible_cells_only = False
+        tree = chart._write()
+        expected = """
+          <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
+             <chart>
+               <plotArea>
+                 <DummyChart visible_cells_only="0"></DummyChart>
+               </plotArea>
+               <legend>
+                 <legendPos val="r"></legendPos>
+               </legend>
+               <plotVisOnly val="0"></plotVisOnly>
+               <dispBlanksAs val="gap"></dispBlanksAs>
+             </chart>
+           </chartSpace>
+        """
+        xml = tostring(tree)
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

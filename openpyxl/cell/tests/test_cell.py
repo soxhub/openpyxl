@@ -71,28 +71,44 @@ def guess_types(request):
                          [
                              ('4.2', 4.2),
                              ('-42.000', -42),
-                             ('0', 0),
+                             ( '0', 0),
                              ('0.9999', 0.9999),
                              ('99E-02', 0.99),
                              ('4', 4),
                              ('-1E3', -1000),
                              ('2e+2', 200),
-                             ('3.1%', 0.031),
-                             ('-3.1%', -0.031),
+                         ]
+                        )
+def test_cast_numeric(dummy_cell, value, expected):
+    cell = dummy_cell
+    result = cell._cast_numeric(value)
+    assert result == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                         ('-3.1%', -0.031),
+                         ('3.1%', 0.031),
+                         ('4.5 %', 0.045),
+                         ]
+                         )
+def test_cast_percent(dummy_cell, value, expected):
+    cell = dummy_cell
+    result = cell._cast_percentage(value)
+    assert result == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
                              ('03:40:16', time(3, 40, 16)),
                              ('03:40', time(3, 40)),
                              ('30:33.865633336', time(0, 30, 33, 865633)),
                          ]
-                        )
-def test_infer_numeric(dummy_cell, guess_types, value, expected):
+                         )
+def test_infer_datetime(dummy_cell, value, expected):
     cell = dummy_cell
-    cell.parent.parent.guess_types = guess_types
-    cell.value = value
-    assert cell.guess_types == guess_types
-    if cell.guess_types:
-        assert cell.value == expected
-    else:
-        assert cell.value == value
+    result = cell._cast_time(value)
+    assert result == expected
 
 
 def test_ctor(dummy_cell):
@@ -148,30 +164,26 @@ def test_error_codes(dummy_cell, error_string):
     assert cell.data_type == 'e'
 
 
-@pytest.mark.parametrize("value, internal, number_format",
+@pytest.mark.parametrize("value, number_format",
                          [
                              (
                                  datetime(2010, 7, 13, 6, 37, 41),
-                                 40372.27616898148,
                                  "yyyy-mm-dd h:mm:ss"
                              ),
                              (
                                  date(2010, 7, 13),
-                                 40372,
                                  "yyyy-mm-dd"
                              ),
                              (
                                  time(1, 3),
-                                 0.04375,
                                  "h:mm:ss",
                              )
                          ]
                          )
-def test_insert_date(dummy_cell, value, internal, number_format):
+def test_insert_date(dummy_cell, value, number_format):
     cell = dummy_cell
     cell.value = value
-    assert cell.data_type == 'n'
-    assert cell.internal_value == internal
+    assert cell.data_type == 'd'
     assert cell.is_date
     assert cell.number_format == number_format
 
@@ -234,13 +246,13 @@ def test_time_regex(value, expected):
     assert m == expected
 
 
-def test_timedelta(dummy_cell):
-    cell = dummy_cell
-    cell.value = timedelta(days=1, hours=3)
-    assert cell.value == 1.125
-    assert cell.data_type == 'n'
-    assert cell.is_date is False
-    assert cell.number_format == "[hh]:mm:ss"
+#def test_timedelta(dummy_cell):
+    #cell = dummy_cell
+    #cell.value = timedelta(days=1, hours=3)
+    #assert cell.value == 1.125
+    #assert cell.data_type == 'n'
+    #assert cell.is_date is False
+    #assert cell.number_format == "[hh]:mm:ss"
 
 
 def test_repr(dummy_cell):

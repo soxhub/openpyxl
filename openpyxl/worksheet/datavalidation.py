@@ -13,14 +13,19 @@ from openpyxl.descriptors import (
     Sequence,
     Alias,
     Integer,
+    Convertible,
 )
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import OrderedDict, safe_string, unicode
+from openpyxl.compat import (
+    safe_string,
+    unicode,
+)
 from openpyxl.utils import (
     rows_from_range,
     coordinate_to_tuple,
     get_column_letter,
 )
+from openpyxl.cell import Cell
 
 
 def collapse_cell_addresses(cells, input_ranges=()):
@@ -68,9 +73,16 @@ def expand_cell_ranges(range_string):
     return set(chain.from_iterable(cells))
 
 
+from .cell_range import MultiCellRange
+
+
 class DataValidation(Serialisable):
 
     tagname = "dataValidation"
+
+    sqref = Convertible(expected_type=MultiCellRange)
+    cells = Alias("sqref")
+    ranges = Alias("sqref")
 
     showErrorMessage = Bool()
     showDropDown = Bool(allow_none=True)
@@ -106,7 +118,7 @@ class DataValidation(Serialisable):
                  showInputMessage=True,
                  showDropDown=None,
                  allowBlank=None,
-                 sqref=None,
+                 sqref=(),
                  promptTitle=None,
                  errorStyle=None,
                  error=None,
@@ -115,7 +127,7 @@ class DataValidation(Serialisable):
                  imeMode=None,
                  operator=None,
                  ):
-
+        self.sqref = sqref
         self.showDropDown = showDropDown
         self.imeMode = imeMode
         self.operator = operator
@@ -127,31 +139,24 @@ class DataValidation(Serialisable):
         self.showErrorMessage = showErrorMessage
         self.showInputMessage = showInputMessage
         self.type = type
-        self.cells = set()
-        self.ranges = []
-        if sqref is not None:
-            self.sqref = sqref
         self.promptTitle = promptTitle
         self.errorStyle = errorStyle
         self.error = error
         self.prompt = prompt
         self.errorTitle = errorTitle
-        self.__attrs__ = DataValidation.__attrs__ + ('sqref',)
 
 
     def add(self, cell):
-        """Adds a openpyxl.cell to this validator"""
-        self.cells.add(cell.coordinate)
+        """Adds a cell or cell coordinate to this validator"""
+        if hasattr(cell, "coordinate"):
+            cell = cell.coordinate
+        self.sqref += cell
 
 
-    @property
-    def sqref(self):
-        return collapse_cell_addresses(self.cells, self.ranges)
-
-
-    @sqref.setter
-    def sqref(self, range_string):
-        self.cells = expand_cell_ranges(range_string)
+    def __contains__(self, cell):
+        if hasattr(cell, "coordinate"):
+            cell = cell.coordinate
+        return cell in self.sqref
 
 
 class DataValidationList(Serialisable):
@@ -190,3 +195,14 @@ class DataValidationList(Serialisable):
 
     def append(self, dv):
         self.dataValidation.append(dv)
+
+
+    def to_tree(self, tagname=None):
+        """
+        Need to skip validations that have no cell ranges
+        """
+        ranges = self.dataValidation # copy
+        self.dataValidation = [r for r in self.dataValidation if bool(r.sqref)]
+        xml = super(DataValidationList, self).to_tree(tagname)
+        self.dataValidation = ranges
+        return xml

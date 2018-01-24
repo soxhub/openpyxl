@@ -35,6 +35,7 @@ from openpyxl.xml.constants import (
 )
 from openpyxl.xml.functions import safe_iterator, localname
 from openpyxl.styles import Color
+from openpyxl.styles import is_date_format
 from openpyxl.formatting import Rule
 from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
@@ -45,6 +46,7 @@ from openpyxl.utils import (
     column_index_from_string,
     coordinate_to_tuple,
     )
+from openpyxl.utils.datetime import from_excel, from_ISO8601
 from openpyxl.descriptors.excel import ExtensionList, Extension
 from openpyxl.worksheet.table import TablePartList
 
@@ -218,12 +220,17 @@ class WorkSheetParser(object):
         if value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
+                if is_date_format(cell.number_format):
+                    data_type = 'd'
+                    value = from_excel(value)
             elif data_type == 'b':
                 value = bool(int(value))
             elif data_type == 's':
                 value = self.shared_strings[int(value)]
             elif data_type == 'str':
                 data_type = 's'
+            elif data_type == 'd':
+                value = from_ISO8601(value)
 
         else:
             if data_type == 'inlineStr':
@@ -236,8 +243,8 @@ class WorkSheetParser(object):
         if self.guess_types or value is None:
             cell.value = value
         else:
-            cell._value=value
-            cell.data_type=data_type
+            cell._value = value
+            cell.data_type = data_type
 
 
     def parse_merge(self, element):
@@ -287,7 +294,7 @@ class WorkSheetParser(object):
         for rule in cf.rules:
             if rule.dxfId is not None:
                 rule.dxf = self.differential_styles[rule.dxfId]
-            self.ws.conditional_formatting.add(cf.sqref, rule)
+            self.ws.conditional_formatting[cf] = rule
 
 
     def parse_sheet_protection(self, element):

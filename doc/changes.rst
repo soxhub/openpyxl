@@ -1,3 +1,148 @@
+2.5.0 (2018-01-24)
+==================
+
+
+Minor changes
+-------------
+
+* Correct definition for Connection Shapes. Related to # 958
+
+
+2.5.0-b2 (2018-01-19)
+=====================
+
+
+Bugfixes
+--------
+
+* `#915 <https://bitbucket.org/openpyxl/openpyxl/issues/915>`_ TableStyleInfo has no required attributes
+* `#925 <https://bitbucket.org/openpyxl/openpyxl/issues/925>`_ Cannot read files with 3D drawings
+* `#926 <https://bitbucket.org/openpyxl/openpyxl/issues/926>`_ Incorrect version check in installer
+* Cell merging uses transposed parameters
+* `#928 <https://bitbucket.org/openpyxl/openpyxl/issues/928>`_ ExtLst missing keyword for PivotFields
+* `#932 <https://bitbucket.org/openpyxl/openpyxl/issues/932>`_ Inf causes problems for Excel
+* `#952 <https://bitbucket.org/openpyxl/openpyxl/issues/952>`_ Cannot load table styles with custom names
+
+
+Major Changes
+-------------
+
+* You can now insert and delete rows and columns in worksheets
+
+
+Minor Changes
+-------------
+
+* pip now handles which Python versions can be used.
+
+
+2.5.0-b1 (2017-10-19)
+=====================
+
+
+Bugfixes
+--------
+* `#812 <https://bitbucket.org/openpyxl/openpyxl/issues/812>`_ Explicitly support for multiple cell ranges in conditonal formatting
+* `#827 <https://bitbucket.org/openpyxl/openpyxl/issues/827>`_ Non-contiguous cell ranges in validators get merged
+* `#837 <https://bitbucket.org/openpyxl/openpyxl/issues/837>`_ Empty data validators create invalid Excel files
+* `#860 <https://bitbucket.org/openpyxl/openpyxl/issues/860>`_ Large validation ranges use lots of memory
+* `#876 <https://bitbucket.org/openpyxl/openpyxl/issues/876>`_ Unicode in chart axes not handled correctly in Python 2
+* `#882 <https://bitbucket.org/openpyxl/openpyxl/issues/882>`_ ScatterCharts have defective axes
+* `#885 <https://bitbucket.org/openpyxl/openpyxl/issues/885>`_ Charts with empty numVal elements cannot be read
+* `#894 <https://bitbucket.org/openpyxl/openpyxl/issues/894>`_ Scaling options from existing files ignored
+* `#895 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Charts with PivotSource cannot be read
+* `#903 <https://bitbucket.org/openpyxl/openpyxl/issues/903>`_ Cannot read gradient fills
+* `#904 <https://bitbucket.org/openpyxl/openpyxl/issues/904>`_ Quotes in number formats could be treated as datetimes
+
+
+Major Changes
+-------------
+
+`worksheet.cell()` no longer accepts a `coordinate` parameter. The syntax is now `ws.cell(row, column, value=None)`
+
+
+Minor Changes
+-------------
+
+Added CellRange and MultiCellRange types (thanks to Laurent LaPorte for the
+suggestion) as a utility type for things like data validations, conditional
+formatting and merged cells.
+
+
+Deprecations
+------------
+
+ws.merged_cell_ranges has been deprecated because MultiCellRange provides sufficient functionality
+
+
+2.5.0-a3 (2017-08-14)
+=====================
+
+
+Bugfixes
+--------
+* `#848 <https://bitbucket.org/openpyxl/openpyxl/issues/848>`_ Reading workbooks with Pie Charts raises an exception
+* `#857 <https://bitbucket.org/openpyxl/openpyxl/issues/857>`_ Pivot Tables without Worksheet Sources raise an exception
+
+
+2.5.0-a2 (2017-06-25)
+=====================
+
+
+Major Changes
+-------------
+
+* Read support for charts
+
+
+Bugfixes
+--------
+* `#833 <https://bitbucket.org/openpyxl/openpyxl/issues/833>`_ Cannot access chartsheets by title
+* `#834 <https://bitbucket.org/openpyxl/openpyxl/issues/834>`_ Preserve workbook views
+* `#841 <https://bitbucket.org/openpyxl/openpyxl/issues/841>`_ Incorrect classification of a datetime
+
+
+2.5.0-a1 (2017-05-30)
+=====================
+
+
+Compatibility
+-------------
+
+* Dropped support for Python 2.6 and 3.3. openpyxl will not run with Python 2.6
+
+
+Major Changes
+-------------
+
+* Read/write support for pivot tables
+
+
+Deprecations
+------------
+
+* Dropped the anchor method from images and additional constructor arguments
+
+
+Bugfixes
+--------
+* `#779 <https://bitbucket.org/openpyxl/openpyxl/issues/779>`_ Fails to recognise Chinese date format`
+* `#828 <https://bitbucket.org/openpyxl/openpyxl/issues/828>`_ Include hidden cells in charts`
+
+
+Pull requests
+-------------
+* `163 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/163>`_ Improved GradientFill
+
+
+Minor changes
+-------------
+
+* Remove deprecated methods from Cell
+* Remove deprecated methods from Worksheet
+* Added read/write support for the datetime type for cells
+
+
 2.4.11 (2018-01-24)
 ===================
 

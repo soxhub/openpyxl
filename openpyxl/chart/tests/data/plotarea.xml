@@ -1,0 +1,187 @@
+<?xml version="1.0" standalone="yes"?>
+<plotArea xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+	<layout/>
+	<lineChart>
+		<grouping val="standard"/>
+		<varyColors val="0"/>
+		<ser>
+			<idx val="0"/>
+			<order val="0"/>
+			<tx>
+				<strRef>
+					<f>OXM!$F$10</f>
+				</strRef>
+			</tx>
+			<marker>
+				<symbol val="none"/>
+			</marker>
+			<cat>
+				<strRef>
+					<f>OXM!$B$11:$B$29</f>
+				</strRef>
+			</cat>
+			<val>
+				<numRef>
+					<f>OXM!$F$11:$F$29</f>
+				</numRef>
+			</val>
+			<smooth val="0"/>
+		</ser>
+		<dLbls>
+			<showLegendKey val="0"/>
+			<showVal val="0"/>
+			<showCatName val="0"/>
+			<showSerName val="0"/>
+			<showPercent val="0"/>
+			<showBubbleSize val="0"/>
+		</dLbls>
+		<marker val="1"/>
+		<smooth val="0"/>
+		<axId val="-1331289968"/>
+		<axId val="-1331286400"/>
+	</lineChart>
+	<lineChart>
+		<grouping val="standard"/>
+		<varyColors val="0"/>
+		<ser>
+			<idx val="1"/>
+			<order val="1"/>
+			<tx>
+				<strRef>
+					<f>OXM!$G$10</f>
+				</strRef>
+			</tx>
+			<marker>
+				<symbol val="none"/>
+			</marker>
+			<cat>
+				<strRef>
+					<f>OXM!$B$11:$B$29</f>
+				</strRef>
+			</cat>
+			<val>
+				<numRef>
+					<f>OXM!$G$11:$G$29</f>
+				</numRef>
+			</val>
+			<smooth val="0"/>
+		</ser>
+		<dLbls>
+			<showLegendKey val="0"/>
+			<showVal val="0"/>
+			<showCatName val="0"/>
+			<showSerName val="0"/>
+			<showPercent val="0"/>
+			<showBubbleSize val="0"/>
+		</dLbls>
+		<marker val="1"/>
+		<smooth val="0"/>
+		<axId val="-1331280608"/>
+		<axId val="-1331287776"/>
+	</lineChart>
+	<catAx>
+		<axId val="-1331289968"/>
+		<scaling>
+			<orientation val="minMax"/>
+		</scaling>
+		<delete val="0"/>
+		<axPos val="b"/>
+		<numFmt formatCode="General" sourceLinked="0"/>
+		<majorTickMark val="out"/>
+		<minorTickMark val="none"/>
+		<tickLblPos val="low"/>
+		<crossAx val="-1331286400"/>
+		<crosses val="autoZero"/>
+		<auto val="1"/>
+		<lblAlgn val="ctr"/>
+		<lblOffset val="100"/>
+		<noMultiLvlLbl val="0"/>
+	</catAx>
+	<valAx>
+		<axId val="-1331286400"/>
+		<scaling>
+			<orientation val="minMax"/>
+		</scaling>
+		<delete val="0"/>
+		<axPos val="l"/>
+		<majorGridlines/>
+		<title>
+			<tx>
+				<rich>
+					<a:bodyPr rot="-5400000" vert="horz"/>
+					<a:lstStyle/>
+					<a:p>
+						<a:pPr>
+							<a:defRPr/>
+						</a:pPr>
+						<a:r>
+							<a:rPr lang="en-US"/>
+							<a:t>Panel Sales</a:t>
+						</a:r>
+					</a:p>
+				</rich>
+			</tx>
+			<layout/>
+			<overlay val="0"/>
+		</title>
+		<numFmt formatCode="General" sourceLinked="1"/>
+		<majorTickMark val="out"/>
+		<minorTickMark val="none"/>
+		<tickLblPos val="nextTo"/>
+		<crossAx val="-1331289968"/>
+		<crosses val="autoZero"/>
+		<crossBetween val="between"/>
+	</valAx>
+	<valAx>
+		<axId val="-1331287776"/>
+		<scaling>
+			<orientation val="minMax"/>
+		</scaling>
+		<delete val="0"/>
+		<axPos val="r"/>
+		<title>
+			<tx>
+				<rich>
+					<a:bodyPr rot="-5400000" vert="horz"/>
+					<a:lstStyle/>
+					<a:p>
+						<a:pPr>
+							<a:defRPr/>
+						</a:pPr>
+						<a:r>
+							<a:rPr lang="en-US"/>
+							<a:t>Revenue ($MM)</a:t>
+						</a:r>
+					</a:p>
+				</rich>
+			</tx>
+			<layout/>
+			<overlay val="0"/>
+		</title>
+		<numFmt formatCode="General" sourceLinked="1"/>
+		<majorTickMark val="out"/>
+		<minorTickMark val="none"/>
+		<tickLblPos val="nextTo"/>
+		<crossAx val="-1331280608"/>
+		<crosses val="max"/>
+		<crossBetween val="between"/>
+	</valAx>
+	<catAx>
+		<axId val="-1331280608"/>
+		<scaling>
+			<orientation val="minMax"/>
+		</scaling>
+		<delete val="1"/>
+		<axPos val="b"/>
+		<numFmt formatCode="General" sourceLinked="1"/>
+		<majorTickMark val="out"/>
+		<minorTickMark val="none"/>
+		<tickLblPos val="none"/>
+		<crossAx val="-1331287776"/>
+		<crosses val="autoZero"/>
+		<auto val="1"/>
+		<lblAlgn val="ctr"/>
+		<lblOffset val="100"/>
+		<noMultiLvlLbl val="0"/>
+	</catAx>
+</plotArea>

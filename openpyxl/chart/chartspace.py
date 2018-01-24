@@ -19,13 +19,13 @@ from openpyxl.descriptors import (
     String,
     Alias,
     Sequence,
+    Typed,
 )
 from openpyxl.descriptors.excel import (
     Percentage,
     ExtensionList,
     Relation
 )
-
 from openpyxl.descriptors.nested import (
     NestedBool,
     NestedNoneSet,
@@ -34,31 +34,18 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedText,
 )
+from openpyxl.xml.constants import CHART_NS
 
 from openpyxl.drawing.colors import ColorMapping
 from .text import Text, RichText
-from .layout import Layout
 from .shapes import GraphicalProperties
 from .legend import Legend
 from .marker import PictureOptions, Marker
 from .label import DataLabel
 from ._3d import _3DBase, View3D
-
-from .area_chart import AreaChart, AreaChart3D
-from .bar_chart import BarChart, BarChart3D
-from .bubble_chart import BubbleChart
-from .line_chart import LineChart, LineChart3D
-from .pie_chart import PieChart, PieChart3D, ProjectedPieChart, DoughnutChart
-from .radar_chart import RadarChart
-from .scatter_chart import ScatterChart
-from .stock_chart import StockChart
-from .surface_chart import SurfaceChart, SurfaceChart3D
-
-from .axis import NumericAxis, TextAxis, SeriesAxis, DateAxis
+from .plotarea import PlotArea
 from .title import Title
 from .print_settings import PrintSettings
-
-from openpyxl.xml.functions import Element
 
 
 class PivotFormat(Serialisable):
@@ -106,151 +93,6 @@ class PivotFormatList(Serialisable):
         self.pivotFmt = pivotFmt
 
 
-class DataTable(Serialisable):
-
-    tagname = "dTable"
-
-    showHorzBorder = NestedBool(allow_none=True)
-    showVertBorder = NestedBool(allow_none=True)
-    showOutline = NestedBool(allow_none=True)
-    showKeys = NestedBool(allow_none=True)
-    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    graphicalProperties = Alias('spPr')
-    txPr = Typed(expected_type=RichText, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('showHorzBorder', 'showVertBorder', 'showOutline',
-                    'showKeys', 'spPr', 'txPr')
-
-    def __init__(self,
-                 showHorzBorder=None,
-                 showVertBorder=None,
-                 showOutline=None,
-                 showKeys=None,
-                 spPr=None,
-                 txPr=None,
-                 extLst=None,
-                ):
-        self.showHorzBorder = showHorzBorder
-        self.showVertBorder = showVertBorder
-        self.showOutline = showOutline
-        self.showKeys = showKeys
-        self.spPr = spPr
-        self.txPr = txPr
-
-
-class PlotArea(Serialisable):
-
-    tagname = "plotArea"
-
-    layout = Typed(expected_type=Layout, allow_none=True)
-    dTable = Typed(expected_type=DataTable, allow_none=True)
-    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    graphicalProperties = Alias("spPr")
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    # at least one chart
-    areaChart = Typed(expected_type=AreaChart, allow_none=True)
-    area3DChart = Typed(expected_type=AreaChart3D, allow_none=True)
-    lineChart = Typed(expected_type=LineChart, allow_none=True)
-    line3DChart = Typed(expected_type=LineChart3D, allow_none=True)
-    stockChart = Typed(expected_type=StockChart, allow_none=True)
-    radarChart = Typed(expected_type=RadarChart, allow_none=True)
-    scatterChart = Typed(expected_type=ScatterChart, allow_none=True)
-    pieChart = Typed(expected_type=PieChart, allow_none=True)
-    pie3DChart = Typed(expected_type=PieChart3D, allow_none=True)
-    doughnutChart = Typed(expected_type=DoughnutChart, allow_none=True)
-    barChart = Typed(expected_type=BarChart, allow_none=True)
-    bar3DChart = Typed(expected_type=BarChart3D, allow_none=True)
-    ofPieChart = Typed(expected_type=ProjectedPieChart, allow_none=True)
-    surfaceChart = Typed(expected_type=SurfaceChart, allow_none=True)
-    surface3DChart = Typed(expected_type=SurfaceChart3D, allow_none=True)
-    bubbleChart = Typed(expected_type=BubbleChart, allow_none=True)
-
-    # maybe axes
-    valAx = Sequence(expected_type=NumericAxis, allow_none=True)
-    catAx = Sequence(expected_type=TextAxis, allow_none=True)
-    dateAx = Sequence(expected_type=DateAxis, allow_none=True)
-    serAx = Sequence(expected_type=SeriesAxis, allow_none=True)
-
-    __elements__ = ('layout', 'areaChart', 'area3DChart', 'lineChart',
-                    'line3DChart', 'stockChart', 'radarChart', 'scatterChart', 'pieChart',
-                    'pie3DChart', 'doughnutChart', 'barChart', 'bar3DChart', 'ofPieChart',
-                    'surfaceChart', 'surface3DChart', 'bubbleChart', 'valAx', 'catAx', 'dateAx', 'serAx',
-                    'dTable', 'spPr')
-
-    def __init__(self,
-                 layout=None,
-                 dTable=None,
-                 spPr=None,
-                 areaChart=None,
-                 area3DChart=None,
-                 lineChart=None,
-                 line3DChart=None,
-                 stockChart=None,
-                 radarChart=None,
-                 scatterChart=None,
-                 pieChart=None,
-                 pie3DChart=None,
-                 doughnutChart=None,
-                 barChart=None,
-                 bar3DChart=None,
-                 ofPieChart=None,
-                 surfaceChart=None,
-                 surface3DChart=None,
-                 bubbleChart=None,
-                 valAx=(),
-                 catAx=(),
-                 serAx=(),
-                 dateAx=(),
-                 extLst=None,
-                ):
-        self.layout = layout
-        self.dTable = dTable
-        self.spPr = spPr
-        self.areaChart = areaChart
-        self.area3DChart = area3DChart
-        self.lineChart = lineChart
-        self.line3DChart = line3DChart
-        self.stockChart = stockChart
-        self.radarChart = radarChart
-        self.scatterChart = scatterChart
-        self.pieChart = pieChart
-        self.pie3DChart = pie3DChart
-        self.doughnutChart = doughnutChart
-        self.barChart = barChart
-        self.bar3DChart = bar3DChart
-        self.ofPieChart = ofPieChart
-        self.surfaceChart = surfaceChart
-        self.surface3DChart = surface3DChart
-        self.bubbleChart = bubbleChart
-        self.valAx = valAx
-        self.catAx = catAx
-        self.dateAx = dateAx
-        self.serAx = serAx
-        self._charts = []
-
-
-    def to_tree(self, tagname=None, idx=None):
-        if tagname is None:
-            tagname = self.tagname
-        el = Element(tagname)
-        if self.layout is not None:
-            el.append(self.layout.to_tree())
-        for chart in self._charts:
-            el.append(chart.to_tree())
-        for ax in ['valAx', 'catAx', 'dateAx', 'serAx',]:
-            seq = getattr(self, ax)
-            if seq:
-                for obj in seq:
-                    el.append(obj.to_tree())
-        for attr in ['dTable', 'spPr']:
-            obj = getattr(self, attr)
-            if obj is not None:
-                el.append(obj.to_tree())
-        return el
-
-
 class ChartContainer(Serialisable):
 
     tagname = "chart"
@@ -264,7 +106,7 @@ class ChartContainer(Serialisable):
     backWall = _3DBase.backWall
     plotArea = Typed(expected_type=PlotArea, )
     legend = Typed(expected_type=Legend, allow_none=True)
-    plotVisOnly = NestedBool(allow_none=True)
+    plotVisOnly = NestedBool()
     dispBlanksAs = NestedNoneSet(values=(['span', 'gap', 'zero']))
     showDLblsOverMax = NestedBool(allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -283,7 +125,7 @@ class ChartContainer(Serialisable):
                  backWall=None,
                  plotArea=None,
                  legend=None,
-                 plotVisOnly=None,
+                 plotVisOnly=True,
                  dispBlanksAs="gap",
                  showDLblsOverMax=None,
                  extLst=None,
@@ -335,7 +177,7 @@ class PivotSource(Serialisable):
     tagname = "pivotSource"
 
     name = NestedText(expected_type=unicode)
-    fmtId = NestedText(expected_type=int)
+    fmtId = NestedInteger(expected_type=int)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('name', 'fmtId')
@@ -418,4 +260,9 @@ class ChartSpace(Serialisable):
         self.externalData = externalData
         self.printSettings = printSettings
         self.userShapes = userShapes
-        self.extLst = extLst
+
+
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        tree = super(ChartSpace, self).to_tree()
+        tree.set("xmlns", CHART_NS)
+        return tree

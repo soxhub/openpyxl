@@ -33,11 +33,26 @@ class NumFmt(Serialisable):
         self.sourceLinked = sourceLinked
 
 
+class NumberValueDescriptor(NestedText):
+    """
+    Data should be numerical but isn't always :-/
+    """
+
+    allow_none = True
+
+    def __set__(self, instance, value):
+        if value == "#N/A":
+            self.expected_type = unicode
+        else:
+            self.expected_type = float
+        super(NumberValueDescriptor, self).__set__(instance, value)
+
+
 class NumVal(Serialisable):
 
     idx = Integer()
     formatCode = NestedText(allow_none=True, expected_type=unicode)
-    v = NestedText(allow_none=True, expected_type=float)
+    v = NumberValueDescriptor()
 
     def __init__(self,
                  idx=None,
@@ -51,7 +66,7 @@ class NumVal(Serialisable):
 
 class NumData(Serialisable):
 
-    formatCode = NestedText(expected_type=str, allow_none=True)
+    formatCode = NestedText(expected_type=unicode, allow_none=True)
     ptCount = NestedInteger(allow_none=True)
     pt = Sequence(expected_type=NumVal)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)

@@ -84,22 +84,10 @@ class TestStockChart:
         from openpyxl.chart.series import Series
         src = """
         <stockChart>
-          <ser>
-            <idx val="0"></idx>
-            <order val="0"></order>
-          </ser>
-          <ser>
-            <idx val="1"></idx>
-            <order val="1"></order>
-          </ser>
-          <ser>
-            <idx val="2"></idx>
-            <order val="2"></order>
-          </ser>
           <axId val="10"></axId>
           <axId val="100"></axId>
         </stockChart>
         """
         node = fromstring(src)
         chart = StockChart.from_tree(node)
-        assert chart == StockChart(ser=[Series(), Series(), Series()])
+        assert chart.axId == [10, 100]

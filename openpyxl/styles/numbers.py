@@ -91,16 +91,42 @@ FORMAT_CURRENCY_USD = '$#,##0_-'
 FORMAT_CURRENCY_EUR_SIMPLE = '[$EUR ]#,##0.00_-'
 
 
-DATE_INDICATORS = 'dmyhs'
-BAD_DATE_RE = re.compile(r'((?<=\[)|").*[dmhys]+.*(\]|")', re.UNICODE)
+COLORS = r"\[(BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW)\]"
+LITERAL_GROUP = r'"[^"]+"'
+LOCALE_GROUP = r'\[\$[^\]]+\]'
+STRIP_RE = re.compile("{0}|{1}|{2}".format(COLORS, LITERAL_GROUP, LOCALE_GROUP), re.IGNORECASE + re.UNICODE)
+
+
+# Spec 18.8.31 numFmts
+# +ve;-ve;zero;text
 
 def is_date_format(fmt):
     if fmt is None:
         return False
-    fmt = fmt.lower()
-    if any([x in fmt for x in DATE_INDICATORS]):
-        return not BAD_DATE_RE.search(fmt)
-    return False
+    fmt = fmt.split(";")[0] # only look at the first format
+    fmt = STRIP_RE.sub("", fmt)
+    return re.search("[dmhysDMHYS]", fmt) is not None
+
+
+def is_datetime(fmt):
+    """
+    Return date, time or datetime
+    """
+    if not is_date_format(fmt):
+        return
+
+    DATE = TIME = False
+
+    if any((x in fmt for x in 'dy')):
+        DATE = True
+    if any((x in fmt for x in 'hs')):
+        TIME = True
+
+    if DATE and TIME:
+        return "datetime"
+    if DATE:
+        return "date"
+    return "time"
 
 
 def is_builtin(fmt):

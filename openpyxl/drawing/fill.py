@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2017 openpyxl
 
+from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
-
 from openpyxl.descriptors import (
     Alias,
     Bool,
@@ -13,12 +13,24 @@ from openpyxl.descriptors import (
     MinMax,
     Sequence,
 )
-from openpyxl.descriptors.excel import Relation
-from openpyxl.descriptors.nested import NestedNoneSet
+from openpyxl.descriptors.excel import (
+    Relation,
+    Percentage,
+)
+from openpyxl.descriptors.nested import NestedNoneSet, NestedValue
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import DRAWING_NS
 
-from .colors import ColorChoice
+from .colors import (
+    ColorChoice,
+    HSLColor,
+    SystemColor,
+    SchemeColor,
+    RGBPercent,
+    PRESET_COLORS,
+)
+
+
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 from .effect import *
 
@@ -63,13 +75,13 @@ class RelativeRect(Serialisable):
     tagname = "rect"
     namespace = DRAWING_NS
 
-    l = MinMax(min=0, max=100, allow_none=True)
+    l = MinMax(min=0, max=100000, allow_none=True)
     left = Alias('l')
-    t = MinMax(min=0, max=100, allow_none=True)
+    t = MinMax(min=0, max=100000, allow_none=True)
     top = Alias('t')
-    r = MinMax(min=0, max=100, allow_none=True)
+    r = MinMax(min=0, max=100000, allow_none=True)
     right = Alias('r')
-    b = MinMax(min=0, max=100, allow_none=True)
+    b = MinMax(min=0, max=100000, allow_none=True)
     bottom = Alias('b')
 
     def __init__(self,
@@ -182,6 +194,38 @@ class GradientFillProperties(Serialisable):
         self.lin = lin
         self.path = path
         self.tileRect = tileRect
+
+
+class SolidColorFillProperties(Serialisable):
+
+    tagname = "solidFill"
+
+    # uses element group EG_ColorChoice
+    scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
+    RGBPercent = Alias('scrgbClr')
+    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    RGB = Alias('srgbClr')
+    hslClr = Typed(expected_type=HSLColor, allow_none=True)
+    sysClr = Typed(expected_type=SystemColor, allow_none=True)
+    schemeClr = Typed(expected_type=SchemeColor, allow_none=True)
+    prstClr = NestedNoneSet(values=PRESET_COLORS)
+
+    __elements__ = ('scrgbClr', 'srgbClr', 'hslClr', 'sysClr', 'schemeClr', 'prstClr')
+
+    def __init__(self,
+                 scrgbClr=None,
+                 srgbClr=None,
+                 hslClr=None,
+                 sysClr=None,
+                 schemeClr=None,
+                 prstClr=None,
+                ):
+        self.scrgbClr = scrgbClr
+        self.srgbClr = srgbClr
+        self.hslClr = hslClr
+        self.sysClr = sysClr
+        self.schemeClr = schemeClr
+        self.prstClr = prstClr
 
 
 class Blip(Serialisable):

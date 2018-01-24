@@ -108,35 +108,33 @@ class SphereCoords(Serialisable):
 
 class Camera(Serialisable):
 
-    prst = Typed(expected_type=Set(values=(['legacyObliqueTopLeft',
-                                            'legacyObliqueTop', 'legacyObliqueTopRight', 'legacyObliqueLeft',
-                                            'legacyObliqueFront', 'legacyObliqueRight', 'legacyObliqueBottomLeft',
-                                            'legacyObliqueBottom', 'legacyObliqueBottomRight',
-                                            'legacyPerspectiveTopLeft', 'legacyPerspectiveTop',
-                                            'legacyPerspectiveTopRight', 'legacyPerspectiveLeft',
-                                            'legacyPerspectiveFront', 'legacyPerspectiveRight',
-                                            'legacyPerspectiveBottomLeft', 'legacyPerspectiveBottom',
-                                            'legacyPerspectiveBottomRight', 'orthographicFront', 'isometricTopUp',
-                                            'isometricTopDown', 'isometricBottomUp', 'isometricBottomDown',
-                                            'isometricLeftUp', 'isometricLeftDown', 'isometricRightUp',
-                                            'isometricRightDown', 'isometricOffAxis1Left', 'isometricOffAxis1Right',
-                                            'isometricOffAxis1Top', 'isometricOffAxis2Left',
-                                            'isometricOffAxis2Right', 'isometricOffAxis2Top',
-                                            'isometricOffAxis3Left', 'isometricOffAxis3Right',
-                                            'isometricOffAxis3Bottom', 'isometricOffAxis4Left',
-                                            'isometricOffAxis4Right', 'isometricOffAxis4Bottom', 'obliqueTopLeft',
-                                            'obliqueTop', 'obliqueTopRight', 'obliqueLeft', 'obliqueRight',
-                                            'obliqueBottomLeft', 'obliqueBottom', 'obliqueBottomRight',
-                                            'perspectiveFront', 'perspectiveLeft', 'perspectiveRight',
-                                            'perspectiveAbove', 'perspectiveBelow', 'perspectiveAboveLeftFacing',
-                                            'perspectiveAboveRightFacing', 'perspectiveContrastingLeftFacing',
-                                            'perspectiveContrastingRightFacing', 'perspectiveHeroicLeftFacing',
-                                            'perspectiveHeroicRightFacing', 'perspectiveHeroicExtremeLeftFacing',
-                                            'perspectiveHeroicExtremeRightFacing', 'perspectiveRelaxed',
-                                            'perspectiveRelaxedModerately'])))
-    fov = Typed(expected_type=Integer)
+    tagname = "camera"
+
+    prst = Set(values=[
+        'legacyObliqueTopLeft', 'legacyObliqueTop', 'legacyObliqueTopRight', 'legacyObliqueLeft',
+         'legacyObliqueFront', 'legacyObliqueRight', 'legacyObliqueBottomLeft',
+         'legacyObliqueBottom', 'legacyObliqueBottomRight', 'legacyPerspectiveTopLeft',
+         'legacyPerspectiveTop', 'legacyPerspectiveTopRight', 'legacyPerspectiveLeft',
+         'legacyPerspectiveFront', 'legacyPerspectiveRight', 'legacyPerspectiveBottomLeft',
+         'legacyPerspectiveBottom', 'legacyPerspectiveBottomRight', 'orthographicFront',
+         'isometricTopUp', 'isometricTopDown', 'isometricBottomUp', 'isometricBottomDown',
+         'isometricLeftUp', 'isometricLeftDown', 'isometricRightUp', 'isometricRightDown',
+         'isometricOffAxis1Left', 'isometricOffAxis1Right', 'isometricOffAxis1Top',
+         'isometricOffAxis2Left', 'isometricOffAxis2Right', 'isometricOffAxis2Top',
+         'isometricOffAxis3Left', 'isometricOffAxis3Right', 'isometricOffAxis3Bottom',
+         'isometricOffAxis4Left', 'isometricOffAxis4Right', 'isometricOffAxis4Bottom',
+         'obliqueTopLeft',  'obliqueTop', 'obliqueTopRight', 'obliqueLeft', 'obliqueRight',
+         'obliqueBottomLeft', 'obliqueBottom', 'obliqueBottomRight', 'perspectiveFront',
+         'perspectiveLeft', 'perspectiveRight', 'perspectiveAbove', 'perspectiveBelow',
+         'perspectiveAboveLeftFacing', 'perspectiveAboveRightFacing',
+         'perspectiveContrastingLeftFacing', 'perspectiveContrastingRightFacing',
+         'perspectiveHeroicLeftFacing', 'perspectiveHeroicRightFacing',
+         'perspectiveHeroicExtremeLeftFacing', 'perspectiveHeroicExtremeRightFacing',
+         'perspectiveRelaxed', 'perspectiveRelaxedModerately'])
+    fov = Typed(expected_type=Integer, allow_none=True)
     zoom = Typed(expected_type=Percentage, allow_none=True)
     rot = Typed(expected_type=SphereCoords, allow_none=True)
+
 
     def __init__(self,
                  prst=None,
@@ -152,13 +150,15 @@ class Camera(Serialisable):
 
 class LightRig(Serialisable):
 
-    rig = Typed(expected_type=Set(values=(['legacyFlat1', 'legacyFlat2',
-                                           'legacyFlat3', 'legacyFlat4', 'legacyNormal1', 'legacyNormal2',
-                                           'legacyNormal3', 'legacyNormal4', 'legacyHarsh1', 'legacyHarsh2',
-                                           'legacyHarsh3', 'legacyHarsh4', 'threePt', 'balanced', 'soft', 'harsh',
-                                           'flood', 'contrasting', 'morning', 'sunrise', 'sunset', 'chilly',
-                                           'freezing', 'flat', 'twoPt', 'glow', 'brightRoom'])))
-    dir = Typed(expected_type=Set(values=(['tl', 't', 'tr', 'l', 'r', 'bl', 'b', 'br'])))
+    tagname = "lightRig"
+
+    rig = Set(values=['legacyFlat1', 'legacyFlat2', 'legacyFlat3', 'legacyFlat4', 'legacyNormal1',
+         'legacyNormal2', 'legacyNormal3', 'legacyNormal4', 'legacyHarsh1',
+         'legacyHarsh2', 'legacyHarsh3', 'legacyHarsh4', 'threePt', 'balanced',
+         'soft', 'harsh', 'flood', 'contrasting', 'morning', 'sunrise', 'sunset',
+         'chilly', 'freezing', 'flat', 'twoPt', 'glow', 'brightRoom']
+    )
+    dir = Set(values=(['tl', 't', 'tr', 'l', 'r', 'bl', 'b', 'br']))
     rot = Typed(expected_type=SphereCoords, allow_none=True)
 
     def __init__(self,
@@ -243,11 +243,15 @@ class Scene3D(Serialisable):
 
 class Bevel(Serialisable):
 
-    w = Typed(expected_type=Integer())
-    h = Typed(expected_type=Integer())
-    prst = Typed(expected_type=Set(values=(['relaxedInset', 'circle',
-                                            'slope', 'cross', 'angle', 'softRound', 'convex', 'coolSlant', 'divot',
-                                            'riblet', 'hardEdge', 'artDeco'])))
+    tagname = "bevel"
+
+    w = Integer()
+    h = Integer()
+    prst = NoneSet(values=
+               ['relaxedInset', 'circle', 'slope', 'cross', 'angle',
+                'softRound', 'convex', 'coolSlant', 'divot', 'riblet',
+                 'hardEdge', 'artDeco']
+               )
 
     def __init__(self,
                  w=None,
@@ -262,12 +266,13 @@ class Bevel(Serialisable):
 class Shape3D(Serialisable):
 
     z = Typed(expected_type=Coordinate, allow_none=True)
-    extrusionH = Typed(expected_type=Integer())
-    contourW = Typed(expected_type=Integer())
-    prstMaterial = Typed(expected_type=Set(values=(['legacyMatte',
-                                                    'legacyPlastic', 'legacyMetal', 'legacyWireframe', 'matte', 'plastic',
-                                                    'metal', 'warmMatte', 'translucentPowder', 'powder', 'dkEdge',
-                                                    'softEdge', 'clear', 'flat', 'softmetal'])))
+    extrusionH = Integer(allow_none=True)
+    contourW = Integer(allow_none=True)
+    prstMaterial = NoneSet(values=[
+        'legacyMatte','legacyPlastic', 'legacyMetal', 'legacyWireframe', 'matte', 'plastic',
+        'metal', 'warmMatte', 'translucentPowder', 'powder', 'dkEdge',
+        'softEdge', 'clear', 'flat', 'softmetal']
+                       )
     bevelT = Typed(expected_type=Bevel, allow_none=True)
     bevelB = Typed(expected_type=Bevel, allow_none=True)
     extrusionClr = Typed(expected_type=Color, allow_none=True)

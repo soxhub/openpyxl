@@ -56,29 +56,23 @@ class ShapeWriter(object):
         column = column_index_from_string(col) - 1
         shape = _shape_factory(row, column)
 
-        shape.set('id',  "_x0000_s%04d" % idx)
+        shape.set('id', "_x0000_s%04d" % idx)
         root.append(shape)
 
 
     def write(self, root):
-        # Remove any existing comment shapes
+
         if not hasattr(root, "findall"):
             root = Element("xml")
-
-        comments = root.findall("{%s}shape" % vmlns)
+        # Remove any existing comment shapes
+        comments = root.findall("{%s}shape[@type='#_x0000_t202']" % vmlns)
         for c in comments:
-            if c.get("type") == '#_x0000_t202':
-                root.remove(c)
+            root.remove(c)
 
         # check whether comments shape type already exists
-        shape_types = root.findall("{%s}shapetype" % vmlns)
-        comments_type = False
-        for s in shape_types:
-            if s.get("id") == '_x0000_t202':
-                comments_type = True
-                break
 
-        if not comments_type:
+        shape_types = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
+        if not shape_types:
             self.add_comment_shapetype(root)
 
         for idx, (coord, comment) in enumerate(self.comments, 1026):

@@ -48,7 +48,7 @@ class TestSystemColor:
         colors = SystemColor()
         xml = tostring(colors.to_tree())
         expected = """
-        <sysClr val="bg1"></sysClr>
+        <sysClr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" val="windowText"></sysClr>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -56,11 +56,11 @@ class TestSystemColor:
 
     def test_from_xml(self, SystemColor):
         src = """
-        <sysClr val="tx1"></sysClr>
+        <sysClr val="windowText"></sysClr>
         """
         node = fromstring(src)
         colors = SystemColor.from_tree(node)
-        assert colors == SystemColor(val="tx1")
+        assert colors == SystemColor(val="windowText")
 
 
 @pytest.fixture
@@ -150,3 +150,30 @@ class TestColorMapping:
         node = fromstring(src)
         colors = ColorMapping.from_tree(node)
         assert colors == ColorMapping()
+
+
+@pytest.fixture
+def SchemeColor():
+    from ..colors import SchemeColor
+    return SchemeColor
+
+
+class TestSchemeColor:
+
+    def test_ctor(self, SchemeColor):
+        sclr = SchemeColor(val="tx1")
+        xml = tostring(sclr.to_tree())
+        expected = """
+        <schemeClr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" val="tx1" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SchemeColor):
+        src = """
+            <schemeClr val="tx1" />
+        """
+        node = fromstring(src)
+        sclr = SchemeColor.from_tree(node)
+        assert sclr == SchemeColor(val="tx1")

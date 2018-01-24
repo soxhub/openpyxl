@@ -148,9 +148,19 @@ class Manifest(Serialisable):
         """
         Find specific content-type
         """
+        try:
+            return next(self.findall(content_type))
+        except StopIteration:
+            return
+
+
+    def findall(self, content_type):
+        """
+        Find all elements of a specific content-type
+        """
         for t in self.Override:
             if t.ContentType == content_type:
-                return t
+                yield t
 
 
     def append(self, obj):

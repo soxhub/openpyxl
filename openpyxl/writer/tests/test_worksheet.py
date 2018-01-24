@@ -81,7 +81,6 @@ def write_cell_implementation(request, etree_write_cell, lxml_write_cell):
                              ("Hello", """<c t="s" r="A1"><v>0</v></c>"""),
                              ("", """<c r="A1" t="s"></c>"""),
                              (None, """<c r="A1" t="n"></c>"""),
-                             (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>40902</v></c>"""),
                          ])
 def test_write_cell(worksheet, write_cell_implementation, value, expected):
     from openpyxl.cell import Cell
@@ -90,6 +89,36 @@ def test_write_cell(worksheet, write_cell_implementation, value, expected):
     ws = worksheet
     cell = ws['A1']
     cell.value = value
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, cell.has_style)
+
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+@pytest.mark.parametrize("value, iso_dates, expected,",
+                         [
+                             (datetime.date(2011, 12, 25), False, """<c r="A1" t="n" s="1"><v>40902</v></c>"""),
+                             (datetime.date(2011, 12, 25), True, """<c r="A1" t="d" s="1"><v>2011-12-25</v></c>"""),
+                             (datetime.datetime(2011, 12, 25, 14, 23, 55), False, """<c r="A1" t="n" s="1"><v>40902.59994212963</v></c>"""),
+                             (datetime.datetime(2011, 12, 25, 14, 23, 55), True, """<c r="A1" t="d" s="1"><v>2011-12-25T14:23:55</v></c>"""),
+                             (datetime.time(14, 15, 25), False, """<c r="A1" t="n" s="1"><v>0.5940393518518519</v></c>"""),
+                             (datetime.time(14, 15, 25), True, """<c r="A1" t="d" s="1"><v>14:15:25</v></c>"""),
+                             (datetime.timedelta(1, 3, 15), False, """<c r="A1" t="n" s="1"><v>1.000034722395833</v></c>"""),
+                             (datetime.timedelta(1, 3, 15), True, """<c r="A1" t="d" s="1"><v>00:00:03.000015</v></c>"""),
+                         ]
+                         )
+def test_write_date(worksheet, write_cell_implementation, value, expected, iso_dates):
+    from openpyxl.cell import Cell
+    write_cell = write_cell_implementation
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = value
+    cell.parent.parent.iso_dates = iso_dates
 
     out = BytesIO()
     with xmlfile(out) as xf:
@@ -210,8 +239,8 @@ def test_merge(worksheet):
     from .. worksheet import write_mergecells
 
     ws = worksheet
-    ws.cell('A1').value = 'Cell A1'
-    ws.cell('B1').value = 'Cell B1'
+    ws['A1'].value = 'Cell A1'
+    ws['B1'].value = 'Cell B1'
 
     ws.merge_cells('A1:B1')
     merge = write_mergecells(ws)
@@ -281,8 +310,8 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
     datadir.chdir()
     wb = Workbook()
     ws = wb.create_sheet()
-    ws.cell('A1').value = "test"
-    ws.cell('A1').hyperlink = "http://test.com/"
+    ws['A1'].value = "test"
+    ws['A1'].hyperlink = "http://test.com/"
     i = Image("plain.png")
     ws.add_image(i)
     raise ValueError("Resulting file is invalid")
@@ -342,8 +371,8 @@ def test_conditional_font(worksheet_with_cf, write_conditional_formatting):
                                              formula=['"Fail"'],
                                              stopIfTrue=False,
                                              font=whiteFont,
-                                             fill=redFill))
-
+                                             fill=redFill)
+                                  )
     cfs = write_conditional_formatting(ws)
     xml = b""
     for cf in cfs:

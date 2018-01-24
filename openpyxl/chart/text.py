@@ -30,7 +30,7 @@ class RichText(Serialisable):
     bodyPr = Typed(expected_type=RichTextProperties)
     properties = Alias("bodyPr")
     lstStyle = Typed(expected_type=ListStyle, allow_none=True)
-    p = Sequence(expected_type=Paragraph, allow_none=True)
+    p = Sequence(expected_type=Paragraph)
     paragraphs = Alias('p')
 
     __elements__ = ("bodyPr", "lstStyle", "p")

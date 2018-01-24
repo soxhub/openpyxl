@@ -130,8 +130,8 @@ worksheet. See :ref:`styling-merged-cells` for information on formatting merged 
 >>> ws.unmerge_cells('A2:D2')
 >>>
 >>> # or equivalently
->>> ws.merge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
->>> ws.unmerge_cells(start_row=2,start_column=1,end_row=2,end_column=4)
+>>> ws.merge_cells(start_row=2, start_column=1, end_row=4, end_column=4)
+>>> ws.unmerge_cells(start_row=2, start_column=1, end_row=4, end_column=4)
 
 
 Inserting an image

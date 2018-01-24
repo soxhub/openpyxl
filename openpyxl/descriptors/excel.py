@@ -6,6 +6,9 @@ Excel specific descriptors
 """
 
 from openpyxl.xml.constants import REL_NS
+from openpyxl.compat import safe_string
+from openpyxl.xml.functions import Element
+
 from . import (
     MatchPattern,
     MinMax,
@@ -92,3 +95,12 @@ class CellRange(MatchPattern):
         if value is not None:
             value = value.upper()
         super(CellRange, self).__set__(instance, value)
+
+
+def _explicit_none(tagname, value, namespace=None):
+    """
+    Override serialisation because explicit none required
+    """
+    if namespace is not None:
+        tagname = "{%s}%s" % (namespace, tagname)
+    return Element(tagname, val=safe_string(value))

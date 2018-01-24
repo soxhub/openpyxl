@@ -86,9 +86,13 @@ class GroupLocking(Serialisable):
     noSelect = Bool(allow_none=True)
     noRot = Bool(allow_none=True)
     noChangeAspect = Bool(allow_none=True)
-    noChangeArrowheads = Bool(allow_none=True)
     noMove = Bool(allow_none=True)
     noResize = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noEditPoints = Bool(allow_none=True)
+    noAdjustHandles = Bool(allow_none=True)
+    noChangeArrowheads = Bool(allow_none=True)
+    noChangeShapeType = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
     def __init__(self,
@@ -100,6 +104,9 @@ class GroupLocking(Serialisable):
                  noChangeArrowheads=None,
                  noMove=None,
                  noResize=None,
+                 noEditPoints=None,
+                 noAdjustHandles=None,
+                 noChangeShapeType=None,
                  extLst=None,
                 ):
         self.noGrp = noGrp
@@ -110,7 +117,6 @@ class GroupLocking(Serialisable):
         self.noChangeArrowheads = noChangeArrowheads
         self.noMove = noMove
         self.noResize = noResize
-        self.extLst = extLst
 
 
 class NonVisualGroupDrawingShapeProps(Serialisable):
@@ -292,7 +298,7 @@ class GraphicData(Serialisable):
                  chart=None,
                 ):
         self.uri = uri
-        self.chart = None
+        self.chart = chart
 
 
 class GraphicObject(Serialisable):
@@ -389,12 +395,38 @@ class ConnectorNonVisual(Serialisable):
     cNvPr = Typed(expected_type=NonVisualDrawingProps, )
     cNvCxnSpPr = Typed(expected_type=NonVisualConnectorProperties, )
 
+    __elements__ = ("cNvPr", "cNvCxnSpPr",)
+
     def __init__(self,
                  cNvPr=None,
                  cNvCxnSpPr=None,
                 ):
         self.cNvPr = cNvPr
         self.cNvCxnSpPr = cNvCxnSpPr
+
+
+class ConnectorShape(Serialisable):
+
+    tagname = "cxnSp"
+
+    nvCxnSpPr = Typed(expected_type=ConnectorNonVisual, )
+    spPr = Typed(expected_type=GraphicalProperties)
+    style = Typed(expected_type=ShapeStyle, allow_none=True)
+    macro = String(allow_none=True)
+    fPublished = Bool(allow_none=True)
+
+    def __init__(self,
+                 nvCxnSpPr=None,
+                 spPr=None,
+                 style=None,
+                 macro=None,
+                 fPublished=None,
+                 ):
+        self.nvCxnSpPr = nvCxnSpPr
+        self.spPr = spPr
+        self.style = style
+        self.macro = macro
+        self.fPublished = fPublished
 
 
 class ShapeMeta(Serialisable):
@@ -414,7 +446,7 @@ class Shape(Serialisable):
     macro = String(allow_none=True)
     textlink = String(allow_none=True)
     fPublished = Bool(allow_none=True)
-    nvSpPr = Typed(expected_type=ShapeMeta)
+    nvSpPr = Typed(expected_type=ShapeMeta, allow_none=True)
     meta = Alias("nvSpPr")
     spPr = Typed(expected_type=GraphicalProperties)
     graphicalProperties = Alias("spPr")
@@ -433,7 +465,7 @@ class Shape(Serialisable):
         self.macro = macro
         self.textlink = textlink
         self.fPublished = fPublished
-        self.nvSpPr =nvSpPr
+        self.nvSpPr = nvSpPr
         self.spPr = spPr
         self.style = style
         self.txBody = txBody

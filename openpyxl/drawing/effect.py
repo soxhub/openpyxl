@@ -235,16 +235,18 @@ class InnerShadowEffect(ColorChoice):
         super(InnerShadowEffect, self).__init__(**kw)
 
 
-class OuterShadowEffect(ColorChoice):
+class OuterShadow(ColorChoice):
 
-    blurRad = Float()
-    dist = Float()
-    dir = Integer()
-    sx = Integer()
-    sy = Integer()
-    kx = Integer()
-    ky = Integer()
-    algn = Set(values=(['tl', 't', 'tr', 'l', 'ctr', 'r', 'bl', 'b', 'br']))
+    tagname = "outerShdw"
+
+    blurRad = Float(allow_none=True)
+    dist = Float(allow_none=True)
+    dir = Integer(allow_none=True)
+    sx = Integer(allow_none=True)
+    sy = Integer(allow_none=True)
+    kx = Integer(allow_none=True)
+    ky = Integer(allow_none=True)
+    algn = Set(values=['tl', 't', 'tr', 'l', 'ctr', 'r', 'bl', 'b', 'br'])
     rotWithShape = Bool(allow_none=True)
     # uses element group EG_ColorChoice
     scrgbClr = ColorChoice.scrgbClr
@@ -277,7 +279,7 @@ class OuterShadowEffect(ColorChoice):
         self.ky = ky
         self.algn = algn
         self.rotWithShape = rotWithShape
-        super(OuterShadowEffect, self).__init__(**kw)
+        super(OuterShadow, self).__init__(**kw)
 
 
 class PresetShadowEffect(ColorChoice):
@@ -374,7 +376,7 @@ class EffectList(Serialisable):
     fillOverlay = Typed(expected_type=FillOverlayEffect, allow_none=True)
     glow = Typed(expected_type=GlowEffect, allow_none=True)
     innerShdw = Typed(expected_type=InnerShadowEffect, allow_none=True)
-    outerShdw = Typed(expected_type=OuterShadowEffect, allow_none=True)
+    outerShdw = Typed(expected_type=OuterShadow, allow_none=True)
     prstShdw = Typed(expected_type=PresetShadowEffect, allow_none=True)
     reflection = Typed(expected_type=ReflectionEffect, allow_none=True)
     softEdge = Typed(expected_type=SoftEdgesEffect, allow_none=True)

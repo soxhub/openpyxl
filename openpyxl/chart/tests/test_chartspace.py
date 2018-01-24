@@ -20,6 +20,7 @@ class TestChartContainer:
         expected = """
         <chart>
           <plotArea></plotArea>
+          <plotVisOnly val="1" />
           <dispBlanksAs val="gap"></dispBlanksAs>
         </chart>
         """
@@ -37,60 +38,6 @@ class TestChartContainer:
         node = fromstring(src)
         container = ChartContainer.from_tree(node)
         assert container == ChartContainer()
-
-
-@pytest.fixture
-def PlotArea():
-    from ..chartspace import PlotArea
-    return PlotArea
-
-
-class TestPlotArea:
-
-    def test_ctor(self, PlotArea):
-        chartspace = PlotArea()
-        xml = tostring(chartspace.to_tree())
-        expected = """
-        <plotArea />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PlotArea):
-        src = """
-        <plotArea />
-        """
-        node = fromstring(src)
-        chartspace = PlotArea.from_tree(node)
-        assert chartspace == PlotArea()
-
-
-@pytest.fixture
-def DataTable():
-    from ..chartspace import DataTable
-    return DataTable
-
-
-class TestDataTable:
-
-    def test_ctor(self, DataTable):
-        table = DataTable()
-        xml = tostring(table.to_tree())
-        expected = """
-        <dTable />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, DataTable):
-        src = """
-        <dTable />
-        """
-        node = fromstring(src)
-        table = DataTable.from_tree(node)
-        assert table == DataTable()
 
 
 @pytest.fixture
@@ -257,7 +204,7 @@ class TestPivotSource:
         expected = """
         <pivotSource>
           <name>pivot source</name>
-          <fmtId>1</fmtId>
+          <fmtId val="1" />
         </pivotSource>
         """
         diff = compare_xml(xml, expected)
@@ -268,7 +215,7 @@ class TestPivotSource:
         src = """
         <pivotSource>
           <name>pivot source</name>
-          <fmtId>1</fmtId>
+          <fmtId val="1" />
         </pivotSource>
         """
         node = fromstring(src)
@@ -301,3 +248,38 @@ class TestExternalData:
         node = fromstring(src)
         data = ExternalData.from_tree(node)
         assert data == ExternalData(id="rId1")
+
+
+@pytest.fixture
+def ChartSpace():
+    from ..chartspace import ChartSpace
+    return ChartSpace
+
+
+class TestChartSpace:
+
+    def test_ctor(self, ChartSpace, ChartContainer):
+        cs = ChartSpace(chart=ChartContainer())
+        xml = tostring(cs.to_tree())
+        expected = """
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
+          <chart>
+          <plotArea></plotArea>
+          <plotVisOnly val="1" />
+          <dispBlanksAs val="gap"></dispBlanksAs>
+          </chart>
+        </chartSpace>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ChartSpace, ChartContainer):
+        src = """
+        <chartSpace>
+          <chart />
+        </chartSpace>
+        """
+        node = fromstring(src)
+        cs = ChartSpace.from_tree(node)
+        assert cs == ChartSpace(chart=ChartContainer())

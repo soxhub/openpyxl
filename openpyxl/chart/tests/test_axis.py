@@ -13,17 +13,33 @@ def Scaling():
     return Scaling
 
 
-def test_scaling(Scaling):
+class TestScale:
 
-    scale = Scaling()
-    xml = tostring(scale.to_tree())
-    expected = """
-    <scaling>
-       <orientation val="minMax"></orientation>
-    </scaling>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+
+    def test_ctor(self, Scaling):
+
+        scale = Scaling()
+        xml = tostring(scale.to_tree())
+        expected = """
+        <scaling>
+           <orientation val="minMax"></orientation>
+        </scaling>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Scaling):
+
+        xml = """
+        <scaling>
+         <logBase val="10"/>
+         <orientation val="minMax"/>
+        </scaling>
+        """
+        node = fromstring(xml)
+        scale = Scaling.from_tree(node)
+        assert scale == Scaling(logBase=10)
 
 
 @pytest.fixture
@@ -44,6 +60,8 @@ class TestAxis:
               <orientation val="minMax"></orientation>
             </scaling>
             <axPos val="l" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
             <crossAx val="100" />
         </baseAxis>
         """
@@ -70,6 +88,8 @@ class TestTextAxis:
               <orientation val="minMax"></orientation>
             </scaling>
             <axPos val="l" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
             <crossAx val="100" />
             <lblOffset val="100" />
         </catAx>
@@ -125,6 +145,8 @@ class TestValAx:
           </scaling>
           <axPos val="l" />
           <majorGridlines />
+          <majorTickMark val="none" />
+          <minorTickMark val="none" />
           <crossAx val="10" />
         </valAx>
         """
@@ -137,6 +159,7 @@ class TestValAx:
         <valAx>
             <axId val="2056619928"/>
             <scaling>
+                <logBase val="10" />
                 <orientation val="minMax"/>
             </scaling>
             <delete val="0"/>
@@ -156,6 +179,7 @@ class TestValAx:
         assert axis.delete is False
         assert axis.crossAx == 2065276984
         assert axis.crossBetween == "between"
+        assert axis.scaling.logBase == 10
 
 
 @pytest.fixture
@@ -177,8 +201,9 @@ class TestDateAx:
              <orientation val="minMax"></orientation>
            </scaling>
            <axPos val="l" />
-           <crossAx val="10" />
-           <majorUnit val="1" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
+            <crossAx val="10" />
         </dateAx>
         """
         diff = compare_xml(xml, expected)
@@ -209,10 +234,10 @@ class TestDateAx:
         """
         node = fromstring(src)
         axis = DateAxis.from_tree(node)
-        assert axis == DateAxis(axId=20, crossAx=10, axPos="b",
-                              scaling="minMax", delete=False, numFmt=NumFmt("d-mmm", True),
-                              majorTickMark="out", crosses="autoZero", tickLblPos="nextTo",
-                              auto=True, lblOffset=100, baseTimeUnit="months")
+        assert axis == DateAxis(axId=20, crossAx=10, axPos="b", delete=False,
+                                numFmt=NumFmt("d-mmm", True), majorTickMark="out",
+                                crosses="autoZero", tickLblPos="nextTo", auto=True, lblOffset=100,
+                                baseTimeUnit="months")
 
 
 @pytest.fixture
@@ -233,7 +258,9 @@ class TestSeriesAxis:
             <orientation val="minMax"></orientation>
           </scaling>
           <axPos val="l" />
-          <crossAx val="10" />
+            <majorTickMark val="none" />
+            <minorTickMark val="none" />
+            <crossAx val="10" />
         </serAx>
         """
         diff = compare_xml(xml, expected)
