@@ -543,3 +543,15 @@ def test_write_tables(worksheet, write_worksheet):
 
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_table_rels(worksheet):
+    from openpyxl.worksheet.table import Table
+    from ..worksheet import _add_table_headers
+
+    worksheet.append(list(u"ABCDEF\xfc"))
+    worksheet._tables = [Table(displayName="Table1", ref="A1:G6")]
+
+    _add_table_headers(worksheet)
+
+    assert worksheet._rels['rId1'].Type == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table"
