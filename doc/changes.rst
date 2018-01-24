@@ -1,5 +1,11 @@
-2.5.0 (unreleased)
+2.5.0 (2018-01-24)
 ==================
+
+
+Minor changes
+-------------
+
+* Correct definition for Connection Shapes. Related to # 958
 
 
 2.5.0-b2 (2018-01-19)
