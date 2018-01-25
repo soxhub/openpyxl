@@ -2,6 +2,12 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#960 <https://bitbucket.org/openpyxl/openpyxl/issues/960>`_ Deprecation warning raised when using ad-hoc access in read-only mode.
+
+
 2.5.0 (2018-01-24)
 ==================
 
