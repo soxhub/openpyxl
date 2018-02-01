@@ -196,6 +196,9 @@ class WriteOnlyWorksheet(_WorkbookChild):
                 if self.data_validations.count:
                     xf.write(self.data_validations.to_tree())
 
+                if bool(self.HeaderFooter):
+                    xf.write(self.HeaderFooter.to_tree())
+
                 drawing = write_drawing(self)
                 if drawing is not None:
                     xf.write(drawing)

@@ -77,6 +77,9 @@ class _WorkbookChild(object):
         Limited to 31 characters, no special characters.
         Duplicate titles will be incremented numerically
         """
+        if not self.__parent:
+            return
+
         if not value:
             raise ValueError("Title must have at least one character")
 
