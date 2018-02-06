@@ -305,7 +305,7 @@ class TextAxis(_BaseAxis):
         super(TextAxis, self).__init__(**kw)
 
 
-class DateAxis(_BaseAxis):
+class DateAxis(TextAxis):
 
     tagname = "dateAx"
 
