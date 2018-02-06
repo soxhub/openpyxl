@@ -153,9 +153,7 @@ class PlotArea(Serialisable):
                 continue
 
             for axId in chart.axId:
-                if not axId:
-                    continue
-                axis = axes[axId]
+                axis = axes.get(axId)
                 if axis.tagname in ("catAx", "dateAx"):
                     chart.x_axis = axis
                 elif axis.tagname == "valAx":
