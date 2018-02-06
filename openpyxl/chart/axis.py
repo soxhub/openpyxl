@@ -358,6 +358,7 @@ class DateAxis(TextAxis):
         self.minorUnit = minorUnit
         self.minorTimeUnit = minorTimeUnit
         kw.setdefault('axId', 500)
+        kw.setdefault('lblOffset', lblOffset)
         super(DateAxis, self).__init__(**kw)
 
 
