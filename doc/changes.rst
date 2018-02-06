@@ -7,6 +7,7 @@ Bugfixes
 
 * `#934 <https://bitbucket.org/openpyxl/openpyxl/issues/934>`_ Headers and footers not included in write-only mode.
 * `#960 <https://bitbucket.org/openpyxl/openpyxl/issues/960>`_ Deprecation warning raised when using ad-hoc access in read-only mode.
+* `#966 <https://bitbucket.org/openpyxl/openpyxl/issues/966>`_ Cannot read 3d bar chart correctly.
 * Make sure that headers and footers in chartsheets are included in the file
 
 
