@@ -30,6 +30,11 @@ def read_chart(chartspace):
     chart.layout = plot.layout
     chart.legend = cs.chart.legend
 
+    # 3d attributes
+    chart.floor = cs.chart.floor
+    chart.sideWall = cs.chart.sideWall
+    chart.backWall = cs.chart.backWall
+
     return chart
 
 
