@@ -265,6 +265,8 @@ class Bevel(Serialisable):
 
 class Shape3D(Serialisable):
 
+    namespace = DRAWING_NS
+
     z = Typed(expected_type=Coordinate, allow_none=True)
     extrusionH = Integer(allow_none=True)
     contourW = Integer(allow_none=True)
