@@ -92,9 +92,9 @@ class Transform2D(Serialisable):
 
 class SphereCoords(Serialisable):
 
-    lat = Typed(expected_type=Integer)
-    lon = Typed(expected_type=Integer)
-    rev = Typed(expected_type=Integer)
+    lat = Integer()
+    lon = Integer()
+    rev = Integer()
 
     def __init__(self,
                  lat=None,

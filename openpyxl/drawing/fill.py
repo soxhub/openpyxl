@@ -113,7 +113,7 @@ class GradientStop(Serialisable):
 
     tagname = "gradStop"
 
-    pos = MinMax(min=0, max=100, allow_none=True)
+    pos = MinMax(min=0, max=100000, allow_none=True)
     # Color Choice Group
 
     def __init__(self,
