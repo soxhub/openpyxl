@@ -71,7 +71,7 @@ class SheetProtection(Serialisable, _Protected):
               'sheet', 'objects', 'insertRows', 'insertHyperlinks', 'autoFilter',
               'scenarios', 'formatColumns', 'deleteColumns', 'insertColumns',
               'pivotTables', 'deleteRows', 'formatCells', 'saltValue', 'formatRows',
-              'sort', 'spinCount', 'password')
+              'sort', 'spinCount', 'password', 'hashValue')
 
 
     def __init__(self, sheet=False, objects=False, scenarios=False,
