@@ -107,7 +107,7 @@ def write_worksheet(worksheet):
             # write data
             write_rows(xf, ws)
 
-            if ws.protection.sheet:
+            if ws.protection:
                 xf.write(ws.protection.to_tree())
 
             if ws.auto_filter:

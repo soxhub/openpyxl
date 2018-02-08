@@ -115,3 +115,9 @@ class SheetProtection(Serialisable, _Protected):
 
     def disable(self):
         self.sheet = False
+
+
+    def  __bool__(self):
+        return self.sheet is None
+
+    __nonzero__ = __bool__
