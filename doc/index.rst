@@ -240,14 +240,6 @@ Worksheet Tables
     worksheet_tables.rst
 
 
-Pivot Tables
-++++++++++++
-
-.. toctree::
-
-    pivot.rst
-
-
 Data Validation
 +++++++++++++++
 
