@@ -1173,7 +1173,6 @@ Known bugfixes
 
 * `#109 <https://bitbucket.org/openpyxl/openpyxl/issue/109>`_
 * `#165 <https://bitbucket.org/openpyxl/openpyxl/issue/165>`_
-* `#179 <https://bitbucket.org/openpyxl/openpyxl/issue/179>`_
 * `#209 <https://bitbucket.org/openpyxl/openpyxl/issue/209>`_
 * `#112 <https://bitbucket.org/openpyxl/openpyxl/issue/112>`_
 * `#166 <https://bitbucket.org/openpyxl/openpyxl/issue/166>`_

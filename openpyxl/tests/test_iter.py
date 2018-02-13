@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import datetime
 from io import BytesIO
@@ -356,7 +356,7 @@ def test_get_empty_cells_nonempty_row(datadir, DummyWorkbook, ReadOnlyWorksheet)
     Get row slice which only contains empty cells in a row containing non-empty
     cells earlier in the row.
     """
-    
+
     datadir.join("reader").chdir()
 
     src = b"""
@@ -368,7 +368,7 @@ def test_get_empty_cells_nonempty_row(datadir, DummyWorkbook, ReadOnlyWorksheet)
     </row>
     </sheetData>
     """
-    
+
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
 
     xml = fromstring(src)

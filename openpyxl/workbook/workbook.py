@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 """Workbook is the top-level container for all document information."""
 
@@ -137,7 +137,7 @@ class Workbook(object):
     @property
     def active(self):
         """Get the currently active sheet or None
-        
+
         :type: :class:`openpyxl.worksheet.worksheet.Worksheet`
         """
         try:
@@ -261,7 +261,7 @@ class Workbook(object):
     @property
     def worksheets(self):
         """A list of sheets in this workbook
-        
+
         :type: list of :class:`openpyxl.worksheet.worksheet.Worksheet`
         """
         return [s for s in self._sheets if isinstance(s, (Worksheet, ReadOnlyWorksheet, WriteOnlyWorksheet))]
