@@ -270,10 +270,11 @@ shutil.rmtree("tmp")
 
 def run_apidoc(_):
     from sphinx.ext.apidoc import main
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
     cur_dir = os.path.abspath(os.path.dirname(__file__))
-    modules = [
-        '../openpyxl',
+    output_path = os.path.join(cur_dir, 'api')
+    modules = os.path.dirname(openpyxl.__file__)
+    exclusions = [
         '../openpyxl/cell/tests',
         '../openpyxl/chart/tests',
         '../openpyxl/chartsheet/tests',
@@ -301,8 +302,7 @@ def run_apidoc(_):
         '../openpyxl/writer/tests',
         '../openpyxl/xml/tests',
     ]
-    output_path = os.path.join(cur_dir, 'api')
-    main(['-f', '-T', '-e', '-M', '-o', output_path] + modules)
+    main(['-f', '-T', '-e', '-M', '-o', output_path, modules] + exclusions)
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)
