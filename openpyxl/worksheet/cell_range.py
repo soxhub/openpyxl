@@ -208,7 +208,7 @@ class CellRange(Strict):
         """
         Test whether every element in the range is in *other*, but not all.
 
-        :type other: CellRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* < *other*.
         """
@@ -219,7 +219,7 @@ class CellRange(Strict):
         """
         Test whether every element in *other* is in the range.
 
-        :type other: CellRange or tuple[int, int]
+        :type other: openpyxl.worksheet.cell_range.CellRange or tuple[int, int]
         :param other: Other sheet range or cell index (*row_idx*, *col_idx*).
         :return: ``True`` if *range* >= *other* (or *other* in *range*).
         """
@@ -249,7 +249,7 @@ class CellRange(Strict):
         """
         Test whether every element in *other* is in the range, but not all.
 
-        :type other: CellRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* > *other*.
         """
@@ -261,7 +261,7 @@ class CellRange(Strict):
         Return ``True`` if the range has no elements in common with other.
         Ranges are disjoint if and only if their intersection is the empty range.
 
-        :type other: CellRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range.
         :return: `True`` if the range has no elements in common with other.
         """
@@ -280,7 +280,7 @@ class CellRange(Strict):
         """
         Return a new range with elements common to the range and another
 
-        :type others: tuple[CellRange]
+        :type others: tuple[openpyxl.worksheet.cell_range.CellRange]
         :param others: Other sheet ranges.
         :return: the current sheet range.
         :raise: :class:`ValueError` if an *other* range don't intersect
@@ -304,7 +304,7 @@ class CellRange(Strict):
         """
         Return a new range with elements from the range and all *others*.
 
-        :type others: tuple[CellRange]
+        :type others: tuple[openpyxl.worksheet.cell_range.CellRange]
         :param others: Other sheet ranges.
         :return: the current sheet range.
         """
