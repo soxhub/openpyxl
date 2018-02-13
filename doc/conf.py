@@ -267,7 +267,7 @@ shutil.rmtree("tmp")
 # Invoke Sphinx apidoc to generate api rst files
 
 def run_apidoc(_):
-    from sphinx.apidoc import main
+    from sphinx.ext.apidoc import main
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     modules = [
@@ -276,30 +276,31 @@ def run_apidoc(_):
         '../openpyxl/chart/tests',
         '../openpyxl/chartsheet/tests',
         '../openpyxl/comments/tests',
+        '../openpyxl/compat',
         '../openpyxl/descriptors/tests',
         '../openpyxl/descriptors/slots.py',
         '../openpyxl/develop/',
+        '../openpyxl/drawing/tests',
         '../openpyxl/formula/',
         '../openpyxl/formatting/tests/',
-        '../openpyxl/styles/tests',
         '../openpyxl/worksheet/tests',
         '../openpyxl/writer/tests/',
         '../openpyxl/xml/tests',
         '../openpyxl/conftest.py',
-        '../openpyxl/tests',
-        '../openpyxl/compat',
-        '../openpyxl/reader/tests',
         '../openpyxl/packaging/tests',
-        '../openpyxl/drawing/tests',
+        '../openpyxl/pivot/tests',
+        '../openpyxl/reader/tests',
+        '../openpyxl/styles/tests',
+        '../openpyxl/tests',
         '../openpyxl/utils/tests',
         '../openpyxl/utils/formulas.py',
         '../openpyxl/workbook/tests',
         '../openpyxl/workbook/external_link/tests',
-        '../openpyxl/worksheet/pivot.py',
-        '../openpyxl/writer/dump_worksheet.py'
+        '../openpyxl/writer/tests',
+        '../openpyxl/xml/tests',
     ]
     output_path = os.path.join(cur_dir, 'api')
-    main([None, '-f', '-T', '-e', '-M', '-o', output_path] + modules)
+    main(['-f', '-T', '-e', '-M', '-o', output_path] + modules)
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)
