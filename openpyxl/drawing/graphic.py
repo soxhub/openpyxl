@@ -63,7 +63,9 @@ class GroupTransform2D(Serialisable):
 
 class GroupShapeProperties(Serialisable):
 
-    bwMode = Set(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray',
+    tagname = "grpSp"
+
+    bwMode = NoneSet(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray',
                           'grayWhite', 'blackGray', 'blackWhite', 'black', 'white', 'hidden']))
     xfrm = Typed(expected_type=GroupTransform2D, allow_none=True)
     scene3d = Typed(expected_type=Scene3D, allow_none=True)
