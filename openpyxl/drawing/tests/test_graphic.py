@@ -408,3 +408,37 @@ class TestConnectorShape:
         node = fromstring(src)
         cnx = ConnectorShape.from_tree(node)
         assert cnx.nvCxnSpPr.cNvPr.id == 3
+
+
+
+@pytest.fixture
+def GroupTransform2D():
+    from ..graphic import GroupTransform2D
+    return GroupTransform2D
+
+
+class TestGroupTransform2D:
+
+    def test_ctor(self, GroupTransform2D):
+        xfrm = GroupTransform2D(rot=0)
+        xml = tostring(xfrm.to_tree())
+        expected = """
+        <xfrm rot="0"></xfrm>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, GroupTransform2D):
+        src = """
+        <a:xfrm xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+            <a:off x="0" y="394447"/>
+            <a:ext cx="1944896" cy="707294"/>
+            <a:chOff x="0" y="351692"/>
+            <a:chExt cx="1918002" cy="670746"/>
+        </a:xfrm>
+        """
+        node = fromstring(src)
+        xfrm = GroupTransform2D.from_tree(node)
+        assert xfrm.off.y == 394447
+
