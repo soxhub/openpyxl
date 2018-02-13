@@ -63,7 +63,7 @@ class GroupTransform2D(Serialisable):
 
 class GroupShapeProperties(Serialisable):
 
-    tagname = "grpSp"
+    tagname = "grpSpPr"
 
     bwMode = NoneSet(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray',
                           'grayWhite', 'blackGray', 'blackWhite', 'black', 'white', 'hidden']))
