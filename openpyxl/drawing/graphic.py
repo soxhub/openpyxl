@@ -33,7 +33,9 @@ from .shapes import (
 
 class GroupTransform2D(Serialisable):
 
-    rot = Integer()
+    tagname = "xfrm"
+
+    rot = Integer(allow_none=True)
     flipH = Bool(allow_none=True)
     flipV = Bool(allow_none=True)
     off = Typed(expected_type=Point2D, allow_none=True)
@@ -42,7 +44,7 @@ class GroupTransform2D(Serialisable):
     chExt = Typed(expected_type=PositiveSize2D, allow_none=True)
 
     def __init__(self,
-                 rot=None,
+                 rot=0,
                  flipH=None,
                  flipV=None,
                  off=None,
@@ -61,7 +63,9 @@ class GroupTransform2D(Serialisable):
 
 class GroupShapeProperties(Serialisable):
 
-    bwMode = Set(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray',
+    tagname = "grpSpPr"
+
+    bwMode = NoneSet(values=(['clr', 'auto', 'gray', 'ltGray', 'invGray',
                           'grayWhite', 'blackGray', 'blackWhite', 'black', 'white', 'hidden']))
     xfrm = Typed(expected_type=GroupTransform2D, allow_none=True)
     scene3d = Typed(expected_type=Scene3D, allow_none=True)

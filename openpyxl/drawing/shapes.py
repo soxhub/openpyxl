@@ -92,9 +92,9 @@ class Transform2D(Serialisable):
 
 class SphereCoords(Serialisable):
 
-    lat = Typed(expected_type=Integer)
-    lon = Typed(expected_type=Integer)
-    rev = Typed(expected_type=Integer)
+    lat = Integer()
+    lon = Integer()
+    rev = Integer()
 
     def __init__(self,
                  lat=None,
@@ -264,6 +264,8 @@ class Bevel(Serialisable):
 
 
 class Shape3D(Serialisable):
+
+    namespace = DRAWING_NS
 
     z = Typed(expected_type=Coordinate, allow_none=True)
     extrusionH = Integer(allow_none=True)

@@ -49,10 +49,12 @@ def Surface():
 class TestSurface:
 
     def test_ctor(self, Surface):
-        surface = Surface()
+        surface = Surface(thickness=0)
         xml = tostring(surface.to_tree())
         expected = """
-        <surface />
+        <surface>
+          <thickness val="0" />
+        </surface>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -60,11 +62,13 @@ class TestSurface:
 
     def test_from_xml(self, Surface):
         src = """
-        <surface />
+        <floor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+            <thickness val="0"/>
+        </floor>
         """
         node = fromstring(src)
         surface = Surface.from_tree(node)
-        assert surface == Surface()
+        assert surface == Surface(thickness=0)
 
 
 @pytest.fixture
