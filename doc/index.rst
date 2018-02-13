@@ -240,6 +240,14 @@ Worksheet Tables
     worksheet_tables.rst
 
 
+Pivot Tables
+++++++++++++
+
+.. toctree::
+
+    pivot.rst
+
+
 Data Validation
 +++++++++++++++
 
@@ -285,7 +293,7 @@ API Documentation
 ------------------
 
 Key Classes
-+++++++++++ 
++++++++++++
 
 * :class:`openpyxl.workbook.workbook.Workbook`
 * :class:`openpyxl.worksheet.worksheet.Worksheet`
