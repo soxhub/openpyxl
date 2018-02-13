@@ -10,6 +10,7 @@ Bugfixes
 * `#966 <https://bitbucket.org/openpyxl/openpyxl/issues/966>`_ Cannot read 3d bar chart correctly.
 * `#967 <https://bitbucket.org/openpyxl/openpyxl/issues/967>`_ Problems reading some charts.
 * `#968 <https://bitbucket.org/openpyxl/openpyxl/issues/968>`_ Worksheets with SHA protection become corrupted after saving.
+* `#976 <https://bitbucket.org/openpyxl/openpyxl/issues/976>`_ GroupTransforms and GroupShapeProperties have incorrect descriptors
 * Make sure that headers and footers in chartsheets are included in the file
 
 
