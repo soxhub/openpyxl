@@ -67,7 +67,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'openpyxl'
-copyright = u'2010 - 2014, %s' % openpyxl.__author__
+from datetime import date
+
+copyright = u'2010 - {0}, {1}'.format(date.today().year, openpyxl.__author__)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
