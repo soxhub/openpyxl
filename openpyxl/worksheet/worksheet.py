@@ -372,6 +372,12 @@ class Worksheet(_WorkbookChild):
         return self.iter_rows()
 
 
+    def __delitem__(self, key):
+        row, column = coordinate_to_tuple(key)
+        if (row, column) in self._cells:
+            self._cells.pop(row, column)
+
+
     @property
     def min_row(self):
         """The minimium row index containing data (1-based)
