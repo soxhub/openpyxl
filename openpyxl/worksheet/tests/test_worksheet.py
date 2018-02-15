@@ -671,8 +671,17 @@ class TestEditableWorksheet:
 
     def test_delete_missing_cols(self, dummy_worksheet):
         ws = dummy_worksheet
-        del ws._cells[(2, 8)]
+        del ws['H2']
 
         ws.delete_cols(7)
 
         assert ws['G2'].value is None
+
+
+    def test_delete_missing_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+        del ws['B4']
+
+        ws.delete_rows(3)
+
+        assert ws['B3'].value is None
