@@ -657,7 +657,7 @@ class TestEditableWorksheet:
         ws.delete_rows(2)
 
         assert ws.max_row == 5
-        assert [c.value for c in ws[2]] == ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3']
+        assert [c.value for c in ws['B']] == ['B1', 'B3', 'B4', 'B5', 'B6']
 
 
     def test_delete_cols(self, dummy_worksheet):
@@ -666,7 +666,7 @@ class TestEditableWorksheet:
         ws.delete_cols(3)
 
         assert ws.max_column == 7
-        assert [c.value for c in ws['C']] == ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']
+        assert [c.value for c in ws[3]] == ['A3', 'B3', 'D3', 'E3', 'F3', 'G3', 'H3']
 
 
     def test_delete_missing_cols(self, dummy_worksheet):
