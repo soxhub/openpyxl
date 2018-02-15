@@ -7,6 +7,7 @@ Bugfixes
 
 * `#934 <https://bitbucket.org/openpyxl/openpyxl/issues/934>`_ Headers and footers not included in write-only mode.
 * `#960 <https://bitbucket.org/openpyxl/openpyxl/issues/960>`_ Deprecation warning raised when using ad-hoc access in read-only mode.
+* `#964 <https://bitbucket.org/openpyxl/openpyxl/issues/964>`_ Not all cells removed when deleting multiple rows.
 * `#966 <https://bitbucket.org/openpyxl/openpyxl/issues/966>`_ Cannot read 3d bar chart correctly.
 * `#967 <https://bitbucket.org/openpyxl/openpyxl/issues/967>`_ Problems reading some charts.
 * `#968 <https://bitbucket.org/openpyxl/openpyxl/issues/968>`_ Worksheets with SHA protection become corrupted after saving.
