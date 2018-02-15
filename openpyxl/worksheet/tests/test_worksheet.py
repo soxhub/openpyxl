@@ -657,3 +657,12 @@ class TestEditableWorksheet:
 
         assert ws.max_column == 7
         assert [c.value for c in ws['C']] == ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']
+
+
+    def test_delete_missing_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+        del ws._cells[(2, 8)]
+
+        ws.delete_cols(7)
+
+        assert ws['G2'].value is None

@@ -788,6 +788,12 @@ class Worksheet(_WorkbookChild):
         """
         reverse = offset > 0 # start at the end if moving down
 
+        # need to make affected ranges contiguous
+        cells = self.iter_rows(min_row=min_row)
+        if row_or_col == 'col':
+            cells = self.iter_cols(min_col=min_col)
+        cells = list(cells)
+
         cells = sorted(self._cells.values(), key=attrgetter(row_or_col), reverse=reverse)
 
         for cell in cells:
@@ -795,7 +801,7 @@ class Worksheet(_WorkbookChild):
                 continue
             elif min_col and cell.col_idx < min_col:
                 continue
-
+            print(cell.value)
             del self._cells[(cell.row, cell.col_idx)] # remove old ref
 
             val = getattr(cell, row_or_col)
