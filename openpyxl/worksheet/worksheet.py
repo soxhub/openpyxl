@@ -786,7 +786,7 @@ class Worksheet(_WorkbookChild):
         """
         Move either rows or columns around by the offset
         """
-        reverse = offset > 0 # start at the end if moving down
+        reverse = offset > 0 # start at the end if inserting
 
         # need to make affected ranges contiguous
         cells = self.iter_rows(min_row=min_row)
@@ -801,6 +801,7 @@ class Worksheet(_WorkbookChild):
                 continue
             elif min_col and cell.col_idx < min_col:
                 continue
+
             del self._cells[(cell.row, cell.col_idx)] # remove old ref
 
             val = getattr(cell, row_or_col)
@@ -827,14 +828,39 @@ class Worksheet(_WorkbookChild):
         """
         Delete row or rows from row==idx
         """
+        def overlap(idx, offset, max):
+            dels = set(range(idx, idx+offset))
+            moves = set(range(idx, max+1-offset))
+            return dels - moves
+
+        remainder = overlap(idx, amount, self.max_row)
+
         self._move_cells(min_row=idx+amount, offset=-amount, row_or_col="row")
+
+        cells = set(self._cells.keys())
+        for coord in cells:
+            if coord[0] in remainder:
+                del self._cells[coord]
 
 
     def delete_cols(self, idx, amount=1):
         """
         Delete column or columns from col==idx
         """
+
+        def overlap(idx, offset, max):
+            dels = set(range(idx, idx+offset))
+            moves = set(range(idx, max+1-offset))
+            return dels - moves
+
+        remainder = overlap(idx, amount, self.max_column)
+
         self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
+
+        cells = set(self._cells.keys())
+        for coord in cells:
+            if coord[1] in remainder:
+                del self._cells[coord]
 
 
     def _invalid_row(self, iterable):
