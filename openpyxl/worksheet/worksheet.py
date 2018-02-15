@@ -375,7 +375,7 @@ class Worksheet(_WorkbookChild):
     def __delitem__(self, key):
         row, column = coordinate_to_tuple(key)
         if (row, column) in self._cells:
-            self._cells.pop(row, column)
+            del self._cells[(row, column)]
 
 
     @property

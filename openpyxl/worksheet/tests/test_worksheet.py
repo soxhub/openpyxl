@@ -356,6 +356,16 @@ class TestWorksheet:
         ws['A12'] = 5
         assert ws['A12'].value == 5
 
+
+    def test_delitem(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        assert (2, 1) in ws._cells
+
+        del ws['A2']
+        assert (2, 1) not in ws._cells
+
+
     def test_getslice(self, Worksheet):
         ws = Worksheet(Workbook())
         ws['B2'] = "cell"
