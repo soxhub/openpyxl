@@ -801,7 +801,6 @@ class Worksheet(_WorkbookChild):
                 continue
             elif min_col and cell.col_idx < min_col:
                 continue
-            print(cell.value)
             del self._cells[(cell.row, cell.col_idx)] # remove old ref
 
             val = getattr(cell, row_or_col)
