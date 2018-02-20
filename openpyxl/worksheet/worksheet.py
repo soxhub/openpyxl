@@ -833,10 +833,10 @@ class Worksheet(_WorkbookChild):
 
         self._move_cells(min_row=idx+amount, offset=-amount, row_or_col="row")
 
-        cells = set(self._cells.keys())
-        for r, c in cells:
-            if r in remainder:
-                del self._cells[r, c]
+        for row in remainder:
+            for col in range(self.min_column, self.max_column+1):
+                if (row, col) in self._cells:
+                    del self._cells[row, col]
 
 
     def delete_cols(self, idx, amount=1):
@@ -848,10 +848,10 @@ class Worksheet(_WorkbookChild):
 
         self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
 
-        cells = set(self._cells.keys())
-        for r, c in cells:
-            if c in remainder:
-                del self._cells[r, c]
+        for col in remainder:
+            for row in range(self.min_row, self.max_row+1):
+                if (row, col) in self._cells:
+                    del self._cells[row, col]
 
 
     def _invalid_row(self, iterable):
