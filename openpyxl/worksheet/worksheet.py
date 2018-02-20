@@ -828,19 +828,15 @@ class Worksheet(_WorkbookChild):
         """
         Delete row or rows from row==idx
         """
-        def overlap(idx, offset, max):
-            dels = set(range(idx, idx+offset))
-            moves = set(range(idx, max+1-offset))
-            return dels - moves
 
-        remainder = overlap(idx, amount, self.max_row)
+        remainder = _gutter(idx, amount, self.max_row)
 
         self._move_cells(min_row=idx+amount, offset=-amount, row_or_col="row")
 
         cells = set(self._cells.keys())
-        for coord in cells:
-            if coord[0] in remainder:
-                del self._cells[coord]
+        for r, c in cells:
+            if r in remainder:
+                del self._cells[r, c]
 
 
     def delete_cols(self, idx, amount=1):
@@ -848,19 +844,14 @@ class Worksheet(_WorkbookChild):
         Delete column or columns from col==idx
         """
 
-        def overlap(idx, offset, max):
-            dels = set(range(idx, idx+offset))
-            moves = set(range(idx, max+1-offset))
-            return dels - moves
-
-        remainder = overlap(idx, amount, self.max_column)
+        remainder = _gutter(idx, amount, self.max_column)
 
         self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
 
         cells = set(self._cells.keys())
-        for coord in cells:
-            if coord[1] in remainder:
-                del self._cells[coord]
+        for r, c in cells:
+            if c in remainder:
+                del self._cells[r, c]
 
 
     def _invalid_row(self, iterable):
@@ -953,3 +944,13 @@ class Worksheet(_WorkbookChild):
             value = [value]
 
         self._print_area = [absolute_coordinate(v) for v in value]
+
+
+def _gutter(idx, offset, max_val):
+    """
+    When deleting rows and columns are deleted we rely on overwriting.
+    This may not be the case for a large offset on small set of cells:
+    range(cells_to_delete) > range(cell_to_be_moved)
+    """
+    gutter = range(max(max_val+1-offset, idx), min(idx+offset, max_val))
+    return gutter

@@ -685,3 +685,20 @@ class TestEditableWorksheet:
         ws.delete_rows(3)
 
         assert ws['B3'].value is None
+
+
+    @pytest.mark.parametrize("idx, offset, max_val, remainder",
+                             [
+                                 (1, 3, 6, set()),
+                                 (2, 3, 6, set([4])),
+                                 (3, 3, 6, set([4, 5])),
+                                 (4, 3, 6, set([4, 5])),
+                                 (5, 3, 6, set([5])),
+                                 (6, 3, 6, set()),
+                             ]
+                             )
+    def test_remainder(self, dummy_worksheet, idx, offset, max_val, remainder):
+        from ..worksheet import _gutter
+        ws = dummy_worksheet
+
+        assert set(_gutter(idx, offset, max_val)) == remainder
