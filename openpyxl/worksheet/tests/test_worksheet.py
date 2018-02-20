@@ -356,6 +356,16 @@ class TestWorksheet:
         ws['A12'] = 5
         assert ws['A12'].value == 5
 
+
+    def test_delitem(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        assert (2, 1) in ws._cells
+
+        del ws['A2']
+        assert (2, 1) not in ws._cells
+
+
     def test_getslice(self, Worksheet):
         ws = Worksheet(Workbook())
         ws['B2'] = "cell"
@@ -644,16 +654,51 @@ class TestEditableWorksheet:
     def test_delete_rows(self, dummy_worksheet):
         ws = dummy_worksheet
 
-        ws.delete_rows(2)
+        ws.delete_rows(2, 3)
 
-        assert ws.max_row == 5
-        assert [c.value for c in ws[2]] == ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3']
+        assert ws.max_row == 3
+        assert [c.value for c in ws['B']] == ['B1', 'B5', 'B6']
 
 
     def test_delete_cols(self, dummy_worksheet):
         ws = dummy_worksheet
 
-        ws.delete_cols(3)
+        ws.delete_cols(5, 2)
 
-        assert ws.max_column == 7
-        assert [c.value for c in ws['C']] == ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']
+        assert ws.max_column == 6
+        assert [c.value for c in ws[3]] == ['A3', 'B3', 'C3', 'D3', 'G3', 'H3']
+
+
+    def test_delete_missing_cols(self, dummy_worksheet):
+        ws = dummy_worksheet
+        del ws['H2']
+
+        ws.delete_cols(7)
+
+        assert ws['G2'].value is None
+
+
+    def test_delete_missing_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+        del ws['B4']
+
+        ws.delete_rows(3)
+
+        assert ws['B3'].value is None
+
+
+    @pytest.mark.parametrize("idx, offset, max_val, remainder",
+                             [
+                                 (1, 3, 6, set()),
+                                 (2, 3, 6, set([4])),
+                                 (3, 3, 6, set([4, 5])),
+                                 (4, 3, 6, set([4, 5])),
+                                 (5, 3, 6, set([5])),
+                                 (6, 3, 6, set()),
+                             ]
+                             )
+    def test_remainder(self, dummy_worksheet, idx, offset, max_val, remainder):
+        from ..worksheet import _gutter
+        ws = dummy_worksheet
+
+        assert set(_gutter(idx, offset, max_val)) == remainder
