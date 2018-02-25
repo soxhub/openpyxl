@@ -47,7 +47,7 @@ def test_table_builder(list):
     sb = list()
     result = {'a':0, 'b':1, 'c':2, 'd':3}
 
-    for letter in sorted(result.keys()):
+    for letter in sorted(result):
         for x in range(5):
             sb.append(letter)
         assert sb.index(letter) == result[letter]

@@ -119,9 +119,8 @@ class WorkSheetParser(object):
             '{%s}rowBreaks' % SHEET_MAIN_NS: ('page_breaks', PageBreak),
         }
 
-        tags = dispatcher.keys()
         stream = _get_xml_iter(self.source)
-        it = iterparse(stream, tag=tags)
+        it = iterparse(stream, tag=dispatcher)
 
         for _, element in it:
             tag_name = element.tag

@@ -130,7 +130,7 @@ def test_col_width(datadir, WorkSheetParser):
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
         for _, col in cols:
             parser.parse_column_dimensions(col)
-    assert set(ws.column_dimensions.keys()) == set(['A', 'C', 'E', 'I', 'G'])
+    assert set(ws.column_dimensions) == set(['A', 'C', 'E', 'I', 'G'])
     assert ws.column_dimensions['A'].style_id == 0
     assert dict(ws.column_dimensions['A']) == {'max': '1', 'min': '1',
                                                'customWidth': '1',
@@ -520,7 +520,7 @@ def test_shared_formulae(WorkSheetParser, datadir):
 
     parser.parse()
 
-    assert set(ws.formula_attributes.keys()) == set(['C10'])
+    assert set(ws.formula_attributes) == set(['C10'])
 
     # Test shared forumlae
     assert ws['B7'].data_type == 'f'
