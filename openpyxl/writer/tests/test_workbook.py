@@ -11,9 +11,7 @@ from openpyxl.tests.helper import compare_xml
 
 # package
 from openpyxl import Workbook, load_workbook
-from openpyxl.workbook.defined_name import DefinedName
-from openpyxl.xml.functions import Element, tostring, fromstring
-from openpyxl.xml.constants import XLTX, XLSX, XLSM, XLTM
+from openpyxl.xml.functions import tostring
 from .. excel import (
     save_workbook,
     save_virtual_workbook,
@@ -247,7 +245,6 @@ def test_print_titles(Unicode_Workbook):
 def test_print_autofilter(Unicode_Workbook):
     wb = Unicode_Workbook
     ws = wb.active
-    from openpyxl.worksheet.filters import AutoFilter
     ws.auto_filter.ref = "A1:A10"
     ws.auto_filter.add_filter_column(0, ["Kiwi", "Apple", "Mango"])
 

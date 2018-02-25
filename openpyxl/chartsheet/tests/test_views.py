@@ -51,8 +51,6 @@ class TestChartsheetViewList:
 
 
     def test_write(self, ChartsheetViewList):
-        from ..views import ChartsheetView
-
         views = ChartsheetViewList()
 
         expected = """
