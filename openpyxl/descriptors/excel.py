@@ -27,7 +27,7 @@ class HexBinary(MatchPattern):
 
 class UniversalMeasure(MatchPattern):
 
-    pattern = "[0-9]+(\.[0-9]+)?(mm|cm|in|pt|pc|pi)"
+    pattern = r"[0-9]+(\.[0-9]+)?(mm|cm|in|pt|pc|pi)"
 
 
 class TextPoint(MinMax):
@@ -46,7 +46,7 @@ Coordinate = Integer
 
 class Percentage(MatchPattern):
 
-    pattern = "((100)|([0-9][0-9]?))(\.[0-9][0-9]?)?%"
+    pattern = r"((100)|([0-9][0-9]?))(\.[0-9][0-9]?)?%"
 
 
 class Extension(Serialisable):
@@ -82,12 +82,12 @@ class Base64Binary(MatchPattern):
 
 class Guid(MatchPattern):
     # https://msdn.microsoft.com/en-us/library/dd946381(v=office.12).aspx
-    pattern = "{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}"
+    pattern = r"{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}"
 
 
 class CellRange(MatchPattern):
 
-    pattern = """^[$]?([A-Za-z]{1,3})[$]?(\d+)(:[$]?([A-Za-z]{1,3})[$]?(\d+)?)?$|^[A-Za-z]{1,3}:[A-Za-z]{1,3}$"""
+    pattern = r"^[$]?([A-Za-z]{1,3})[$]?(\d+)(:[$]?([A-Za-z]{1,3})[$]?(\d+)?)?$|^[A-Za-z]{1,3}:[A-Za-z]{1,3}$"
     allow_none = True
 
     def __set__(self, instance, value):

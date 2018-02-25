@@ -15,7 +15,7 @@ def WebPublishItem():
 
 class TestWebPulishItem:
     def test_read(self, WebPublishItem):
-        src = """
+        src = r"""
         <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
             sourceObject="Chart 1" destinationFile="D:\Publish.mht" autoRepublish="0"/>
         """
@@ -26,9 +26,9 @@ class TestWebPulishItem:
 
     def test_write(self, WebPublishItem):
         webPublish = WebPublishItem(id=6433, divId="Views_6433", sourceType="chart", sourceRef="",
-                                    sourceObject="Chart 1", destinationFile="D:\Publish.mht", title="First Chart",
+                                    sourceObject="Chart 1", destinationFile=r"D:\Publish.mht", title="First Chart",
                                     autoRepublish=False)
-        expected = """
+        expected = r"""
         <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
         sourceObject="Chart 1" destinationFile="D:\Publish.mht" title="First Chart" autoRepublish="0"/>
         """
@@ -46,7 +46,7 @@ def WebPublishItems():
 
 class TestWebPublishItems:
     def test_read(self, WebPublishItems):
-        src = """
+        src = r"""
         <webPublishItems count="1">
             <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
             sourceObject="Chart 1" destinationFile="D:\Publish.mht" autoRepublish="0"/>
@@ -61,14 +61,14 @@ class TestWebPublishItems:
         from ..publish import WebPublishItem
 
         webPublish_6433 = WebPublishItem(id=6433, divId="Views_6433", sourceType="chart", sourceRef="",
-                                         sourceObject="Chart 1", destinationFile="D:\Publish.mht", title="First Chart",
+                                         sourceObject="Chart 1", destinationFile=r"D:\Publish.mht", title="First Chart",
                                          autoRepublish=False)
         webPublish_64487 = WebPublishItem(id=64487, divId="Views_64487", sourceType="chart", sourceRef="Ref_545421",
-                                          sourceObject="Chart 15", destinationFile="D:\Publish_12.mht",
+                                          sourceObject="Chart 15", destinationFile=r"D:\Publish_12.mht",
                                           title="Second Chart",
                                           autoRepublish=True)
         webPublishItems = WebPublishItems(webPublishItem=[webPublish_6433, webPublish_64487])
-        expected = """
+        expected = r"""
         <WebPublishItems count="2">
             <webPublishItem id="6433" divId="Views_6433" sourceType="chart" sourceRef=""
             sourceObject="Chart 1" destinationFile="D:\Publish.mht" title="First Chart" autoRepublish="0"/>
