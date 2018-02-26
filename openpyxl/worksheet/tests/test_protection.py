@@ -5,7 +5,7 @@ import pytest
 from openpyxl.tests.helper import compare_xml
 
 from openpyxl.xml.functions import tostring, fromstring
-from .. protection import hash_password
+
 
 @pytest.fixture
 def SheetProtection():
@@ -60,6 +60,3 @@ def test_explicit_password(SheetProtection, password, already_hashed, value):
     prot.set_password(password, already_hashed)
     assert prot.password == value
     assert prot.sheet == True
-
-
-

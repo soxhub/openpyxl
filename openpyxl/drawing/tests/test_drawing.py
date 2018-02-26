@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from openpyxl.xml.functions import Element, tostring
+from openpyxl.xml.functions import tostring
 
 from openpyxl.tests.helper import compare_xml
 

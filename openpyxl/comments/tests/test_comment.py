@@ -4,8 +4,6 @@ from __future__ import absolute_import
 from copy import copy
 
 from openpyxl.comments import Comment
-from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Worksheet
 
 import pytest
 

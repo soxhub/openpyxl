@@ -1,7 +1,6 @@
 # Copyright (c) 2010-2018 openpyxl
 
 import pytest
-import re
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml

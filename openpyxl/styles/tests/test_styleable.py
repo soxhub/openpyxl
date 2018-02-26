@@ -4,13 +4,6 @@ from __future__ import absolute_import
 import pytest
 
 from openpyxl.utils.indexed_list import IndexedList
-from ..import (
-    Font,
-    Border,
-    PatternFill,
-    Alignment,
-    Protection
-)
 from ..named_styles import (
     NamedStyleList,
     NamedStyle,

@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_escape():
     from ..escape import escape
     value = "My name is \nNewline\r"
