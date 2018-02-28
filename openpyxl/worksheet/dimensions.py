@@ -103,7 +103,7 @@ class RowDimension(Dimension):
         if visible is not None:
             hidden = not visible
         if outline_level is not None:
-            outlineLevel = outlineLevel
+            outlineLevel = outline_level
         self.thickBot = thickBot
         self.thickTop = thickTop
         super(RowDimension, self).__init__(index, hidden, outlineLevel,
