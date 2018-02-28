@@ -290,4 +290,3 @@ class SheetDimension(Serialisable):
     @property
     def boundaries(self):
         return range_boundaries(self.ref)
-

@@ -29,6 +29,6 @@ Copyright (c) 2001-2011 Python Software Foundation
 License: PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
          See http://www.opensource.org/licenses/Python-2.0 for full terms
 Note: backport changes by Raymond were originally distributed under MIT
-      license, but since the original license for Python is more 
+      license, but since the original license for Python is more
       restrictive than MIT, code cannot be released under its terms and
       still adheres to the limitations of Python license.

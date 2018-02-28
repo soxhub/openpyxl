@@ -69,4 +69,3 @@ def deprecated(reason):
 
     else:
         raise TypeError(repr(type(reason)))
-

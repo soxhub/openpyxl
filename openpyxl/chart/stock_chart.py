@@ -53,4 +53,3 @@ class StockChart(ChartBase):
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
         super(StockChart, self).__init__(**kw)
-

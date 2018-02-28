@@ -65,7 +65,7 @@ You can create copies of worksheets *within a single workbook*:
 
     Only cells (including values, styles, hyperlinks and comments) and
     certain worksheet attribues (including dimensions, format and
-    properties) are copied. All other workbook / worksheet attributes 
+    properties) are copied. All other workbook / worksheet attributes
     are not copied - e.g. Images, Charts.
 
 .. note::

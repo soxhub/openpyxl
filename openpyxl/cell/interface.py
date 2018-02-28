@@ -58,4 +58,3 @@ class AbstractCell(ABC):
     @abstractproperty
     def is_date(self):
         pass
-

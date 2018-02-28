@@ -16,4 +16,3 @@ ws['A2'] = datetime.datetime.now()
 
 # Save the file
 wb.save("sample.xlsx")
-
