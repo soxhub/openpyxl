@@ -4,8 +4,6 @@
 # package imports
 from openpyxl.reader.strings import read_string_table
 
-from openpyxl.tests.helper import compare_xml
-
 
 def test_read_string_table(datadir):
     datadir.chdir()

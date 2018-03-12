@@ -5,7 +5,7 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring, Element
 from openpyxl.tests.helper import compare_xml
 from ..serialisable import Serialisable
-from ..base import Integer, Alias
+from ..base import Integer
 
 @pytest.fixture
 def Sequence():

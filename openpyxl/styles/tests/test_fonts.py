@@ -6,8 +6,6 @@ import pytest
 from openpyxl.xml.functions import tostring, fromstring
 
 from openpyxl.tests.helper import compare_xml
-from ..colors import Color
-from .. import colors
 
 
 @pytest.fixture

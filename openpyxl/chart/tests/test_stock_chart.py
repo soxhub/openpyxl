@@ -81,7 +81,6 @@ class TestStockChart:
 
 
     def test_from_xml(self, StockChart):
-        from openpyxl.chart.series import Series
         src = """
         <stockChart>
           <axId val="10"></axId>

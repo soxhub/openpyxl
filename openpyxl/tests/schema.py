@@ -47,5 +47,3 @@ def validate_archive(file_path):
                 sheet_schema.assertValid(root)
     finally:
         zipfile.close()
-
-

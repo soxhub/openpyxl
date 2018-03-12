@@ -172,7 +172,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     """
     archive = _validate_archive(filename)
-    read_only = read_only
 
     src = archive.read(ARC_CONTENT_TYPES)
     root = fromstring(src)

@@ -3,12 +3,9 @@ from __future__ import absolute_import
 
 
 import datetime
-import decimal
 from io import BytesIO
-from zipfile import ZipFile
-from tempfile import TemporaryFile
 
-from openpyxl.xml.functions import tostring, xmlfile
+from openpyxl.xml.functions import xmlfile
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
@@ -323,7 +320,6 @@ def test_write_empty_row(WriteOnlyWorksheet):
 
 
 def test_write_height(WriteOnlyWorksheet):
-    from openpyxl.worksheet.dimensions import RowDimension
     ws = WriteOnlyWorksheet
     ws.row_dimensions[1].height = 10
     ws.append([4])

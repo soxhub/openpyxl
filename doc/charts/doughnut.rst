@@ -10,4 +10,3 @@ of a circle. They can also plot several series of data as concentric rings.
 
 .. image:: doughnut.png
    :alt: "Sample doughnut charts"
-

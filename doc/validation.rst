@@ -40,7 +40,7 @@ Examples
 >>>
 >>> # Or, apply the validation to a range of cells
 >>> dv.add('B1:B1048576') # This is the same as for the whole of column B
->>> 
+>>>
 >>> # Check with a cell is in the validator
 >>> "B4" in dv
 True
