@@ -1,6 +1,8 @@
 2.5.2 (unreleased)
 ==================
 
+* `#995 <https://bitbucket.org/openpyxl/openpyxl/issues/995>`_ Cannot delete last row or column.
+
 
 2.5.1 (2018-03-12)
 ==================
