@@ -28,7 +28,7 @@ another password. This password can be set using the
 
     >>> wb.security.revisionsPassword = '...'
 
-Other properties on the :class:`openpyxl.workbook.protection.WorkbookProtection` object control exactly what 
+Other properties on the :class:`openpyxl.workbook.protection.WorkbookProtection` object control exactly what
 restrictions are in place, but these will only be enforced if the appropriate password is set.
 
 Specific setter functions are provided if you need to set the raw password value without using the

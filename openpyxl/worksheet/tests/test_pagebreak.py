@@ -51,4 +51,3 @@ class TestPageBreak:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
