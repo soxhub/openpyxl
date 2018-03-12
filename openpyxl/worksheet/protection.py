@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.descriptors import (
     Bool,
@@ -71,7 +71,7 @@ class SheetProtection(Serialisable, _Protected):
               'sheet', 'objects', 'insertRows', 'insertHyperlinks', 'autoFilter',
               'scenarios', 'formatColumns', 'deleteColumns', 'insertColumns',
               'pivotTables', 'deleteRows', 'formatCells', 'saltValue', 'formatRows',
-              'sort', 'spinCount', 'password')
+              'sort', 'spinCount', 'password', 'hashValue')
 
 
     def __init__(self, sheet=False, objects=False, scenarios=False,
@@ -115,3 +115,9 @@ class SheetProtection(Serialisable, _Protected):
 
     def disable(self):
         self.sheet = False
+
+
+    def  __bool__(self):
+        return self.sheet is None
+
+    __nonzero__ = __bool__

@@ -1,11 +1,9 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from copy import copy
 
 from openpyxl.comments import Comment
-from openpyxl.workbook import Workbook
-from openpyxl.worksheet import Worksheet
 
 import pytest
 

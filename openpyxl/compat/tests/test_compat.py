@@ -1,7 +1,6 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 import pytest
-import sys
 
 
 @pytest.mark.parametrize("value, result",
@@ -30,7 +29,7 @@ def test_numeric_types():
 
 @pytest.mark.numpy_required
 def test_numpy_tostring():
-    from numpy import float_, int_, bool_
+    from numpy import float_, bool_
     from .. import safe_string
     assert safe_string(float_(5.1)) == "5.1"
     assert safe_string(int(5)) == "5"

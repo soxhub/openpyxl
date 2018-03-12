@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
@@ -370,6 +370,12 @@ class Worksheet(_WorkbookChild):
 
     def __iter__(self):
         return self.iter_rows()
+
+
+    def __delitem__(self, key):
+        row, column = coordinate_to_tuple(key)
+        if (row, column) in self._cells:
+            del self._cells[(row, column)]
 
 
     @property
@@ -780,7 +786,13 @@ class Worksheet(_WorkbookChild):
         """
         Move either rows or columns around by the offset
         """
-        reverse = offset > 0 # start at the end if moving down
+        reverse = offset > 0 # start at the end if inserting
+
+        # need to make affected ranges contiguous
+        cells = self.iter_rows(min_row=min_row)
+        if row_or_col == 'col':
+            cells = self.iter_cols(min_col=min_col)
+        cells = list(cells)
 
         cells = sorted(self._cells.values(), key=attrgetter(row_or_col), reverse=reverse)
 
@@ -816,14 +828,30 @@ class Worksheet(_WorkbookChild):
         """
         Delete row or rows from row==idx
         """
+
+        remainder = _gutter(idx, amount, self.max_row)
+
         self._move_cells(min_row=idx+amount, offset=-amount, row_or_col="row")
+
+        for row in remainder:
+            for col in range(self.min_column, self.max_column+1):
+                if (row, col) in self._cells:
+                    del self._cells[row, col]
 
 
     def delete_cols(self, idx, amount=1):
         """
         Delete column or columns from col==idx
         """
+
+        remainder = _gutter(idx, amount, self.max_column)
+
         self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
+
+        for col in remainder:
+            for row in range(self.min_row, self.max_row+1):
+                if (row, col) in self._cells:
+                    del self._cells[row, col]
 
 
     def _invalid_row(self, iterable):
@@ -916,3 +944,13 @@ class Worksheet(_WorkbookChild):
             value = [value]
 
         self._print_area = [absolute_coordinate(v) for v in value]
+
+
+def _gutter(idx, offset, max_val):
+    """
+    When deleting rows and columns are deleted we rely on overwriting.
+    This may not be the case for a large offset on small set of cells:
+    range(cells_to_delete) > range(cell_to_be_moved)
+    """
+    gutter = range(max(max_val+1-offset, idx), min(idx+offset, max_val))
+    return gutter

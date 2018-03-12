@@ -1,6 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
-import pytest
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml

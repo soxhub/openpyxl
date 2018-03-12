@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -305,7 +305,7 @@ class TextAxis(_BaseAxis):
         super(TextAxis, self).__init__(**kw)
 
 
-class DateAxis(_BaseAxis):
+class DateAxis(TextAxis):
 
     tagname = "dateAx"
 
@@ -358,6 +358,7 @@ class DateAxis(_BaseAxis):
         self.minorUnit = minorUnit
         self.minorTimeUnit = minorTimeUnit
         kw.setdefault('axId', 500)
+        kw.setdefault('lblOffset', lblOffset)
         super(DateAxis, self).__init__(**kw)
 
 

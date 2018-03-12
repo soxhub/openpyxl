@@ -51,4 +51,3 @@ class RadarChart(ChartBase):
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
         super(RadarChart, self).__init__(**kw)
-

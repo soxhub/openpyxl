@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 """
 Read a chart
@@ -29,6 +29,11 @@ def read_chart(chartspace):
     chart.title = cs.chart.title
     chart.layout = plot.layout
     chart.legend = cs.chart.legend
+
+    # 3d attributes
+    chart.floor = cs.chart.floor
+    chart.sideWall = cs.chart.sideWall
+    chart.backWall = cs.chart.backWall
 
     return chart
 

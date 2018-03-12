@@ -1,9 +1,8 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.functions import fromstring
-from openpyxl.workbook import Workbook
 
 from ..comments import Comment
 

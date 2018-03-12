@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import pytest
 
@@ -81,7 +81,6 @@ class TestStockChart:
 
 
     def test_from_xml(self, StockChart):
-        from openpyxl.chart.series import Series
         src = """
         <stockChart>
           <axId val="10"></axId>

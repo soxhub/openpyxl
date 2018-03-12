@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import pytest
 from io import BytesIO
@@ -7,16 +7,6 @@ from zipfile import ZipFile
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
-
-from openpyxl.xml.constants import (
-    ARC_CONTENT_TYPES,
-    ARC_WORKBOOK,
-    CONTYPES_NS,
-    XLSM,
-    XLSX,
-    XLTM,
-    XLTX,
-)
 
 from ..manifest import WORKSHEET_TYPE
 

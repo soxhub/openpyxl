@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
@@ -113,7 +113,7 @@ class GradientStop(Serialisable):
 
     tagname = "gradStop"
 
-    pos = MinMax(min=0, max=100, allow_none=True)
+    pos = MinMax(min=0, max=100000, allow_none=True)
     # Color Choice Group
 
     def __init__(self,

@@ -1,14 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 
 import datetime
-import decimal
 from io import BytesIO
-from zipfile import ZipFile
-from tempfile import TemporaryFile
 
-from openpyxl.xml.functions import tostring, xmlfile
+from openpyxl.xml.functions import xmlfile
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
@@ -323,7 +320,6 @@ def test_write_empty_row(WriteOnlyWorksheet):
 
 
 def test_write_height(WriteOnlyWorksheet):
-    from openpyxl.worksheet.dimensions import RowDimension
     ws = WriteOnlyWorksheet
     ws.row_dimensions[1].height = 10
     ws.append([4])
@@ -416,6 +412,40 @@ def test_conditional_formatting(WriteOnlyWorksheet):
          <formula>C$1</formula>
        </cfRule>
      </conditionalFormatting>
+    </worksheet>"""
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_odd_headet(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    ws.oddHeader.center.text = "odd header centre"
+    ws.close()
+
+    with open(ws.filename) as src:
+        xml = src.read()
+
+    expected = """
+    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+       </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+     <sheetData />
+     <headerFooter>
+       <oddHeader>&amp;Codd header centre</oddHeader>
+       <oddFooter />
+       <evenHeader />
+       <evenFooter />
+       <firstHeader />
+       <firstFooter />
+     </headerFooter>
     </worksheet>"""
     diff = compare_xml(xml, expected)
     assert diff is None, diff

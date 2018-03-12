@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 
 import os
@@ -47,5 +47,3 @@ def validate_archive(file_path):
                 sheet_schema.assertValid(root)
     finally:
         zipfile.close()
-
-

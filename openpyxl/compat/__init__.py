@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 
 from .strings import (
@@ -66,7 +66,6 @@ def deprecated(reason):
 
     elif inspect.isclass(reason) or inspect.isfunction(reason):
         raise TypeError("Reason for deprecation must be supplied")
-        
+
     else:
         raise TypeError(repr(type(reason)))
-        

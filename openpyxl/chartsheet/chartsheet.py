@@ -1,9 +1,9 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from weakref import ref
 
-from openpyxl.descriptors import Typed, Set
+from openpyxl.descriptors import Typed, Set, Alias
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.drawing.spreadsheet_drawing import (
@@ -48,6 +48,8 @@ class Chartsheet(_WorkbookChild, Serialisable):
     webPublishItems = Typed(expected_type=WebPublishItems, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
     sheet_state = Set(values=('visible', 'hidden', 'veryHidden'))
+    headerFooter = Typed(expected_type=HeaderFooter)
+    HeaderFooter = Alias('headerFooter')
 
     __elements__ = (
         'sheetPr', 'sheetViews', 'sheetProtection', 'customSheetViews',
@@ -73,9 +75,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
                  title="",
                  sheet_state='visible',
                  ):
-        # hack to simplify testing
-        if parent is not None:
-            super(Chartsheet, self).__init__(parent, title)
+        super(Chartsheet, self).__init__(parent, title)
         self._charts = []
         self.sheetPr = sheetPr
         if sheetViews is None:
@@ -85,7 +85,8 @@ class Chartsheet(_WorkbookChild, Serialisable):
         self.customSheetViews = customSheetViews
         self.pageMargins = pageMargins
         self.pageSetup = pageSetup
-        self.headerFooter = headerFooter
+        if headerFooter is not None:
+            self.headerFooter = headerFooter
         self.drawing = Drawing("rId1")
         self.drawingHF = drawingHF
         self.picture = picture
@@ -102,5 +103,8 @@ class Chartsheet(_WorkbookChild, Serialisable):
         self._drawing = SpreadsheetDrawing()
         self._drawing.charts = self._charts
         tree = super(Chartsheet, self).to_tree()
+        if not self.headerFooter:
+            el = tree.find('headerFooter')
+            tree.remove(el)
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree

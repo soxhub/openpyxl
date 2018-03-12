@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -152,7 +152,12 @@ class PlotArea(Serialisable):
                 chart.y_axis = y
                 continue
 
+            if isinstance(chart, (BarChart3D, LineChart3D, SurfaceChart3D)):
+                chart.z_axis = None
+
             for axId in chart.axId:
+                if not axId:
+                    continue
                 axis = axes[axId]
                 if axis.tagname in ("catAx", "dateAx"):
                     chart.x_axis = axis

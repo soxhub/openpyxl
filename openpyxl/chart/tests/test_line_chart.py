@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import pytest
 
@@ -44,7 +44,7 @@ class TestLineChart:
 
     def test_axes(self, LineChart):
         chart = LineChart()
-        assert set(chart._axes.keys()) == set([10, 100])
+        assert set(chart._axes) == set([10, 100])
 
 
 @pytest.fixture

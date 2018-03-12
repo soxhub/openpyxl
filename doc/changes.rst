@@ -1,3 +1,22 @@
+2.5.1 (2018-03-12)
+==================
+
+
+Bugfixes
+--------
+
+* `#934 <https://bitbucket.org/openpyxl/openpyxl/issues/934>`_ Headers and footers not included in write-only mode.
+* `#960 <https://bitbucket.org/openpyxl/openpyxl/issues/960>`_ Deprecation warning raised when using ad-hoc access in read-only mode.
+* `#964 <https://bitbucket.org/openpyxl/openpyxl/issues/964>`_ Not all cells removed when deleting multiple rows.
+* `#966 <https://bitbucket.org/openpyxl/openpyxl/issues/966>`_ Cannot read 3d bar chart correctly.
+* `#967 <https://bitbucket.org/openpyxl/openpyxl/issues/967>`_ Problems reading some charts.
+* `#968 <https://bitbucket.org/openpyxl/openpyxl/issues/968>`_ Worksheets with SHA protection become corrupted after saving.
+* `#974 <https://bitbucket.org/openpyxl/openpyxl/issues/974>`_ Problem when deleting ragged rows or columns.
+* `#976 <https://bitbucket.org/openpyxl/openpyxl/issues/976>`_ GroupTransforms and GroupShapeProperties have incorrect descriptors
+* Make sure that headers and footers in chartsheets are included in the file
+
+
+
 2.5.0 (2018-01-24)
 ==================
 
@@ -1152,7 +1171,6 @@ Known bugfixes
 
 * `#109 <https://bitbucket.org/openpyxl/openpyxl/issue/109>`_
 * `#165 <https://bitbucket.org/openpyxl/openpyxl/issue/165>`_
-* `#179 <https://bitbucket.org/openpyxl/openpyxl/issue/179>`_
 * `#209 <https://bitbucket.org/openpyxl/openpyxl/issue/209>`_
 * `#112 <https://bitbucket.org/openpyxl/openpyxl/issue/112>`_
 * `#166 <https://bitbucket.org/openpyxl/openpyxl/issue/166>`_

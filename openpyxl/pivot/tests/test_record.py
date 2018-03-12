@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 import pytest
 
 from io import BytesIO
@@ -10,12 +10,9 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 from .test_fields import (
-    Boolean,
     Index,
-    Missing,
     Number,
     Text,
-    DateTimeField,
 )
 
 @pytest.fixture

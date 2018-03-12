@@ -1,13 +1,9 @@
 from __future__ import absolute_import
 # coding: utf-8
-# Copyright (c) 2010-2017 openpyxl
-
-# stdlib
-import datetime
+# Copyright (c) 2010-2018 openpyxl
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.reader.excel import load_workbook
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 

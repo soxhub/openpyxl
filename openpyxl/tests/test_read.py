@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import pytest
 
@@ -7,8 +7,6 @@ import pytest
 from openpyxl.compat import unicode
 
 # package imports
-from openpyxl.worksheet import Worksheet
-from openpyxl.workbook import Workbook
 from openpyxl.styles import numbers
 from openpyxl.reader.excel import load_workbook
 

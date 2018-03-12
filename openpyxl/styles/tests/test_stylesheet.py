@@ -151,7 +151,7 @@ class TestStylesheet:
         stylesheet = Stylesheet.from_tree(node)
 
         assert set(stylesheet.number_formats) == set([
-            '_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
+            r'_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ',
             "#,##0.00_ ",
             "yyyy/m/d;@",
             "0.00000_ "
@@ -172,7 +172,7 @@ class TestStylesheet:
 
     def test_assign_number_formats(self, Stylesheet):
 
-        node = fromstring("""
+        node = fromstring(r"""
         <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <numFmts count="1">
           <numFmt numFmtId="43" formatCode='_ * #,##0.00_ ;_ * \-#,##0.00_ ;_ * "-"??_ ;_ @_ ' />
@@ -192,8 +192,6 @@ class TestStylesheet:
 
 
     def test_named_styles(self, datadir, Stylesheet):
-        from openpyxl.styles.named_styles import NamedStyle
-        from openpyxl.styles.fonts import DEFAULT_FONT
         from openpyxl.styles.fills import DEFAULT_EMPTY_FILL
         from openpyxl.styles.borders import Border
 

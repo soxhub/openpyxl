@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 from copy import copy
 
@@ -103,7 +103,7 @@ class RowDimension(Dimension):
         if visible is not None:
             hidden = not visible
         if outline_level is not None:
-            outlineLevel = outlineLevel
+            outlineLevel = outline_level
         self.thickBot = thickBot
         self.thickTop = thickTop
         super(RowDimension, self).__init__(index, hidden, outlineLevel,
@@ -290,4 +290,3 @@ class SheetDimension(Serialisable):
     @property
     def boundaries(self):
         return range_boundaries(self.ref)
-

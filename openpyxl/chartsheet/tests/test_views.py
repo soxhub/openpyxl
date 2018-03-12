@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 import pytest
 
@@ -51,8 +51,6 @@ class TestChartsheetViewList:
 
 
     def test_write(self, ChartsheetViewList):
-        from ..views import ChartsheetView
-
         views = ChartsheetViewList()
 
         expected = """

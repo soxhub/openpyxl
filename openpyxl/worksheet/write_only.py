@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 
 """Write worksheets to xml representations in an optimized way"""
@@ -195,6 +195,9 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
                 if self.data_validations.count:
                     xf.write(self.data_validations.to_tree())
+
+                if bool(self.HeaderFooter):
+                    xf.write(self.HeaderFooter.to_tree())
 
                 drawing = write_drawing(self)
                 if drawing is not None:

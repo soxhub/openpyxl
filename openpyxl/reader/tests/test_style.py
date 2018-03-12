@@ -1,14 +1,11 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
-
-import pytest
+# Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.reader.excel import load_workbook
 from openpyxl.styles import (
     Color,
     Font,
     PatternFill,
-    GradientFill,
     Border,
     Side,
     Alignment,

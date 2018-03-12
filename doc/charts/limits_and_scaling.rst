@@ -58,4 +58,3 @@ orientations that look something like this:
 
 .. image:: limits_and_scaling_orientation.png
    :alt: "Sample charts with different axis orientations"
-

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2017 openpyxl
+# Copyright (c) 2010-2018 openpyxl
 
 """Write worksheets to xml representations."""
 
@@ -107,7 +107,7 @@ def write_worksheet(worksheet):
             # write data
             write_rows(xf, ws)
 
-            if ws.protection.sheet:
+            if ws.protection:
                 xf.write(ws.protection.to_tree())
 
             if ws.auto_filter:
