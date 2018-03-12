@@ -790,6 +790,7 @@ class Worksheet(_WorkbookChild):
 
         # need to make affected ranges contiguous
         cells = self.iter_rows(min_row=min_row)
+
         if row_or_col == 'col':
             cells = self.iter_cols(min_col=min_col)
         cells = list(cells)
@@ -952,5 +953,5 @@ def _gutter(idx, offset, max_val):
     This may not be the case for a large offset on small set of cells:
     range(cells_to_delete) > range(cell_to_be_moved)
     """
-    gutter = range(max(max_val+1-offset, idx), min(idx+offset, max_val))
+    gutter = range(max(max_val+1-offset, idx), min(idx+offset, max_val)+1)
     return gutter

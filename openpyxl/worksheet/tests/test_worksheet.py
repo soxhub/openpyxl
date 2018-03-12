@@ -684,12 +684,13 @@ class TestEditableWorksheet:
 
     @pytest.mark.parametrize("idx, offset, max_val, remainder",
                              [
-                                 (1, 3, 6, set()),
-                                 (2, 3, 6, set([4])),
-                                 (3, 3, 6, set([4, 5])),
-                                 (4, 3, 6, set([4, 5])),
-                                 (5, 3, 6, set([5])),
-                                 (6, 3, 6, set()),
+                                 (1, 3, 6, {4}),
+                                 (2, 3, 6, {4, 5}),
+                                 (3, 3, 6, {4, 5, 6}),
+                                 (4, 3, 6, {4, 5, 6}),
+                                 (5, 3, 6, {5, 6}),
+                                 (6, 3, 6, {6}),
+                                 (6, 1, 6, {6}),
                              ]
                              )
     def test_remainder(self, dummy_worksheet, idx, offset, max_val, remainder):
@@ -697,3 +698,17 @@ class TestEditableWorksheet:
         ws = dummy_worksheet
 
         assert set(_gutter(idx, offset, max_val)) == remainder
+
+
+    def test_delete_last_col(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws.delete_cols(8)
+        assert ws.max_column == 7
+        assert ws['H8'].value == None
+
+
+    def test_delete_last_row(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws.delete_rows(6)
+        assert ws.max_row == 5
+        assert ws['A6'].value == None
