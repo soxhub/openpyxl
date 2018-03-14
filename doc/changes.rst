@@ -6,6 +6,12 @@
 ==================
 
 
+* `#949 <https://bitbucket.org/openpyxl/openpyxl/issues/949>`_ High memory use when reading text-heavy files.
+* `#970 <https://bitbucket.org/openpyxl/openpyxl/issues/970>`_ Copying merged cells copies references.
+* `#985 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Exception when trying to save workbooks with no views.
+* `#995 <https://bitbucket.org/openpyxl/openpyxl/issues/995>`_ Cannot delete last row or column.
+
+
 2.5.1 (2018-03-12)
 ==================
 

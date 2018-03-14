@@ -295,3 +295,10 @@ class TestMultiCellRange:
     def test_iter(self, MultiCellRange, CellRange):
         cells = MultiCellRange("A1")
         assert list(cells) == [CellRange("A1")]
+
+
+    def test_copy(self, MultiCellRange, CellRange):
+        r1 = MultiCellRange("A1")
+        from copy import copy
+        r2 = copy(r1)
+        assert list(r1)[0] is not list(r2)[0]
