@@ -46,7 +46,7 @@ def test_write_hidden_worksheet():
     <workbookPr/>
     <workbookProtection/>
     <bookViews>
-      <workbookView activeTab="1"/>
+      <workbookView activeTab="1" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
     </bookViews>
     <sheets>
       <sheet name="Sheet" sheetId="1" state="hidden" r:id="rId1"/>
@@ -137,7 +137,7 @@ def test_write_workbook_code_name():
     <workbookPr codeName="MyWB"/>
     <workbookProtection/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
     </bookViews>
     <sheets>
       <sheet name="Sheet" sheetId="1" state="visible" r:id="rId1"/>
@@ -200,7 +200,7 @@ def test_print_area(Unicode_Workbook):
     <workbookPr/>
     <workbookProtection/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
     </bookViews>
     <sheets>
       <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
@@ -227,7 +227,7 @@ def test_print_titles(Unicode_Workbook):
     <workbookPr/>
     <workbookProtection/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
     </bookViews>
     <sheets>
       <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
@@ -256,7 +256,7 @@ def test_print_autofilter(Unicode_Workbook):
     <workbookPr/>
     <workbookProtection/>
     <bookViews>
-      <workbookView activeTab="0"/>
+      <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
     </bookViews>
     <sheets>
       <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
