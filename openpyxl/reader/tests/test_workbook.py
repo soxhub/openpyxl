@@ -75,7 +75,7 @@ class TestWorkbookParser:
 
 
     def test_broken_sheet_ref(self, datadir, recwarn, WorkbookParser):
-        from openpyxl.workbook.parser import WorkbookPackage
+        from openpyxl.packaging.workbook import WorkbookPackage
         datadir.chdir()
         with open("workbook_missing_id.xml", "rb") as src:
             xml = src.read()

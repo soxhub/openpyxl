@@ -7,7 +7,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def WorkbookPackage():
-    from ..parser import WorkbookPackage
+    from ..workbook import WorkbookPackage
     return WorkbookPackage
 
 
