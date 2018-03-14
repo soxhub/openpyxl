@@ -21,7 +21,7 @@ from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.workbook.external_reference import ExternalReference
-from openpyxl.workbook.parser import ChildSheet, WorkbookPackage, PivotCache
+from openpyxl.packaging.parser import ChildSheet, WorkbookPackage, PivotCache
 from openpyxl.workbook.properties import CalcProperties, WorkbookProperties
 from openpyxl.workbook.views import BookView
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
