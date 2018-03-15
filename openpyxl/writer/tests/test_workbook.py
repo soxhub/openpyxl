@@ -260,11 +260,11 @@ def test_write_workbook_rels(datadir, vba, filename, WorkbookWriter):
         assert diff is None, diff
 
 
-def test_write_root_rels():
-    from ..workbook import write_root_rels
-
+def test_write_root_rels(WorkbookWriter):
     wb = Workbook()
-    xml = write_root_rels(wb)
+    writer = WorkbookWriter(wb)
+
+    xml = writer.write_root_rels()
     expected = """
     <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
       <Relationship Id="rId1" Target="xl/workbook.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"/>

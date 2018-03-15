@@ -166,7 +166,7 @@ def test_save():
     save_dump(wb, filename)
 
     archive = ZipFile(filename)
-    assert archive.namelist() == [
+    assert set(archive.namelist()) == {
         '_rels/.rels',
         'docProps/app.xml',
         'docProps/core.xml',
@@ -177,4 +177,4 @@ def test_save():
         'xl/workbook.xml',
         'xl/_rels/workbook.xml.rels',
         '[Content_Types].xml'
-    ]
+    }

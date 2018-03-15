@@ -24,30 +24,6 @@ from openpyxl.workbook.properties import WorkbookProperties
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
 
-def write_root_rels(workbook):
-    """Write the relationships xml."""
-
-    rels = RelationshipList()
-
-    rel = Relationship(type="officeDocument", Target=ARC_WORKBOOK)
-    rels.append(rel)
-
-    rel = Relationship(Target=ARC_CORE, Type="%s/metadata/core-properties" % PKG_REL_NS)
-    rels.append(rel)
-
-    rel = Relationship(type="extended-properties", Target=ARC_APP)
-    rels.append(rel)
-
-    if workbook.vba_archive is not None:
-        # See if there was a customUI relation and reuse it
-        xml = fromstring(workbook.vba_archive.read(ARC_ROOT_RELS))
-        root_rels = RelationshipList.from_tree(xml)
-        for rel in root_rels.find(CUSTOMUI_NS):
-            rels.append(rel)
-
-    return tostring(rels.to_tree())
-
-
 def get_active_sheet(wb):
     """
     Return the index of the active sheet.
@@ -194,3 +170,27 @@ class WorkbookWriter:
             self.rels.append(vba)
 
         return tostring(self.rels.to_tree())
+
+
+    def write_root_rels(self):
+        """Write the package relationships"""
+
+        rels = RelationshipList()
+
+        rel = Relationship(type="officeDocument", Target=ARC_WORKBOOK)
+        rels.append(rel)
+
+        rel = Relationship(Type="%s/metadata/core-properties" % PKG_REL_NS, Target=ARC_CORE)
+        rels.append(rel)
+
+        rel = Relationship(type="extended-properties", Target=ARC_APP)
+        rels.append(rel)
+
+        if self.wb.vba_archive is not None:
+            # See if there was a customUI relation and reuse it
+            xml = fromstring(self.wb.vba_archive.read(ARC_ROOT_RELS))
+            root_rels = RelationshipList.from_tree(xml)
+            for rel in root_rels.find(CUSTOMUI_NS):
+                rels.append(rel)
+
+        return tostring(rels.to_tree())
