@@ -16,14 +16,11 @@ from openpyxl.xml.constants import (
 )
 from openpyxl.xml.functions import tostring, fromstring
 
-from openpyxl.worksheet import Worksheet
-from openpyxl.chartsheet import Chartsheet
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.workbook.external_reference import ExternalReference
 from openpyxl.packaging.workbook import ChildSheet, WorkbookPackage, PivotCache
-from openpyxl.workbook.properties import CalcProperties, WorkbookProperties
-from openpyxl.workbook.views import BookView
+from openpyxl.workbook.properties import WorkbookProperties
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
 
@@ -121,6 +118,7 @@ class WorkbookWriter:
         # Defined names -> autoFilter
         for idx, sheet in enumerate(self.wb.worksheets):
             auto_filter = sheet.auto_filter.ref
+
             if auto_filter:
                 name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
                 name.value = u"{0}!{1}".format(quote_sheetname(sheet.title),
