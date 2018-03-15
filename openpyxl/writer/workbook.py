@@ -108,7 +108,7 @@ class WorkbookWriter:
     def write_refs(self):
         for link in self.wb._external_links:
             # need to match a counter with a workbook's relations
-            rId = len(wb.rels) + 1
+            rId = len(self.wb.rels) + 1
             rel = Relationship(type=link._rel_type, Target=link.path)
             self.wb.rels.append(rel)
             ext = ExternalReference(id=rel.id)
@@ -116,8 +116,7 @@ class WorkbookWriter:
 
 
     def write_names(self):
-        # Defined names
-        defined_names = copy(self.wb.defined_names) # don't add special defns to workbook itself.
+        defined_names = copy(self.wb.defined_names)
 
         # Defined names -> autoFilter
         for idx, sheet in enumerate(self.wb.worksheets):
