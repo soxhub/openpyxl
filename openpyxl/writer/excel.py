@@ -40,7 +40,7 @@ from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_root_rels,
     write_workbook_rels,
-    write_workbook,
+    WorkbookWriter
 )
 from openpyxl.writer.theme import write_theme
 from openpyxl.writer.worksheet import write_worksheet
@@ -92,7 +92,8 @@ class ExcelWriter(object):
         stylesheet = write_stylesheet(self.workbook)
         archive.writestr(ARC_STYLE, tostring(stylesheet))
 
-        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
+        writer = WorkbookWriter(self.workbook)
+        archive.writestr(ARC_WORKBOOK, writer.write())
         archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
 
         self._merge_vba()

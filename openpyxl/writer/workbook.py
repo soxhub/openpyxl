@@ -181,11 +181,6 @@ class WorkbookWriter:
         return tostring(self.package.to_tree())
 
 
-def write_workbook(workbook):
-    writer = WorkbookWriter(workbook)
-    return writer.write()
-
-
 def write_workbook_rels(workbook):
     """Write the workbook relationships xml."""
     wb = workbook
