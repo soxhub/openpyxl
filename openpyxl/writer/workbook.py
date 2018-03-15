@@ -93,7 +93,7 @@ class WorkbookWriter:
         for idx, sheet in enumerate(self.wb._sheets, 1):
             sheet_node = ChildSheet(name=sheet.title, sheetId=idx, id="rId{0}".format(idx))
             rel = Relationship(type=sheet._rel_type, Target=sheet.path)
-            self.wb.rels.append(rel)
+            self.rels.append(rel)
 
             if not sheet.sheet_state == 'visible':
                 if len(self.wb._sheets) == 1:
@@ -107,7 +107,7 @@ class WorkbookWriter:
             # need to match a counter with a workbook's relations
             rId = len(self.wb.rels) + 1
             rel = Relationship(type=link._rel_type, Target=link.path)
-            self.wb.rels.append(rel)
+            self.rels.append(rel)
             ext = ExternalReference(id=rel.id)
             self.package.externalReferences.append(ext)
 
@@ -151,9 +151,9 @@ class WorkbookWriter:
                 c = PivotCache(cacheId=pivot.cacheId)
                 root.pivotCaches.append(c)
                 rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
-                wb.rels.append(rel)
+                self.rels.append(rel)
                 c.id = rel.id
-        self.wb._pivots = [] # reset
+        #self.wb._pivots = [] # reset
 
 
     def write_views(self):

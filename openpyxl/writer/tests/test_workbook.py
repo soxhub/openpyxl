@@ -82,7 +82,7 @@ class TestWorkbookWriter:
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
-        assert len(wb.rels) == 1
+        assert len(writer.rels) == 1
         with open('workbook.xml') as expected:
             diff = compare_xml(xml, expected.read())
             assert diff is None, diff
