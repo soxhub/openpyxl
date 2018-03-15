@@ -16,7 +16,6 @@ from .. excel import (
     save_workbook,
     save_virtual_workbook,
     )
-from .. workbook import write_workbook_rels
 
 
 @pytest.fixture
@@ -248,13 +247,16 @@ def test_write_virtual_workbook():
 
                          ]
                          )
-def test_write_workbook_rels(datadir, vba, filename):
+def test_write_workbook_rels(datadir, vba, filename, WorkbookWriter):
     datadir.chdir()
     wb = Workbook()
     wb.vba_archive = vba
-    content = write_workbook_rels(wb)
+
+    writer = WorkbookWriter(wb)
+    xml = writer.write_rels()
+
     with open(filename) as expected:
-        diff = compare_xml(content, expected.read())
+        diff = compare_xml(xml, expected.read())
         assert diff is None, diff
 
 

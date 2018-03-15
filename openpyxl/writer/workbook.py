@@ -147,7 +147,6 @@ class WorkbookWriter:
 
 
     def write_pivots(self):
-
         pivot_caches = set()
         for pivot in self.wb._pivots:
             if pivot.cache not in pivot_caches:
@@ -161,7 +160,6 @@ class WorkbookWriter:
 
 
     def write_views(self):
-        # book views
         active = get_active_sheet(self.wb)
         if self.wb.views:
             self.wb.views[0].activeTab = active
@@ -181,22 +179,21 @@ class WorkbookWriter:
         return tostring(self.package.to_tree())
 
 
-def write_workbook_rels(workbook):
-    """Write the workbook relationships xml."""
-    wb = workbook
+    def write_rels(self):
+        """Write the workbook relationships xml."""
 
-    strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
-    wb.rels.append(strings)
+        strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
+        self.rels.append(strings)
 
-    styles =  Relationship(type='styles', Target='styles.xml')
-    wb.rels.append(styles)
+        styles =  Relationship(type='styles', Target='styles.xml')
+        self.rels.append(styles)
 
-    theme =  Relationship(type='theme', Target='theme/theme1.xml')
-    wb.rels.append(theme)
+        theme =  Relationship(type='theme', Target='theme/theme1.xml')
+        self.rels.append(theme)
 
-    if workbook.vba_archive:
-        vba =  Relationship(type='', Target='vbaProject.bin')
-        vba.Type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
-        wb.rels.append(vba)
+        if self.wb.vba_archive:
+            vba =  Relationship(type='', Target='vbaProject.bin')
+            vba.Type ='http://schemas.microsoft.com/office/2006/relationships/vbaProject'
+            self.rels.append(vba)
 
-    return tostring(wb.rels.to_tree())
+        return tostring(self.rels.to_tree())

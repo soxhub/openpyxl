@@ -39,7 +39,6 @@ from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import (
     write_root_rels,
-    write_workbook_rels,
     WorkbookWriter
 )
 from openpyxl.writer.theme import write_theme
@@ -94,7 +93,7 @@ class ExcelWriter(object):
 
         writer = WorkbookWriter(self.workbook)
         archive.writestr(ARC_WORKBOOK, writer.write())
-        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
+        archive.writestr(ARC_WORKBOOK_RELS, writer.write_rels())
 
         self._merge_vba()
 
