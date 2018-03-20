@@ -155,11 +155,6 @@ class TestDefinition:
                  "3.14",
                  "NUMBER"
                  ),
-                ("""<definedName name="pi">3.14</definedName>""",
-                 "pi",
-                 "3.14",
-                 "NUMBER"
-                 ),
                 ("""<definedName name="name">"charlie"</definedName>""",
                  "name",
                  '"charlie"',
