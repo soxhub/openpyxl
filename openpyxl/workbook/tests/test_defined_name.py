@@ -319,3 +319,20 @@ class TestDefinitionList:
         node = fromstring(xml)
         dl = DefinedNameList.from_tree(node)
         assert dl.localnames(0) == ['MySheetRef', 'MySheetValue']
+
+
+    @pytest.mark.parametrize("name, scope, result",
+                             [
+                                 ("MySheetValue", None, False),
+                                 ("MySheetValue", 0, True),
+                                 ("MySheetValue", 1, True),
+                             ]
+                             )
+    def test_get(self, DefinedNameList, datadir, name, scope, result):
+        datadir.chdir()
+        with open("workbook.xml", "rb") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        check = dl.get(name, scope) is not None
+        assert check is result
