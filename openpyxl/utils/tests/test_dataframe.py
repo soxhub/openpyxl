@@ -25,3 +25,17 @@ def test_dataframe():
         [3, 3.0, 1.0, 'foo4', Timestamp('2009-01-06 00:00:00')],
         [4, 4.0, 0.0, 'foo5', Timestamp('2009-01-07 00:00:00')],
         )
+
+
+def test_expand_levels():
+    from ..dataframe import expand_levels
+    levels = [
+        ['2018', '2017', '2016'],
+        ['Major', 'Minor',],
+        ['a', 'b'],
+    ]
+
+    expanded = list(expand_levels(levels))
+    assert expanded[0] == ['2018', None, None, None, '2017', None, None, None, '2016', None, None, None]
+    assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
+    assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
