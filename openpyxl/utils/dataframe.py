@@ -9,6 +9,8 @@ def dataframe_to_rows(df, index=True, header=True):
     """
     Convert a Pandas dataframe into something suitable for passing into a worksheet
     """
+    import numpy
+    from pandas import Timestamp
     blocks = df._data.blocks
     ncols = sum(b.shape[0] for b in blocks)
     data = [None] * ncols
@@ -26,10 +28,18 @@ def dataframe_to_rows(df, index=True, header=True):
             data[col_loc] = col
 
     if header:
-        values = list(df.columns.values)
-        if df.columns.dtype.type == numpy.datetime64:
-            values = [Timestamp(v) for v in values]
-        yield [None]*index + values
+        if hasattr(df.columns, 'levels'):
+            rows = expand_levels(df.columns.levels)
+        else:
+            rows = [list(df.columns.values)]
+        for row in rows:
+            n = []
+            for v in row:
+                if isinstance(v, numpy.datetime64):
+                    v = Timestamp(v)
+                n.append(v)
+            row = n
+            yield [None]*index + row
 
     for idx, v in enumerate(df.index):
         yield [v]*index + [data[j][idx] for j in range(ncols)]
