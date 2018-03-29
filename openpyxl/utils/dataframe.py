@@ -1,10 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
-from itertools import accumulate
 import operator
-import numpy
-from pandas import Timestamp
+from openpyxl.compat import accumulate
 
 
 def dataframe_to_rows(df, index=True, header=True):
