@@ -50,11 +50,11 @@ class ShapeWriter(object):
                     "{%s}connecttype" % officens: "rect"})
 
 
-    def add_comment_shape(self, root, idx, coord):
+    def add_comment_shape(self, root, idx, coord, size):
         col, row = coordinate_from_string(coord)
         row -= 1
         column = column_index_from_string(col) - 1
-        shape = _shape_factory(row, column)
+        shape = _shape_factory(row, column, size)
 
         shape.set('id', "_x0000_s%04d" % idx)
         root.append(shape)
@@ -64,29 +64,33 @@ class ShapeWriter(object):
 
         if not hasattr(root, "findall"):
             root = Element("xml")
+
         # Remove any existing comment shapes
         comments = root.findall("{%s}shape[@type='#_x0000_t202']" % vmlns)
         for c in comments:
             root.remove(c)
 
         # check whether comments shape type already exists
-
         shape_types = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
         if not shape_types:
             self.add_comment_shapetype(root)
 
         for idx, (coord, comment) in enumerate(self.comments, 1026):
-            self.add_comment_shape(root, idx, coord)
+            self.add_comment_shape(root, idx, coord, comment.size)
 
         return tostring(root)
 
 
-def _shape_factory(row, column):
+def _shape_factory(row, column, size):
 
-    style = ("position:absolute; margin-left:59.25pt;"
-             "margin-top:1.5pt;width:{width};height:{height};"
-             "z-index:1;visibility:hidden").format(height="59.25pt",
-                                               width="108pt")
+    style = ("position:absolute; "
+             "margin-left:59.25pt;"
+             "margin-top:1.5pt;"
+             "width:{width}pt;"
+             "height:{height}pt;"
+             "z-index:1;"
+             "visibility:hidden").format(height=size.height,
+                                         width=size.width)
     attrs = {
         "type": "#_x0000_t202",
         "style": style,
