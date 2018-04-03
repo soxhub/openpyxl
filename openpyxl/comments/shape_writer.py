@@ -50,11 +50,11 @@ class ShapeWriter(object):
                     "{%s}connecttype" % officens: "rect"})
 
 
-    def add_comment_shape(self, root, idx, coord, size):
+    def add_comment_shape(self, root, idx, coord, height, width):
         col, row = coordinate_from_string(coord)
         row -= 1
         column = column_index_from_string(col) - 1
-        shape = _shape_factory(row, column, size)
+        shape = _shape_factory(row, column, height, width)
 
         shape.set('id', "_x0000_s%04d" % idx)
         root.append(shape)
@@ -76,21 +76,20 @@ class ShapeWriter(object):
             self.add_comment_shapetype(root)
 
         for idx, (coord, comment) in enumerate(self.comments, 1026):
-            self.add_comment_shape(root, idx, coord, comment.size)
+            self.add_comment_shape(root, idx, coord, comment.height, comment.width)
 
         return tostring(root)
 
 
-def _shape_factory(row, column, size):
-
+def _shape_factory(row, column, height, width):
     style = ("position:absolute; "
              "margin-left:59.25pt;"
              "margin-top:1.5pt;"
              "width:{width}pt;"
              "height:{height}pt;"
              "z-index:1;"
-             "visibility:hidden").format(height=size.height,
-                                         width=size.width)
+             "visibility:hidden").format(height=height,
+                                         width=width)
     attrs = {
         "type": "#_x0000_t202",
         "style": style,

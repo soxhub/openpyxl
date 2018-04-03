@@ -6,7 +6,7 @@ Comments
     Openpyxl currently supports the reading and writing of comment text only.
     Formatting information is lost. Comment dimensions are lost upon reading,
     but can be written. Comments are not currently supported if
-    `use_iterators=True` is used.
+    `read_only=True` is used.
 
 
 Adding a comment to a cell
@@ -67,8 +67,8 @@ in points:
 >>> ws=wb.active
 >>>
 >>> comment = Comment("Text", "Author")
->>> comment.size.width = 300
->>> comment.size.height = 30
+>>> comment.width = 300
+>>> comment.height = 30
 >>>
 >>> ws["A1"].comment = comment
 >>>

@@ -89,13 +89,12 @@ def test_write_comments_vml(datadir):
 
 def test_shape(datadir):
     from ..shape_writer import _shape_factory
-    from ..comment_sheet import CommentSize
 
     datadir.chdir()
     with open('size+comments.vml') as existing:
         expected = existing.read()
 
-    shape = _shape_factory(2, 3, CommentSize())
+    shape = _shape_factory(2, 3, 59.25, 108)
     xml = tostring(shape)
 
     diff = compare_xml(xml, expected)
@@ -104,7 +103,6 @@ def test_shape(datadir):
 
 def test_shape_with_custom_size(datadir):
     from ..shape_writer import _shape_factory
-    from ..comment_sheet import CommentSize
 
     datadir.chdir()
     with open('size+comments.vml') as existing:
@@ -113,7 +111,7 @@ def test_shape_with_custom_size(datadir):
         expected = expected.replace('width:108pt;', 'width:80pt;')
         expected = expected.replace('height:59.25pt;', 'height:20pt;')
 
-    shape = _shape_factory(2, 3, CommentSize(height=20, width=80))
+    shape = _shape_factory(2, 3, 20, 80)
     xml = tostring(shape)
 
     diff = compare_xml(xml, expected)

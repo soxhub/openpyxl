@@ -2,33 +2,16 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 
-class CommentSize(object):
-
-    def __init__(self, height=59.25, width=108):
-        self.height = height
-        self.width = width
-
-    def update_from(self, size):
-        self.height = size.height
-        self.width = size.width
-
-    def __copy__(self):
-        return CommentSize(height=self.height, width=self.width)
-
-    def __repr__(self):
-        return '<CommentSize {0}pt x {1}pt>'.format(self.height, self.width)
-
-
 class Comment(object):
 
     _parent = None
 
-    def __init__(self, text, author, size=None):
+    def __init__(self, text, author, height=59.25, width=108):
         self.content = text
         self.author = author
-        self.size = CommentSize()
-        if size:
-            self.size.update_from(size)
+        self.height = height
+        self.width = width
+
 
     @property
     def parent(self):
@@ -47,7 +30,7 @@ class Comment(object):
 
     def __copy__(self):
         """Create a detached copy of this comment."""
-        clone = self.__class__(self.content, self.author, self.size)
+        clone = self.__class__(self.content, self.author, self.height, self.width)
         return clone
 
 
