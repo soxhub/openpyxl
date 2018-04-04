@@ -42,7 +42,7 @@ def test_merge_comments_vml(datadir):
     datadir.chdir()
     cw = ShapeWriter(create_comments())
 
-    with open('control+comments.vml') as existing:
+    with open('control+comments.vml', 'rb') as existing:
         content = fromstring(cw.write(fromstring(existing.read())))
     assert len(content.findall('{%s}shape' % vmlns)) == 5
     assert len(content.findall('{%s}shapetype' % vmlns)) == 2
@@ -53,7 +53,7 @@ def test_write_comments_vml(datadir):
     cw = ShapeWriter(create_comments())
 
     content = cw.write(Element("xml"))
-    with open('commentsDrawing1.vml') as expected:
+    with open('commentsDrawing1.vml', 'rb') as expected:
         correct = fromstring(expected.read())
     check = fromstring(content)
     correct_ids = []
@@ -91,10 +91,10 @@ def test_shape(datadir):
     from ..shape_writer import _shape_factory
 
     datadir.chdir()
-    with open('size+comments.vml') as existing:
+    with open('size+comments.vml', 'rb') as existing:
         expected = existing.read()
 
-    shape = _shape_factory(2, 3, 59.25, 108)
+    shape = _shape_factory(2, 3, 79, 144)
     xml = tostring(shape)
 
     diff = compare_xml(xml, expected)
@@ -105,11 +105,11 @@ def test_shape_with_custom_size(datadir):
     from ..shape_writer import _shape_factory
 
     datadir.chdir()
-    with open('size+comments.vml') as existing:
+    with open('size+comments.vml', 'rb') as existing:
         expected = existing.read()
         # Change our source document for this test
-        expected = expected.replace('width:108pt;', 'width:80pt;')
-        expected = expected.replace('height:59.25pt;', 'height:20pt;')
+        expected = expected.replace(b'width:144px;', b'width:80px;')
+        expected = expected.replace(b'height:79px;', b'height:20px;')
 
     shape = _shape_factory(2, 3, 20, 80)
     xml = tostring(shape)

@@ -56,20 +56,40 @@ Comments remaining in a workbook when it is saved are automatically saved to
 the workbook file.
 
 Comment dimensions can be specified for write-only. Comment dimension are
-in points:
+in pixels.
 
 .. :: doctest
 
 >>> from openpyxl import Workbook
 >>> from openpyxl.comments import Comment
+>>> from openpyxl.utils import units
 >>>
 >>> wb=Workbook()
 >>> ws=wb.active
 >>>
 >>> comment = Comment("Text", "Author")
 >>> comment.width = 300
->>> comment.height = 30
+>>> comment.height = 50
 >>>
 >>> ws["A1"].comment = comment
 >>>
 >>> wb.save('commented_book.xlsx')
+
+
+If needed, ``openpyxl.utils.units`` contains helper functions for converting
+from other measurements such as mm or points to pixels:
+
+.. :: doctest
+
+>>> from openpyxl import Workbook
+>>> from openpyxl.comments import Comment
+>>> from openpyxl.utils import units
+>>>
+>>> wb=Workbook()
+>>> ws=wb.active
+>>>
+>>> comment = Comment("Text", "Author")
+>>> comment.width = units.points_to_pixels(300)
+>>> comment.height = units.points_to_pixels(50)
+>>>
+>>> ws["A1"].comment = comment

@@ -85,8 +85,8 @@ def _shape_factory(row, column, height, width):
     style = ("position:absolute; "
              "margin-left:59.25pt;"
              "margin-top:1.5pt;"
-             "width:{width}pt;"
-             "height:{height}pt;"
+             "width:{width}px;"
+             "height:{height}px;"
              "z-index:1;"
              "visibility:hidden").format(height=height,
                                          width=width)

@@ -20,8 +20,8 @@ class TestComment:
         assert comment.author == "Charlie"
         assert comment.text == "A comment"
         assert comment.parent is None
-        assert comment.height == 59.25
-        assert comment.width == 108
+        assert comment.height == 79
+        assert comment.width == 144
         assert repr(comment) == 'Comment: A comment by Charlie'
 
 

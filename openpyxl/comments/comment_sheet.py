@@ -2,7 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 ## Incomplete!
-from copy import copy
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -123,8 +122,8 @@ class CommentRecord(Serialisable):
                  text=None,
                  commentPr=None,
                  author=None,
-                 height=59.25,
-                 width=108
+                 height=79,
+                 width=144
                 ):
         self.ref = ref
         self.authorId = authorId

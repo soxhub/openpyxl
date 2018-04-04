@@ -6,7 +6,7 @@ class Comment(object):
 
     _parent = None
 
-    def __init__(self, text, author, height=59.25, width=108):
+    def __init__(self, text, author, height=79, width=144):
         self.content = text
         self.author = author
         self.height = height
