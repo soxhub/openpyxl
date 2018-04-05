@@ -39,10 +39,15 @@ def dataframe_to_rows(df, index=True, header=True):
                     v = Timestamp(v)
                 n.append(v)
             row = n
-            yield [None]*index + row
+            if index:
+                row = [None]*df.index.nlevels + row
+            yield row
 
     for idx, v in enumerate(df.index):
-        yield [v]*index + [data[j][idx] for j in range(ncols)]
+        row = [data[j][idx] for j in range(ncols)]
+        if index:
+            row = [v] + row
+        yield row
 
 
 def expand_levels(levels):
