@@ -28,7 +28,7 @@ def dataframe_to_rows(df, index=True, header=True):
             data[col_loc] = col
 
     if header:
-        if hasattr(df.columns, 'levels'):
+        if df.columns.nlevels > 1:
             rows = expand_levels(df.columns.levels)
         else:
             rows = [list(df.columns.values)]
