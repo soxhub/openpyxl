@@ -11,6 +11,7 @@ def sample_data():
     from pandas.util import testing
 
     df = testing.makeMixedDataFrame()
+    df.index.name = "openpyxl test"
     df.iloc[0] = numpy.nan
     return df
 
@@ -38,7 +39,7 @@ def test_dataframe_index(sample_data):
     from ..dataframe import dataframe_to_rows
 
     rows = tuple(dataframe_to_rows(sample_data, header=False))
-    assert rows[1] == [1, 1.0, 1.0, 'foo2', Timestamp('2009-01-02 00:00:00')]
+    assert rows[0] == ['openpyxl test']
 
 
 def test_expand_levels():
@@ -53,3 +54,21 @@ def test_expand_levels():
     assert expanded[0] == ['2018', None, None, None, '2017', None, None, None, '2016', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
+
+
+def test_dataframe_multiindex():
+    from ..dataframe import dataframe_to_rows
+    from pandas import MultiIndex, Series, DataFrame
+    import numpy
+
+    arrays = [
+        ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
+        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']
+    ]
+    tuples = list(zip(*arrays))
+    index = MultiIndex.from_tuples(tuples, names=['first', 'second'])
+    df = Series(numpy.random.randn(8), index=index)
+    df = DataFrame(df)
+
+    rows = list(dataframe_to_rows(df, header=False))
+    assert rows[0] == ['first', 'second']

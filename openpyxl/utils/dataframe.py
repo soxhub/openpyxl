@@ -43,10 +43,19 @@ def dataframe_to_rows(df, index=True, header=True):
                 row = [None]*df.index.nlevels + row
             yield row
 
+    cols = None
+    if df.index.nlevels > 1:
+        cols = zip(*expand_levels(df.index.levels))
+
     for idx, v in enumerate(df.index):
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            row = [v] + row
+            yield df.index.names
+            if cols:
+                v = list(next(cols))
+            else:
+                v = [v]
+            row = v + row
         yield row
 
 
