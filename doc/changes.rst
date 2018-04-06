@@ -6,10 +6,21 @@
 ==================
 
 
+Bugfixes
+--------
+
 * `#949 <https://bitbucket.org/openpyxl/openpyxl/issues/949>`_ High memory use when reading text-heavy files.
 * `#970 <https://bitbucket.org/openpyxl/openpyxl/issues/970>`_ Copying merged cells copies references.
+* `#978 <https://bitbucket.org/openpyxl/openpyxl/issues/978>`_ Cannot set comment size.
 * `#985 <https://bitbucket.org/openpyxl/openpyxl/issues/895>`_ Exception when trying to save workbooks with no views.
 * `#995 <https://bitbucket.org/openpyxl/openpyxl/issues/995>`_ Cannot delete last row or column.
+* `#1002 <https://bitbucket.org/openpyxl/openpyxl/issues/1002>`_ Cannot read Drawings containing embedded images.
+
+
+Minor changes
+-------------
+
+* Support for dataframes with multiple columns and multiple indices.
 
 
 2.5.1 (2018-03-12)

@@ -105,17 +105,22 @@ def Percentage():
 
 class TestPercentage:
 
-    @pytest.mark.parametrize("value",
-                             ["15%", "15.5%"]
+    @pytest.mark.parametrize("input, value",
+                             [
+                                 ("15%", 15000),
+                                 (1500, 1500),
+                                 ("15.5%", 15500),
+                              ]
                              )
-    def test_valid(self, Percentage, value):
+    def test_valid(self, Percentage, input, value):
         Percentage.value = value
         assert Percentage.value == value
 
+
     @pytest.mark.parametrize("value",
-                             ["15", "101%", "-1%"]
+                             ["2000000", "-1000001",]
                              )
-    def test_valid(self, Percentage, value):
+    def test_invalid(self, Percentage, value):
         with pytest.raises(ValueError):
             Percentage.value = value
 

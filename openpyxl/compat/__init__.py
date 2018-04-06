@@ -19,6 +19,17 @@ try:
 except NameError:
     range = range
 
+try:
+    from itertools import accumulate
+except ImportError:
+    from .accumulate import accumulate
+
+try:
+    from itertools import izip as zip
+except ImportError:
+    zip = zip
+
+
 import warnings
 from functools import wraps
 import inspect

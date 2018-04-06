@@ -22,6 +22,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Don Freeman
 * Eric Gazoni
 * Brice Gelineau
+* Mark Gemmill
 * Alex Gronholm
 * Yaroslav Halchenko
 * Fumito Hamamura

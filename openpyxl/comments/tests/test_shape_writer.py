@@ -42,7 +42,7 @@ def test_merge_comments_vml(datadir):
     datadir.chdir()
     cw = ShapeWriter(create_comments())
 
-    with open('control+comments.vml') as existing:
+    with open('control+comments.vml', 'rb') as existing:
         content = fromstring(cw.write(fromstring(existing.read())))
     assert len(content.findall('{%s}shape' % vmlns)) == 5
     assert len(content.findall('{%s}shapetype' % vmlns)) == 2
@@ -53,7 +53,7 @@ def test_write_comments_vml(datadir):
     cw = ShapeWriter(create_comments())
 
     content = cw.write(Element("xml"))
-    with open('commentsDrawing1.vml') as expected:
+    with open('commentsDrawing1.vml', 'rb') as expected:
         correct = fromstring(expected.read())
     check = fromstring(content)
     correct_ids = []
@@ -87,34 +87,32 @@ def test_write_comments_vml(datadir):
     assert diff is None, diff
 
 
-def test_shape():
+def test_shape(datadir):
     from ..shape_writer import _shape_factory
 
-    shape = _shape_factory(2,3)
+    datadir.chdir()
+    with open('size+comments.vml', 'rb') as existing:
+        expected = existing.read()
+
+    shape = _shape_factory(2, 3, 79, 144)
     xml = tostring(shape)
-    expected = """
-    <v:shape
-    xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:x="urn:schemas-microsoft-com:office:excel"
-    xmlns:o="urn:schemas-microsoft-com:office:office"
-    fillcolor="#ffffe1"
-    style="position:absolute; margin-left:59.25pt;margin-top:1.5pt;width:108pt;height:59.25pt;z-index:1;visibility:hidden"
-    type="#_x0000_t202"
-    o:insetmode="auto">
-      <v:fill color2="#ffffe1"/>
-      <v:shadow color="black" obscured="t"/>
-      <v:path o:connecttype="none"/>
-      <v:textbox style="mso-direction-alt:auto">
-        <div style="text-align:left"/>
-      </v:textbox>
-      <x:ClientData ObjectType="Note">
-        <x:MoveWithCells/>
-        <x:SizeWithCells/>
-        <x:AutoFill>False</x:AutoFill>
-        <x:Row>2</x:Row>
-        <x:Column>3</x:Column>
-      </x:ClientData>
-    </v:shape>
-    """
+
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_shape_with_custom_size(datadir):
+    from ..shape_writer import _shape_factory
+
+    datadir.chdir()
+    with open('size+comments.vml', 'rb') as existing:
+        expected = existing.read()
+        # Change our source document for this test
+        expected = expected.replace(b'width:144px;', b'width:80px;')
+        expected = expected.replace(b'height:79px;', b'height:20px;')
+
+    shape = _shape_factory(2, 3, 20, 80)
+    xml = tostring(shape)
+
     diff = compare_xml(xml, expected)
     assert diff is None, diff
