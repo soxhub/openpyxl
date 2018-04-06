@@ -56,6 +56,7 @@ def test_expand_levels():
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
 
 
+@pytest.mark.pandas_required
 def test_dataframe_multiindex():
     from ..dataframe import dataframe_to_rows
     from pandas import MultiIndex, Series, DataFrame
