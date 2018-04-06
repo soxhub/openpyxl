@@ -4,8 +4,9 @@ Comments
 .. warning::
 
     Openpyxl currently supports the reading and writing of comment text only.
-    Formatting information is lost.
-    Comments are not currently supported if `use_iterators=True` is used.
+    Formatting information is lost. Comment dimensions are lost upon reading,
+    but can be written. Comments are not currently supported if
+    `read_only=True` is used.
 
 
 Adding a comment to a cell
@@ -53,3 +54,42 @@ and position of the comment's container box.
 
 Comments remaining in a workbook when it is saved are automatically saved to
 the workbook file.
+
+Comment dimensions can be specified for write-only. Comment dimension are
+in pixels.
+
+.. :: doctest
+
+>>> from openpyxl import Workbook
+>>> from openpyxl.comments import Comment
+>>> from openpyxl.utils import units
+>>>
+>>> wb=Workbook()
+>>> ws=wb.active
+>>>
+>>> comment = Comment("Text", "Author")
+>>> comment.width = 300
+>>> comment.height = 50
+>>>
+>>> ws["A1"].comment = comment
+>>>
+>>> wb.save('commented_book.xlsx')
+
+
+If needed, ``openpyxl.utils.units`` contains helper functions for converting
+from other measurements such as mm or points to pixels:
+
+.. :: doctest
+
+>>> from openpyxl import Workbook
+>>> from openpyxl.comments import Comment
+>>> from openpyxl.utils import units
+>>>
+>>> wb=Workbook()
+>>> ws=wb.active
+>>>
+>>> comment = Comment("Text", "Author")
+>>> comment.width = units.points_to_pixels(300)
+>>> comment.height = units.points_to_pixels(50)
+>>>
+>>> ws["A1"].comment = comment

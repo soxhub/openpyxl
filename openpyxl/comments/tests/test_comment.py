@@ -20,6 +20,9 @@ class TestComment:
         assert comment.author == "Charlie"
         assert comment.text == "A comment"
         assert comment.parent is None
+        assert comment.height == 79
+        assert comment.width == 144
+        assert repr(comment) == 'Comment: A comment by Charlie'
 
 
     def test_bind(self, Comment):
@@ -41,3 +44,5 @@ class TestComment:
         assert clone is not comment
         assert comment.text == clone.text
         assert comment.author == clone.author
+        assert comment.height == clone.height
+        assert comment.width == clone.width
