@@ -6,11 +6,12 @@ class Comment(object):
 
     _parent = None
 
-    def __init__(self, text, author):
+    def __init__(self, text, author, height=79, width=144):
         self.content = text
         self.author = author
-        self.width = '108pt'
-        self.height = '59.25pt'
+        self.height = height
+        self.width = width
+
 
     @property
     def parent(self):
@@ -29,9 +30,7 @@ class Comment(object):
 
     def __copy__(self):
         """Create a detached copy of this comment."""
-        clone = self.__class__(self.content, self.author)
-        clone.width = self.width
-        clone.height = self.height
+        clone = self.__class__(self.content, self.author, self.height, self.width)
         return clone
 
 

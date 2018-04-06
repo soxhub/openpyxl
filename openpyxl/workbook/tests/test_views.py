@@ -17,7 +17,7 @@ class TestBookView:
         view = BookView()
         xml = tostring(view.to_tree())
         expected = """
-        <workbookView />
+        <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

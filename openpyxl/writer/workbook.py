@@ -92,7 +92,8 @@ def write_workbook(workbook):
 
     # book views
     active = get_active_sheet(wb)
-    wb.views[0].activeTab = active
+    if wb.views:
+        wb.views[0].activeTab = active
     root.bookViews = wb.views
 
     # worksheets

@@ -12,16 +12,17 @@ from .worksheet import _get_xml_iter
 
 def read_string_table(xml_source):
     """Read in all shared strings in the table"""
+
     strings = []
     src = _get_xml_iter(xml_source)
+    STRING_TAG = '{%s}si' % SHEET_MAIN_NS
 
     for _, node in iterparse(src):
-        if node.tag == '{%s}si' % SHEET_MAIN_NS:
-
+        if node.tag == STRING_TAG:
             text = Text.from_tree(node).content
             text = text.replace('x005F_', '')
-            strings.append(text)
-
             node.clear()
 
-    return IndexedList(strings)
+            strings.append(text)
+
+    return strings

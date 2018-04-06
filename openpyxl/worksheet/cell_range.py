@@ -1,6 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2018 openpyxl
 
+from copy import copy
+
 from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
@@ -437,3 +439,11 @@ class MultiCellRange(Strict):
     def __iter__(self):
         for cr in self.ranges:
             yield cr
+
+
+    def __copy__(self):
+        n = MultiCellRange()
+
+        for r in self.ranges:
+            n.ranges.append(copy(r))
+        return n
