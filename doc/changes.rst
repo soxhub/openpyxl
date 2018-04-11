@@ -2,6 +2,11 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1017 <https://bitbucket.org/openpyxl/openpyxl/issues/1017>`_ Deleting elements from a legend doesn't work.
+
 
 2.5.2 (2018-04-06)
 ==================
