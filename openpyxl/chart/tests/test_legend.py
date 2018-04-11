@@ -46,11 +46,12 @@ def LegendEntry():
 class TestLegendEntry:
 
     def test_ctor(self, LegendEntry):
-        legend = LegendEntry()
+        legend = LegendEntry(idx=0, delete=True)
         xml = tostring(legend.to_tree())
         expected = """
         <legendEntry>
-          <idx val="0"></idx>
+          <idx val="0" />
+          <delete val= "1" />
         </legendEntry>
         """
         diff = compare_xml(xml, expected)
