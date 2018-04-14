@@ -312,7 +312,6 @@ class ExcelReader:
         self.shared_strings = []
 
 
-
     def read_manifest(self):
         src = self.archive.read(ARC_CONTENT_TYPES)
         root = fromstring(src)
@@ -338,18 +337,18 @@ class ExcelReader:
         wb.guess_types = self.guess_types
         wb.template = wb_part.ContentType in (XLTX, XLTM)
 
-
         # If are going to preserve the vba then attach a copy of the archive to the
         # workbook so that is available for the save.
         if self.keep_vba:
             wb.vba_archive = ZipFile(BytesIO(), 'a', ZIP_DEFLATED)
             for name in self.valid_files:
-                wb.vba_archive.writestr(name, archive.read(name))
+                wb.vba_archive.writestr(name, self.archive.read(name))
 
         if self.read_only:
-            wb._archive = ZipFile(filename)
+            wb._archive = ZipFile(self.archive.filename)
 
         self.wb = wb
+
 
     def read_properties(self):
         if ARC_CORE in self.valid_files:
@@ -375,9 +374,8 @@ class ExcelReader:
                 continue
 
             if self.read_only:
-                ws = ReadOnlyWorksheet(self.wb, sheet_name, worksheet_path, None,
-                                           shared_strings)
-                wb._sheets.append(ws)
+                ws = ReadOnlyWorksheet(self.wb, sheet_name, worksheet_path, None, self.shared_strings)
+                self.wb._sheets.append(ws)
             else:
                 fh = self.archive.open(worksheet_path)
                 ws = self.wb.create_sheet(sheet_name)
@@ -408,7 +406,7 @@ class ExcelReader:
 
                     drawings = rels.find(SpreadsheetDrawing._rel_type)
                     for rel in drawings:
-                        for c in find_charts(archive, rel.target):
+                        for c in find_charts(self.archive, rel.target):
                             ws.add_chart(c, c.anchor)
 
                     pivot_rel = rels.find(TableDefinition.rel_type)
@@ -436,7 +434,7 @@ class ExcelReader:
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                   data_only=False, guess_types=False, keep_links=True):
-    reader = ExcelReader(filename, read_only=False, keep_vba=KEEP_VBA,
-                        data_only=False, guess_types=False, keep_links=True)
+    reader = ExcelReader(filename, read_only, keep_vba,
+                        data_only, guess_types, keep_links)
     reader.read()
     return reader.wb
