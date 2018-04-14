@@ -186,7 +186,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     wb.guess_types = guess_types
     wb.template = wb_part.ContentType in (XLTX, XLTM)
     parser.parse()
-    wb._sheets = []
+    wb._sheets = [] # remove default worksheet
 
     if read_only and guess_types:
         warnings.warn('Data types are not guessed when using iterator reader')
@@ -301,7 +301,6 @@ class ExcelReader:
 
     def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
                   data_only=False, guess_types=False, keep_links=True):
-        self.fn = fn
         self.archive = _validate_archive(fn)
         self.valid_files = self.archive.namelist()
         self.read_only = read_only
@@ -330,7 +329,7 @@ class ExcelReader:
         self.parser = WorkbookParser(self.archive, wb_part.PartName[1:])
         self.parser.parse()
         wb = self.parser.wb
-        wb.sheets = []
+        wb._sheets = []
         wb._data_only = self.data_only
         wb._read_only = self.read_only
         wb._keep_links = self.keep_links
@@ -364,6 +363,7 @@ class ExcelReader:
     def read_worksheets(self):
         for sheet, rel in self.parser.find_sheets():
             sheet_name = sheet.name
+            print(self.wb.sheetnames)
             worksheet_path = rel.target
             rels_path = get_rels_path(worksheet_path)
             rels = []
