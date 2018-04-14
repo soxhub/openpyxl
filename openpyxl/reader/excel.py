@@ -291,3 +291,152 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     archive.close()
     return wb
+
+
+class ExcelReader:
+
+    """
+    Read an Excel package and dispatch the contents to the relevant modules
+    """
+
+    def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
+                  data_only=False, guess_types=False, keep_links=True):
+        self.fn = fn
+        self.archive = _validate_archive(fn)
+        self.valid_files = self.archive.namelist()
+        self.read_only = read_only
+        self.keep_vba = keep_vba
+        self.data_only = data_only
+        self.guess_types = guess_types
+        self.keep_links = keep_links
+        self.shared_strings = []
+
+
+
+    def read_manifest(self):
+        src = self.archive.read(ARC_CONTENT_TYPES)
+        root = fromstring(src)
+        self.package = Manifest.from_tree(root)
+
+
+    def read_strings(self):
+        ct = self.package.find(SHARED_STRINGS)
+        if ct is not None:
+            strings_path = ct.PartName[1:]
+            self.shared_strings = read_string_table(self.archive.read(strings_path))
+
+
+    def read_workbook(self):
+        wb_part = _find_workbook_part(self.package)
+        self.parser = WorkbookParser(self.archive, wb_part.PartName[1:])
+        self.parser.parse()
+        wb = self.parser.wb
+        wb.sheets = []
+        wb._data_only = self.data_only
+        wb._read_only = self.read_only
+        wb._keep_links = self.keep_links
+        wb.guess_types = self.guess_types
+        wb.template = wb_part.ContentType in (XLTX, XLTM)
+
+
+        # If are going to preserve the vba then attach a copy of the archive to the
+        # workbook so that is available for the save.
+        if self.keep_vba:
+            wb.vba_archive = ZipFile(BytesIO(), 'a', ZIP_DEFLATED)
+            for name in self.valid_files:
+                wb.vba_archive.writestr(name, archive.read(name))
+
+        if self.read_only:
+            wb._archive = ZipFile(filename)
+
+        self.wb = wb
+
+    def read_properties(self):
+        if ARC_CORE in self.valid_files:
+            src = fromstring(self.archive.read(ARC_CORE))
+            self.wb.properties = DocumentProperties.from_tree(src)
+
+
+    def read_theme(self):
+        if ARC_THEME in self.valid_files:
+            self.wb.loaded_theme = self.archive.read(ARC_THEME)
+
+
+    def read_worksheets(self):
+        for sheet, rel in self.parser.find_sheets():
+            sheet_name = sheet.name
+            worksheet_path = rel.target
+            rels_path = get_rels_path(worksheet_path)
+            rels = []
+            if rels_path in self.valid_files:
+                rels = get_dependents(self.archive, rels_path)
+
+            if not worksheet_path in self.valid_files:
+                continue
+
+            if self.read_only:
+                ws = ReadOnlyWorksheet(self.wb, sheet_name, worksheet_path, None,
+                                           shared_strings)
+                wb._sheets.append(ws)
+            else:
+                fh = self.archive.open(worksheet_path)
+                ws = self.wb.create_sheet(sheet_name)
+                ws._rels = rels
+                ws_parser = WorkSheetParser(ws, fh, self.shared_strings)
+                ws_parser.parse()
+
+                if rels:
+                    # assign any comments to cells
+                    for r in rels.find(COMMENTS_NS):
+                        src = self.archive.read(r.target)
+                        comment_sheet = CommentSheet.from_tree(fromstring(src))
+                        for ref, comment in comment_sheet.comments:
+                            ws[ref].comment = comment
+
+                    # preserve link to VML file if VBA
+                    if (
+                        self.wb.vba_archive is not None
+                        and ws.legacy_drawing is not None
+                        ):
+                        ws.legacy_drawing = rels[ws.legacy_drawing].target
+
+                    for t in ws_parser.tables:
+                        src = self.archive.read(t)
+                        xml = fromstring(src)
+                        table = Table.from_tree(xml)
+                        ws.add_table(table)
+
+                    drawings = rels.find(SpreadsheetDrawing._rel_type)
+                    for rel in drawings:
+                        for c in find_charts(archive, rel.target):
+                            ws.add_chart(c, c.anchor)
+
+                    pivot_rel = rels.find(TableDefinition.rel_type)
+                    for r in pivot_rel:
+                        pivot_path = r.Target
+                        src = self.archive.read(pivot_path)
+                        tree = fromstring(src)
+                        pivot = TableDefinition.from_tree(tree)
+                        pivot.cache = pivot_caches[pivot.cacheId]
+                        ws.add_pivot(pivot)
+
+            ws.sheet_state = sheet.state
+            ws._rels = [] # reset
+
+
+    def read(self):
+        self.read_manifest()
+        self.read_strings()
+        self.read_workbook()
+        self.read_properties()
+        self.read_theme()
+        apply_stylesheet(self.archive, self.wb)
+        self.read_worksheets()
+
+
+def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
+                  data_only=False, guess_types=False, keep_links=True):
+    reader = ExcelReader(filename, read_only=False, keep_vba=KEEP_VBA,
+                        data_only=False, guess_types=False, keep_links=True)
+    reader.read()
+    return reader.wb
