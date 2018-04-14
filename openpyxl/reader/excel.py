@@ -211,7 +211,6 @@ class ExcelReader:
     def read_worksheets(self):
         for sheet, rel in self.parser.find_sheets():
             sheet_name = sheet.name
-            print(self.wb.sheetnames)
             worksheet_path = rel.target
             rels_path = get_rels_path(worksheet_path)
             rels = []
