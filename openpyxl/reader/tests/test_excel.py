@@ -185,3 +185,35 @@ class TestExcelReader:
             'docProps/core.xml',
             'docProps/app.xml'
         ]
+
+
+    def test_read_manifest(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        reader.read_manifest()
+        assert reader.package is not None
+
+
+    def test_read_strings(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        reader.read_manifest()
+        reader.read_strings()
+        assert reader.shared_strings != []
+
+
+    def test_read_workbook(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        reader.read_manifest()
+        reader.read_workbook()
+        assert reader.wb is not None
+
+
+    def test_read_workbook(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        reader.read_manifest()
+        reader.read_workbook()
+        reader.read_theme()
+        assert reader.wb.loaded_theme is not None
