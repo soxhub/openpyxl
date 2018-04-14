@@ -162,3 +162,26 @@ def test_no_external_links(datadir, load_workbook):
 
     wb = load_workbook("bug137.xlsx", keep_links=False)
     assert wb.keep_links is False
+
+
+from ..excel import ExcelReader
+
+
+class TestExcelReader:
+
+    def test_ctor(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        assert reader.valid_files == [
+            '[Content_Types].xml',
+            '_rels/.rels',
+            'xl/_rels/workbook.xml.rels',
+            'xl/workbook.xml',
+            'xl/sharedStrings.xml',
+            'xl/theme/theme1.xml',
+            'xl/styles.xml',
+            'xl/worksheets/sheet1.xml',
+            'docProps/thumbnail.jpeg',
+            'docProps/core.xml',
+            'docProps/app.xml'
+        ]
