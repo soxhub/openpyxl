@@ -136,3 +136,32 @@ class TestCharacterProperties:
         node = fromstring(src)
         text = CharacterProperties.from_tree(node)
         assert text == CharacterProperties(sz=110)
+
+
+@pytest.fixture
+def Font():
+    from ..text import Font
+    return Font
+
+
+class TestFont:
+
+    def test_ctor(self, Font):
+        fut = Font("Arial")
+        xml = tostring(fut.to_tree())
+        expected = """
+        <latin typeface="Arial"
+xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Font):
+        src = """
+        <latin typeface="Arial" pitchFamily="40"
+xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        """
+        node = fromstring(src)
+        fut = Font.from_tree(node)
+        assert fut == Font(typeface="Arial", pitchFamily=40)
