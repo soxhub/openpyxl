@@ -110,10 +110,20 @@ def CharacterProperties():
 class TestCharacterProperties:
 
     def test_ctor(self, CharacterProperties):
-        text = CharacterProperties(sz=110)
+        from ..text import Font
+        normal_font = Font(typeface='Arial')
+        text = CharacterProperties(latin=normal_font, sz=900, b=False, solidFill='FFC000')
+
         xml = tostring(text.to_tree())
-        expected = ('<defRPr xmlns="http://schemas.openxmlformats.org/'
-                    'drawingml/2006/main" sz="110"/>')
+        expected = ("""
+        <a:defRPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        b="0" sz="900">
+           <a:solidFill>
+              <a:srgbClr val="FFC000"/>
+           </a:solidFill>
+           <a:latin typeface="Arial"/>
+        </a:defRPr>
+        """)
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
