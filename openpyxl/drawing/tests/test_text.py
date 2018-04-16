@@ -110,10 +110,20 @@ def CharacterProperties():
 class TestCharacterProperties:
 
     def test_ctor(self, CharacterProperties):
-        text = CharacterProperties(sz=110)
+        from ..text import Font
+        normal_font = Font(typeface='Arial')
+        text = CharacterProperties(latin=normal_font, sz=900, b=False, solidFill='FFC000')
+
         xml = tostring(text.to_tree())
-        expected = ('<defRPr xmlns="http://schemas.openxmlformats.org/'
-                    'drawingml/2006/main" sz="110"/>')
+        expected = ("""
+        <a:defRPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        b="0" sz="900">
+           <a:solidFill>
+              <a:srgbClr val="FFC000"/>
+           </a:solidFill>
+           <a:latin typeface="Arial"/>
+        </a:defRPr>
+        """)
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -126,3 +136,32 @@ class TestCharacterProperties:
         node = fromstring(src)
         text = CharacterProperties.from_tree(node)
         assert text == CharacterProperties(sz=110)
+
+
+@pytest.fixture
+def Font():
+    from ..text import Font
+    return Font
+
+
+class TestFont:
+
+    def test_ctor(self, Font):
+        fut = Font("Arial")
+        xml = tostring(fut.to_tree())
+        expected = """
+        <latin typeface="Arial"
+xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Font):
+        src = """
+        <latin typeface="Arial" pitchFamily="40"
+xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        """
+        node = fromstring(src)
+        fut = Font.from_tree(node)
+        assert fut == Font(typeface="Arial", pitchFamily=40)

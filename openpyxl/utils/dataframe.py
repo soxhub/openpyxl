@@ -50,10 +50,12 @@ def dataframe_to_rows(df, index=True, header=True):
     if df.index.nlevels > 1:
         cols = zip(*expand_levels(df.index.levels))
 
+    if index:
+        yield df.index.names
+
     for idx, v in enumerate(df.index):
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            yield df.index.names
             if cols:
                 v = list(next(cols))
             else:

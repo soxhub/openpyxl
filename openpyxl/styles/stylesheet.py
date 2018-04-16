@@ -137,8 +137,6 @@ class Stylesheet(Serialisable):
         for style in wb._named_styles:
             self.cellStyles.cellStyle.append(style.as_name())
             self.cellStyleXfs.xf.append(style.as_xf())
-            if style.as_xf().fillId == 21:
-                style.name
 
 
     @property
