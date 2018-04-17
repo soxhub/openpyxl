@@ -118,6 +118,6 @@ class SheetProtection(Serialisable, _Protected):
 
 
     def  __bool__(self):
-        return self.sheet is None
+        return self.sheet
 
     __nonzero__ = __bool__
