@@ -21,6 +21,8 @@ renaming worksheets, you can protect the structure of your workbook with a passw
 set using the :func:`openpyxl.workbook.protection.WorkbookProtection.workbookPassword` property ::
 
     >>> wb.security.workbookPassword = '...'
+    >>> wb.security.lockStructure = True
+
 
 Similarly removing change tracking and change history from a shared workbook can be prevented by setting
 another password. This password can be set using the
@@ -42,12 +44,15 @@ Worksheet Protection
 --------------------
 
 Various aspects of a worksheet can also be locked by setting attributes on the
-:class:`openpyxl.worksheet.protection.SheetProtection` object. Unlike the worksheet protection, sheet
+:class:`openpyxl.worksheet.protection.SheetProtection` object. Unlike workbook protection, sheet
 protection may be enabled with or without using a password. Sheet protection is enabled using the
-:attr:`openpxyl.worksheet.protection.SheetProtection.sheet` attribute ::
+:attr:`openpxyl.worksheet.protection.SheetProtection.sheet` attribute or calling `enable()` or `disable()`::
 
     >>> ws = wb.active
     >>> wb.protection.sheet = True
+    >>> wb.protection.enable()
+    >>> wb.protection.disabe()
+
 
 If no password is specified, users can disable configured sheet protection without specifying a password.
 Otherwise they must supply a password to change configured protections. The password is set using
