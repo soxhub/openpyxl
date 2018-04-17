@@ -38,8 +38,8 @@ client and the following URL.
 .. parsed-literal::
 
     $ hg clone \https://bitbucket.org/openpyxl/openpyxl
-    $ hg up |version|
     $ virtualenv openpyxl
+    $ hg up |version|
     $ cd openpyxl
     $ source bin/activate
     $ pip install -U -r requirements.txt
