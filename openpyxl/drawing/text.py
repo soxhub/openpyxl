@@ -19,7 +19,8 @@ from openpyxl.descriptors.excel import (
     HexBinary,
     TextPoint,
     Coordinate,
-    ExtensionList
+    ExtensionList,
+    Relation,
 )
 from openpyxl.descriptors.nested import (
     NestedInteger,
@@ -46,7 +47,7 @@ from openpyxl.descriptors.nested import NestedBool
 
 class EmbeddedWAVAudioFile(Serialisable):
 
-    name = Typed(expected_type=String, allow_none=True)
+    name = String(allow_none=True)
 
     def __init__(self,
                  name=None,
@@ -56,15 +57,21 @@ class EmbeddedWAVAudioFile(Serialisable):
 
 class Hyperlink(Serialisable):
 
-    invalidUrl = Typed(expected_type=String, allow_none=True)
-    action = Typed(expected_type=String, allow_none=True)
-    tgtFrame = Typed(expected_type=String, allow_none=True)
-    tooltip = Typed(expected_type=String, allow_none=True)
-    history = Typed(expected_type=Bool, allow_none=True)
-    highlightClick = Typed(expected_type=Bool, allow_none=True)
-    endSnd = Typed(expected_type=Bool, allow_none=True)
+    tagname = "hlinkClick"
+    namespace = DRAWING_NS
+
+    invalidUrl = String(allow_none=True)
+    action = String(allow_none=True)
+    tgtFrame = String(allow_none=True)
+    tooltip = String(allow_none=True)
+    history = Bool(allow_none=True)
+    highlightClick = Bool(allow_none=True)
+    endSnd = Bool(allow_none=True)
     snd = Typed(expected_type=EmbeddedWAVAudioFile, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+    id = Relation(allow_none=True)
+
+    __elements__ = ('snd',)
 
     def __init__(self,
                  invalidUrl=None,
@@ -76,6 +83,7 @@ class Hyperlink(Serialisable):
                  endSnd=None,
                  snd=None,
                  extLst=None,
+                 id=None,
                 ):
         self.invalidUrl = invalidUrl
         self.action = action
@@ -85,7 +93,7 @@ class Hyperlink(Serialisable):
         self.highlightClick = highlightClick
         self.endSnd = endSnd
         self.snd = snd
-        self.extLst = extLst
+        self.id = id
 
 
 class Font(Serialisable):
