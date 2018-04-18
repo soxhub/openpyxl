@@ -165,3 +165,33 @@ xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         node = fromstring(src)
         fut = Font.from_tree(node)
         assert fut == Font(typeface="Arial", pitchFamily=40)
+
+
+
+@pytest.fixture
+def Hyperlink():
+    from ..text import Hyperlink
+    return Hyperlink
+
+
+class TestHyperlink:
+
+    def test_ctor(self, Hyperlink):
+        link = Hyperlink()
+        xml = tostring(link.to_tree())
+        expected = """
+        <hlinkClick xmlns="http://schemas.openxmlformats.org/drawingml/2006/main"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Hyperlink):
+        src = """
+        <hlinkClick tooltip="Select/de-select all"/>
+        """
+        node = fromstring(src)
+        link = Hyperlink.from_tree(node)
+        assert link == Hyperlink(tooltip="Select/de-select all")
+
+
