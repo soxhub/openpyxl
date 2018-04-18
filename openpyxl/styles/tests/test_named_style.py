@@ -59,6 +59,7 @@ class TestNamedStyle:
 
     def test_as_xf(self, NamedStyle):
         style = NamedStyle(xfId=0)
+        style.alignment = Alignment(horizontal="left")
 
         xf = style.as_xf()
         assert xf == CellStyle(numFmtId=0, fontId=0, fillId=0, borderId=0,
@@ -66,9 +67,9 @@ class TestNamedStyle:
                               applyFont=None,
                               applyFill=None,
                               applyBorder=None,
-                              applyAlignment=None,
+                              applyAlignment=True,
                               applyProtection=None,
-                              alignment=None,
+                              alignment=Alignment(horizontal="left"),
                               protection=None,
                               )
 

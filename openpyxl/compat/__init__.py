@@ -56,13 +56,12 @@ def deprecated(reason):
 
             @wraps(func1)
             def new_func1(*args, **kwargs):
-                warnings.simplefilter('always', DeprecationWarning)
+                warnings.simplefilter('default', DeprecationWarning)
                 warnings.warn(
                     fmt1.format(name=func1.__name__, reason=reason),
                     category=DeprecationWarning,
                     stacklevel=2
                 )
-                warnings.simplefilter('default', DeprecationWarning)
                 return func1(*args, **kwargs)
 
             # Enhance docstring with a deprecation note

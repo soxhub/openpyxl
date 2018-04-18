@@ -45,6 +45,14 @@ class TestSheetProtection:
         assert diff is None, diff
 
 
+
+    def test_bool(self, SheetProtection):
+        prot = SheetProtection()
+        assert bool(prot) is False
+        prot.enable()
+        assert bool(prot) is True
+
+
 def test_ctor_with_password(SheetProtection):
     prot = SheetProtection(password="secret")
     assert prot.password == "DAA7"

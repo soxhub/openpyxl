@@ -140,6 +140,10 @@ class NamedStyle(Serialisable):
         xf.xfId = None
         xf.pivotButton = None
         xf.quotePrefix = None
+        if self.alignment != Alignment():
+            xf.alignment = self.alignment
+        if self.protection != Protection():
+            xf.protection = self.protection
         return xf
 
 

@@ -1,3 +1,18 @@
+2.5.3 (2018-04-18)
+==================
+
+
+Bugfixes
+--------
+
+* `#983 <https://bitbucket.org/openpyxl/openpyxl/issues/983>`_ Warning level too aggressive.
+* `#1015 <https://bitbucket.org/openpyxl/openpyxl/issues/1015>`_ Alignment and protection values not saved for named styles.
+* `#1017 <https://bitbucket.org/openpyxl/openpyxl/issues/1017>`_ Deleting elements from a legend doesn't work.
+* `#1018 <https://bitbucket.org/openpyxl/openpyxl/issues/1018>`_ Index names repeated for every row in dataframe.
+* `#1020 <https://bitbucket.org/openpyxl/openpyxl/issues/1020>`_ Worksheet protection not being stored.
+* `#1023 <https://bitbucket.org/openpyxl/openpyxl/issues/1023>`_ Exception raised when reading a tooltip.
+
+
 2.5.2 (2018-04-06)
 ==================
 
