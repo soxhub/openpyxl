@@ -73,8 +73,8 @@ def expand_levels(levels):
     size = max(widths)
 
     for level, width in zip(levels, widths):
-        padding = int(size/width) # how wide a title should be
-        repeat = int(width/len(level)) # how often a title is repeated
+        padding = size//width # how wide a title should be
+        repeat = width//len(level) # how often a title is repeated
         row = []
         for v in level:
             title = [None]*padding
