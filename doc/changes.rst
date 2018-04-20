@@ -1,6 +1,8 @@
 2.5.4 (unreleased)
 ==================
 
+* `#1025 <https://bitbucket.org/openpyxl/openpyxl/issues/1025>`_ Cannot read files with 3D charts.
+
 
 2.5.3 (2018-04-18)
 ==================
