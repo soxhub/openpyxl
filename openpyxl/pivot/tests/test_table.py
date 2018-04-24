@@ -376,3 +376,66 @@ class TestChartFormat:
         fmt = ChartFormat.from_tree(node)
         area = PivotArea()
         assert fmt == ChartFormat(chart=0, format=12, series=1, pivotArea=area)
+
+
+@pytest.fixture
+def PivotFilter():
+    from ..table import PivotFilter
+    return PivotFilter
+
+
+@pytest.fixture
+def Autofilter():
+    from ..table import (
+        AutoFilter,
+        FilterColumn,
+        CustomFilter,
+        CustomFilters,
+    )
+    cf1 = CustomFilter(operator="greaterThanOrEqual", val="1")
+    cf2 = CustomFilter(operator="lessThanOrEqual", val="2")
+    filters = CustomFilters(_and=True, customFilter=(cf1, cf2))
+    col = FilterColumn(colId=0, customFilters=filters)
+    af = AutoFilter(ref="A1", filterColumn=[col])
+    return af
+
+
+class TestPivotFilter:
+
+    def test_ctor(self, PivotFilter, Autofilter):
+        flt = PivotFilter(fld=0, id=6, evalOrder=-1, type="dateBetween", autoFilter=Autofilter)
+        xml = tostring(flt.to_tree())
+        expected = """
+        <filter fld="0" type="dateBetween" evalOrder="-1" id="6">
+            <autoFilter ref="A1">
+                <filterColumn colId="0">
+                    <filters />
+                    <customFilters and="1">
+                        <customFilter operator="greaterThanOrEqual" val="1"/>
+                        <customFilter operator="lessThanOrEqual" val="2"/>
+                    </customFilters>
+                </filterColumn>
+            </autoFilter>
+        </filter>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PivotFilter, Autofilter):
+        src = """
+        <filter fld="0" type="dateBetween" evalOrder="-1" id="6">
+            <autoFilter ref="A1">
+                <filterColumn colId="0">
+                    <filters />
+                    <customFilters and="1">
+                        <customFilter operator="greaterThanOrEqual" val="1"/>
+                        <customFilter operator="lessThanOrEqual" val="2"/>
+                    </customFilters>
+                </filterColumn>
+            </autoFilter>
+        </filter>
+        """
+        node = fromstring(src)
+        flt = PivotFilter.from_tree(node)
+        assert flt == PivotFilter(fld=0, id=6, evalOrder=-1, type="dateBetween", autoFilter=Autofilter)
