@@ -197,3 +197,62 @@ class TestPivotCacheDefinition:
 
         assert archive.namelist() == [DummyCache.path[1:]]
         assert manifest.find(DummyCache.mime_type)
+
+
+
+@pytest.fixture
+def CacheHierarchy():
+    from ..cache import CacheHierarchy
+    return CacheHierarchy
+
+
+class TestCacheHierarchy:
+
+    def test_ctor(self, CacheHierarchy):
+        ch = CacheHierarchy(
+            uniqueName="[Interval].[Date]",
+            caption="Date",
+            attribute=True,
+            time=True,
+            defaultMemberUniqueName="[Interval].[Date].[All]",
+            allUniqueName="[Interval].[Date].[All]",
+            dimensionUniqueName="[Interval]",
+            memberValueDatatype=7,
+            count=0,
+        )
+        xml = tostring(ch.to_tree())
+        expected = """
+        <cacheHierarchy uniqueName="[Interval].[Date]" caption="Date" attribute="1"
+        time="1" defaultMemberUniqueName="[Interval].[Date].[All]"
+        allUniqueName="[Interval].[Date].[All]" dimensionUniqueName="[Interval]"
+        count="0" memberValueDatatype="7"
+        hidden="0" iconSet="0" keyAttribute="0" measure="0" measures="0"
+        oneField="0" set="0"
+        />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, CacheHierarchy):
+        src = """
+        <cacheHierarchy uniqueName="[Interval].[Date]" caption="Date" attribute="1"
+        time="1" defaultMemberUniqueName="[Interval].[Date].[All]"
+        allUniqueName="[Interval].[Date].[All]" dimensionUniqueName="[Interval]"
+        displayFolder="" count="0" memberValueDatatype="7" unbalanced="0"/>
+        """
+        node = fromstring(src)
+        ch = CacheHierarchy.from_tree(node)
+        assert ch == CacheHierarchy(
+            uniqueName="[Interval].[Date]",
+            caption="Date",
+            attribute=True,
+            time=True,
+            defaultMemberUniqueName="[Interval].[Date].[All]",
+            allUniqueName="[Interval].[Date].[All]",
+            dimensionUniqueName="[Interval]",
+            memberValueDatatype=7,
+            count=0,
+            unbalanced=False,
+            displayFolder="",
+            )
