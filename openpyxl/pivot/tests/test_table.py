@@ -409,7 +409,6 @@ class TestPivotFilter:
         <filter fld="0" type="dateBetween" evalOrder="-1" id="6">
             <autoFilter ref="A1">
                 <filterColumn colId="0">
-                    <filters />
                     <customFilters and="1">
                         <customFilter operator="greaterThanOrEqual" val="1"/>
                         <customFilter operator="lessThanOrEqual" val="2"/>
@@ -427,7 +426,6 @@ class TestPivotFilter:
         <filter fld="0" type="dateBetween" evalOrder="-1" id="6">
             <autoFilter ref="A1">
                 <filterColumn colId="0">
-                    <filters />
                     <customFilters and="1">
                         <customFilter operator="greaterThanOrEqual" val="1"/>
                         <customFilter operator="lessThanOrEqual" val="2"/>
