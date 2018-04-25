@@ -4,6 +4,12 @@
 * `#1025 <https://bitbucket.org/openpyxl/openpyxl/issues/1025>`_ Cannot read files with 3D charts.
 
 
+Minor changes
+-------------
+
+* Improve read support for pivot tables and don't always create a Filters child for filterColumn objects.
+
+
 2.5.3 (2018-04-18)
 ==================
 
