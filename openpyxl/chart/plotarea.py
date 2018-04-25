@@ -152,9 +152,6 @@ class PlotArea(Serialisable):
                 chart.y_axis = y
                 continue
 
-            if isinstance(chart, (BarChart3D, LineChart3D, SurfaceChart3D)):
-                chart.z_axis = None
-
             for axId in chart.axId:
                 if not axId:
                     continue

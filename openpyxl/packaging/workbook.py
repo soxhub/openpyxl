@@ -187,3 +187,19 @@ class WorkbookPackage(Serialisable):
                 return view.activeTab
         return 0
 
+
+    @property
+    def pivot_caches(self):
+        """
+        Get PivotCache objects
+        """
+        d = {}
+        for c in self.caches:
+            cache = get_rel(self.archive, self.rels, id=c.id, cls=CacheDefinition)
+            if cache.deps:
+                records = get_rel(self.archive, cache.deps, cache.id, RecordList)
+            else:
+                records = None
+            cache.records = records
+            d[c.cacheId]  = cache
+        return d

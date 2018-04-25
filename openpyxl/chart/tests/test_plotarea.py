@@ -121,6 +121,16 @@ class TestPlotArea:
         assert chart.y_axis.axId == 211330000
 
 
+    def test_read_scatter_chart(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("3D_plotarea.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        chart = plot._charts[0]
+        assert chart.axId == [10, 100, 1000]
+        assert chart.tagname == "surface3DChart"
+
+
 @pytest.fixture
 def DataTable():
     from ..plotarea import DataTable

@@ -301,17 +301,15 @@ class FilterColumn(Serialisable):
         self.colId = colId
         self.hiddenButton = hiddenButton
         self.showButton = showButton
-        if filters is None:
-            filters = Filters()
         self.filters = filters
         self.top10 = top10
         self.customFilters = customFilters
         self.dynamicFilter = dynamicFilter
         self.colorFilter = colorFilter
         self.iconFilter = iconFilter
-        if blank is not None:
+        if blank is not None and self.filters:
             self.filters.blank = blank
-        if vals is not None:
+        if vals is not None and self.filters:
             self.filters.filter = vals
 
 
@@ -354,7 +352,7 @@ class AutoFilter(Serialisable):
         :param blank: Show rows that have blank cell if True (default=``False``)
         :type  blank: bool
         """
-        self.filterColumn.append(FilterColumn(colId=col_id, vals=vals, blank=blank))
+        self.filterColumn.append(FilterColumn(colId=col_id, filters=Filters(blank=blank, filter=vals)))
 
 
     def add_sort_condition(self, ref, descending=False):
