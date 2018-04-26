@@ -245,6 +245,12 @@ class TestMultiCellRange:
         assert cells.ranges == [cr1, cr2]
 
 
+    def test_iadd(self, MultiCellRange):
+        cells = MultiCellRange()
+        cells.add('A1')
+        assert cells == "A1"
+
+
     def test_avoid_duplicates(self, MultiCellRange):
         cells = MultiCellRange("A1:D4")
         cells.add("A3")
