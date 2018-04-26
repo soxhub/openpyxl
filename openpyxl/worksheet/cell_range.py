@@ -6,6 +6,7 @@ from copy import copy
 from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
+from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.utils import (
     range_boundaries,
@@ -15,7 +16,7 @@ from openpyxl.utils import (
 )
 
 
-class CellRange(Strict):
+class CellRange(Serialisable):
     """
     Represents a range in a sheet: title and coordinates.
 
