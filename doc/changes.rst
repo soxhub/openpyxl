@@ -2,6 +2,7 @@
 ==================
 
 * `#1025 <https://bitbucket.org/openpyxl/openpyxl/issues/1025>`_ Cannot read files with 3D charts.
+* `#1030 <https://bitbucket.org/openpyxl/openpyxl/issues/1030>`_ Merged cells take a long time to parse
 
 
 Minor changes
