@@ -249,9 +249,6 @@ class WorkSheetParser(object):
 
     def parse_merge(self, element):
         merged = MergeCells.from_tree(element)
-        #cells = []
-        #for c in merged.mergeCell:
-            #cells.append(CellRange(c.ref))
         self.ws.merged_cells.ranges = merged.mergeCell
         for cr in merged.mergeCell:
             self.ws._clean_merge_range(cr)
