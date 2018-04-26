@@ -414,9 +414,11 @@ class MultiCellRange(Strict):
             ranges = self.ranges
             ranges.append(cr)
             self.ranges = ranges
-        return self
 
-    __iadd__ = add
+
+    def __iadd__(self, coord):
+        self.add(coord)
+        return self
 
 
     def __eq__(self, other):
