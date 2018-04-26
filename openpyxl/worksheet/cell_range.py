@@ -402,10 +402,15 @@ class MultiCellRange(Strict):
 
     def add(self, coord):
         """
-        Add a cell coordinate. Will create a new CellRange
+        Add a cell coordinate or CellRange
         """
+        cr = None
+        if isinstance(coord, CellRange):
+            cr = coord
+            coord = cr.coord
         if coord not in self:
-            cr = CellRange(coord)
+            if cr is None:
+                cr = CellRange(coord)
             ranges = self.ranges
             ranges.append(cr)
             self.ranges = ranges
