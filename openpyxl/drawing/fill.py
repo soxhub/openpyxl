@@ -112,19 +112,46 @@ class StretchInfoProperties(Serialisable):
 class GradientStop(Serialisable):
 
     tagname = "gradStop"
+    namespace = DRAWING_NS
 
     pos = MinMax(min=0, max=100000, allow_none=True)
     # Color Choice Group
+    scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
+    RGBPercent = Alias('scrgbClr')
+    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    RGB = Alias('srgbClr')
+    hslClr = Typed(expected_type=HSLColor, allow_none=True)
+    sysClr = Typed(expected_type=SystemColor, allow_none=True)
+    schemeClr = Typed(expected_type=SchemeColor, allow_none=True)
+    prstClr = NestedNoneSet(values=PRESET_COLORS)
+
+    __elements__ = ('scrgbClr', 'srgbClr', 'hslClr', 'sysClr', 'schemeClr', 'prstClr')
 
     def __init__(self,
                  pos=None,
+                 scrgbClr=None,
+                 srgbClr=None,
+                 hslClr=None,
+                 sysClr=None,
+                 schemeClr=None,
+                 prstClr=None,
                 ):
+        if pos is None:
+            pos = 0
         self.pos = pos
+
+        self.scrgbClr = scrgbClr
+        self.srgbClr = srgbClr
+        self.hslClr = hslClr
+        self.sysClr = sysClr
+        self.schemeClr = schemeClr
+        self.prstClr = prstClr
 
 
 class GradientStopList(Serialisable):
 
     tagname = "gradStopLst"
+    namespace = DRAWING_NS
 
     gs = Sequence(expected_type=GradientStop)
 
@@ -138,6 +165,9 @@ class GradientStopList(Serialisable):
 
 class LinearShadeProperties(Serialisable):
 
+    tagname = "lin"
+    namespace = DRAWING_NS
+
     ang = Integer()
     scaled = Bool(allow_none=True)
 
@@ -150,6 +180,9 @@ class LinearShadeProperties(Serialisable):
 
 
 class PathShadeProperties(Serialisable):
+
+    tagname = "path"
+    namespace = DRAWING_NS
 
     path = Set(values=(['shape', 'circle', 'rect']))
     fillToRect = Typed(expected_type=RelativeRect, allow_none=True)
@@ -165,6 +198,7 @@ class PathShadeProperties(Serialisable):
 class GradientFillProperties(Serialisable):
 
     tagname = "gradFill"
+    namespace = DRAWING_NS
 
     flip = NoneSet(values=(['x', 'y', 'xy']))
     rotWithShape = Bool(allow_none=True)

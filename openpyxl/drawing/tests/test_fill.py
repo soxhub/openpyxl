@@ -106,10 +106,12 @@ def GradientStop():
 class TestGradientStop:
 
     def test_ctor(self, GradientStop):
-        fill = GradientStop()
+        fill = GradientStop(pos=0, prstClr="blue")
         xml = tostring(fill.to_tree())
         expected = """
-        <gradStop />
+        <a:gradStop xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
+          <a:prstClr val="blue"/>
+        </a:gradStop>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -117,11 +119,13 @@ class TestGradientStop:
 
     def test_from_xml(self, GradientStop):
         src = """
-        <gradStop />
+        <a:gradStop xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
+          <a:prstClr val="blue"/>
+        </a:gradStop>
         """
         node = fromstring(src)
         fill = GradientStop.from_tree(node)
-        assert fill == GradientStop()
+        assert fill == GradientStop(pos=0, prstClr="blue")
 
 
 @pytest.fixture
@@ -136,10 +140,10 @@ class TestGradientStopList:
         fill = GradientStopList()
         xml = tostring(fill.to_tree())
         expected = """
-        <gradStopLst>
-          <gs />
-          <gs />
-        </gradStopLst>
+        <a:gradStopLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:gs pos="0"/>
+          <a:gs pos="0"/>
+        </a:gradStopLst>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -147,14 +151,68 @@ class TestGradientStopList:
 
     def test_from_xml(self, GradientStopList):
         src = """
-        <gradStopLst>
-          <gs />
-          <gs />
-        </gradStopLst>
+        <a:gradStopLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:gs pos="0"/>
+          <a:gs pos="0"/>
+        </a:gradStopLst>
         """
         node = fromstring(src)
         fill = GradientStopList.from_tree(node)
         assert fill == GradientStopList()
+
+
+@pytest.fixture
+def LinearShadeProperties():
+    from ..fill import LinearShadeProperties
+    return LinearShadeProperties
+
+
+class TestLinearShadeProperties:
+
+    def test_ctor(self, LinearShadeProperties):
+        fill = LinearShadeProperties(ang=0, scaled=True)
+        xml = tostring(fill.to_tree())
+        expected = """
+            <a:lin xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ang="0" scaled="1"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, LinearShadeProperties):
+        src = """
+            <a:lin xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ang="0" scaled="1"/>
+        """
+        node = fromstring(src)
+        fill = LinearShadeProperties.from_tree(node)
+        assert fill == LinearShadeProperties(ang=0, scaled=True)
+
+
+@pytest.fixture
+def PathShadeProperties():
+    from ..fill import PathShadeProperties
+    return PathShadeProperties
+
+
+class PathShadeProperties:
+
+    def test_ctor(self, PathShadeProperties):
+        fill = PathShadeProperties(path="circle")
+        xml = tostring(fill.to_tree())
+        expected = """
+            <a:path xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" path="circle"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, PathShadeProperties):
+        src = """
+            <a:path xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" path="circle"/>
+        """
+        node = fromstring(src)
+        fill = PathShadeProperties.from_tree(node)
+        assert fill == PathShadeProperties(path="circle")
 
 
 @pytest.fixture
@@ -169,7 +227,7 @@ class TestGradientFillProperties:
         fill = GradientFillProperties(flip="xy")
         xml = tostring(fill.to_tree())
         expected = """
-        <gradFill flip="xy" />
+        <a:gradFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" flip="xy"/>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -177,11 +235,11 @@ class TestGradientFillProperties:
 
     def test_from_xml(self, GradientFillProperties):
         src = """
-        <root />
+        <a:gradFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" flip="xy"/>
         """
         node = fromstring(src)
         fill = GradientFillProperties.from_tree(node)
-        assert fill == GradientFillProperties()
+        assert fill == GradientFillProperties(flip="xy")
 
 
 @pytest.fixture

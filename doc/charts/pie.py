@@ -6,6 +6,14 @@ from openpyxl.chart import (
     Reference
 )
 from openpyxl.chart.series import DataPoint
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.drawing.fill import (
+    GradientFillProperties,
+    GradientStopList,
+    GradientStop,
+    LinearShadeProperties
+)
+from openpyxl.drawing.colors import SchemeColor
 
 data = [
     ['Pie', 'Sold'],
@@ -28,8 +36,31 @@ pie.add_data(data, titles_from_data=True)
 pie.set_categories(labels)
 pie.title = "Pies sold by category"
 
-# Cut the first slice out of the pie
-slice = DataPoint(idx=0, explosion=20)
+# Cut the first slice out of the pie and apply a gradient to it
+slice = DataPoint(
+    idx=0,
+    explosion=20,
+    spPr=GraphicalProperties(
+        gradFill=GradientFillProperties(
+            gsLst=GradientStopList(
+                gs=[
+                    GradientStop(
+                        pos=0,
+                        prstClr='blue'
+                    ),
+                    GradientStop(
+                        pos=100000,
+                        schemeClr=SchemeColor(
+                            val='accent1',
+                            lumMod=30000,
+                            lumOff=70000
+                        )
+                    )
+                ]
+            )
+        )
+    )
+)
 pie.series[0].data_points = [slice]
 
 ws.add_chart(pie, "D1")
