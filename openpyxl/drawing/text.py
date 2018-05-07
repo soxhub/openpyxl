@@ -56,6 +56,8 @@ class EmbeddedWAVAudioFile(Serialisable):
 
 class Hyperlink(Serialisable):
 
+    tagname = "hlinkClick"
+
     invalidUrl = Typed(expected_type=String, allow_none=True)
     action = Typed(expected_type=String, allow_none=True)
     tgtFrame = Typed(expected_type=String, allow_none=True)
@@ -485,6 +487,9 @@ class RegularTextRun(Serialisable):
 
 
 class LineBreak(Serialisable):
+
+    tagname = "br"
+    namespace = DRAWING_NS
 
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
 
