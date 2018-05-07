@@ -21,6 +21,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Alexandre Fayolle
 * Don Freeman
 * Eric Gazoni
+* Dominik Geldmacher
 * Brice Gelineau
 * Mark Gemmill
 * Alex Gronholm
