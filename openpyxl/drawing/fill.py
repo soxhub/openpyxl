@@ -111,7 +111,7 @@ class StretchInfoProperties(Serialisable):
 
 class GradientStop(Serialisable):
 
-    tagname = "gradStop"
+    tagname = "gs"
     namespace = DRAWING_NS
 
     pos = MinMax(min=0, max=100000, allow_none=True)
@@ -154,7 +154,7 @@ class GradientStopList(Serialisable):
     became a NestedSequence.
     """
 
-    tagname = "gradStopLst"
+    tagname = "gsLst"
     namespace = DRAWING_NS
 
     gs = Sequence(expected_type=GradientStop)

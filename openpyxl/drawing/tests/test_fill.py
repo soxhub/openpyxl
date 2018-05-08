@@ -109,9 +109,9 @@ class TestGradientStop:
         fill = GradientStop(pos=0, prstClr="blue")
         xml = tostring(fill.to_tree())
         expected = """
-        <a:gradStop xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
+        <a:gs xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
           <a:prstClr val="blue"/>
-        </a:gradStop>
+        </a:gs>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -119,9 +119,9 @@ class TestGradientStop:
 
     def test_from_xml(self, GradientStop):
         src = """
-        <a:gradStop xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
+        <a:gs xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" pos="0">
           <a:prstClr val="blue"/>
-        </a:gradStop>
+        </a:gs>
         """
         node = fromstring(src)
         fill = GradientStop.from_tree(node)
@@ -140,10 +140,10 @@ class TestGradientStopList:
         fill = GradientStopList()
         xml = tostring(fill.to_tree())
         expected = """
-        <a:gradStopLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <a:gsLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <a:gs pos="0"/>
           <a:gs pos="0"/>
-        </a:gradStopLst>
+        </a:gsLst>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -151,10 +151,10 @@ class TestGradientStopList:
 
     def test_from_xml(self, GradientStopList):
         src = """
-        <a:gradStopLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <a:gsLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <a:gs pos="0"/>
           <a:gs pos="0"/>
-        </a:gradStopLst>
+        </a:gsLst>
         """
         node = fromstring(src)
         fill = GradientStopList.from_tree(node)
