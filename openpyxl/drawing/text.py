@@ -56,8 +56,6 @@ class EmbeddedWAVAudioFile(Serialisable):
 
 class Hyperlink(Serialisable):
 
-    tagname = "hlinkClick"
-
     invalidUrl = Typed(expected_type=String, allow_none=True)
     action = Typed(expected_type=String, allow_none=True)
     tgtFrame = Typed(expected_type=String, allow_none=True)

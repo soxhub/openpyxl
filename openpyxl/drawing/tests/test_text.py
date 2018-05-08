@@ -191,31 +191,3 @@ class TestLineBreak:
         fut = LineBreak.from_tree(node)
         assert fut == LineBreak()  
 
-
-@pytest.fixture
-def Hyperlink():
-    from ..text import Hyperlink
-    return Hyperlink
-
-
-class TestHyperlink:
-
-    def test_ctor(self, Hyperlink):
-        link = Hyperlink()
-        xml = tostring(link.to_tree())
-        expected = """
-        <hlinkClick></hlinkClick>        
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, Hyperlink):
-        src = """
-        <hlinkClick />
-        """
-        node = fromstring(src)
-        link = Hyperlink.from_tree(node)
-        assert link == Hyperlink()
-
-
