@@ -148,25 +148,6 @@ class GradientStop(Serialisable):
         self.prstClr = prstClr
 
 
-class GradientStopList(Serialisable):
-    """
-    Unused because gsLst attribute in class GradientFillProperties
-    became a NestedSequence.
-    """
-
-    tagname = "gsLst"
-    namespace = DRAWING_NS
-
-    gs = Sequence(expected_type=GradientStop)
-
-    def __init__(self,
-                 gs=None,
-                ):
-        if gs is None:
-            gs = [GradientStop(), GradientStop()]
-        self.gs = gs
-
-
 class LinearShadeProperties(Serialisable):
 
     tagname = "lin"

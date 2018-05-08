@@ -129,39 +129,6 @@ class TestGradientStop:
 
 
 @pytest.fixture
-def GradientStopList():
-    from ..fill import GradientStopList
-    return GradientStopList
-
-
-class TestGradientStopList:
-
-    def test_ctor(self, GradientStopList):
-        fill = GradientStopList()
-        xml = tostring(fill.to_tree())
-        expected = """
-        <a:gsLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
-          <a:gs pos="0"/>
-          <a:gs pos="0"/>
-        </a:gsLst>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, GradientStopList):
-        src = """
-        <a:gsLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
-          <a:gs pos="0"/>
-          <a:gs pos="0"/>
-        </a:gsLst>
-        """
-        node = fromstring(src)
-        fill = GradientStopList.from_tree(node)
-        assert fill == GradientStopList()
-
-
-@pytest.fixture
 def LinearShadeProperties():
     from ..fill import LinearShadeProperties
     return LinearShadeProperties
