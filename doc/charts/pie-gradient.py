@@ -41,21 +41,19 @@ slice = DataPoint(
     explosion=20,
     spPr=GraphicalProperties(
         gradFill=GradientFillProperties(
-            gsLst=GradientStopList(
-                gs=[
-                    GradientStop(
-                        pos=0,
-                        prstClr='blue'
-                    ),
-                    GradientStop(
-                        pos=100000,
-                        schemeClr=SchemeColor(
-                            val='accent1',
-                            lumMod=30000,
-                            lumOff=70000
-                        )
+            gsLst=(
+                GradientStop(
+                    pos=0,
+                    prstClr='blue'
+                ),
+                GradientStop(
+                    pos=100000,
+                    schemeClr=SchemeColor(
+                        val='accent1',
+                        lumMod=30000,
+                        lumOff=70000
                     )
-                ]
+                )
             )
         )
     )

@@ -149,6 +149,10 @@ class GradientStop(Serialisable):
 
 
 class GradientStopList(Serialisable):
+    """
+    Unused because gsLst attribute in class GradientFillProperties
+    became a NestedSequence.
+    """
 
     tagname = "gradStopLst"
     namespace = DRAWING_NS
@@ -203,7 +207,7 @@ class GradientFillProperties(Serialisable):
     flip = NoneSet(values=(['x', 'y', 'xy']))
     rotWithShape = Bool(allow_none=True)
 
-    gsLst = Typed(expected_type=GradientStopList, allow_none=True)
+    gsLst = NestedSequence(expected_type=GradientStop, count=False)
     stop_list = Alias("gsLst")
 
     lin = Typed(expected_type=LinearShadeProperties, allow_none=True)
@@ -217,7 +221,7 @@ class GradientFillProperties(Serialisable):
     def __init__(self,
                  flip=None,
                  rotWithShape=None,
-                 gsLst=None,
+                 gsLst=(),
                  lin=None,
                  path=None,
                  tileRect=None,
