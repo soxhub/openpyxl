@@ -230,11 +230,25 @@ class TestMultiCellRange:
         assert cells.ranges == [CellRange("A1"), CellRange("B2:B5")]
 
 
-    def test_add(self, MultiCellRange, CellRange):
+    def test_add_coord(self, MultiCellRange, CellRange):
         cr = CellRange("A1")
         cells = MultiCellRange(ranges=[cr])
-        cells += "B2"
+        cells.add("B2")
         assert cells.ranges == [cr, CellRange("B2")]
+
+
+    def test_add_cell_range(self, MultiCellRange, CellRange):
+        cr1 = CellRange("A1")
+        cr2 = CellRange("B2")
+        cells = MultiCellRange(ranges=[cr1])
+        cells.add(cr2)
+        assert cells.ranges == [cr1, cr2]
+
+
+    def test_iadd(self, MultiCellRange):
+        cells = MultiCellRange()
+        cells.add('A1')
+        assert cells == "A1"
 
 
     def test_avoid_duplicates(self, MultiCellRange):
