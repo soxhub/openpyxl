@@ -521,12 +521,12 @@ class CacheHierarchy(Serialisable):
     attribute = Bool()
     time = Bool()
     keyAttribute = Bool()
-    defaultMemberUniqueName = String()
-    allUniqueName = String()
-    allCaption = String()
-    dimensionUniqueName = String()
-    displayFolder = String()
-    measureGroup = String()
+    defaultMemberUniqueName = String(allow_none=True)
+    allUniqueName = String(allow_none=True)
+    allCaption = String(allow_none=True)
+    dimensionUniqueName = String(allow_none=True)
+    displayFolder = String(allow_none=True)
+    measureGroup = String(allow_none=True)
     measures = Bool()
     count = Integer()
     oneField = Bool()
@@ -541,12 +541,12 @@ class CacheHierarchy(Serialisable):
     __elements__ = ('fieldsUsage', 'groupLevels')
 
     def __init__(self,
-                 uniqueName=None,
+                 uniqueName="",
                  caption=None,
                  measure=None,
                  set=None,
                  parentSet=None,
-                 iconSet=None,
+                 iconSet=0,
                  attribute=None,
                  time=None,
                  keyAttribute=None,
