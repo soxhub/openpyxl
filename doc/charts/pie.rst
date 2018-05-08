@@ -43,3 +43,14 @@ Pie charts can also be created with a 3D effect.
 
 .. image:: pie3D.png
    :alt: "Sample 3D pie chart"
+
+
+Gradient Pie Charts
+-------------------
+
+Pie charts can also be created with gradient series.
+
+..literalinclude:: pie-gradient.py
+
+.. image:: pie-gradient.png
+   :alt: "Sampe gradient pie chart"
