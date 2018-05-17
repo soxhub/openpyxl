@@ -25,17 +25,22 @@ try:
 except IOError:
     README = ''
 
+try:
+    from importlib.util import module_from_spec, spec_from_file_location
+    spec = spec_from_file_location("constants", "./openpyxl/_constants.py")
+    constants = module_from_spec(spec)
+    spec.loader.exec_module(constants)
+except ImportError:
+    # python2.7
+    import imp
+    constants = imp.load_source("constants", "./openpyxl/_constants.py")
 
-import json
-src_file = os.path.join(here, "openpyxl", ".constants.json")
-with open(src_file) as src:
-    constants = json.load(src)
-    __author__ = constants['__author__']
-    __author_email__ = constants["__author_email__"]
-    __license__ = constants["__license__"]
-    __maintainer_email__ = constants["__maintainer_email__"]
-    __url__ = constants["__url__"]
-    __version__ = constants["__version__"]
+__author__ = constants.__author__
+__author_email__ = constants.__author_email__
+__license__ = constants.__license__
+__maintainer_email__ = constants.__maintainer_email__
+__url__ = constants.__url__
+__version__ = constants.__version__
 
 
 setup(name='openpyxl',

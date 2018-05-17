@@ -15,7 +15,7 @@ def ExtendedProperties():
 class TestExtendedProperties:
 
     def test_ctor(self, ExtendedProperties):
-        from ..extended import VERSION
+        from ..extended import get_version
         props = ExtendedProperties()
         xml = tostring(props.to_tree())
         expected = """
@@ -23,7 +23,7 @@ class TestExtendedProperties:
         <Application>Microsoft Excel</Application>
         <AppVersion>{0}</AppVersion>
         </Properties>
-        """.format(VERSION)
+        """.format(get_version())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
