@@ -2,11 +2,14 @@ from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2018 openpyxl
 
 from copy import copy
+from itertools import islice, product
 
 from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.styles.borders import Border
+from openpyxl.cell.cell import Cell, MergedCell
 
 from openpyxl.utils import (
     range_boundaries,
@@ -455,3 +458,54 @@ class MultiCellRange(Strict):
         for r in self.ranges:
             n.ranges.append(copy(r))
         return n
+
+
+class MergedCellRange(object):
+
+    def __init__(self, worksheet, bounds):
+        self.ws = worksheet
+        self.min_col, self.min_row, self.max_col, self.max_row = bounds
+        self.get_borders()
+
+    def get_borders(self):
+        # Top-left cell.
+        if (self.min_row, self.min_col) in self.ws._cells:
+            self.start_cell = self.ws._cells[(self.min_row, self.min_col)]
+        else:
+            self.start_cell = Cell(self.ws, row=self.min_row,
+                    col_idx=self.min_col)
+            self.ws._cells.update({(self.start_cell.row,
+                self.start_cell.col_idx): self.start_cell})
+
+        if (self.max_row, self.max_col) in self.ws._cells:
+            # Bottom-right cell
+            end_cell = self.ws._cells[(self.max_row, self.max_col)]
+            self.start_cell.border = self.start_cell.border + Border(
+                right=end_cell.border.right, bottom=end_cell.border.bottom)
+
+
+    def format(self):
+
+        # The borders of Merged_cell are formatted.
+        rows = range(self.min_row, self.max_row+1)
+        cols = range(self.min_col, self.max_col+1)
+        cells = product(rows, cols)
+
+        for row, col in islice(cells, 1, None):
+            if (row, col) not in self.ws._cells:
+                mc = MergedCell(self.ws, row=row, col_idx=col)
+                self.ws._cells.update({(mc.row, mc.col_idx):mc})
+
+            cell = self.ws._cells[(row, col)]
+            if row == self.min_row:
+                    cell.border = cell.border + Border(
+                            top=self.start_cell.border.top)
+            if row == self.max_row:
+                    cell.border = cell.border + Border(
+                            bottom=self.start_cell.border.bottom)
+            if col == self.min_col:
+                    cell.border = cell.border + Border(
+                            left=self.start_cell.border.left)
+            if col == self.max_col:
+                    cell.border = cell.border + Border(
+                            right=self.start_cell.border.right)

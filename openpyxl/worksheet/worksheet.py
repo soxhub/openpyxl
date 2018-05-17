@@ -47,6 +47,7 @@ from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.cell.cell import MergedCell
 
 from .datavalidation import DataValidationList
 from .page import (
@@ -68,7 +69,7 @@ from .views import (
     Selection,
     SheetViewList,
 )
-from .cell_range import MultiCellRange, CellRange
+from .cell_range import MultiCellRange, CellRange, MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
@@ -158,6 +159,7 @@ class Worksheet(_WorkbookChild):
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
+        self.merged_cell_range = {}
 
 
     @property
@@ -714,13 +716,22 @@ class Worksheet(_WorkbookChild):
         """
 
         min_col, min_row, max_col, max_row = cr.bounds
+
+        # Saves the borders style and the range of the merge cell.
+        mcr = MergedCellRange(self, cr.bounds)
+        self.merged_cell_range.update({cr.bounds:mcr})
+
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
         cells = product(rows, cols)
 
         for c in islice(cells, 1, None):
             if c in self._cells:
+                x = MergedCell(worksheet=self, column=self._cells[c].column,
+                        row=self._cells[c].row)
                 del self._cells[c]
+
+        mcr.format()
 
 
     @property
@@ -739,6 +750,9 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
         self.merged_cells.remove(cr)
+
+        # Removes the saved border styles from the merge cell.
+        del self.merged_cell_range[cr.bounds]
 
 
     def append(self, iterable):

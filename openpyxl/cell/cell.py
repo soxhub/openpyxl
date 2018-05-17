@@ -16,6 +16,8 @@ from copy import copy
 import datetime
 import re
 
+from itertools import islice, product
+
 from openpyxl.compat import (
     unicode,
     basestring,
@@ -45,6 +47,7 @@ from openpyxl.utils import (
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
+
 
 # constants
 
@@ -376,6 +379,25 @@ class Cell(StyleableObject):
         elif value is None and self._comment:
             self._comment.unbind()
         self._comment = value
+
+
+class MergedCell(Cell):
+    def __init__(self, worksheet, column=None, row=None, col_idx=None, style_array=None):
+            super(MergedCell, self).__init__(worksheet, row=row, column=column,
+                            col_idx=col_idx, value=None)
+
+
+    #overwrite value(). Set value always on None.
+    @property
+    def value(self):
+        value = self._value
+        return value
+
+
+    @value.setter
+    def value(self, value):
+        value = None
+        self._bind_value(value)
 
 
 def WriteOnlyCell(ws=None, value=None):
