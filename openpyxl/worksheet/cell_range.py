@@ -460,11 +460,11 @@ class MultiCellRange(Strict):
         return n
 
 
-class MergedCellRange(object):
+class MergedCellRange(CellRange):
 
-    def __init__(self, worksheet, bounds):
+    def __init__(self, worksheet, coord):
         self.ws = worksheet
-        self.min_col, self.min_row, self.max_col, self.max_row = bounds
+        super(MergedCellRange, self).__init__(coord)
         self.get_borders()
 
     def get_borders(self):

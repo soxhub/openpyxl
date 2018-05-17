@@ -718,7 +718,7 @@ class Worksheet(_WorkbookChild):
         min_col, min_row, max_col, max_row = cr.bounds
 
         # Saves the borders style and the range of the merge cell.
-        mcr = MergedCellRange(self, cr.bounds)
+        mcr = MergedCellRange(self, cr.coord)
         self.merged_cell_range.update({cr.bounds:mcr})
 
         rows = range(min_row, max_row+1)
