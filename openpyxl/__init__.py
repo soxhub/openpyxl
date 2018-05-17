@@ -5,7 +5,7 @@ from openpyxl.compat.numbers import NUMPY, PANDAS
 from openpyxl.xml import LXML
 from openpyxl.workbook import Workbook
 from openpyxl.reader.excel import load_workbook
-import _constants as constants
+import openpyxl._constants as constants
 
 # Expose constants especially the version number
 
