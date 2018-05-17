@@ -111,32 +111,47 @@ class StretchInfoProperties(Serialisable):
 
 class GradientStop(Serialisable):
 
-    tagname = "gradStop"
+    tagname = "gs"
+    namespace = DRAWING_NS
 
     pos = MinMax(min=0, max=100000, allow_none=True)
     # Color Choice Group
+    scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
+    RGBPercent = Alias('scrgbClr')
+    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    RGB = Alias('srgbClr')
+    hslClr = Typed(expected_type=HSLColor, allow_none=True)
+    sysClr = Typed(expected_type=SystemColor, allow_none=True)
+    schemeClr = Typed(expected_type=SchemeColor, allow_none=True)
+    prstClr = NestedNoneSet(values=PRESET_COLORS)
+
+    __elements__ = ('scrgbClr', 'srgbClr', 'hslClr', 'sysClr', 'schemeClr', 'prstClr')
 
     def __init__(self,
                  pos=None,
+                 scrgbClr=None,
+                 srgbClr=None,
+                 hslClr=None,
+                 sysClr=None,
+                 schemeClr=None,
+                 prstClr=None,
                 ):
+        if pos is None:
+            pos = 0
         self.pos = pos
 
-
-class GradientStopList(Serialisable):
-
-    tagname = "gradStopLst"
-
-    gs = Sequence(expected_type=GradientStop)
-
-    def __init__(self,
-                 gs=None,
-                ):
-        if gs is None:
-            gs = [GradientStop(), GradientStop()]
-        self.gs = gs
+        self.scrgbClr = scrgbClr
+        self.srgbClr = srgbClr
+        self.hslClr = hslClr
+        self.sysClr = sysClr
+        self.schemeClr = schemeClr
+        self.prstClr = prstClr
 
 
 class LinearShadeProperties(Serialisable):
+
+    tagname = "lin"
+    namespace = DRAWING_NS
 
     ang = Integer()
     scaled = Bool(allow_none=True)
@@ -150,6 +165,9 @@ class LinearShadeProperties(Serialisable):
 
 
 class PathShadeProperties(Serialisable):
+
+    tagname = "path"
+    namespace = DRAWING_NS
 
     path = Set(values=(['shape', 'circle', 'rect']))
     fillToRect = Typed(expected_type=RelativeRect, allow_none=True)
@@ -165,11 +183,12 @@ class PathShadeProperties(Serialisable):
 class GradientFillProperties(Serialisable):
 
     tagname = "gradFill"
+    namespace = DRAWING_NS
 
     flip = NoneSet(values=(['x', 'y', 'xy']))
     rotWithShape = Bool(allow_none=True)
 
-    gsLst = Typed(expected_type=GradientStopList, allow_none=True)
+    gsLst = NestedSequence(expected_type=GradientStop, count=False)
     stop_list = Alias("gsLst")
 
     lin = Typed(expected_type=LinearShadeProperties, allow_none=True)
@@ -183,7 +202,7 @@ class GradientFillProperties(Serialisable):
     def __init__(self,
                  flip=None,
                  rotWithShape=None,
-                 gsLst=None,
+                 gsLst=(),
                  lin=None,
                  path=None,
                  tileRect=None,

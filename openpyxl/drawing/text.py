@@ -494,6 +494,9 @@ class RegularTextRun(Serialisable):
 
 class LineBreak(Serialisable):
 
+    tagname = "br"
+    namespace = DRAWING_NS
+
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
 
     __elements__ = ('rPr',)

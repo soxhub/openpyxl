@@ -19,7 +19,7 @@ class TestGradientFillProperties:
         fill = GradientFillProperties()
         xml = tostring(fill.to_tree())
         expected = """
-        <gradFill></gradFill>
+        <a:gradFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -27,7 +27,7 @@ class TestGradientFillProperties:
 
     def test_from_xml(self, GradientFillProperties):
         src = """
-        <gradFill></gradFill>
+        <a:gradFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         node = fromstring(src)
         fill = GradientFillProperties.from_tree(node)
