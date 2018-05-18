@@ -381,23 +381,47 @@ class Cell(StyleableObject):
         self._comment = value
 
 
-class MergedCell(Cell):
+class MergedCell(StyleableObject):
+
+    __slots__ = (
+        '_value',
+        'value',
+        'row',
+        'col_idx',
+        'column',
+        'data_type',
+        '_comment',
+        )
+
     def __init__(self, worksheet, column=None, row=None, col_idx=None, style_array=None):
-            super(MergedCell, self).__init__(worksheet, row=row, column=column,
-                            col_idx=col_idx, value=None)
+        super(MergedCell, self).__init__(worksheet)
+        self._value = None
+        self.value = None
+        self.row = row
+        self.col_idx = col_idx
+        if column is not None:
+            col_idx = column_index_from_string(column)
+        self.data_type = 'n'
+        self._comment = None
 
+    @property
+    def coordinate(self):
+        """This cell's coordinate (ex. 'A5')"""
+        return '%s%d' % (self.column, self.row)
 
-    #overwrite value(). Set value always on None.
+    @property
+    def column(self):
+        """The letter of this cell's column (ex. 'A')"""
+        return get_column_letter(self.col_idx)
+
     @property
     def value(self):
         value = self._value
         return value
 
-
     @value.setter
     def value(self, value):
-        value = None
-        self._bind_value(value)
+        pass
 
 
 def WriteOnlyCell(ws=None, value=None):

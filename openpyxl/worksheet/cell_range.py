@@ -464,7 +464,7 @@ class MergedCellRange(CellRange):
 
     def __init__(self, worksheet, coord):
         self.ws = worksheet
-        super(MergedCellRange, self).__init__(coord)
+        super(MergedCellRange, self).__init__(range_string=coord)
         self.get_borders()
 
     def get_borders(self):

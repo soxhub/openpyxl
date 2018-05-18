@@ -47,7 +47,6 @@ from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
-from openpyxl.cell.cell import MergedCell
 
 from .datavalidation import DataValidationList
 from .page import (
@@ -727,8 +726,6 @@ class Worksheet(_WorkbookChild):
 
         for c in islice(cells, 1, None):
             if c in self._cells:
-                x = MergedCell(worksheet=self, column=self._cells[c].column,
-                        row=self._cells[c].row)
                 del self._cells[c]
 
         mcr.format()
