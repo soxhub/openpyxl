@@ -404,14 +404,17 @@ class MergedCell(StyleableObject):
         self.data_type = 'n'
         self._comment = None
 
+    def __repr__(self):
+        return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
+
     @property
     def coordinate(self):
-        """This cell's coordinate (ex. 'A5')"""
+        """This merged cell's coordinate (ex. 'A5')"""
         return '%s%d' % (self.column, self.row)
 
     @property
     def column(self):
-        """The letter of this cell's column (ex. 'A')"""
+        """The letter of this merged cell's column (ex. 'A')"""
         return get_column_letter(self.col_idx)
 
     @property

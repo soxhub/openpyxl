@@ -7,7 +7,7 @@ from itertools import islice
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, MergedCell
 from openpyxl.utils.exceptions import NamedRangeException
 
 
@@ -424,7 +424,8 @@ class TestWorksheet:
         assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
         assert ws.merged_cells == "A1:D4"
-        assert (4, 4) not in ws._cells
+        assert (4, 4) in ws._cells
+        assert ws._cells[(4, 4)].__class__ == MergedCell
         assert (1, 1) in ws._cells
 
 
@@ -444,6 +445,16 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=2)
         assert ws.merged_cells == "A1:B4"
+
+
+    def test_unmerge_clean_merge_cell_range(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.merge_cells("A1:D4")
+        assert (4, 4) in ws._cells
+        ws.unmerge_cells("A1:D4")
+        assert (1, 1) in ws._cells
+        assert (1, 2) not in ws._cells
+        assert (4, 4) not in ws._cells
 
 
     def test_unmerge_range_string(self, Worksheet):
@@ -701,7 +712,7 @@ class TestEditableWorksheet:
 
 
     def test_delete_last_col(self, dummy_worksheet):
-        ws = dummy_worksheet
+        ws = dummy_worksheet # Removes the saved border styles from the merge cell.
         ws.delete_cols(8)
         assert ws.max_column == 7
         assert ws['H8'].value == None

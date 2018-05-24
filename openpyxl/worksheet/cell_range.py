@@ -465,7 +465,15 @@ class MergedCellRange(CellRange):
     def __init__(self, worksheet, coord):
         self.ws = worksheet
         super(MergedCellRange, self).__init__(range_string=coord)
+        self.start_cell = None
         self.get_borders()
+
+    def __repr__(self):
+        fmt = u"<{cls} {coord}>"
+        if self.title:
+            fmt = u"<{cls} {title!r}!{coord}>"
+        return safe_repr(fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord))
+
 
     def get_borders(self):
         # Top-left cell.
@@ -496,6 +504,7 @@ class MergedCellRange(CellRange):
                 mc = MergedCell(self.ws, row=row, col_idx=col)
                 self.ws._cells.update({(mc.row, mc.col_idx):mc})
 
+            # TODO These repetitive assertions can probably be refactored.
             cell = self.ws._cells[(row, col)]
             if row == self.min_row:
                     cell.border = cell.border + Border(

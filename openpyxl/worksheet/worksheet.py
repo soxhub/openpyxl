@@ -748,8 +748,21 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        # Removes the saved border styles from the merge cell.
-        del self.merged_cell_range[cr.bounds]
+        self._clean_merge_cell_range(cr.bounds)
+
+
+    def _clean_merge_cell_range(self, bounds):
+        min_col, min_row, max_col, max_row = bounds
+
+        rows = range(min_row, max_row+1)
+        cols = range(min_col, max_col+1)
+        cells = product(rows, cols)
+
+        for c in islice(cells, 1, None):
+            if c in self._cells:
+                del self._cells[c]
+
+        del self.merged_cell_range[bounds]
 
 
     def append(self, iterable):
