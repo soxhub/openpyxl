@@ -123,7 +123,8 @@ class Worksheet(_WorkbookChild):
         self._setup()
 
     def _setup(self):
-        self.row_dimensions = BoundDictionary("index", self._add_row)
+        self.row_dimensions = DimensionHolder(worksheet=self,
+                                              default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
         self.page_breaks = PageBreak()
