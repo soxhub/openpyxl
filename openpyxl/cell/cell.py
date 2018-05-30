@@ -383,6 +383,13 @@ class Cell(StyleableObject):
 
 class MergedCell(StyleableObject):
 
+    """
+    Describes the properties of a cell in a merged cell and helps to
+    display the borders of the merged cell.
+
+    The value of a MergedCell is always None.
+    """
+
     __slots__ = (
         '_value',
         'value',
@@ -409,12 +416,12 @@ class MergedCell(StyleableObject):
 
     @property
     def coordinate(self):
-        """This merged cell's coordinate (ex. 'A5')"""
+        """This merged cell's coordinate. (ex. 'A5')"""
         return '%s%d' % (self.column, self.row)
 
     @property
     def column(self):
-        """The letter of this merged cell's column (ex. 'A')"""
+        """The letter of this merged cell's column. (ex. 'A')"""
         return get_column_letter(self.col_idx)
 
     @property
@@ -424,6 +431,7 @@ class MergedCell(StyleableObject):
 
     @value.setter
     def value(self, value):
+        """Intercepts the overwriting of value so that value is always None."""
         pass
 
 

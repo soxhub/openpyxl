@@ -462,6 +462,13 @@ class MultiCellRange(Strict):
 
 class MergedCellRange(CellRange):
 
+    """
+    MergedCellRange stores the border information of a merged cell in the top
+    left cell of the merged cell.
+    The remaining cells in the merged cell are stored as MergedCell objects and
+    get their border information from the upper left cell.
+    """
+
     def __init__(self, worksheet, coord):
         self.ws = worksheet
         super(MergedCellRange, self).__init__(range_string=coord)
@@ -472,10 +479,18 @@ class MergedCellRange(CellRange):
         fmt = u"<{cls} {coord}>"
         if self.title:
             fmt = u"<{cls} {title!r}!{coord}>"
-        return safe_repr(fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord))
+        return safe_repr(fmt.format(cls=self.__class__.__name__,
+                                    title=self.title, coord=self.coord))
 
 
     def get_borders(self):
+        """
+        If the upper left cell of the merged cell does not yet exist, it is
+        created.
+        The upper left cell gets the border information of the bottom and right
+        border from the bottom right cell of the merged cell, if available.
+        """
+
         # Top-left cell.
         if (self.min_row, self.min_col) in self.ws._cells:
             self.start_cell = self.ws._cells[(self.min_row, self.min_col)]
@@ -488,13 +503,26 @@ class MergedCellRange(CellRange):
         if (self.max_row, self.max_col) in self.ws._cells:
             # Bottom-right cell
             end_cell = self.ws._cells[(self.max_row, self.max_col)]
+
             self.start_cell.border = self.start_cell.border + Border(
                 right=end_cell.border.right, bottom=end_cell.border.bottom)
 
 
     def format(self):
 
-        # The borders of Merged_cell are formatted.
+        """
+        Each cell of the merged cell is created as MergedCell if it does not
+        already exist.
+
+        The MergedCells at the edge of the merged cell gets its borders from
+        the upper left cell.
+
+         - The top MergedCells get the top border from the top left cell.
+         - The bottom MergedCells get the bottom border from the top left cell.
+         - The left MergedCells get the left border from the top left cell.
+         - The right MergedCells get the right border from the top left cell.
+        """
+
         rows = range(self.min_row, self.max_row+1)
         cols = range(self.min_col, self.max_col+1)
         cells = product(rows, cols)
@@ -504,7 +532,6 @@ class MergedCellRange(CellRange):
                 mc = MergedCell(self.ws, row=row, col_idx=col)
                 self.ws._cells.update({(mc.row, mc.col_idx):mc})
 
-            # TODO These repetitive assertions can probably be refactored.
             cell = self.ws._cells[(row, col)]
             if row == self.min_row:
                     cell.border = cell.border + Border(
