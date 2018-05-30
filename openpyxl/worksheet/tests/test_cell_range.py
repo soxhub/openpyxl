@@ -377,7 +377,6 @@ class TestMergedCellRange:
         assert ws['C1'].border == c1_border
 
 
-
     def test_format_3x1(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:A3')
