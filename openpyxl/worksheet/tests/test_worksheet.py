@@ -712,7 +712,7 @@ class TestEditableWorksheet:
 
 
     def test_delete_last_col(self, dummy_worksheet):
-        ws = dummy_worksheet # Removes the saved border styles from the merge cell.
+        ws = dummy_worksheet
         ws.delete_cols(8)
         assert ws.max_column == 7
         assert ws['H8'].value == None
