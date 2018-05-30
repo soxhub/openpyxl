@@ -425,7 +425,7 @@ class TestWorksheet:
         ws.merge_cells(range_string="A1:D4")
         assert ws.merged_cells == "A1:D4"
         assert (4, 4) in ws._cells
-        assert ws._cells[(4, 4)].__class__ == MergedCell
+        assert isinstance(ws._cells[(4, 4)], MergedCell)
         assert (1, 1) in ws._cells
 
 

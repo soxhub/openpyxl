@@ -712,8 +712,9 @@ class Worksheet(_WorkbookChild):
     def _clean_merge_range(self, cr):
         """
         Remove all but the top left-cell from a range of merged cells
-        and creates a MergedCellRange object to restore the lost border
+        and creates a MergedCellRange object to recreate the lost border
         information.
+        After deletion of cells a reformat is issued.
         """
 
         min_col, min_row, max_col, max_row = cr.bounds
