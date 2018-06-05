@@ -213,6 +213,15 @@ class TestCellRange:
         assert cr1 > cr2
 
 
+    def test_edge_cells(self,CellRange):
+        cr = CellRange("A1:C3")
+        assert cr.top == [(1,1), (1,2), (1,3)]
+        assert cr.bottom == [(3,1), (3,2), (3,3)]
+        assert cr.left == [(1,1), (2,1), (3,1)]
+        assert cr.right == [(1,3), (2,3), (3,3)]
+
+
+
 @pytest.fixture
 def MultiCellRange():
     from ..cell_range import MultiCellRange
@@ -327,15 +336,29 @@ def MergedCellRange():
     return MergedCellRange
 
 
+@pytest.fixture
+def default_border():
+    return Side(border_style=None, color=None)
+
+@pytest.fixture
+def thin_border():
+    return Side(border_style="thin", color="000000")
+
+@pytest.fixture
+def double_border():
+    return Side(border_style="double", color="000000")
+
+@pytest.fixture
+def thick_border():
+    return Side(border_style="thick", color="000000")
+
+@pytest.fixture
+def start_border():
+    return Border(top=thick_border(), left=thick_border(),
+                    right=thin_border(), bottom=double_border())
+
+
 class TestMergedCellRange:
-    @classmethod
-    def setup_class(cls):
-        cls.default = Side(border_style=None, color=None)
-        cls.thin = Side(border_style="thin", color="000000")
-        cls.double = Side(border_style="double", color="000000")
-        cls.thick = Side(border_style="thick", color="000000")
-        cls.start_border = Border(top=cls.thick, left=cls.thick,
-                                    right=cls.thin, bottom=cls.double)
 
     @pytest.mark.parametrize("end",
                              [
@@ -347,117 +370,84 @@ class TestMergedCellRange:
 
     def test_get_borders(self,  MergedCellRange, end):
         ws = Worksheet(Workbook())
-        ws['A1'].border = Border(top=self.thick, left=self.thick)
-        ws[end].border = Border(right=self.thin, bottom=self.double)
+        ws['A1'].border = Border(top=thick_border(), left=thick_border())
+        ws[end].border = Border(right=thin_border(), bottom=double_border())
 
         mcr = MergedCellRange(ws, 'A1:' + end)
         assert mcr.start_cell.coordinate == 'A1'
-        assert mcr.start_cell.border == self.start_border
+        assert mcr.start_cell.border == start_border()
 
 
-    def test_fromat_1x3(self, MergedCellRange):
+    def test_format_1x3(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:C1')
-        mcr.start_cell.border = self.start_border
+        mcr.start_cell.border = start_border()
 
         mcr.format()
 
         b1_border = Border(
-                top=self.thick,
-                left=self.default,
-                right=self.default,
-                bottom=self.double)
+                top=thick_border(),
+                left=default_border(),
+                right=default_border(),
+                bottom=double_border())
         assert ws['B1'].border == b1_border
 
         c1_border = Border(
-                top=self.thick,
-                left=self.default,
-                right=self.thin,
-                bottom=self.double)
+                top=thick_border(),
+                left=default_border(),
+                right=thin_border(),
+                bottom=double_border())
         assert ws['C1'].border == c1_border
 
 
     def test_format_3x1(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:A3')
-        mcr.start_cell.border = self.start_border
+        mcr.start_cell.border = start_border()
 
         mcr.format()
 
         a2_border = Border(
-                top=self.default,
-                left=self.thick,
-                right=self.thin,
-                bottom=self.default)
+                top=default_border(),
+                left=thick_border(),
+                right=thin_border(),
+                bottom=default_border())
         assert ws['A2'].border == a2_border
 
         a3_border = Border(
-                top=self.default,
-                left=self.thick,
-                right=self.thin,
-                bottom=self.double)
+                top=default_border(),
+                left=thick_border(),
+                right=thin_border(),
+                bottom=double_border())
         assert ws['A3'].border == a3_border
 
 
     def test_format_3x3(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:C3')
-        mcr.start_cell.border = self.start_border
+        mcr.start_cell.border = start_border()
 
         mcr.format()
 
-        b1_border = Border(
-                top=self.thick,
-                left=self.default,
-                right=self.default,
-                bottom=self.default)
-        assert ws['B1'].border == b1_border
+        for coord in mcr.top:
+           cell = ws._cells.get(coord)
+           assert cell.border.top == thick_border()
 
-        c1_border = Border(
-                top=self.thick,
-                left=self.default,
-                right=self.thin,
-                bottom=self.default)
-        assert ws['C1'].border == c1_border
+        for coord in mcr.bottom:
+           cell = ws._cells.get(coord)
+           assert cell.border.bottom== double_border()
 
-        a2_border = Border(
-                top=self.default,
-                left=self.thick,
-                right=self.default,
-                bottom=self.default)
-        assert ws['A2'].border == a2_border
+        for coord in mcr.left:
+           cell = ws._cells.get(coord)
+           assert cell.border.left == thick_border()
+
+        for coord in mcr.right:
+           cell = ws._cells.get(coord)
+           assert cell.border.right == thin_border()
 
         b2_border = Border(
-                top=self.default,
-                left=self.default,
-                right=self.default,
-                bottom=self.default)
+                top=default_border(),
+                left=default_border(),
+                right=default_border(),
+                bottom=default_border())
         assert ws['B2'].border == b2_border
-
-        c2_border = Border(
-                top=self.default,
-                left=self.default,
-                right=self.thin,
-                bottom=self.default)
-        assert ws['C2'].border == c2_border
-
-        a3_border = Border(
-                top=self.default,
-                left=self.thick,
-                right=self.default,
-                bottom=self.double)
-        assert ws['A3'].border == a3_border
-
-        b3_border = Border(
-                top=self.default,
-                left=self.default,
-                right=self.default,
-                bottom=self.double)
-        assert ws['B3'].border == b3_border
-
-        c3_border = Border(
-                top=self.default,
-                left=self.default,
-                right=self.thin,
-                bottom=self.double)
-        assert ws['C3'].border == c3_border

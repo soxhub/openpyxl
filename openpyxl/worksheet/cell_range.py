@@ -372,6 +372,33 @@ class CellRange(Serialisable):
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
 
+    @property
+    def top(self):
+        top = []
+        for col in range(self.min_col, self.max_col+1):
+            top.append((self.min_row, col))
+        return top
+
+    @property
+    def bottom(self):
+        bottom = []
+        for col in range(self.min_col, self.max_col+1):
+            bottom.append((self.max_row, col))
+        return bottom
+
+    @property
+    def left(self):
+        left = []
+        for row in range(self.min_row, self.max_row+1):
+            left.append((row, self.min_col))
+        return left
+
+    @property
+    def right(self):
+        right = []
+        for row in range(self.min_row, self.max_row+1):
+            right.append((row, self.max_col))
+        return right
 
 class MultiCellRange(Strict):
 
@@ -497,8 +524,8 @@ class MergedCellRange(CellRange):
         else:
             self.start_cell = Cell(self.ws, row=self.min_row,
                     col_idx=self.min_col)
-            self.ws._cells.update({(self.start_cell.row,
-                self.start_cell.col_idx): self.start_cell})
+            self.ws._cells[(self.start_cell.row,
+                self.start_cell.col_idx)] = self.start_cell
 
         if (self.max_row, self.max_col) in self.ws._cells:
             # Bottom-right cell
@@ -523,25 +550,18 @@ class MergedCellRange(CellRange):
          - The right MergedCells get the right border from the top left cell.
         """
 
-        rows = range(self.min_row, self.max_row+1)
-        cols = range(self.min_col, self.max_col+1)
-        cells = product(rows, cols)
+        border_options= (
+                (self.top, Border(top=self.start_cell.border.top)),
+                (self.bottom, Border(bottom=self.start_cell.border.bottom)),
+                (self.left, Border(left=self.start_cell.border.left)),
+                (self.right, Border(right=self.start_cell.border.right)),
+                )
 
-        for row, col in islice(cells, 1, None):
-            if (row, col) not in self.ws._cells:
-                mc = MergedCell(self.ws, row=row, col_idx=col)
-                self.ws._cells.update({(mc.row, mc.col_idx):mc})
-
-            cell = self.ws._cells[(row, col)]
-            if row == self.min_row:
-                    cell.border = cell.border + Border(
-                            top=self.start_cell.border.top)
-            if row == self.max_row:
-                    cell.border = cell.border + Border(
-                            bottom=self.start_cell.border.bottom)
-            if col == self.min_col:
-                    cell.border = cell.border + Border(
-                            left=self.start_cell.border.left)
-            if col == self.max_col:
-                    cell.border = cell.border + Border(
-                            right=self.start_cell.border.right)
+        for edge in border_options:
+            for coord in edge[0]:
+                cell = self.ws._cells.get(coord)
+                if cell == None:
+                    row, col = coord
+                    cell = MergedCell(self.ws, row=row, col_idx=col)
+                    self.ws._cells[(cell.row, cell.col_idx)] = cell
+                cell.border += edge[1]

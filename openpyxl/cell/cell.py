@@ -390,28 +390,29 @@ class MergedCell(StyleableObject):
     """
 
     __slots__ = (
-        '_value',
-        'value',
         'row',
         'col_idx',
-        'column',
-        'data_type',
-        '_comment',
         )
 
-    def __init__(self, worksheet, column=None, row=None, col_idx=None, style_array=None):
+    def __init__(self, worksheet, row=None, col_idx=None):
         super(MergedCell, self).__init__(worksheet)
-        self._value = None
-        self.value = None
         self.row = row
         self.col_idx = col_idx
-        if column is not None:
-            col_idx = column_index_from_string(column)
-        self.data_type = 'n'
-        self._comment = None
 
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
+
+    @property
+    def _value(self):
+        return None
+
+    @property
+    def data_type(self):
+        return 'n'
+
+    @property
+    def _comment(self):
+        return None
 
     @property
     def coordinate(self):
@@ -422,16 +423,6 @@ class MergedCell(StyleableObject):
     def column(self):
         """The letter of this merged cell's column. (ex. 'A')"""
         return get_column_letter(self.col_idx)
-
-    @property
-    def value(self):
-        value = self._value
-        return value
-
-    @value.setter
-    def value(self, value):
-        """Intercepts the overwriting of value so that value is always None."""
-        pass
 
 
 def WriteOnlyCell(ws=None, value=None):
