@@ -123,7 +123,8 @@ class Worksheet(_WorkbookChild):
         self._setup()
 
     def _setup(self):
-        self.row_dimensions = BoundDictionary("index", self._add_row)
+        self.row_dimensions = DimensionHolder(worksheet=self,
+                                              default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
         self.page_breaks = PageBreak()
@@ -705,12 +706,19 @@ class Worksheet(_WorkbookChild):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
 
         self.merged_cells.add(cr.coord)
+        self._clean_merge_range(cr)
+
+
+    def _clean_merge_range(self, cr):
+        """
+        Remove all but the top left-cell from a range of merged cells
+        """
 
         min_col, min_row, max_col, max_row = cr.bounds
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
         cells = product(rows, cols)
-        # all but the top-left cell are removed
+
         for c in islice(cells, 1, None):
             if c in self._cells:
                 del self._cells[c]

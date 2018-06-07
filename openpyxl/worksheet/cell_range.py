@@ -6,6 +6,7 @@ from copy import copy
 from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
+from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.utils import (
     range_boundaries,
@@ -15,7 +16,7 @@ from openpyxl.utils import (
 )
 
 
-class CellRange(Strict):
+class CellRange(Serialisable):
     """
     Represents a range in a sheet: title and coordinates.
 
@@ -402,16 +403,23 @@ class MultiCellRange(Strict):
 
     def add(self, coord):
         """
-        Add a cell coordinate. Will create a new CellRange
+        Add a cell coordinate or CellRange
         """
+        cr = None
+        if isinstance(coord, CellRange):
+            cr = coord
+            coord = cr.coord
         if coord not in self:
-            cr = CellRange(coord)
+            if cr is None:
+                cr = CellRange(coord)
             ranges = self.ranges
             ranges.append(cr)
             self.ranges = ranges
-        return self
 
-    __iadd__ = add
+
+    def __iadd__(self, coord):
+        self.add(coord)
+        return self
 
 
     def __eq__(self, other):

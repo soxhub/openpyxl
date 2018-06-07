@@ -167,7 +167,6 @@ xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         assert fut == Font(typeface="Arial", pitchFamily=40)
 
 
-
 @pytest.fixture
 def Hyperlink():
     from ..text import Hyperlink
@@ -194,4 +193,28 @@ class TestHyperlink:
         link = Hyperlink.from_tree(node)
         assert link == Hyperlink(tooltip="Select/de-select all")
 
+
+@pytest.fixture
+def LineBreak():
+    from ..text import LineBreak
+    return LineBreak
+
+
+class TestLineBreak:
+
+    def test_ctor(self, LineBreak):
+        fut = LineBreak()
+        xml = tostring(fut.to_tree())
+        expected = """ <br xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" /> """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    
+    def test_from_xml(self, LineBreak):
+        src = """
+        <br />
+        """
+        node = fromstring(src)
+        fut = LineBreak.from_tree(node)
+        assert fut == LineBreak()  
 

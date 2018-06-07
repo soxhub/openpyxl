@@ -14,8 +14,9 @@ def FilterColumn():
 
 class TestFilterColumn:
 
-    def test_ctor(self, FilterColumn):
-        col = FilterColumn(colId=5, vals=["0"], blank=True)
+    def test_ctor(self, FilterColumn, Filters):
+        filters = Filters(blank=True, filter=["0"])
+        col = FilterColumn(colId=5, filters=filters)
         expected = """
         <filterColumn colId="5">
           <filters blank="1">
@@ -28,7 +29,7 @@ class TestFilterColumn:
         assert diff is None, diff
 
 
-    def test_from_xml(self, FilterColumn):
+    def test_from_xml(self, FilterColumn, Filters):
         xml = """
         <filterColumn colId="5">
           <filters blank="1">
@@ -38,7 +39,8 @@ class TestFilterColumn:
         """
         node = fromstring(xml)
         col = FilterColumn.from_tree(node)
-        assert col == FilterColumn(colId=5, vals=["0"], blank=True)
+        filters = Filters(blank=True, filter=["0"])
+        assert col == FilterColumn(colId=5, filters=filters)
 
 
 @pytest.fixture

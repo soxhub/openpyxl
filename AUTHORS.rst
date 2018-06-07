@@ -21,6 +21,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Alexandre Fayolle
 * Don Freeman
 * Eric Gazoni
+* Dominik Geldmacher
 * Brice Gelineau
 * Mark Gemmill
 * Alex Gronholm
@@ -70,6 +71,8 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki
+* Israel Barth Rubio
+* Alessandro Cucci
 
 Project logo designed by Eric Gazoni, font by claudeserieux
 (http://www.dafont.com/profile.php?user=337503)

@@ -96,6 +96,8 @@ class RowHierarchiesUsage(Serialisable):
 
 class PivotFilter(Serialisable):
 
+    tagname = "filter"
+
     fld = Integer()
     mpFld = Integer(allow_none=True)
     type = Set(values=(['unknown', 'count', 'percent', 'sum', 'captionEqual',
@@ -118,9 +120,9 @@ class PivotFilter(Serialisable):
     iMeasureHier = Integer(allow_none=True)
     iMeasureFld = Integer(allow_none=True)
     name = String(allow_none=True)
-    description = String()
-    stringValue1 = String()
-    stringValue2 = String()
+    description = String(allow_none=True)
+    stringValue1 = String(allow_none=True)
+    stringValue2 = String(allow_none=True)
     autoFilter = Typed(expected_type=AutoFilter, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -153,7 +155,6 @@ class PivotFilter(Serialisable):
         self.stringValue1 = stringValue1
         self.stringValue2 = stringValue2
         self.autoFilter = autoFilter
-        self.extLst = extLst
 
 
 class PivotFilters(Serialisable):

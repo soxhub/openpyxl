@@ -1,3 +1,17 @@
+2.5.4 (2016-06-07)
+==================
+
+* `#1025 <https://bitbucket.org/openpyxl/openpyxl/issues/1025>`_ Cannot read files with 3D charts.
+* `#1030 <https://bitbucket.org/openpyxl/openpyxl/issues/1030>`_ Merged cells take a long time to parse
+
+
+Minor changes
+-------------
+
+* Improve read support for pivot tables and don't always create a Filters child for filterColumn objects.
+* `Support folding rows` <https://bitbucket.org/openpyxl/openpyxl/pull-requests/259/fold-rows>`_
+
+
 2.5.3 (2018-04-18)
 ==================
 

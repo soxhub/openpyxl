@@ -1,0 +1,105 @@
+<plotArea xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+    <layout/>
+    <surface3DChart>
+        <wireframe val="0"/>
+        <ser>
+            <idx val="0"/>
+            <order val="0"/>
+            <tx>
+                <strRef>
+                    <f>Splines!$D$76</f>
+                </strRef>
+            </tx>
+            <spPr>
+                <a:ln>
+                    <a:prstDash val="solid"/>
+                </a:ln>
+            </spPr>
+            <cat>
+                <numRef>
+                    <f>Splines!$C$78:$C$82</f>
+                </numRef>
+            </cat>
+            <val>
+                <numRef>
+                    <f>Splines!$D$77:$D$81</f>
+                </numRef>
+            </val>
+        </ser>
+        <ser>
+            <idx val="1"/>
+            <order val="1"/>
+            <tx>
+                <strRef>
+                    <f>Splines!$E$76</f>
+                </strRef>
+            </tx>
+            <spPr>
+                <a:ln>
+                    <a:prstDash val="solid"/>
+                </a:ln>
+            </spPr>
+            <cat>
+                <numRef>
+                    <f>Splines!$C$78:$C$82</f>
+                </numRef>
+            </cat>
+            <val>
+                <numRef>
+                    <f>Splines!$E$77:$E$81</f>
+                </numRef>
+            </val>
+        </ser>
+        <bandFmts/>
+        <axId val="10"/>
+        <axId val="100"/>
+        <axId val="1000"/>
+    </surface3DChart>
+    <valAx>
+        <axId val="100"/>
+        <scaling>
+            <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="l"/>
+        <majorGridlines/>
+        <numFmt formatCode="General" sourceLinked="1"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="10"/>
+        <crosses val="autoZero"/>
+        <crossBetween val="midCat"/>
+    </valAx>
+    <catAx>
+        <axId val="10"/>
+        <scaling>
+            <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="b"/>
+        <numFmt formatCode="General" sourceLinked="1"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="100"/>
+        <crosses val="autoZero"/>
+        <auto val="0"/>
+        <lblAlgn val="ctr"/>
+        <lblOffset val="100"/>
+        <noMultiLvlLbl val="0"/>
+    </catAx>
+    <serAx>
+        <axId val="1000"/>
+        <scaling>
+            <orientation val="minMax"/>
+        </scaling>
+        <delete val="0"/>
+        <axPos val="b"/>
+        <majorTickMark val="out"/>
+        <minorTickMark val="none"/>
+        <tickLblPos val="nextTo"/>
+        <crossAx val="10"/>
+        <crosses val="autoZero"/>
+    </serAx>
+</plotArea>
