@@ -72,6 +72,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Kay Webber
 * Shibukawa Yoshiki
 * Israel Barth Rubio
+* Alessandro Cucci
 
 Project logo designed by Eric Gazoni, font by claudeserieux
 (http://www.dafont.com/profile.php?user=337503)
