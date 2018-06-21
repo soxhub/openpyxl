@@ -371,33 +371,26 @@ class CellRange(Serialisable):
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
 
-    @property
-    def top(self):
-        top = []
-        for col in range(self.min_col, self.max_col+1):
-            top.append((self.min_row, col))
-        return top
 
     @property
-    def bottom(self):
-        bottom = []
-        for col in range(self.min_col, self.max_col+1):
-            bottom.append((self.max_row, col))
-        return bottom
+    def _top(self):
+        return [(self.min_row, col) for col in range(self.min_col, self.max_col+1)]
+
 
     @property
-    def left(self):
-        left = []
-        for row in range(self.min_row, self.max_row+1):
-            left.append((row, self.min_col))
-        return left
+    def _bottom(self):
+        return [(self.max_row, col) for col in range(self.min_col, self.max_col+1)]
+
 
     @property
-    def right(self):
-        right = []
-        for row in range(self.min_row, self.max_row+1):
-            right.append((row, self.max_col))
-        return right
+    def _left(self):
+        return [(row, self.min_col) for row in range(self.min_row, self.max_row+1)]
+
+
+    @property
+    def _right(self):
+        return [(row, self.max_col) for row in range(self.min_row, self.max_row+1)]
+
 
 class MultiCellRange(Strict):
 
@@ -499,7 +492,7 @@ class MergedCellRange(CellRange):
         self.ws = worksheet
         super(MergedCellRange, self).__init__(range_string=coord)
         self.start_cell = None
-        self.get_borders()
+        self._get_borders()
 
     def __repr__(self):
         fmt = u"<{cls} {coord}>"
@@ -509,7 +502,7 @@ class MergedCellRange(CellRange):
                                     title=self.title, coord=self.coord))
 
 
-    def get_borders(self):
+    def _get_borders(self):
         """
         If the upper left cell of the merged cell does not yet exist, it is
         created.
@@ -549,18 +542,28 @@ class MergedCellRange(CellRange):
          - The right MergedCells get the right border from the top left cell.
         """
 
-        border_options= (
-                (self.top, Border(top=self.start_cell.border.top)),
-                (self.bottom, Border(bottom=self.start_cell.border.bottom)),
-                (self.left, Border(left=self.start_cell.border.left)),
-                (self.right, Border(right=self.start_cell.border.right)),
-                )
 
-        for edge in border_options:
-            for coord in edge[0]:
+        edge_names = ['top', 'left', 'right', 'bottom']
+
+        for border_name in edge_names:
+            edge, border = self._side_for_edge(border_name)
+            for coord in edge:
                 cell = self.ws._cells.get(coord)
-                if cell == None:
+                if cell is None:
                     row, col = coord
                     cell = MergedCell(self.ws, row=row, col_idx=col)
                     self.ws._cells[(cell.row, cell.col_idx)] = cell
-                cell.border += edge[1]
+                cell.border += border
+
+
+    def _side_for_edge(self, edge_name):
+        """
+        Returns the cells of an edge and its border.
+        """
+
+        edge = getattr(self, "_" + edge_name)
+        side = getattr(self.start_cell.border, edge_name)
+        border = Border()
+        setattr(border, edge_name, side)
+        return edge, border
+

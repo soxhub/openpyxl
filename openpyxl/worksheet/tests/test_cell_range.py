@@ -215,10 +215,10 @@ class TestCellRange:
 
     def test_edge_cells(self,CellRange):
         cr = CellRange("A1:C3")
-        assert cr.top == [(1,1), (1,2), (1,3)]
-        assert cr.bottom == [(3,1), (3,2), (3,3)]
-        assert cr.left == [(1,1), (2,1), (3,1)]
-        assert cr.right == [(1,3), (2,3), (3,3)]
+        assert cr._top == [(1,1), (1,2), (1,3)]
+        assert cr._bottom == [(3,1), (3,2), (3,3)]
+        assert cr._left == [(1,1), (2,1), (3,1)]
+        assert cr._right == [(1,3), (2,3), (3,3)]
 
 
 
@@ -378,6 +378,30 @@ class TestMergedCellRange:
         assert mcr.start_cell.border == start_border()
 
 
+    @pytest.mark.parametrize("edge_name, edge, border",
+                [
+                    ('top', [(1,1),(1,2), (1,3)],
+                        Border(top=thick_border())),
+                    ('bottom', [(3,1), (3,2), (3,3)],
+                        Border(bottom=double_border())),
+                    ('left', [(1,1), (2,1), (3,1)],
+                        Border(left=thick_border())),
+                    ('right', [(1,3), (2,3), (3,3)],
+                        Border(right=thin_border())),
+                ]
+    )
+
+
+    def test_side_for_edge(self, MergedCellRange, edge_name, edge, border):
+        ws = Worksheet(Workbook())
+        mcr = MergedCellRange(ws, 'A1:C3')
+        mcr.start_cell.border = start_border()
+
+        e, b = mcr._side_for_edge(edge_name,)
+        assert e == edge
+        assert b == border
+
+
     def test_format_1x3(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:C1')
@@ -429,19 +453,19 @@ class TestMergedCellRange:
 
         mcr.format()
 
-        for coord in mcr.top:
+        for coord in mcr._top:
            cell = ws._cells.get(coord)
            assert cell.border.top == thick_border()
 
-        for coord in mcr.bottom:
+        for coord in mcr._bottom:
            cell = ws._cells.get(coord)
            assert cell.border.bottom== double_border()
 
-        for coord in mcr.left:
+        for coord in mcr._left:
            cell = ws._cells.get(coord)
            assert cell.border.left == thick_border()
 
-        for coord in mcr.right:
+        for coord in mcr._right:
            cell = ws._cells.get(coord)
            assert cell.border.right == thin_border()
 

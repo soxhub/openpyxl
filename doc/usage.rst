@@ -117,7 +117,9 @@ Merge / Unmerge cells
 ---------------------
 
 When you merge cells all cells but the top-left one are **removed** from the
-worksheet. See :ref:`styling-merged-cells` for information on formatting merged cells.
+worksheet. To carry the border-information of the merged cell, the boundary cells of the
+merged cell are created as MergeCells which always have the value None.
+See :ref:`styling-merged-cells` for information on formatting merged cells.
 
 .. :: doctest
 

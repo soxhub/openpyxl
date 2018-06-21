@@ -159,7 +159,7 @@ class Worksheet(_WorkbookChild):
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
-        self.merged_cell_range = {}
+        self._merged_cell_range = {}
 
 
     @property
@@ -721,7 +721,7 @@ class Worksheet(_WorkbookChild):
         min_col, min_row, max_col, max_row = cr.bounds
 
         mcr = MergedCellRange(self, cr.coord)
-        self.merged_cell_range.update({cr.bounds:mcr})
+        self._merged_cell_range.update({cr.bounds:mcr})
 
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
@@ -736,7 +736,7 @@ class Worksheet(_WorkbookChild):
 
     @property
     @deprecated("Use ws.merged_cells.ranges")
-    def merged_cell_ranges(self):
+    def _merged_cell_ranges(self):
         """Return a copy of cell ranges"""
         return self.merged_cells.ranges[:]
 
@@ -769,7 +769,7 @@ class Worksheet(_WorkbookChild):
             if c in self._cells:
                 del self._cells[c]
 
-        del self.merged_cell_range[bounds]
+        del self._merged_cell_range[bounds]
 
 
     def append(self, iterable):

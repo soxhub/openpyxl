@@ -105,7 +105,7 @@ def write_worksheet(worksheet):
                 xf.write(cols)
 
             # The borders of all merged cells are formatted.
-            for mcr in ws.merged_cell_range.itervalues():
+            for mcr in ws._merged_cell_range.itervalues():
                 mcr.format()
 
             # write data
