@@ -357,3 +357,19 @@ class SpreadsheetDrawing(Serialisable):
                     rel.anchor.graphicFrame = None
                     rels.append(rel)
         return rels
+
+
+    @property
+    def _blip_rels(self):
+        """
+        Get relationship information for each blip and bind anchor to it
+        """
+        rels = []
+        anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
+        for anchor in anchors:
+            if anchor.pic and anchor.pic.blipFill:
+                rel = anchor.pic.blipFill.blip
+                if rel is not None:
+                    rel.anchor = anchor
+                    rels.append(rel)
+        return rels
