@@ -25,6 +25,10 @@ class MergeCell(CellRange):
         super(MergeCell, self).__init__(ref)
 
 
+    def __copy__(self):
+        return self.__class__(self.ref)
+
+
 class MergeCells(Serialisable):
 
     tagname = "mergeCells"
