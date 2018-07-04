@@ -10,10 +10,12 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Day Barr
 * Stefan Behnel
 * Bernt R. Brenna
+* Israel Barth Rubio
 * Sven Burk
 * Max Bolingbroke
 * Anders Chrigstrom
 * ccoacley
+* Alessandro Cucci
 * Maarten De Paepe
 * Etienne Desautels
 * Dmitriy Chernyshov
@@ -72,8 +74,6 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki
-* Israel Barth Rubio
-* Alessandro Cucci
 
 Project logo designed by Eric Gazoni, font by claudeserieux
 (http://www.dafont.com/profile.php?user=337503)
