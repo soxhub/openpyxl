@@ -164,6 +164,7 @@ The merged cell behaves similar to other cell ojects.
 Its value and format is defined in its top-left cell.
 In order to change the border of the whole merged cell,
 change the border of its top-left cell.
+The formatting is generated for the purpose of writing.
 
 .. :: doctest
 

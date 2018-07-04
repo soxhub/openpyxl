@@ -424,8 +424,7 @@ class TestWorksheet:
         assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
         assert ws.merged_cells == "A1:D4"
-        assert (4, 4) in ws._cells
-        assert isinstance(ws._cells[(4, 4)], MergedCell)
+        assert (4, 4) not in ws._cells
         assert (1, 1) in ws._cells
 
 
@@ -445,16 +444,6 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         ws.merge_cells(start_row=1, start_column=1, end_row=4, end_column=2)
         assert ws.merged_cells == "A1:B4"
-
-
-    def test_unmerge_clean_merge_cell_range(self, Worksheet):
-        ws = Worksheet(Workbook())
-        ws.merge_cells("A1:D4")
-        assert (4, 4) in ws._cells
-        ws.unmerge_cells("A1:D4")
-        assert (1, 1) in ws._cells
-        assert (1, 2) not in ws._cells
-        assert (4, 4) not in ws._cells
 
 
     def test_unmerge_range_string(self, Worksheet):

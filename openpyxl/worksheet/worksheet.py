@@ -731,12 +731,10 @@ class Worksheet(_WorkbookChild):
             if c in self._cells:
                 del self._cells[c]
 
-        mcr.format()
-
 
     @property
     @deprecated("Use ws.merged_cells.ranges")
-    def _merged_cell_ranges(self):
+    def merged_cell_ranges(self):
         """Return a copy of cell ranges"""
         return self.merged_cells.ranges[:]
 
@@ -751,25 +749,8 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        self._clean_merge_cell_range(cr.bounds)
-
-
-    def _clean_merge_cell_range(self, bounds):
-        """
-        Remove all MergedCells from the MergedCellRange and deletes the
-        MergedCellRange.
-        """
-        min_col, min_row, max_col, max_row = bounds
-
-        rows = range(min_row, max_row+1)
-        cols = range(min_col, max_col+1)
-        cells = product(rows, cols)
-
-        for c in islice(cells, 1, None):
-            if c in self._cells:
-                del self._cells[c]
-
-        del self._merged_cell_range[bounds]
+        # Deletes the MergedCellRange.
+        del self._merged_cell_range[cr.bounds]
 
 
     def append(self, iterable):
