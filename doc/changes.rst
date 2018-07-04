@@ -1,3 +1,9 @@
+2.5.5 (unreleased)
+==================
+
+* `#1058 <https://bitbucket.org/openpyxl/openpyxl/issues/1058>`_ Cannot copy merged cells
+
+
 2.5.4 (2016-06-07)
 ==================
 

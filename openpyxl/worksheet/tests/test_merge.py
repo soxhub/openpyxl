@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
+from copy import copy
+
 from ..cell_range import CellRange
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
@@ -31,3 +33,9 @@ class TestMergeCell:
         node = fromstring(xml)
         cell = MergeCell.from_tree(node)
         assert cell == CellRange("A1")
+
+
+    def test_copy(self, MergeCell):
+        cell = MergeCell("A1")
+        cp = copy(cell)
+        assert cp == cell
