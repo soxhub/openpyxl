@@ -273,7 +273,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
                 for rel in drawings:
                     for c in find_charts(archive, rel.target):
                         ws.add_chart(c, c.anchor)
-                    for im in find_images(self.archive, rel.target):
+                    for im in find_images(archive, rel.target):
                         ws.add_image(im, im.anchor)
 
                 pivot_rel = rels.find(TableDefinition.rel_type)
