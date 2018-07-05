@@ -310,7 +310,7 @@ class TestSpreadsheetDrawing:
 
     def test_read_blip(self, SpreadsheetDrawing, datadir):
         datadir.chdir()
-        with open("spreadsheet_drawing_with_blip.xml") as src:
+        with open("spreadsheet_drawing_with_blip.xml", "rb") as src:
             xml = src.read()
         node = fromstring(xml)
 
