@@ -53,6 +53,7 @@ from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.chart.reader import find_charts
+from openpyxl.drawing.image_reader import find_images
 
 from openpyxl.xml.functions import fromstring
 
@@ -255,6 +256,8 @@ class ExcelReader:
                     for rel in drawings:
                         for c in find_charts(self.archive, rel.target):
                             ws.add_chart(c, c.anchor)
+                        for im in find_images(self.archive, rel.target):
+                            ws.add_image(im, im.anchor)
 
                     pivot_rel = rels.find(TableDefinition.rel_type)
                     for r in pivot_rel:

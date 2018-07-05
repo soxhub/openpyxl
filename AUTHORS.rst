@@ -36,6 +36,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Eric Hurkman
 * Jean Pierre Huart
 * JarekPS
+* Paul Joyce
 * Heikki Junes
 * Chi Ho Kwok
 * Yingjie Lan
