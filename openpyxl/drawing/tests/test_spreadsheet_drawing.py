@@ -308,6 +308,18 @@ class TestSpreadsheetDrawing:
         assert chart_rels[0].anchor is not None
 
 
+    def test_read_blip(self, SpreadsheetDrawing, datadir):
+        datadir.chdir()
+        with open("spreadsheet_drawing_with_blip.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+
+        drawing = SpreadsheetDrawing.from_tree(node)
+        blip_rels = drawing._blip_rels
+        assert len(blip_rels) == 1
+        assert blip_rels[0].anchor is not None
+
+
     def test_write_rels(self, SpreadsheetDrawing):
         from openpyxl.packaging.relationship import Relationship
         rel = Relationship(type="drawing", Target="../file.xml")
