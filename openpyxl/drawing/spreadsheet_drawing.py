@@ -287,7 +287,12 @@ class SpreadsheetDrawing(Serialisable):
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", Target=obj.path)
-                anchor.pic = self._picture_frame(idx)
+                if isinstance(anchor, OneCellAnchor):
+                    if not anchor.pic:
+                        anchor.pic = self._picture_frame(idx)
+                elif isinstance(anchor, TwoCellAnchor):
+                    if not anchor.groupShape.pic:
+                        anchor.groupShape.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
@@ -365,10 +370,16 @@ class SpreadsheetDrawing(Serialisable):
         Get relationship information for each blip and bind anchor to it
         """
         rels = []
-        anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
-        for anchor in anchors:
+        anchors = self.absoluteAnchor + self.twoCellAnchor
+        for anchor in self.oneCellAnchor:
             if anchor.pic and anchor.pic.blipFill:
                 rel = anchor.pic.blipFill.blip
+                if rel is not None:
+                    rel.anchor = anchor
+                    rels.append(rel)
+        for anchor in self.twoCellAnchor:
+            if anchor.groupShape and anchor.groupShape.pic:
+                rel = anchor.groupShape.pic.blipFill.blip
                 if rel is not None:
                     rel.anchor = anchor
                     rels.append(rel)

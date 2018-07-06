@@ -75,9 +75,9 @@ class TestDrawing(object):
         node = self.drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
-        <absoluteAnchor>
-            <pos x="0" y="0"/>
-            <ext cx="200025" cy="1828800"/>
+        <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+            <a:pos x="0" y="0"/>
+            <a:ext cx="200025" cy="1828800"/>
             <clientData></clientData>
         </absoluteAnchor>
         """
@@ -91,14 +91,14 @@ class TestDrawing(object):
         node = self.drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
-        <oneCellAnchor>
+        <oneCellAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
             <from>
                 <col>0</col>
                 <colOff>0</colOff>
                 <row>0</row>
                 <rowOff>0</rowOff>
             </from>
-            <ext cx="200025" cy="1828800"/>
+            <a:ext cx="200025" cy="1828800"/>
             <clientData></clientData>
         </oneCellAnchor>
         """

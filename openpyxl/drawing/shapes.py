@@ -34,6 +34,9 @@ from openpyxl.xml.constants import DRAWING_NS
 
 class Point2D(Serialisable):
 
+    tagname = "off"
+    namespace = DRAWING_NS
+
     x = Coordinate()
     y = Coordinate()
 
@@ -46,6 +49,9 @@ class Point2D(Serialisable):
 
 
 class PositiveSize2D(Serialisable):
+
+    tagname = "ext"
+    namespace = DRAWING_NS
 
     """
     Dimensions in EMUs
@@ -67,14 +73,17 @@ class PositiveSize2D(Serialisable):
 class Transform2D(Serialisable):
 
     tagname = "xfrm"
+    namespace = DRAWING_NS
 
     rot = Integer(allow_none=True)
     flipH = Bool(allow_none=True)
     flipV = Bool(allow_none=True)
     off = Typed(expected_type=Point2D, allow_none=True)
     ext = Typed(expected_type=PositiveSize2D, allow_none=True)
+    chOff = Typed(expected_type=Point2D, allow_none=True)
+    chExt = Typed(expected_type=PositiveSize2D, allow_none=True)
 
-    __elements__ = ('off', 'ext')
+    __elements__ = ('off', 'ext', 'chOff', 'chExt')
 
     def __init__(self,
                  rot=None,
@@ -82,12 +91,16 @@ class Transform2D(Serialisable):
                  flipV=None,
                  off=None,
                  ext=None,
+                 chOff=None,
+                 chExt=None,
                 ):
         self.rot = rot
         self.flipH = flipH
         self.flipV = flipV
         self.off = off
         self.ext = ext
+        self.chOff = chOff
+        self.chExt = chExt
 
 
 class SphereCoords(Serialisable):
