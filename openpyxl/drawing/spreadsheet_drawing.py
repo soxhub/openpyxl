@@ -288,9 +288,11 @@ class SpreadsheetDrawing(Serialisable):
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", Target=obj.path)
                 if isinstance(anchor, OneCellAnchor):
-                    anchor.pic = self._picture_frame(idx)
+                    if not anchor.pic:
+                        anchor.pic = self._picture_frame(idx)
                 elif isinstance(anchor, TwoCellAnchor):
-                    anchor.groupShape.pic = self._picture_frame(idx)
+                    if not anchor.groupShape.pic:
+                        anchor.groupShape.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
