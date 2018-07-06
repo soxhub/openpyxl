@@ -423,7 +423,7 @@ class TestGroupTransform2D:
         xfrm = GroupTransform2D(rot=0)
         xml = tostring(xfrm.to_tree())
         expected = """
-        <xfrm rot="0"></xfrm>
+        <xfrm rot="0" xmlns="http://schemas.openxmlformats.org/drawingml/2006/main"></xfrm>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -602,3 +602,71 @@ class TestGroupShape:
         node = fromstring(src)
         grp = GroupShape.from_tree(node)
         assert grp == GroupShape()
+
+
+@pytest.fixture
+def GroupLocking():
+    from ..graphic import GroupLocking
+    return GroupLocking
+
+
+class TestGroupLocking:
+
+    def test_ctor(self, GroupLocking):
+        lock = GroupLocking()
+        xml = tostring(lock.to_tree())
+        expected = """
+        <grpSpLocks xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, GroupLocking):
+        src = """
+        <grpSpLocks />
+        """
+        node = fromstring(src)
+        lock = GroupLocking.from_tree(node)
+        assert lock == GroupLocking()
+
+
+@pytest.fixture
+def GroupShapeProperties():
+    from ..graphic import GroupShapeProperties
+    return GroupShapeProperties
+
+from ..shapes import Point2D, PositiveSize2D
+
+class TestGroupShapeProperties:
+
+    def test_ctor(self, GroupShapeProperties, GroupTransform2D):
+        xfrm = GroupTransform2D(
+            off=Point2D(x=2222500, y=0),
+            ext=PositiveSize2D(cx=2806700, cy=825500),
+            chOff=Point2D(x=303, y=0),
+            chExt=PositiveSize2D(cx=321, cy=111),
+        )
+        props = GroupShapeProperties(bwMode="auto", xfrm=xfrm)
+        xml = tostring(props.to_tree())
+        expected = """
+        <grpSpPr bwMode="auto" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:xfrm rot="0">
+            <a:off x="2222500" y="0"/>
+            <a:ext cx="2806700" cy="825500"/>
+            <a:chOff x="303" y="0"/>
+            <a:chExt cx="321" cy="111"/>
+          </a:xfrm>
+        </grpSpPr>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, GroupShapeProperties):
+        src = """
+        <grpSpPr />
+        """
+        node = fromstring(src)
+        fut = GroupShapeProperties.from_tree(node)
+        assert fut == GroupShapeProperties()

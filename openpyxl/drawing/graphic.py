@@ -34,6 +34,7 @@ from .shapes import (
 class GroupTransform2D(Serialisable):
 
     tagname = "xfrm"
+    namespace = DRAWING_NS
 
     rot = Integer(allow_none=True)
     flipH = Bool(allow_none=True)
@@ -42,6 +43,8 @@ class GroupTransform2D(Serialisable):
     ext = Typed(expected_type=PositiveSize2D, allow_none=True)
     chOff = Typed(expected_type=Point2D, allow_none=True)
     chExt = Typed(expected_type=PositiveSize2D, allow_none=True)
+
+    __elements__ = ("off", "ext", "chOff", "chExt")
 
     def __init__(self,
                  rot=0,
@@ -126,6 +129,9 @@ class GroupLocking(Serialisable):
         self.noChangeArrowheads = noChangeArrowheads
         self.noMove = noMove
         self.noResize = noResize
+        self.noEditPoints = noEditPoints
+        self.noAdjustHandles = noAdjustHandles
+        self.noChangeShapeType = noChangeShapeType
 
 
 class NonVisualGroupDrawingShapeProps(Serialisable):

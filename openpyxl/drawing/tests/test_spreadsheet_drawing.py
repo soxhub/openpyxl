@@ -76,14 +76,14 @@ class TestOneCellAnchor:
         chart_drawing = OneCellAnchor()
         xml = tostring(chart_drawing.to_tree())
         expected = """
-        <oneCellAnchor>
+        <oneCellAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <from>
             <col>0</col>
             <colOff>0</colOff>
             <row>0</row>
             <rowOff>0</rowOff>
           </from>
-          <ext cx="0" cy="0" />
+          <a:ext cx="0" cy="0" />
           <clientData></clientData>
         </oneCellAnchor>
         """
@@ -121,9 +121,9 @@ class TestAbsoluteAnchor:
         chart_drawing = AbsoluteAnchor()
         xml = tostring(chart_drawing.to_tree())
         expected = """
-         <absoluteAnchor>
-           <pos x="0" y="0" />
-           <ext cx="0" cy="0" />
+         <absoluteAnchor xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+           <a:pos x="0" y="0" />
+           <a:ext cx="0" cy="0" />
            <clientData></clientData>
          </absoluteAnchor>
         """
@@ -165,7 +165,7 @@ class TestSpreadsheetDrawing:
                                            twoCellAnchor=t)
         xml = tostring(chart_drawing.to_tree())
         expected = """
-        <wsDr>
+        <wsDr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
           <twoCellAnchor>
           <from>
             <col>0</col>
@@ -203,17 +203,17 @@ class TestSpreadsheetDrawing:
             <row>0</row>
             <rowOff>0</rowOff>
           </from>
-            <ext cx="0" cy="0" />
+            <a:ext cx="0" cy="0" />
             <clientData></clientData>
           </oneCellAnchor>
           <absoluteAnchor>
-            <pos x="0" y="0"  />
-            <ext cx="0" cy="0" />
+            <a:pos x="0" y="0"  />
+            <a:ext cx="0" cy="0" />
             <clientData></clientData>
           </absoluteAnchor>
           <absoluteAnchor>
-            <pos x="0" y="0" />
-            <ext cx="0" cy="0" />
+            <a:pos x="0" y="0" />
+            <a:ext cx="0" cy="0" />
             <clientData></clientData>
           </absoluteAnchor>
         </wsDr>
@@ -244,7 +244,7 @@ class TestSpreadsheetDrawing:
             <row>14</row>
             <rowOff>0</rowOff>
           </from>
-          <ext cx="5400000" cy="2700000"/>
+          <a:ext cx="5400000" cy="2700000"/>
           <graphicFrame>
             <nvGraphicFramePr>
               <cNvPr id="1" name="Chart 1"/>
