@@ -356,11 +356,34 @@ class TestPicture:
 
     def test_from_xml(self, PictureFrame):
         src = """
-        <pic />
+        <pic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <nvPicPr>
+            <cNvPr descr="Picture" id="1" name="Image 1"/>
+            <cNvPicPr/>
+        </nvPicPr>
+        <blipFill>
+            <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" cstate="print" r:embed="rId1"/>
+            <a:stretch>
+                <a:fillRect/>
+            </a:stretch>
+        </blipFill>
+        <spPr>
+            <a:xfrm>
+                <a:off x="303" y="0"/>
+                <a:ext cx="321" cy="88"/>
+            </a:xfrm>
+            <a:prstGeom prst="rect"/>
+            <a:ln>
+              <a:prstDash val="solid" />
+            </a:ln>
+        </spPr>
+        </pic>
         """
         node = fromstring(src)
         graphic = PictureFrame.from_tree(node)
-        assert graphic == PictureFrame()
+        xml = tostring(graphic.to_tree())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 @pytest.fixture
