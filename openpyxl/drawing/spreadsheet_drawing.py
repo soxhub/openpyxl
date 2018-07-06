@@ -287,7 +287,10 @@ class SpreadsheetDrawing(Serialisable):
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", Target=obj.path)
-                anchor.pic = self._picture_frame(idx)
+                if isinstance(anchor, OneCellAnchor):
+                    anchor.pic = self._picture_frame(idx)
+                elif isinstance(anchor, TwoCellAnchor):
+                    anchor.groupShape.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
