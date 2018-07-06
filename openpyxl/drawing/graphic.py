@@ -99,6 +99,8 @@ class GroupLocking(Serialisable):
     noChangeShapeType = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
+    __elements__ = []
+
     def __init__(self,
                  noGrp=None,
                  noUngrp=None,
@@ -331,7 +333,9 @@ class GroupShape(Serialisable):
     nonVisualProperties = Alias("nvGrpSpPr")
     grpSpPr = Typed(expected_type=GroupShapeProperties)
     visualProperties = Alias("grpSpPr")
-    pic = Typed(expected_type=PictureFrame)
+    pic = Typed(expected_type=PictureFrame, allow_none=True)
+
+    __elements__ = ["nvGrpSpPr", "grpSpPr", "pic"]
 
     def __init__(self,
                  nvGrpSpPr=None,
