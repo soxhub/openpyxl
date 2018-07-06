@@ -308,9 +308,13 @@ class TestSpreadsheetDrawing:
         assert chart_rels[0].anchor is not None
 
 
-    def test_read_blip(self, SpreadsheetDrawing, datadir):
+    @pytest.mark.parametrize("path", [
+        "spreadsheet_drawing_with_blip.xml",
+        "two_cell_anchor.xml",
+    ])
+    def test_read_blip(self, SpreadsheetDrawing, datadir, path):
         datadir.chdir()
-        with open("spreadsheet_drawing_with_blip.xml", "rb") as src:
+        with open(path, "rb") as src:
             xml = src.read()
         node = fromstring(xml)
 

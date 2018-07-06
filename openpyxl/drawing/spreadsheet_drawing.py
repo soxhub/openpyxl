@@ -365,10 +365,16 @@ class SpreadsheetDrawing(Serialisable):
         Get relationship information for each blip and bind anchor to it
         """
         rels = []
-        anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
-        for anchor in anchors:
+        anchors = self.absoluteAnchor + self.twoCellAnchor
+        for anchor in self.oneCellAnchor:
             if anchor.pic and anchor.pic.blipFill:
                 rel = anchor.pic.blipFill.blip
+                if rel is not None:
+                    rel.anchor = anchor
+                    rels.append(rel)
+        for anchor in self.twoCellAnchor:
+            if anchor.groupShape and anchor.groupShape.pic:
+                rel = anchor.groupShape.pic.blipFill.blip
                 if rel is not None:
                     rel.anchor = anchor
                     rels.append(rel)
