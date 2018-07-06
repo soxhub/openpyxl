@@ -85,6 +85,9 @@ class GroupShapeProperties(Serialisable):
 
 class GroupLocking(Serialisable):
 
+    tagname = "grpSpLocks"
+    namespace = DRAWING_NS
+
     noGrp = Bool(allow_none=True)
     noUngrp = Bool(allow_none=True)
     noSelect = Bool(allow_none=True)
@@ -99,7 +102,7 @@ class GroupLocking(Serialisable):
     noChangeShapeType = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
-    __elements__ = []
+    __elements__ = ()
 
     def __init__(self,
                  noGrp=None,
@@ -127,15 +130,18 @@ class GroupLocking(Serialisable):
 
 class NonVisualGroupDrawingShapeProps(Serialisable):
 
+    tagname = "cNvGrpSpPr"
+
     grpSpLocks = Typed(expected_type=GroupLocking, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    __elements__ = ("grpSpLocks",)
 
     def __init__(self,
                  grpSpLocks=None,
                  extLst=None,
                 ):
         self.grpSpLocks = grpSpLocks
-        self.extLst = extLst
 
 
 class NonVisualDrawingShapeProps(Serialisable):
@@ -146,6 +152,8 @@ class NonVisualDrawingShapeProps(Serialisable):
     txBax = Bool(allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
+    __elements__ = ("spLocks", "txBax")
+
     def __init__(self,
                  spLocks=None,
                  txBox=None,
@@ -153,7 +161,6 @@ class NonVisualDrawingShapeProps(Serialisable):
                 ):
         self.spLocks = spLocks
         self.txBox = txBox
-        self.extLst = extLst
 
 
 class NonVisualDrawingProps(Serialisable):
@@ -168,6 +175,8 @@ class NonVisualDrawingProps(Serialisable):
     hlinkClick = Typed(expected_type=Hyperlink, allow_none=True)
     hlinkHover = Typed(expected_type=Hyperlink, allow_none=True)
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
+
+    __elements__ = ["hlinkClick", "hlinkHover"]
 
     def __init__(self,
                  id=None,
@@ -191,8 +200,12 @@ class NonVisualDrawingProps(Serialisable):
 
 class NonVisualGroupShape(Serialisable):
 
-    cNvPr = Typed(expected_type=NonVisualDrawingProps, )
-    cNvGrpSpPr = Typed(expected_type=NonVisualGroupDrawingShapeProps, )
+    tagname = "nvGrpSpPr"
+
+    cNvPr = Typed(expected_type=NonVisualDrawingProps)
+    cNvGrpSpPr = Typed(expected_type=NonVisualGroupDrawingShapeProps)
+
+    __elements__ = ("cNvPr", "cNvGrpSpPr")
 
     def __init__(self,
                  cNvPr=None,
@@ -200,7 +213,6 @@ class NonVisualGroupShape(Serialisable):
                 ):
         self.cNvPr = cNvPr
         self.cNvGrpSpPr = cNvGrpSpPr
-
 
 
 class PictureLocking(Serialisable):

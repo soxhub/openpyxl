@@ -46,7 +46,7 @@ class TestTransform2D:
         shapes = Transform2D()
         xml = tostring(shapes.to_tree())
         expected = """
-        <xfrm></xfrm>
+        <xfrm xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

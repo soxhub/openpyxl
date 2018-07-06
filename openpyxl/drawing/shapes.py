@@ -67,6 +67,7 @@ class PositiveSize2D(Serialisable):
 class Transform2D(Serialisable):
 
     tagname = "xfrm"
+    namespace = DRAWING_NS
 
     rot = Integer(allow_none=True)
     flipH = Bool(allow_none=True)

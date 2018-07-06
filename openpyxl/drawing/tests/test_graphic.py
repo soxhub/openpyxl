@@ -179,7 +179,7 @@ class TestGraphicFrame:
             <cNvPr id="0" name="Chart 0"></cNvPr>
             <cNvGraphicFramePr></cNvGraphicFramePr>
           </nvGraphicFramePr>
-          <xfrm></xfrm>
+          <a:xfrm></a:xfrm>
           <a:graphic>
             <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart" />
           </a:graphic>
@@ -441,6 +441,73 @@ class TestGroupTransform2D:
         node = fromstring(src)
         xfrm = GroupTransform2D.from_tree(node)
         assert xfrm.off.y == 394447
+
+
+@pytest.fixture
+def NonVisualGroupDrawingShapeProps():
+    from ..graphic import NonVisualGroupDrawingShapeProps
+    return NonVisualGroupDrawingShapeProps
+
+
+class TestNonVisualGroupDrawingShapeProps:
+
+    def test_ctor(self, NonVisualGroupDrawingShapeProps):
+        props = NonVisualGroupDrawingShapeProps()
+        xml = tostring(props.to_tree())
+        expected = """
+        <cNvGrpSpPr />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, NonVisualGroupDrawingShapeProps):
+        src = """
+        <cNvGrpSpPr />
+        """
+        node = fromstring(src)
+        props = NonVisualGroupDrawingShapeProps.from_tree(node)
+        assert props == NonVisualGroupDrawingShapeProps()
+
+
+@pytest.fixture
+def NonVisualGroupShape():
+    from ..graphic import NonVisualGroupShape
+    return NonVisualGroupShape
+
+
+class TestNonVisualGroupShape:
+
+
+    def test_ctor(self, NonVisualGroupShape, NonVisualDrawingProps, NonVisualGroupDrawingShapeProps):
+        props = NonVisualGroupShape(
+            cNvPr=NonVisualDrawingProps(id=2208, name="Group 1"),
+            cNvGrpSpPr=NonVisualGroupDrawingShapeProps()
+        )
+        xml = tostring(props.to_tree())
+        expected = """
+        <nvGrpSpPr>
+             <cNvPr id="2208" name="Group 1" />
+             <cNvGrpSpPr />
+         </nvGrpSpPr>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, NonVisualGroupShape, NonVisualDrawingProps, NonVisualGroupDrawingShapeProps):
+        src = """
+        <nvGrpSpPr>
+             <cNvPr id="2208" name="Group 1" />
+             <cNvGrpSpPr />
+         </nvGrpSpPr>
+        """
+        node = fromstring(src)
+        props = NonVisualGroupShape.from_tree(node)
+        assert props == NonVisualGroupShape(
+            cNvPr=NonVisualDrawingProps(id=2208, name="Group 1"),
+            cNvGrpSpPr=NonVisualGroupDrawingShapeProps()
+            )
 
 
 @pytest.fixture
