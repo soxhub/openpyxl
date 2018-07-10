@@ -16,6 +16,7 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.pagebreak import Break, PageBreak
 from openpyxl.packaging.relationship import Relationship, RelationshipList
+from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
 
 
 def test_get_xml_iter():
@@ -76,6 +77,7 @@ def Workbook():
         data_only = False
         _colors = []
         encoding = "utf8"
+        excel_base_date = CALENDAR_WINDOWS_1900
 
         def __init__(self):
             self._differential_styles = []
