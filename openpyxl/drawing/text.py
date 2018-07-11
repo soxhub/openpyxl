@@ -35,7 +35,7 @@ from openpyxl.xml.constants import DRAWING_NS
 from .colors import ColorChoiceDescriptor
 from .effect import *
 from .fill import *
-from .shapes import (
+from .geometry import (
     LineProperties,
     Color,
     Scene3D

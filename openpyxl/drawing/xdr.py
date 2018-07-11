@@ -5,7 +5,7 @@ from __future__ import absolute_import
 Spreadsheet Drawing has some copies of Drawing ML elements
 """
 
-from .shapes import Point2D, PositiveSize2D, Transform2D
+from .geometry import Point2D, PositiveSize2D, Transform2D
 
 
 class XDRPoint2D(Point2D):

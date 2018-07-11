@@ -43,7 +43,7 @@ from .graphic import (
     ChartRelation,
     Shape,
     )
-from .shapes import PresetGeometry2D
+from .geometry import PresetGeometry2D
 
 
 class AnchorClientData(Serialisable):

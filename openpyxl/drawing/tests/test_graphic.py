@@ -659,7 +659,7 @@ def GroupShapeProperties():
     from ..graphic import GroupShapeProperties
     return GroupShapeProperties
 
-from ..shapes import Point2D, PositiveSize2D
+from ..geometry import Point2D, PositiveSize2D
 
 class TestGroupShapeProperties:
 

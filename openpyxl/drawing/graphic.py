@@ -23,7 +23,7 @@ from openpyxl.chart.text import RichText
 from .effect import *
 from .fill import RelativeRect, BlipFillProperties
 from .text import Hyperlink, EmbeddedWAVAudioFile
-from .shapes import (
+from .geometry import (
     Point2D,
     PositiveSize2D,
     PresetGeometry2D,
