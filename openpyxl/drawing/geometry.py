@@ -177,7 +177,7 @@ class Camera(Serialisable):
          'perspectiveHeroicLeftFacing', 'perspectiveHeroicRightFacing',
          'perspectiveHeroicExtremeLeftFacing', 'perspectiveHeroicExtremeRightFacing',
          'perspectiveRelaxed', 'perspectiveRelaxedModerately'])
-    fov = Typed(expected_type=Integer, allow_none=True)
+    fov = Integer(allow_none=True)
     zoom = Typed(expected_type=Percentage, allow_none=True)
     rot = Typed(expected_type=SphereCoords, allow_none=True)
 
