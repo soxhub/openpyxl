@@ -43,6 +43,7 @@ from .graphic import (
     Shape,
     )
 from .geometry import PresetGeometry2D
+from .picture import PictureFrame
 from .relation import ChartRelation
 
 
