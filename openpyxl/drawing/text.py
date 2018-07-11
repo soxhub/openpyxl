@@ -35,7 +35,7 @@ from openpyxl.xml.constants import DRAWING_NS
 from .colors import ColorChoiceDescriptor
 from .effect import *
 from .fill import *
-from .shapes import (
+from .geometry import (
     LineProperties,
     Color,
     Scene3D
@@ -513,7 +513,7 @@ class TextField(Serialisable):
     type = String(allow_none=True)
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
     pPr = Typed(expected_type=ParagraphProperties, allow_none=True)
-    t = Typed(expected_type=String, allow_none=True)
+    t = String(allow_none=True)
 
     __elements__ = ('rPr', 'pPr')
 
@@ -565,8 +565,8 @@ class Paragraph(Serialisable):
 
 class GeomGuide(Serialisable):
 
-    name = Typed(expected_type=String())
-    fmla = Typed(expected_type=String())
+    name = String(())
+    fmla = String(())
 
     def __init__(self,
                  name=None,
