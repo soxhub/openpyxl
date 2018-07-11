@@ -35,12 +35,10 @@ from .xdr import (
     XDRPositiveSize2D,
 )
 from .fill import Blip
+from .connector import Shape
 from .graphic import (
     GroupShape,
     GraphicFrame,
-    Shape,
-    PictureFrame,
-    Shape,
     )
 from .geometry import PresetGeometry2D
 from .picture import PictureFrame
