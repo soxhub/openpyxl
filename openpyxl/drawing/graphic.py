@@ -24,45 +24,11 @@ from .effect import *
 from .fill import RelativeRect, BlipFillProperties
 from .text import Hyperlink, EmbeddedWAVAudioFile
 from .geometry import (
-    Point2D,
-    PositiveSize2D,
-    PresetGeometry2D,
     Scene3D,
     ShapeStyle,
+    GroupTransform2D
 )
 from .xdr import XDRTransform2D
-
-class GroupTransform2D(Serialisable):
-
-    tagname = "xfrm"
-    namespace = DRAWING_NS
-
-    rot = Integer(allow_none=True)
-    flipH = Bool(allow_none=True)
-    flipV = Bool(allow_none=True)
-    off = Typed(expected_type=Point2D, allow_none=True)
-    ext = Typed(expected_type=PositiveSize2D, allow_none=True)
-    chOff = Typed(expected_type=Point2D, allow_none=True)
-    chExt = Typed(expected_type=PositiveSize2D, allow_none=True)
-
-    __elements__ = ("off", "ext", "chOff", "chExt")
-
-    def __init__(self,
-                 rot=0,
-                 flipH=None,
-                 flipV=None,
-                 off=None,
-                 ext=None,
-                 chOff=None,
-                 chExt=None,
-                ):
-        self.rot = rot
-        self.flipH = flipH
-        self.flipV = flipV
-        self.off = off
-        self.ext = ext
-        self.chOff = chOff
-        self.chExt = chExt
 
 
 class GroupShapeProperties(Serialisable):
