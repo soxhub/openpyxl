@@ -40,10 +40,10 @@ from .graphic import (
     GraphicFrame,
     Shape,
     PictureFrame,
-    ChartRelation,
     Shape,
     )
 from .geometry import PresetGeometry2D
+from .relation import ChartRelation
 
 
 class AnchorClientData(Serialisable):
