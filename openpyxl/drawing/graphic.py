@@ -24,12 +24,13 @@ from .effect import *
 from .fill import RelativeRect, BlipFillProperties
 from .text import Hyperlink, EmbeddedWAVAudioFile
 from .shapes import (
-    Transform2D,
     Point2D,
     PositiveSize2D,
+    PresetGeometry2D,
     Scene3D,
     ShapeStyle,
 )
+from .xdr import XDRTransform2D
 
 class GroupTransform2D(Serialisable):
 
@@ -477,7 +478,7 @@ class GraphicFrame(Serialisable):
     tagname = "graphicFrame"
 
     nvGraphicFramePr = Typed(expected_type=NonVisualGraphicFrame)
-    xfrm = Typed(expected_type=Transform2D)
+    xfrm = Typed(expected_type=XDRTransform2D)
     graphic = Typed(expected_type=GraphicObject)
     macro = String(allow_none=True)
     fPublished = Bool(allow_none=True)
@@ -495,7 +496,7 @@ class GraphicFrame(Serialisable):
             nvGraphicFramePr = NonVisualGraphicFrame()
         self.nvGraphicFramePr = nvGraphicFramePr
         if xfrm is None:
-            xfrm = Transform2D()
+            xfrm = XDRTransform2D()
         self.xfrm = xfrm
         if graphic is None:
             graphic = GraphicObject()

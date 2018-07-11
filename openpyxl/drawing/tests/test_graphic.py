@@ -179,7 +179,7 @@ class TestGraphicFrame:
             <cNvPr id="0" name="Chart 0"></cNvPr>
             <cNvGraphicFramePr></cNvGraphicFramePr>
           </nvGraphicFramePr>
-          <a:xfrm></a:xfrm>
+          <xfrm />
           <a:graphic>
             <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart" />
           </a:graphic>
