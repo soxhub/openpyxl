@@ -58,19 +58,6 @@ class TestWorksheet:
         assert 'B12:B12' == ws.calculate_dimension()
 
 
-    def test_squared_range(self, Worksheet):
-        ws = Worksheet(Workbook())
-        expected = [
-            ('A1', 'B1', 'C1'),
-            ('A2', 'B2', 'C2'),
-            ('A3', 'B3', 'C3'),
-            ('A4', 'B4', 'C4'),
-        ]
-        rows = ws.get_squared_range(1, 1, 3, 4)
-        for row, coord in zip(rows, expected):
-            assert tuple(c.coordinate for c in row) == coord
-
-
     @pytest.mark.parametrize("row, column, coordinate",
                              [
                                  (1, 0, 'A1'),
@@ -115,31 +102,6 @@ class TestWorksheet:
             assert tuple(c.coordinate for c in row) == coord
 
 
-    def test_get_named_range(self, Worksheet):
-        wb = Workbook()
-        ws = wb.active
-        wb.create_named_range('test_range', ws, value='C5')
-        xlrange = tuple(ws.get_named_range('test_range'))
-        cell = xlrange[0]
-        assert isinstance(cell, Cell)
-        assert cell.row == 5
-
-
-    def test_get_bad_named_range(self, Worksheet):
-        ws = Worksheet(Workbook())
-        with pytest.raises(KeyError):
-            ws.get_named_range('bad_range')
-
-
-    def test_get_named_range_wrong_sheet(self, Worksheet):
-        wb = Workbook()
-        ws1 = wb.create_sheet("Sheet1")
-        ws2 = wb.create_sheet("Sheet2")
-        wb.create_named_range('wrong_sheet_range', ws1, 'C5')
-        with pytest.raises(NamedRangeException):
-            ws2.get_named_range('wrong_sheet_range')
-
-
     def test_cell_alternate_coordinates(self, Worksheet):
         ws = Worksheet(Workbook())
         cell = ws.cell(row=8, column=4)
@@ -149,14 +111,6 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         with pytest.raises(TypeError):
             ws.cell(row=8)
-
-    def test_cell_range_name(self):
-        wb = Workbook()
-        ws = wb.active
-        wb.create_named_range('test_range_single', ws, 'B12')
-        c_range_name = ws.get_named_range('test_range_single')
-        c_cell = ws['B12']
-        assert c_range_name == (c_cell,)
 
 
     def test_hyperlink_value(self, Worksheet):
@@ -458,18 +412,6 @@ class TestWorksheet:
         ws.merge_cells("A1:D4")
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
         assert ws.merged_cells == ""
-
-
-    @pytest.mark.parametrize("value, result, rows_cols",
-                             [
-                                 (3, "1:3", None),
-                                 (4, "A:D", "cols")
-                             ])
-    def test_print_title_old(self, value, result, rows_cols):
-        wb = Workbook()
-        ws = wb.active
-        ws.add_print_title(value, rows_cols)
-        assert ws.print_titles == result
 
 
     @pytest.mark.parametrize("rows, cols, titles",

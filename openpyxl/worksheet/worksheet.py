@@ -73,14 +73,6 @@ from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
 
-@deprecated("Use the worksheet.values property")
-def flatten(results):
-    """Return cell values row-by-row"""
-
-    for row in results:
-        yield(c.value for c in row)
-
-
 class Worksheet(_WorkbookChild):
     """Represents a worksheet.
 
@@ -255,21 +247,6 @@ class Worksheet(_WorkbookChild):
             sel.insert(0, Selection(pane="topRight", activeCell=None, sqref=None))
             sel.insert(1, Selection(pane="bottomLeft", activeCell=None, sqref=None))
             view.selection = sel
-
-
-    @deprecated("Set print titles rows or columns directly")
-    def add_print_title(self, n, rows_or_cols='rows'):
-        """ Print Titles are rows or columns that are repeated on each printed sheet.
-        This adds n rows or columns at the top or left of the sheet
-        """
-
-        scope = self.parent.get_index(self)
-
-        if rows_or_cols == 'cols':
-            self.print_title_cols = 'A:%s' % get_column_letter(n)
-
-        else:
-            self.print_title_rows = '1:%d' % n
 
 
     def cell(self, row, column, value=None):
@@ -472,9 +449,6 @@ class Worksheet(_WorkbookChild):
 
         If no cells are in the worksheet an empty tuple will be returned.
 
-        :param range_string: range string (e.g. 'A1:B2') *deprecated*
-        :type range_string: string
-
         :param min_col: smallest column index (1-based index)
         :type min_col: int
 
@@ -593,67 +567,6 @@ class Worksheet(_WorkbookChild):
     def columns(self):
         """Produces all cells in the worksheet, by column  (see :func:`iter_cols`)"""
         return self.iter_cols()
-
-
-    @deprecated("""
-    Use ws.iter_rows() or ws.iter_cols() depending whether you
-    want rows or columns returned.
-    """)
-    def get_squared_range(self, min_col, min_row, max_col, max_row):
-        """Returns a 2D array of cells. Will create any cells within the
-        boundaries that do not already exist
-
-        :param min_col: smallest column index (1-based index)
-        :type min_col: int
-
-        :param min_row: smallest row index (1-based index)
-        :type min_row: int
-
-        :param max_col: largest column index (1-based index)
-        :type max_col: int
-
-        :param max_row: smallest row index (1-based index)
-        :type max_row: int
-
-        :rtype: generator
-        """
-
-        return self._cells_by_row(min_col, min_row, max_col, max_row)
-
-
-    @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
-    def get_named_range(self, range_name):
-        """
-        Returns a 2D array of cells, with optional row and column offsets.
-
-        :param range_name: `named range` name
-        :type range_name: string
-
-        :rtype: tuple[tuple[openpyxl.cell.cell.Cell]]
-        """
-        defn = self.parent.defined_names[range_name]
-        if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
-            msg = "{0} not available in this worksheet".format(range_name)
-            raise KeyError(msg)
-
-        if defn.type != "RANGE":
-            msg = '{0} refers to a value, not a range'.format(range_name)
-            raise NameError(msg)
-
-        result = []
-        for title, cells_range in defn.destinations:
-            ws = self.parent[title]
-            if ws != self:
-                raise NamedRangeException("Range includes cells from another worksheet")
-
-            rows = ws[cells_range]
-            if isinstance(rows, Cell):
-                rows = [(rows, )]
-
-            for row in rows:
-                result.extend(row)
-
-        return tuple(result)
 
 
     def set_printer_settings(self, paper_size, orientation):
