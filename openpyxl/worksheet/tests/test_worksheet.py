@@ -87,25 +87,11 @@ class TestWorksheet:
             assert tuple(c.coordinate for c in row) == coord
 
 
-    def test_iter_rows_offset(self, Worksheet):
-        ws = Worksheet(Workbook())
-        rows = ws.iter_rows(min_row=1, min_col=1, max_row=4, max_col=3,
-                            row_offset=1, column_offset=3)
-        expected = [
-            ('D2', 'E2', 'F2'),
-            ('D3', 'E3', 'F3'),
-            ('D4', 'E4', 'F4'),
-            ('D5', 'E5', 'F5'),
-        ]
-
-        for row, coord in zip(rows, expected):
-            assert tuple(c.coordinate for c in row) == coord
-
-
     def test_cell_alternate_coordinates(self, Worksheet):
         ws = Worksheet(Workbook())
         cell = ws.cell(row=8, column=4)
         assert 'D8' == cell.coordinate
+
 
     def test_cell_insufficient_coordinates(self, Worksheet):
         ws = Worksheet(Workbook())

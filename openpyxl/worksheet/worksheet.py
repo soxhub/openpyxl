@@ -439,8 +439,7 @@ class Worksheet(_WorkbookChild):
         return self.calculate_dimension()
 
 
-    def iter_rows(self, range_string=None, min_row=None, max_row=None, min_col=None, max_col=None,
-                  row_offset=0, column_offset=0):
+    def iter_rows(self, min_row=None, max_row=None, min_col=None, max_col=None,):
         """
         Produces cells from the worksheet, by row. Specify the iteration range
         using indices of rows and columns.
@@ -461,18 +460,8 @@ class Worksheet(_WorkbookChild):
         :param max_row: smallest row index (1-based index)
         :type max_row: int
 
-        :param row_offset: added to min_row and max_row (e.g. 4)
-        :type row_offset: int
-
-        :param column_offset: added to min_col and max_col (e.g. 3)
-        :type column_offset: int
-
         :rtype: generator
         """
-
-        if range_string is not None:
-            warn("Using a range string with iter_rows is deprecated. Use ws[range_string]")
-            min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
             return ()
@@ -482,14 +471,7 @@ class Worksheet(_WorkbookChild):
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
-        if max_col is not None:
-            max_col += column_offset
-        if max_row is not None:
-            max_row += row_offset
-        return self._cells_by_row(min_col + column_offset,
-                                  min_row + row_offset,
-                                  max_col,
-                                  max_row)
+        return self._cells_by_row(min_col, min_row, max_col, max_row)
 
 
     def _cells_by_row(self, min_col, min_row, max_col, max_row):
