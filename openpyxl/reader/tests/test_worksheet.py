@@ -357,7 +357,6 @@ def test_mac_date():
     element = fromstring(src)
 
     parser.parse_cell(element)
-    #assert ws['A1'].data_type == 'd'
     assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)
 
 
