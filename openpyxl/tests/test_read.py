@@ -2,7 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 import pytest
-import datetime
 
 # compatibility imports
 from openpyxl.compat import unicode
@@ -45,16 +44,3 @@ def test_guess_types(datadir, guess_types, dtype):
     wb = load_workbook('guess_types.xlsx', guess_types=guess_types)
     ws = wb.active
     assert isinstance(ws['D2'].value, dtype)
-
-
-@pytest.mark.parametrize("guess_types, dtype",
-                         (
-                             (True, float),
-                             (False, unicode),
-                         )
-                        )
-def test_mac_date(datadir, guess_types, dtype):
-    datadir.join("genuine").chdir()
-    wb = load_workbook('mac_date.xlsx', guess_types=guess_types)
-    ws = wb.active
-    assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)
