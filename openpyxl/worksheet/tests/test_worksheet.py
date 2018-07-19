@@ -500,6 +500,21 @@ class TestWorksheet:
         assert ws.print_area == result
 
 
+    def test_active_cell(self, Worksheet):
+        ws = Worksheet(Workbook())
+        assert ws.active_cell == 'A1'
+
+
+    def test_selected_cell(self, Worksheet):
+        ws = Worksheet(Workbook())
+        assert ws.selected_cell == 'A1'
+
+
+    def test_gridlines(self, Worksheet):
+        ws = Worksheet(Workbook())
+        assert not ws.show_gridlines
+
+
 def test_freeze_panes_horiz(Worksheet):
     ws = Worksheet(Workbook())
     ws.freeze_panes = 'A4'

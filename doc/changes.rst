@@ -16,6 +16,7 @@ Bugfixes
 --------
 
 * `#1058 <https://bitbucket.org/openpyxl/openpyxl/issues/1058>`_ Cannot copy merged cells
+* `#1066 <https://bitbucket.org/openpyxl/openpyxl/issues/1066>`_ Cannot access ws.active_cell
 
 
 Pull Requests
