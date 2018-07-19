@@ -168,12 +168,12 @@ class Worksheet(_WorkbookChild):
 
     @property
     def selected_cell(self):
-        return self.sheet_view.selection.sqref
+        return self.sheet_view.selection[0].sqref
 
 
     @property
     def active_cell(self):
-        return self.sheet_view.selection.activeCell
+        return self.sheet_view.selection[0].activeCell
 
     @property
     def show_gridlines(self):
