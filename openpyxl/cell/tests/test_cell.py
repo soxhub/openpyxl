@@ -57,7 +57,7 @@ def Cell():
 @pytest.fixture
 def dummy_cell(DummyWorksheet, Cell):
     ws = DummyWorksheet
-    cell = Cell(ws, column="A", row=1)
+    cell = Cell(ws, col_idx=1, row=1)
     return cell
 
 
@@ -113,7 +113,7 @@ def test_infer_datetime(dummy_cell, value, expected):
 def test_ctor(dummy_cell):
     cell = dummy_cell
     assert cell.data_type == 'n'
-    assert cell.column == 'A'
+    assert cell.column == 1
     assert cell.row == 1
     assert cell.coordinate == "A1"
     assert cell.value is None
@@ -339,7 +339,7 @@ def test_font(DummyWorksheet, Cell):
     ws = DummyWorksheet
     ws.parent._fonts.add(font)
 
-    cell = Cell(ws, column='A', row=1)
+    cell = Cell(ws, row=1, column=1)
     assert cell.font == font
 
 
