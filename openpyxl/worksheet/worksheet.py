@@ -279,7 +279,7 @@ class Worksheet(_WorkbookChild):
         """
         coordinate = (row, column)
         if not coordinate in self._cells:
-            cell = Cell(self, row=row, col_idx=column)
+            cell = Cell(self, row=row, column=column)
             self._add_cell(cell)
         return self._cells[coordinate]
 
@@ -669,17 +669,17 @@ class Worksheet(_WorkbookChild):
                     if cell.parent and cell.parent != self:
                         raise ValueError("Cells cannot be copied from other worksheets")
                     cell.parent = self
-                    cell.col_idx = col_idx
+                    cell.column = col_idx
                     cell.row = row_idx
                 else:
-                    cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                    cell = Cell(self, row=row_idx, column=col_idx, value=content)
                 self._cells[(row_idx, col_idx)] = cell
 
         elif isinstance(iterable, dict):
             for col_idx, content in iterable.items():
                 if isinstance(col_idx, basestring):
                     col_idx = column_index_from_string(col_idx)
-                cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                cell = Cell(self, row=row_idx, column=col_idx, value=content)
                 self._cells[(row_idx, col_idx)] = cell
 
         else:
@@ -709,12 +709,12 @@ class Worksheet(_WorkbookChild):
             elif min_col and cell.col_idx < min_col:
                 continue
 
-            del self._cells[(cell.row, cell.col_idx)] # remove old ref
+            del self._cells[(cell.row, cell.column)] # remove old ref
 
             val = getattr(cell, row_or_col)
             setattr(cell, row_or_col, val+offset) # calculate new coords
 
-            self._cells[(cell.row, cell.col_idx)] = cell # add new ref
+            self._cells[(cell.row, cell.column)] = cell # add new ref
 
 
     def insert_rows(self, idx, amount=1):
@@ -728,7 +728,7 @@ class Worksheet(_WorkbookChild):
         """
         Insert column or columns before col==idx
         """
-        self._move_cells(min_col=idx, offset=amount, row_or_col="col_idx")
+        self._move_cells(min_col=idx, offset=amount, row_or_col="column")
 
 
     def delete_rows(self, idx, amount=1):
@@ -753,7 +753,7 @@ class Worksheet(_WorkbookChild):
 
         remainder = _gutter(idx, amount, self.max_column)
 
-        self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
+        self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="column")
 
         for col in remainder:
             for row in range(self.min_row, self.max_row+1):

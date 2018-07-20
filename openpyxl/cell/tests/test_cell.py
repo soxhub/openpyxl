@@ -43,7 +43,7 @@ def DummyWorksheet():
         _comment_count = 0
 
         def cell(self, column, row):
-            return Cell(self, row=row, col_idx=column)
+            return Cell(self, row=row, column=column)
 
     return Ws()
 
@@ -57,7 +57,7 @@ def Cell():
 @pytest.fixture
 def dummy_cell(DummyWorksheet, Cell):
     ws = DummyWorksheet
-    cell = Cell(ws, col_idx=1, row=1)
+    cell = Cell(ws, column=1, row=1)
     return cell
 
 
@@ -117,6 +117,7 @@ def test_ctor(dummy_cell):
     assert cell.row == 1
     assert cell.coordinate == "A1"
     assert cell.value is None
+
     assert cell.comment is None
 
 

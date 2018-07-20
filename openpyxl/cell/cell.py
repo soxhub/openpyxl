@@ -105,10 +105,12 @@ class Cell(StyleableObject):
                    TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
 
-    def __init__(self, worksheet, row=None, column=None, value=None, col_idx=None, style_array=None):
+    def __init__(self, worksheet, row=None, column=None, value=None, style_array=None):
         super(Cell, self).__init__(worksheet, style_array)
         self.row = row
         """Row number of this cell (1-based)"""
+        self.column = column
+        """Column number of this cell (1-based)"""
         # _value is the stored value, while value is the displayed value
         self._value = None
         self._hyperlink = None
@@ -116,10 +118,6 @@ class Cell(StyleableObject):
         if value is not None:
             self.value = value
         self._comment = None
-        """Column number of this cell (1-based)"""
-        if col_idx is not None: # will be removed
-            column = col_idx
-        self.column = column
 
 
     @property
@@ -399,13 +397,13 @@ class MergedCell(StyleableObject):
 
     __slots__ = (
         'row',
-        'col_idx',
+        'column',
         )
 
-    def __init__(self, worksheet, row=None, col_idx=None):
+    def __init__(self, worksheet, row=None, column=None):
         super(MergedCell, self).__init__(worksheet)
         self.row = row
-        self.col_idx = col_idx
+        self.column = column
 
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
@@ -425,12 +423,8 @@ class MergedCell(StyleableObject):
     @property
     def coordinate(self):
         """This merged cell's coordinate. (ex. 'A5')"""
+        col = get_column_letter(self.column)
         return '%s%d' % (self.column, self.row)
-
-    @property
-    def column(self):
-        """The letter of this merged cell's column. (ex. 'A')"""
-        return get_column_letter(self.col_idx)
 
 
 def WriteOnlyCell(ws=None, value=None):

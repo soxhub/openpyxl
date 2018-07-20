@@ -515,9 +515,9 @@ class MergedCellRange(CellRange):
             self.start_cell = self.ws._cells[(self.min_row, self.min_col)]
         else:
             self.start_cell = Cell(self.ws, row=self.min_row,
-                    col_idx=self.min_col)
+                    column=self.min_col)
             self.ws._cells[(self.start_cell.row,
-                self.start_cell.col_idx)] = self.start_cell
+                self.start_cell.column)] = self.start_cell
 
         if (self.max_row, self.max_col) in self.ws._cells:
             # Bottom-right cell
@@ -551,8 +551,8 @@ class MergedCellRange(CellRange):
                 cell = self.ws._cells.get(coord)
                 if cell is None:
                     row, col = coord
-                    cell = MergedCell(self.ws, row=row, col_idx=col)
-                    self.ws._cells[(cell.row, cell.col_idx)] = cell
+                    cell = MergedCell(self.ws, row=row, column=col)
+                    self.ws._cells[(cell.row, cell.column)] = cell
                 cell.border += border
 
 

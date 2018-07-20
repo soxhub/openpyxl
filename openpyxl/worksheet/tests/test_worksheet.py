@@ -555,7 +555,7 @@ class TestEditableWorksheet:
         ws = dummy_worksheet
         assert ws.max_column == 8
 
-        ws._move_cells(min_col=3, offset=2, row_or_col="col_idx")
+        ws._move_cells(min_col=3, offset=2, row_or_col="column")
 
         assert ws.max_column == 10
         assert [c.value for c in ws['D']] == [None]*6

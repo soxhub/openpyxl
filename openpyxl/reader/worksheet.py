@@ -214,7 +214,7 @@ class WorkSheetParser(object):
         else:
             row, column = self._row_count, self._col_count
 
-        cell = Cell(self.ws, row=row, col_idx=column, style_array=style_array)
+        cell = Cell(self.ws, row=row, column=column, style_array=style_array)
         self.ws._cells[(row, column)] = cell
 
         if value is not None:

@@ -167,7 +167,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
                                         else:
                                             raise ValueError
 
-                                    cell.col_idx = col_idx
+                                    cell.column = col_idx
                                     cell.row = row_idx
 
                                     styled = cell.has_style
