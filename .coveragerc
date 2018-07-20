@@ -1,8 +1,8 @@
 [html]
-directory = shippable/codecoverage
+directory = $PWD/shippable/codecoverage
 
 [xml]
-output = shippable/codecoverage/coverage.xml
+output = $PWDshippable/codecoverage/coverage.xml
 
 [report]
 exclude_lines =
@@ -12,4 +12,3 @@ omit =
     */benchmarks/*
     */tests/*
     */test_*
-    openpyxl/worksheet/pivot.py
