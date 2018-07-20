@@ -296,10 +296,7 @@ class Cell(StyleableObject):
         :type: depends on the value (string, float, int or
             :class:`datetime.datetime`)
         """
-        value = self._value
-        #if value is not None and self.is_date:
-            #value = from_excel(value, self.base_date)
-        return value
+        return self._value
 
     @value.setter
     def value(self, value):
