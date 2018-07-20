@@ -199,14 +199,6 @@ class Worksheet(_WorkbookChild):
                      "syncVertical", "transitionEvaluation", "transitionEntry"):
                 setattr(self.sheet_properties, k, v)
 
-    """ End To keep compatibility with previous versions"""
-
-
-    @deprecated("Use the ws.values property")
-    def get_cell_collection(self):
-        """Return an unordered list of the cells in this worksheet."""
-        return self._cells.values()
-
 
     @property
     def freeze_panes(self):
