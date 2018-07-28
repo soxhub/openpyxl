@@ -447,3 +447,10 @@ class TestMergedCell:
         cell.row = 1
         cell.column = 1
         assert cell.coordinate == "A1"
+
+
+    def test_repr(self, MergedCell):
+        cell = MergedCell
+        cell.row = 1
+        cell.column = 1
+        assert repr(cell) == "<MergedCell 'Dummy Worksheet'.A1>"
