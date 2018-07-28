@@ -421,7 +421,7 @@ class MergedCell(StyleableObject):
     def coordinate(self):
         """This merged cell's coordinate. (ex. 'A5')"""
         col = get_column_letter(self.column)
-        return '%s%d' % (self.column, self.row)
+        return '%s%d' % (col, self.row)
 
 
 def WriteOnlyCell(ws=None, value=None):
