@@ -98,11 +98,6 @@ class ReadOnlyWorksheet(object):
         self._xml = value
 
 
-    @deprecated("Use ws.iter_rows()")
-    def get_squared_range(self, min_col, min_row, max_col, max_row):
-        return self._cells_by_row(min_col, min_row, max_col, max_row)
-
-
     def _cells_by_row(self, min_col, min_row, max_col, max_row):
         """
         The source worksheet file may have columns or rows missing.
