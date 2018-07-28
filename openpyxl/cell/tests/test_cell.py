@@ -417,3 +417,33 @@ def test_remove_hyperlink(dummy_cell):
     cell.hyperlink = "http://test.com"
     cell.hyperlink = None
     assert cell.hyperlink is None
+
+
+@pytest.fixture
+def MergedCell():
+    from ..cell import MergedCell
+    return MergedCell(DummyWorksheet())
+
+
+class TestMergedCell:
+
+    def test_value(self, MergedCell):
+        cell = MergedCell
+        assert cell._value is None
+
+
+    def test_data_type(self, MergedCell):
+        cell = MergedCell
+        assert cell.data_type == 'n'
+
+
+    def test_comment(self, MergedCell):
+        cell = MergedCell
+        assert cell._comment is None
+
+
+    def test_coordinate(self, MergedCell):
+        cell = MergedCell
+        cell.row = 1
+        cell.column = 1
+        assert cell.coordinate == "A1"
