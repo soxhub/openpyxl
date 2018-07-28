@@ -302,7 +302,7 @@ open an existing workbook::
 
     >>> from openpyxl import load_workbook
     >>> wb2 = load_workbook('test.xlsx')
-    >>> print wb2.get_sheet_names()
+    >>> print wb2.sheetnames
     ['Sheet2', 'New Title', 'Sheet1']
 
 This ends the tutorial for now, you can proceed to the :doc:`usage` section
