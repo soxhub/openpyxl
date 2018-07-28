@@ -123,7 +123,7 @@ class Cell(StyleableObject):
     @property
     def coordinate(self):
         """This cell's coordinate (ex. 'A5')"""
-        col = get_column_letter(self.col_idx)
+        col = get_column_letter(self.column)
         return "{0}{1}".format(col, self.row)
 
 
@@ -408,12 +408,7 @@ class MergedCell(StyleableObject):
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-
-    @property
-    def coordinate(self):
-        """This merged cell's coordinate. (ex. 'A5')"""
-        col = get_column_letter(self.column)
-        return '%s%d' % (col, self.row)
+    coordinate = Cell.coordinate
 
 
 def WriteOnlyCell(ws=None, value=None):
