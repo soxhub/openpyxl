@@ -392,30 +392,22 @@ class MergedCell(StyleableObject):
     The value of a MergedCell is always None.
     """
 
-    __slots__ = (
-        'row',
-        'column',
-        )
+    __slots__ = ('row', 'column')
+
+    _value = None
+    data_type = "n"
+    _comment = None
+
 
     def __init__(self, worksheet, row=None, column=None):
         super(MergedCell, self).__init__(worksheet)
         self.row = row
         self.column = column
 
+
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-    @property
-    def _value(self):
-        return None
-
-    @property
-    def data_type(self):
-        return 'n'
-
-    @property
-    def _comment(self):
-        return None
 
     @property
     def coordinate(self):
