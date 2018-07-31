@@ -75,7 +75,7 @@ class Workbook(object):
         self.is_template = False
         self._differential_styles = DifferentialStyleList()
         self.code_name = None
-        self.excel_base_date = CALENDAR_WINDOWS_1900
+        self.epoch = self.excel_base_date = CALENDAR_WINDOWS_1900
         self.encoding = "utf-8"
         self.iso_dates = iso_dates
 
