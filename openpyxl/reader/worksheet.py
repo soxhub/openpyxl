@@ -82,6 +82,7 @@ class WorkSheetParser(object):
 
     def __init__(self, ws, xml_source, shared_strings):
         self.ws = ws
+        self.epoch = ws.parent.excel_base_date
         self.source = xml_source
         self.shared_strings = shared_strings
         self.guess_types = ws.parent.guess_types
@@ -222,8 +223,8 @@ class WorkSheetParser(object):
                 value = _cast_number(value)
                 if is_date_format(cell.number_format):
                     data_type = 'd'
-                    value = from_excel(value, self.ws.parent.excel_base_date)
-                    
+                    value = from_excel(value, self.epoch)
+
             elif data_type == 'b':
                 value = bool(int(value))
             elif data_type == 's':
