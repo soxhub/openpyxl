@@ -16,7 +16,7 @@ from openpyxl.cell.read_only import EMPTY_CELL
 @pytest.fixture
 def DummyWorkbook():
     class Workbook:
-        excel_base_date = None
+        epoch = None
         _cell_styles = [StyleArray([0, 0, 0, 0, 0, 0, 0, 0, 0])]
 
         def __init__(self):
@@ -438,3 +438,11 @@ def test_read_empty_sheet(datadir, read_only):
     wb = load_workbook("empty.xlsx", read_only=read_only)
     ws = wb.active
     assert tuple(ws.rows) == tuple(ws.iter_rows())
+
+
+@pytest.mark.parametrize("read_only", [False, True])
+def test_read_mac_date(datadir, read_only):
+    datadir.join("genuine").chdir()
+    wb = load_workbook("mac_date.xlsx", read_only=read_only)
+    ws = wb.active
+    assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)

@@ -26,7 +26,7 @@ def DummyWorksheet():
     from openpyxl.cell import Cell
 
     class Wb(object):
-        excel_base_date = CALENDAR_WINDOWS_1900
+        epoch = CALENDAR_WINDOWS_1900
         _fonts = IndexedList()
         _fills = IndexedList()
         _borders = IndexedList()

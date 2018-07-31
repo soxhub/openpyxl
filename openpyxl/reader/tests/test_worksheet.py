@@ -16,6 +16,7 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.pagebreak import Break, PageBreak
 from openpyxl.packaging.relationship import Relationship, RelationshipList
+from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 
 
 def test_get_xml_iter():
@@ -76,6 +77,7 @@ def Workbook():
         data_only = False
         _colors = []
         encoding = "utf8"
+        epoch = CALENDAR_WINDOWS_1900
 
         def __init__(self):
             self._differential_styles = []
@@ -313,6 +315,49 @@ def test_datetime(WorkSheetParser):
     parser.parse_cell(element)
     assert ws['A1'].data_type == 'd'
     assert ws['A1'].value == datetime.datetime(2011, 12, 25, 14, 23, 55)
+
+
+def test_mac_date():
+    from openpyxl.styles.styleable import StyleArray
+    from openpyxl.styles import numbers
+
+    class DummyWorkbook:
+        guess_types = False
+        data_only = False
+        _colors = []
+        encoding = "utf8"
+        epoch = CALENDAR_MAC_1904
+
+        def __init__(self):
+            self._differential_styles = []
+            self.shared_strings = IndexedList()
+            self._fonts = IndexedList()
+            self._fills = IndexedList()
+            self._number_formats = IndexedList()
+            self._borders = IndexedList()
+            self._alignments = IndexedList()
+            self._protections = IndexedList()
+            self._cell_styles = IndexedList()
+            self.vba_archive = None
+            self._cell_styles.add(StyleArray([0, 0, 0, 14, 0, 0, 0, 0, 0]))
+            self.sheetnames = []
+
+        def create_sheet(self, title):
+            return Worksheet(self)
+
+    from .. worksheet import WorkSheetParser
+    ws = DummyWorkbook().create_sheet('sheet')
+    parser = WorkSheetParser(ws, None, {0:'a'})
+
+    src = """
+    <x:c r="A1" s="0" t="n" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <x:v>41184</x:v>
+    </x:c>
+    """
+    element = fromstring(src)
+
+    parser.parse_cell(element)
+    assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)
 
 
 def test_string(WorkSheetParser):

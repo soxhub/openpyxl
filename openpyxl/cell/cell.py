@@ -144,7 +144,7 @@ class Cell(StyleableObject):
 
     @property
     def base_date(self):
-        return self.parent.parent.excel_base_date
+        return self.parent.parent.epoch
 
     @property
     def guess_types(self):
