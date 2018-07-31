@@ -82,7 +82,7 @@ class WorkSheetParser(object):
 
     def __init__(self, ws, xml_source, shared_strings):
         self.ws = ws
-        self.epoch = ws.parent.excel_base_date
+        self.epoch = ws.parent.epoch
         self.source = xml_source
         self.shared_strings = shared_strings
         self.guess_types = ws.parent.guess_types

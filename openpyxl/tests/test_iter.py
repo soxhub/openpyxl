@@ -16,7 +16,7 @@ from openpyxl.cell.read_only import EMPTY_CELL
 @pytest.fixture
 def DummyWorkbook():
     class Workbook:
-        excel_base_date = None
+        epoch = None
         _cell_styles = [StyleArray([0, 0, 0, 0, 0, 0, 0, 0, 0])]
 
         def __init__(self):

@@ -83,7 +83,7 @@ def write_workbook(workbook):
     props = WorkbookProperties() # needs a mapping to the workbook for preservation
     if wb.code_name is not None:
         props.codeName = wb.code_name
-    if wb.excel_base_date == CALENDAR_MAC_1904:
+    if wb.epoch == CALENDAR_MAC_1904:
         props.date1904 = True
     root.workbookPr = props
 

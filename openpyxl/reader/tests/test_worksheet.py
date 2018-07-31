@@ -77,7 +77,7 @@ def Workbook():
         data_only = False
         _colors = []
         encoding = "utf8"
-        excel_base_date = CALENDAR_WINDOWS_1900
+        epoch = CALENDAR_WINDOWS_1900
 
         def __init__(self):
             self._differential_styles = []
@@ -326,7 +326,7 @@ def test_mac_date():
         data_only = False
         _colors = []
         encoding = "utf8"
-        excel_base_date = CALENDAR_MAC_1904
+        epoch = CALENDAR_MAC_1904
 
         def __init__(self):
             self._differential_styles = []

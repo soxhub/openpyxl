@@ -6,7 +6,7 @@ import pytest
 
 class DummyWorkbook:
 
-    excel_base_date = None
+    epoch = None
     sheetnames = []
 
 

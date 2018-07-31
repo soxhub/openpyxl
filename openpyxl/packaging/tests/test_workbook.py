@@ -49,11 +49,11 @@ class TestWorkbookParser:
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
         parser = WorkbookParser(archive, ARC_WORKBOOK)
-        assert parser.wb.excel_base_date == CALENDAR_WINDOWS_1900
+        assert parser.wb.epoch == CALENDAR_WINDOWS_1900
 
         parser.parse()
         assert parser.wb.code_name is None
-        assert parser.wb.excel_base_date == CALENDAR_MAC_1904
+        assert parser.wb.epoch == CALENDAR_MAC_1904
 
 
     def test_find_sheets(self, datadir, WorkbookParser):
