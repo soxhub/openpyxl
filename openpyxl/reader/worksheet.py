@@ -222,7 +222,8 @@ class WorkSheetParser(object):
                 value = _cast_number(value)
                 if is_date_format(cell.number_format):
                     data_type = 'd'
-                    value = from_excel(value)
+                    value = from_excel(value, self.ws.parent.excel_base_date)
+                    
             elif data_type == 'b':
                 value = bool(int(value))
             elif data_type == 's':
