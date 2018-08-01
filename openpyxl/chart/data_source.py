@@ -206,11 +206,11 @@ class MultiLevelStrRef(Serialisable):
 
     tagname = "multiLvlStrRef"
 
-    f = String()
+    f = NestedText(expected_type=unicode)
     multiLvlStrCache = Typed(expected_type=MultiLevelStrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('multiLvlStrCache',)
+    __elements__ = ('multiLvlStrCache', 'f')
 
     def __init__(self,
                  f=None,
@@ -222,6 +222,8 @@ class MultiLevelStrRef(Serialisable):
 
 
 class AxDataSource(Serialisable):
+
+    tagname = "cat"
 
     numRef = Typed(expected_type=NumRef, allow_none=True)
     numLit = Typed(expected_type=NumData, allow_none=True)
@@ -236,6 +238,8 @@ class AxDataSource(Serialisable):
                  strLit=None,
                  multiLvlStrRef=None,
                  ):
+        if not any([numLit, numRef, strRef, strLit, multiLvlStrRef]):
+            raise TypeError("A data source must be provided")
         self.numRef = numRef
         self.numLit = numLit
         self.strRef = strRef
