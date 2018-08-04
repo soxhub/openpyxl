@@ -77,7 +77,7 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
             value = value.isoformat()
         else:
             attributes['t'] = "n"
-            value = to_excel(value)
+            value = to_excel(value, worksheet.parent.epoch)
 
     if cell._comment is not None:
         comment = CommentRecord.from_cell(cell)
@@ -125,7 +125,7 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
             value = value.isoformat()
         else:
             attributes['t'] = "n"
-            value = to_excel(value)
+            value = to_excel(value, worksheet.parent.epoch)
 
     if cell._comment is not None:
         comment = CommentRecord.from_cell(cell)

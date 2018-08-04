@@ -25,7 +25,7 @@ class DummyWorkbook:
         )
         self._number_formats = IndexedList()
         self.encoding = "UTF-8"
-        self.excel_base_date = CALENDAR_WINDOWS_1900
+        self.epoch = CALENDAR_WINDOWS_1900
         self.sheetnames = []
 
 

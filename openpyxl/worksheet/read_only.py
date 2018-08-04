@@ -68,7 +68,7 @@ class ReadOnlyWorksheet(object):
         self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
-        self.base_date = parent_workbook.excel_base_date
+        self.base_date = parent_workbook.epoch
         self.xml_source = xml_source
         dimensions = read_dimension(self.xml_source)
         if dimensions is not None:

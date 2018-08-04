@@ -152,3 +152,130 @@ class TestStrData:
         node = fromstring(src)
         data_source = StrData.from_tree(node)
         assert data_source == StrData(ptCount=4)
+
+
+@pytest.fixture
+def Level():
+    from ..data_source import Level
+    return Level
+
+
+class TestLevel:
+
+    def test_ctor(self, Level):
+        level = Level()
+        xml = tostring(level.to_tree())
+        expected = """
+        <lvl />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Level):
+        src = """
+        <root />
+        """
+        node = fromstring(src)
+        level = Level.from_tree(node)
+        assert level == Level()
+
+
+@pytest.fixture
+def MultiLevelStrData():
+    from ..data_source import MultiLevelStrData
+    return MultiLevelStrData
+
+
+class TestMultiLevelStrData:
+
+    def test_ctor(self, MultiLevelStrData):
+        multidata = MultiLevelStrData()
+        xml = tostring(multidata.to_tree())
+        expected = """
+        <multiLvlStrData />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, MultiLevelStrData):
+        src = """
+        <multiLvlStrData />
+        """
+        node = fromstring(src)
+        multidata = MultiLevelStrData.from_tree(node)
+        assert multidata == MultiLevelStrData()
+
+
+@pytest.fixture
+def MultiLevelStrRef():
+    from ..data_source import MultiLevelStrRef
+    return MultiLevelStrRef
+
+
+class TestMultiLevelStrRef:
+
+    def test_ctor(self, MultiLevelStrRef):
+        multiref = MultiLevelStrRef(f="Sheet1!$A$1:$B$10")
+        xml = tostring(multiref.to_tree())
+        expected = """
+        <multiLvlStrRef>
+          <f>Sheet1!$A$1:$B$10</f>
+        </multiLvlStrRef>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, MultiLevelStrRef):
+        src = """
+        <multiLvlStrRef>
+          <f>Sheet1!$A$1:$B$10</f>
+        </multiLvlStrRef>
+        """
+        node = fromstring(src)
+        multiref = MultiLevelStrRef.from_tree(node)
+        assert multiref == MultiLevelStrRef(f="Sheet1!$A$1:$B$10")
+
+
+@pytest.fixture
+def AxDataSource():
+    from ..data_source import AxDataSource
+    return AxDataSource
+
+
+class TestAxDataSource:
+
+    def test_ctor(self, AxDataSource, StrRef):
+        dummy = StrRef(f="")
+        ax = AxDataSource(strRef=dummy)
+        xml = tostring(ax.to_tree())
+        expected = """
+        <cat>
+          <strRef>
+            <f />
+          </strRef>
+        </cat>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_no_source(self, AxDataSource):
+        with pytest.raises(TypeError):
+            ax = AxDataSource()
+
+
+    def test_from_xml(self, AxDataSource, StrRef):
+        src = """
+        <cat>
+          <strRef>
+            <f />
+          </strRef>
+        </cat>
+        """
+        node = fromstring(src)
+        dummy = StrRef()
+        ax = AxDataSource.from_tree(node)
+        assert ax == AxDataSource(strRef=dummy)

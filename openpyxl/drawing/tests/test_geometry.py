@@ -36,7 +36,7 @@ class TestGradientFillProperties:
 
 @pytest.fixture
 def Transform2D():
-    from ..shapes import Transform2D
+    from ..geometry import Transform2D
     return Transform2D
 
 
@@ -46,7 +46,7 @@ class TestTransform2D:
         shapes = Transform2D()
         xml = tostring(shapes.to_tree())
         expected = """
-        <xfrm></xfrm>
+        <xfrm xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -63,7 +63,7 @@ class TestTransform2D:
 
 @pytest.fixture
 def Camera():
-    from ..shapes import Camera
+    from ..geometry import Camera
     return Camera
 
 
@@ -90,7 +90,7 @@ class TestCamera:
 
 @pytest.fixture
 def LightRig():
-    from ..shapes import LightRig
+    from ..geometry import LightRig
     return LightRig
 
 
@@ -117,7 +117,7 @@ class TestLightRig:
 
 @pytest.fixture
 def Bevel():
-    from ..shapes import Bevel
+    from ..geometry import Bevel
     return Bevel
 
 

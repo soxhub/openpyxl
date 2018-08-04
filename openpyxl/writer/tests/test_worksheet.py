@@ -16,6 +16,7 @@ from .. worksheet import write_worksheet
 from openpyxl.tests.helper import compare_xml
 from openpyxl.worksheet.dimensions import DimensionHolder
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
+from openpyxl.utils.datetime import CALENDAR_MAC_1904, CALENDAR_WINDOWS_1900
 
 from openpyxl import LXML
 
@@ -116,6 +117,31 @@ def test_write_date(worksheet, write_cell_implementation, value, expected, iso_d
     cell = ws['A1']
     cell.value = value
     cell.parent.parent.iso_dates = iso_dates
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, cell.has_style)
+
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+@pytest.mark.parametrize("value, expected, epoch",
+                         [
+                             (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>40902</v></c>""",
+                              CALENDAR_WINDOWS_1900),
+                             (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>39440</v></c>""",
+                              CALENDAR_MAC_1904),
+                         ]
+                         )
+def test_write_epoch(worksheet, write_cell_implementation, value, expected, epoch):
+    write_cell = write_cell_implementation
+
+    ws = worksheet
+    ws.parent.epoch = epoch
+    cell = ws['A1']
+    cell.value = value
 
     out = BytesIO()
     with xmlfile(out) as xf:
