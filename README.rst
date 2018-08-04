@@ -8,6 +8,9 @@ the Office Open XML format.
 
 All kudos to the PHPExcel team as openpyxl was initially based on PHPExcel.
 
+.. image:: https://coveralls.io/repos/bitbucket/openpyxl/openpyxl/badge.svg?branch=default
+:target: https://coveralls.io/bitbucket/openpyxl/openpyxl?branch=default
+
 
 Mailing List
 ============
