@@ -1,5 +1,9 @@
-openpyxl
-========
+.. image:: https://coveralls.io/repos/bitbucket/openpyxl/openpyxl/badge.svg?branch=default
+    :target: https://coveralls.io/bitbucket/openpyxl/openpyxl?branch=default
+    :alt: coverage status
+
+Introduction
+------------
 
 openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files.
 
@@ -10,10 +14,9 @@ All kudos to the PHPExcel team as openpyxl was initially based on PHPExcel.
 
 
 Mailing List
-============
+------------
 
-Official user list can be found on
-http://groups.google.com/group/openpyxl-users
+The user list can be found on http://groups.google.com/group/openpyxl-users
 
 
 Sample code::
@@ -38,8 +41,8 @@ Sample code::
     wb.save("sample.xlsx")
 
 
-Official documentation
-======================
+Documentation
+-------------
 
 The documentation is at: https://openpyxl.readthedocs.io
 
@@ -47,4 +50,4 @@ The documentation is at: https://openpyxl.readthedocs.io
 * code examples
 * instructions for contributing
 
-Release notes: https://openpyxl.readthedocs.io/en/latest/changes.html
+Release notes: https://openpyxl.readthedocs.io/en/stable/changes.html
