@@ -1,23 +1,28 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
-
 from io import BytesIO
+from openpyxl.xml.functions import xmlfile
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
 
 class WorksheetWriter:
 
 
-    def __init__(self, out=None):
+    def __init__(self, ws, out=None):
+        self.ws = ws
         if out is None:
             out = BytesIO()
         self.out = out
-        self._rels = RelationshipList()
+        #self._rels = RelationshipList()
         self._hyperlinks = []
+        self.xf = self.write()
 
 
     def write_properties(self):
-        pass
+        next(self.xf)
+        props = self.ws.sheet_properties
+        self.xf.send(props.to_tree())
 
 
     def write_dimensions(self):
@@ -93,4 +98,11 @@ class WorksheetWriter:
 
 
     def write(self):
-        pass
+        with xmlfile(self.out) as xf:
+            with xf.element("worksheet", xmlns=SHEET_MAIN_NS):
+                try:
+                    while True:
+                        el = (yield)
+                        xf.write(el)
+                except GeneratorExit:
+                    pass
