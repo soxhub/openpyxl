@@ -182,7 +182,7 @@ class TestCellRange:
                                  ("Sheet1!A1:B4", "Sheet1!D5:E5", None),
                                  ("Sheet1!A1:B4", "D5:E5", None),
                              ]
-    )
+                             )
     def test_check_title(self, CellRange,r1, r2, expected):
         cr1 = CellRange(r1)
         cr2 = CellRange(r2)
@@ -355,7 +355,7 @@ def thick_border():
 @pytest.fixture
 def start_border():
     return Border(top=thick_border(), left=thick_border(),
-                    right=thin_border(), bottom=double_border())
+                  right=thin_border(), bottom=double_border())
 
 
 class TestMergedCellRange:
@@ -366,7 +366,7 @@ class TestMergedCellRange:
                                  ("A3"),
                                  ("C3"),
                              ]
-    )
+                             )
 
     def test_get_borders(self,  MergedCellRange, end):
         ws = Worksheet(Workbook())
@@ -379,17 +379,17 @@ class TestMergedCellRange:
 
 
     @pytest.mark.parametrize("edge_name, edge, border",
-                [
+                             [
                     ('top', [(1,1),(1,2), (1,3)],
-                        Border(top=thick_border())),
+                     Border(top=thick_border())),
                     ('bottom', [(3,1), (3,2), (3,3)],
-                        Border(bottom=double_border())),
+                     Border(bottom=double_border())),
                     ('left', [(1,1), (2,1), (3,1)],
-                        Border(left=thick_border())),
+                     Border(left=thick_border())),
                     ('right', [(1,3), (2,3), (3,3)],
-                        Border(right=thin_border())),
+                     Border(right=thin_border())),
                 ]
-    )
+                )
 
 
     def test_side_for_edge(self, MergedCellRange, edge_name, edge, border):
@@ -410,14 +410,14 @@ class TestMergedCellRange:
         mcr.format()
 
         b1_border = Border(
-                top=thick_border(),
+            top=thick_border(),
                 left=default_border(),
                 right=default_border(),
                 bottom=double_border())
         assert ws['B1'].border == b1_border
 
         c1_border = Border(
-                top=thick_border(),
+            top=thick_border(),
                 left=default_border(),
                 right=thin_border(),
                 bottom=double_border())
@@ -432,14 +432,14 @@ class TestMergedCellRange:
         mcr.format()
 
         a2_border = Border(
-                top=default_border(),
+            top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
                 bottom=default_border())
         assert ws['A2'].border == a2_border
 
         a3_border = Border(
-                top=default_border(),
+            top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
                 bottom=double_border())
@@ -454,23 +454,23 @@ class TestMergedCellRange:
         mcr.format()
 
         for coord in mcr._top:
-           cell = ws._cells.get(coord)
-           assert cell.border.top == thick_border()
+            cell = ws._cells.get(coord)
+            assert cell.border.top == thick_border()
 
         for coord in mcr._bottom:
-           cell = ws._cells.get(coord)
-           assert cell.border.bottom== double_border()
+            cell = ws._cells.get(coord)
+            assert cell.border.bottom== double_border()
 
         for coord in mcr._left:
-           cell = ws._cells.get(coord)
-           assert cell.border.left == thick_border()
+            cell = ws._cells.get(coord)
+            assert cell.border.left == thick_border()
 
         for coord in mcr._right:
-           cell = ws._cells.get(coord)
-           assert cell.border.right == thin_border()
+            cell = ws._cells.get(coord)
+            assert cell.border.right == thin_border()
 
         b2_border = Border(
-                top=default_border(),
+            top=default_border(),
                 left=default_border(),
                 right=default_border(),
                 bottom=default_border())
