@@ -494,13 +494,6 @@ class MergedCellRange(CellRange):
         self.start_cell = None
         self._get_borders()
 
-    def __repr__(self):
-        fmt = u"<{cls} {coord}>"
-        if self.title:
-            fmt = u"<{cls} {title!r}!{coord}>"
-        return safe_repr(fmt.format(cls=self.__class__.__name__,
-                                    title=self.title, coord=self.coord))
-
 
     def _get_borders(self):
         """

@@ -367,12 +367,6 @@ class TestMergedCellRange:
         assert cells.start_cell == ws['A1']
 
 
-    def test_repr(self, MergedCellRange):
-        ws = Worksheet(Workbook())
-        cells = MergedCellRange(ws, "A1:E4")
-        assert repr(cells) == "<MergedCellRange A1:E4>"
-
-
     @pytest.mark.parametrize("end",
                              [
                                  ("C1"),
