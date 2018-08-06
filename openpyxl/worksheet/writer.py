@@ -80,10 +80,16 @@ class WorksheetWriter:
 
 
     def write_filter(self):
-        pass
+        flt = self.ws.auto_filter
+        if flt:
+            self.xf.send(flt.to_tree())
 
 
     def write_sort(self):
+        """
+        As per discusion with the OOXML Working Group global sort state is not required.
+        openpyxl never reads it from existing files
+        """
         pass
 
 
@@ -150,7 +156,7 @@ class WorksheetWriter:
         protected ranges #
         scenarios #
         filters
-        sorts
+        sorts # always ignored
         data consolidation #
         custom views #
         merged cells

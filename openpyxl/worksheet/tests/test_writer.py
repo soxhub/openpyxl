@@ -8,6 +8,8 @@ from openpyxl.tests.helper import compare_xml
 from openpyxl.workbook import Workbook
 
 from ..protection import SheetProtection
+from ..filters import AutoFilter
+from ..filters import SortState
 
 
 @pytest.fixture
@@ -134,6 +136,34 @@ class TestWorksheetWriter:
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetProtection autoFilter="1" deleteColumns="1" deleteRows="1" formatCells="1" formatColumns="1" formatRows="1" insertColumns="1" insertHyperlinks="1" insertRows="1" objects="0" pivotTables="1" scenarios="0" selectLockedCells="0" selectUnlockedCells="0" sheet="1" sort="1" />
         </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_filter(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.auto_filter.ref ="A1:A10"
+        writer.write_filter()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <autoFilter ref="A1:A10" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_sort(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.sort_state = SortState(ref="A1:A10")
+        writer.write_sort()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff

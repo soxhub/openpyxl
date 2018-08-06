@@ -143,7 +143,6 @@ class Worksheet(_WorkbookChild):
 
         self._current_row = 0
         self.auto_filter = AutoFilter()
-        self.sort_state = SortState()
         self.paper_size = None
         self.formula_attributes = {}
         self.orientation = None
