@@ -53,7 +53,7 @@ class WorksheetWriter:
         self.xf.send(cols.to_tree())
 
 
-    def write_header(self):
+    def write_top(self):
         """
         Write all elements up to rows:
         properties

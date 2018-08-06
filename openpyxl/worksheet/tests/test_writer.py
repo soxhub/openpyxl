@@ -96,3 +96,27 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_write_top(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.write_top()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetPr>
+            <outlinePr summaryRight="1" summaryBelow="1"/>
+            <pageSetUpPr/>
+          </sheetPr>
+          <dimension ref="A1:A1" />
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1" />
+            </sheetView>
+          </sheetViews>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
