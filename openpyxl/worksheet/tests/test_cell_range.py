@@ -4,7 +4,6 @@ import pytest
 
 from copy import copy
 from ..worksheet import Worksheet
-from openpyxl.styles import Border, Side
 from openpyxl.workbook import Workbook
 
 @pytest.fixture
@@ -328,31 +327,3 @@ class TestMultiCellRange:
         from copy import copy
         r2 = copy(r1)
         assert list(r1)[0] is not list(r2)[0]
-
-
-@pytest.fixture
-def MergedCellRange():
-    from ..cell_range import MergedCellRange
-    return MergedCellRange
-
-
-@pytest.fixture
-def default_border():
-    return Side(border_style=None, color=None)
-
-@pytest.fixture
-def thin_border():
-    return Side(border_style="thin", color="000000")
-
-@pytest.fixture
-def double_border():
-    return Side(border_style="double", color="000000")
-
-@pytest.fixture
-def thick_border():
-    return Side(border_style="thick", color="000000")
-
-@pytest.fixture
-def start_border():
-    return Border(top=thick_border(), left=thick_border(),
-                  right=thin_border(), bottom=double_border())
