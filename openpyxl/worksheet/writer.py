@@ -25,17 +25,30 @@ class WorksheetWriter:
         self.xf.send(props.to_tree())
 
 
+    def write_format(self):
+        self.ws.sheet_format.outlineLevelCol = self.ws.column_dimensions.max_outline
+        fmt = self.ws.sheet_format
+        self.xf.send(fmt.to_tree())
+
+
+    def write_views(self):
+        views = self.ws.views
+        self.xf.send(views.to_tree())
+
+
     def write_cols(self):
         cols = self.ws.column_dimensions
         self.xf.send(cols.to_tree())
 
 
-    def write_views(self):
-        pass
-
-
-    def write_columns(self):
-        pass
+    def write_header(self):
+        """
+        Write all elements up to rows
+        """
+        self.write_properties()
+        self.write_format()
+        self.write_views()
+        self.write_cols()
 
 
     def write_rows(self):
@@ -107,3 +120,10 @@ class WorksheetWriter:
                         xf.write(el)
                 except GeneratorExit:
                     pass
+
+
+    def write_tail(self):
+        """
+        Write all elements after the rows
+        """
+        pass

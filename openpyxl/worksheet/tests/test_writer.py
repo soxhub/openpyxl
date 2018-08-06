@@ -36,6 +36,38 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
+    def test_write_format(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.write_format()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_views(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.write_views()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1" />
+            </sheetView>
+          </sheetViews>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
     def test_cols(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.ws.column_dimensions['A'].width = 5
