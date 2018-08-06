@@ -153,8 +153,9 @@ class WorksheetWriter:
 
 
     def write_header(self):
-        pass
-
+        hf = self.ws.HeaderFooter
+        if hf:
+            self.xf.send(hf.to_tree())
 
     def write_breaks(self):
         pass

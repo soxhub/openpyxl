@@ -309,3 +309,25 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_header(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.oddHeader.center.text = "odd header centre"
+        writer.write_header()
+        writer.xf.close()
+
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+         <headerFooter>
+           <oddHeader>&amp;Codd header centre</oddHeader>
+           <oddFooter />
+           <evenHeader />
+           <evenFooter />
+           <firstHeader />
+           <firstFooter />
+         </headerFooter>
+        </worksheet>"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
