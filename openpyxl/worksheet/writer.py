@@ -5,6 +5,8 @@ from io import BytesIO
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
+from .dimensions import SheetDimension
+
 
 class WorksheetWriter:
 
@@ -23,6 +25,16 @@ class WorksheetWriter:
     def write_properties(self):
         props = self.ws.sheet_properties
         self.xf.send(props.to_tree())
+
+
+    def write_dimensions(self):
+        """
+        Write worksheet size if known
+        """
+        ref = getattr(self.ws, 'calculate_dimension')
+        if ref:
+            dim = SheetDimension(ref())
+            self.xf.send(dim.to_tree())
 
 
     def write_format(self):
@@ -51,6 +63,7 @@ class WorksheetWriter:
         cols
         """
         self.write_properties()
+        self.write_dimensions()
         self.write_format()
         self.write_views()
         self.write_cols()

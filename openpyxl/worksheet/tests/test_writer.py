@@ -36,6 +36,19 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
+    def test_dimensions(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.write_dimensions()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <dimension ref="A1:A1" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
     def test_write_format(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.write_format()
