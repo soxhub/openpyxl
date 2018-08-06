@@ -363,3 +363,37 @@ class TestWorksheetWriter:
         xml = writer.out.getvalue()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_comments(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws._comments = True
+        writer.write_legacy()
+        writer.xf.close()
+
+        xml = writer.out.getvalue
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
+        </worksheet>
+        """
+        xml = writer.out.getvalue()
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_legacy(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.legacy_drawing = True
+        writer.write_legacy()
+        writer.xf.close()
+
+        xml = writer.out.getvalue
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
+        </worksheet>
+        """
+        xml = writer.out.getvalue()
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

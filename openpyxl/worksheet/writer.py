@@ -173,6 +173,16 @@ class WorksheetWriter:
             self.xf.send(drawing.to_tree("drawing"))
 
 
+    def write_legacy(self):
+        """
+        Comments & VBA controls use VML and require an additional element
+        that is no longer in the specification.
+        """
+        if (self.ws.legacy_drawing is not None or self.ws._comments):
+            legacy = Related(id="anysvml")
+            self.xf.send(legacy.to_tree("legacyDrawing"))
+
+
     def write_tables(self):
         pass
 
