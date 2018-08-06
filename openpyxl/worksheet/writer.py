@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2018 openpyxl
 
 from io import BytesIO
@@ -11,6 +11,7 @@ from .dimensions import SheetDimension
 from .hyperlink import HyperlinkList
 from .merge import MergeCell, MergeCells
 from .related import Related
+from .table import TablePartList
 
 
 class WorksheetWriter:
@@ -184,7 +185,24 @@ class WorksheetWriter:
 
 
     def write_tables(self):
-        pass
+        tables = TablePartList()
+
+        for table in self.ws._tables:
+            if not table.tableColumns:
+                table._initialise_columns()
+                if table.headerRowCount:
+                    row = self.ws[table.ref][0]
+                    for cell, col in zip(row, table.tableColumns):
+                        if cell.data_type != "s":
+                            warn("File may not be readable: column headings must be strings.")
+                        col.name = str(cell.value)
+            rel = Relationship(Type=table._rel_type, Target="")
+            self._rels.append(rel)
+            table._rel_id = rel.Id
+            tables.append(Related(id=rel.Id))
+
+        if tables:
+            self.xf.send(tables.to_tree())
 
 
     def write(self):

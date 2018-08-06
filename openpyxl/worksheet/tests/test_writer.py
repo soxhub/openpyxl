@@ -13,6 +13,7 @@ from openpyxl.formatting.rule import CellIsRule
 from ..protection import SheetProtection
 from ..filters import AutoFilter
 from ..filters import SortState
+from ..table import Table
 
 
 @pytest.fixture
@@ -395,5 +396,26 @@ class TestWorksheetWriter:
         </worksheet>
         """
         xml = writer.out.getvalue()
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_tables(self, WorksheetWriter):
+        writer = WorksheetWriter
+
+        writer.ws.append(list(u"ABCDEF\xfc"))
+        writer.ws._tables = [Table(displayName="Table1", ref="A1:G6")]
+        writer.write_tables()
+        writer.xf.close()
+
+        assert len(writer._rels) == 1
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
+          <tableParts count="1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+             <tablePart r:id="rId1" />
+          </tableParts>
+        </worksheet>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
