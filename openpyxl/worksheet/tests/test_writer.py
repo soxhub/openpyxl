@@ -38,11 +38,15 @@ class TestWorksheetWriter:
 
     def test_cols(self, WorksheetWriter):
         writer = WorksheetWriter
+        writer.ws.column_dimensions['A'].width = 5
         writer.write_cols()
         writer.xf.close()
         xml = writer.out.getvalue()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <cols>
+            <col customWidth="1" width="5" min="1" max="1" />
+          </cols>
         </worksheet>
         """
         diff = compare_xml(xml, expected)
