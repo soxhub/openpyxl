@@ -6,6 +6,8 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 from openpyxl.workbook import Workbook
+from openpyxl.styles import PatternFill, Font, Color
+from openpyxl.formatting.rule import CellIsRule
 
 from ..protection import SheetProtection
 from ..filters import AutoFilter
@@ -180,6 +182,40 @@ class TestWorksheetWriter:
           <mergeCells count="1">
             <mergeCell ref="A1:B2"/>
           </mergeCells>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_formatting(self, WorksheetWriter):
+        writer = WorksheetWriter
+
+        redFill = PatternFill(
+            start_color=Color('FFEE1111'),
+            end_color=Color('FFEE1111'),
+            patternType='solid'
+        )
+        whiteFont = Font(color=Color("FFFFFFFF"))
+
+        ws = writer.ws
+        ws.conditional_formatting.add('A1:A3',
+                                      CellIsRule(operator='equal',
+                                                 formula=['"Fail"'],
+                                                 stopIfTrue=False,
+                                                 font=whiteFont,
+                                                 fill=redFill)
+                                      )
+        writer.write_formatting()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <conditionalFormatting sqref="A1:A3">
+            <cfRule operator="equal" priority="1" type="cellIs" dxfId="0" stopIfTrue="0">
+              <formula>"Fail"</formula>
+            </cfRule>
+          </conditionalFormatting>
         </worksheet>
         """
         diff = compare_xml(xml, expected)

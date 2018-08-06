@@ -5,6 +5,7 @@ from io import BytesIO
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
+from openpyxl.styles.differential import DifferentialStyle
 from .dimensions import SheetDimension
 from .merge import MergeCell, MergeCells
 
@@ -102,7 +103,13 @@ class WorksheetWriter:
 
 
     def write_formatting(self):
-        pass
+        df = DifferentialStyle()
+        wb = self.ws.parent
+        for cf in self.ws.conditional_formatting:
+            for rule in cf.rules:
+                if rule.dxf and rule.dxf != df:
+                    rule.dxfId = wb._differential_styles.add(rule.dxf)
+            self.xf.send(cf.to_tree())
 
 
     def write_validations(self):
