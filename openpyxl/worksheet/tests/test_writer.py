@@ -263,3 +263,19 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_print(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.print_options.headings = True
+
+        writer.write_print()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <printOptions headings="1" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

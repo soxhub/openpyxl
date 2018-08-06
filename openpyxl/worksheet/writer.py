@@ -135,7 +135,9 @@ class WorksheetWriter:
 
 
     def write_print(self):
-        pass
+        print_options = self.ws.print_options
+        if print_options:
+            self.xf.send(print_options.to_tree())
 
 
     def write_margin(self):
