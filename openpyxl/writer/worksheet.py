@@ -117,8 +117,6 @@ def write_worksheet(worksheet):
             if ws.auto_filter:
                 xf.write(ws.auto_filter.to_tree())
 
-            if ws.sort_state:
-                xf.write(ws.sort_state.to_tree())
 
             merge = write_mergecells(ws)
             if merge is not None:

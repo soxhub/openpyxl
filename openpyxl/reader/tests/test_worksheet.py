@@ -747,25 +747,6 @@ def test_auto_filter(WorkSheetParser):
 
     assert ws.auto_filter.ref == "A1:AK3237"
     assert ws.auto_filter.sortState.ref == "A2:AM3269"
-    assert ws.sort_state.ref is None
-
-
-@pytest.mark.xfail
-def test_sort_state(WorkSheetParser):
-    src = """
-    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-    <sortState ref="A2:AM3269">
-        <sortCondition ref="B1:B3269"/>
-    </sortState>
-    </sheet>
-    """
-
-    parser = WorkSheetParser
-    parser.source = src
-    parser.parse()
-    ws = parser.ws
-
-    assert ws.sort_state.ref == "A2:AM3269"
 
 
 def test_page_break(WorkSheetParser):

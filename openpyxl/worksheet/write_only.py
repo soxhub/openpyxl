@@ -185,9 +185,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
                 if self.auto_filter.ref:
                     xf.write(self.auto_filter.to_tree())
 
-                if self.sort_state.ref:
-                    xf.write(self.sort_state.to_tree())
-
                 if self.conditional_formatting:
                     cfs = write_conditional_formatting(self)
                     for cf in cfs:
