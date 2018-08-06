@@ -147,7 +147,9 @@ class WorksheetWriter:
 
 
     def write_page(self):
-        pass
+        setup = self.ws.page_setup
+        if setup:
+            self.xf.send(setup.to_tree())
 
 
     def write_header(self):
