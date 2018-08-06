@@ -74,7 +74,9 @@ class WorksheetWriter:
 
 
     def write_protection(self):
-        pass
+        prot = self.ws.protection
+        if prot:
+            self.xf.send(prot.to_tree())
 
 
     def write_filter(self):
