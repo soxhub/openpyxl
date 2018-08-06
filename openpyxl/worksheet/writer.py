@@ -10,6 +10,7 @@ from openpyxl.styles.differential import DifferentialStyle
 from .dimensions import SheetDimension
 from .hyperlink import HyperlinkList
 from .merge import MergeCell, MergeCells
+from .related import Related
 
 
 class WorksheetWriter:
@@ -164,7 +165,12 @@ class WorksheetWriter:
 
 
     def write_drawings(self):
-        pass
+        if self.ws._charts or self.ws._images:
+            rel = Relationship(type="drawing", Target="")
+            self._rels.append(rel)
+            drawing = Related()
+            drawing.id = rel.id
+            self.xf.send(drawing.to_tree("drawing"))
 
 
     def write_tables(self):

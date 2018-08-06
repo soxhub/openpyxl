@@ -349,3 +349,17 @@ class TestWorksheetWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+
+    def test_drawings(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws._images = [1]
+        writer.write_drawings()
+        writer.xf.close()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+        </worksheet>
+        """
+        xml = writer.out.getvalue()
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
