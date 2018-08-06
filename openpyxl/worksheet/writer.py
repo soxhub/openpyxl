@@ -43,7 +43,12 @@ class WorksheetWriter:
 
     def write_header(self):
         """
-        Write all elements up to rows
+        Write all elements up to rows:
+        properties
+        dimensions
+        views
+        format
+        cols
         """
         self.write_properties()
         self.write_format()
@@ -125,5 +130,35 @@ class WorksheetWriter:
     def write_tail(self):
         """
         Write all elements after the rows
+        calc properties
+        protection
+        protected ranges #
+        scenarios #
+        filters
+        sorts
+        data consolidation #
+        custom views #
+        merged cells
+        phonetic properties #
+        conditional formatting
+        data validation
+        hyperlinks
+        print options
+        page margins
+        page setup
+        header
+        row breaks
+        col breaks
+        custom properties #
+        cell watches #
+        ignored errors #
+        smart tags #
+        drawing
+        drawingHF #
+        background #
+        OLE objects #
+        controls #
+        web publishing #
+        tables
         """
         pass
