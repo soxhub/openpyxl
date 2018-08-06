@@ -68,7 +68,8 @@ from .views import (
     Selection,
     SheetViewList,
 )
-from .cell_range import MultiCellRange, CellRange, MergedCellRange
+from .cell_range import MultiCellRange, CellRange
+from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 
