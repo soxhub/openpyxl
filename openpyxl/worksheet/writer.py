@@ -158,7 +158,9 @@ class WorksheetWriter:
             self.xf.send(hf.to_tree())
 
     def write_breaks(self):
-        pass
+        brk = self.ws.page_breaks
+        if brk:
+            self.xf.send(brk.to_tree())
 
 
     def write_drawings(self):

@@ -319,7 +319,7 @@ class TestWorksheetWriter:
 
         xml = writer.out.getvalue()
         expected = """
-        <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
          <headerFooter>
            <oddHeader>&amp;Codd header centre</oddHeader>
            <oddFooter />
@@ -331,3 +331,21 @@ class TestWorksheetWriter:
         </worksheet>"""
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_breaks(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.page_breaks.append()
+        writer.write_breaks()
+        writer.xf.close()
+
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <rowBreaks count="1" manualBreakCount="1">
+            <brk id="1" man="1" max="16383" min="0" />
+          </rowBreaks>
+        </worksheet>"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
