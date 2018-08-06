@@ -419,3 +419,19 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_tail(seld, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.write_tail()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <printOptions />
+          <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+          <pageSetup />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

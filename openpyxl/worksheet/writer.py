@@ -250,4 +250,17 @@ class WorksheetWriter:
         web publishing #
         tables
         """
-        pass
+        self.write_protection()
+        self.write_filter()
+        self.write_merged_cells()
+        self.write_formatting()
+        self.write_validations()
+        self.write_hyperlinks()
+        self.write_print()
+        self.write_margins()
+        self.write_page()
+        self.write_header()
+        self.write_breaks()
+        self.write_drawings()
+        self.write_legacy()
+        self.write_tables()
