@@ -279,3 +279,19 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_margins(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.print_options.headings = True
+
+        writer.write_margins()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <pageMargins  bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

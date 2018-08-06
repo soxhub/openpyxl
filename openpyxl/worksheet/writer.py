@@ -140,8 +140,10 @@ class WorksheetWriter:
             self.xf.send(print_options.to_tree())
 
 
-    def write_margin(self):
-        pass
+    def write_margins(self):
+        margins = self.ws.page_margins
+        if margins:
+            self.xf.send(margins.to_tree())
 
 
     def write_page(self):
