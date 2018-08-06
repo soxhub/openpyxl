@@ -17,16 +17,17 @@ class WorksheetWriter:
         #self._rels = RelationshipList()
         self._hyperlinks = []
         self.xf = self.write()
+        next(self.xf) # start generator
 
 
     def write_properties(self):
-        next(self.xf)
         props = self.ws.sheet_properties
         self.xf.send(props.to_tree())
 
 
-    def write_dimensions(self):
-        pass
+    def write_cols(self):
+        cols = self.ws.column_dimensions
+        self.xf.send(cols.to_tree())
 
 
     def write_views(self):
