@@ -5,8 +5,10 @@ from io import BytesIO
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
+from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
 from .dimensions import SheetDimension
+from .hyperlink import HyperlinkList
 from .merge import MergeCell, MergeCells
 
 
@@ -18,7 +20,7 @@ class WorksheetWriter:
         if out is None:
             out = BytesIO()
         self.out = out
-        #self._rels = RelationshipList()
+        self._rels = RelationshipList()
         self._hyperlinks = []
         self.xf = self.write()
         next(self.xf) # start generator
@@ -113,11 +115,23 @@ class WorksheetWriter:
 
 
     def write_validations(self):
-        pass
+        dv = self.ws.data_validations
+        if dv:
+            self.xf.send(dv.to_tree())
 
 
     def write_hyperlinks(self):
-        pass
+        links = HyperlinkList()
+
+        for link in self._hyperlinks:
+            if link.target:
+                rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
+                self._rels.append(rel)
+                link.id = rel.id
+            links.hyperlink.append(link)
+
+        if links:
+            self.xf.send(links.to_tree())
 
 
     def write_print(self):

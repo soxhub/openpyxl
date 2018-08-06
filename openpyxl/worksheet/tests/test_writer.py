@@ -5,6 +5,7 @@ import pytest
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
+from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.workbook import Workbook
 from openpyxl.styles import PatternFill, Font, Color
 from openpyxl.formatting.rule import CellIsRule
@@ -216,6 +217,48 @@ class TestWorksheetWriter:
               <formula>"Fail"</formula>
             </cfRule>
           </conditionalFormatting>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_validations(self, WorksheetWriter):
+        writer = WorksheetWriter
+        ws = writer.ws
+        dv = DataValidation(sqref="A1")
+        ws.data_validations.append(dv)
+        writer.write_validations()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+         <dataValidations count="1">
+           <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" />
+         </dataValidations>
+        </worksheet>"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_hyperlinks(self, WorksheetWriter):
+        writer = WorksheetWriter
+        ws = writer.ws
+
+        cell = ws['A1']
+        cell.value = "test"
+        cell.hyperlink = "http://test.com"
+        writer._hyperlinks.append(cell.hyperlink) # done when writing cells
+        writer.write_hyperlinks()
+        writer.xf.close()
+        assert len(writer._rels) == 1
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <hyperlink r:id="rId1" ref="A1"/>
+        </hyperlinks>
         </worksheet>
         """
         diff = compare_xml(xml, expected)
