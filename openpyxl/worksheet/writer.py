@@ -6,6 +6,7 @@ from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from .dimensions import SheetDimension
+from .merge import MergeCell, MergeCells
 
 
 class WorksheetWriter:
@@ -94,7 +95,10 @@ class WorksheetWriter:
 
 
     def write_merged_cells(self):
-        pass
+        merged = self.ws.merged_cells
+        if merged:
+            cells = [MergeCell(str(ref)) for ref in self.ws.merged_cells]
+            self.xf.send(MergeCells(mergeCell=cells).to_tree())
 
 
     def write_formatting(self):

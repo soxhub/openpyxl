@@ -167,3 +167,20 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_write_merged(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws.merge_cells("A1:B2")
+        writer.write_merged_cells()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <mergeCells count="1">
+            <mergeCell ref="A1:B2"/>
+          </mergeCells>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
