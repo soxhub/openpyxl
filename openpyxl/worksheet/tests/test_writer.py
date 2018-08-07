@@ -441,7 +441,7 @@ class TestWorksheetWriter:
     def test_write_height(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.ws['F1'] = 10
-        writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=30)
+        writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=20)
         writer.ws.row_dimensions[2] = RowDimension(writer.ws, height=30)
 
         writer.write_rows()
@@ -451,12 +451,12 @@ class TestWorksheetWriter:
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <sheetData>
-          <row customHeight="1" ht="30" r="1" spans="1:6">
+          <row customHeight="1" ht="20" r="1">
             <c r="F1" t="n">
               <v>10</v>
             </c>
           </row>
-          <row customHeight="1" ht="30" r="2" spans="1:6"></row>
+          <row customHeight="1" ht="30" r="2"></row>
         </sheetData>
         </worksheet>
         """
@@ -488,7 +488,7 @@ class TestWorksheetWriter:
         xml = writer.out.getvalue()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-          <row r="10" spans="1:1">
+          <row r="10">
             <c r="A10" t="n">
               <v>15</v>
             </c>
