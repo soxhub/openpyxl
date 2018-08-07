@@ -75,8 +75,8 @@ class WorksheetWriter:
         """
         self.write_properties()
         self.write_dimensions()
-        self.write_format()
         self.write_views()
+        self.write_format()
         self.write_cols()
 
 
@@ -204,6 +204,7 @@ class WorksheetWriter:
         hf = self.ws.HeaderFooter
         if hf:
             self.xf.send(hf.to_tree())
+
 
     def write_breaks(self):
         brk = self.ws.page_breaks

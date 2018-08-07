@@ -82,6 +82,13 @@ class PrintPageSetup(Serialisable):
         self.id = id
 
 
+    def __bool__(self):
+        return bool(dict(self))
+
+
+    __nonzero__ = __bool__
+
+
     @property
     def sheet_properties(self):
         """
@@ -138,6 +145,13 @@ class PrintOptions(Serialisable):
         self.headings = headings
         self.gridLines = gridLines
         self.gridLinesSet = gridLinesSet
+
+
+    def __bool__(self):
+        return bool(dict(self))
+
+
+    __nonzero__ = __bool__
 
 
 class PageMargins(Serialisable):

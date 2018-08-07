@@ -119,12 +119,12 @@ class TestWorksheetWriter:
             <pageSetUpPr/>
           </sheetPr>
           <dimension ref="A1:A1" />
-          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
           <sheetViews>
             <sheetView workbookViewId="0">
               <selection activeCell="A1" sqref="A1" />
             </sheetView>
           </sheetViews>
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
         </worksheet>
         """
         diff = compare_xml(xml, expected)
@@ -429,9 +429,7 @@ class TestWorksheetWriter:
         xml = writer.out.getvalue()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-          <printOptions />
           <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-          <pageSetup />
         </worksheet>
         """
         diff = compare_xml(xml, expected)
