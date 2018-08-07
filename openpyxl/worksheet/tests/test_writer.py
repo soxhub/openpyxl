@@ -9,8 +9,9 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.workbook import Workbook
 from openpyxl.styles import PatternFill, Font, Color
 from openpyxl.formatting.rule import CellIsRule
-from ..dimensions import RowDimension
+from openpyxl.comments import Comment
 
+from ..dimensions import RowDimension
 from ..protection import SheetProtection
 from ..filters import AutoFilter
 from ..filters import SortState
@@ -423,7 +424,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_tail(self, WorksheetWriter):
+    def test_write_tail(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.write_tail()
         writer.xf.close()
@@ -437,7 +438,19 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_height(self, WorksheetWriter):
+    def test_rows(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws['A10'] = "test"
+        writer.ws.row_dimensions[10] = None
+        writer.ws.row_dimensions[2] = None
+
+        assert writer.rows() == [
+            (2, []),
+            (10, [(1, writer.ws['A10'])])
+        ]
+
+
+    def test_write_rows(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.ws['F1'] = 10
         writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=20)
@@ -463,16 +476,13 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_get_rows_to_write(self, WorksheetWriter):
+    def test_write_rows_comment(self, WorksheetWriter):
         writer = WorksheetWriter
-        writer.ws['A10'] = "test"
-        writer.ws.row_dimensions[10] = None
-        writer.ws.row_dimensions[2] = None
+        cell = writer.ws['F1']
+        cell._comment = Comment("comment", "author")
 
-        assert writer.rows() == [
-            (2, []),
-            (10, [(1, writer.ws['A10'])])
-        ]
+        writer.write_rows()
+        assert len(writer.ws._comments) == 1
 
 
     def test_write_row(self, WorksheetWriter):
