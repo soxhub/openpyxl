@@ -72,6 +72,7 @@ from .cell_range import MultiCellRange, CellRange
 from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
+from .writer import WorksheetWriter
 
 
 class Worksheet(_WorkbookChild):
@@ -780,11 +781,18 @@ class Worksheet(_WorkbookChild):
 
     def _write(self):
         from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-        from openpyxl.writer.worksheet import write_worksheet
         self._drawing = SpreadsheetDrawing()
         self._drawing.charts = self._charts
         self._drawing.images = self._images
-        return write_worksheet(self)
+
+        writer = WorksheetWriter(self)
+        writer.write_top()
+        writer.write_rows()
+        writer.write_tail()
+        writer.xf.close()
+        self._rels = writer._rels
+        self._hyperlinks = writer._hyperlinks
+        return writer.out.getvalue()
 
 
     @property
