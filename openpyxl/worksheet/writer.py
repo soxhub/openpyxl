@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2018 openpyxl
 
 from io import BytesIO
+from operator import itemgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
@@ -12,6 +13,8 @@ from .hyperlink import HyperlinkList
 from .merge import MergeCell, MergeCells
 from .related import Related
 from .table import TablePartList
+
+from openpyxl.writer.etree_worksheet import write_row
 
 
 class WorksheetWriter:
@@ -75,8 +78,31 @@ class WorksheetWriter:
         self.write_cols()
 
 
+    def get_rows_to_write(self):
+        """Return all rows, and any cells that they contain"""
+        # order cells by row
+        rows = {}
+        for (row, col), cell in self.ws._cells.items():
+            rows.setdefault(row, []).append((col, cell))
+
+        # add empty rows if styling has been applied
+        for row_idx in self.ws.row_dimensions:
+            if row_idx not in rows:
+                rows[row_idx] = []
+
+        return sorted(rows.items())
+
+
     def write_rows(self):
-        pass
+        xf = self.xf.send(True)
+
+        rows = self.get_rows_to_write()
+        max_column = self.ws.max_column
+
+        with xf.element("sheetData"):
+            for row_idx, row in rows:
+                row = sorted(row, key=itemgetter(0))
+                write_row(xf, self.ws, row, row_idx, max_column)
 
 
     def write_protection(self):
@@ -211,7 +237,10 @@ class WorksheetWriter:
                 try:
                     while True:
                         el = (yield)
-                        xf.write(el)
+                        if el is True:
+                            yield xf
+                        else:
+                            xf.write(el)
                 except GeneratorExit:
                     pass
 

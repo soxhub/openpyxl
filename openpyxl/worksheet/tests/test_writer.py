@@ -9,6 +9,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.workbook import Workbook
 from openpyxl.styles import PatternFill, Font, Color
 from openpyxl.formatting.rule import CellIsRule
+from ..dimensions import RowDimension
 
 from ..protection import SheetProtection
 from ..filters import AutoFilter
@@ -421,7 +422,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_tail(seld, WorksheetWriter):
+    def test_tail(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.write_tail()
         writer.xf.close()
@@ -431,6 +432,32 @@ class TestWorksheetWriter:
           <printOptions />
           <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
           <pageSetup />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_height(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws['F1'] = 10
+        writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=30)
+        writer.ws.row_dimensions[2] = RowDimension(writer.ws, height=30)
+
+        writer.write_rows()
+        writer.xf.close()
+
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <sheetData>
+          <row customHeight="1" ht="30" r="1" spans="1:6">
+            <c r="F1" t="n">
+              <v>10</v>
+            </c>
+          </row>
+          <row customHeight="1" ht="30" r="2" spans="1:6"></row>
+        </sheetData>
         </worksheet>
         """
         diff = compare_xml(xml, expected)
