@@ -474,3 +474,26 @@ class TestWorksheetWriter:
             (2, []),
             (10, [(1, writer.ws['A10'])])
         ]
+
+
+    def test_write_row(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws['A10'] = 15
+        xf = writer.xf.send(True)
+        row = [(1, writer.ws['A10'])]
+
+        writer.write_row(xf, row, 10)
+        writer.xf.close()
+
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <row r="10" spans="1:1">
+            <c r="A10" t="n">
+              <v>15</v>
+            </c>
+          </row>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

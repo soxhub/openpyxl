@@ -16,7 +16,7 @@ from .merge import MergeCell, MergeCells
 from .related import Related
 from .table import TablePartList
 
-from openpyxl.writer.etree_worksheet import write_row
+from openpyxl.writer.etree_worksheet import write_cell
 
 
 class WorksheetWriter:
@@ -97,12 +97,31 @@ class WorksheetWriter:
     def write_rows(self):
         xf = self.xf.send(True)
 
-        max_column = self.ws.max_column
-
         with xf.element("sheetData"):
             for row_idx, row in self.rows():
                 row = sorted(row, key=itemgetter(0))
-                write_row(xf, self.ws, row, row_idx, max_column)
+                self.write_row(xf, row, row_idx)
+
+
+    def write_row(self, xf, row, row_idx):
+        max_column = self.ws.max_column
+
+        attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
+        dims = self.ws.row_dimensions
+        if row_idx in dims:
+            row_dimension = dims[row_idx]
+            attrs.update(dict(row_dimension))
+
+        with xf.element("row", attrs):
+
+            for col, cell in row:
+                if (
+                    cell._value is None
+                    and not cell.has_style
+                    and not cell._comment
+                    ):
+                    continue
+                el = write_cell(xf, self.ws, cell, cell.has_style)
 
 
     def write_protection(self):
