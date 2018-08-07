@@ -123,6 +123,7 @@ class WorksheetWriter:
                     ):
                     continue
                 el = write_cell(xf, self.ws, cell, cell.has_style)
+        self.xf.send(None) # return control to generator
 
 
     def write_protection(self):
