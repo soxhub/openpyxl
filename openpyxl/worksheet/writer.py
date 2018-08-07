@@ -1,4 +1,4 @@
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 from collections import defaultdict
@@ -6,6 +6,7 @@ from io import BytesIO
 from operator import itemgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.compat import unicode
 
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
@@ -220,7 +221,7 @@ class WorksheetWriter:
                     for cell, col in zip(row, table.tableColumns):
                         if cell.data_type != "s":
                             warn("File may not be readable: column headings must be strings.")
-                        col.name = str(cell.value)
+                        col.name = unicode(cell.value)
             rel = Relationship(Type=table._rel_type, Target="")
             self._rels.append(rel)
             table._rel_id = rel.Id
