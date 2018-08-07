@@ -10,6 +10,7 @@ import os
 from tempfile import NamedTemporaryFile
 
 from openpyxl.cell import Cell, WriteOnlyCell
+from openpyxl.comments.comment_sheet import CommentRecord
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.workbook.child import _WorkbookChild
 from .worksheet import Worksheet
@@ -169,6 +170,9 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
                                     cell.column = col_idx
                                     cell.row = row_idx
+                                    if cell._comment is not None:
+                                        comment = CommentRecord.from_cell(cell)
+                                        self._comments.append(comment)
 
                                     styled = cell.has_style
                                     write_cell(xf, self, cell, styled)
