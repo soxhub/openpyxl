@@ -7,6 +7,7 @@ from operator import itemgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.compat import unicode
+from openpyxl.comments.comment_sheet import CommentRecord
 
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
@@ -102,6 +103,8 @@ class WorksheetWriter:
                 row = sorted(row, key=itemgetter(0))
                 self.write_row(xf, row, row_idx)
 
+        self.xf.send(None) # return control to generator
+
 
     def write_row(self, xf, row, row_idx):
         max_column = self.ws.max_column
@@ -115,7 +118,7 @@ class WorksheetWriter:
             for col, cell in row:
                 if cell._comment is not None:
                     comment = CommentRecord.from_cell(cell)
-                    worksheet._comments.append(comment)
+                    self.ws._comments.append(comment)
                 if (
                     cell._value is None
                     and not cell.has_style
