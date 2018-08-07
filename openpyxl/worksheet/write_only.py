@@ -23,6 +23,8 @@ from openpyxl.writer.worksheet import write_drawing, write_conditional_formattin
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile
 
+from .writer import WorksheetWriter
+
 ALL_TEMP_FILES = []
 
 
@@ -127,6 +129,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
         Generator that creates the XML file and the sheet header
         """
 
+
         with xmlfile(self.filename) as xf:
             with xf.element("worksheet", xmlns=SHEET_MAIN_NS):
 
@@ -213,9 +216,13 @@ class WriteOnlyWorksheet(_WorkbookChild):
         if self.__saved:
             self._already_saved()
         if self.writer is None:
-            self.writer = self._write_header()
-            next(self.writer)
-        self.writer.close()
+            self.writer = WorksheetWriter(self, self.filename)
+            self.writer.write_top()
+            self.writer.write_rows()
+            #self.writer = self._write_header()
+            #next(self.writer)
+        self.writer.write_tail()
+        self.writer.xf.close()
         self.__saved = True
 
     def _cleanup(self):
@@ -235,11 +242,13 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._max_row += 1
 
         if self.writer is None:
-            self.writer = self._write_header()
-            next(self.writer)
+            self.writer = WorksheetWriter(self, out=self.filename)
+            self.writer.write_top()
+            #self.writer = self._write_header()
+            #next(self.writer)
 
         try:
-            self.writer.send(row)
+            self.writer.xf.send(row)
         except StopIteration:
             self._already_saved()
 

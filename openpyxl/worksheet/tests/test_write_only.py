@@ -94,8 +94,8 @@ def _writer(doc):
 def test_append(WriteOnlyWorksheet, _writer, doc):
     ws = WriteOnlyWorksheet
 
-    ws.writer = _writer
-    next(ws.writer)
+    #ws.writer = _writer
+    #next(ws.writer)
 
     ws.append([1, "s"])
     ws.append(['2', 3])
@@ -125,8 +125,8 @@ def test_append(WriteOnlyWorksheet, _writer, doc):
 def test_dirty_cell(WriteOnlyWorksheet,_writer, doc):
     ws = WriteOnlyWorksheet
 
-    ws.writer = _writer
-    next(ws.writer)
+    #ws.writer = _writer
+    #next(ws.writer)
 
     ws.append((datetime.date(2001, 1, 1), 1))
     ws.writer.close()
@@ -379,6 +379,7 @@ def test_data_validations(WriteOnlyWorksheet):
      <dataValidations count="1">
        <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" />
      </dataValidations>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>"""
     diff = compare_xml(xml, expected)
     assert diff is None, diff
@@ -412,6 +413,7 @@ def test_conditional_formatting(WriteOnlyWorksheet):
          <formula>C$1</formula>
        </cfRule>
      </conditionalFormatting>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>"""
     diff = compare_xml(xml, expected)
     assert diff is None, diff
@@ -438,6 +440,7 @@ def test_odd_headet(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
      <sheetData />
+     <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
      <headerFooter>
        <oddHeader>&amp;Codd header centre</oddHeader>
        <oddFooter />

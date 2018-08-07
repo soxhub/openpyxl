@@ -43,7 +43,7 @@ class WorksheetWriter:
         """
         Write worksheet size if known
         """
-        ref = getattr(self.ws, 'calculate_dimension')
+        ref = getattr(self.ws, 'calculate_dimension', None)
         if ref:
             dim = SheetDimension(ref())
             self.xf.send(dim.to_tree())
