@@ -184,23 +184,23 @@ def test_write_formula(worksheet, write_rows):
     xml = out.getvalue()
     expected = """
     <sheetData>
-      <row r="1" spans="1:6">
+      <row r="1">
         <c r="F1" t="n">
           <v>10</v>
         </c>
       </row>
-      <row r="2" spans="1:6">
+      <row r="2">
         <c r="F2" t="n">
           <v>32</v>
         </c>
       </row>
-      <row r="3" spans="1:6">
+      <row r="3">
         <c r="F3">
           <f>F1+F2</f>
           <v></v>
         </c>
       </row>
-      <row r="4" spans="1:6">
+      <row r="4">
         <c r="A4">
           <f>A1+A2+A3</f>
           <v></v>
@@ -230,12 +230,12 @@ def test_write_height(worksheet, write_rows):
     xml = out.getvalue()
     expected = """
      <sheetData>
-       <row customHeight="1" ht="30" r="1" spans="1:6">
+       <row customHeight="1" ht="30" r="1">
          <c r="F1" t="n">
            <v>10</v>
          </c>
        </row>
-       <row customHeight="1" ht="30" r="2" spans="1:6"></row>
+       <row customHeight="1" ht="30" r="2"></row>
      </sheetData>
     """
     diff = compare_xml(xml, expected)
@@ -562,7 +562,7 @@ def test_write_tables(worksheet, write_worksheet):
       </sheetViews>
       <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
       <sheetData>
-        <row r="1" spans="1:7">
+        <row r="1">
         <c r="A1" t="s">
           <v>0</v>
         </c>

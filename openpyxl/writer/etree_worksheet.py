@@ -40,7 +40,7 @@ def write_rows(xf, worksheet):
 
 def write_row(xf, worksheet, row, row_idx, max_column):
 
-    attrs = {'r': '%d' % row_idx, 'spans': '1:%d' % max_column}
+    attrs = {'r': '%d' % row_idx}
     dims = worksheet.row_dimensions
     if row_idx in dims:
         row_dimension = dims[row_idx]
