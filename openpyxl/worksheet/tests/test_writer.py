@@ -462,3 +462,15 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_get_rows_to_write(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws['A10'] = "test"
+        writer.ws.row_dimensions[10] = None
+        writer.ws.row_dimensions[2] = None
+
+        assert writer.rows() == [
+            (2, []),
+            (10, [(1, writer.ws['A10'])])
+        ]

@@ -78,7 +78,7 @@ class WorksheetWriter:
         self.write_cols()
 
 
-    def get_rows_to_write(self):
+    def rows(self):
         """Return all rows, and any cells that they contain"""
         # order cells by row
         rows = {}
@@ -96,11 +96,10 @@ class WorksheetWriter:
     def write_rows(self):
         xf = self.xf.send(True)
 
-        rows = self.get_rows_to_write()
         max_column = self.ws.max_column
 
         with xf.element("sheetData"):
-            for row_idx, row in rows:
+            for row_idx, row in self.rows():
                 row = sorted(row, key=itemgetter(0))
                 write_row(xf, self.ws, row, row_idx, max_column)
 
