@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 # Copyright (c) 2010-2018 openpyxl
 
+from collections import defaultdict
 from io import BytesIO
 from operator import itemgetter
 from openpyxl.xml.functions import xmlfile
@@ -81,14 +82,13 @@ class WorksheetWriter:
     def rows(self):
         """Return all rows, and any cells that they contain"""
         # order cells by row
-        rows = {}
+        rows = defaultdict(list)
         for (row, col), cell in self.ws._cells.items():
-            rows.setdefault(row, []).append((col, cell))
+            rows[row].append((col, cell))
 
         # add empty rows if styling has been applied
-        for row_idx in self.ws.row_dimensions:
-            if row_idx not in rows:
-                rows[row_idx] = []
+        for row in set(self.ws.row_dimensions.keys()) - set(rows.keys()):
+            rows[row] = []
 
         return sorted(rows.items())
 
