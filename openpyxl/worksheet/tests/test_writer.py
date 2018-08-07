@@ -58,6 +58,7 @@ class TestWorksheetWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+
     def test_write_format(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.write_format()
@@ -491,6 +492,43 @@ class TestWorksheetWriter:
               <v>15</v>
             </c>
           </row>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_write_sheet(self, WorksheetWriter):
+        writer = WorksheetWriter
+        writer.ws['A10'] = 15
+
+        writer.write_top()
+        writer.write_rows()
+        writer.write_tail()
+        writer.xf.close()
+
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetPr>
+            <outlinePr summaryRight="1" summaryBelow="1"/>
+            <pageSetUpPr/>
+          </sheetPr>
+          <dimension ref="A10:A10" />
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1" />
+            </sheetView>
+          </sheetViews>
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
+          <sheetData>
+          <row r="10">
+            <c r="A10" t="n">
+              <v>15</v>
+            </c>
+          </row>
+          </sheetData>
+          <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
         </worksheet>
         """
         diff = compare_xml(xml, expected)
