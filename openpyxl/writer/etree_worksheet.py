@@ -42,9 +42,7 @@ def write_row(xf, worksheet, row, row_idx, max_column):
 
     attrs = {'r': '%d' % row_idx}
     dims = worksheet.row_dimensions
-    if row_idx in dims:
-        row_dimension = dims[row_idx]
-        attrs.update(dict(row_dimension))
+    attrs.update(dims.get(row_idx, {}))
 
     with xf.element("row", attrs):
 
