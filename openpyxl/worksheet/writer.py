@@ -113,6 +113,9 @@ class WorksheetWriter:
         with xf.element("row", attrs):
 
             for col, cell in row:
+                if cell._comment is not None:
+                    comment = CommentRecord.from_cell(cell)
+                    worksheet._comments.append(comment)
                 if (
                     cell._value is None
                     and not cell.has_style

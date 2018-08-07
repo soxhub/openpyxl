@@ -152,21 +152,6 @@ def test_write_epoch(worksheet, write_cell_implementation, value, expected, epoc
     assert diff is None, diff
 
 
-def test_write_comment(worksheet, write_cell_implementation):
-
-    write_cell = write_cell_implementation
-    from openpyxl.comments import Comment
-
-    ws = worksheet
-    cell = ws['A1']
-    cell.comment = Comment("test comment", "test author")
-
-    out = BytesIO()
-    with xmlfile(out) as xf:
-        write_cell(xf, ws, cell, False)
-    assert len(ws._comments) == 1
-
-
 def test_write_formula(worksheet, write_rows):
     ws = worksheet
 

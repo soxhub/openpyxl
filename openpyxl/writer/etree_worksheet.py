@@ -47,10 +47,12 @@ def write_row(xf, worksheet, row, row_idx, max_column):
     with xf.element("row", attrs):
 
         for col, cell in row:
+            if cell._comment is not None:
+                comment = CommentRecord.from_cell(cell)
+                worksheet._comments.append(comment)
             if (
                 cell._value is None
                 and not cell.has_style
-                and not cell._comment
                 ):
                 continue
             el = write_cell(xf, worksheet, cell, cell.has_style)
@@ -76,10 +78,6 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
         else:
             attributes['t'] = "n"
             value = to_excel(value, worksheet.parent.epoch)
-
-    if cell._comment is not None:
-        comment = CommentRecord.from_cell(cell)
-        worksheet._comments.append(comment)
 
     el = Element("c", attributes)
     if value is None or value == "":
@@ -124,10 +122,6 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
         else:
             attributes['t'] = "n"
             value = to_excel(value, worksheet.parent.epoch)
-
-    if cell._comment is not None:
-        comment = CommentRecord.from_cell(cell)
-        worksheet._comments.append(comment)
 
     if value == '' or value is None:
         with xf.element("c", attributes):
