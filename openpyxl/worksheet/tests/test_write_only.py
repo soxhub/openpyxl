@@ -43,11 +43,36 @@ def test_path(WriteOnlyWorksheet):
 
 def test_values_to_rows(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-    from openpyxl.cell import Cell, WriteOnlyCell
 
     row = ws._values_to_row([1, "s"])
     cells = [repr(c) for col, c in row]
     assert cells == ["<Cell 'TestWorksheet'.A0>", "<Cell 'TestWorksheet'.B0>"]
+
+
+def test_write_row(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    row = ws._values_to_row([1, "s"])
+    from openpyxl.writer.etree_worksheet import write_row
+
+    from openpyxl.xml.functions import xmlfile
+    out = BytesIO()
+
+    with xmlfile(out) as xf:
+        write_row(xf, ws, row, 1, 1)
+
+    xml = out.getvalue()
+    expected = """
+    <row r="1">
+      <c r="A0" t="n">
+        <v>1</v>
+      </c>
+      <c r="B0" t="s">
+        <v>0</v>
+      </c>
+    </row>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
 
 
 def test_append(WriteOnlyWorksheet):
