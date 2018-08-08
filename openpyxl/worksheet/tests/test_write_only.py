@@ -46,42 +46,15 @@ def test_values_to_rows(WriteOnlyWorksheet):
     ws._max_row = 1
 
     row = ws._values_to_row([1, "s"])
-    coords = [c.coordinate for col, c in row]
+    coords = [c.coordinate for c in row]
     assert coords == ["A1", "B1"]
-
-
-def test_write_row(WriteOnlyWorksheet):
-    ws = WriteOnlyWorksheet
-    values = [datetime.date(2001, 1, 1), 1]
-    row = ws._values_to_row(values)
-    from openpyxl.writer.etree_worksheet import write_row
-
-    from openpyxl.xml.functions import xmlfile
-    out = BytesIO()
-
-    with xmlfile(out) as xf:
-        write_row(xf, ws, row, 1, 1)
-
-    xml = out.getvalue()
-    expected = """
-    <row r="1">
-      <c r="A0" s="1" t="n">
-        <v>36892</v>
-      </c>
-      <c r="B0" t="n">
-        <v>1</v>
-      </c>
-    </row>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
 
 
 def test_append(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
 
     ws.append([1, "s"])
-    ws.append(['2', 3])
+    ws.append([datetime.date(2001, 1, 1), 1])
     ws.append(i for i in [1, 2])
     ws._rows.close()
     ws.writer.xf.close()
@@ -109,11 +82,11 @@ def test_append(WriteOnlyWorksheet):
             </c>
             </row>
             <row r="2">
-            <c t="s" r="A2">
-              <v>1</v>
+            <c t="n" s="1" r="A2">
+              <v>36892</v>
             </c>
             <c t="n" r="B2">
-              <v>3</v>
+              <v>1</v>
             </c>
             </row>
             <row r="3">

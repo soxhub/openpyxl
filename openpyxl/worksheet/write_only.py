@@ -168,8 +168,10 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self.writer.xf.close()
         self.__saved = True
 
+
     def _cleanup(self):
         os.remove(self.filename)
+
 
     def append(self, row):
         """
@@ -222,7 +224,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
             cell.column = col_idx
             cell.row = row_idx
 
-            yield (col_idx, cell)
+            yield cell
             # reset cell if style applied
             if cell.has_style:
                 cell = WriteOnlyCell(self)
