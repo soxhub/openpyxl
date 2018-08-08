@@ -412,4 +412,4 @@ class MergedCell(StyleableObject):
 
 
 def WriteOnlyCell(ws=None, value=None):
-    return Cell(worksheet=ws, column='A', row=1, value=value)
+    return Cell(worksheet=ws, column=1, row=1, value=value)
