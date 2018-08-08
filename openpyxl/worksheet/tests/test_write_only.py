@@ -195,7 +195,7 @@ def test_close(WriteOnlyWorksheet):
     with open(ws.filename) as src:
         xml = src.read()
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>
@@ -207,6 +207,7 @@ def test_close(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -220,7 +221,7 @@ def test_auto_filter(WriteOnlyWorksheet):
     with open(ws.filename) as src:
         xml = src.read()
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>
@@ -233,6 +234,7 @@ def test_auto_filter(WriteOnlyWorksheet):
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
     <autoFilter ref="A1:F1"/>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -246,7 +248,7 @@ def test_frozen_panes(WriteOnlyWorksheet):
     with open(ws.filename) as src:
         xml = src.read()
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>
@@ -261,6 +263,7 @@ def test_frozen_panes(WriteOnlyWorksheet):
     </sheetViews>
     <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
     <sheetData/>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -277,7 +280,7 @@ def test_write_empty_row(WriteOnlyWorksheet):
         xml = src.read()
 
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>
@@ -302,6 +305,7 @@ def test_write_empty_row(WriteOnlyWorksheet):
     </row>
     <row r="2"/>
     </sheetData>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -318,7 +322,7 @@ def test_write_height(WriteOnlyWorksheet):
         xml = src.read()
 
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>
@@ -336,6 +340,7 @@ def test_write_height(WriteOnlyWorksheet):
          </c>
        </row>
      </sheetData>
+     <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -353,7 +358,7 @@ def test_data_validations(WriteOnlyWorksheet):
         xml = src.read()
 
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
       <outlinePr summaryRight="1" summaryBelow="1"/>
       <pageSetUpPr/>

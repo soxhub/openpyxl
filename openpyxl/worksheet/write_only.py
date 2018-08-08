@@ -129,7 +129,10 @@ class WriteOnlyWorksheet(_WorkbookChild):
         """
         Generator that creates the XML file and the sheet header
         """
-        xf = self.writer.xf.send(True)
+        try:
+            xf = self.writer.xf.send(True)
+        except StopIteration:
+            self._already_saved()
 
         with xf.element("sheetData"):
             cell = WriteOnlyCell(self)
