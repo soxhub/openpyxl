@@ -28,54 +28,6 @@ from openpyxl.worksheet.dimensions import (
     SheetDimension,
 )
 
-from .etree_worksheet import write_rows
-
-
-def write_mergecells(ws):
-    """Write merged cells to xml."""
-
-    merged = [MergeCell(str(ref)) for ref in ws.merged_cells]
-
-    if merged:
-        return MergeCells(mergeCell=merged).to_tree()
-
-
-def write_conditional_formatting(worksheet):
-    """Write conditional formatting to xml."""
-    df = DifferentialStyle()
-    wb = worksheet.parent
-    for cf in worksheet.conditional_formatting:
-        for rule in cf.rules:
-            if rule.dxf and rule.dxf != df:
-                rule.dxfId = wb._differential_styles.add(rule.dxf)
-        yield cf.to_tree()
-
-
-def write_hyperlinks(worksheet):
-    """Write worksheet hyperlinks to xml."""
-    links = HyperlinkList()
-
-    for link in worksheet._hyperlinks:
-        if link.target:
-            rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
-            worksheet._rels.append(rel)
-            link.id = rel.id
-        links.hyperlink.append(link)
-
-    return links
-
-
-def write_drawing(worksheet):
-    """
-    Add link to drawing if required
-    """
-    if worksheet._charts or worksheet._images:
-        rel = Relationship(type="drawing", Target="")
-        worksheet._rels.append(rel)
-        drawing = Related()
-        drawing.id = rel.id
-        return drawing.to_tree("drawing")
-
 
 def write_worksheet(worksheet):
     """Write a worksheet to an xml file."""
