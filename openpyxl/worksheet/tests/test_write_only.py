@@ -27,6 +27,7 @@ class DummyWorkbook:
         self.encoding = "UTF-8"
         self.epoch = CALENDAR_WINDOWS_1900
         self.sheetnames = []
+        self.iso_dates = False
 
 
 @pytest.fixture
@@ -40,104 +41,91 @@ def test_path(WriteOnlyWorksheet):
     assert ws.path == "/xl/worksheets/sheetNone.xml"
 
 
-def test_write_header(WriteOnlyWorksheet):
+def test_append(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-    doc = ws._write_header()
-    next(doc)
-    doc.close()
-    header = open(ws.filename)
-    xml = header.read()
+
+    ws.append([1, "s"])
+    ws.append(['2', 3])
+    ws.append(i for i in [1, 2])
+    ws._rows.close()
+    ws.writer.xf.close()
+    with open(ws.filename) as src:
+        xml = src.read()
     expected = """
-    <worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-    <sheetPr>
-      <outlinePr summaryRight="1" summaryBelow="1"/>
-      <pageSetUpPr/>
-    </sheetPr>
-    <sheetViews>
-      <sheetView workbookViewId="0">
-        <selection sqref="A1" activeCell="A1"/>
-      </sheetView>
-    </sheetViews>
-    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
-    <sheetData/>
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetPr>
+            <outlinePr summaryRight="1" summaryBelow="1"/>
+            <pageSetUpPr/>
+          </sheetPr>
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1" />
+            </sheetView>
+          </sheetViews>
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
+          <sheetData>
+            <row r="1">
+            <c t="n" r="A1">
+              <v>1</v>
+            </c>
+            <c t="s" r="B1">
+              <v>0</v>
+            </c>
+            </row>
+            <row r="2">
+            <c t="s" r="A2">
+              <v>1</v>
+            </c>
+            <c t="n" r="B2">
+              <v>3</v>
+            </c>
+            </row>
+            <row r="3">
+            <c t="n" r="A3">
+              <v>1</v>
+            </c>
+            <c t="n" r="B3">
+              <v>2</v>
+            </c>
+            </row>
+          </sheetData>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
 
-@pytest.fixture
-def doc():
-    return BytesIO()
-
-
-@pytest.fixture
-def _writer(doc):
-
-    def _writer(doc):
-        with xmlfile(doc) as xf:
-            with xf.element('sheetData'):
-                try:
-                    while True:
-                        row = (yield)
-                        with xf.element("row"):
-                            for cell in row:
-                                with xf.element("v"):
-                                    xf.write(str(cell))
-
-                except GeneratorExit:
-                    pass
-
-    return _writer(doc)
-
-
-def test_append(WriteOnlyWorksheet, _writer, doc):
+def test_dirty_cell(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-
-    #ws.writer = _writer
-    #next(ws.writer)
-
-    ws.append([1, "s"])
-    ws.append(['2', 3])
-    ws.append(i for i in [1, 2])
-    ws.writer.close()
-    xml = doc.getvalue()
-    expected = """
-    <sheetData>
-      <row>
-          <v>1</v>
-          <v>s</v>
-      </row>
-      <row>
-          <v>2</v>
-          <v>3</v>
-      </row>
-      <row>
-          <v>1</v>
-          <v>2</v>
-      </row>
-    </sheetData>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
-
-
-def test_dirty_cell(WriteOnlyWorksheet,_writer, doc):
-    ws = WriteOnlyWorksheet
-
-    #ws.writer = _writer
-    #next(ws.writer)
 
     ws.append((datetime.date(2001, 1, 1), 1))
-    ws.writer.close()
-    xml = doc.getvalue()
+    ws._rows.close()
+    ws.writer.xf.close()
+    with open(ws.filename) as src:
+        xml = src.read()
     expected = """
-    <sheetData>
-    <row>
-      <v>2001-01-01</v>
-      <v>1</v>
-    </row>
-    </sheetData>
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <sheetPr>
+            <outlinePr summaryRight="1" summaryBelow="1"/>
+            <pageSetUpPr/>
+          </sheetPr>
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1" />
+            </sheetView>
+          </sheetViews>
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
+          <sheetData>
+            <row r="1">
+            <c t="n" s="1" r="A1">
+            <v>36892</v>
+            </c>
+            <c t="n" r="B1">
+            <v>1</v>
+            </c>
+            </row>
+            </sheetData>
+    </worksheet>
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
@@ -182,6 +170,7 @@ def test_cell_comment(WriteOnlyWorksheet):
      <c r="B1" t="n"><v>1</v></c>
      </row>
     </sheetData>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     <legacyDrawing r:id="anysvml"></legacyDrawing>
     </worksheet>
     """
