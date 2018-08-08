@@ -52,7 +52,8 @@ def test_values_to_rows(WriteOnlyWorksheet):
 
 def test_write_row(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-    row = ws._values_to_row([1, "s"])
+    values = [datetime.date(2001, 1, 1), 1]
+    row = ws._values_to_row(values)
     from openpyxl.writer.etree_worksheet import write_row
 
     from openpyxl.xml.functions import xmlfile
@@ -64,11 +65,11 @@ def test_write_row(WriteOnlyWorksheet):
     xml = out.getvalue()
     expected = """
     <row r="1">
-      <c r="A0" t="n">
-        <v>1</v>
+      <c r="A0" s="1" t="n">
+        <v>36892</v>
       </c>
-      <c r="B0" t="s">
-        <v>0</v>
+      <c r="B0" t="n">
+        <v>1</v>
       </c>
     </row>
     """

@@ -201,7 +201,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
         """
         row_idx = self._max_row
         cell = WriteOnlyCell(self)
-        row = []
+
         for col_idx, value in enumerate(values, 1):
             if value is None:
                 continue
@@ -217,6 +217,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
             cell.row = row_idx
 
             yield (col_idx, cell)
+            # reset cell if style applied
             if cell.has_style:
                 cell = WriteOnlyCell(self)
 
