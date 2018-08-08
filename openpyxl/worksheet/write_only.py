@@ -146,17 +146,25 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self.writer.xf.send(None)
 
 
-    def close(self):
-        if self.__saved:
-            self._already_saved()
+    def _get_writer(self):
         if self.writer is None:
             self.writer = WorksheetWriter(self, self.filename)
             self.writer.write_top()
-            self.writer.write_rows()
 
+
+    def close(self):
+        if self.__saved:
+            self._already_saved()
+
+        self._get_writer()
+
+        if self._rows is None:
+            self.writer.write_rows()
         if self._rows:
             self._rows.close()
+
         self.writer.write_tail()
+
         self.writer.xf.close()
         self.__saved = True
 
@@ -174,9 +182,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
             ):
             self._invalid_row(row)
 
-        if self.writer is None:
-            self.writer = WorksheetWriter(self, self.filename)
-            self.writer.write_top()
+        self._get_writer()
 
         if self._rows is None:
             self._rows = self._write_rows()
