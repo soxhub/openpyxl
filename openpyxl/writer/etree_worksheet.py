@@ -1,61 +1,11 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
-from operator import itemgetter
-
 from openpyxl.compat import safe_string
-from openpyxl.comments.comment_sheet import CommentRecord
 from openpyxl.xml.functions import Element, SubElement
 from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, days_to_time
 from datetime import timedelta
-
-
-def get_rows_to_write(worksheet):
-    """Return all rows, and any cells that they contain"""
-    # order cells by row
-    rows = {}
-    for (row, col), cell in worksheet._cells.items():
-        rows.setdefault(row, []).append((col, cell))
-
-    # add empty rows if styling has been applied
-    for row_idx in worksheet.row_dimensions:
-        if row_idx not in rows:
-            rows[row_idx] = []
-
-    return sorted(rows.items())
-
-
-def write_rows(xf, worksheet):
-    """Write worksheet data to xml."""
-
-    all_rows = get_rows_to_write(worksheet)
-    max_column = worksheet.max_column
-
-    with xf.element("sheetData"):
-        for row_idx, row in sorted(all_rows):
-            row = sorted(row, key=itemgetter(0))
-            write_row(xf, worksheet, row, row_idx, max_column)
-
-
-def write_row(xf, worksheet, row, row_idx, max_column):
-
-    attrs = {'r': '%d' % row_idx}
-    dims = worksheet.row_dimensions
-    attrs.update(dims.get(row_idx, {}))
-
-    with xf.element("row", attrs):
-
-        for col, cell in row:
-            if cell._comment is not None:
-                comment = CommentRecord.from_cell(cell)
-                worksheet._comments.append(comment)
-            if (
-                cell._value is None
-                and not cell.has_style
-                ):
-                continue
-            el = write_cell(xf, worksheet, cell, cell.has_style)
 
 
 def etree_write_cell(xf, worksheet, cell, styled=None):

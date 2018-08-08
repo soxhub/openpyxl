@@ -14,7 +14,6 @@ from openpyxl import Workbook
 from .. worksheet import write_worksheet
 
 from openpyxl.tests.helper import compare_xml
-from openpyxl.worksheet.dimensions import DimensionHolder
 from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.utils.datetime import CALENDAR_MAC_1904, CALENDAR_WINDOWS_1900
 
@@ -25,31 +24,6 @@ def worksheet():
     from openpyxl import Workbook
     wb = Workbook()
     return wb.active
-
-
-@pytest.fixture
-def DummyWorksheet():
-
-    class DummyWorksheet:
-
-        def __init__(self):
-            self._styles = {}
-            self.column_dimensions = DimensionHolder(self)
-            self.parent = Workbook()
-
-    return DummyWorksheet()
-
-
-@pytest.fixture
-def ColumnDimension():
-    from openpyxl.worksheet.dimensions import ColumnDimension
-    return ColumnDimension
-
-
-@pytest.fixture
-def write_rows():
-    from .. etree_worksheet import write_rows
-    return write_rows
 
 
 @pytest.fixture
@@ -164,13 +138,6 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
     ws.add_image(i)
     raise ValueError("Resulting file is invalid")
     # TODO write integration test with duplicate relation ids then fix
-
-
-@pytest.fixture
-def worksheet_with_cf(worksheet):
-    from openpyxl.formatting.formatting import ConditionalFormattingList
-    worksheet.conditional_formating = ConditionalFormattingList()
-    return worksheet
 
 
 @pytest.fixture
