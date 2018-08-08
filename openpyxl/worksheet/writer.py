@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from collections import defaultdict
 from io import BytesIO
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.compat import unicode
@@ -85,7 +85,7 @@ class WorksheetWriter:
         """Return all rows, and any cells that they contain"""
         # order cells by row
         rows = defaultdict(list)
-        for (row, col), cell in self.ws._cells.items():
+        for (row, col), cell in sorted(self.ws._cells.items()):
             rows[row].append(cell)
 
         # add empty rows if styling has been applied

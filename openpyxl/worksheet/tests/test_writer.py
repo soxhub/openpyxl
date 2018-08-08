@@ -438,7 +438,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_rows(self, WorksheetWriter):
+    def test_row_dimensons(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.ws['A10'] = "test"
         writer.ws.row_dimensions[10] = None
@@ -449,6 +449,15 @@ class TestWorksheetWriter:
             (10, [writer.ws['A10']])
         ]
 
+    def test_rows_sort(self, WorksheetWriter):
+        writer = WorksheetWriter
+        ws = writer.ws
+        for c in ['F1', 'B1', 'A1', 'D1', 'E1', 'C1']:
+            ws[c] = 1
+
+        assert writer.rows() == [
+            (1, [ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1'], ws['F1']]),
+        ]
 
     def test_write_rows(self, WorksheetWriter):
         writer = WorksheetWriter
