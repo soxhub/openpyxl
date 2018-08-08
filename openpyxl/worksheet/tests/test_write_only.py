@@ -41,6 +41,15 @@ def test_path(WriteOnlyWorksheet):
     assert ws.path == "/xl/worksheets/sheetNone.xml"
 
 
+def test_values_to_rows(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    from openpyxl.cell import Cell, WriteOnlyCell
+
+    row = ws._values_to_row([1, "s"])
+    cells = [repr(c) for col, c in row]
+    assert cells == ["<Cell 'TestWorksheet'.A0>", "<Cell 'TestWorksheet'.B0>"]
+
+
 def test_append(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
 

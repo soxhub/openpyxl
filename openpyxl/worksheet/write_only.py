@@ -223,6 +223,32 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self._already_saved()
 
 
+    def _values_to_row(self, values):
+        """
+        Convert whatever has been appended into a form suitable for work_rows
+        """
+        row_idx = self._max_row
+        cell = WriteOnlyCell(self)
+        row = []
+        for col_idx, value in enumerate(values, 1):
+            if value is None:
+                continue
+            try:
+                cell.value = value
+            except ValueError:
+                if isinstance(value, Cell):
+                    cell = value
+                else:
+                    raise ValueError
+
+            cell.column = col_idx
+            cell.row = row_idx
+
+            yield (col_idx, cell)
+            if cell.has_style:
+                cell = WriteOnlyCell(self)
+
+
     def _already_saved(self):
         raise WorkbookAlreadySaved('Workbook has already been saved and cannot be modified or saved anymore.')
 
