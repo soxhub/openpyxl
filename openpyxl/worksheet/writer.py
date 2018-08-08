@@ -107,7 +107,6 @@ class WorksheetWriter:
 
 
     def write_row(self, xf, row, row_idx):
-        max_column = self.ws.max_column
 
         attrs = {'r': '%d' % row_idx}
         dims = self.ws.row_dimensions
