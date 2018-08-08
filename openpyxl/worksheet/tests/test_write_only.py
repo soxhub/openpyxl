@@ -43,10 +43,11 @@ def test_path(WriteOnlyWorksheet):
 
 def test_values_to_rows(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
+    ws._max_row = 1
 
     row = ws._values_to_row([1, "s"])
-    cells = [repr(c) for col, c in row]
-    assert cells == ["<Cell 'TestWorksheet'.A0>", "<Cell 'TestWorksheet'.B0>"]
+    coords = [c.coordinate for col, c in row]
+    assert coords == ["A1", "B1"]
 
 
 def test_write_row(WriteOnlyWorksheet):
