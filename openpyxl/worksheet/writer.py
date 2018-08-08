@@ -86,7 +86,7 @@ class WorksheetWriter:
         # order cells by row
         rows = defaultdict(list)
         for (row, col), cell in self.ws._cells.items():
-            rows[row].append((col, cell))
+            rows[row].append(cell)
 
         # add empty rows if styling has been applied
         for row in set(self.ws.row_dimensions.keys()) - set(rows.keys()):
@@ -100,7 +100,6 @@ class WorksheetWriter:
 
         with xf.element("sheetData"):
             for row_idx, row in self.rows():
-                row = sorted(row, key=itemgetter(0))
                 self.write_row(xf, row, row_idx)
 
         self.xf.send(None) # return control to generator
@@ -114,7 +113,7 @@ class WorksheetWriter:
 
         with xf.element("row", attrs):
 
-            for col, cell in row:
+            for cell in row:
                 if cell._comment is not None:
                     comment = CommentRecord.from_cell(cell)
                     self.ws._comments.append(comment)

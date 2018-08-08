@@ -446,7 +446,7 @@ class TestWorksheetWriter:
 
         assert writer.rows() == [
             (2, []),
-            (10, [(1, writer.ws['A10'])])
+            (10, [writer.ws['A10']])
         ]
 
 
@@ -489,7 +489,7 @@ class TestWorksheetWriter:
         writer = WorksheetWriter
         writer.ws['A10'] = 15
         xf = writer.xf.send(True)
-        row = [(1, writer.ws['A10'])]
+        row = [writer.ws['A10']]
 
         writer.write_row(xf, row, 10)
         writer.xf.close()
