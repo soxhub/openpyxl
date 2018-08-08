@@ -139,39 +139,10 @@ class WriteOnlyWorksheet(_WorkbookChild):
             try:
                 while True:
                     row = (yield)
-                    row_idx = self._max_row
-                    attrs = {'r': '%d' % row_idx}
-                    if row_idx in self.row_dimensions:
-                        dim = self.row_dimensions[row_idx]
-                        attrs.update(dict(dim))
-
-                    with xf.element("row", attrs):
-
-                        for col_idx, value in enumerate(row, 1):
-                            if value is None:
-                                continue
-                            try:
-                                cell.value = value
-                            except ValueError:
-                                if isinstance(value, Cell):
-                                    cell = value
-                                else:
-                                    raise ValueError
-
-                            cell.column = col_idx
-                            cell.row = row_idx
-                            if cell._comment is not None:
-                                comment = CommentRecord.from_cell(cell)
-                                self._comments.append(comment)
-
-                            styled = cell.has_style
-                            write_cell(xf, self, cell, styled)
-
-                            if styled: # styled cell or datetime
-                                cell = WriteOnlyCell(self)
-
+                    self.writer.write_row(xf, row, self._max_row)
             except GeneratorExit:
                 pass
+
         self.writer.xf.send(None)
 
 
@@ -217,6 +188,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self.writer = WorksheetWriter(self, out=self.filename)
             self.writer.write_top()
 
+        row = self._values_to_row(row)
         try:
             self._rows.send(row)
         except StopIteration:
