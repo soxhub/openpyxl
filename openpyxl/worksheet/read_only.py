@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 """ Read worksheets on-demand
 """
-
+from zipfile import ZipExtFile
 # compatibility
 from openpyxl.compat import (
     range,
@@ -12,7 +12,6 @@ from openpyxl.compat import (
 
 # package
 from openpyxl.cell.text import Text
-
 from openpyxl.xml.functions import iterparse, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
@@ -70,7 +69,12 @@ class ReadOnlyWorksheet(object):
         self.shared_strings = shared_strings
         self.base_date = parent_workbook.epoch
         self.xml_source = xml_source
-        dimensions = read_dimension(self.xml_source)
+        try:
+            source = self.xml_source
+            dimensions = read_dimension(source)
+        finally:
+            if isinstance(source, ZipExtFile):
+                source.close()
         if dimensions is not None:
             self.min_column, self.min_row, self.max_column, self.max_row = dimensions
 
