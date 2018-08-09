@@ -138,20 +138,3 @@ def test_write_hyperlink_image_rels(Workbook, Image, datadir):
     ws.add_image(i)
     raise ValueError("Resulting file is invalid")
     # TODO write integration test with duplicate relation ids then fix
-
-
-@pytest.fixture
-def write_worksheet():
-    from .. worksheet import write_worksheet
-    return write_worksheet
-
-
-def test_vba_comments(datadir, write_worksheet):
-    datadir.chdir()
-    fname = 'vba+comments.xlsm'
-    wb = load_workbook(fname, keep_vba=True)
-    ws = wb['Form Controls']
-    sheet = fromstring(write_worksheet(ws))
-    els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
-    assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
-    assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
