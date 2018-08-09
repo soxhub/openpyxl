@@ -585,3 +585,17 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+@pytest.mark.xfail
+@pytest.mark.pil_required
+def test_write_hyperlink_image_rels(Workbook, Image, datadir):
+    datadir.chdir()
+    wb = Workbook()
+    ws = wb.create_sheet()
+    ws['A1'].value = "test"
+    ws['A1'].hyperlink = "http://test.com/"
+    i = Image("plain.png")
+    ws.add_image(i)
+    raise ValueError("Resulting file is invalid")
+    # TODO write integration test with duplicate relation ids then fix
