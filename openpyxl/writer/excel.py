@@ -39,7 +39,6 @@ from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.writer.strings import write_string_table
 from openpyxl.writer.workbook import WorkbookWriter
 from openpyxl.writer.theme import write_theme
-from openpyxl.writer.worksheet import write_worksheet
 from openpyxl.styles.stylesheet import write_stylesheet
 
 from openpyxl.comments.comment_sheet import CommentSheet
