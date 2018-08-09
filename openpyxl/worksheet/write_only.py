@@ -49,7 +49,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
     """
 
     __saved = False
-    writer = None
+    _writer = None
     _rows = None
     _rel_type = Worksheet._rel_type
     _path = Worksheet._path
@@ -126,7 +126,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
         Generator that creates the XML file and the sheet header
         """
         try:
-            xf = self.writer.xf.send(True)
+            xf = self._writer.xf.send(True)
         except StopIteration:
             self._already_saved()
 
@@ -135,17 +135,17 @@ class WriteOnlyWorksheet(_WorkbookChild):
             try:
                 while True:
                     row = (yield)
-                    self.writer.write_row(xf, row, self._max_row)
+                    self._writer.write_row(xf, row, self._max_row)
             except GeneratorExit:
                 pass
 
-        self.writer.xf.send(None)
+        self._writer.xf.send(None)
 
 
     def _get_writer(self):
-        if self.writer is None:
-            self.writer = WorksheetWriter(self, self.filename)
-            self.writer.write_top()
+        if self._writer is None:
+            self._writer = WorksheetWriter(self, self.filename)
+            self._writer.write_top()
 
 
     def close(self):
@@ -155,13 +155,13 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._get_writer()
 
         if self._rows is None:
-            self.writer.write_rows()
+            self._writer.write_rows()
         if self._rows:
             self._rows.close()
 
-        self.writer.write_tail()
+        self._writer.write_tail()
 
-        self.writer.xf.close()
+        self._writer.xf.close()
         self.__saved = True
 
 
@@ -186,13 +186,8 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self._rows = self._write_rows()
             next(self._rows)
 
-        self._max_row += 1
-
-        if self.writer is None:
-            self.writer = WorksheetWriter(self, out=self.filename)
-            self.writer.write_top()
-
         row = self._values_to_row(row)
+        self._max_row += 1
         try:
             self._rows.send(row)
         except StopIteration:

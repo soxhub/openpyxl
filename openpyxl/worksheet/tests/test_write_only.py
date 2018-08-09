@@ -57,7 +57,7 @@ def test_append(WriteOnlyWorksheet):
     ws.append([datetime.date(2001, 1, 1), 1])
     ws.append(i for i in [1, 2])
     ws._rows.close()
-    ws.writer.xf.close()
+    ws._writer.xf.close()
     with open(ws.filename) as src:
         xml = src.read()
     expected = """
