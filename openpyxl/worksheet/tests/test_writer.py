@@ -403,6 +403,39 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
+    def test_vba(self, WorksheetWriter):
+        writer = WorksheetWriter
+        ws = writer.ws
+        ws.vba_code = {"codeName":"Sheet1"}
+        ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
+        writer.write_top()
+        writer.write_rows()
+        writer.write_tail()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+          <sheetPr codeName="Sheet1">
+            <outlinePr summaryBelow="1" summaryRight="1"/>
+            <pageSetUpPr/>
+          </sheetPr>
+          <dimension ref="A1:A1"/>
+          <sheetViews>
+            <sheetView workbookViewId="0">
+              <selection activeCell="A1" sqref="A1"/>
+            </sheetView>
+          </sheetViews>
+          <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+          <sheetData/>
+          <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+          <legacyDrawing r:id="anysvml"/>
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
     def test_tables(self, WorksheetWriter):
         writer = WorksheetWriter
 

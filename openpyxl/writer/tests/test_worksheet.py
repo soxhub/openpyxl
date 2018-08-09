@@ -145,32 +145,6 @@ def write_worksheet():
     from .. worksheet import write_worksheet
     return write_worksheet
 
-def test_vba(worksheet, write_worksheet):
-    ws = worksheet
-    ws.vba_code = {"codeName":"Sheet1"}
-    ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
-    xml = write_worksheet(ws)
-    expected = """
-    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-      <sheetPr codeName="Sheet1">
-        <outlinePr summaryBelow="1" summaryRight="1"/>
-        <pageSetUpPr/>
-      </sheetPr>
-      <dimension ref="A1:A1"/>
-      <sheetViews>
-        <sheetView workbookViewId="0">
-          <selection activeCell="A1" sqref="A1"/>
-        </sheetView>
-      </sheetViews>
-      <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
-      <sheetData/>
-      <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
-      <legacyDrawing r:id="anysvml"/>
-    </worksheet>
-    """
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
 
 def test_vba_comments(datadir, write_worksheet):
     datadir.chdir()
@@ -181,15 +155,3 @@ def test_vba_comments(datadir, write_worksheet):
     els = sheet.findall('{%s}legacyDrawing' % SHEET_MAIN_NS)
     assert len(els) == 1, "Wrong number of legacyDrawing elements %d" % len(els)
     assert els[0].get('{%s}id' % REL_NS) == 'anysvml'
-
-
-def test_table_rels(worksheet):
-    from openpyxl.worksheet.table import Table
-    from ..worksheet import _add_table_headers
-
-    worksheet.append(list(u"ABCDEF\xfc"))
-    worksheet._tables = [Table(displayName="Table1", ref="A1:G6")]
-
-    _add_table_headers(worksheet)
-
-    assert worksheet._rels['rId1'].Type == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table"
