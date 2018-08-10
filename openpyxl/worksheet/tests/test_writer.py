@@ -19,7 +19,7 @@ from ..table import Table
 
 
 @pytest.fixture
-def WorksheetWriter():
+def writer():
     from ..writer import WorksheetWriter
     wb = Workbook()
     ws = wb.active
@@ -29,8 +29,8 @@ def WorksheetWriter():
 class TestWorksheetWriter:
 
 
-    def test_properties(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_properties(self, writer):
+
         writer.write_properties()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -46,8 +46,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_dimensions(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_dimensions(self, writer):
+
         writer.write_dimensions()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -60,8 +60,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_format(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_format(self, writer):
+
         writer.write_format()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -74,8 +74,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_views(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_views(self, writer):
+
         writer.write_views()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -92,8 +92,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_cols(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_cols(self, writer):
+
         writer.ws.column_dimensions['A'].width = 5
         writer.write_cols()
         writer.xf.close()
@@ -109,8 +109,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_top(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_top(self, writer):
+
         writer.write_top()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -133,8 +133,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_protection(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_protection(self, writer):
+
         writer.ws.protection = SheetProtection(sheet=True)
         writer.write_protection()
         writer.xf.close()
@@ -148,8 +148,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_filter(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_filter(self, writer):
+
         writer.ws.auto_filter.ref ="A1:A10"
         writer.write_filter()
         writer.xf.close()
@@ -163,8 +163,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_sort(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_sort(self, writer):
+
         writer.ws.sort_state = SortState(ref="A1:A10")
         writer.write_sort()
         writer.xf.close()
@@ -176,8 +176,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_merged(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_merged(self, writer):
+
         writer.ws.merge_cells("A1:B2")
         writer.write_merged_cells()
         writer.xf.close()
@@ -193,8 +193,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_formatting(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_formatting(self, writer):
+
 
         redFill = PatternFill(
             start_color=Color('FFEE1111'),
@@ -227,8 +227,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_validations(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_validations(self, writer):
+
         ws = writer.ws
         dv = DataValidation(sqref="A1")
         ws.data_validations.append(dv)
@@ -246,8 +246,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_hyperlinks(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_hyperlinks(self, writer):
+
         ws = writer.ws
 
         cell = ws['A1']
@@ -269,8 +269,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_print(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_print(self, writer):
+
         writer.ws.print_options.headings = True
 
         writer.write_print()
@@ -285,8 +285,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_margins(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_margins(self, writer):
+
         writer.write_margins()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -299,8 +299,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_page_setup(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_page_setup(self, writer):
+
         writer.ws.page_setup.orientation = "portrait"
 
         writer.write_page()
@@ -315,8 +315,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_header(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_header(self, writer):
+
         writer.ws.oddHeader.center.text = "odd header centre"
         writer.write_header()
         writer.xf.close()
@@ -337,8 +337,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_breaks(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_breaks(self, writer):
+
         writer.ws.page_breaks.append()
         writer.write_breaks()
         writer.xf.close()
@@ -354,8 +354,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_drawings(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_drawings(self, writer):
+
         writer.ws._images = [1]
         writer.write_drawings()
         writer.xf.close()
@@ -369,8 +369,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_comments(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_comments(self, writer):
+
         writer.ws._comments = True
         writer.write_legacy()
         writer.xf.close()
@@ -386,8 +386,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_legacy(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_legacy(self, writer):
+
         writer.ws.legacy_drawing = True
         writer.write_legacy()
         writer.xf.close()
@@ -403,8 +403,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_vba(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_vba(self, writer):
+
         ws = writer.ws
         ws.vba_code = {"codeName":"Sheet1"}
         ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
@@ -436,8 +436,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_tables(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_tables(self, writer):
 
         writer.ws.append(list(u"ABCDEF\xfc"))
         writer.ws._tables = [Table(displayName="Table1", ref="A1:G6")]
@@ -457,8 +456,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_tail(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_tail(self, writer):
+
         writer.write_tail()
         writer.xf.close()
         xml = writer.out.getvalue()
@@ -471,8 +470,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_row_dimensons(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_row_dimensons(self, writer):
+
         writer.ws['A10'] = "test"
         writer.ws.row_dimensions[10] = None
         writer.ws.row_dimensions[2] = None
@@ -482,8 +481,8 @@ class TestWorksheetWriter:
             (10, [writer.ws['A10']])
         ]
 
-    def test_rows_sort(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_rows_sort(self, writer):
+
         ws = writer.ws
         for c in ['F1', 'B1', 'A1', 'D1', 'E1', 'C1']:
             ws[c] = 1
@@ -492,8 +491,8 @@ class TestWorksheetWriter:
             (1, [ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1'], ws['F1']]),
         ]
 
-    def test_write_rows(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_rows(self, writer):
+
         writer.ws['F1'] = 10
         writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=20)
         writer.ws.row_dimensions[2] = RowDimension(writer.ws, height=30)
@@ -518,8 +517,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_rows_comment(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_rows_comment(self, writer):
+
         cell = writer.ws['F1']
         cell._comment = Comment("comment", "author")
 
@@ -527,8 +526,8 @@ class TestWorksheetWriter:
         assert len(writer.ws._comments) == 1
 
 
-    def test_write_row(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_row(self, writer):
+
         writer.ws['A10'] = 15
         xf = writer.xf.send(True)
         row = [writer.ws['A10']]
@@ -550,8 +549,8 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_sheet(self, WorksheetWriter):
-        writer = WorksheetWriter
+    def test_write_sheet(self, writer):
+
         writer.ws['A10'] = 15
         writer.ws['A10'].hyperlink = "http://www.example.com"
 
