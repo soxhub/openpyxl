@@ -122,3 +122,18 @@ def test_write_epoch(worksheet, write_cell_implementation, value, expected, epoc
     xml = out.getvalue()
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_write_hyperlink(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = "test"
+    cell.hyperlink = "http://www.test.com"
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell, cell.has_style)
+
+    assert len(worksheet._hyperlinks) == 1
