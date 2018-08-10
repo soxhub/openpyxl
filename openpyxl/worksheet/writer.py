@@ -29,7 +29,6 @@ class WorksheetWriter:
             out = BytesIO()
         self.out = out
         self._rels = RelationshipList()
-        self._hyperlinks = []
         self.xf = self.write()
         next(self.xf) # start generator
 
@@ -172,7 +171,7 @@ class WorksheetWriter:
     def write_hyperlinks(self):
         links = HyperlinkList()
 
-        for link in self._hyperlinks:
+        for link in self.ws._hyperlinks:
             if link.target:
                 rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
                 self._rels.append(rel)

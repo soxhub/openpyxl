@@ -253,7 +253,7 @@ class TestWorksheetWriter:
         cell = ws['A1']
         cell.value = "test"
         cell.hyperlink = "http://test.com"
-        writer._hyperlinks.append(cell.hyperlink) # done when writing cells
+        writer.ws._hyperlinks.append(cell.hyperlink) # done when writing cells
         writer.write_hyperlinks()
         writer.xf.close()
         assert len(writer._rels) == 1
@@ -553,6 +553,7 @@ class TestWorksheetWriter:
     def test_write_sheet(self, WorksheetWriter):
         writer = WorksheetWriter
         writer.ws['A10'] = 15
+        writer.ws['A10'].hyperlink = "http://www.example.com"
 
         writer.write_top()
         writer.write_rows()
@@ -580,22 +581,11 @@ class TestWorksheetWriter:
             </c>
           </row>
           </sheetData>
+          <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+            <hyperlink ref="A10" r:id="rId1" />
+          </hyperlinks>
           <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
         </worksheet>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
-
-@pytest.mark.xfail
-@pytest.mark.pil_required
-def test_write_hyperlink_image_rels(Workbook, Image, datadir):
-    datadir.chdir()
-    wb = Workbook()
-    ws = wb.create_sheet()
-    ws['A1'].value = "test"
-    ws['A1'].hyperlink = "http://test.com/"
-    i = Image("plain.png")
-    ws.add_image(i)
-    raise ValueError("Resulting file is invalid")
-    # TODO write integration test with duplicate relation ids then fix

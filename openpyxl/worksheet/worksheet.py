@@ -791,7 +791,6 @@ class Worksheet(_WorkbookChild):
         writer.write_tail()
         writer.xf.close()
         self._rels = writer._rels
-        self._hyperlinks = writer._hyperlinks
         return writer.out.getvalue()
 
 
