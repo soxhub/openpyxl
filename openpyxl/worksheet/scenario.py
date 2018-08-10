@@ -7,6 +7,8 @@ from openpyxl.descriptors import (
     String,
     Integer,
     Bool,
+    Sequence,
+    Convertible,
 )
 from .cell_range import MultiCellRange
 
@@ -19,7 +21,7 @@ class InputCells(Serialisable):
     deleted = Bool(allow_none=True)
     undone = Bool(allow_none=True)
     val = String()
-    numFmtId = Integer()
+    numFmtId = Integer(allow_none=True)
 
     def __init__(self,
                  r=None,
@@ -43,11 +45,11 @@ class Scenario(Serialisable):
     name = String()
     locked = Bool(allow_none=True)
     hidden = Bool(allow_none=True)
-    count = Integer(allow_none=True)
     user = String(allow_none=True)
     comment = String(allow_none=True)
 
     __elements__ = ('inputCells',)
+    __attrs__ = ('name', 'locked', 'hidden', 'user', 'comment', 'count')
 
     def __init__(self,
                  inputCells=(),
@@ -62,9 +64,13 @@ class Scenario(Serialisable):
         self.name = name
         self.locked = locked
         self.hidden = hidden
-        self.count = count
         self.user = user
         self.comment = comment
+
+
+    @property
+    def count(self):
+        return len(self.inputCells)
 
 
 class Scenarios(Serialisable):
@@ -74,7 +80,7 @@ class Scenarios(Serialisable):
     scenario = Sequence(expected_type=Scenario)
     current = Integer(allow_none=True)
     show = Integer(allow_none=True)
-    sqref = Convertible(expected_type=MultiCellRange)
+    sqref = Convertible(expected_type=MultiCellRange, allow_none=True)
 
     __elements__ = ('scenario',)
 
