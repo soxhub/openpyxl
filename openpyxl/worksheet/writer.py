@@ -261,6 +261,8 @@ class WorksheetWriter:
                         el = (yield)
                         if el is True:
                             yield xf
+                        elif el is None: # et_xmlfile chokes
+                            continue
                         else:
                             xf.write(el)
                 except GeneratorExit:
