@@ -61,7 +61,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_format(self, writer):
+    def test_format(self, writer):
 
         writer.write_format()
         writer.xf.close()
@@ -75,7 +75,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_views(self, writer):
+    def test_views(self, writer):
 
         writer.write_views()
         writer.xf.close()
@@ -134,7 +134,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_protection(self, writer):
+    def test_protection(self, writer):
 
         writer.ws.protection = SheetProtection(sheet=True)
         writer.write_protection()
@@ -170,7 +170,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_filter(self, writer):
+    def test_filter(self, writer):
 
         writer.ws.auto_filter.ref ="A1:A10"
         writer.write_filter()
@@ -185,7 +185,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_sort(self, writer):
+    def test_sort(self, writer):
 
         writer.ws.sort_state = SortState(ref="A1:A10")
         writer.write_sort()
@@ -198,7 +198,7 @@ class TestWorksheetWriter:
         assert diff is None, diff
 
 
-    def test_write_merged(self, writer):
+    def test_merged_cells(self, writer):
 
         writer.ws.merge_cells("A1:B2")
         writer.write_merged_cells()
