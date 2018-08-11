@@ -3,9 +3,15 @@
 
 
 Major changes
-------------
+-------------
 
 * Implement robust for merged cells so that these can be formatted the way Excel does without confusion. Thanks to Magnus Schieder.
+
+
+Minor changes
+-------------
+
+* Add support for worksheet scenarios
 
 
 2.5.6 (unreleased)
