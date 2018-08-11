@@ -72,8 +72,8 @@ class TestScenario:
 
 @pytest.fixture
 def Scenarios():
-    from ..scenario import Scenarios
-    return Scenarios
+    from ..scenario import ScenarioList
+    return ScenarioList
 
 
 class TestScenarios:
@@ -81,7 +81,7 @@ class TestScenarios:
     def test_ctor(self, Scenarios, Scenario, InputCells):
         c1 = InputCells(r="B2", val="50000")
         s = Scenario(name="Worst case", inputCells=[c1], locked=True, user="User")
-        fut = Scenarios(scenario=[s])
+        fut = ScenarioList(scenario=[s])
         xml = tostring(fut.to_tree())
         expected = """
         <scenarios>
@@ -103,7 +103,7 @@ class TestScenarios:
         </scenarios>
         """
         node = fromstring(src)
-        fut = Scenarios.from_tree(node)
+        fut = ScenarioList.from_tree(node)
         c1 = InputCells(r="B2", val="50000")
         s = Scenario(name="Best case", inputCells=[c1], locked=True, user="User")
-        assert fut == Scenarios(scenario=[s], current=0, show=0)
+        assert fut == ScenarioList(scenario=[s], current=0, show=0)

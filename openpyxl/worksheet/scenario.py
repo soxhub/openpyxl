@@ -73,7 +73,7 @@ class Scenario(Serialisable):
         return len(self.inputCells)
 
 
-class Scenarios(Serialisable):
+class ScenarioList(Serialisable):
 
     tagname = "scenarios"
 
