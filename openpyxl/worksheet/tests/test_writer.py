@@ -152,7 +152,7 @@ class TestWorksheetWriter:
     def test_scenarios(self, writer):
         c = InputCells(r="B2", val="50000")
         s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
-        writer.ws.scenarios.scenario.append(s)
+        writer.ws.scenarios.append(s)
         writer.write_scenarios()
         writer.xf.close()
         xml = writer.out.getvalue()

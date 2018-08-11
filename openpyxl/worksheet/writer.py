@@ -280,7 +280,7 @@ class WorksheetWriter:
         calc properties
         protection
         protected ranges #
-        scenarios #
+        scenarios
         filters
         sorts # always ignored
         data consolidation #
@@ -309,6 +309,7 @@ class WorksheetWriter:
         tables
         """
         self.write_protection()
+        self.write_scenarios()
         self.write_filter()
         self.write_merged_cells()
         self.write_formatting()

@@ -94,3 +94,15 @@ class ScenarioList(Serialisable):
         self.current = current
         self.show = show
         self.sqref = sqref
+
+
+    def append(self, scenario):
+        s = self.scenario
+        s.append(scenario)
+        self.scenario = s
+
+
+    def __bool__(self):
+        return bool(self.scenario)
+
+    __nonzero__ = __bool__
