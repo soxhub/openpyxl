@@ -15,6 +15,7 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.pagebreak import Break, PageBreak
+from openpyxl.worksheet.scenario import ScenarioList, Scenario, InputCells
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 
@@ -766,3 +767,26 @@ def test_page_break(WorkSheetParser):
     ws = parser.ws
 
     assert ws.page_breaks == expected_pagebreak
+
+
+def test_scenarios(WorkSheetParser):
+    src = """
+    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <scenarios current="0" show="0">
+    <scenario name="Worst case" locked="1" user="User" comment="comment">
+      <inputCells r="B2" val="50000" />
+    </scenario>
+    </scenarios>
+    </sheet>
+    """
+
+    c = InputCells(r="B2", val="50000")
+    s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
+    scenarios = ScenarioList(scenario=[s], current="0", show="0")
+
+    parser = WorkSheetParser
+    parser.source = src
+    parser.parse()
+    ws = parser.ws
+
+    assert ws.scenarios == scenarios

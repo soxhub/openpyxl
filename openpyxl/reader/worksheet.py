@@ -26,6 +26,7 @@ from openpyxl.worksheet.cell_range import CellRange
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
 from openpyxl.worksheet.pagebreak import PageBreak
 from openpyxl.worksheet.protection import SheetProtection
+from openpyxl.worksheet.scenario import ScenarioList
 from openpyxl.worksheet.views import SheetViewList
 from openpyxl.worksheet.datavalidation import DataValidationList
 from openpyxl.xml.constants import (
@@ -119,6 +120,7 @@ class WorkSheetParser(object):
             '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
             '{%s}sheetFormatPr' % SHEET_MAIN_NS: ('sheet_format', SheetFormatProperties),
             '{%s}rowBreaks' % SHEET_MAIN_NS: ('page_breaks', PageBreak),
+            '{%s}scenarios' % SHEET_MAIN_NS: ('scenarios', ScenarioList),
         }
 
         stream = _get_xml_iter(self.source)
