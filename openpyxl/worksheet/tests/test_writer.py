@@ -15,6 +15,7 @@ from ..dimensions import RowDimension
 from ..protection import SheetProtection
 from ..filters import AutoFilter
 from ..filters import SortState
+from ..scenario import Scenario, InputCells
 from ..table import Table
 
 
@@ -142,6 +143,27 @@ class TestWorksheetWriter:
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetProtection autoFilter="1" deleteColumns="1" deleteRows="1" formatCells="1" formatColumns="1" formatRows="1" insertColumns="1" insertHyperlinks="1" insertRows="1" objects="0" pivotTables="1" scenarios="0" selectLockedCells="0" selectUnlockedCells="0" sheet="1" sort="1" />
+        </worksheet>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_scenarios(self, writer):
+        c = InputCells(r="B2", val="50000")
+        s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
+        writer.ws.scenarios.scenario.append(s)
+        writer.write_scenarios()
+        writer.xf.close()
+        xml = writer.out.getvalue()
+        expected = """
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <scenarios>
+            <scenario name="Worst case" locked="1" user="User" comment="comment" count="1"
+                     hidden="0" >
+            <inputCells r="B2" val="50000" deleted="0" undone="0" />
+            </scenario>
+          </scenarios>
         </worksheet>
         """
         diff = compare_xml(xml, expected)

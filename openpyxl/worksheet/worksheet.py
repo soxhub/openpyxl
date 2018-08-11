@@ -72,6 +72,7 @@ from .cell_range import MultiCellRange, CellRange
 from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
+from .scenario import ScenarioList
 from .writer import WorksheetWriter
 
 
@@ -153,6 +154,7 @@ class Worksheet(_WorkbookChild):
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
         self._merged_cell_range = {}
+        self.scenarios = ScenarioList()
 
 
     @property

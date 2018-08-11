@@ -131,6 +131,12 @@ class WorksheetWriter:
             self.xf.send(prot.to_tree())
 
 
+    def write_scenarios(self):
+        scenarios = self.ws.scenarios
+        if scenarios:
+            self.xf.send(scenarios.to_tree())
+
+
     def write_filter(self):
         flt = self.ws.auto_filter
         if flt:
