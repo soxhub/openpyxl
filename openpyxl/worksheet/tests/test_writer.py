@@ -33,8 +33,7 @@ class TestWorksheetWriter:
     def test_properties(self, writer):
 
         writer.write_properties()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetPr>
@@ -50,8 +49,7 @@ class TestWorksheetWriter:
     def test_dimensions(self, writer):
 
         writer.write_dimensions()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <dimension ref="A1:A1" />
@@ -64,8 +62,7 @@ class TestWorksheetWriter:
     def test_format(self, writer):
 
         writer.write_format()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetFormatPr baseColWidth="8" defaultRowHeight="15" />
@@ -78,8 +75,7 @@ class TestWorksheetWriter:
     def test_views(self, writer):
 
         writer.write_views()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetViews>
@@ -97,8 +93,7 @@ class TestWorksheetWriter:
 
         writer.ws.column_dimensions['A'].width = 5
         writer.write_cols()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <cols>
@@ -113,8 +108,7 @@ class TestWorksheetWriter:
     def test_write_top(self, writer):
 
         writer.write_top()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetPr>
@@ -138,8 +132,7 @@ class TestWorksheetWriter:
 
         writer.ws.protection = SheetProtection(sheet=True)
         writer.write_protection()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetProtection autoFilter="1" deleteColumns="1" deleteRows="1" formatCells="1" formatColumns="1" formatRows="1" insertColumns="1" insertHyperlinks="1" insertRows="1" objects="0" pivotTables="1" scenarios="0" selectLockedCells="0" selectUnlockedCells="0" sheet="1" sort="1" />
@@ -154,8 +147,7 @@ class TestWorksheetWriter:
         s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
         writer.ws.scenarios.append(s)
         writer.write_scenarios()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <scenarios>
@@ -174,8 +166,7 @@ class TestWorksheetWriter:
 
         writer.ws.auto_filter.ref ="A1:A10"
         writer.write_filter()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <autoFilter ref="A1:A10" />
@@ -189,8 +180,7 @@ class TestWorksheetWriter:
 
         writer.ws.sort_state = SortState(ref="A1:A10")
         writer.write_sort()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />
         """
@@ -202,8 +192,7 @@ class TestWorksheetWriter:
 
         writer.ws.merge_cells("A1:B2")
         writer.write_merged_cells()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <mergeCells count="1">
@@ -216,7 +205,6 @@ class TestWorksheetWriter:
 
 
     def test_formatting(self, writer):
-
 
         redFill = PatternFill(
             start_color=Color('FFEE1111'),
@@ -234,8 +222,7 @@ class TestWorksheetWriter:
                                                  fill=redFill)
                                       )
         writer.write_formatting()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <conditionalFormatting sqref="A1:A3">
@@ -255,8 +242,8 @@ class TestWorksheetWriter:
         dv = DataValidation(sqref="A1")
         ws.data_validations.append(dv)
         writer.write_validations()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+
+        xml = writer.read()
 
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -277,9 +264,9 @@ class TestWorksheetWriter:
         cell.hyperlink = "http://test.com"
         writer.ws._hyperlinks.append(cell.hyperlink) # done when writing cells
         writer.write_hyperlinks()
-        writer.xf.close()
+
         assert len(writer._rels) == 1
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <hyperlinks xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -294,10 +281,8 @@ class TestWorksheetWriter:
     def test_print(self, writer):
 
         writer.ws.print_options.headings = True
-
         writer.write_print()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <printOptions headings="1" />
@@ -310,8 +295,7 @@ class TestWorksheetWriter:
     def test_margins(self, writer):
 
         writer.write_margins()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <pageMargins  bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1" />
@@ -324,10 +308,8 @@ class TestWorksheetWriter:
     def test_page_setup(self, writer):
 
         writer.ws.page_setup.orientation = "portrait"
-
         writer.write_page()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <pageSetup orientation="portrait" />
@@ -341,9 +323,7 @@ class TestWorksheetWriter:
 
         writer.ws.oddHeader.center.text = "odd header centre"
         writer.write_header()
-        writer.xf.close()
-
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
          <headerFooter>
@@ -363,9 +343,7 @@ class TestWorksheetWriter:
 
         writer.ws.page_breaks.append()
         writer.write_breaks()
-        writer.xf.close()
-
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <rowBreaks count="1" manualBreakCount="1">
@@ -380,13 +358,13 @@ class TestWorksheetWriter:
 
         writer.ws._images = [1]
         writer.write_drawings()
-        writer.xf.close()
+
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
         </worksheet>
         """
-        xml = writer.out.getvalue()
+        xml = writer.read()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -395,15 +373,13 @@ class TestWorksheetWriter:
 
         writer.ws._comments = True
         writer.write_legacy()
-        writer.xf.close()
-
-        xml = writer.out.getvalue
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
         </worksheet>
         """
-        xml = writer.out.getvalue()
+        xml = writer.read()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -412,15 +388,13 @@ class TestWorksheetWriter:
 
         writer.ws.legacy_drawing = True
         writer.write_legacy()
-        writer.xf.close()
-
-        xml = writer.out.getvalue
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
         </worksheet>
         """
-        xml = writer.out.getvalue()
+        xml = writer.read()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -433,8 +407,8 @@ class TestWorksheetWriter:
         writer.write_top()
         writer.write_rows()
         writer.write_tail()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
         xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -463,10 +437,9 @@ class TestWorksheetWriter:
         writer.ws.append(list(u"ABCDEF\xfc"))
         writer.ws._tables = [Table(displayName="Table1", ref="A1:G6")]
         writer.write_tables()
-        writer.xf.close()
 
         assert len(writer._rels) == 1
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
           <tableParts count="1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -481,8 +454,7 @@ class TestWorksheetWriter:
     def test_write_tail(self, writer):
 
         writer.write_tail()
-        writer.xf.close()
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
@@ -518,11 +490,9 @@ class TestWorksheetWriter:
         writer.ws['F1'] = 10
         writer.ws.row_dimensions[1] = RowDimension(writer.ws, height=20)
         writer.ws.row_dimensions[2] = RowDimension(writer.ws, height=30)
-
         writer.write_rows()
-        writer.xf.close()
 
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <sheetData>
@@ -553,11 +523,9 @@ class TestWorksheetWriter:
         writer.ws['A10'] = 15
         xf = writer.xf.send(True)
         row = [writer.ws['A10']]
-
         writer.write_row(xf, row, 10)
-        writer.xf.close()
 
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <row r="10">
@@ -575,13 +543,11 @@ class TestWorksheetWriter:
 
         writer.ws['A10'] = 15
         writer.ws['A10'].hyperlink = "http://www.example.com"
-
         writer.write_top()
         writer.write_rows()
         writer.write_tail()
-        writer.xf.close()
 
-        xml = writer.out.getvalue()
+        xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetPr>

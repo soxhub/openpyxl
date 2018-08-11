@@ -323,3 +323,20 @@ class WorksheetWriter:
         self.write_drawings()
         self.write_legacy()
         self.write_tables()
+
+
+    def close(self):
+        """
+        Close the context manager
+        """
+        if self.xf:
+            self.xf.close()
+
+
+    def read(self):
+        """
+        Close the context manager and return serialised XML
+        """
+        self.close()
+        if isinstance(self.out, BytesIO):
+            return self.out.getvalue()
