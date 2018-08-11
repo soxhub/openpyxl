@@ -71,14 +71,14 @@ class TestScenario:
 
 
 @pytest.fixture
-def Scenarios():
+def ScenarioList():
     from ..scenario import ScenarioList
     return ScenarioList
 
 
 class TestScenarios:
 
-    def test_ctor(self, Scenarios, Scenario, InputCells):
+    def test_ctor(self, ScenarioList, Scenario, InputCells):
         c1 = InputCells(r="B2", val="50000")
         s = Scenario(name="Worst case", inputCells=[c1], locked=True, user="User")
         fut = ScenarioList(scenario=[s])
@@ -94,7 +94,7 @@ class TestScenarios:
         assert diff is None, diff
 
 
-    def test_from_xml(self, Scenarios, Scenario, InputCells):
+    def test_from_xml(self, ScenarioList, Scenario, InputCells):
         src = """
         <scenarios current="0" show="0">
         <scenario name="Best case" locked="1" count="1" user="User">
