@@ -125,7 +125,7 @@ class WorkbookWriter:
             if pivot.cache not in pivot_caches:
                 pivot_caches.add(pivot.cache)
                 c = PivotCache(cacheId=pivot.cacheId)
-                root.pivotCaches.append(c)
+                self.package.pivotCaches.append(c)
                 rel = Relationship(Type=pivot.cache.rel_type, Target=pivot.cache.path)
                 self.rels.append(rel)
                 c.id = rel.id

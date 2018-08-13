@@ -265,7 +265,7 @@ class ExcelReader:
                         src = self.archive.read(pivot_path)
                         tree = fromstring(src)
                         pivot = TableDefinition.from_tree(tree)
-                        pivot.cache = pivot_caches[pivot.cacheId]
+                        pivot.cache = self.parser.pivot_caches[pivot.cacheId]
                         ws.add_pivot(pivot)
 
             ws.sheet_state = sheet.state
