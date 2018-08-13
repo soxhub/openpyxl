@@ -18,6 +18,9 @@ Minor changes
 ==================
 
 
+* `#832 <https://bitbucket.org/openpyxl/openpyxl/issues/832>`_ Read-only mode can leave find-handles open when reading dimensions
+
+
 2.5.5 (2018-08-04)
 ==================
 
