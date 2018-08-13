@@ -12,6 +12,7 @@ omit =
     */benchmarks/*
     */tests/*
     */test_*
+    */openpyxl/packaging/interface.py
     */openpyxl/worksheet/cell_watch.py
     */openpyxl/workhseet/controls.py
     */openpyxl/worksheet/custom.py
