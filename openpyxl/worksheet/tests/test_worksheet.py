@@ -577,6 +577,7 @@ class TestEditableWorksheet:
         ws.insert_rows(2, 2)
 
         assert ws.max_row == 8
+        assert ws._current_row == 8
         assert [c.value for c in ws[2]] == [None]*8
 
 
@@ -595,7 +596,17 @@ class TestEditableWorksheet:
         ws.delete_rows(2, 3)
 
         assert ws.max_row == 3
+        assert ws._current_row == 3
         assert [c.value for c in ws['B']] == ['B1', 'B5', 'B6']
+
+
+    def test_deleta_all_rows(self, dummy_worksheet):
+        ws = dummy_worksheet
+
+        ws.delete_rows(1, 6)
+
+        assert ws.max_row == 1
+        assert ws._current_row == 0
 
 
     def test_delete_cols(self, dummy_worksheet):
