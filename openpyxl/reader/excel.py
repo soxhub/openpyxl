@@ -176,12 +176,12 @@ class ExcelReader:
     def read_workbook(self):
         wb_part = _find_workbook_part(self.package)
         self.parser = WorkbookParser(self.archive, wb_part.PartName[1:])
+        self.parser.keep_links = self.keep_links
         self.parser.parse()
         wb = self.parser.wb
         wb._sheets = []
         wb._data_only = self.data_only
         wb._read_only = self.read_only
-        wb._keep_links = self.keep_links
         wb.guess_types = self.guess_types
         wb.template = wb_part.ContentType in (XLTX, XLTM)
 
