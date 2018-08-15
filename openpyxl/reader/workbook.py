@@ -119,7 +119,8 @@ class WorkbookParser:
         d = {}
         for c in self.caches:
             cache = get_rel(self.archive, self.rels, id=c.id, cls=CacheDefinition)
-            records = get_rel(self.archive, cache.deps, cache.id, RecordList)
-            cache.records = records
+            if cache.deps:
+                records = get_rel(self.archive, cache.deps, cache.id, RecordList)
+                cache.records = records
             d[c.cacheId]  = cache
         return d
