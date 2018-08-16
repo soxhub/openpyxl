@@ -32,6 +32,7 @@ from openpyxl.chartsheet import Chartsheet
 from .defined_name import DefinedName, DefinedNameList
 from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.relationship import RelationshipList
+from .child import _WorkbookChild
 from .protection import DocumentSecurity
 from .properties import CalcProperties
 from .views import BookView
@@ -153,7 +154,21 @@ class Workbook(object):
     @active.setter
     def active(self, value):
         """Set the active sheet"""
-        self._active_sheet_index = value
+        if not isinstance(value, (_WorkbookChild, int)):
+            raise TypeError("Value must be either a worksheet, chartsheet or numerical index")
+        if isinstance(value, int):
+            if 0 <= value < len(self._sheets):
+                value = self._sheets[value]
+            else:
+                raise ValueError("Sheet index is outside the range of possible values")
+        if value not in self._sheets:
+            raise ValueError("Worksheet is not in the workbook")
+        if value.sheet_state != "visible":
+            raise ValueError("Only visible sheets can be made active")
+
+        idx = self._sheets.index(value)
+        self._active_sheet_index = idx
+
 
     def create_sheet(self, title=None, index=None):
         """Create a worksheet (at an optional index).

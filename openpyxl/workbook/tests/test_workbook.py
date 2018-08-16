@@ -46,6 +46,29 @@ def test_get_active_sheet():
     assert wb.active == wb.worksheets[0]
 
 
+def test_set_active_by_sheet():
+    wb = Workbook()
+    names = ['Sheet', 'Sheet1', 'Sheet2',]
+    for n in names:
+        wb.create_sheet(n)
+
+    for n in names:
+        sheet = wb[n]
+        wb.active = sheet
+        assert wb.active == wb[n]
+
+
+def test_set_active_by_index():
+    wb = Workbook()
+    names = ['Sheet', 'Sheet1', 'Sheet2',]
+    for n in names:
+        wb.create_sheet(n)
+
+    for idx, name in enumerate(names):
+        wb.active = idx
+        assert wb.active == wb.worksheets[idx]
+
+
 def test_create_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet()
