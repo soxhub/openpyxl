@@ -282,9 +282,7 @@ class Cell(StyleableObject):
             datetime.time:numbers.FORMAT_DATE_TIME6,
             datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
                 }
-        for typ, fmt in fmts.items():
-            if isinstance(value, typ):
-                self.number_format = fmt
+        self.number_format = fmts[type(value)]
 
     @property
     def value(self):
