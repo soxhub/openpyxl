@@ -188,6 +188,13 @@ def test_insert_date(dummy_cell, value, number_format):
     assert cell.number_format == number_format
 
 
+def test_not_overwrite_time_format(dummy_cell):
+    cell = dummy_cell
+    cell.number_format = "mmm-yy"
+    cell.value = date(2010, 7, 13)
+    assert cell.number_format == "mmm-yy"
+
+
 @pytest.mark.parametrize("value, is_date",
                          [
                              (None, True,),

@@ -189,7 +189,8 @@ class Cell(StyleableObject):
             pass
 
         elif isinstance(value, TIME_TYPES):
-            value = self._set_time_format(value)
+            if not is_date_format(self.number_format):
+                self._set_time_format(value)
             self.data_type = "d"
 
         elif isinstance(value, STRING_TYPES):
