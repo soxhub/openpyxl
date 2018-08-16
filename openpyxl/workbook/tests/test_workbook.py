@@ -69,6 +69,34 @@ def test_set_active_by_index():
         assert wb.active == wb.worksheets[idx]
 
 
+def test_set_invalid_active_index():
+    wb = Workbook()
+    with pytest.raises(ValueError):
+        wb.active = 1
+
+
+def test_set_invalid_sheet_by_name():
+    wb = Workbook()
+    with pytest.raises(TypeError):
+        wb.active = "Sheet"
+
+
+def test_set_invalid_child_as_active():
+    wb1 = Workbook()
+    wb2 = Workbook()
+    ws2 = wb2['Sheet']
+    with pytest.raises(ValueError):
+        wb1.active = ws2
+
+
+def test_set_hidden_sheet_as_active():
+    wb = Workbook()
+    ws = wb.create_sheet()
+    ws.sheet_state = 'hidden'
+    with pytest.raises(ValueError):
+        wb.active = ws
+
+
 def test_create_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet()
