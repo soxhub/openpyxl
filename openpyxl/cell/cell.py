@@ -268,15 +268,15 @@ class Cell(StyleableObject):
 
     def _set_time_format(self, value):
         """Set number format for Python date or time"""
-        if isinstance(value, datetime.datetime):
-            self.number_format = numbers.FORMAT_DATE_DATETIME
-        elif isinstance(value, datetime.date):
-            self.number_format = numbers.FORMAT_DATE_YYYYMMDD2
-        elif isinstance(value, datetime.time):
-            self.number_format = numbers.FORMAT_DATE_TIME6
-        elif isinstance(value, datetime.timedelta):
-            self.number_format = numbers.FORMAT_DATE_TIMEDELTA
-        return value
+        fmts = {
+            datetime.datetime:numbers.FORMAT_DATE_DATETIME,
+            datetime.date:numbers.FORMAT_DATE_YYYYMMDD2,
+            datetime.time:numbers.FORMAT_DATE_TIME6,
+            datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
+                }
+        for typ, fmt in fmts.items():
+            if isinstance(value, typ):
+                self.number_format = fmt
 
     @property
     def value(self):
