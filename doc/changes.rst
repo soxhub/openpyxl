@@ -3,6 +3,7 @@
 
 
 * `#832 <https://bitbucket.org/openpyxl/openpyxl/issues/832>`_ Read-only mode can leave find-handles open when reading dimensions
+* `#933 <https://bitbucket.org/openpyxl/openpyxl/issues/933>`_ Set a worksheet directly as active
 * `#1086 <https://bitbucket.org/openpyxl/openpyxl/issues/1086>`_ Internal row counter not adjusted when rows are deleted or inserted
 
 
