@@ -211,6 +211,8 @@ class ExcelReader:
 
     def read_worksheets(self):
         for sheet, rel in self.parser.find_sheets():
+            if "chartsheet" in rel.Type:
+                continue
             sheet_name = sheet.name
             worksheet_path = rel.target
             rels_path = get_rels_path(worksheet_path)
