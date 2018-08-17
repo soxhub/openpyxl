@@ -241,66 +241,64 @@ class ExcelReader:
 
     def read_worksheets(self):
         for sheet, rel in self.parser.find_sheets():
+            if rel.target not in self.valid_files:
+                continue
+
             if "chartsheet" in rel.Type:
                 self.read_chartsheet(sheet, rel)
                 continue
 
-            sheet_name = sheet.name
-            worksheet_path = rel.target
-            rels_path = get_rels_path(worksheet_path)
+            rels_path = get_rels_path(rel.target)
             rels = []
             if rels_path in self.valid_files:
                 rels = get_dependents(self.archive, rels_path)
 
-            if not worksheet_path in self.valid_files:
-                continue
-
             if self.read_only:
-                ws = ReadOnlyWorksheet(self.wb, sheet_name, worksheet_path, None, self.shared_strings)
+                ws = ReadOnlyWorksheet(self.wb, sheet.name, rel.target, None, self.shared_strings)
                 self.wb._sheets.append(ws)
             else:
-                fh = self.archive.open(worksheet_path)
-                ws = self.wb.create_sheet(sheet_name)
+                fh = self.archive.open(rel.target)
+                ws = self.wb.create_sheet(sheet.name)
                 ws._rels = rels
                 ws_parser = WorkSheetParser(ws, fh, self.shared_strings)
                 ws_parser.parse()
 
-                if rels:
-                    # assign any comments to cells
-                    for r in rels.find(COMMENTS_NS):
-                        src = self.archive.read(r.target)
-                        comment_sheet = CommentSheet.from_tree(fromstring(src))
-                        for ref, comment in comment_sheet.comments:
-                            ws[ref].comment = comment
+            if rels:
+                # assign any comments to cells
+                for r in rels.find(COMMENTS_NS):
+                    src = self.archive.read(r.target)
+                    comment_sheet = CommentSheet.from_tree(fromstring(src))
+                    for ref, comment in comment_sheet.comments:
+                        ws[ref].comment = comment
 
-                    # preserve link to VML file if VBA
-                    if (
-                        self.wb.vba_archive is not None
-                        and ws.legacy_drawing is not None
-                        ):
-                        ws.legacy_drawing = rels[ws.legacy_drawing].target
+                # preserve link to VML file if VBA
+                if (
+                    self.wb.vba_archive is not None
+                    and ws.legacy_drawing is not None
+                    ):
+                    ws.legacy_drawing = rels[ws.legacy_drawing].target
 
-                    for t in ws_parser.tables:
-                        src = self.archive.read(t)
-                        xml = fromstring(src)
-                        table = Table.from_tree(xml)
-                        ws.add_table(table)
+                for t in ws_parser.tables:
+                    src = self.archive.read(t)
+                    xml = fromstring(src)
+                    table = Table.from_tree(xml)
+                    ws.add_table(table)
 
-                    drawings = rels.find(SpreadsheetDrawing._rel_type)
-                    for rel in drawings:
-                        for c in find_charts(self.archive, rel.target):
-                            ws.add_chart(c, c.anchor)
-                        for im in find_images(self.archive, rel.target):
-                            ws.add_image(im, im.anchor)
+                drawings = rels.find(SpreadsheetDrawing._rel_type)
+                for rel in drawings:
+                    for c in find_charts(self.archive, rel.target):
+                        ws.add_chart(c, c.anchor)
+                    for im in find_images(self.archive, rel.target):
+                        ws.add_image(im, im.anchor)
 
-                    pivot_rel = rels.find(TableDefinition.rel_type)
-                    for r in pivot_rel:
-                        pivot_path = r.Target
-                        src = self.archive.read(pivot_path)
-                        tree = fromstring(src)
-                        pivot = TableDefinition.from_tree(tree)
-                        pivot.cache = self.parser.pivot_caches[pivot.cacheId]
-                        ws.add_pivot(pivot)
+                pivot_rel = rels.find(TableDefinition.rel_type)
+                for r in pivot_rel:
+                    pivot_path = r.Target
+                    src = self.archive.read(pivot_path)
+                    tree = fromstring(src)
+                    pivot = TableDefinition.from_tree(tree)
+                    pivot.cache = self.parser.pivot_caches[pivot.cacheId]
+                    ws.add_pivot(pivot)
 
             ws.sheet_state = sheet.state
             ws._rels = [] # reset
