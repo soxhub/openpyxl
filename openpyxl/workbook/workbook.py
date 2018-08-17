@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 """Workbook is the top-level container for all document information."""
 
-from openpyxl.compat import deprecated
+from openpyxl.compat import deprecated, long
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.write_only import WriteOnlyWorksheet
@@ -45,6 +45,7 @@ from openpyxl.xml.constants import (
     XLTX
 )
 
+INTEGER_TYPES = (int, long)
 
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
@@ -154,9 +155,9 @@ class Workbook(object):
     @active.setter
     def active(self, value):
         """Set the active sheet"""
-        if not isinstance(value, (_WorkbookChild, int)):
+        if not isinstance(value, (_WorkbookChild, INTEGER_TYPES)):
             raise TypeError("Value must be either a worksheet, chartsheet or numerical index")
-        if isinstance(value, int):
+        if isinstance(value, INTEGER_TYPES):
             self._active_sheet_index = value
             return
             #if self._sheets and 0 <= value < len(self._sheets):
