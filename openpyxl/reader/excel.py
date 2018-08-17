@@ -50,6 +50,7 @@ from openpyxl.packaging.manifest import Manifest, Override
 from openpyxl.packaging.relationship import get_dependents, get_rels_path
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+from openpyxl.chartsheet import Chartsheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.chart.reader import find_charts
@@ -209,10 +210,40 @@ class ExcelReader:
             self.wb.loaded_theme = self.archive.read(ARC_THEME)
 
 
+    def read_chartsheet(self, sheet, rel):
+        sheet_path = rel.target
+        rels_path = get_rels_path(sheet_path)
+        rels = []
+        if rels_path in self.valid_files:
+            rels = get_dependents(self.archive, rels_path)
+
+        with self.archive.open(sheet_path, "r") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        template = Chartsheet.from_tree(node)
+        cs = self.wb.create_chartsheet(sheet.name)
+        cs.sheetPr = template.sheetPr
+        cs.sheetViews = template.sheetViews
+        cs.sheetProtection = template.sheetProtection
+        cs.customSheetViews = template.customSheetViews
+        cs.pageMargins = template.pageMargins
+        cs.pageSetup = template.pageSetup
+        cs.sheet_state = template.sheet_state
+        cs.headerFooter = template.headerFooter
+
+
+        drawings = rels.find(SpreadsheetDrawing._rel_type)
+        for rel in drawings:
+            for c in find_charts(self.archive, rel.target):
+                cs.add_chart(c)
+
+
     def read_worksheets(self):
         for sheet, rel in self.parser.find_sheets():
             if "chartsheet" in rel.Type:
+                self.read_chartsheet(sheet, rel)
                 continue
+
             sheet_name = sheet.name
             worksheet_path = rel.target
             rels_path = get_rels_path(worksheet_path)
