@@ -278,7 +278,7 @@ def run_apidoc(_):
 
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
-    shutil.rmtree(output_path)
+    shutil.rmtree(output_path, ignore_errors=True)
     modules = os.path.dirname(openpyxl.__file__)
     exclusions = [
         '../openpyxl/cell/tests',
