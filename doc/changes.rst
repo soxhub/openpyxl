@@ -22,7 +22,7 @@ Bugfixes
 Pull Requests
 -------------
 
-* `#1058 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/267/image-read>`_ Introduce read-support for images
+* `PR267 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/267/image-read>`_ Introduce read-support for images
 
 
 2.5.4 (2016-06-07)
