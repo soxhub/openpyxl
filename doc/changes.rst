@@ -12,6 +12,7 @@ Minor changes
 -------------
 
 * Add support for worksheet scenarios
+* Add read support for chartsheets
 
 
 2.5.6 (unreleased)
