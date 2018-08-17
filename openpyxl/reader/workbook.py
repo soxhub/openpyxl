@@ -58,7 +58,7 @@ class WorkbookParser:
         self.caches = package.pivotCaches
 
         #external links contain cached worksheets and can be very big
-        if not self.keep_links:
+        if not hasattr(self, 'keep_links'):
             package.externalReferences = []
 
         for ext_ref in package.externalReferences:

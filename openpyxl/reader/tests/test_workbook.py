@@ -121,12 +121,6 @@ class TestWorkbookParser:
 
         parser = WorkbookParser(archive, ARC_WORKBOOK)
         assert parser.wb.keep_links is True
-
-        with pytest.raises(KeyError):
-            parser.parse()
-
-        parser.wb._keep_links = False
-        parser.parse()
         assert parser.wb._external_links == []
 
 
