@@ -268,6 +268,8 @@ shutil.rmtree("tmp")
 
 # Invoke Sphinx apidoc to generate api rst files
 
+import shutil
+
 def run_apidoc(_):
     try:
         from sphinx.ext.apidoc import main
@@ -276,6 +278,7 @@ def run_apidoc(_):
 
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
+    shutil.rmtree(output_path)
     modules = os.path.dirname(openpyxl.__file__)
     exclusions = [
         '../openpyxl/cell/tests',
