@@ -237,4 +237,4 @@ class TestExcelReader:
         sheet.name = "chart"
 
         reader.read_chartsheet(sheet, rel)
-        assert reader.wb['chart'].sheetViews.sheetView[0].zoomScale == 98
+        assert reader.wb['chart'].title == "chart"

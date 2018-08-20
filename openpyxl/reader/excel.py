@@ -223,16 +223,10 @@ class ExcelReader:
         with self.archive.open(sheet_path, "r") as src:
             xml = src.read()
         node = fromstring(xml)
-        template = Chartsheet.from_tree(node)
-        cs = self.wb.create_chartsheet(sheet.name)
-        cs.sheetPr = template.sheetPr
-        cs.sheetViews = template.sheetViews
-        cs.sheetProtection = template.sheetProtection
-        cs.customSheetViews = template.customSheetViews
-        cs.pageMargins = template.pageMargins
-        cs.pageSetup = template.pageSetup
-        cs.sheet_state = template.sheet_state
-        cs.headerFooter = template.headerFooter
+        cs = Chartsheet.from_tree(node)
+        cs._parent = self.wb
+        cs.title = sheet.name
+        self.wb._add_sheet(cs)
 
         drawings = rels.find(SpreadsheetDrawing._rel_type)
         for rel in drawings:
