@@ -4,10 +4,7 @@ from __future__ import absolute_import
 
 """Write worksheets to xml representations in an optimized way"""
 
-import atexit
 from inspect import isgenerator
-import os
-from tempfile import NamedTemporaryFile
 
 from openpyxl.cell import Cell, WriteOnlyCell
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
@@ -20,23 +17,6 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import xmlfile
 
 from .writer import WorksheetWriter
-
-ALL_TEMP_FILES = []
-
-
-@atexit.register
-def _openpyxl_shutdown():
-    for path in ALL_TEMP_FILES:
-        if os.path.exists(path):
-            os.remove(path)
-
-
-def create_temporary_file(suffix=''):
-    fobj = NamedTemporaryFile(mode='w+', suffix=suffix,
-                              prefix='openpyxl.', delete=False)
-    filename = fobj.name
-    ALL_TEMP_FILES.append(filename)
-    return filename
 
 
 class WriteOnlyWorksheet(_WorkbookChild):
@@ -59,7 +39,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
         super(WriteOnlyWorksheet, self).__init__(parent, title)
         self._max_col = 0
         self._max_row = 0
-        self._fileobj_name = create_temporary_file()
 
         # Methods from Worksheet
         self._add_row = Worksheet._add_row.__get__(self)
@@ -115,11 +94,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
         Worksheet.print_area.__set__(self, value)
 
 
-    @property
-    def filename(self):
-        return self._fileobj_name
-
-
     def _write_rows(self):
         """
         Send rows to the writer's stream
@@ -145,7 +119,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
     def _get_writer(self):
         if self._writer is None:
-            self._writer = WorksheetWriter(self, self.filename)
+            self._writer = WorksheetWriter(self)
             self._writer.write_top()
 
 
@@ -164,12 +138,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
         self._writer.close()
         self.__saved = True
-
-
-    def _cleanup(self):
-        os.remove(self.filename)
-        idx = ALL_TEMP_FILES.index(self.filename)
-        ALL_TEMP_FILES.remove(self.filename)
 
 
     def append(self, row):
@@ -237,5 +205,4 @@ class WriteOnlyWorksheet(_WorkbookChild):
         if not self.__saved:
             self.close()
         out = self._writer.read()
-        self._cleanup()
         return out

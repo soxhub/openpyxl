@@ -1,16 +1,20 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
+import atexit
 from collections import defaultdict
 from io import BytesIO
+import os
+from tempfile import NamedTemporaryFile
+
 from operator import itemgetter, attrgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.compat import unicode
 from openpyxl.comments.comment_sheet import CommentRecord
-
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
+
 from .dimensions import SheetDimension
 from .hyperlink import HyperlinkList
 from .merge import MergeCell, MergeCells
@@ -20,13 +24,31 @@ from .table import TablePartList
 from openpyxl.writer.cell import write_cell
 
 
+ALL_TEMP_FILES = []
+
+@atexit.register
+def _openpyxl_shutdown():
+    for path in ALL_TEMP_FILES:
+        if os.path.exists(path):
+            os.remove(path)
+
+
+def create_temporary_file(suffix=''):
+    fobj = NamedTemporaryFile(mode='w+', suffix=suffix,
+                              prefix='openpyxl.', delete=False)
+    filename = fobj.name
+    fobj.close()
+    ALL_TEMP_FILES.append(filename)
+    return filename
+
+
 class WorksheetWriter:
 
 
     def __init__(self, ws, out=None):
         self.ws = ws
         if out is None:
-            out = BytesIO()
+            out = create_temporary_file()
         self.out = out
         self._rels = RelationshipList()
         self.xf = self.get_stream()
@@ -341,4 +363,8 @@ class WorksheetWriter:
         if isinstance(self.out, BytesIO):
             return self.out.getvalue()
         with open(self.out, "rb") as src:
-            return src.read()
+            out = src.read()
+
+        os.remove(self.out)
+        ALL_TEMP_FILES.remove(self.out)
+        return out

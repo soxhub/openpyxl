@@ -57,10 +57,10 @@ def test_append(WriteOnlyWorksheet):
     ws.append([1, "s"])
     ws.append([datetime.date(2001, 1, 1), 1])
     ws.append(i for i in [1, 2])
-    ws._rows.close()
-    ws._writer.xf.close()
-    with open(ws.filename) as src:
-        xml = src.read()
+    ws.close()
+    #ws._rows.close()
+    #ws._writer.xf.close()
+    xml = ws._write()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetPr>
@@ -99,6 +99,7 @@ def test_append(WriteOnlyWorksheet):
             </c>
             </row>
           </sheetData>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
     </worksheet>
     """
     diff = compare_xml(xml, expected)
@@ -125,9 +126,7 @@ def test_cannot_save_twice(WriteOnlyWorksheet):
 
 def test_close(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-    ws.close()
-    with open(ws.filename) as src:
-        xml = src.read()
+    xml = ws._write()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
@@ -171,9 +170,3 @@ def test_read_after_closing(WriteOnlyWorksheet):
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
-
-def test_cleanup(WriteOnlyWorksheet):
-    ws = WriteOnlyWorksheet
-    assert os.path.isfile(ws.filename)
-    ws._cleanup()
-    assert os.path.isfile(ws.filename) is False

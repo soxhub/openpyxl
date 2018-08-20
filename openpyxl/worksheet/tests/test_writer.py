@@ -2,6 +2,8 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 import pytest
+import os
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -379,7 +381,6 @@ class TestWorksheetWriter:
           <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
         </worksheet>
         """
-        xml = writer.read()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -394,7 +395,6 @@ class TestWorksheetWriter:
           <legacyDrawing r:id="anysvml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" />
         </worksheet>
         """
-        xml = writer.read()
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -576,3 +576,10 @@ class TestWorksheetWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_cleanup(self, writer):
+        assert os.path.exists(writer.out) is True
+        writer.close()
+        x = writer.read()
+        assert os.path.exists(writer.out) is False
