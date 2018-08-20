@@ -131,10 +131,13 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self._already_saved()
 
         with xf.element("sheetData"):
+            row_idx = 1
             try:
                 while True:
                     row = (yield)
-                    self._writer.write_row(xf, row, self._max_row)
+                    row = self._values_to_row(row, row_idx)
+                    self._writer.write_row(xf, row, row_idx)
+                    row_idx += 1
             except GeneratorExit:
                 pass
 
@@ -185,19 +188,16 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self._rows = self._write_rows()
             next(self._rows)
 
-        row = self._values_to_row(row)
-        self._max_row += 1
         try:
             self._rows.send(row)
         except StopIteration:
             self._already_saved()
 
 
-    def _values_to_row(self, values):
+    def _values_to_row(self, values, row_idx):
         """
         Convert whatever has been appended into a form suitable for work_rows
         """
-        row_idx = self._max_row
         cell = WriteOnlyCell(self)
 
         for col_idx, value in enumerate(values, 1):
