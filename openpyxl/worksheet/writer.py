@@ -340,3 +340,5 @@ class WorksheetWriter:
         self.close()
         if isinstance(self.out, BytesIO):
             return self.out.getvalue()
+        with open(self.out, "rb") as src:
+            return src.read()

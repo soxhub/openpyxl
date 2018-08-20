@@ -236,7 +236,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._drawing.images = self._images
         if not self.__saved:
             self.close()
-        with open(self.filename) as src:
-            out = src.read()
+        out = self._writer.read()
         self._cleanup()
         return out
