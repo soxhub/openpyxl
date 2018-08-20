@@ -169,3 +169,11 @@ def test_read_after_closing(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+import os
+
+def test_cleanup(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    assert os.path.isfile(ws.filename)
+    ws._cleanup()
+    assert os.path.isfile(ws.filename) is False

@@ -26,7 +26,6 @@ ALL_TEMP_FILES = []
 
 @atexit.register
 def _openpyxl_shutdown():
-    global ALL_TEMP_FILES
     for path in ALL_TEMP_FILES:
         if os.path.exists(path):
             os.remove(path)
@@ -169,6 +168,8 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
     def _cleanup(self):
         os.remove(self.filename)
+        idx = ALL_TEMP_FILES.index(self.filename)
+        ALL_TEMP_FILES.remove(self.filename)
 
 
     def append(self, row):
