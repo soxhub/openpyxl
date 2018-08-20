@@ -233,7 +233,8 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._drawing = SpreadsheetDrawing()
         self._drawing.charts = self._charts
         self._drawing.images = self._images
-        self.close()
+        if not self.__saved:
+            self.close()
         with open(self.filename) as src:
             out = src.read()
         self._cleanup()
