@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from zipfile import BadZipfile, ZipFile
 
 from openpyxl.packaging.manifest import Manifest, Override
+from openpyxl.packaging.relationship import Relationship
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import (
@@ -219,3 +220,21 @@ class TestExcelReader:
         reader.read_workbook()
         reader.read_theme()
         assert reader.wb.loaded_theme is not None
+
+
+    def test_read_chartsheet(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("contains_chartsheets.xlsx")
+        reader.read_manifest()
+        reader.read_workbook()
+
+        rel = Relationship(Target="xl/chartsheets/sheet1.xml", type="chartsheet")
+
+        class Sheet:
+            pass
+
+        sheet = Sheet()
+        sheet.name = "chart"
+
+        reader.read_chartsheet(sheet, rel)
+        assert reader.wb['chart'].sheetViews.sheetView[0].zoomScale == 98
