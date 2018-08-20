@@ -797,7 +797,7 @@ class Worksheet(_WorkbookChild):
         writer.write_tail()
         writer.xf.close()
         self._rels = writer._rels
-        return writer.out.getvalue()
+        return writer.read()
 
 
     @property
