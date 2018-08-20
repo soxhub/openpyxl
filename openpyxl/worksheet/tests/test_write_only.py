@@ -145,3 +145,27 @@ def test_close(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_read_after_closing(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    ws.close()
+    xml = ws._write()
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+      </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+    <sheetData/>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+    </worksheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
