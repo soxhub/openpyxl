@@ -131,7 +131,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
             self._already_saved()
 
         with xf.element("sheetData"):
-            cell = WriteOnlyCell(self)
             try:
                 while True:
                     row = (yield)
