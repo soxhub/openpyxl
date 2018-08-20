@@ -29,7 +29,7 @@ class WorksheetWriter:
             out = BytesIO()
         self.out = out
         self._rels = RelationshipList()
-        self.xf = self.write()
+        self.xf = self.get_stream()
         next(self.xf) # start generator
 
 
@@ -258,7 +258,7 @@ class WorksheetWriter:
             self.xf.send(tables.to_tree())
 
 
-    def write(self):
+    def get_stream(self):
         with xmlfile(self.out) as xf:
             with xf.element("worksheet", xmlns=SHEET_MAIN_NS):
                 try:
