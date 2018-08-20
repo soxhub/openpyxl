@@ -42,11 +42,11 @@ class _WorkbookChild(object):
     __title = ""
     _id = None
     _path = "{0}"
-    __parent = None
+    _parent = None
     _default_title = "Sheet"
 
     def __init__(self, parent=None, title=None):
-        self.__parent = parent
+        self._parent = parent
         self.title = title or self._default_title
         self.HeaderFooter = HeaderFooter()
 
@@ -57,12 +57,12 @@ class _WorkbookChild(object):
 
     @property
     def parent(self):
-        return self.__parent
+        return self._parent
 
 
     @property
     def encoding(self):
-        return self.__parent.encoding
+        return self._parent.encoding
 
 
     @property
@@ -77,7 +77,7 @@ class _WorkbookChild(object):
         Limited to 31 characters, no special characters.
         Duplicate titles will be incremented numerically
         """
-        if not self.__parent:
+        if not self._parent:
             return
 
         if not value:
