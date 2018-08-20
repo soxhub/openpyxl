@@ -123,7 +123,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
     def _write_rows(self):
         """
-        Generator that creates the XML file and the sheet header
+        Send rows to the writer's stream
         """
         try:
             xf = self._writer.xf.send(True)
@@ -156,12 +156,12 @@ class WriteOnlyWorksheet(_WorkbookChild):
 
         if self._rows is None:
             self._writer.write_rows()
-        if self._rows:
+        else:
             self._rows.close()
 
         self._writer.write_tail()
 
-        self._writer.xf.close()
+        self._writer.close()
         self.__saved = True
 
 
