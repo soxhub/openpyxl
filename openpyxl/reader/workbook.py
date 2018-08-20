@@ -29,10 +29,11 @@ class WorkbookParser:
 
     _rels = None
 
-    def __init__(self, archive, workbook_part_name):
+    def __init__(self, archive, workbook_part_name, keep_links=True):
         self.archive = archive
         self.workbook_part_name = workbook_part_name
         self.wb = Workbook()
+        self.keep_links = keep_links
         self.sheets = []
 
 
@@ -58,7 +59,7 @@ class WorkbookParser:
         self.caches = package.pivotCaches
 
         #external links contain cached worksheets and can be very big
-        if not hasattr(self, 'keep_links'):
+        if not self.keep_links:
             package.externalReferences = []
 
         for ext_ref in package.externalReferences:

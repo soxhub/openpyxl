@@ -180,8 +180,7 @@ class ExcelReader:
 
     def read_workbook(self):
         wb_part = _find_workbook_part(self.package)
-        self.parser = WorkbookParser(self.archive, wb_part.PartName[1:])
-        self.parser.keep_links = self.keep_links
+        self.parser = WorkbookParser(self.archive, wb_part.PartName[1:], keep_links=self.keep_links)
         self.parser.parse()
         wb = self.parser.wb
         wb._keep_links = self.keep_links
