@@ -163,7 +163,7 @@ def test_no_external_links(datadir, load_workbook):
     datadir.chdir()
 
     wb = load_workbook("bug137.xlsx", keep_links=False)
-    assert wb.keep_links is False
+    assert wb._external_links == []
 
 
 from ..excel import ExcelReader

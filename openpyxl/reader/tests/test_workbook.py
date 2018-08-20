@@ -120,7 +120,6 @@ class TestWorkbookParser:
         archive.writestr(ARC_WORKBOOK_RELS, b"<root />")
 
         parser = WorkbookParser(archive, ARC_WORKBOOK)
-        assert parser.wb.keep_links is True
         assert parser.wb._external_links == []
 
 

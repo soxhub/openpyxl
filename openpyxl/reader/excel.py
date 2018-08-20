@@ -183,7 +183,6 @@ class ExcelReader:
         self.parser = WorkbookParser(self.archive, wb_part.PartName[1:], keep_links=self.keep_links)
         self.parser.parse()
         wb = self.parser.wb
-        wb._keep_links = self.keep_links
         wb._sheets = []
         wb._data_only = self.data_only
         wb._read_only = self.read_only
