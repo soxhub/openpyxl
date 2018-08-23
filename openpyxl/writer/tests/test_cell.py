@@ -137,3 +137,14 @@ def test_write_hyperlink(worksheet, write_cell_implementation):
         write_cell(xf, ws, cell, cell.has_style)
 
     assert len(worksheet._hyperlinks) == 1
+
+
+def test_attributes(worksheet):
+    from ..cell import _set_attributes
+
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = "test"
+
+    assert(_set_attributes(cell)) == ("test", {'r': 'A1', 't': 's'})
