@@ -9,10 +9,10 @@ Dimensions:
     Cols = 50
 
 Times:
-    xlsxwriter (optimised):  10.49
-    xlsxwriter            :  11.90
-    openpyxl   (optimised):  10.97
-    openpyxl              :  13.59
+    xlsxwriter (optimised):   9.74
+    xlsxwriter            :  11.01
+    openpyxl   (optimised):   8.27
+    openpyxl              :  11.21
 
 
 Versions:
@@ -25,10 +25,10 @@ Dimensions:
     Cols = 50
 
 Times:
-    xlsxwriter (optimised):   9.55
-    xlsxwriter            :  11.04
-    openpyxl   (optimised):  11.63
-    openpyxl              :  15.06
+    xlsxwriter (optimised):   8.66
+    xlsxwriter            :   9.95
+    openpyxl   (optimised):   8.79
+    openpyxl              :  12.22
 
 
 Versions:
@@ -41,10 +41,10 @@ Dimensions:
     Cols = 50
 
 Times:
-    xlsxwriter (optimised):  10.07
-    xlsxwriter            :  10.57
-    openpyxl   (optimised):  10.37
-    openpyxl              :  11.39
+    xlsxwriter (optimised):   8.71
+    xlsxwriter            :  10.00
+    openpyxl   (optimised):   8.21
+    openpyxl              :   9.13
 
 
 Versions:
@@ -58,7 +58,7 @@ Dimensions:
 
 Times:
     xlsxwriter (optimised):   9.17
-    xlsxwriter            :  10.33
-    openpyxl   (optimised):   9.03
-    openpyxl              :  10.19
+    xlsxwriter            :  10.25
+    openpyxl   (optimised):   7.21
+    openpyxl              :   8.65
 
