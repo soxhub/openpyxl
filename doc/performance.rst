@@ -14,8 +14,9 @@ Benchmarks
 ----------
 
 All benchmarks are synthetic and extremely dependent upon the hardware but
-they can nevertheless give an indication. The `XLSXWriter benchmarks <`_ I've
-updated to use more openpyxl more idiomatically and with lxml installed get
-these results.
+they can nevertheless give an indication. The `XLSXWriter benchmarks
+<https://xlsxwriter.readthedocs.io/working_with_memory.html?highlight=performance>`_
+have been updated to use more openpyxl more idiomatically and with lxml
+installed get these results.
 
 .. literalinclude:: benchmark.txt
