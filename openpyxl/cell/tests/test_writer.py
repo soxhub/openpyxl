@@ -139,12 +139,18 @@ def test_write_hyperlink(worksheet, write_cell_implementation):
     assert len(worksheet._hyperlinks) == 1
 
 
-def test_attributes(worksheet):
+@pytest.mark.parametrize("value, result, attrs",
+                         [
+                             ("test", "test", {'r': 'A1', 't': 's'}),
+                             ("=SUM(A1:A2)", "=SUM(A1:A2)", {'r': 'A1'}),
+                             (datetime.date(2018, 8, 25), 43337, {'r':'A1', 't':'n'}),
+                         ]
+                         )
+def test_attributes(worksheet, value, result, attrs):
     from ..writer import _set_attributes
-
 
     ws = worksheet
     cell = ws['A1']
-    cell.value = "test"
+    cell.value = value
 
-    assert(_set_attributes(cell)) == ("test", {'r': 'A1', 't': 's'})
+    assert(_set_attributes(cell)) == (result, attrs)
