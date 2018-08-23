@@ -33,6 +33,9 @@ def _set_attributes(cell, styled=None):
             attrs['t'] = "n"
             value = to_excel(value, cell.parent.parent.epoch)
 
+    if cell.hyperlink:
+        cell.parent._hyperlinks.append(cell.hyperlink)
+
     return value, attrs
 
 
@@ -62,9 +65,6 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
         if value is not None:
             cell_content.text = safe_string(value)
 
-    if cell.hyperlink:
-        worksheet._hyperlinks.append(cell.hyperlink)
-
     xf.write(el)
 
 
@@ -91,9 +91,6 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
             with xf.element("v"):
                 if value is not None:
                     xf.write(safe_string(value))
-
-        if cell.hyperlink:
-            worksheet._hyperlinks.append(cell.hyperlink)
 
 
 if LXML:
