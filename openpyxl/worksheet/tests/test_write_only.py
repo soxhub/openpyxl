@@ -58,8 +58,6 @@ def test_append(WriteOnlyWorksheet):
     ws.append([datetime.date(2001, 1, 1), 1])
     ws.append(i for i in [1, 2])
     ws.close()
-    #ws._rows.close()
-    #ws._writer.xf.close()
     xml = ws._write()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -78,8 +76,8 @@ def test_append(WriteOnlyWorksheet):
             <c t="n" r="A1">
               <v>1</v>
             </c>
-            <c t="s" r="B1">
-              <v>0</v>
+            <c t="inlineStr" r="B1">
+              <is><t>s</t></is>
             </c>
             </row>
             <row r="2">

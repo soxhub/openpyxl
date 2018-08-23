@@ -17,7 +17,9 @@ def _set_attributes(cell, styled=None):
     if styled:
         attrs['s'] = '%d' % cell.style_id
 
-    if cell.data_type != 'f':
+    if cell.data_type == "s":
+        attrs['t'] = "inlineStr"
+    elif cell.data_type != 'f':
         attrs['t'] = cell.data_type
 
     value = cell._value
@@ -51,10 +53,14 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
             value = None
 
     if cell.data_type == 's':
-        value = worksheet.parent.shared_strings.add(value)
-    cell_content = SubElement(el, 'v')
-    if value is not None:
-        cell_content.text = safe_string(value)
+        inline_string = SubElement(el, 'is')
+        text = SubElement(inline_string, 't')
+        text.text = value
+
+    else:
+        cell_content = SubElement(el, 'v')
+        if value is not None:
+            cell_content.text = safe_string(value)
 
     if cell.hyperlink:
         worksheet._hyperlinks.append(cell.hyperlink)
@@ -78,10 +84,13 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
                     value = None
 
         if cell.data_type == 's':
-            value = worksheet.parent.shared_strings.add(value)
-        with xf.element("v"):
-            if value is not None:
-                xf.write(safe_string(value))
+            with xf.element("is"):
+                with xf.element("t"):
+                    xf.write(value)
+        else:
+            with xf.element("v"):
+                if value is not None:
+                    xf.write(safe_string(value))
 
         if cell.hyperlink:
             worksheet._hyperlinks.append(cell.hyperlink)

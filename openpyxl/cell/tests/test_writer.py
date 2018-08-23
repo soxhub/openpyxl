@@ -50,8 +50,8 @@ def write_cell_implementation(request, etree_write_cell, lxml_write_cell):
                              (1234567890, """<c t="n" r="A1"><v>1234567890</v></c>"""),
                              ("=sum(1+1)", """<c r="A1"><f>sum(1+1)</f><v></v></c>"""),
                              (True, """<c t="b" r="A1"><v>1</v></c>"""),
-                             ("Hello", """<c t="s" r="A1"><v>0</v></c>"""),
-                             ("", """<c r="A1" t="s"></c>"""),
+                             ("Hello", """<c t="inlineStr" r="A1"><is><t>Hello</t></is></c>"""),
+                             ("", """<c r="A1" t="inlineStr"></c>"""),
                              (None, """<c r="A1" t="n"></c>"""),
                          ])
 def test_write_cell(worksheet, write_cell_implementation, value, expected):
@@ -141,7 +141,7 @@ def test_write_hyperlink(worksheet, write_cell_implementation):
 
 @pytest.mark.parametrize("value, result, attrs",
                          [
-                             ("test", "test", {'r': 'A1', 't': 's'}),
+                             ("test", "test", {'r': 'A1', 't': 'inlineStr'}),
                              ("=SUM(A1:A2)", "=SUM(A1:A2)", {'r': 'A1'}),
                              (datetime.date(2018, 8, 25), 43337, {'r':'A1', 't':'n'}),
                          ]
