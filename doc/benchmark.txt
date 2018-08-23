@@ -1,0 +1,64 @@
+
+Versions:
+    python      : 2.7.1
+    openpyxl    : 2.6.0a1
+    xlsxwriter  : 1.0.7
+
+Dimensions:
+    Rows = 10000
+    Cols = 50
+
+Times:
+    xlsxwriter (optimised):  10.49
+    xlsxwriter            :  11.90
+    openpyxl   (optimised):  10.97
+    openpyxl              :  13.59
+
+
+Versions:
+    python      : 3.5.6
+    openpyxl    : 2.6.0a1
+    xlsxwriter  : 1.0.7
+
+Dimensions:
+    Rows = 10000
+    Cols = 50
+
+Times:
+    xlsxwriter (optimised):   9.55
+    xlsxwriter            :  11.04
+    openpyxl   (optimised):  11.63
+    openpyxl              :  15.06
+
+
+Versions:
+    python      : 3.6.6
+    openpyxl    : 2.6.0a1
+    xlsxwriter  : 1.0.7
+
+Dimensions:
+    Rows = 10000
+    Cols = 50
+
+Times:
+    xlsxwriter (optimised):  10.07
+    xlsxwriter            :  10.57
+    openpyxl   (optimised):  10.37
+    openpyxl              :  11.39
+
+
+Versions:
+    python      : 3.7.0
+    openpyxl    : 2.6.0a1
+    xlsxwriter  : 1.0.7
+
+Dimensions:
+    Rows = 10000
+    Cols = 50
+
+Times:
+    xlsxwriter (optimised):   9.17
+    xlsxwriter            :  10.33
+    openpyxl   (optimised):   9.03
+    openpyxl              :  10.19
+
