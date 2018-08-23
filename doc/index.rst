@@ -146,6 +146,15 @@ Cookbook
     usage
 
 
+Performance
+-----------
+
+.. toctree::
+    :maxdepth: 1
+
+    performance
+
+
 Other topics
 ------------
 
