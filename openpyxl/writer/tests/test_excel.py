@@ -155,26 +155,3 @@ def test_duplicate_chart(ExcelWriter, archive, Workbook):
     writer._charts = [pc]*2
     with pytest.raises(InvalidFileException):
         writer._write_charts()
-
-
-def test_save():
-    from tempfile import NamedTemporaryFile
-    filename = NamedTemporaryFile(delete=False)
-    from openpyxl.workbook import Workbook
-    from ..excel import save_dump
-    wb = Workbook(write_only=True)
-    save_dump(wb, filename)
-
-    archive = ZipFile(filename)
-    assert set(archive.namelist()) == {
-        '_rels/.rels',
-        'docProps/app.xml',
-        'docProps/core.xml',
-        'xl/theme/theme1.xml',
-        'xl/worksheets/sheet1.xml',
-        'xl/sharedStrings.xml',
-        'xl/styles.xml',
-        'xl/workbook.xml',
-        'xl/_rels/workbook.xml.rels',
-        '[Content_Types].xml'
-    }
