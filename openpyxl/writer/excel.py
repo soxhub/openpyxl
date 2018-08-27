@@ -190,6 +190,15 @@ class ExcelWriter(object):
         ws._rels.append(comment_rel)
 
 
+    def write_worksheet(self, ws):
+        ws._drawing = SpreadsheetDrawing()
+        ws._drawing.charts = ws._charts
+        ws._drawing.images = ws._images
+        writer = ws._write()
+        self._archive.write(writer.out, ws.path[1:])
+        self.manifest.append(ws)
+
+
     def _write_worksheets(self):
 
         pivot_caches = set()
@@ -197,11 +206,7 @@ class ExcelWriter(object):
         for idx, ws in enumerate(self.workbook.worksheets, 1):
 
             ws._id = idx
-            writer = ws._write()
-            rels_path = get_rels_path(ws.path)[1:]
-
-            self._archive.write(writer.out, ws.path[1:])
-            self.manifest.append(ws)
+            self.write_worksheet(ws)
 
             if ws._drawing:
                 self._write_drawing(ws._drawing)
@@ -239,6 +244,7 @@ class ExcelWriter(object):
 
             if ws._rels:
                 tree = ws._rels.to_tree()
+                rels_path = get_rels_path(ws.path)[1:]
                 self._archive.writestr(rels_path, tostring(tree))
 
 

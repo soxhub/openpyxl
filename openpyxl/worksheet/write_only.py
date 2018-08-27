@@ -199,9 +199,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
                         )
 
     def _write(self):
-        self._drawing = SpreadsheetDrawing()
-        self._drawing.charts = self._charts
-        self._drawing.images = self._images
         if not self.__saved:
             self.close()
         return self._writer
