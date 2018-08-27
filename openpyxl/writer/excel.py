@@ -9,6 +9,7 @@ from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 
 # package imports
+from openpyxl.compat import deprecated
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
@@ -281,6 +282,7 @@ def save_workbook(workbook, filename):
     return True
 
 
+@deprecated("Use a NamedTemporaryFile")
 def save_virtual_workbook(workbook):
     """Return an in-memory workbook, suitable for a Django response."""
     tmp = TemporaryFile()
