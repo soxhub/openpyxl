@@ -365,6 +365,12 @@ class WorksheetWriter:
         with open(self.out, "rb") as src:
             out = src.read()
 
+        return out
+
+
+    def cleanup(self):
+        """
+        Remove tempfile
+        """
         os.remove(self.out)
         ALL_TEMP_FILES.remove(self.out)
-        return out

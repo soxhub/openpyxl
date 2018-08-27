@@ -581,5 +581,5 @@ class TestWorksheetWriter:
     def test_cleanup(self, writer):
         assert os.path.exists(writer.out) is True
         writer.close()
-        x = writer.read()
+        x = writer.cleanup()
         assert os.path.exists(writer.out) is False

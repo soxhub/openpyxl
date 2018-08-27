@@ -58,7 +58,8 @@ def test_append(WriteOnlyWorksheet):
     ws.append([datetime.date(2001, 1, 1), 1])
     ws.append(i for i in [1, 2])
     ws.close()
-    xml = ws._write()
+    with open(ws._writer.out, "rb") as src:
+        xml = src.read()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <sheetPr>
@@ -124,7 +125,9 @@ def test_cannot_save_twice(WriteOnlyWorksheet):
 
 def test_close(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
-    xml = ws._write()
+    ws.close()
+    with open(ws._writer.out, "rb") as src:
+        xml = src.read()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>
@@ -148,7 +151,8 @@ def test_close(WriteOnlyWorksheet):
 def test_read_after_closing(WriteOnlyWorksheet):
     ws = WriteOnlyWorksheet
     ws.close()
-    xml = ws._write()
+    with open(ws._writer.out, "rb") as src:
+        xml = src.read()
     expected = """
     <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <sheetPr>

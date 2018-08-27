@@ -197,10 +197,10 @@ class ExcelWriter(object):
         for idx, ws in enumerate(self.workbook.worksheets, 1):
 
             ws._id = idx
-            xml = ws._write()
+            writer = ws._write()
             rels_path = get_rels_path(ws.path)[1:]
 
-            self._archive.writestr(ws.path[1:], xml)
+            self._archive.write(writer.out, ws.path[1:])
             self.manifest.append(ws)
 
             if ws._drawing:

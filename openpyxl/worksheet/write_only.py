@@ -204,5 +204,4 @@ class WriteOnlyWorksheet(_WorkbookChild):
         self._drawing.images = self._images
         if not self.__saved:
             self.close()
-        out = self._writer.read()
-        return out
+        return self._writer
