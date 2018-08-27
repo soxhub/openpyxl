@@ -94,6 +94,11 @@ class WriteOnlyWorksheet(_WorkbookChild):
         Worksheet.print_area.__set__(self, value)
 
 
+    @property
+    def closed(self):
+        return self.__saved
+
+
     def _write_rows(self):
         """
         Send rows to the writer's stream
@@ -197,8 +202,3 @@ class WriteOnlyWorksheet(_WorkbookChild):
         raise TypeError('Value must be a list, tuple, range or a generator Supplied value is {0}'.format(
             type(iterable))
                         )
-
-    def _write(self):
-        if not self.__saved:
-            self.close()
-        return self._writer

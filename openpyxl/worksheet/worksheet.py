@@ -785,16 +785,6 @@ class Worksheet(_WorkbookChild):
         return RowDimension(self)
 
 
-    def _write(self):
-        writer = WorksheetWriter(self)
-        writer.write_top()
-        writer.write_rows()
-        writer.write_tail()
-        writer.xf.close()
-        self._rels = writer._rels
-        return writer
-
-
     @property
     def print_title_rows(self):
         """Rows to be printed at the top of every page (ex: '1:3')"""

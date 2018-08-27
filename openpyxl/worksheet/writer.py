@@ -347,6 +347,16 @@ class WorksheetWriter:
         self.write_tables()
 
 
+    def write(self):
+        """
+        High level
+        """
+        self.write_top()
+        self.write_rows()
+        self.write_tail()
+        self.close()
+
+
     def close(self):
         """
         Close the context manager

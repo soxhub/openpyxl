@@ -41,7 +41,6 @@ def test_tables(ExcelWriter, archive):
     t = Table(displayName="Table1", ref="A1:D10")
     ws.add_table(t)
 
-
     writer = ExcelWriter(wb, archive)
     writer._write_worksheets()
 
