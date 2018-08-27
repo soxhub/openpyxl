@@ -50,8 +50,19 @@ from openpyxl.worksheet.hyperlink import Hyperlink
 
 # constants
 
-
 TIME_TYPES = (datetime.datetime, datetime.date, datetime.time, datetime.timedelta)
+TIME_FORMATS = {
+    datetime.datetime:numbers.FORMAT_DATE_DATETIME,
+    datetime.date:numbers.FORMAT_DATE_YYYYMMDD2,
+    datetime.time:numbers.FORMAT_DATE_TIME6,
+    datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
+                }
+try:
+    from pandas import Timestamp
+    TIME_FORMATS[Timestamp] = numbers.FORMAT_DATE_DATETIME
+except ImportError:
+    pass
+
 STRING_TYPES = (basestring, unicode, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
@@ -276,13 +287,7 @@ class Cell(StyleableObject):
 
     def _set_time_format(self, value):
         """Set number format for Python date or time"""
-        fmts = {
-            datetime.datetime:numbers.FORMAT_DATE_DATETIME,
-            datetime.date:numbers.FORMAT_DATE_YYYYMMDD2,
-            datetime.time:numbers.FORMAT_DATE_TIME6,
-            datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
-                }
-        self.number_format = fmts[type(value)]
+        self.number_format = TIME_FORMATS[type(value)]
 
     @property
     def value(self):
