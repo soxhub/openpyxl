@@ -165,7 +165,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
         try:
             self._rows.send(row)
         except StopIteration:
-            self._already_saved()
+            pass
 
 
     def _values_to_row(self, values, row_idx):
