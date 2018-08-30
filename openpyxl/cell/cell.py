@@ -209,7 +209,7 @@ class Cell(StyleableObject):
 
         elif isinstance(value, TIME_TYPES):
             if not is_date_format(self.number_format):
-                self._set_time_format(value)
+                self.number_format = TIME_FORMATS[type(value)]
             self.data_type = "d"
 
         elif isinstance(value, STRING_TYPES):
@@ -284,10 +284,6 @@ class Cell(StyleableObject):
             value = datetime.datetime.strptime(value, pattern)
             return value.time()
 
-
-    def _set_time_format(self, value):
-        """Set number format for Python date or time"""
-        self.number_format = TIME_FORMATS[type(value)]
 
     @property
     def value(self):
