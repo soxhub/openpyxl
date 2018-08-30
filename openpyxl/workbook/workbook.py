@@ -132,7 +132,6 @@ class Workbook(object):
         return getattr(self, '__guess_types', False)
 
 
-    @deprecated("Type inference will no longer be supported")
     @guess_types.setter
     def guess_types(self, value):
         self.__guess_types = value
