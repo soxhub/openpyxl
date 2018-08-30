@@ -824,6 +824,7 @@ class Worksheet(_WorkbookChild):
         Insert row or rows before row==idx
         """
         self._move_cells(min_row=idx, offset=amount, row_or_col="row")
+        self._current_row = self.max_row
 
 
     def insert_cols(self, idx, amount=1):
@@ -846,6 +847,9 @@ class Worksheet(_WorkbookChild):
             for col in range(self.min_column, self.max_column+1):
                 if (row, col) in self._cells:
                     del self._cells[row, col]
+        self._current_row = self.max_row
+        if not self._cells:
+            self._current_row = 0
 
 
     def delete_cols(self, idx, amount=1):

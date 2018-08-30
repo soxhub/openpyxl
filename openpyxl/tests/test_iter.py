@@ -2,6 +2,8 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 import datetime
+import gc
+import os
 from io import BytesIO
 
 import pytest
@@ -84,6 +86,43 @@ def test_calculate_dimension(datadir):
     wb = load_workbook(filename="sample.xlsx", read_only=True)
     sheet2 = wb['Sheet2 - Numbers']
     assert sheet2.calculate_dimension() == 'D1:AA30'
+
+
+def count_open_fds():
+    """Return the number of open file descriptors for this process
+
+    The implementation assumes that all FDs are smaller than 10,000 and that
+    nobody (other threads, garbage collection) modifies the file descriptors
+    while we are counting.
+    """
+    count = 0
+    for i in range(10000):
+        try:
+            os.fstat(i)
+        except Exception:
+            pass
+        else:
+            count += 1
+    return count
+
+
+def test_file_descriptor_leak(datadir):
+    datadir.join("genuine").chdir()
+
+    try:
+        gc.disable()
+        gc.collect()
+        num_fds_before = count_open_fds()
+
+        wb = load_workbook(filename="sample.xlsx", read_only=True)
+        wb.close()
+
+        num_fds_after = count_open_fds()
+    finally:
+        gc.enable()
+
+    assert num_fds_after == num_fds_before
+
 
 def test_nonstandard_name(datadir):
     datadir.join('reader').chdir()

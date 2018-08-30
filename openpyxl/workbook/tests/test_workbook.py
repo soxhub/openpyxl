@@ -46,6 +46,58 @@ def test_get_active_sheet():
     assert wb.active == wb.worksheets[0]
 
 
+def test_set_active_by_sheet():
+    wb = Workbook()
+    names = ['Sheet', 'Sheet1', 'Sheet2',]
+    for n in names:
+        wb.create_sheet(n)
+
+    for n in names:
+        sheet = wb[n]
+        wb.active = sheet
+        assert wb.active == wb[n]
+
+
+def test_set_active_by_index():
+    wb = Workbook()
+    names = ['Sheet', 'Sheet1', 'Sheet2',]
+    for n in names:
+        wb.create_sheet(n)
+
+    for idx, name in enumerate(names):
+        wb.active = idx
+        assert wb.active == wb.worksheets[idx]
+
+
+@pytest.mark.xfail
+def test_set_invalid_active_index():
+    wb = Workbook()
+    with pytest.raises(ValueError):
+        wb.active = 1
+
+
+def test_set_invalid_sheet_by_name():
+    wb = Workbook()
+    with pytest.raises(TypeError):
+        wb.active = "Sheet"
+
+
+def test_set_invalid_child_as_active():
+    wb1 = Workbook()
+    wb2 = Workbook()
+    ws2 = wb2['Sheet']
+    with pytest.raises(ValueError):
+        wb1.active = ws2
+
+
+def test_set_hidden_sheet_as_active():
+    wb = Workbook()
+    ws = wb.create_sheet()
+    ws.sheet_state = 'hidden'
+    with pytest.raises(ValueError):
+        wb.active = ws
+
+
 def test_create_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet()

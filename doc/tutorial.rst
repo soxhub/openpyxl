@@ -251,6 +251,24 @@ The simplest and safest way to save a workbook is by using the
     As OOXML files are basically ZIP files, you can also end the filename
     with .zip and open it with your favourite ZIP archive manager.
 
+
+Saving as a stream
+++++++++++++++++++
+
+If you want to save the file to a stream, e.g. when using a web application
+such as Pyramid, Flask or Django then you can simply provide a
+`NamedTemporaryFile`::
+
+
+>>> from tempfile import NamedTemporaryFile
+>>> from openpyxl import Workbook
+>>> wb = Workbook()
+>>> with NamedTemporaryFile() as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
+
+
 You can specify the attribute `template=True`, to save a workbook
 as a template::
 

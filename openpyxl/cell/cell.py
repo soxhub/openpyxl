@@ -189,7 +189,8 @@ class Cell(StyleableObject):
             pass
 
         elif isinstance(value, TIME_TYPES):
-            value = self._set_time_format(value)
+            if not is_date_format(self.number_format):
+                self._set_time_format(value)
             self.data_type = "d"
 
         elif isinstance(value, STRING_TYPES):
@@ -267,19 +268,13 @@ class Cell(StyleableObject):
 
     def _set_time_format(self, value):
         """Set number format for Python date or time"""
-        if isinstance(value, datetime.datetime):
-            #value = to_excel(value, self.base_date)
-            self.number_format = numbers.FORMAT_DATE_DATETIME
-        elif isinstance(value, datetime.date):
-            #value = to_excel(value, self.base_date)
-            self.number_format = numbers.FORMAT_DATE_YYYYMMDD2
-        elif isinstance(value, datetime.time):
-            #value = time_to_days(value)
-            self.number_format = numbers.FORMAT_DATE_TIME6
-        elif isinstance(value, datetime.timedelta):
-            #value = timedelta_to_days(value)
-            self.number_format = numbers.FORMAT_DATE_TIMEDELTA
-        return value
+        fmts = {
+            datetime.datetime:numbers.FORMAT_DATE_DATETIME,
+            datetime.date:numbers.FORMAT_DATE_YYYYMMDD2,
+            datetime.time:numbers.FORMAT_DATE_TIME6,
+            datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
+                }
+        self.number_format = fmts[type(value)]
 
     @property
     def value(self):
@@ -288,10 +283,7 @@ class Cell(StyleableObject):
         :type: depends on the value (string, float, int or
             :class:`datetime.datetime`)
         """
-        value = self._value
-        #if value is not None and self.is_date:
-            #value = from_excel(value, self.base_date)
-        return value
+        return self._value
 
     @value.setter
     def value(self, value):

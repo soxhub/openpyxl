@@ -1,0 +1,6 @@
+Contributing
+============
+
+Contributions to openpyxl are welcome.
+Please see the [developer documentation](https://openpyxl.readthedocs.io/en/stable/development.html)
+for further information.

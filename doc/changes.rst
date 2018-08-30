@@ -1,3 +1,12 @@
+2.5.6 (2018-08-30)
+==================
+
+
+* `#832 <https://bitbucket.org/openpyxl/openpyxl/issues/832>`_ Read-only mode can leave find-handles open when reading dimensions
+* `#933 <https://bitbucket.org/openpyxl/openpyxl/issues/933>`_ Set a worksheet directly as active
+* `#1086 <https://bitbucket.org/openpyxl/openpyxl/issues/1086>`_ Internal row counter not adjusted when rows are deleted or inserted
+
+
 2.5.5 (2018-08-04)
 ==================
 
@@ -13,10 +22,10 @@ Bugfixes
 Pull Requests
 -------------
 
-* `#1058 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/267/image-read>`_ Introduce read-support for images
+* `PR267 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/267/image-read>`_ Introduce read-support for images
 
 
-2.5.4 (2016-06-07)
+2.5.4 (2018-06-07)
 ==================
 
 
