@@ -186,6 +186,7 @@ class Cell(StyleableObject):
         except UnicodeDecodeError:
             return u'#N/A'
 
+    @deprecated("Type coercion will no longer be supported")
     def set_explicit_value(self, value=None, data_type=TYPE_STRING):
         """Coerce values according to their explicit type"""
         if data_type not in self.VALID_TYPES:
