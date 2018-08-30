@@ -15,6 +15,12 @@ Minor changes
 * Add read support for chartsheets
 
 
+Deprections
+-----------
+
+* Type inference and coercion for cell values
+
+
 2.5.7 (unreleased)
 ==================
 
