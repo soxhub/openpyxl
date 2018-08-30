@@ -1,4 +1,4 @@
-2.5.6 (unreleased)
+2.5.6 (2018-08-30)
 ==================
 
 
@@ -25,7 +25,7 @@ Pull Requests
 * `PR267 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/267/image-read>`_ Introduce read-support for images
 
 
-2.5.4 (2016-06-07)
+2.5.4 (2018-06-07)
 ==================
 
 
