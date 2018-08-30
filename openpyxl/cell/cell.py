@@ -200,19 +200,20 @@ class Cell(StyleableObject):
         """Given a value, infer the correct data type"""
 
         self.data_type = "n"
+        t = type(value)
 
-        if value is True or value is False:
-            self.data_type = self.TYPE_BOOL
-
-        elif isinstance(value, NUMERIC_TYPES):
+        if t in NUMERIC_TYPES:
             pass
 
-        elif isinstance(value, TIME_TYPES):
+        elif t is bool:
+            self.data_type = self.TYPE_BOOL
+
+        elif t in TIME_TYPES:
             if not is_date_format(self.number_format):
                 self.number_format = TIME_FORMATS[type(value)]
             self.data_type = "d"
 
-        elif isinstance(value, STRING_TYPES):
+        elif t in STRING_TYPES:
             value = self.check_string(value)
             self.data_type = self.TYPE_STRING
             if len(value) > 1 and value.startswith("="):
