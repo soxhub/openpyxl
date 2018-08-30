@@ -44,6 +44,11 @@ from openpyxl.utils import (
     get_column_letter,
     column_index_from_string,
 )
+from openpyxl.utils.inference import (
+    cast_numeric,
+    cast_percentage,
+    cast_percentage,
+)
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
@@ -66,21 +71,7 @@ except ImportError:
 STRING_TYPES = (basestring, unicode, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
-PERCENT_REGEX = re.compile(r'^(?P<number>\-?[0-9]*\.?[0-9]*\s?)\%$')
-TIME_REGEX = re.compile(r"""
-^(?: # HH:MM and HH:MM:SS
-(?P<hour>[0-1]{0,1}[0-9]{2}):
-(?P<minute>[0-5][0-9]):?
-(?P<second>[0-5][0-9])?$)
-|
-^(?: # MM:SS.
-([0-5][0-9]):
-([0-5][0-9])?\.
-(?P<microsecond>\d{1,6}))
-""", re.VERBOSE)
-NUMBER_REGEX = re.compile(r'^-?([\d]|[\d]+\.[\d]*|\.[\d]+|[1-9][\d]+\.?[\d]*)((E|e)[-+]?[\d]+)?$')
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
-
 ERROR_CODES = ('#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!',
                '#N/A')
 
@@ -236,55 +227,19 @@ class Cell(StyleableObject):
             value = str(value)
 
         # number detection
-        v = self._cast_numeric(value)
+        v = cast_numeric(value)
         if v is None:
             # percentage detection
-            v = self._cast_percentage(value)
+            fmt, v = cast_percentage(value)
+            if v is not None:
+                self.number_format = fmt
         if v is None:
             # time detection
-            v = self._cast_time(value)
-        if v is not None:
-            self.data_type = self.TYPE_NUMERIC
-            return v
+            fmt, v = cast_percentage(value)
+            if v is not None:
+                self.number_format = fmt
 
         return value
-
-
-    def _cast_numeric(self, value):
-        """Explicity convert a string to a numeric value"""
-        if NUMBER_REGEX.match(value):
-            try:
-                return int(value)
-            except ValueError:
-                return float(value)
-
-    def _cast_percentage(self, value):
-        """Explicitly convert a string to numeric value and format as a
-        percentage"""
-        match = PERCENT_REGEX.match(value)
-        if match:
-            self.number_format = numbers.FORMAT_PERCENTAGE
-            return float(match.group('number')) / 100
-
-
-    def _cast_time(self, value):
-        """Explicitly convert a string to a number and format as datetime or
-        time"""
-        match = TIME_REGEX.match(value)
-        if match:
-            if match.group("microsecond") is not None:
-                value = value[:12]
-                pattern = "%M:%S.%f"
-                fmt = numbers.FORMAT_DATE_TIME5
-            elif match.group('second') is None:
-                fmt = numbers.FORMAT_DATE_TIME3
-                pattern = "%H:%M"
-            else:
-                pattern = "%H:%M:%S"
-                fmt = numbers.FORMAT_DATE_TIME6
-            self.number_format = fmt
-            value = datetime.datetime.strptime(value, pattern)
-            return value.time()
 
 
     @property
