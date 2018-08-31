@@ -1,64 +1,72 @@
 
 Versions:
-    python      : 2.7.1
-    openpyxl    : 2.6.0a1
-    xlsxwriter  : 1.0.7
+python: 2.7.1
+openpyxl: 2.6.0dev
+xlsxwriter: 1.0.9
 
 Dimensions:
-    Rows = 10000
+    Rows = 1000
     Cols = 50
+    Sheets = 4
+    Proportion text = 0.10
 
 Times:
-    xlsxwriter (optimised):   9.74
-    xlsxwriter            :  11.01
-    openpyxl   (optimised):   8.27
-    openpyxl              :  11.21
+    xlsxwriter            :   2.45
+    xlsxwriter (optimised):   2.64
+    openpyxl              :   3.96
+    openpyxl (optimised)  :   2.78
 
 
 Versions:
-    python      : 3.5.6
-    openpyxl    : 2.6.0a1
-    xlsxwriter  : 1.0.7
+python: 3.5.6
+openpyxl: 2.6.0dev
+xlsxwriter: 1.0.9
 
 Dimensions:
-    Rows = 10000
+    Rows = 1000
     Cols = 50
+    Sheets = 4
+    Proportion text = 0.10
 
 Times:
-    xlsxwriter (optimised):   8.66
-    xlsxwriter            :   9.95
-    openpyxl   (optimised):   8.79
-    openpyxl              :  12.22
+    xlsxwriter            :   2.29
+    xlsxwriter (optimised):   2.22
+    openpyxl              :   4.35
+    openpyxl (optimised)  :   2.90
 
 
 Versions:
-    python      : 3.6.6
-    openpyxl    : 2.6.0a1
-    xlsxwriter  : 1.0.7
+python: 3.6.6
+openpyxl: 2.6.0dev
+xlsxwriter: 1.0.9
 
 Dimensions:
-    Rows = 10000
+    Rows = 1000
     Cols = 50
+    Sheets = 4
+    Proportion text = 0.10
 
 Times:
-    xlsxwriter (optimised):   8.71
-    xlsxwriter            :  10.00
-    openpyxl   (optimised):   8.21
-    openpyxl              :   9.13
+    xlsxwriter            :   2.32
+    xlsxwriter (optimised):   2.22
+    openpyxl              :   3.35
+    openpyxl (optimised)  :   2.64
 
 
 Versions:
-    python      : 3.7.0
-    openpyxl    : 2.6.0a1
-    xlsxwriter  : 1.0.7
+python: 3.7.0
+openpyxl: 2.6.0dev
+xlsxwriter: 1.0.9
 
 Dimensions:
-    Rows = 10000
+    Rows = 1000
     Cols = 50
+    Sheets = 4
+    Proportion text = 0.10
 
 Times:
-    xlsxwriter (optimised):   9.17
-    xlsxwriter            :  10.25
-    openpyxl   (optimised):   7.21
-    openpyxl              :   8.65
+    xlsxwriter            :   2.34
+    xlsxwriter (optimised):   2.23
+    openpyxl              :   2.93
+    openpyxl (optimised)  :   2.49
 
