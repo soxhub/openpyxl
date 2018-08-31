@@ -229,14 +229,10 @@ class Cell(StyleableObject):
         v = cast_numeric(value)
         if v is None:
             # percentage detection
-            fmt, v = cast_percentage(value)
-            if v is not None:
-                self.number_format = fmt
+            v = cast_percentage(value)
         if v is None:
             # time detection
-            fmt, v = cast_percentage(value)
-            if v is not None:
-                self.number_format = fmt
+            v = cast_percentage(value)
 
         return value
 

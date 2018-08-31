@@ -38,9 +38,8 @@ def cast_percentage(value):
     percentage"""
     match = PERCENT_REGEX.match(value)
     if match:
-        return numbers.FORMAT_PERCENTAGE, float(match.group('number')) / 100
+        return float(match.group('number')) / 100
 
-    return None, None
 
 
 def cast_time(value):
@@ -51,14 +50,12 @@ def cast_time(value):
         if match.group("microsecond") is not None:
             value = value[:12]
             pattern = "%M:%S.%f"
-            fmt = numbers.FORMAT_DATE_TIME5
+            #fmt = numbers.FORMAT_DATE_TIME5
         elif match.group('second') is None:
-            fmt = numbers.FORMAT_DATE_TIME3
+            #fmt = numbers.FORMAT_DATE_TIME3
             pattern = "%H:%M"
         else:
             pattern = "%H:%M:%S"
-            fmt = numbers.FORMAT_DATE_TIME6
+            #fmt = numbers.FORMAT_DATE_TIME6
         value = datetime.datetime.strptime(value, pattern)
-        return fmt, value.time()
-
-    return None, None
+        return value.time()

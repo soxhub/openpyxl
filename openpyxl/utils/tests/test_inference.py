@@ -34,7 +34,7 @@ def test_cast_numeric(value, expected):
                          ]
                          )
 def test_cast_percent(value, expected):
-    assert cast_percentage(value)[1] == expected
+    assert cast_percentage(value) == expected
 
 
 @pytest.mark.parametrize("value, expected",
@@ -45,7 +45,7 @@ def test_cast_percent(value, expected):
                          ]
                          )
 def test_infer_datetime(value, expected):
-    assert cast_time(value)[1] == expected
+    assert cast_time(value) == expected
 
 
 values = (
