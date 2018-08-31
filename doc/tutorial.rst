@@ -211,25 +211,28 @@ Once we have a :class:`openpyxl.cell.Cell`, we can assign it a value::
     >>> print(d.value)
     3.14
 
-You can also enable type and format inference::
+When all values are strings, for example when working with CSV files, you can
+try using openpyxl's type inference functions::
 
-    >>> wb = Workbook(guess_types=True)
-    >>> c.value = '12%'
-    >>> print(c.value)
+    >>> from openpyxl.utils.inference import cast_numeric, cast_percentage, cast_time
+    >>> value = cast_numeric('31.50')
+    >>> print(value)
+    31.5
+
+    >>> value = cast_percentage('12%')
+    >>> print(value)
     0.12
 
-    >>> import datetime
-    >>> d.value = datetime.datetime.now()
-    >>> print d.value
-    datetime.datetime(2010, 9, 10, 22, 25, 18)
+    >>> value = cast_time('03:40:16')
+    >>> print(value)
+    datetime.time(3, 40, 16)
 
-    >>> c.value = '31.50'
-    >>> print(c.value)
-    31.5
+However, the functions support only a limited set of formats so it is
+recommended you use your own converters.
 
 
 Saving to a file
-================
+----------------
 
 The simplest and safest way to save a workbook is by using the
 :func:`openpyxl.workbook.Workbook.save()` method of the
@@ -260,13 +263,13 @@ such as Pyramid, Flask or Django then you can simply provide a
 `NamedTemporaryFile`::
 
 
->>> from tempfile import NamedTemporaryFile
->>> from openpyxl import Workbook
->>> wb = Workbook()
->>> with NamedTemporaryFile() as tmp:
-        wb.save(tmp.name)
-        tmp.seek(0)
-        stream = tmp.read()
+    >>> from tempfile import NamedTemporaryFile
+    >>> from openpyxl import Workbook
+    >>> wb = Workbook()
+    >>> with NamedTemporaryFile() as tmp:
+            wb.save(tmp.name)
+            tmp.seek(0)
+            stream = tmp.read()
 
 
 You can specify the attribute `template=True`, to save a workbook
@@ -313,7 +316,7 @@ or set this attribute to `False` (default), to save as a document::
 
 
 Loading from a file
-===================
+-------------------
 
 The same way as writing, you can import :func:`openpyxl.load_workbook` to
 open an existing workbook::

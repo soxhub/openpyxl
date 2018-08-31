@@ -77,16 +77,6 @@ Using number formats
 >>>
 >>> ws['A1'].number_format
 'yyyy-mm-dd h:mm:ss'
->>> # You can enable type inference on a case-by-case basis
->>> wb.guess_types = True
->>> # set percentage using a string followed by the percent sign
->>> ws['B1'] = '3.14%'
->>> wb.guess_types = False
->>> ws['B1'].value
-0.031400000000000004
->>>
->>> ws['B1'].number_format
-'0%'
 
 
 Using formulae
