@@ -310,7 +310,6 @@ def test_simple_styles(datadir):
     from .. import numbers
     from ..stylesheet import write_stylesheet
     wb = Workbook()
-    wb.guess_types = True
     ws = wb.active
     now = datetime.date.today()
     for idx, v in enumerate(['12.34%', now, 'This is a test', '31.31415', None], 1):
@@ -324,7 +323,7 @@ def test_simple_styles(datadir):
     ws['E1'].protection = Protection(hidden=True)
     ws['E1'].style_id
 
-    assert len(wb._cell_styles) == 5
+    assert len(wb._cell_styles) == 4
     stylesheet = write_stylesheet(wb)
 
     datadir.chdir()
