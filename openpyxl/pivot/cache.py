@@ -110,7 +110,7 @@ class CalculatedMember(Serialisable):
     set = Bool()
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('extLst',)
+    __elements__ = ()
 
     def __init__(self,
                  name=None,
@@ -129,7 +129,7 @@ class CalculatedMember(Serialisable):
         self.parent = parent
         self.solveOrder = solveOrder
         self.set = set
-        self.extLst = extLst
+        #self.extLst = extLst
 
 
 class CalculatedItem(Serialisable):
