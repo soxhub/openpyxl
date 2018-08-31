@@ -40,7 +40,6 @@ from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.styles.stylesheet import write_stylesheet
 from openpyxl.worksheet.writer import WorksheetWriter
 
-from .strings import write_string_table
 from .workbook import WorkbookWriter
 from .theme import write_theme
 
