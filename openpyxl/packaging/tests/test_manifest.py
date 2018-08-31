@@ -90,8 +90,6 @@ class TestManifest:
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
           <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
           <Default ContentType="application/xml" Extension="xml" />
-          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
-            PartName="/xl/sharedStrings.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
             PartName="/xl/styles.xml"/>
           <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
@@ -173,10 +171,10 @@ class TestManifest:
 
     def test_no_dupe_overrides(self, Manifest):
         manifest = Manifest()
+        assert len(manifest.Override) == 4
+        manifest.Override.append("a")
+        manifest.Override.append("a")
         assert len(manifest.Override) == 5
-        manifest.Override.append("a")
-        manifest.Override.append("a")
-        assert len(manifest.Override) == 6
 
 
     def test_no_dupe_types(self, Manifest):
@@ -193,7 +191,7 @@ class TestManifest:
         ws = wb.active
         manifest = Manifest()
         manifest.append(ws)
-        assert len(manifest.Override) == 6
+        assert len(manifest.Override) == 5
 
 
     def test_write(self, Manifest):
@@ -242,7 +240,6 @@ class TestManifest:
             '/xl/styles.xml',
             '/docProps/core.xml',
             '/docProps/app.xml',
-            '/xl/sharedStrings.xml'
                     ])
         assert partnames == expected
 

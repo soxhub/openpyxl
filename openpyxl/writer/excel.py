@@ -80,8 +80,8 @@ class ExcelWriter(object):
         self._write_images()
         self._write_charts()
 
-        self._archive.writestr(ARC_SHARED_STRINGS,
-                              write_string_table(self.workbook.shared_strings))
+        #self._archive.writestr(ARC_SHARED_STRINGS,
+                              #write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
         stylesheet = write_stylesheet(self.workbook)
