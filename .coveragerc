@@ -9,9 +9,9 @@ exclude_lines =
     pragma: no cover
 
 omit =
-    */benchmarks/*
     */tests/*
     */test_*
+    *conftest.py
     */openpyxl/packaging/interface.py
     */openpyxl/worksheet/cell_watch.py
     */openpyxl/workhseet/controls.py
