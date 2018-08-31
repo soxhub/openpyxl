@@ -92,6 +92,23 @@ class NamedStyleDescriptor(object):
         return coll.names[idx]
 
 
+class StyleArrayDescriptor(object):
+
+    def __init__(self, key):
+        self.key = key
+
+    def __set__(self, instance, value):
+        if instance._style is None:
+            instance._style = StyleArray()
+        setattr(instance._style, self.key, value)
+
+
+    def __get__(self, instance, cls):
+        if instance._style is None:
+            return False
+        return bool(getattr(instance._style, self.key))
+
+
 class StyleableObject(object):
     """
     Base class for styleble objects implementing proxy and lookup functions
@@ -104,6 +121,8 @@ class StyleableObject(object):
     protection = StyleDescriptor('_protections', "protectionId")
     alignment = StyleDescriptor('_alignments', "alignmentId")
     style = NamedStyleDescriptor()
+    quotePrefix = StyleArrayDescriptor('quotePrefix')
+    pivotButton = StyleArrayDescriptor('pivotButton')
 
     __slots__ = ('parent', '_style')
 
@@ -120,22 +139,10 @@ class StyleableObject(object):
             self._style = StyleArray()
         return self.parent.parent._cell_styles.add(self._style)
 
+
     @property
     def has_style(self):
         if self._style is None:
             return False
         return any(self._style)
 
-
-    @property
-    def pivotButton(self):
-        if self._style is None:
-            return False
-        return bool(self._style[6])
-
-
-    @property
-    def quotePrefix(self):
-        if self._style is None:
-            return False
-        return bool(self._style[7])
