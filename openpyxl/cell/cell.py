@@ -76,6 +76,20 @@ ERROR_CODES = ('#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!',
                '#N/A')
 
 
+ERROR_CODES = ERROR_CODES
+
+TYPE_STRING = 's'
+TYPE_FORMULA = 'f'
+TYPE_NUMERIC = 'n'
+TYPE_BOOL = 'b'
+TYPE_NULL = 'n'
+TYPE_INLINE = 'inlineStr'
+TYPE_ERROR = 'e'
+TYPE_FORMULA_CACHE_STRING = 'str'
+
+VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
+               TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
+
 class Cell(StyleableObject):
     """Describes cell associated properties.
 
@@ -91,21 +105,6 @@ class Cell(StyleableObject):
         '_hyperlink',
         '_comment',
                  )
-
-    ERROR_CODES = ERROR_CODES
-
-    TYPE_STRING = 's'
-    TYPE_FORMULA = 'f'
-    TYPE_NUMERIC = 'n'
-    TYPE_BOOL = 'b'
-    TYPE_NULL = 'n'
-    TYPE_INLINE = 'inlineStr'
-    TYPE_ERROR = 'e'
-    TYPE_FORMULA_CACHE_STRING = 'str'
-
-    VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
-                   TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
-
 
     def __init__(self, worksheet, row=None, column=None, value=None, style_array=None):
         super(Cell, self).__init__(worksheet, style_array)
@@ -180,7 +179,7 @@ class Cell(StyleableObject):
     @deprecated("Type coercion will no longer be supported")
     def set_explicit_value(self, value=None, data_type=TYPE_STRING):
         """Coerce values according to their explicit type"""
-        if data_type not in self.VALID_TYPES:
+        if data_type not in VALID_TYPES:
             raise ValueError('Invalid data type: %s' % data_type)
         if isinstance(value, STRING_TYPES):
             value = self.check_string(value)
@@ -197,23 +196,23 @@ class Cell(StyleableObject):
         if t in NUMERIC_TYPES:
             pass
 
-        elif t is bool:
-            self.data_type = self.TYPE_BOOL
-
         elif t in TIME_TYPES:
             if not is_date_format(self.number_format):
-                self.number_format = TIME_FORMATS[type(value)]
+                self.number_format = TIME_FORMATS[t]
             self.data_type = "d"
 
         elif t in STRING_TYPES:
             value = self.check_string(value)
-            self.data_type = self.TYPE_STRING
+            self.data_type = 's'
             if len(value) > 1 and value.startswith("="):
-                self.data_type = self.TYPE_FORMULA
-            elif value in self.ERROR_CODES:
-                self.data_type = self.TYPE_ERROR
-            elif self.guess_types:
+                self.data_type = 'f'
+            elif value in ERROR_CODES:
+                self.data_type = 'e'
+            elif self.guess_types: # deprecated
                 value = self._infer_value(value)
+
+        elif t is bool:
+            self.data_type = 'b'
 
         elif value is not None:
             raise ValueError("Cannot convert {0!r} to Excel".format(value))

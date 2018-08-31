@@ -118,7 +118,7 @@ class ReadOnlyCell(object):
             return self._value
         if self.data_type == 'b':
             return self._value == '1'
-        elif self.data_type in(Cell.TYPE_INLINE, Cell.TYPE_FORMULA_CACHE_STRING):
+        elif self.data_type in(['inlineStr', 'str']):
             return unicode(self._value)
         elif self.data_type == 's':
             return unicode(self.shared_strings[int(self._value)])
