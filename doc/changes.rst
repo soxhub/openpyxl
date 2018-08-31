@@ -2,6 +2,9 @@
 ==================
 
 
+* `#1047 <https://bitbucket.org/openpyxl/openpyxl/issues/1047>`_ Cannot set quote prefix
+
+
 2.5.6 (2018-08-30)
 ==================
 
