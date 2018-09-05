@@ -3,6 +3,7 @@
 
 
 * `#1047 <https://bitbucket.org/openpyxl/openpyxl/issues/1047>`_ Cannot set quote prefix
+* `#1093 <https://bitbucket.org/openpyxl/openpyxl/issues/1093>`_ Pandas timestamps raise KeyError
 
 
 2.5.6 (2018-08-30)
