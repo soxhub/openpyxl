@@ -64,6 +64,7 @@ TIME_FORMATS = {
                 }
 try:
     from pandas import Timestamp
+    TIME_TYPES = TIME_TYPES + (Timestamp,)
     TIME_FORMATS[Timestamp] = numbers.FORMAT_DATE_DATETIME
 except ImportError:
     pass

@@ -140,6 +140,14 @@ def test_insert_date(dummy_cell, value, number_format):
     assert cell.number_format == number_format
 
 
+@pytest.mark.pandas_required
+def test_timstamp(dummy_cell):
+    from pandas import Timestamp
+    cell = dummy_cell
+    cell.value = Timestamp("2018-09-05")
+    assert cell.number_format == "yyyy-mm-dd h:mm:ss"
+
+
 def test_not_overwrite_time_format(dummy_cell):
     cell = dummy_cell
     cell.number_format = "mmm-yy"
