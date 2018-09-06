@@ -25,6 +25,7 @@ Deprections
 ==================
 
 
+* `#954 <https://bitbucket.org/openpyxl/openpyxl/issues/954>`_ Sheet title containing % need quoting in references
 * `#1047 <https://bitbucket.org/openpyxl/openpyxl/issues/1047>`_ Cannot set quote prefix
 * `#1093 <https://bitbucket.org/openpyxl/openpyxl/issues/1093>`_ Pandas timestamps raise KeyError
 
