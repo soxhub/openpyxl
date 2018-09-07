@@ -21,8 +21,8 @@ class ManualLayout(Serialisable):
     tagname = "manualLayout"
 
     layoutTarget = NestedNoneSet(values=(['inner', 'outer']))
-    xMode = NestedSet(values=(['edge', 'factor']))
-    yMode = NestedSet(values=(['edge', 'factor']))
+    xMode = NestedNoneSet(values=(['edge', 'factor']))
+    yMode = NestedNoneSet(values=(['edge', 'factor']))
     wMode = NestedSet(values=(['edge', 'factor']))
     hMode = NestedSet(values=(['edge', 'factor']))
     x = NestedMinMax(min=-1, max=1)
@@ -40,8 +40,8 @@ class ManualLayout(Serialisable):
                  layoutTarget=None,
                  xMode=None,
                  yMode=None,
-                 wMode=None,
-                 hMode=None,
+                 wMode="factor",
+                 hMode="factor",
                  x=None,
                  y=None,
                  w=None,
