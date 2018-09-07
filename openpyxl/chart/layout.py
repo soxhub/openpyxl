@@ -12,8 +12,8 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
     NestedNoneSet,
-    NestedFloat
-
+    NestedSet,
+    NestedMinMax,
 )
 
 class ManualLayout(Serialisable):
@@ -21,15 +21,15 @@ class ManualLayout(Serialisable):
     tagname = "manualLayout"
 
     layoutTarget = NestedNoneSet(values=(['inner', 'outer']))
-    xMode = NestedNoneSet(values=(['edge', 'factor']))
-    yMode = NestedNoneSet(values=(['edge', 'factor']))
-    wMode = NestedNoneSet(values=(['edge', 'factor']))
-    hMode = NestedNoneSet(values=(['edge', 'factor']))
-    x = NestedFloat(allow_none=True)
-    y = NestedFloat(allow_none=True)
-    w = NestedFloat(allow_none=True)
+    xMode = NestedSet(values=(['edge', 'factor']))
+    yMode = NestedSet(values=(['edge', 'factor']))
+    wMode = NestedSet(values=(['edge', 'factor']))
+    hMode = NestedSet(values=(['edge', 'factor']))
+    x = NestedMinMax(min=-1, max=1)
+    y = NestedMinMax(min=-1, max=1)
+    w = NestedMinMax(min=0, max=1)
     width = Alias('w')
-    h = NestedFloat(allow_none=True)
+    h = NestedMinMax(min=0, max=1)
     height = Alias('h')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
