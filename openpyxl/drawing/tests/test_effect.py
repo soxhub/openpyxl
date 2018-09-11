@@ -35,3 +35,57 @@ class TestOuterShadow:
         node = fromstring(src)
         shadow = OuterShadow.from_tree(node)
         assert shadow == OuterShadow(algn="tl", blurRad=38100, dist=38100, dir=2700000, srgbClr="000000")
+
+
+@pytest.fixture
+def TintEffect():
+    from ..effect import TintEffect
+    return TintEffect
+
+
+class TestTintEffect:
+
+    def test_ctor(self, TintEffect):
+        tint = TintEffect()
+        xml = tostring(tint.to_tree())
+        expected = """
+        <tint hue="0" amt="0" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, TintEffect):
+        src = """
+        <tint hue="56" amt="85" />
+        """
+        node = fromstring(src)
+        tint = TintEffect.from_tree(node)
+        assert tint == TintEffect(hue=56, amt=85)
+
+
+@pytest.fixture
+def LuminanceEffect():
+    from ..effect import LuminanceEffect
+    return LuminanceEffect
+
+
+class TestLuminanceEffect:
+
+    def test_ctor(self, LuminanceEffect):
+        lum = LuminanceEffect()
+        xml = tostring(lum.to_tree())
+        expected = """
+        <lum bright="0" contrast="0" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, LuminanceEffect):
+        src = """
+        <lum bright="45" contrast="80"/>
+        """
+        node = fromstring(src)
+        lum = LuminanceEffect.from_tree(node)
+        assert lum == LuminanceEffect(bright=45, contrast=80)

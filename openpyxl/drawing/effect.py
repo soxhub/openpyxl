@@ -9,7 +9,8 @@ from openpyxl.descriptors import (
     Bool,
     Integer,
     NoneSet,
-    Float,)
+    Float,
+)
 
 
 from .colors import ColorChoice
@@ -17,12 +18,14 @@ from .colors import ColorChoice
 
 class TintEffect(Serialisable):
 
+    tagname = "tint"
+
     hue = Integer()
     amt = Integer()
 
     def __init__(self,
-                 hue=None,
-                 amt=None,
+                 hue=0,
+                 amt=0,
                 ):
         self.hue = hue
         self.amt = amt
@@ -30,12 +33,14 @@ class TintEffect(Serialisable):
 
 class LuminanceEffect(Serialisable):
 
-    bright = Integer()
-    contrast = Integer()
+    tagname = "lum"
+
+    bright = Integer() #Pct ?
+    contrast = Integer() #Pct#
 
     def __init__(self,
-                 bright=None,
-                 contrast=None,
+                 bright=0,
+                 contrast=0,
                 ):
         self.bright = bright
         self.contrast = contrast
@@ -59,7 +64,8 @@ class HSLEffect(Serialisable):
 
 class GrayscaleEffect(Serialisable):
 
-    pass
+    tagname = "grayscl"
+
 
 class FillOverlayEffect(Serialisable):
 
