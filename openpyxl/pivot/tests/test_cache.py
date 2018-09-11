@@ -366,3 +366,62 @@ class TestCalculatedMember:
         cm = CalculatedMember.from_tree(node)
         assert cm == CalculatedMember(name="name", mdx="mdx", memberName="member",
                               hierarchy="yes", parent="parent", solveOrder=1, set=True)
+
+
+@pytest.fixture
+def ServerFormat():
+    from ..cache import ServerFormat
+    return ServerFormat
+
+
+class TestServerFormat:
+
+    def test_ctor(self, ServerFormat):
+        sf = ServerFormat(culture="x", format="y")
+        xml = tostring(sf.to_tree())
+        expected = """
+        <serverFormat culture="x" format="y" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ServerFormat):
+        src = """
+        <serverFormat  culture="x" format="y" />
+        """
+        node = fromstring(src)
+        sf = ServerFormat.from_tree(node)
+        assert sf == ServerFormat(culture="x", format="y")
+
+
+@pytest.fixture
+def ServerFormatList():
+    from ..cache import ServerFormatList
+    return ServerFormatList
+
+
+class TestServerFormatList:
+
+    def test_ctor(self, ServerFormatList, ServerFormat):
+        sf = ServerFormat(culture="x", format="y")
+        l = ServerFormatList(serverFormat=[sf])
+        xml = tostring(l.to_tree())
+        expected = """
+        <serverFormats count="1">
+          <serverFormat culture="x" format="y" />
+        </serverFormats>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ServerFormatList, ServerFormat):
+        src = """
+        <serverFormats count="1">
+          <serverFormat culture="x" format="y" />
+        </serverFormats>
+        """
+        node = fromstring(src)
+        l = ServerFormatList.from_tree(node)
+        assert l.serverFormat[0] == ServerFormat(culture="x", format="y")

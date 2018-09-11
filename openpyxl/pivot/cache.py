@@ -159,6 +159,7 @@ class ServerFormat(Serialisable):
 
     tagname = "serverFormat"
 
+    culture = String(allow_none=True)
     format = String(allow_none=True)
 
     def __init__(self,
@@ -169,19 +170,25 @@ class ServerFormat(Serialisable):
         self.format = format
 
 
-class ServerFormats(Serialisable):
+class ServerFormatList(Serialisable):
 
-    count = Integer()
-    serverFormat = Typed(expected_type=ServerFormat, allow_none=True)
+    tagname = "serverFormats"
+
+    serverFormat = Sequence(expected_type=ServerFormat, allow_none=True)
 
     __elements__ = ('serverFormat',)
+    __attrs__ = ('count',)
 
     def __init__(self,
                  count=None,
                  serverFormat=None,
                 ):
-        self.count = count
         self.serverFormat = serverFormat
+
+
+    @property
+    def count(self):
+        return len(self.serverFormat)
 
 
 class Query(Serialisable):
@@ -300,7 +307,7 @@ class TupleCache(Serialisable):
     entries = Typed(expected_type=PCDSDTCEntries, allow_none=True)
     sets = Typed(expected_type=OLAPSets, allow_none=True)
     queryCache = Typed(expected_type=QueryCache, allow_none=True)
-    serverFormats = Typed(expected_type=ServerFormats, allow_none=True)
+    serverFormats = Typed(expected_type=ServerFormatList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('entries', 'sets', 'queryCache', 'serverFormats', 'extLst')
