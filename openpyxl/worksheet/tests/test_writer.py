@@ -402,7 +402,7 @@ class TestWorksheetWriter:
     def test_vba(self, writer):
 
         ws = writer.ws
-        ws.vba_code = {"codeName":"Sheet1"}
+        ws.sheet_properties.codeName = "Sheet1"
         ws.legacy_drawing = "../drawings/vmlDrawing1.vml"
         writer.write_top()
         writer.write_rows()

@@ -185,23 +185,6 @@ class Worksheet(_WorkbookChild):
     def show_summary_right(self):
         return self.sheet_properties.outlinePr.summaryRight
 
-    @property
-    def vba_code(self):
-        for attr in ("codeName", "enableFormatConditionsCalculation",
-                     "filterMode", "published", "syncHorizontal", "syncRef",
-                     "syncVertical", "transitionEvaluation", "transitionEntry"):
-            value = getattr(self.sheet_properties, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-    @vba_code.setter
-    def vba_code(self, value):
-        for k, v in value.items():
-            if k in ("codeName", "enableFormatConditionsCalculation",
-                     "filterMode", "published", "syncHorizontal", "syncRef",
-                     "syncVertical", "transitionEvaluation", "transitionEntry"):
-                setattr(self.sheet_properties, k, v)
-
 
     @property
     def freeze_panes(self):
