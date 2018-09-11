@@ -533,8 +533,6 @@ class Worksheet(_WorkbookChild):
         """Set printer settings """
 
         self.page_setup.paperSize = paper_size
-        if orientation not in (self.ORIENTATION_PORTRAIT, self.ORIENTATION_LANDSCAPE):
-            raise ValueError("Values should be %s or %s" % (self.ORIENTATION_PORTRAIT, self.ORIENTATION_LANDSCAPE))
         self.page_setup.orientation = orientation
 
 
