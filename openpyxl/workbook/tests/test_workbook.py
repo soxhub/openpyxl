@@ -98,6 +98,11 @@ def test_set_hidden_sheet_as_active():
         wb.active = ws
 
 
+def test_no_active():
+    wb = Workbook(write_only=True)
+    assert wb.active is None
+
+
 def test_create_sheet():
     wb = Workbook()
     new_sheet = wb.create_sheet()
