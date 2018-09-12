@@ -5,7 +5,6 @@ pipelines:
   - step:
       caches:
         - pip
-        - docker
       script:
         - /tools/clean-launch.sh tox --skip-missing-interpreters -- -qrf
         - /tools/clean-launch.sh tox -e cov
