@@ -138,7 +138,7 @@ class CellRange(Serialisable):
 
     def shift(self, col_shift=0, row_shift=0):
         """
-        Shift the range according to the shift values (*col_shift*, *row_shift*).
+        Shift the focus of the range according to the shift values (*col_shift*, *row_shift*).
 
         :type col_shift: int
         :param col_shift: number of columns to be moved by, can be negative
