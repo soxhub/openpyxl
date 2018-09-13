@@ -61,7 +61,7 @@ def Worksheet(Workbook):
 @pytest.fixture
 def StyleableObject(Worksheet):
     from .. styleable import StyleableObject
-    so = StyleableObject(sheet=Worksheet, style_array=list(range(9)))
+    so = StyleableObject(sheet=Worksheet, style_array=[0]*9)
     return so
 
 
@@ -129,3 +129,17 @@ class TestNamedStyle:
         s1.style = "Hyperlink"
         s2.style = "Hyperlink"
         assert s1._style is not s2._style
+
+
+    def test_quote_prefix(self, StyleableObject):
+        s1 = StyleableObject
+        assert s1.quotePrefix is False
+        s1.quotePrefix = True
+        assert s1.quotePrefix is True
+
+
+    def test_pivot_button(self, StyleableObject):
+        s1 = StyleableObject
+        assert s1.pivotButton is False
+        s1.pivotButton = True
+        assert s1.pivotButton is True

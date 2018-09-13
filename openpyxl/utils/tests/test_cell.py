@@ -119,10 +119,12 @@ def test_invalid_range():
 
 @pytest.mark.parametrize("title, quoted",
                          [
-                             (u'In D\xfcsseldorf', u"'In D\xfcsseldorf'"),
+                             (u'In Dusseldorf', u"'In Dusseldorf'"),
                              (u'My-Sheet', u"'My-Sheet'"),
                              (u"Demande d'autorisation", "'Demande d''autorisation'"),
-                             (u"d'autorisation", "'d''autorisation'"),
+                             ("1sheet", "'1sheet'"),
+                             (".sheet", "'.sheet'"),
+                             ('"', "'\"'"),
                          ]
                          )
 def test_quote_sheetname(title, quoted):
