@@ -10,6 +10,8 @@ from openpyxl.workbook import Workbook
 from openpyxl.cell import Cell, MergedCell
 from openpyxl.utils.exceptions import NamedRangeException
 
+from ..cell_range import CellRange
+
 
 class DummyWorkbook:
 
@@ -666,3 +668,49 @@ class TestEditableWorksheet:
         ws.delete_rows(6)
         assert ws.max_row == 5
         assert ws['A6'].value == None
+
+
+    def test_move_range_down(self, dummy_worksheet):
+        ws = dummy_worksheet
+        cr = CellRange("B2:E5")
+        ws.move_range(cr, rows=2)
+        assert ws['B4'].value == "B2"
+        assert cr.coord == "B4:E7"
+
+
+    def test_move_range_up(self, dummy_worksheet):
+        ws = dummy_worksheet
+        cr = CellRange("B4:E5")
+        ws.move_range(cr, rows=-2)
+        assert ws['B2'].value == "B4"
+        assert cr.coord == "B2:E3"
+
+
+    def test_move_range_right(self, dummy_worksheet):
+        ws = dummy_worksheet
+        cr = CellRange("B2:E5")
+        ws.move_range(cr, cols=2)
+        assert ws['D2'].value == "B2"
+        assert cr.coord == "D2:G5"
+
+
+    def test_move_range_left(self, dummy_worksheet):
+        ws = dummy_worksheet
+        cr = CellRange("D2:E5")
+        ws.move_range(cr, cols=-2)
+        assert ws['B2'].value == "D2"
+        assert cr.coord == "B2:C5"
+
+
+    def test_move_empty_range(self, dummy_worksheet):
+        ws = dummy_worksheet
+        cr = CellRange("A7:E15")
+        ws.move_range(cr, rows=-2)
+        assert ws['A6'].value is None
+        assert cr.coord == "A5:E13"
+
+
+    def test_move_range_from_string(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws.move_range("B2:E5", rows=2)
+        assert ws['B4'].value == "B2"

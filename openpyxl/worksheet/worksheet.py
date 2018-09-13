@@ -749,6 +749,33 @@ class Worksheet(_WorkbookChild):
                     del self._cells[row, col]
 
 
+    def move_range(self, cell_range, rows=0, cols=0):
+        """
+        Move a cell range by the number of rows and/or columns:
+        down if rows > 0 and up if rows < 0
+        right if cols > 0 and left if cols < 0
+        Existing cells will be overwritten.
+        Formulae and references will not be updated.
+        """
+        if isinstance(cell_range, basestring):
+            cell_range = CellRange(cell_range)
+        if not isinstance(cell_range, CellRange):
+            raise ValueError("Only CellRange objects can be moved")
+        min_col, min_row, max_col, max_row = cell_range.bounds
+        # rebase moved range
+        cell_range.shift(row_shift=rows, col_shift=cols)
+
+        down = rows > 0
+        right = cols > 0
+        r = sorted(range(min_row, max_row+1), reverse=down)
+        c = sorted(range(min_col, max_col+1), reverse=right)
+        for coord in product(r, c):
+            cell = self._get_cell(*coord)
+            self._cells[(cell.row + rows,
+                         cell.column + cols)] = cell
+            del self._cells[cell.row, cell.column]
+
+
     def _invalid_row(self, iterable):
         raise TypeError('Value must be a list, tuple, range or generator, or a dict. Supplied value is {0}'.format(
             type(iterable))
