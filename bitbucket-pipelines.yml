@@ -15,4 +15,4 @@ pipelines:
         - export GIT_MESSAGE=$(hg tip --template '{desc}\n')
         - export GIT_BRANCH=$(hg branch)
         - export GIT_URL=https://bitbucket.org/openpyxl/openpyxl
-        - /tools/clean-launch.sh tox -e cov
+#        - /tools/clean-launch.sh tox -e cov
