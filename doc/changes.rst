@@ -14,10 +14,11 @@ Minor changes
 * Add support for worksheet scenarios
 * Add read support for chartsheets
 * Add method for moving ranges of cells on a worksheet
+* Last version to support Python 2.7
 
 
-Deprections
------------
+Deprecations
+------------
 
 * Type inference and coercion for cell values
 
