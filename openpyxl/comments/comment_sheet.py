@@ -19,27 +19,10 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
 
 from openpyxl.cell.text import Text
+#from openpyxl.worksheet.ole import ObjectAnchor
 from .author import AuthorList
 from .comments import Comment
 from .shape_writer import ShapeWriter
-
-
-class ObjectAnchor(Serialisable):
-
-    moveWithCells = Bool(allow_none=True)
-    sizeWithCells = Bool(allow_none=True)
-    #z-order = Integer(allow_none=True) needs alias
-    #from
-    #to defs from xdr
-
-    def __init__(self,
-                 moveWithCells=None,
-                 sizeWithCells=None,
-                 #z-order=None,
-                ):
-        self.moveWithCells = moveWithCells
-        self.sizeWithCells = sizeWithCells
-        #self.z-order = z-order
 
 
 class Properties(Serialisable):
@@ -59,7 +42,7 @@ class Properties(Serialisable):
     autoScale = Bool(allow_none=True)
     rowHidden = Bool(allow_none=True)
     colHidden = Bool(allow_none=True)
-    anchor = Typed(expected_type=ObjectAnchor, )
+    #anchor = Typed(expected_type=ObjectAnchor, )
 
     __elements__ = ('anchor',)
 
