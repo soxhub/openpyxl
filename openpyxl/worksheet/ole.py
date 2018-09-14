@@ -20,7 +20,7 @@ class ObjectAnchor(Serialisable):
     _to = Typed(expected_type=AnchorMarker)
     moveWithCells = Bool(allow_none=True)
     sizeWithCells = Bool(allow_none=True)
-    z_order = Integer(allow_none=True)
+    z_order = Integer(allow_none=True, hyphenated=True)
 
     def __init__(self,
                  _from=None,

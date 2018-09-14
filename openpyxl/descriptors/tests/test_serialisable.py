@@ -207,3 +207,42 @@ class TestKeywordNode:
         el = fromstring(src)
         dummy = KeywordNode.from_tree(el)
         assert dummy._from.val is True
+
+
+@pytest.fixture
+def HyphenatedAttribute(Serialisable):
+    from ..base import Bool
+
+    class SomeElement(Serialisable):
+
+        tagname = "dummy"
+        z_order = Bool(hyphenated=True)
+        a_order = Bool()
+
+        def __init__(self, z_order, a_order):
+            self.z_order = z_order
+            self.a_order = a_order
+
+    return SomeElement
+
+
+class TestHyphenatedAttribute:
+
+    def test_to_tree(self, HyphenatedAttribute):
+
+        dummy = HyphenatedAttribute(z_order=True, a_order=True)
+
+        xml = tostring(dummy.to_tree())
+        expected = """<dummy z-order="1" a_order="1" />"""
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_tree(self, HyphenatedAttribute):
+        src = """<dummy z-order="1" a_order="1" />"""
+
+        el = fromstring(src)
+        dummy = HyphenatedAttribute.from_tree(el)
+        assert dummy.z_order is True
+        assert dummy.a_order is True
