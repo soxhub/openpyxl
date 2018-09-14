@@ -2,6 +2,9 @@
 ==================
 
 
+* `#877 <https://bitbucket.org/openpyxl/openpyxl/issues/877>`_ Cannot control how missing values are displayed in charts.
+
+
 2.5.7 (2018-09-13)
 ==================
 
