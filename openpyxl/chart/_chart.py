@@ -11,6 +11,7 @@ from openpyxl.descriptors import (
     Alias,
     MinMax,
     Bool,
+    Set,
 )
 from openpyxl.descriptors.nested import Nested
 from openpyxl.descriptors.sequence import NestedSequence, ValueSequence
@@ -51,6 +52,7 @@ class ChartBase(Serialisable):
     roundedCorners = Bool(allow_none=True)
     axId = ValueSequence(expected_type=int)
     visible_cells_only = Bool()
+    display_blanks = Set(values=['span', 'gap', 'zero'])
 
     _series_type = ""
     ser = ()
@@ -78,7 +80,8 @@ class ChartBase(Serialisable):
         self.style = None
         self.plot_area = PlotArea()
         self.axId = axId
-        super(ChartBase, self).__init__(**kw)
+        self.display_blanks = 'gap'
+
 
     def __hash__(self):
         """
@@ -122,6 +125,7 @@ class ChartBase(Serialisable):
             container.sideWall = chart.sideWall
             container.backWall = chart.backWall
         container.plotVisOnly = self.visible_cells_only
+        container.dispBlanksAs = self.display_blanks
         cs = ChartSpace(chart=container)
         cs.style = self.style
         cs.roundedCorners = self.roundedCorners

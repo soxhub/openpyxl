@@ -27,6 +27,8 @@ def read_chart(chartspace):
     chart._charts = plot._charts
 
     chart.title = cs.chart.title
+    chart.display_blanks = cs.chart.dispBlanksAs
+    chart.visible_cells_only = cs.chart.plotVisOnly
     chart.layout = plot.layout
     chart.legend = cs.chart.legend
 

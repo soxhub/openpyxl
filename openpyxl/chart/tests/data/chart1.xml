@@ -1187,7 +1187,7 @@
       <c:overlay val="0"/>
     </c:legend>
     <c:plotVisOnly val="0"/>
-    <c:dispBlanksAs val="gap"/>
+    <c:dispBlanksAs val="span"/>
     <c:showDLblsOverMax val="0"/>
   </c:chart>
   <c:printSettings>

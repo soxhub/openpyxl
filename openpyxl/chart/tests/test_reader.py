@@ -22,6 +22,7 @@ def test_read(datadir):
 
     assert isinstance(chart, LineChart)
     assert chart.title.tx.rich.p[0].r[0].t == "Website Performance"
+    assert chart.display_blanks == "span"
 
     assert isinstance(chart.y_axis, NumericAxis)
     assert chart.y_axis.title.tx.rich.p[0].r[0].t == "Time in seconds"
