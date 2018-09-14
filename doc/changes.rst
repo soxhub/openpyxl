@@ -22,7 +22,14 @@ Deprections
 * Type inference and coercion for cell values
 
 
-2.5.7 (unreleased)
+2.5.8 (unreleased)
+==================
+
+
+* `#877 <https://bitbucket.org/openpyxl/openpyxl/issues/877>`_ Cannot control how missing values are displayed in charts.
+
+
+2.5.7 (2018-09-13)
 ==================
 
 

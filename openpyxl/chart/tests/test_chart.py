@@ -119,7 +119,7 @@ class TestChartBase:
           <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
              <chart>
                <plotArea>
-                 <DummyChart visible_cells_only="0"></DummyChart>
+                 <DummyChart visible_cells_only="0" display_blanks="gap" />
                </plotArea>
                <legend>
                  <legendPos val="r"></legendPos>
