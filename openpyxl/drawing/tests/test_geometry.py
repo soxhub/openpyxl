@@ -140,3 +140,30 @@ class TestBevel:
         node = fromstring(src)
         bevel = Bevel.from_tree(node)
         assert bevel == Bevel( w=101600, h=101600)
+
+
+@pytest.fixture
+def SphereCoords():
+    from ..geometry import SphereCoords
+    return SphereCoords
+
+
+class TestSphereCoords:
+
+    def test_ctor(self, SphereCoords):
+        rot = SphereCoords(lat=90, lon=45, rev=60)
+        xml = tostring(rot.to_tree())
+        expected = """
+        <sphereCoords lat="90" lon="45" rev="60" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, SphereCoords):
+        src = """
+        <sphereCoords lat="90" lon="45" rev="60" />
+        """
+        node = fromstring(src)
+        rot = SphereCoords.from_tree(node)
+        assert rot == SphereCoords(lat=90, lon=45, rev=60)

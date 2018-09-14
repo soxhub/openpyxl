@@ -138,6 +138,8 @@ class GroupTransform2D(Serialisable):
 
 class SphereCoords(Serialisable):
 
+    tagname = "sphereCoords" # usually
+
     lat = Integer()
     lon = Integer()
     rev = Integer()
