@@ -761,6 +761,8 @@ class Worksheet(_WorkbookChild):
             cell_range = CellRange(cell_range)
         if not isinstance(cell_range, CellRange):
             raise ValueError("Only CellRange objects can be moved")
+        if not rows and not cols:
+            return
         min_col, min_row, max_col, max_row = cell_range.bounds
         # rebase moved range
         cell_range.shift(row_shift=rows, col_shift=cols)
@@ -769,11 +771,23 @@ class Worksheet(_WorkbookChild):
         right = cols > 0
         r = sorted(range(min_row, max_row+1), reverse=down)
         c = sorted(range(min_col, max_col+1), reverse=right)
-        for coord in product(r, c):
-            cell = self._get_cell(*coord)
-            self._cells[(cell.row + rows,
-                         cell.column + cols)] = cell
-            del self._cells[(cell.row, cell.column)]
+        for row, column in product(r, c):
+            self._move_cell(row, column, rows, cols)
+
+
+    def _move_cell(self, row, column, row_offset, col_offset):
+        """
+        Move a cell from one place to another.
+        Delete at old index
+        Rebase coordinate
+        """
+        cell = self._get_cell(row, column)
+        new_row = cell.row + row_offset
+        new_col = cell.column + col_offset
+        self._cells[new_row, new_col] = cell
+        del self._cells[(cell.row, cell.column)]
+        cell.row = new_row
+        cell.column = new_col
 
 
     def _invalid_row(self, iterable):

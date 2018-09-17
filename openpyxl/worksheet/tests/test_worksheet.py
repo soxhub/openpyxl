@@ -670,6 +670,21 @@ class TestEditableWorksheet:
         assert ws['A6'].value == None
 
 
+    def test_move_cell(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws._move_cell(1, 1, 3, 6)
+        cell = ws['G4']
+        assert cell.value == 'A1'
+        assert cell.coordinate == 'G4'
+        assert ws['A1'].value is None
+
+
+    def test_move_nothing(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws.move_range("B2:E5")
+        assert ws['B2'].value == "B2"
+
+
     def test_move_range_down(self, dummy_worksheet):
         ws = dummy_worksheet
         cr = CellRange("B2:E5")
