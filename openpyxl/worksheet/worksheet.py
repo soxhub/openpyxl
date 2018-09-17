@@ -773,7 +773,7 @@ class Worksheet(_WorkbookChild):
             cell = self._get_cell(*coord)
             self._cells[(cell.row + rows,
                          cell.column + cols)] = cell
-            del self._cells[cell.row, cell.column]
+            del self._cells[(cell.row, cell.column)]
 
 
     def _invalid_row(self, iterable):
