@@ -155,9 +155,6 @@ class WorkbookWriter:
     def write_rels(self):
         """Write the workbook relationships xml."""
 
-        strings =  Relationship(type='sharedStrings', Target='sharedStrings.xml')
-        self.rels.append(strings)
-
         styles =  Relationship(type='styles', Target='styles.xml')
         self.rels.append(styles)
 

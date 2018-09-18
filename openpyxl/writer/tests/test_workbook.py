@@ -244,7 +244,6 @@ def test_write_virtual_workbook():
                          [
                              (None, 'workbook.xml.rels',),
                              (True, 'workbook_vba.xml.rels'),
-
                          ]
                          )
 def test_write_workbook_rels(datadir, vba, filename, WorkbookWriter):
