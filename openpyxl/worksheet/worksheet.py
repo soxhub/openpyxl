@@ -6,7 +6,7 @@ from __future__ import absolute_import
 
 # Python stdlib imports
 from itertools import islice, product
-from operator import attrgetter
+from operator import itemgetter
 import re
 from inspect import isgenerator
 from warnings import warn
@@ -677,28 +677,27 @@ class Worksheet(_WorkbookChild):
         Move either rows or columns around by the offset
         """
         reverse = offset > 0 # start at the end if inserting
+        row_offset = 0
+        col_offset = 0
 
         # need to make affected ranges contiguous
-        cells = self.iter_rows(min_row=min_row)
-
-        if row_or_col == 'col':
+        if row_or_col == 'row':
+            cells = self.iter_rows(min_row=min_row)
+            row_offset = offset
+            key = 0
+        else:
             cells = self.iter_cols(min_col=min_col)
+            col_offset = offset
+            key = 1
         cells = list(cells)
 
-        cells = sorted(self._cells.values(), key=attrgetter(row_or_col), reverse=reverse)
-
-        for cell in cells:
-            if min_row and cell.row < min_row:
+        for row, column in sorted(self._cells, key=itemgetter(key), reverse=reverse):
+            if min_row and row < min_row:
                 continue
-            elif min_col and cell.col_idx < min_col:
+            elif min_col and column < min_col:
                 continue
 
-            del self._cells[(cell.row, cell.column)] # remove old ref
-
-            val = getattr(cell, row_or_col)
-            setattr(cell, row_or_col, val+offset) # calculate new coords
-
-            self._cells[(cell.row, cell.column)] = cell # add new ref
+            self._move_cell(row, column, row_offset, col_offset)
 
 
     def insert_rows(self, idx, amount=1):
