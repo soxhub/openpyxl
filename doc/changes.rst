@@ -28,6 +28,7 @@ Deprecations
 
 
 * `#877 <https://bitbucket.org/openpyxl/openpyxl/issues/877>`_ Cannot control how missing values are displayed in charts.
+* `#948 <https://bitbucket.org/openpyxl/openpyxl/issues/948>`_ Cell references can't be used for chart titles
 
 
 2.5.7 (2018-09-13)

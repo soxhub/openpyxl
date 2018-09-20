@@ -51,6 +51,13 @@ class RichText(Serialisable):
 
 class Text(Serialisable):
 
+    """
+    The value can be either a cell reference or a text element
+    If both are present then the reference will be used.
+    """
+
+    tagname = "tx"
+
     strRef = Typed(expected_type=StrRef, allow_none=True)
     rich = Typed(expected_type=RichText, allow_none=True)
 
@@ -64,3 +71,9 @@ class Text(Serialisable):
         if rich is None:
             rich = RichText()
         self.rich = rich
+
+
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        if self.strRef and self.rich:
+            self.rich = None # can only have one
+        return super(Text, self).to_tree(tagname, idx, namespace)
