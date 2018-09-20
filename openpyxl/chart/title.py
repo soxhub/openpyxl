@@ -55,6 +55,7 @@ class Title(Serialisable):
         self.txPr = txPr
 
 
+
 def title_maker(text):
     title = Title()
     paras = [Paragraph(r=[RegularTextRun(t=s)]) for s in text.split("\n")]
