@@ -560,7 +560,7 @@ class Worksheet(_WorkbookChild):
         :param max_col: largest column index (1-based index)
         :type max_col: int
 
-        :param max_row: smallest row index (1-based index)
+        :param max_row: largest row index (1-based index)
         :type max_row: int
 
         :rtype: generator
@@ -611,7 +611,7 @@ class Worksheet(_WorkbookChild):
         :param max_col: largest column index (1-based index)
         :type max_col: int
 
-        :param max_row: smallest row index (1-based index)
+        :param max_row: largest row index (1-based index)
         :type max_row: int
 
         :rtype: generator

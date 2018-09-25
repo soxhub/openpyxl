@@ -89,3 +89,24 @@ As shown above, tokens have three attributes of interest:
     to distinguish between the comma and semicolon. Commas produce
     tokens of subtype ``ARG`` whereas semicolons produce tokens of
     subtype ``ROW``
+
+
+Translating formulae from one location to another
+-------------------------------------------------
+
+
+It is possible to translate (in the mathematical sense) formulae from one
+location to another using the :class:`openpyxl.formulas.translate.Translator`
+class. For example, there a range of cells ``B2:E7`` with a sum of each
+row in column ``F``::
+
+    >>> from openpyxl.formula.translate import Translator
+    >>> ws['F2'] = "=SUM(B2:E2)"
+    >>> # move the formula one colum to the right
+    >>> formula = Translator("=SUM(B2:E2)", "G2")
+    '=SUM(C2:F2)'
+
+.. note::
+
+    This is limited to the same general restrictions of formulae: `A1`
+    cell-references only and no support for defined names.

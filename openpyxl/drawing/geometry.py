@@ -138,6 +138,8 @@ class GroupTransform2D(Serialisable):
 
 class SphereCoords(Serialisable):
 
+    tagname = "sphereCoords" # usually
+
     lat = Integer()
     lon = Integer()
     rev = Integer()
@@ -219,9 +221,11 @@ class LightRig(Serialisable):
 
 class Vector3D(Serialisable):
 
-    dx = Typed(expected_type=Coordinate, )
-    dy = Typed(expected_type=Coordinate, )
-    dz = Typed(expected_type=Coordinate, )
+    tagname = "vector"
+
+    dx = Integer() # can be in or universl measure :-/
+    dy = Integer()
+    dz = Integer()
 
     def __init__(self,
                  dx=None,
@@ -235,9 +239,11 @@ class Vector3D(Serialisable):
 
 class Point3D(Serialisable):
 
-    x = Typed(expected_type=Coordinate, )
-    y = Typed(expected_type=Coordinate, )
-    z = Typed(expected_type=Coordinate, )
+    tagname = "anchor"
+
+    x = Integer()
+    y = Integer()
+    z = Integer()
 
     def __init__(self,
                  x=None,
