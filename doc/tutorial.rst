@@ -199,7 +199,7 @@ or the :func:`openpyxl.worksheet.Worksheet.columns` property::
 
 
 Data storage
-++++++++++++
+------------
 
 Once we have a :class:`openpyxl.cell.Cell`, we can assign it a value::
 
@@ -229,7 +229,7 @@ You can also enable type and format inference::
 
 
 Saving to a file
-================
+++++++++++++++++
 
 The simplest and safest way to save a workbook is by using the
 :func:`openpyxl.workbook.Workbook.save()` method of the
@@ -260,13 +260,13 @@ such as Pyramid, Flask or Django then you can simply provide a
 `NamedTemporaryFile`::
 
 
->>> from tempfile import NamedTemporaryFile
->>> from openpyxl import Workbook
->>> wb = Workbook()
->>> with NamedTemporaryFile() as tmp:
-        wb.save(tmp.name)
-        tmp.seek(0)
-        stream = tmp.read()
+    >>> from tempfile import NamedTemporaryFile
+    >>> from openpyxl import Workbook
+    >>> wb = Workbook()
+    >>> with NamedTemporaryFile() as tmp:
+            wb.save(tmp.name)
+            tmp.seek(0)
+            stream = tmp.read()
 
 
 You can specify the attribute `template=True`, to save a workbook
