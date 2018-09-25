@@ -97,8 +97,8 @@ Translating formulae from one location to another
 
 It is possible to translate (in the mathematical sense) formulae from one
 location to another using the :class:`openpyxl.formulas.translate.Translator`
-class. For example, there a range of cells `B2:E7` with a sum of each
-row in column `F`::
+class. For example, there a range of cells ``B2:E7`` with a sum of each
+row in column ``F``::
 
     >>> from openpyxl.formula.translate import Translator
     >>> ws['F2'] = "=SUM(B2:E2)"
@@ -106,7 +106,7 @@ row in column `F`::
     >>> formula = Translator("=SUM(B2:E2)", "G2")
     '=SUM(C2:F2)'
 
-..note::
+.. note::
 
-This is limited to the same general restrictions of formulae: `A1`
-cell-references only and no support for defined names.
+    This is limited to the same general restrictions of formulae: `A1`
+    cell-references only and no support for defined names.
