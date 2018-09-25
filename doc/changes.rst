@@ -5,7 +5,8 @@
 Major changes
 -------------
 
-* Implement robust for merged cells so that these can be formatted the way Excel does without confusion. Thanks to Magnus Schieder.
+* Implement robust for merged cells so that these can be formatted the way
+Excel does without confusion. Thanks to Magnus Schieder.
 
 
 Minor changes
@@ -23,12 +24,17 @@ Deprecations
 * Type inference and coercion for cell values
 
 
-2.5.8 (unreleased)
+2.5.9 (unreleased)
+==================
+
+
+2.5.8 (2018-09-25)
 ==================
 
 
 * `#877 <https://bitbucket.org/openpyxl/openpyxl/issues/877>`_ Cannot control how missing values are displayed in charts.
 * `#948 <https://bitbucket.org/openpyxl/openpyxl/issues/948>`_ Cell references can't be used for chart titles
+* `#1095 <https://bitbucket.org/openpyxl/openpyxl/issues/1095>`_ Params in iter_cols and iter_rows methods are slightly wrong.
 
 
 2.5.7 (2018-09-13)

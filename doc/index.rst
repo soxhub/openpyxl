@@ -163,6 +163,12 @@ Other topics
 
         optimized
 
+
+    .. toctree::
+        :maxdepth: 1
+
+        editing_worksheets
+
     .. toctree::
         :maxdepth: 1
 
