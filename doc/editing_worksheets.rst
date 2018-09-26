@@ -29,9 +29,9 @@ To delete the columns ``F:H``::
 Moving ranges of cells
 ----------------------
 
-You can also move ranges of cells within a worksheet:
+You can also move ranges of cells within a worksheet::
 
->>> ws.move_range("D4:F10", rows=-1, cols=2)
+    >>> ws.move_range("D4:F10", rows=-1, cols=2)
 
 Will move the cells in the range ``D4:F10`` up one row, and right two columns. The cells will overwrite any existing cells.
 
