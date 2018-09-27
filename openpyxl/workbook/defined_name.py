@@ -178,10 +178,16 @@ class DefinedNameList(Serialisable):
 
     def _cleanup(self):
         """
-        Strip broken or unknown definitions
+        Strip invalid definitions and remove special hidden ones
         """
-        self.delete("_xlnm.Print_Titles")
-        self.delete("_xlnm.Print_Area")
+        valid_names = []
+        for n in self.definedName:
+            if n.name in ("_xlnm.Print_Titles", "_xlnm.Print_Area") and n.localSheetId is None:
+                continue
+            elif n.name == "_xlnm._FilterDatabase":
+                continue
+            valid_names.append(n)
+        self.definedName = valid_names
 
 
     def _duplicate(self, defn):
