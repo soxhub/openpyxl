@@ -302,9 +302,10 @@ class TestDefinitionList:
             xml = src.read()
         node = fromstring(xml)
         dl = DefinedNameList.from_tree(node)
-        assert len(dl) == 4
+        assert len(dl) == 5
         dl._cleanup()
         assert len(dl) == 2
+        assert dl.get("_xlnm._FilterDatabase", 0) is None
 
 
     def test_localnames(self, DefinedNameList, datadir):
