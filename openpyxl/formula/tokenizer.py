@@ -29,7 +29,7 @@ class Tokenizer(object):
     """
 
     SN_RE = re.compile("^[1-9](\\.[0-9]+)?[Ee]$")  # Scientific notation
-    WSPACE_RE = re.compile(" +")
+    WSPACE_RE = re.compile("[ \\n]+")
     STRING_REGEXES = {
         # Inside a string, all characters are treated as literals, except for
         # the quote character used to start the string. That character, when
@@ -68,6 +68,7 @@ class Tokenizer(object):
             ('[', self._parse_brackets),
             ('#', self._parse_error),
             (' ', self._parse_whitespace),
+            ('\n', self._parse_whitespace),
             ('+-*/^&=><%', self._parse_operator),
             ('{(', self._parse_opener),
             (')}', self._parse_closer),
@@ -163,8 +164,8 @@ class Tokenizer(object):
         Returns the number of spaces found. (Does not update self.offset).
 
         """
-        assert self.formula[self.offset] == ' '
-        self.items.append(Token(' ', Token.WSPACE))
+        assert self.formula[self.offset] in (' ', '\n')
+        self.items.append(Token(self.formula[self.offset], Token.WSPACE))
         return self.WSPACE_RE.match(self.formula[self.offset:]).end()
 
     def _parse_operator(self):
