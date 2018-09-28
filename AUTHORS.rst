@@ -75,6 +75,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki
+* Masato Yoshida
 
 Project logo designed by Eric Gazoni, font by claudeserieux
 (http://www.dafont.com/profile.php?user=337503)
