@@ -172,3 +172,36 @@ def test_read_after_closing(WriteOnlyWorksheet):
     diff = compare_xml(xml, expected)
     assert diff is None, diff
 
+
+def test_write_only_cell(WriteOnlyWorksheet):
+    from openpyxl.cell import WriteOnlyCell
+    ws = WriteOnlyWorksheet
+    c = WriteOnlyCell(ws, value=5)
+    ws.append([c])
+    ws.close()
+    with open(ws._writer.out, "rb") as src:
+        xml = src.read()
+    expected = """
+    <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <sheetPr>
+      <outlinePr summaryRight="1" summaryBelow="1"/>
+      <pageSetUpPr/>
+    </sheetPr>
+    <sheetViews>
+      <sheetView workbookViewId="0">
+        <selection sqref="A1" activeCell="A1"/>
+      </sheetView>
+    </sheetViews>
+    <sheetFormatPr baseColWidth="8" defaultRowHeight="15"/>
+    <sheetData>
+        <row r="1">
+        <c t="n" r="A1">
+          <v>5</v>
+        </c>
+        </row>
+    </sheetData>
+    <pageMargins bottom="1" footer="0.5" header="0.5" left="0.75" right="0.75" top="1"/>
+    </worksheet>
+    """
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
