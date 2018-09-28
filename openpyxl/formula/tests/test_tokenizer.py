@@ -323,7 +323,7 @@ class TestTokenizer(object):
             tok._parse_error()
 
     @pytest.mark.parametrize('formula, value',
-        [(c * i, c) for c in (' ', '\n') for i in range(1, 10)])
+        [(' ' * i, ' ') for i in range(1, 10)] + [('\n', '\n')])
     def test_parse_whitespace(self, tokenizer, formula, value):
         tok = tokenizer.Tokenizer(formula)
         tok.offset = 0
