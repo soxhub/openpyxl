@@ -2,7 +2,16 @@
 ==================
 
 
+Bugfixes
+--------
+
 * `#1000 <https://bitbucket.org/openpyxl/openpyxl/issues/1000>`_ Clean AutoFilter name definitions
+
+
+Pull Requests
+-------------
+
+* `PR281 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/281>`_ Allow newlines in formulae
 
 
 2.5.8 (2018-09-25)
