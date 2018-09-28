@@ -29,7 +29,7 @@ class Tokenizer(object):
     """
 
     SN_RE = re.compile("^[1-9](\\.[0-9]+)?[Ee]$")  # Scientific notation
-    WSPACE_RE = re.compile("[ \\n]+")
+    WSPACE_RE = re.compile(r"[ \n]+")
     STRING_REGEXES = {
         # Inside a string, all characters are treated as literals, except for
         # the quote character used to start the string. That character, when
