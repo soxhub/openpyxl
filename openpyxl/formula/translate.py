@@ -11,8 +11,12 @@ to identify the parts of the formula that need to change.
 
 import re
 from .tokenizer import Tokenizer, Token
-from openpyxl.utils import (coordinate_from_string, column_index_from_string,
-                            get_column_letter)
+from openpyxl.utils import (
+    coordinate_to_tuple,
+    coordinate_from_string,
+    column_index_from_string,
+    get_column_letter
+)
 
 class TranslatorError(Exception):
     """
@@ -133,14 +137,16 @@ class Translator(object):
         return (ws_part + cls.translate_col(match.group(1), cdelta)
                 + cls.translate_row(match.group(2), rdelta))
 
-    def translate_formula(self, dest):
+    def translate_formula(self, dest=None, row=None, col=None):
         """
-        Convert the formula into A1 notation.
+        Convert the formula into A1 notation, or as row and column coordinates
 
         The formula is converted into A1 assuming it is assigned to the cell
         whose address is `dest` (no worksheet name).
 
         """
+        if not any([dest, row, col]):
+            raise TypeError("You must provide coordinates for the target")
         tokens = self.get_tokens()
         if not tokens:
             return ""
@@ -152,12 +158,13 @@ class Translator(object):
         # range A1-XFD1048576 to be an error. All other names outside this
         # range can be defined as names and overrides a cell reference if an
         # ambiguity exists. (I.18.2.5)
-        dcol, drow = coordinate_from_string(dest)
-        dcol = column_index_from_string(dcol)
-        row_delta = drow - self.row
-        col_delta = dcol - self.col
+        if dest:
+            row, col = coordinate_to_tuple(dest)
+        row_delta = row - self.row
+        col_delta = col - self.col
         for token in tokens:
-            if token.type == Token.OPERAND and token.subtype == Token.RANGE:
+            if (token.type == Token.OPERAND
+                and token.subtype == Token.RANGE):
                 out.append(self.translate_range(token.value, row_delta,
                                                 col_delta))
             else:
