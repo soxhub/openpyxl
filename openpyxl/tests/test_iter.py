@@ -494,10 +494,3 @@ def test_read_mac_date(datadir, read_only):
     wb = load_workbook("mac_date.xlsx", read_only=read_only)
     ws = wb.active
     assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)
-
-
-def test_formula_with_line_feed(datadir):
-    datadir.join("genuine").chdir()
-    wb = load_workbook(filename="formula_with_line_feed.xlsx", data_only=True)
-    ws = wb['Sheet1']
-    assert ws['B1'].value == "abc"
