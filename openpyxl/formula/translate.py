@@ -13,7 +13,6 @@ import re
 from .tokenizer import Tokenizer, Token
 from openpyxl.utils import (
     coordinate_to_tuple,
-    coordinate_from_string,
     column_index_from_string,
     get_column_letter
 )
@@ -49,8 +48,7 @@ class Translator(object):
         # Excel errors out when a workbook has formulae in R1C1 notation,
         # regardless of the calcPr:refMode setting, so I'm assuming the
         # formulae stored in the workbook must be in A1 notation.
-        col, self.row = coordinate_from_string(origin)
-        self.col = column_index_from_string(col)
+        self.row, self.col = coordinate_to_tuple(origin)
         self.tokenizer = Tokenizer(formula)
 
     def get_tokens(self):
