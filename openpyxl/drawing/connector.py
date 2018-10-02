@@ -117,6 +117,7 @@ class Shape(Serialisable):
     macro = String(allow_none=True)
     textlink = String(allow_none=True)
     fPublished = Bool(allow_none=True)
+    fLocksText = Bool(allow_none=True)
     nvSpPr = Typed(expected_type=ShapeMeta, allow_none=True)
     meta = Alias("nvSpPr")
     spPr = Typed(expected_type=GraphicalProperties)
@@ -128,6 +129,7 @@ class Shape(Serialisable):
                  macro=None,
                  textlink=None,
                  fPublished=None,
+                 fLocksText=None,
                  nvSpPr=None,
                  spPr=None,
                  style=None,
@@ -136,6 +138,7 @@ class Shape(Serialisable):
         self.macro = macro
         self.textlink = textlink
         self.fPublished = fPublished
+        self.fLocksText = fLocksText
         self.nvSpPr = nvSpPr
         self.spPr = spPr
         self.style = style
