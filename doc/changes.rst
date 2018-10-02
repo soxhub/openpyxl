@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#1000 <https://bitbucket.org/openpyxl/openpyxl/issues/1000>`_ Clean AutoFilter name definitions
+* `#1106 <https://bitbucket.org/openpyxl/openpyxl/issues/1106>`_ Attribute missing from Shape object
 
 
 Pull Requests
