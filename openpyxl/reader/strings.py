@@ -2,7 +2,6 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.cell.text import Text
-from openpyxl.utils.indexed_list import IndexedList
 
 from openpyxl.xml.functions import iterparse
 from openpyxl.xml.constants import SHEET_MAIN_NS
