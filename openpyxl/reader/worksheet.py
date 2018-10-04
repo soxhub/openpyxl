@@ -53,26 +53,6 @@ from openpyxl.descriptors.excel import ExtensionList, Extension
 from openpyxl.worksheet.table import TablePartList
 
 
-def _get_xml_iter(xml_source):
-    """
-    Possible inputs: strings, bytes, members of zipfile, temporary file
-    Always return a file like object
-    """
-    if not hasattr(xml_source, 'read'):
-        try:
-            xml_source = xml_source.encode("utf-8")
-        except (AttributeError, UnicodeDecodeError):
-            pass
-        return BytesIO(xml_source)
-    else:
-        try:
-            xml_source.seek(0)
-        except:
-            # could be a zipfile
-            pass
-        return xml_source
-
-
 class WorkSheetParser(object):
 
     CELL_TAG = '{%s}c' % SHEET_MAIN_NS
@@ -123,8 +103,7 @@ class WorkSheetParser(object):
             '{%s}scenarios' % SHEET_MAIN_NS: ('scenarios', ScenarioList),
         }
 
-        stream = _get_xml_iter(self.source)
-        it = iterparse(stream, tag=dispatcher)
+        it = iterparse(self.source, tag=dispatcher)
 
         for _, element in it:
             tag_name = element.tag

@@ -175,7 +175,8 @@ class ExcelReader:
         ct = self.package.find(SHARED_STRINGS)
         if ct is not None:
             strings_path = ct.PartName[1:]
-            self.shared_strings = read_string_table(self.archive.read(strings_path))
+            with self.archive.open(strings_path,) as src:
+                self.shared_strings = read_string_table(src)
 
 
     def read_workbook(self):
