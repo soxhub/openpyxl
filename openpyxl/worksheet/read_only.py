@@ -25,7 +25,7 @@ from openpyxl.utils import (
 )
 from openpyxl.utils.datetime import from_excel
 from openpyxl.worksheet.dimensions import SheetDimension
-from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
+from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL, _cast_number
 
 
 def read_dimension(source):
@@ -116,9 +116,9 @@ class ReadOnlyWorksheet(object):
         style = self.parent._cell_styles[style_id]
         key = style.numFmtId
         if key < 164:
-            fmt = BUILTIN_FORMATS.get(_id, "General")
+            fmt = BUILTIN_FORMATS.get(key, "General")
         else:
-            fmt = self.parent._number_formats[_id - 164]
+            fmt = self.parent._number_formats[key - 164]
         is_date = is_date_format(fmt)
         self._number_format_cache[style_id] = is_date
         return is_date
@@ -151,7 +151,7 @@ class ReadOnlyWorksheet(object):
 
                 # return cells from a row
                 if min_row <= row_id:
-                    yield tuple(self._get_row(element, min_col, max_col, row_counter=row_counter))
+                    yield tuple(self._get_row(element, min_col, max_col, row_counter, values_only))
                     row_counter += 1
 
                 element.clear()
@@ -197,12 +197,13 @@ class ReadOnlyWorksheet(object):
                     value = cell.findtext(VALUE_TAG) or None
 
                 if values_only:
-                    if data_type == "n" and style_id:
-                        if self._is_date(style_id):
+                    if data_type == "n" and value is not None:
+                        value = _cast_number(value)
+                        if style_id and self._is_date(style_id):
                             value = from_excel(value, self.base_date)
                     elif data_type == "s":
                         value = self.shared_strings[int(value)]
-                        yield value
+                    yield value
                 else:
                     yield ReadOnlyCell(self, row, column,
                                    value, data_type, style_id)
