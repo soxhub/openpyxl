@@ -10,7 +10,7 @@ from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
 
 # constants
-COORD_RE = re.compile(r'^[$]?([A-Z]+)[$]?(\d+)$')
+COORD_RE = re.compile(r'^[$]?([A-Za-z]+)[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
 ROW_RANGE = r"""\d+:\d+:"""
 RANGE_EXPR = r"""
@@ -42,7 +42,7 @@ def get_column_interval(start, end):
 
 def coordinate_from_string(coord_string):
     """Convert a coordinate string like 'B12' to a tuple ('B', 12)"""
-    match = COORD_RE.match(coord_string.upper())
+    match = COORD_RE.match(coord_string)
     if not match:
         msg = 'Invalid cell coordinates (%s)' % coord_string
         raise CellCoordinatesException(msg)
