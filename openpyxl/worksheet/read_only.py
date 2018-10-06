@@ -182,19 +182,20 @@ class ReadOnlyWorksheet(object):
                 style_id = int(cell.get('s', 0))
                 value = None
 
-                formula = cell.findtext(FORMULA_TAG)
-                if formula is not None and not data_only:
-                    data_type = 'f'
-                    value = "=%s" % formula
+                if not data_only:
+                    formula = cell.findtext(FORMULA_TAG)
+                    if formula is not None:
+                        data_type = 'f'
+                        value = "=%s" % formula
 
-                elif data_type == 'inlineStr':
+                if data_type == 'inlineStr':
                     child = cell.find(INLINE_TAG)
                     if child is not None:
                         richtext = Text.from_tree(child)
                         value = richtext.content
 
                 else:
-                    value = cell.findtext(VALUE_TAG) or None
+                    value = cell.findtext(VALUE_TAG)
 
                 if values_only:
                     if data_type == "n" and value is not None:
