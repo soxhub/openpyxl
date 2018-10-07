@@ -56,7 +56,7 @@ def coordinate_from_string(coord_string):
 
 def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
-    m = ABSOLUTE_RE.match(coord_string.upper())
+    m = ABSOLUTE_RE.match(coord_string)
     if not m:
         raise ValueError("Value is not a valid coordinate range")
 
