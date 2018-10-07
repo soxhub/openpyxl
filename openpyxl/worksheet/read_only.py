@@ -197,13 +197,16 @@ class ReadOnlyWorksheet(object):
                 elif data_type != 'f':
                     value = cell.findtext(VALUE_TAG) or None
 
+                if data_type == "n" and value is not None:
+                    value = _cast_number(value)
+                    if style_id and self._is_date(style_id):
+                        value = from_excel(value, self.base_date)
+                elif data_type == "s":
+                    value = self.shared_strings[int(value)]
+                elif data_type == "b":
+                    value = value == "1"
+
                 if values_only:
-                    if data_type == "n" and value is not None:
-                        value = _cast_number(value)
-                        if style_id and self._is_date(style_id):
-                            value = from_excel(value, self.base_date)
-                    elif data_type == "s":
-                        value = self.shared_strings[int(value)]
                     yield value
                 else:
                     yield ReadOnlyCell(self, row, column,

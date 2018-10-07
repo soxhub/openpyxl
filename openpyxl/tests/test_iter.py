@@ -73,6 +73,7 @@ def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [])
+    ws.shared_strings = ['A', 'B']
 
     dims = ws.calculate_dimension(True)
     assert dims == "A1:AA30"
@@ -140,6 +141,7 @@ def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
+    ws.shared_strings = ['A', 'B']
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
 

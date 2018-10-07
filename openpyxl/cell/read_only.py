@@ -45,13 +45,6 @@ class ReadOnlyCell(object):
     def __repr__(self):
         return "<ReadOnlyCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-    @property
-    def shared_strings(self):
-        return self.parent.shared_strings
-
-    @property
-    def base_date(self):
-        return self.parent.base_date
 
     @property
     def coordinate(self):
@@ -105,29 +98,12 @@ class ReadOnlyCell(object):
 
     @property
     def value(self):
-        if self._value is None:
-            return
-        if self.data_type == 'n':
-            if self.style_array:
-                if is_date_format(self.number_format):
-                    return from_excel(self._value, self.base_date)
-            return self._value
-        if self.data_type == 'b':
-            return self._value == '1'
-        elif self.data_type in(['inlineStr', 'str']):
-            return self._value
-        elif self.data_type == 's':
-            return self.shared_strings[int(self._value)]
         return self._value
 
     @value.setter
     def value(self, value):
         if self._value is not None:
             raise AttributeError("Cell is read only")
-        if value is None:
-            self.data_type = 'n'
-        elif self.data_type == 'n':
-            value = _cast_number(value)
         self._value = value
 
 
