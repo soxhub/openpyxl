@@ -43,7 +43,6 @@ from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.utils import (
-    coordinate_from_string,
     get_column_letter,
     column_index_from_string,
     coordinate_to_tuple,
