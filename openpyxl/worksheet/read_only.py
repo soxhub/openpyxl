@@ -194,8 +194,8 @@ class ReadOnlyWorksheet(object):
                         richtext = Text.from_tree(child)
                         value = richtext.content
 
-                else:
-                    value = cell.findtext(VALUE_TAG)
+                elif data_type != 'f':
+                    value = cell.findtext(VALUE_TAG) or None
 
                 if values_only:
                     if data_type == "n" and value is not None:
