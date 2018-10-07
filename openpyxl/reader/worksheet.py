@@ -44,7 +44,6 @@ from openpyxl.formula.translate import Translator
 from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.utils import (
     get_column_letter,
-    column_index_from_string,
     coordinate_to_tuple,
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601
@@ -65,7 +64,6 @@ class WorkSheetParser(object):
         self.epoch = ws.parent.epoch
         self.source = xml_source
         self.shared_strings = shared_strings
-        self.guess_types = ws.parent.guess_types
         self.data_only = ws.parent.data_only
         self.styles = ws.parent._cell_styles
         self.differential_styles = ws.parent._differential_styles
@@ -222,7 +220,7 @@ class WorkSheetParser(object):
                     richtext = Text.from_tree(child)
                     value = richtext.content
 
-        if self.guess_types or value is None:
+        if value is None:
             cell.value = value
         else:
             cell._value = value
