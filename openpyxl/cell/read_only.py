@@ -115,9 +115,9 @@ class ReadOnlyCell(object):
         if self.data_type == 'b':
             return self._value == '1'
         elif self.data_type in(['inlineStr', 'str']):
-            return unicode(self._value)
+            return self._value
         elif self.data_type == 's':
-            return unicode(self.shared_strings[int(self._value)])
+            return self.shared_strings[int(self._value)]
         return self._value
 
     @value.setter
