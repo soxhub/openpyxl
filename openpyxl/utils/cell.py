@@ -10,7 +10,7 @@ from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
 
 # constants
-COORD_RE = re.compile(r'^[$]?([A-Za-z]+)[$]?(\d+)$')
+COORD_RE = re.compile(r'^[$]?([A-Za-z]{1,3})[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
 ROW_RANGE = r"""\d+:\d+:"""
 RANGE_EXPR = r"""
