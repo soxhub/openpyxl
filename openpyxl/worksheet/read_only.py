@@ -160,7 +160,7 @@ class ReadOnlyWorksheet(object):
     def _get_row(self, element, min_col=1, max_col=None, row_counter=None, values_only=False):
         """Return cells from a particular row"""
         col_counter = min_col
-        data_only = getattr(self.parent, 'data_only', False)
+        data_only = self.parent.data_only
 
         for cell in safe_iterator(element, CELL_TAG):
             coordinate = cell.get('r')
