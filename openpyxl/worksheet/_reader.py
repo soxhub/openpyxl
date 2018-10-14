@@ -46,7 +46,7 @@ from openpyxl.utils import (
     get_column_letter,
     coordinate_to_tuple,
     )
-from openpyxl.utils.datetime import from_excel, from_ISO8601
+from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList, Extension
 from openpyxl.worksheet.table import TablePartList
 
@@ -59,18 +59,36 @@ class WorkSheetParser(object):
     MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
     INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
 
-    def __init__(self, ws, xml_source, shared_strings):
-        self.ws = ws
-        self.epoch = ws.parent.epoch
+    def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, cell_styles=[]):
+        self.epoch = epoch
         self.source = xml_source
         self.shared_strings = shared_strings
-        self.data_only = ws.parent.data_only
-        self.styles = ws.parent._cell_styles
-        self.differential_styles = ws.parent._differential_styles
-        self.keep_vba = ws.parent.vba_archive is not None
-        self.shared_formula_masters = {}  # {si_str: Translator()}
+        self.data_only = data_only
+        self.shared_formula_masters = {}
         self._row_count = self._col_count = 0
         self.tables = []
+        self._number_format_cache = {}
+        self.row_dimensions = {}
+        self.col_dimensions = {}
+        self.cell_styles = cell_styles
+        self.number_formats = []
+
+    def _is_date(self, style_id):
+        """
+        Check whether a particular style has a date format
+        """
+        if style_id in self._number_format_cache:
+            return self._number_format_cache[style_id]
+
+        style = self.cell_styles[style_id]
+        key = style.numFmtId
+        if key < 164:
+            fmt = BUILTIN_FORMATS.get(key, "General")
+        else:
+            fmt = self.number_formats[key - 164]
+        is_date = is_date_format(fmt)
+        self._number_format_cache[style_id] = is_date
+        return is_date
 
     def parse(self):
         dispatcher = {
@@ -92,7 +110,6 @@ class WorkSheetParser(object):
             '{%s}headerFooter' % SHEET_MAIN_NS: ('HeaderFooter', HeaderFooter),
             '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
             '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
-            #'{%s}sheet/{%s}sortState' % (SHEET_MAIN_NS, SHEET_MAIN_NS): ('sort_state', SortState),
             '{%s}sheetPr' % SHEET_MAIN_NS: ('sheet_properties', WorksheetProperties),
             '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
             '{%s}sheetFormatPr' % SHEET_MAIN_NS: ('sheet_format', SheetFormatProperties),
@@ -113,11 +130,9 @@ class WorkSheetParser(object):
                 setattr(self.ws, prop[0], obj)
                 element.clear()
 
-        self.ws._current_row = self.ws.max_row
-
 
     def parse_cell(self, element):
-        value = element.find(self.VALUE_TAG)
+        value = element.findtext(self.VALUE_TAG)
         if value is not None:
             value = value.text
         formula = element.find(self.FORMULA_TAG)
@@ -127,86 +142,44 @@ class WorkSheetParser(object):
         style_id = element.get('s')
 
         # assign formula to cell value unless only the data is desired
-        if formula is not None and not self.data_only:
+        # possible formulae types: shared, array, datatable
+        if not self.data_only and formula.text is not None:
             data_type = 'f'
-            if formula.text:
-                value = "=" + formula.text
-            else:
-                value = "="
             formula_type = formula.get('t')
-            if formula_type:
-                if formula_type != "shared":
-                    self.ws.formula_attributes[coordinate] = dict(formula.attrib)
+            value = "="
+            if formula.text:
+                value += formula
 
+            if formula_type == "array":
+                self.array_formulae[coordinate] = dict(formula.attrib)
+
+            elif formula_type == "shared":
+                idx = formula.get('si')
+                if idx in self.shared_formula_masters:
+                    trans = self.shared_formula_masters[idx]
+                    value = trans.translate_formula(coordinate)
                 else:
-                    si = formula.get('si')  # Shared group index for shared formulas
-
-                    # The spec (18.3.1.40) defines shared formulae in
-                    # terms of the following:
-                    #
-                    # `master`: "The first formula in a group of shared
-                    #            formulas"
-                    # `ref`: "Range of cells which the formula applies
-                    #        to." It's a required attribute on the master
-                    #        cell, forbidden otherwise.
-                    # `shared cell`: "A cell is shared only when si is
-                    #                 used and t is `shared`."
-                    #
-                    # Whether to use the cell's given formula or the
-                    # master's depends on whether the cell is shared,
-                    # whether it's in the ref, and whether it defines its
-                    # own formula, as follows:
-                    #
-                    #  Shared?   Has formula? | In ref    Not in ref
-                    # ========= ==============|======== ===============
-                    #   Yes          Yes      | master   impl. defined
-                    #    No          Yes      |  own         own
-                    #   Yes           No      | master   impl. defined
-                    #    No           No      |  ??          N/A
-                    #
-                    # The ?? is because the spec is silent on this issue,
-                    # though my inference is that the cell does not
-                    # receive a formula at all.
-                    #
-                    # For this implementation, we are using the master
-                    # formula in the two "impl. defined" cases and no
-                    # formula in the "??" case. This choice of
-                    # implementation allows us to disregard the `ref`
-                    # parameter altogether, and does not require
-                    # computing expressions like `C5 in A1:D6`.
-                    # Presumably, Excel does not generate spreadsheets
-                    # with such contradictions.
-                    if si in self.shared_formula_masters:
-                        trans = self.shared_formula_masters[si]
-                        value = trans.translate_formula(coordinate)
-                    else:
-                        self.shared_formula_masters[si] = Translator(value, coordinate)
+                    self.shared_formula_masters[idx] = Translator(value, coordinate)
 
 
-        style_array = None
         if style_id is not None:
             style_id = int(style_id)
-            style_array = self.styles[style_id]
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
         else:
             row, column = self._row_count, self._col_count
 
-        cell = Cell(self.ws, row=row, column=column, style_array=style_array)
-        self.ws._cells[(row, column)] = cell
-
         if value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
-                if is_date_format(cell.number_format):
+                if self._is_date(style_id):
                     data_type = 'd'
                     value = from_excel(value, self.epoch)
-
-            elif data_type == 'b':
-                value = bool(int(value))
             elif data_type == 's':
                 value = self.shared_strings[int(value)]
+            elif data_type == 'b':
+                value = bool(int(value))
             elif data_type == 'str':
                 data_type = 's'
             elif data_type == 'd':
@@ -220,18 +193,14 @@ class WorkSheetParser(object):
                     richtext = Text.from_tree(child)
                     value = richtext.content
 
-        if value is None:
-            cell.value = value
-        else:
-            cell._value = value
-            cell.data_type = data_type
+        yield row, column, value, data_type, style_id
 
 
     def parse_merge(self, element):
         merged = MergeCells.from_tree(element)
-        self.ws.merged_cells.ranges = merged.mergeCell
-        for cr in merged.mergeCell:
-            self.ws._clean_merge_range(cr)
+        #self.ws.merged_cells.ranges = merged.mergeCell
+        #for cr in merged.mergeCell:
+            #self.ws._clean_merge_range(cr)
 
 
     def parse_column_dimensions(self, col):
@@ -240,8 +209,8 @@ class WorkSheetParser(object):
         attrs['index'] = column
         if 'style' in attrs:
             attrs['style'] = self.styles[int(attrs['style'])]
-        dim = ColumnDimension(self.ws, **attrs)
-        self.ws.column_dimensions[column] = dim
+        dim = ColumnDimension(**attrs)
+        self.column_dimensions[column] = dim
 
 
     def parse_row(self, row):
@@ -263,8 +232,8 @@ class WorkSheetParser(object):
         keys = set(attrs)
         if keys != set(['r', 'spans']) and keys != set(['r']):
             # don't create dimension objects unless they have relevant information
-            dim = RowDimension(self.ws, **attrs)
-            self.ws.row_dimensions[dim.index] = dim
+            dim = RowDimension(**attrs)
+            self.row_dimensions[dim.index] = dim
 
         for cell in safe_iterator(row, self.CELL_TAG):
             self.parse_cell(cell)
@@ -272,24 +241,24 @@ class WorkSheetParser(object):
 
     def parser_conditional_formatting(self, element):
         cf = ConditionalFormatting.from_tree(element)
-        for rule in cf.rules:
-            if rule.dxfId is not None:
-                rule.dxf = self.differential_styles[rule.dxfId]
-            self.ws.conditional_formatting[cf] = rule
+        #for rule in cf.rules:
+            #if rule.dxfId is not None:
+                #rule.dxf = self.differential_styles[rule.dxfId]
+            #self.ws.conditional_formatting[cf] = rule
 
 
     def parse_sheet_protection(self, element):
         self.ws.protection = SheetProtection.from_tree(element)
         password = element.get("password")
-        if password is not None:
-            self.ws.protection.set_password(password, True)
+        #if password is not None:
+            #self.ws.protection.set_password(password, True)
 
 
     def parse_legacy_drawing(self, element):
         if self.keep_vba:
             # For now just save the legacy drawing id.
             # We will later look up the file name
-            self.ws.legacy_drawing = element.get('{%s}id' % REL_NS)
+            return element.get('{%s}id' % REL_NS)
 
 
     def parse_extensions(self, element):
@@ -302,19 +271,30 @@ class WorkSheetParser(object):
 
     def parse_hyperlinks(self, element):
         link = Hyperlink.from_tree(element)
-        if link.id:
-            rel = self.ws._rels[link.id]
-            link.target = rel.Target
-        if ":" in link.ref:
-            # range of cells
-            for row in self.ws[link.ref]:
-                for cell in row:
-                    cell.hyperlink = link
-        else:
-            self.ws[link.ref].hyperlink = link
+        #if link.id:
+            #rel = self.ws._rels[link.id]
+            #link.target = rel.Target
+        #if ":" in link.ref:
+            ## range of cells
+            #for row in self.ws[link.ref]:
+                #for cell in row:
+                    #cell.hyperlink = link
+        #else:
+            #self.ws[link.ref].hyperlink = link
 
 
     def parse_tables(self, element):
-        for t in TablePartList.from_tree(element).tablePart:
-            rel = self.ws._rels[t.id]
-            self.tables.append(rel.Target)
+        return TablePartList.from_tree(element)
+        #for t in TablePartList.from_tree(element).tablePart:
+            #rel = self.ws._rels[t.id]
+            #self.tables.append(rel.Target)
+
+
+class Reader(object):
+    """
+    Create a parser and apply it to a workbook
+    """
+
+    def __init__(self, ws):
+        self.ws = ws
+        self.parser = WorkSheetParser(xml_source, shared_strings)
