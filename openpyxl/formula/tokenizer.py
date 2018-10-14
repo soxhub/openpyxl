@@ -192,8 +192,9 @@ class Tokenizer(object):
         elif not self.items:
             token = Token(curr_char, Token.OP_PRE)
         else:
-            prev = self.items[-1]
-            is_infix = (
+            prev = next((i for i in reversed(self.items)
+                         if i.type != Token.WSPACE), None)
+            is_infix = prev and (
                 prev.subtype == Token.CLOSE
                 or prev.type == Token.OP_POST
                 or prev.type == Token.OPERAND

@@ -222,6 +222,14 @@ class TestTokenizer(object):
           (',', OP_IN, ""),
           ('$C:$C', OPERAND, RANGE)]),
 
+        ('=3 +1-5',
+         [('3', 'OPERAND', 'NUMBER'),
+          (' ', 'WHITE-SPACE', ''),
+          ('+', 'OPERATOR-INFIX', ''),
+          ('1', 'OPERAND', 'NUMBER'),
+          ('-', 'OPERATOR-INFIX', ''),
+          ('5', 'OPERAND', 'NUMBER')]),
+
         ("Just text", [("Just text", LITERAL, "")]),
         ("123.456", [("123.456", LITERAL, "")]),
         ("31/12/1999", [("31/12/1999", LITERAL, "")]),
