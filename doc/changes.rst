@@ -13,6 +13,7 @@ Pull Requests
 -------------
 
 * `PR281 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/281>`_ Allow newlines in formulae
+* `PR284 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/282>`_ Fix whitespace in front of infix operator in formulae
 
 
 2.5.8 (2018-09-25)
