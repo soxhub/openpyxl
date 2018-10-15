@@ -8,6 +8,7 @@ class DummyWorkbook:
 
     epoch = None
     sheetnames = []
+    data_only = False
 
 
 @pytest.fixture
