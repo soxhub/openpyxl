@@ -73,7 +73,7 @@ def Workbook():
 @pytest.fixture
 def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
-    from .. worksheet import WorkSheetParser
+    from .._reader import WorkSheetParser
     ws = Workbook.create_sheet('sheet')
     return WorkSheetParser(ws, None, {0:'a'})
 
@@ -82,7 +82,7 @@ def WorkSheetParser(Workbook):
 def WorkSheetParserKeepVBA(Workbook):
     """Setup a parser instance with an empty source"""
     Workbook.vba_archive=True
-    from .. worksheet import WorkSheetParser
+    from .._reader import WorkSheetParser
     ws = Workbook.create_sheet('sheet')
     return WorkSheetParser(ws, {0:'a'}, {})
 
