@@ -20,6 +20,7 @@ def DummyWorkbook():
     class Workbook:
         epoch = None
         _cell_styles = [StyleArray([0, 0, 0, 0, 0, 0, 0, 0, 0])]
+        data_only = False
 
         def __init__(self):
             self.sheetnames = []
