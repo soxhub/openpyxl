@@ -52,12 +52,11 @@ from openpyxl.packaging.relationship import get_dependents, get_rels_path
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.drawing.image_reader import find_images
-from openpyxl.chart.reader import find_charts
 
 from openpyxl.xml.functions import fromstring
 
 from .worksheet import WorkSheetParser
+from .drawings import find_images
 
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
@@ -273,9 +272,10 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
                 drawings = rels.find(SpreadsheetDrawing._rel_type)
                 for rel in drawings:
-                    for c in find_charts(archive, rel.target):
+                    charts, images = find_images(archive, rel.target)
+                    for c in charts:
                         ws.add_chart(c, c.anchor)
-                    for im in find_images(archive, rel.target):
+                    for im in images:
                         ws.add_image(im, im.anchor)
 
                 pivot_rel = rels.find(TableDefinition.rel_type)
