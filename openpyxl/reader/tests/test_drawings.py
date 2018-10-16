@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
+from io import BytesIO
 from zipfile import ZipFile
 
 def test_read_charts(datadir):
@@ -23,3 +24,14 @@ def test_read_drawing(datadir):
     from ..drawings import find_images
     images = find_images(archive, path)[1]
     assert len(images) == 3
+
+
+def test_unsupport_drawing(datadir):
+    datadir.chdir()
+    out = BytesIO()
+    archive = ZipFile(out, mode="w")
+    archive.write("unsupported_drawing.xml", "drawing1.xml")
+
+    from ..drawings import find_images
+    charts, images = find_images(archive, "drawing1.xml")
+    assert charts == images == []
