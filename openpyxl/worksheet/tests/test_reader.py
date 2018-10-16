@@ -496,12 +496,12 @@ def test_legacy_document_no_keep(WorkSheetParser, datadir):
     assert parser.ws.legacy_drawing is None
 
 
-@pytest.mark.xfail
 @pytest.fixture
 def Translator():
     from openpyxl.formula import translate
     return translate.Translator
 
+@pytest.mark.xfail
 def test_shared_formula(WorkSheetParser, Translator):
     parser = WorkSheetParser
     src = """
@@ -513,7 +513,7 @@ def test_shared_formula(WorkSheetParser, Translator):
     element = fromstring(src)
     parser.shared_formula_masters['0'] = Translator("=A4*B4", "A1")
     parser.parse_cell(element)
-    #assert parser.ws['A9'].value == "=A12*B12"
+    assert parser.ws['A9'].value == "=A12*B12"
 
 
 import warnings
