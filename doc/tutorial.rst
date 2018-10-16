@@ -211,22 +211,6 @@ Once we have a :class:`openpyxl.cell.Cell`, we can assign it a value::
     >>> print(d.value)
     3.14
 
-You can also enable type and format inference::
-
-    >>> wb = Workbook(guess_types=True)
-    >>> c.value = '12%'
-    >>> print(c.value)
-    0.12
-
-    >>> import datetime
-    >>> d.value = datetime.datetime.now()
-    >>> print d.value
-    datetime.datetime(2010, 9, 10, 22, 25, 18)
-
-    >>> c.value = '31.50'
-    >>> print(c.value)
-    31.5
-
 
 Saving to a file
 ++++++++++++++++
