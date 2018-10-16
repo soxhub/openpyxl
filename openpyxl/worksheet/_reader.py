@@ -193,7 +193,7 @@ class WorkSheetParser(object):
                     richtext = Text.from_tree(child)
                     value = richtext.content
 
-        yield row, column, value, data_type, style_id
+        yield {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 
 
     def parse_merge(self, element):
