@@ -32,6 +32,7 @@ Bugfixes
 
 * `#1000 <https://bitbucket.org/openpyxl/openpyxl/issues/1000>`_ Clean AutoFilter name definitions
 * `#1106 <https://bitbucket.org/openpyxl/openpyxl/issues/1106>`_ Attribute missing from Shape object
+* `#1109 <https://bitbucket.org/openpyxl/openpyxl/issues/1109>`_ Failure to read all DrawingML means workbook can't be read
 
 
 Pull Requests

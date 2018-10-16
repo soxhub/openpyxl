@@ -57,11 +57,10 @@ from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.chart.reader import find_charts
-from openpyxl.drawing.image_reader import find_images
 
 from openpyxl.xml.functions import fromstring
 
+from .drawings import find_images
 from .worksheet import WorkSheetParser
 
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
@@ -231,7 +230,8 @@ class ExcelReader:
 
         drawings = rels.find(SpreadsheetDrawing._rel_type)
         for rel in drawings:
-            for c in find_charts(self.archive, rel.target):
+            charts, images = find_images(self.archive, rel.target)
+            for c in charts:
                 cs.add_chart(c)
 
 
@@ -279,9 +279,10 @@ class ExcelReader:
 
             drawings = rels.find(SpreadsheetDrawing._rel_type)
             for rel in drawings:
-                for c in find_charts(self.archive, rel.target):
+                charts, images = find_images(self.archive, rel.target)
+                for c in charts:
                     ws.add_chart(c, c.anchor)
-                for im in find_images(self.archive, rel.target):
+                for im in images:
                     ws.add_image(im, im.anchor)
 
             pivot_rel = rels.find(TableDefinition.rel_type)
