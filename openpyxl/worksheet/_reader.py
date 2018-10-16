@@ -64,7 +64,8 @@ class WorkSheetParser(object):
         self.source = xml_source
         self.shared_strings = shared_strings
         self.data_only = data_only
-        self.shared_formula_masters = {}
+        self.shared_formulae = {}
+        self.array_formulae = {}
         self._row_count = self._col_count = 0
         self.tables = []
         self._number_format_cache = {}
@@ -135,32 +136,11 @@ class WorkSheetParser(object):
         value = element.findtext(self.VALUE_TAG)
         if value is not None:
             value = value.text
-        formula = element.find(self.FORMULA_TAG)
+
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
         self._col_count += 1
         style_id = element.get('s')
-
-        # assign formula to cell value unless only the data is desired
-        # possible formulae types: shared, array, datatable
-        if not self.data_only and formula.text is not None:
-            data_type = 'f'
-            formula_type = formula.get('t')
-            value = "="
-            if formula.text:
-                value += formula
-
-            if formula_type == "array":
-                self.array_formulae[coordinate] = dict(formula.attrib)
-
-            elif formula_type == "shared":
-                idx = formula.get('si')
-                if idx in self.shared_formula_masters:
-                    trans = self.shared_formula_masters[idx]
-                    value = trans.translate_formula(coordinate)
-                else:
-                    self.shared_formula_masters[idx] = Translator(value, coordinate)
-
 
         if style_id is not None:
             style_id = int(style_id)
@@ -170,7 +150,11 @@ class WorkSheetParser(object):
         else:
             row, column = self._row_count, self._col_count
 
-        if value is not None:
+        if not self.data_only:
+            data_type = 'f'
+            value = self.parse_formula(element)
+
+        elif value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
                 if self._is_date(style_id):
@@ -185,8 +169,7 @@ class WorkSheetParser(object):
             elif data_type == 'd':
                 value = from_ISO8601(value)
 
-        else:
-            if data_type == 'inlineStr':
+        elif data_type == 'inlineStr':
                 child = element.find(self.INLINE_STRING)
                 if child is not None:
                     data_type = 's'
@@ -194,6 +177,30 @@ class WorkSheetParser(object):
                     value = richtext.content
 
         yield {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
+
+
+    def parse_formula(self, element):
+        """
+        possible formulae types: shared, array, datatable
+        """
+        formula = element.find(self.FORMULA_TAG)
+        data_type = 'f'
+        formula_type = formula.get('t')
+        value = "="
+        if formula.text:
+            value += formula.text
+
+        if formula_type == "array":
+            self.array_formulae[coordinate] = dict(formula.attrib)
+
+        elif formula_type == "shared":
+            idx = formula.get('si')
+            if idx in self.shared_formulae:
+                trans = self.shared_formulae[idx]
+                value = trans.translate_formula(coordinate)
+            elif value != "=":
+                self.shared_formulae[idx] = Translator(value, coordinate)
+        return value
 
 
     def parse_merge(self, element):

@@ -511,7 +511,7 @@ def test_shared_formula(WorkSheetParser, Translator):
     </x:c>
     """
     element = fromstring(src)
-    parser.shared_formula_masters['0'] = Translator("=A4*B4", "A1")
+    parser.shared_formulae['0'] = Translator("=A4*B4", "A1")
     parser.parse_cell(element)
     assert parser.ws['A9'].value == "=A12*B12"
 
