@@ -18,12 +18,13 @@ from openpyxl.worksheet.pagebreak import Break, PageBreak
 from openpyxl.worksheet.scenario import ScenarioList, Scenario, InputCells
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
+from openpyxl.styles.styleable import StyleArray
+from openpyxl.styles import numbers
 
 
 @pytest.fixture
 def Workbook():
-    from openpyxl.styles.styleable import StyleArray
-    from openpyxl.styles import numbers
+
 
     class DummyStyle:
         number_format = numbers.FORMAT_GENERAL
@@ -73,8 +74,12 @@ def Workbook():
 def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
     from .._reader import WorkSheetParser
-    ws = Workbook.create_sheet('sheet')
-    return WorkSheetParser(None, {0:'a'})
+
+    styles = IndexedList()
+    for i in range(29):
+        styles.add((StyleArray([i]*9)))
+    styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
+    return WorkSheetParser(None, {0:'a'}, styles=styles)
 
 
 @pytest.fixture
@@ -102,83 +107,69 @@ def test_read_dimension(WorkSheetParser, datadir, filename, expected):
     assert dimension == expected
 
 
-@pytest.mark.xfail
 def test_col_width(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
-
     with open("complex-styles-worksheet.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
         for _, col in cols:
             parser.parse_column_dimensions(col)
-    assert set(ws.column_dimensions) == set(['A', 'C', 'E', 'I', 'G'])
-    assert ws.column_dimensions['A'].style_id == 0
-    assert dict(ws.column_dimensions['A']) == {'max': '1', 'min': '1',
+    assert set(parser.column_dimensions) == set(['A', 'C', 'E', 'I', 'G'])
+    assert dict(parser.column_dimensions['A']) == {'max': '1', 'min': '1',
                                                'customWidth': '1',
                                                'width': '31.1640625'}
 
 
-@pytest.mark.xfail
 def test_hidden_col(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
 
     with open("hidden_rows_cols.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
         for _, col in cols:
             parser.parse_column_dimensions(col)
-    assert 'D' in ws.column_dimensions
-    assert dict(ws.column_dimensions['D']) == {'customWidth': '1', 'hidden':
+    assert 'D' in parser.column_dimensions
+    assert dict(parser.column_dimensions['D']) == {'customWidth': '1', 'hidden':
                                                '1', 'max': '4', 'min': '4'}
 
 
-@pytest.mark.xfail
 def test_styled_col(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
 
     with open("complex-styles-worksheet.xml", "rb") as src:
         cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
         for _, col in cols:
             parser.parse_column_dimensions(col)
-    assert 'I' in ws.column_dimensions
-    cd = ws.column_dimensions['I']
-    assert cd.style_id == 28
-    assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25', 'style':'28'}
+    assert 'I' in parser.column_dimensions
+    cd = parser.column_dimensions['I']
+    assert cd._style == StyleArray([28]*9)
+    assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25'}
 
 
-@pytest.mark.xfail
 def test_hidden_row(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
 
     with open("hidden_rows_cols.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
             parser.parse_row(row)
-    assert 2 in ws.row_dimensions
-    assert dict(ws.row_dimensions[2]) == {'hidden': '1'}
+    assert dict(parser.row_dimensions[2]) == {'hidden': '1'}
 
 
-@pytest.mark.xfail
 def test_styled_row(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
     parser.shared_strings = dict((i, i) for i in range(30))
 
     with open("complex-styles-worksheet.xml", "rb") as src:
         rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
         for _, row in rows:
             parser.parse_row(row)
-    assert 23 in ws.row_dimensions
-    rd = ws.row_dimensions[23]
-    assert rd.style_id == 28
-    assert dict(rd) == {'s':'28', 'customFormat':'1'}
+    rd = parser.row_dimensions[23]
+    assert rd._style == StyleArray([28]*9)
+    assert dict(rd) == {'customFormat':'1'}
 
 
 @pytest.mark.xfail

@@ -83,7 +83,7 @@ DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 class WorkSheetParser(object):
 
-    def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, cell_styles=[]):
+    def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, styles={}):
         self.min_row = self.min_col = self.max_row = self.max_col = None
         self.epoch = epoch
         self.source = xml_source
@@ -95,9 +95,10 @@ class WorkSheetParser(object):
         self.tables = []
         self._number_format_cache = {}
         self.row_dimensions = {}
-        self.col_dimensions = {}
-        self.cell_styles = cell_styles
+        self.column_dimensions = {}
+        self.styles = styles
         self.number_formats = []
+
 
     def _is_date(self, style_id):
         """
@@ -153,7 +154,7 @@ class WorkSheetParser(object):
             elif tag_name in properties:
                 prop = properties[tag_name]
                 obj = prop[1].from_tree(element)
-                setattr(self.ws, prop[0], obj)
+                setattr(self, prop[0], obj)
                 element.clear()
 
 
@@ -254,6 +255,7 @@ class WorkSheetParser(object):
 
     def parse_column_dimensions(self, col):
         attrs = dict(col.attrib)
+        attrs['worksheet'] = None
         column = get_column_letter(int(attrs['min']))
         attrs['index'] = column
         if 'style' in attrs:
@@ -264,6 +266,7 @@ class WorkSheetParser(object):
 
     def parse_row(self, row):
         attrs = dict(row.attrib)
+        attrs['worksheet'] = None
 
         if "r" in attrs:
             self._row_count = int(attrs['r'])
@@ -284,7 +287,7 @@ class WorkSheetParser(object):
             dim = RowDimension(**attrs)
             self.row_dimensions[dim.index] = dim
 
-        for cell in safe_iterator(row, self.CELL_TAG):
+        for cell in safe_iterator(row, CELL_TAG):
             self.parse_cell(cell)
 
 
