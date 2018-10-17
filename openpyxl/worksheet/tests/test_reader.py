@@ -39,7 +39,6 @@ def Workbook():
 
     class DummyWorkbook:
 
-        guess_types = False
         data_only = False
         _colors = []
         encoding = "utf8"
@@ -70,7 +69,6 @@ def Workbook():
     return DummyWorkbook()
 
 
-@pytest.mark.xfail
 @pytest.fixture
 def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
@@ -79,7 +77,6 @@ def WorkSheetParser(Workbook):
     return WorkSheetParser(ws, None, {0:'a'})
 
 
-@pytest.mark.xfail
 @pytest.fixture
 def WorkSheetParserKeepVBA(Workbook):
     """Setup a parser instance with an empty source"""
@@ -87,6 +84,22 @@ def WorkSheetParserKeepVBA(Workbook):
     from .._reader import WorkSheetParser
     ws = Workbook.create_sheet('sheet')
     return WorkSheetParser(ws, {0:'a'}, {})
+
+
+@pytest.mark.parametrize("filename, expected",
+                         [
+                             ("dimension.xml", (4, 1, 27, 30)),
+                             ("no_dimension.xml", None),
+                             ("invalid_dimension.xml", (None, 1, None, 113)),
+                          ]
+                         )
+def test_read_dimension(WorkSheetParser, datadir, filename, expected):
+    datadir.chdir()
+    parser = WorkSheetParser
+    parser.source = filename
+
+    dimension = parser.parse_dimensions()
+    assert dimension == expected
 
 
 @pytest.mark.xfail
