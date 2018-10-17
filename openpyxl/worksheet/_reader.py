@@ -41,25 +41,50 @@ from openpyxl.styles import is_date_format
 from openpyxl.formatting import Rule
 from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
-from openpyxl.worksheet.properties import WorksheetProperties
 from openpyxl.utils import (
     get_column_letter,
     coordinate_to_tuple,
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList, Extension
-from openpyxl.worksheet.table import TablePartList
+
+from .table import TablePartList
+from .properties import WorksheetProperties
+from .dimensions import SheetDimension
+
+
+CELL_TAG = '{%s}c' % SHEET_MAIN_NS
+VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
+FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
+MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
+INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
+COL_TAG = '{%s}col' % SHEET_MAIN_NS
+ROW_TAG = '{%s}row' % SHEET_MAIN_NS
+CF_TAG = '{%s}conditionalFormatting' % SHEET_MAIN_NS
+LEGACY_TAG = '{%s}legacyDrawing' % SHEET_MAIN_NS
+PROT_TAG = '{%s}sheetProtection' % SHEET_MAIN_NS
+EXT_TAG = "{%s}extLst" % SHEET_MAIN_NS
+HYPERLINK_TAG = "{%s}hyperlink" % SHEET_MAIN_NS
+TABLE_TAG = "{%s}tableParts" % SHEET_MAIN_NS
+PRINT_TAG = '{%s}printOptions' % SHEET_MAIN_NS
+MARGINS_TAG = '{%s}pageMargins' % SHEET_MAIN_NS
+PAGE_TAG = '{%s}pageSetup' % SHEET_MAIN_NS
+HEADER_TAG = '{%s}headerFooter' % SHEET_MAIN_NS
+FILTER_TAG = '{%s}autoFilter' % SHEET_MAIN_NS
+VALIDATION_TAG = '{%s}dataValidations' % SHEET_MAIN_NS
+PROPERTIES_TAG = '{%s}sheetPr' % SHEET_MAIN_NS
+VIEWS_TAG = '{%s}sheetViews' % SHEET_MAIN_NS
+FORMAT_TAG = '{%s}sheetFormatPr' % SHEET_MAIN_NS
+ROW_BREAK_TAG = '{%s}rowBreaks' % SHEET_MAIN_NS
+SCENARIOS_TAG = '{%s}scenarios' % SHEET_MAIN_NS
+DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
+DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 
 class WorkSheetParser(object):
 
-    CELL_TAG = '{%s}c' % SHEET_MAIN_NS
-    VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
-    FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
-    MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
-    INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
-
     def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, cell_styles=[]):
+        self.min_row = self.min_col = self.max_row = self.max_col = None
         self.epoch = epoch
         self.source = xml_source
         self.shared_strings = shared_strings
@@ -93,29 +118,29 @@ class WorkSheetParser(object):
 
     def parse(self):
         dispatcher = {
-            '{%s}mergeCells' % SHEET_MAIN_NS: self.parse_merge,
-            '{%s}col' % SHEET_MAIN_NS: self.parse_column_dimensions,
-            '{%s}row' % SHEET_MAIN_NS: self.parse_row,
-            '{%s}conditionalFormatting' % SHEET_MAIN_NS: self.parser_conditional_formatting,
-            '{%s}legacyDrawing' % SHEET_MAIN_NS: self.parse_legacy_drawing,
-            '{%s}sheetProtection' % SHEET_MAIN_NS: self.parse_sheet_protection,
-            '{%s}extLst' % SHEET_MAIN_NS: self.parse_extensions,
-            '{%s}hyperlink' % SHEET_MAIN_NS: self.parse_hyperlinks,
-            '{%s}tableParts' % SHEET_MAIN_NS: self.parse_tables,
+            MERGE_TAG: self.parse_merge,
+            COL_TAG: self.parse_column_dimensions,
+            ROW_TAG: self.parse_row,
+            CF_TAG: self.parser_conditional_formatting,
+            LEGACY_TAG: self.parse_legacy_drawing,
+            PROT_TAG: self.parse_sheet_protection,
+            EXT_TAG: self.parse_extensions,
+            HYPERLINK_TAG: self.parse_hyperlinks,
+            TABLE_TAG: self.parse_tables,
                       }
 
         properties = {
-            '{%s}printOptions' % SHEET_MAIN_NS: ('print_options', PrintOptions),
-            '{%s}pageMargins' % SHEET_MAIN_NS: ('page_margins', PageMargins),
-            '{%s}pageSetup' % SHEET_MAIN_NS: ('page_setup', PrintPageSetup),
-            '{%s}headerFooter' % SHEET_MAIN_NS: ('HeaderFooter', HeaderFooter),
-            '{%s}autoFilter' % SHEET_MAIN_NS: ('auto_filter', AutoFilter),
-            '{%s}dataValidations' % SHEET_MAIN_NS: ('data_validations', DataValidationList),
-            '{%s}sheetPr' % SHEET_MAIN_NS: ('sheet_properties', WorksheetProperties),
-            '{%s}sheetViews' % SHEET_MAIN_NS: ('views', SheetViewList),
-            '{%s}sheetFormatPr' % SHEET_MAIN_NS: ('sheet_format', SheetFormatProperties),
-            '{%s}rowBreaks' % SHEET_MAIN_NS: ('page_breaks', PageBreak),
-            '{%s}scenarios' % SHEET_MAIN_NS: ('scenarios', ScenarioList),
+            PRINT_TAG: ('print_options', PrintOptions),
+            MARGINS_TAG: ('page_margins', PageMargins),
+            PAGE_TAG: ('page_setup', PrintPageSetup),
+            HEADER_TAG: ('HeaderFooter', HeaderFooter),
+            FILTER_TAG: ('auto_filter', AutoFilter),
+            VALIDATION_TAG: ('data_validations', DataValidationList),
+            PROPERTIES_TAG: ('sheet_properties', WorksheetProperties),
+            VIEWS_TAG: ('views', SheetViewList),
+            FORMAT_TAG: ('sheet_format', SheetFormatProperties),
+            ROW_BREAK_TAG: ('page_breaks', PageBreak),
+            SCENARIOS_TAG: ('scenarios', ScenarioList),
         }
 
         it = iterparse(self.source, tag=dispatcher)
@@ -130,6 +155,23 @@ class WorkSheetParser(object):
                 obj = prop[1].from_tree(element)
                 setattr(self.ws, prop[0], obj)
                 element.clear()
+
+
+    def parse_dimensions(self):
+        """
+        Get worksheet dimensions if they are provided.
+        """
+        it = iterparse(self.source)
+
+        for _event, element in it:
+            if element.tag == DIMENSION_TAG:
+                dim = SheetDimension.from_tree(element)
+                return dim.boundaries
+
+            elif element.tag == DATA_TAG:
+                # Dimensions missing
+                break
+            element.clear()
 
 
     def parse_cell(self, element):
