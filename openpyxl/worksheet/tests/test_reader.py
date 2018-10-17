@@ -74,7 +74,7 @@ def WorkSheetParser(Workbook):
     """Setup a parser instance with an empty source"""
     from .._reader import WorkSheetParser
     ws = Workbook.create_sheet('sheet')
-    return WorkSheetParser(ws, None, {0:'a'})
+    return WorkSheetParser(None, {0:'a'})
 
 
 @pytest.fixture
@@ -83,7 +83,7 @@ def WorkSheetParserKeepVBA(Workbook):
     Workbook.vba_archive=True
     from .._reader import WorkSheetParser
     ws = Workbook.create_sheet('sheet')
-    return WorkSheetParser(ws, {0:'a'}, {})
+    return WorkSheetParser(None, {0:'a'}, {})
 
 
 @pytest.mark.parametrize("filename, expected",

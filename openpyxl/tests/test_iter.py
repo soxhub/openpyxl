@@ -42,23 +42,6 @@ def test_open_many_sheets(datadir):
 
 @pytest.mark.parametrize("filename, expected",
                          [
-                             ("sheet2.xml", (4, 1, 27, 30)),
-                             ("sheet2_no_dimension.xml", None),
-                             ("sheet2_no_span.xml", None),
-                             ("sheet2_invalid_dimension.xml", (None, 1, None, 113)),
-                          ]
-                         )
-def test_read_dimension(datadir, filename, expected):
-    from openpyxl.worksheet.read_only import read_dimension
-
-    datadir.join("reader").chdir()
-    with open(filename) as handle:
-        dimension = read_dimension(handle)
-    assert dimension == expected
-
-
-@pytest.mark.parametrize("filename, expected",
-                         [
                              ("sheet2.xml", (1, 4, 30, 27)),
                              ("sheet2_no_dimension.xml", (1, 1, None, None)),
                          ]
@@ -340,7 +323,6 @@ def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
 
 
 def test_read_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
-    datadir.join("reader").chdir()
 
     src = b"""
     <sheetData  xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >

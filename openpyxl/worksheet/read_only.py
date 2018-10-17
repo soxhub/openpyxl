@@ -27,25 +27,12 @@ from openpyxl.utils.datetime import from_excel
 from openpyxl.worksheet.dimensions import SheetDimension
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL, _cast_number
 
+from ._reader import WorkSheetParser
+
 
 def read_dimension(source):
-    if hasattr(source, "encode"):
-        return
-
-    min_row = min_col =  max_row = max_col = None
-    DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
-    DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
-    it = iterparse(source, tag=[DIMENSION_TAG, DATA_TAG])
-
-    for _event, element in it:
-        if element.tag == DIMENSION_TAG:
-            dim = SheetDimension.from_tree(element)
-            return dim.boundaries
-
-        elif element.tag == DATA_TAG:
-            # Dimensions missing
-            break
-        element.clear()
+    parser = WorkSheetParser(source, {})
+    return parser.parse_dimensions()
 
 
 ROW_TAG = '{%s}row' % SHEET_MAIN_NS
@@ -53,7 +40,6 @@ CELL_TAG = '{%s}c' % SHEET_MAIN_NS
 VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
 FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
 INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
-DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 
 class ReadOnlyWorksheet(object):
@@ -73,9 +59,11 @@ class ReadOnlyWorksheet(object):
         self.base_date = parent_workbook.epoch
         self.xml_source = xml_source
         self._number_format_cache = {}
+        dimensions = None
         try:
             source = self.xml_source
-            dimensions = read_dimension(source)
+            if source:
+                dimensions = read_dimension(source)
         finally:
             if isinstance(source, ZipExtFile):
                 source.close()
