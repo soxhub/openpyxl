@@ -679,6 +679,22 @@ class TestEditableWorksheet:
         assert ws['A1'].value is None
 
 
+    @pytest.mark.parametrize("translate, formula, result",
+                             [
+                                 (False, "=SUM(G1:G3)", "=SUM(G1:G3)"),
+                                 (True, "=SUM(G1:G3)", "=SUM(I2:I4)"),
+                                 (True, "I2:I4", "I2:I4"),
+                             ]
+                             )
+    def test_move_translated_fomula(self, dummy_worksheet, translate, formula, result):
+        ws = dummy_worksheet
+        cell = ws['G4']
+        cell.value = formula
+        ws._move_cell(row=4, column=7, row_offset=1, col_offset=2, translate=translate)
+        moved = ws['I5']
+        assert moved.value == result
+
+
     def test_move_nothing(self, dummy_worksheet):
         ws = dummy_worksheet
         ws.move_range("B2:E5")
@@ -729,3 +745,10 @@ class TestEditableWorksheet:
         ws = dummy_worksheet
         ws.move_range("B2:E5", rows=2)
         assert ws['B4'].value == "B2"
+
+
+    def test_move_range_with_formula(self, dummy_worksheet):
+        ws = dummy_worksheet
+        ws['G4'] = "=SUM(G1:G3)"
+        ws.move_range("G4", 1, 1, True)
+        assert ws['H5'].value == "=SUM(H2:H4)"

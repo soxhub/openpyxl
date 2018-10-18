@@ -46,6 +46,7 @@ from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
 from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.formula.translate import Translator
 
 from .datavalidation import DataValidationList
 from .page import (
@@ -747,7 +748,7 @@ class Worksheet(_WorkbookChild):
                     del self._cells[row, col]
 
 
-    def move_range(self, cell_range, rows=0, cols=0):
+    def move_range(self, cell_range, rows=0, cols=0, translate=False):
         """
         Move a cell range by the number of rows and/or columns:
         down if rows > 0 and up if rows < 0
@@ -770,10 +771,10 @@ class Worksheet(_WorkbookChild):
         r = sorted(range(min_row, max_row+1), reverse=down)
         c = sorted(range(min_col, max_col+1), reverse=right)
         for row, column in product(r, c):
-            self._move_cell(row, column, rows, cols)
+            self._move_cell(row, column, rows, cols, translate)
 
 
-    def _move_cell(self, row, column, row_offset, col_offset):
+    def _move_cell(self, row, column, row_offset, col_offset, translate=False):
         """
         Move a cell from one place to another.
         Delete at old index
@@ -786,6 +787,9 @@ class Worksheet(_WorkbookChild):
         del self._cells[(cell.row, cell.column)]
         cell.row = new_row
         cell.column = new_col
+        if translate and cell.data_type == "f":
+            t = Translator(cell.value, cell.coordinate)
+            cell.value = t.translate_formula(row_delta=row_offset, col_delta=col_offset)
 
 
     def _invalid_row(self, iterable):
