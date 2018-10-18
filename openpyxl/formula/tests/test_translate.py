@@ -237,11 +237,5 @@ class TestTranslator(object):
 
     def test_translate_formula_coordinates(self, Translator):
         trans = Translator("='Summary slices'!C3", "A1")
-        result = trans.translate_formula(row=2, col=3)
-        assert result == "='Summary slices'!E4"
-
-
-    def test_translate_formula_no_dest(self, Translator):
-        trans = Translator("='Summary slices'!C3", "A1")
-        with pytest.raises(TypeError):
-            trans.translate_formula()
+        result = trans.translate_formula(row_delta=2, col_delta=3)
+        assert result == "='Summary slices'!F5"
