@@ -172,17 +172,17 @@ def test_styled_row(datadir, WorkSheetParser):
     assert dict(rd) == {'customFormat':'1'}
 
 
-@pytest.mark.xfail
 def test_sheet_protection(datadir, WorkSheetParser):
     datadir.chdir()
     parser = WorkSheetParser
-    ws = parser.ws
 
-    with open("protected_sheet.xml", "rb") as src:
-        tree = iterparse(src, tag='{%s}sheetProtection' % SHEET_MAIN_NS)
-        for _, tag in tree:
-            parser.parse_sheet_protection(tag)
-    assert dict(ws.protection) == {
+    src = """
+    <sheetProtection xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" password="DAA7" sheet="1" formatCells="0" formatColumns="0" formatRows="0" insertColumns="0" insertRows="0" insertHyperlinks="0" deleteColumns="0" deleteRows="0" sort="0" autoFilter="0" pivotTables="0"/>
+    """
+    element = fromstring(src)
+    parser.parse_sheet_protection(element)
+
+    assert dict(parser.protection) == {
         'autoFilter': '0', 'deleteColumns': '0',
         'deleteRows': '0', 'formatCells': '0', 'formatColumns': '0', 'formatRows':
         '0', 'insertColumns': '0', 'insertHyperlinks': '0', 'insertRows': '0',

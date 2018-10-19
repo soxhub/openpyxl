@@ -300,10 +300,11 @@ class WorkSheetParser(object):
 
 
     def parse_sheet_protection(self, element):
-        self.ws.protection = SheetProtection.from_tree(element)
+        protection = SheetProtection.from_tree(element)
         password = element.get("password")
-        #if password is not None:
-            #self.ws.protection.set_password(password, True)
+        if password is not None:
+            protection.set_password(password, True)
+        self.protection = protection
 
 
     def parse_legacy_drawing(self, element):
