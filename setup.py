@@ -57,6 +57,11 @@ setup(name='openpyxl',
     install_requires=[
         'jdcal', 'et_xmlfile',
         ],
+    project_urls={
+        'Documentation': 'https://openpyxl.readthedocs.io/en/stable/',
+        'Source': 'https://bitbucket.org/openpyxl/openpyxl',
+        'Tracker': 'https://bitbucket.org/openpyxl/openpyxl/issues',
+    },
     classifiers=[
                  'Development Status :: 5 - Production/Stable',
                  'Operating System :: MacOS :: MacOS X',
