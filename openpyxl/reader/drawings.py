@@ -1,27 +1,44 @@
 from __future__ import absolute_import
+# Copyright (c) 2010-2018 openpyxl
 
 from io import BytesIO
+from warnings import warn
 
 from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import IMAGE_NS
 from openpyxl.packaging.relationship import get_rel, get_rels_path, get_dependents
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.drawing.image import Image
+from openpyxl.chart.chartspace import ChartSpace
+from openpyxl.chart.reader import read_chart
 
 
 def find_images(archive, path):
     """
-    Given the path to a drawing file extract anchors with images
+    Given the path to a drawing file extract charts and images
+
+    Ingore errors due to unsupported parts of DrawingML
     """
 
     src = archive.read(path)
     tree = fromstring(src)
-    drawing = SpreadsheetDrawing.from_tree(tree)
+    try:
+        drawing = SpreadsheetDrawing.from_tree(tree)
+    except TypeError:
+        warn("DrawingML support is incomplete and limited to charts and images only. Shapes and drawings will be lost.")
+        return [], []
 
     rels_path = get_rels_path(path)
     deps = []
     if rels_path in archive.namelist():
         deps = get_dependents(archive, rels_path)
+
+    charts = []
+    for rel in drawing._chart_rels:
+        cs = get_rel(archive, deps, rel.id, ChartSpace)
+        chart = read_chart(cs)
+        chart.anchor = rel.anchor
+        charts.append(chart)
 
     images = []
     for rel in drawing._blip_rels:
@@ -30,4 +47,4 @@ def find_images(archive, path):
             image = Image(BytesIO(archive.read(dep.target)))
             image.anchor = rel.anchor
             images.append(image)
-    return images
+    return charts, images

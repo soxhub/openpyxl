@@ -58,6 +58,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Ted Pollari
 * Elias Rabel
 * Rick Rankin
+* Stephen Rauch
 * ramn_se
 * Philip Roche
 * Wojciech Rola
@@ -72,6 +73,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Laurent Vasseur
 * Kay Webber
 * Shibukawa Yoshiki
+* Masato Yoshida
 * Israel Barth Rubio
 * Alessandro Cucci
 
