@@ -445,9 +445,6 @@ def test_array_formula(WorkSheetParser, datadir):
     assert parser.array_formulae['C10']['ref'] == 'C10:C14'
 
 
-import warnings
-warnings.simplefilter("always") # so that tox doesn't suppress warnings.
-
 def test_extended_conditional_formatting(WorkSheetParser, recwarn):
     parser = WorkSheetParser
 

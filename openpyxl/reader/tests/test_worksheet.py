@@ -416,9 +416,6 @@ def test_shared_formula(WorkSheetParser, Translator):
     assert parser.ws['A9'].value == "=A12*B12"
 
 
-import warnings
-warnings.simplefilter("always") # so that tox doesn't suppress warnings.
-
 def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
     datadir.chdir()
     parser = WorkSheetParser
