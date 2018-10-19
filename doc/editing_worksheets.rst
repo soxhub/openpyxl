@@ -40,7 +40,7 @@ If cells contain formulae you can let openpyxl translate these for you but,
 as this is not always what you want it is disabled by default. Also only the
 formulae in the cells themselves will be translated. References to the cells
 from other cells or defined names will not be updated, you can use the
-:doc:`formula` translator to do this
+:doc:`formula` translator to do this::
 
     >>> ws.move_range("G4:H10", rows=1, cols=1, translate=True)
 
