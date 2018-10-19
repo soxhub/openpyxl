@@ -432,6 +432,19 @@ def test_shared_formula(WorkSheetParser):
     assert formula == "=A12*B12"
 
 
+def test_array_formula(WorkSheetParser, datadir):
+    parser = WorkSheetParser
+
+    src = """
+    <c r="C10" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <f t="array" ref="C10:C14">SUM(A10:A14*B10:B14)</f>
+    </c>"""
+    element = fromstring(src)
+
+    parser.parse_formula(element)
+    assert parser.array_formulae['C10']['ref'] == 'C10:C14'
+
+
 import warnings
 warnings.simplefilter("always") # so that tox doesn't suppress warnings.
 
@@ -449,48 +462,35 @@ def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
     assert issubclass(w.category, UserWarning)
 
 
-@pytest.mark.xfail
-def test_shared_formulae(WorkSheetParser, datadir):
-    datadir.chdir()
+def test_cell_without_coordinates(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
-    parser.shared_strings = ["Whatever"] * 7
 
-    with open("worksheet_formulae.xml") as src:
-        parser.source = src
-        parser.parse()
+    src = """
+    <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <c t="s">
+        <v>2</v>
+      </c>
+      <c t="s">
+        <v>4</v>
+      </c>
+      <c t="s">
+        <v>3</v>
+      </c>
+      <c t="s">
+        <v>6</v>
+      </c>
+      <c t="s">
+        <v>9</v>
+      </c>
+    </row>
+    """
+    element = fromstring(src)
 
-    assert set(ws.formula_attributes) == set(['C10'])
-
-    # Test shared forumlae
-    assert ws['B7'].data_type == 'f'
-    assert ws['B7'].value == '=B4*2'
-    assert ws['C7'].value == '=C4*2'
-    assert ws['D7'].value == '=D4*2'
-    assert ws['E7'].value == '=E4*2'
-
-    # Test array forumlae
-    assert ws['C10'].data_type == 'f'
-    assert ws.formula_attributes['C10']['ref'] == 'C10:C14'
-    assert ws['C10'].value == '=SUM(A10:A14*B10:B14)'
-
-
-@pytest.mark.xfail
-def test_cell_without_coordinates(WorkSheetParser, datadir):
-    datadir.chdir()
-    with open("worksheet_without_coordinates.xml", "rb") as src:
-        xml = src.read()
-
-    sheet = fromstring(xml)
-
-    el = sheet.find(".//{%s}row" % SHEET_MAIN_NS)
-
-    parser = WorkSheetParser
     parser.shared_strings = ["Whatever"] * 10
-    parser.parse_row(el)
+    parser.parse_row(element)
 
-    assert parser.ws.max_row == 1
-    assert parser.ws.max_column == 5
+    assert parser.max_row == 1
+    assert parser.max_column == 5
 
 
 @pytest.mark.xfail

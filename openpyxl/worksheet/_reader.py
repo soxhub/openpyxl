@@ -85,14 +85,14 @@ DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 class WorkSheetParser(object):
 
     def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, styles={}):
-        self.min_row = self.min_col = self.max_row = self.max_col = None
+        self.min_row = self.min_col = self.max_row = self.max_column = None
         self.epoch = epoch
         self.source = xml_source
         self.shared_strings = shared_strings
         self.data_only = data_only
         self.shared_formulae = {}
         self.array_formulae = {}
-        self._row_count = self._col_count = 0
+        self.max_row = self.max_column = 0
         self.tables = []
         self._number_format_cache = {}
         self.row_dimensions = {}
@@ -181,7 +181,7 @@ class WorkSheetParser(object):
         value = element.findtext(VALUE_TAG)
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self._col_count += 1
+        self.max_column += 1
         style_id = element.get('s', 0)
 
         if style_id is not None:
@@ -190,7 +190,7 @@ class WorkSheetParser(object):
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
         else:
-            row, column = self._row_count, self._col_count
+            row, column = self.max_row, self.max_column
 
         if data_type == "str" and not self.data_only:
             data_type = 'f'
@@ -272,10 +272,10 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self._row_count = int(attrs['r'])
+            self.max_row = int(attrs['r'])
         else:
-            self._row_count += 1
-        self._col_count = 0
+            self.max_row += 1
+        self.max_column = 0
         keys = set(attrs)
         for key in keys:
             if key == "s":
