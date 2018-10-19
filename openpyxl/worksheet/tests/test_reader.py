@@ -448,15 +448,32 @@ def test_array_formula(WorkSheetParser, datadir):
 import warnings
 warnings.simplefilter("always") # so that tox doesn't suppress warnings.
 
-@pytest.mark.xfail
-def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
-    datadir.chdir()
+def test_extended_conditional_formatting(WorkSheetParser, recwarn):
     parser = WorkSheetParser
 
-    with open("extended_conditional_formatting_sheet.xml") as src:
-        sheet = fromstring(src.read())
+    src = """
+    <extLst>
+        <ext xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}">
+            <x14:conditionalFormattings>
+                <x14:conditionalFormatting xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main">
+                    <x14:cfRule type="containsText" priority="1" operator="containsText" id="{5F3BF262-1B4E-49BC-812D-8F5B1802CE0A}">
+                        <xm:f>NOT(ISERROR(SEARCH($AA$7,A1)))</xm:f>
+                        <xm:f>$AA$7</xm:f>
+                        <x14:dxf>
+                            <fill>
+                                <patternFill>
+                                    <bgColor rgb="FF6699FF"/>
+                                </patternFill>
+                            </fill>
+                        </x14:dxf>
+                    </x14:cfRule>
+                </x14:conditionalFormatting>
+            </x14:conditionalFormattings>
+        </ext>
+    </extLst>
+    """
+    element = fromstring(src)
 
-    element = sheet.find("{%s}extLst" % SHEET_MAIN_NS)
     parser.parse_extensions(element)
     w = recwarn.pop()
     assert issubclass(w.category, UserWarning)
