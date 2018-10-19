@@ -590,7 +590,6 @@ def test_conditonal_formatting(WorkSheetParser):
     assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
 
-@pytest.mark.xfail
 def test_sheet_properties(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -605,11 +604,10 @@ def test_sheet_properties(WorkSheetParser):
     parser.source = BytesIO(src)
     parser.parse()
 
-    assert parser.ws.sheet_properties.tabColor.rgb == "FF92D050"
-    assert parser.ws.sheet_properties.codeName == "Sheet3"
+    assert parser.sheet_properties.tabColor.rgb == "FF92D050"
+    assert parser.sheet_properties.codeName == "Sheet3"
 
 
-@pytest.mark.xfail
 def test_sheet_format(WorkSheetParser):
 
     src = b"""
@@ -621,34 +619,26 @@ def test_sheet_format(WorkSheetParser):
     parser.source = BytesIO(src)
     parser.parse()
 
-    assert parser.ws.sheet_format.defaultRowHeight == 14.25
-    assert parser.ws.sheet_format.baseColWidth == 15
+    assert parser.sheet_format.defaultRowHeight == 14.25
+    assert parser.sheet_format.baseColWidth == 15
 
 
-@pytest.mark.xfail
 def test_tables(WorkSheetParser):
-    src = b"""
-    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-      xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-      <tableParts count="1">
-        <tablePart r:id="rId1"/>
-      </tableParts>
-    </sheet>
-    """
-
     parser = WorkSheetParser
-    r = Relationship(type="table", Id="rId1", Target="../tables/table1.xml")
-    rels = RelationshipList()
-    rels.append(r)
-    parser.ws._rels = rels
 
-    parser.source = BytesIO(src)
-    parser.parse()
+    src = b"""
+    <tableParts count="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+      xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        <tablePart r:id="rId1"/>
+    </tableParts>
+    """
+    element = fromstring(src)
 
-    assert parser.tables == ["../tables/table1.xml"]
+    tables = parser.parse_tables(element)
+
+    assert tables.tablePart[0].id == "rId1"
 
 
-@pytest.mark.xfail
 def test_auto_filter(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -663,13 +653,11 @@ def test_auto_filter(WorkSheetParser):
     parser = WorkSheetParser
     parser.source = BytesIO(src)
     parser.parse()
-    ws = parser.ws
 
-    assert ws.auto_filter.ref == "A1:AK3237"
-    assert ws.auto_filter.sortState.ref == "A2:AM3269"
+    assert parser.auto_filter.ref == "A1:AK3237"
+    assert parser.auto_filter.sortState.ref == "A2:AM3269"
 
 
-@pytest.mark.xfail
 def test_page_break(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -684,12 +672,10 @@ def test_page_break(WorkSheetParser):
     parser = WorkSheetParser
     parser.source = BytesIO(src)
     parser.parse()
-    ws = parser.ws
 
-    assert ws.page_breaks == expected_pagebreak
+    assert parser.page_breaks == expected_pagebreak
 
 
-@pytest.mark.xfail
 def test_scenarios(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -708,6 +694,5 @@ def test_scenarios(WorkSheetParser):
     parser = WorkSheetParser
     parser.source = BytesIO(src)
     parser.parse()
-    ws = parser.ws
 
-    assert ws.scenarios == scenarios
+    assert parser.scenarios == scenarios
