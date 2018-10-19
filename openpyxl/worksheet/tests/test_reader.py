@@ -120,14 +120,13 @@ def test_col_width(datadir, WorkSheetParser):
                                                'width': '31.1640625'}
 
 
-def test_hidden_col(datadir, WorkSheetParser):
-    datadir.chdir()
+def test_hidden_col(WorkSheetParser):
     parser = WorkSheetParser
 
-    with open("hidden_rows_cols.xml", "rb") as src:
-        cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
-        for _, col in cols:
-            parser.parse_column_dimensions(col)
+    src = """<col min="4" max="4" width="0" hidden="1" customWidth="1"/>"""
+    element = fromstring(src)
+
+    parser.parse_column_dimensions(element)
     assert 'D' in parser.column_dimensions
     assert dict(parser.column_dimensions['D']) == {'customWidth': '1', 'hidden':
                                                '1', 'max': '4', 'min': '4'}
@@ -147,14 +146,15 @@ def test_styled_col(datadir, WorkSheetParser):
     assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25'}
 
 
-def test_hidden_row(datadir, WorkSheetParser):
-    datadir.chdir()
+def test_hidden_row(WorkSheetParser):
     parser = WorkSheetParser
 
-    with open("hidden_rows_cols.xml", "rb") as src:
-        rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
-        for _, row in rows:
-            parser.parse_row(row)
+    src = """
+    <row r="2" spans="1:4" hidden="1" />
+    """
+    element = fromstring(src)
+
+    parser.parse_row(element)
     assert dict(parser.row_dimensions[2]) == {'hidden': '1'}
 
 
