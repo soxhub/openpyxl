@@ -78,7 +78,7 @@ def WorkSheetParser(Workbook):
     styles = IndexedList()
     for i in range(29):
         styles.add((StyleArray([i]*9)))
-    styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
+    styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
     return WorkSheetParser(None, {0:'a'}, styles=styles)
 
 
@@ -159,21 +159,17 @@ def test_hidden_row(datadir, WorkSheetParser):
 
 
 def test_styled_row(datadir, WorkSheetParser):
-    datadir.chdir()
     parser = WorkSheetParser
-    parser.shared_strings = dict((i, i) for i in range(30))
+    src = """<row r="23" s="28" spans="1:8" />"""
+    element = fromstring(src)
 
-    with open("complex-styles-worksheet.xml", "rb") as src:
-        rows = iterparse(src, tag='{%s}row' % SHEET_MAIN_NS)
-        for _, row in rows:
-            parser.parse_row(row)
+    parser.parse_row(element)
     rd = parser.row_dimensions[23]
     assert rd._style == StyleArray([28]*9)
     assert dict(rd) == {'customFormat':'1'}
 
 
 def test_sheet_protection(datadir, WorkSheetParser):
-    datadir.chdir()
     parser = WorkSheetParser
 
     src = """
@@ -192,222 +188,169 @@ def test_sheet_protection(datadir, WorkSheetParser):
     }
 
 
-@pytest.mark.xfail
-def test_formula_without_value(WorkSheetParser):
-    parser = WorkSheetParser
-    ws = parser.ws
-
-    src = """
-      <x:c r="A1" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:f>IF(TRUE, "y", "n")</x:f>
-        <x:v />
-      </x:c>
-    """
-    element = fromstring(src)
-
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'f'
-    assert ws['A1'].value == '=IF(TRUE, "y", "n")'
-
-
-@pytest.mark.xfail
 def test_formula(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
 
     src = """
-    <x:c r="A1" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:f>IF(TRUE, "y", "n")</x:f>
-        <x:v>y</x:v>
-    </x:c>
+    <c r="A1" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <f>IF(TRUE, "y", "n")</f>
+        <v>y</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'f'
-    assert ws['A1'].value == '=IF(TRUE, "y", "n")'
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'f', 'row': 1,
+                    'style_id':0, 'value': '=IF(TRUE, "y", "n")'}
 
 
-@pytest.mark.xfail
 def test_formula_data_only(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
     parser.data_only = True
 
     src = """
-    <x:c r="A1" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:f>1+2</x:f>
-        <x:v>3</x:v>
-    </x:c>
+    <c r="A1" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <f>1+2</f>
+        <v>3</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'n'
-    assert ws['A1'].value == 3
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
+                    'style_id':0, 'value': 3}
 
 
-@pytest.mark.xfail
 def test_string_formula_data_only(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
     parser.data_only = True
 
     src = """
-    <x:c r="A1" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:f>IF(TRUE, "y", "n")</x:f>
-        <x:v>y</x:v>
-    </x:c>
+    <c r="A1" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <f>IF(TRUE, "y", "n")</f>
+        <v>y</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 's'
-    assert ws['A1'].value == 'y'
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 's', 'row': 1,
+                    'style_id':0, 'value': 'y'}
 
 
-@pytest.mark.xfail
 def test_number(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
 
     src = """
-    <x:c r="A1" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:v>1</x:v>
-    </x:c>
+    <c r="A1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <v>1</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'n'
-    assert ws['A1'].value == 1
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
+                    'style_id':0, 'value': 1}
 
 
 
-@pytest.mark.xfail
 def test_datetime(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
 
     src = """
-    <x:c r="A1" t="d" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:v>2011-12-25T14:23:55</x:v>
-    </x:c>
+    <c r="A1" t="d" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <v>2011-12-25T14:23:55</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'd'
-    assert ws['A1'].value == datetime.datetime(2011, 12, 25, 14, 23, 55)
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
+                    'style_id':0, 'value': datetime.datetime(2011, 12, 25, 14, 23, 55)}
 
 
-@pytest.mark.xfail
-def test_mac_date():
-    from openpyxl.styles.styleable import StyleArray
-    from openpyxl.styles import numbers
-
-    class DummyWorkbook:
-        guess_types = False
-        data_only = False
-        _colors = []
-        encoding = "utf8"
-        epoch = CALENDAR_MAC_1904
-
-        def __init__(self):
-            self._differential_styles = []
-            self.shared_strings = IndexedList()
-            self._fonts = IndexedList()
-            self._fills = IndexedList()
-            self._number_formats = IndexedList()
-            self._borders = IndexedList()
-            self._alignments = IndexedList()
-            self._protections = IndexedList()
-            self._cell_styles = IndexedList()
-            self.vba_archive = None
-            self._cell_styles.add(StyleArray([0, 0, 0, 14, 0, 0, 0, 0, 0]))
-            self.sheetnames = []
-
-        def create_sheet(self, title):
-            return Worksheet(self)
-
-    from .. worksheet import WorkSheetParser
-    ws = DummyWorkbook().create_sheet('sheet')
-    parser = WorkSheetParser(ws, None, {0:'a'})
+def test_mac_date(WorkSheetParser):
+    parser = WorkSheetParser
+    parser.epoch = CALENDAR_MAC_1904
 
     src = """
-    <x:c r="A1" s="0" t="n" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:v>41184</x:v>
-    </x:c>
+    <c r="A1" t="n" s="29" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <v>41184</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].value == datetime.datetime(2016, 10, 3, 0, 0)
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
+                    'style_id':29, 'value':datetime.datetime(2016, 10, 3, 0, 0)}
 
 
-@pytest.mark.xfail
 def test_string(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
 
     src = """
-    <x:c r="A1" t="s" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:v>0</x:v>
-    </x:c>
+    <c r="A1" t="s" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <v>0</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 's'
-    assert ws['A1'].value == "a"
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 's', 'row': 1,
+                    'style_id':0, 'value':'a'}
 
 
-@pytest.mark.xfail
 def test_boolean(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
 
     src = """
-    <x:c r="A1" t="b" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-        <x:v>1</x:v>
-    </x:c>
+    <c r="A1" t="b" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <v>1</v>
+    </c>
     """
     element = fromstring(src)
 
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 'b'
-    assert ws['A1'].value is True
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 'b', 'row': 1,
+                    'style_id':0, 'value':True}
 
 
-@pytest.mark.xfail
-def test_inline_string(WorkSheetParser, datadir):
+def test_inline_string(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
-    datadir.chdir()
+    src = """
+    <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="A1" s="0" t="inlineStr">
+      <is>
+      <t>ID</t>
+      </is>
+    </c>
+    """
 
-    with open("Table1-XmlFromAccess.xml") as src:
-        sheet = fromstring(src.read())
+    element = fromstring(src)
 
-    element = sheet.find("{%s}sheetData/{%s}row/{%s}c" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS))
-    parser.parse_cell(element)
-    assert ws['A1'].data_type == 's'
-    assert ws['A1'].value == "ID"
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 1, 'data_type': 's', 'row': 1,
+                    'style_id':0, 'value':"ID"}
 
 
-@pytest.mark.xfail
-def test_inline_richtext(WorkSheetParser, datadir):
+def test_inline_richtext(WorkSheetParser):
     parser = WorkSheetParser
-    ws = parser.ws
-    datadir.chdir()
-    with open("jasper_sheet.xml", "rb") as src:
-        sheet = fromstring(src.read())
+    src = """
+    <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="R2" s="4" t="inlineStr">
+    <is>
+      <r>
+        <rPr>
+          <sz val="8.0" />
+        </rPr>
+        <t xml:space="preserve">11 de September de 2014</t>
+      </r>
+      </is>
+    </c>
+    """
 
-    element = sheet.find("{%s}sheetData/{%s}row[2]/{%s}c[18]" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS))
-    assert element.get("r") == 'R2'
-    parser.parse_cell(element)
-    cell = ws['R2']
-    assert cell.data_type == 's'
-    assert cell.value == "11 de September de 2014"
+    element = fromstring(src)
+    cell = parser.parse_cell(element)
+    assert cell == {'column': 18, 'data_type': 's', 'row': 2,
+                    'style_id':4, 'value':"11 de September de 2014"}
 
 
 @pytest.mark.xfail
@@ -446,8 +389,8 @@ def test_cell_exotic_style(WorkSheetParser, datadir):
     parser.styles = [None, None, [0,0,0,0,0,0,1,1,0]]
 
     src = """
-    <x:c xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="D4" s="2">
-    </x:c>
+    <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="D4" s="2">
+    </c>
     """
 
     sheet = fromstring(src)
@@ -509,10 +452,10 @@ def Translator():
 def test_shared_formula(WorkSheetParser, Translator):
     parser = WorkSheetParser
     src = """
-    <x:c r="A9" t="str" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-      <x:f t="shared" si="0"/>
-      <x:v>9</x:v>
-    </x:c>
+    <c r="A9" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <f t="shared" si="0"/>
+      <v>9</v>
+    </c>
     """
     element = fromstring(src)
     parser.shared_formulae['0'] = Translator("=A4*B4", "A1")
@@ -539,7 +482,7 @@ def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
 
 @pytest.mark.xfail
 def test_row_dimensions(WorkSheetParser):
-    src = """<row r="2" spans="1:6" x14ac:dyDescent="0.3" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" />"""
+    src = """<row r="2" spans="1:6" x14ac:dyDescent="0.3" xmlns14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" />"""
     element = fromstring(src)
 
     parser = WorkSheetParser

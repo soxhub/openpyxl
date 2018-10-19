@@ -38,6 +38,7 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import safe_iterator, localname
 from openpyxl.styles import Color
 from openpyxl.styles import is_date_format
+from openpyxl.styles.numbers import BUILTIN_FORMATS
 from openpyxl.formatting import Rule
 from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
@@ -107,7 +108,7 @@ class WorkSheetParser(object):
         if style_id in self._number_format_cache:
             return self._number_format_cache[style_id]
 
-        style = self.cell_styles[style_id]
+        style = self.styles[style_id]
         key = style.numFmtId
         if key < 164:
             fmt = BUILTIN_FORMATS.get(key, "General")
@@ -176,14 +177,11 @@ class WorkSheetParser(object):
 
 
     def parse_cell(self, element):
-        value = element.findtext(self.VALUE_TAG)
-        if value is not None:
-            value = value.text
-
+        value = element.findtext(VALUE_TAG)
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
         self._col_count += 1
-        style_id = element.get('s')
+        style_id = element.get('s', 0)
 
         if style_id is not None:
             style_id = int(style_id)
@@ -193,11 +191,11 @@ class WorkSheetParser(object):
         else:
             row, column = self._row_count, self._col_count
 
-        if not self.data_only:
+        if data_type == "str" and not self.data_only:
             data_type = 'f'
             value = self.parse_formula(element)
 
-        elif value is not None:
+        if value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
                 if self._is_date(style_id):
@@ -207,26 +205,30 @@ class WorkSheetParser(object):
                 value = self.shared_strings[int(value)]
             elif data_type == 'b':
                 value = bool(int(value))
-            elif data_type == 'str':
-                data_type = 's'
+            elif data_type == "str":
+                try:
+                    value = _cast_number(value)
+                    data_type = "n"
+                except ValueError:
+                    data_type = "s"
             elif data_type == 'd':
                 value = from_ISO8601(value)
 
         elif data_type == 'inlineStr':
-                child = element.find(self.INLINE_STRING)
+                child = element.find(INLINE_STRING)
                 if child is not None:
                     data_type = 's'
                     richtext = Text.from_tree(child)
                     value = richtext.content
 
-        yield {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
+        return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 
 
     def parse_formula(self, element):
         """
         possible formulae types: shared, array, datatable
         """
-        formula = element.find(self.FORMULA_TAG)
+        formula = element.find(FORMULA_TAG)
         data_type = 'f'
         formula_type = formula.get('t')
         value = "="
