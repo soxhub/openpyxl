@@ -99,6 +99,7 @@ class WorkSheetParser(object):
         self.column_dimensions = {}
         self.styles = styles
         self.number_formats = []
+        self.keep_vba = False
 
 
     def _is_date(self, style_id):
@@ -268,7 +269,6 @@ class WorkSheetParser(object):
 
     def parse_row(self, row):
         attrs = dict(row.attrib)
-        attrs['worksheet'] = None
 
         if "r" in attrs:
             self._row_count = int(attrs['r'])
@@ -284,8 +284,10 @@ class WorkSheetParser(object):
 
 
         keys = set(attrs)
+        print(keys)
         if keys != set(['r', 'spans']) and keys != set(['r']):
             # don't create dimension objects unless they have relevant information
+            attrs['worksheet'] = None
             dim = RowDimension(**attrs)
             self.row_dimensions[dim.index] = dim
 

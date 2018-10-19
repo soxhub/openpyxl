@@ -146,6 +146,16 @@ def test_styled_col(datadir, WorkSheetParser):
     assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25'}
 
 
+def test_row_dimensions(WorkSheetParser):
+    src = """<row r="2" spans="1:6" />"""
+    element = fromstring(src)
+
+    parser = WorkSheetParser
+    parser.parse_row(element)
+
+    assert 2 not in parser.row_dimensions
+
+
 def test_hidden_row(WorkSheetParser):
     parser = WorkSheetParser
 
@@ -363,45 +373,46 @@ def test_legacy_drawing(datadir):
     assert sheet2.legacy_drawing == 'xl/drawings/vmlDrawing2.vml'
 
 
-@pytest.mark.xfail
-def test_sheet_views(WorkSheetParser, datadir):
-    datadir.chdir()
+def test_sheet_views(WorkSheetParser):
     parser = WorkSheetParser
 
-    with open("frozen_view_worksheet.xml", "rb") as src:
-        parser.source = src
-        parser.parse()
-    ws = parser.ws
-    view = ws.sheet_view
+    src = b"""
+    <sheetViews xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+      <sheetView tabSelected="1" zoomScale="200" zoomScaleNormal="200" zoomScalePageLayoutView="200" workbookViewId="0">
+        <pane xSplit="5" ySplit="19" topLeftCell="F20" activePane="bottomRight" state="frozenSplit"/>
+        <selection pane="topRight" activeCell="F1" sqref="F1"/>
+        <selection pane="bottomLeft" activeCell="A20" sqref="A20"/>
+        <selection pane="bottomRight" activeCell="E22" sqref="E22"/>
+      </sheetView>
+    </sheetViews>
+    """
+
+    parser.source = source = BytesIO()
+    parser.source.write(src)
+    parser.source.seek(0)
+    parser.parse()
+
+    view = parser.views.sheetView[0]
 
     assert view.zoomScale == 200
     assert len(view.selection) == 3
 
 
-@pytest.mark.xfail
-def test_legacy_document_keep(WorkSheetParserKeepVBA, datadir):
+@pytest.mark.parametrize("keep_vba, result",
+                         [
+                             ("True", "rId3"),
+                             ("False", None),
+                         ]
+                         )
+def test_legacy_document_(WorkSheetParserKeepVBA, keep_vba, result):
     parser = WorkSheetParserKeepVBA
-    datadir.chdir()
+    parser.keep_vba = keep_vba
 
-    with open("legacy_drawing_worksheet.xml") as src:
-        sheet = fromstring(src.read())
+    src = """<legacyDrawing r:id="rId3" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>"""
+    element = fromstring(src)
 
-    element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
-    parser.parse_legacy_drawing(element)
-    assert parser.ws.legacy_drawing == 'rId3'
-
-
-@pytest.mark.xfail
-def test_legacy_document_no_keep(WorkSheetParser, datadir):
-    parser = WorkSheetParser
-    datadir.chdir()
-
-    with open("legacy_drawing_worksheet.xml") as src:
-        sheet = fromstring(src.read())
-
-    element = sheet.find("{%s}legacyDrawing" % SHEET_MAIN_NS)
-    parser.parse_legacy_drawing(element)
-    assert parser.ws.legacy_drawing is None
+    legacy = parser.parse_legacy_drawing(element)
+    assert legacy == 'rId3'
 
 
 @pytest.fixture
@@ -439,17 +450,6 @@ def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
     parser.parse_extensions(element)
     w = recwarn.pop()
     assert issubclass(w.category, UserWarning)
-
-
-@pytest.mark.xfail
-def test_row_dimensions(WorkSheetParser):
-    src = """<row r="2" spans="1:6" x14ac:dyDescent="0.3" xmlns14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" />"""
-    element = fromstring(src)
-
-    parser = WorkSheetParser
-    parser.parse_row(element)
-
-    assert 2 not in parser.ws.row_dimensions
 
 
 @pytest.mark.xfail
