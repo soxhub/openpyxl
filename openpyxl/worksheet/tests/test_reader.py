@@ -364,45 +364,6 @@ def test_legacy_drawing(datadir):
 
 
 @pytest.mark.xfail
-def test_cell_style(WorkSheetParser, datadir):
-    datadir.chdir()
-    parser = WorkSheetParser
-    ws = parser.ws
-    parser.shared_strings[1] = "Arial Font, 10"
-
-    with open("complex-styles-worksheet.xml") as src:
-        sheet = fromstring(src.read())
-
-    element = sheet.find("{%s}sheetData/{%s}row[2]/{%s}c[1]" % (SHEET_MAIN_NS, SHEET_MAIN_NS, SHEET_MAIN_NS))
-    assert element.get('r') == 'A2'
-    assert element.get('s') == '2'
-    parser.parse_cell(element)
-    assert ws['A2']._style == parser.styles[2]
-    assert ws['A2'].style_id == 2
-
-
-@pytest.mark.xfail
-def test_cell_exotic_style(WorkSheetParser, datadir):
-    datadir.chdir()
-    parser = WorkSheetParser
-    ws = parser.ws
-    parser.styles = [None, None, [0,0,0,0,0,0,1,1,0]]
-
-    src = """
-    <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="D4" s="2">
-    </c>
-    """
-
-    sheet = fromstring(src)
-    parser.parse_cell(sheet)
-    assert ws['A1'].pivotButton is False
-
-    cell = ws['D4']
-    assert cell.pivotButton is True
-    assert cell.quotePrefix is True
-
-
-@pytest.mark.xfail
 def test_sheet_views(WorkSheetParser, datadir):
     datadir.chdir()
     parser = WorkSheetParser
