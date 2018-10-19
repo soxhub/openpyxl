@@ -415,13 +415,10 @@ def test_legacy_document_(WorkSheetParserKeepVBA, keep_vba, result):
     assert legacy == 'rId3'
 
 
-@pytest.fixture
-def Translator():
-    from openpyxl.formula import translate
-    return translate.Translator
+from openpyxl.formula.translate import Translator
 
-@pytest.mark.xfail
-def test_shared_formula(WorkSheetParser, Translator):
+
+def test_shared_formula(WorkSheetParser):
     parser = WorkSheetParser
     src = """
     <c r="A9" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -431,8 +428,8 @@ def test_shared_formula(WorkSheetParser, Translator):
     """
     element = fromstring(src)
     parser.shared_formulae['0'] = Translator("=A4*B4", "A1")
-    parser.parse_cell(element)
-    assert parser.ws['A9'].value == "=A12*B12"
+    formula = parser.parse_formula(element)
+    assert formula == "=A12*B12"
 
 
 import warnings

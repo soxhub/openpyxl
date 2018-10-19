@@ -232,8 +232,9 @@ class WorkSheetParser(object):
         formula = element.find(FORMULA_TAG)
         data_type = 'f'
         formula_type = formula.get('t')
+        coordinate = element.get('r')
         value = "="
-        if formula.text:
+        if formula.text is not None:
             value += formula.text
 
         if formula_type == "array":
