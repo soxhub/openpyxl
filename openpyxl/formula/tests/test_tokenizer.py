@@ -246,6 +246,7 @@ class TestTokenizer(object):
         result = [(token.value, token.type, token.subtype)
                   for token in tok.items]
         assert result == tokens
+        assert tok.render() == formula
 
     @pytest.mark.parametrize('formula, offset, result', [
         ('"spamspamspam"spam', 0, '"spamspamspam"'),
@@ -604,3 +605,34 @@ class TestToken(object):
         assert token.value == ';'
         assert token.type == SEP
         assert token.subtype == ROW
+
+    @pytest.mark.parametrize('formula, tokens', [
+        ("SUM(Inputs!$W$111:'Input 1'!W111)",
+         [("SUM(Inputs!$W$111:'Input 1'!W111)", 'LITERAL', '')]),
+
+        ("=SUM('Inputs 1'!$W$111:'Input 1'!W111)",
+         [('SUM(', 'FUNC', 'OPEN'),
+          ("'Inputs 1'!$W$111:'Input 1'!W111", 'OPERAND', 'RANGE'),
+          (')', 'FUNC', 'CLOSE')]),
+
+        ("=SUM(Inputs!$W$111:'Input 1'!W111)",
+         [('SUM(', 'FUNC', 'OPEN'),
+          ("Inputs!$W$111:'Input 1'!W111", 'OPERAND', 'RANGE'),
+          (')', 'FUNC', 'CLOSE')]),
+
+        ("=SUM(Inputs!$W$111:'Input ''\"1'!W111)",
+         [('SUM(', 'FUNC', 'OPEN'),
+          ("Inputs!$W$111:'Input ''\"1'!W111", 'OPERAND', 'RANGE'),
+          (')', 'FUNC', 'CLOSE')]),
+
+        ("=SUM(Inputs!$W$111:Input1!W111)",
+         [('SUM(', 'FUNC', 'OPEN'),
+          ('Inputs!$W$111:Input1!W111', 'OPERAND', 'RANGE'),
+          (')', 'FUNC', 'CLOSE')]),
+    ])
+    def test_parse_quoted_sheet_name_in_range(self, tokenizer, formula, tokens):
+        tok = tokenizer.Tokenizer(formula)
+        result = [(token.value, token.type, token.subtype)
+                  for token in tok.items]
+        assert result == tokens
+        assert tok.render() == formula

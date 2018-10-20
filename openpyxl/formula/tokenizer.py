@@ -10,7 +10,7 @@ import re
 
 
 class TokenizerError(Exception):
-    "Base class for all Tokenizer errors."
+    """Base class for all Tokenizer errors."""
 
 
 class Tokenizer(object):
@@ -172,7 +172,7 @@ class Tokenizer(object):
         """
         Consume the characters constituting an operator.
 
-        Returns the number of charactes consumed. (Does not update
+        Returns the number of characters consumed. (Does not update
         self.offset)
 
         """
@@ -210,7 +210,7 @@ class Tokenizer(object):
         """
         Consumes a ( or { character.
 
-        Returns the number of charactes consumed. (Does not update
+        Returns the number of characters consumed. (Does not update
         self.offset)
 
         """
@@ -232,7 +232,7 @@ class Tokenizer(object):
         """
         Consumes a } or ) character.
 
-        Returns the number of charactes consumed. (Does not update
+        Returns the number of characters consumed. (Does not update
         self.offset)
 
         """
@@ -248,7 +248,7 @@ class Tokenizer(object):
         """
         Consumes a ; or , character.
 
-        Returns the number of charactes consumed. (Does not update
+        Returns the number of characters consumed. (Does not update
         self.offset)
 
         """
@@ -294,7 +294,7 @@ class Tokenizer(object):
         token transition. In this case, we raise a TokenizerError
 
         """
-        if self.token:
+        if self.token and self.token[-1] != ':':
             raise TokenizerError(
                 "Unexpected character at position %d in '%s'" %
                 (self.offset, self.formula))
@@ -306,7 +306,7 @@ class Tokenizer(object):
             del self.token[:]
 
     def render(self):
-        "Convert the parsed tokens back to a string."
+        """Convert the parsed tokens back to a string."""
         if not self.items:
             return ""
         elif self.items[0].type == Token.LITERAL:
@@ -364,7 +364,7 @@ class Token(object):
 
     @classmethod
     def make_operand(cls, value):
-        "Create an operand token."
+        """Create an operand token."""
         if value.startswith('"'):
             subtype = cls.TEXT
         elif value.startswith('#'):
@@ -384,7 +384,7 @@ class Token(object):
     #
     # There are 3 types of `Subexpressions`: functions, array literals, and
     # parentheticals. Subexpressions have 'OPEN' and 'CLOSE' tokens. 'OPEN'
-    # is used when parsing the initital expression token (i.e., '(' or '{')
+    # is used when parsing the initial expression token (i.e., '(' or '{')
     # and 'CLOSE' is used when parsing the closing expression token ('}' or
     # ')').
 
@@ -414,7 +414,7 @@ class Token(object):
         return cls(value, type_, subtype)
 
     def get_closer(self):
-        "Return a closing token that matches this token's type."
+        """Return a closing token that matches this token's type."""
         assert self.type in (self.FUNC, self.ARRAY, self.PAREN)
         assert self.subtype == self.OPEN
         value = "}" if self.type == self.ARRAY else ")"
@@ -433,7 +433,7 @@ class Token(object):
 
     @classmethod
     def make_separator(cls, value):
-        "Create a separator token"
+        """Create a separator token"""
         assert value in (',', ';')
         subtype = cls.ARG if value == ',' else cls.ROW
         return cls(value, cls.SEP, subtype)
