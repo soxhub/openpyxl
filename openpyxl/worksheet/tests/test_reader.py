@@ -20,6 +20,7 @@ from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles import numbers
+from openpyxl.formula.translate import Translator
 
 
 @pytest.fixture
@@ -387,9 +388,7 @@ def test_sheet_views(WorkSheetParser):
     </sheetViews>
     """
 
-    parser.source = source = BytesIO()
-    parser.source.write(src)
-    parser.source.seek(0)
+    parser.source = source = BytesIO(src)
     parser.parse()
 
     view = parser.views.sheetView[0]
@@ -413,9 +412,6 @@ def test_legacy_document_(WorkSheetParserKeepVBA, keep_vba, result):
 
     legacy = parser.parse_legacy_drawing(element)
     assert legacy == 'rId3'
-
-
-from openpyxl.formula.translate import Translator
 
 
 def test_shared_formula(WorkSheetParser):
@@ -444,7 +440,8 @@ def test_array_formula(WorkSheetParser, datadir):
     parser.parse_formula(element)
     assert parser.array_formulae['C10']['ref'] == 'C10:C14'
 
-from warnings import simplefilter, resetwarnings
+
+from warnings import simplefilter
 simplefilter("always")
 
 def test_extended_conditional_formatting(WorkSheetParser, recwarn):
@@ -475,11 +472,9 @@ def test_extended_conditional_formatting(WorkSheetParser, recwarn):
 
     parser.parse_extensions(element)
     w = recwarn.pop()
-    resetwarnings()
 
     assert issubclass(w.category, UserWarning)
 
-resetwarnings()
 
 def test_cell_without_coordinates(WorkSheetParser):
     parser = WorkSheetParser
@@ -512,46 +507,47 @@ def test_cell_without_coordinates(WorkSheetParser):
     assert parser.max_column == 5
 
 
-@pytest.mark.xfail
 def test_external_hyperlinks(WorkSheetParser):
     src = b"""
-    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <hyperlinks xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
       <hyperlink xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
        display="http://test.com" r:id="rId1" ref="A1"/>
-    </sheet>
+    </hyperlinks>
     """
-    from openpyxl.packaging.relationship import Relationship, RelationshipList
+    element = fromstring(src)
+    #from openpyxl.packaging.relationship import Relationship, RelationshipList
 
-    r = Relationship(type="hyperlink", Id="rId1", Target="../")
-    rels = RelationshipList()
-    rels.append(r)
+    #r = Relationship(type="hyperlink", Id="rId1", Target="../")
+    #rels = RelationshipList()
+    #rels.append(r)
 
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.ws._rels = rels
+    #parser.ws._rels = rels
 
     parser.parse()
+    assert len(parser.hyperlinks.hyperlink) == 1
 
-    assert parser.ws['A1'].hyperlink.target == "../"
+    #assert parser.ws['A1'].hyperlink.target == "../"
 
 
-@pytest.mark.xfail
 def test_local_hyperlinks(WorkSheetParser):
     src = b"""
-    <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
-      <hyperlinks>
+     <hyperlinks xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
         <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
-      </hyperlinks>
-    </sheet>
+    </hyperlinks>
     """
+    element = fromstring(src)
     parser = WorkSheetParser
     parser.source = BytesIO(src)
     parser.parse()
 
-    assert parser.ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
+    assert len(parser.hyperlinks.hyperlink) == 1
+
+    #assert parser.ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
 
 
-@pytest.mark.xfail
+#@pytest.mark.xfail
 def test_merge_cells(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -568,10 +564,11 @@ def test_merge_cells(WorkSheetParser):
 
     parser.parse()
 
-    assert parser.ws.merged_cells == "C2:F2 B19:C20 E19:G19"
+    assert len(parser.merged_cells.mergeCell) == 3
+
+    #assert parser.ws.merged_cells == "C2:F2 B19:C20 E19:G19"
 
 
-@pytest.mark.xfail
 def test_conditonal_formatting(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -586,13 +583,13 @@ def test_conditonal_formatting(WorkSheetParser):
     from openpyxl.styles.differential import DifferentialStyle
 
     parser = WorkSheetParser
-    dxf = DifferentialStyle()
-    parser.differential_styles = [dxf] * 30
+    #dxf = DifferentialStyle()
+    #parser.differential_styles = [dxf] * 30
     parser.source = BytesIO(src)
 
     parser.parse()
-
-    assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
+    assert len(parser.formatting) == 2
+    #assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
 
 def test_sheet_properties(WorkSheetParser):

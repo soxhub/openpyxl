@@ -20,7 +20,7 @@ from openpyxl.worksheet.dimensions import (
     SheetFormatProperties,
 )
 from openpyxl.worksheet.header_footer import HeaderFooter
-from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.hyperlink import HyperlinkList
 from openpyxl.worksheet.merge import MergeCells
 from openpyxl.worksheet.cell_range import CellRange
 from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
@@ -57,7 +57,7 @@ from .dimensions import SheetDimension
 CELL_TAG = '{%s}c' % SHEET_MAIN_NS
 VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
 FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
-MERGE_TAG = '{%s}mergeCell' % SHEET_MAIN_NS
+MERGE_TAG = '{%s}mergeCells' % SHEET_MAIN_NS
 INLINE_STRING = "{%s}is" % SHEET_MAIN_NS
 COL_TAG = '{%s}col' % SHEET_MAIN_NS
 ROW_TAG = '{%s}row' % SHEET_MAIN_NS
@@ -65,7 +65,7 @@ CF_TAG = '{%s}conditionalFormatting' % SHEET_MAIN_NS
 LEGACY_TAG = '{%s}legacyDrawing' % SHEET_MAIN_NS
 PROT_TAG = '{%s}sheetProtection' % SHEET_MAIN_NS
 EXT_TAG = "{%s}extLst" % SHEET_MAIN_NS
-HYPERLINK_TAG = "{%s}hyperlink" % SHEET_MAIN_NS
+HYPERLINK_TAG = "{%s}hyperlinks" % SHEET_MAIN_NS
 TABLE_TAG = "{%s}tableParts" % SHEET_MAIN_NS
 PRINT_TAG = '{%s}printOptions' % SHEET_MAIN_NS
 MARGINS_TAG = '{%s}pageMargins' % SHEET_MAIN_NS
@@ -93,14 +93,15 @@ class WorkSheetParser(object):
         self.shared_formulae = {}
         self.array_formulae = {}
         self.max_row = self.max_column = 0
-        self.tables = []
+        self.tables = TablePartList()
         self._number_format_cache = {}
         self.row_dimensions = {}
         self.column_dimensions = {}
         self.styles = styles
         self.number_formats = []
         self.keep_vba = False
-        self.hyperlinks = []
+        self.hyperlinks = HyperlinkList()
+        self.formatting = []
 
 
     def _is_date(self, style_id):
@@ -125,8 +126,8 @@ class WorkSheetParser(object):
             COL_TAG: self.parse_column_dimensions,
             PROT_TAG: self.parse_sheet_protection,
             EXT_TAG: self.parse_extensions,
-            HYPERLINK_TAG: self.parse_hyperlinks,
             LEGACY_TAG: self.parse_legacy_drawing,
+            CF_TAG: self.parse_formatting,
                       }
 
         properties = {
@@ -142,7 +143,7 @@ class WorkSheetParser(object):
             ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
             TABLE_TAG: ('tables', TablePartList),
-            CF_TAG: ('formatting', ConditionalFormatting),
+            HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
         }
 
@@ -290,6 +291,11 @@ class WorkSheetParser(object):
         return cells
 
 
+    def parse_formatting(self, element):
+        cf = ConditionalFormatting.from_tree(element)
+        self.formatting.append(cf)
+
+
     def parse_sheet_protection(self, element):
         protection = SheetProtection.from_tree(element)
         password = element.get("password")
@@ -311,11 +317,6 @@ class WorkSheetParser(object):
             ext_type = EXT_TYPES.get(e.uri.upper(), "Unknown")
             msg = "{0} extension is not supported and will be removed".format(ext_type)
             warn(msg)
-
-
-    def parse_hyperlinks(self, element):
-        link = Hyperlink.from_tree(element)
-        self.hyperlinks.append(link)
 
 
 class Reader(object):
