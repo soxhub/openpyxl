@@ -415,8 +415,10 @@ def test_shared_formula(WorkSheetParser, Translator):
     parser.parse_cell(element)
     assert parser.ws['A9'].value == "=A12*B12"
 
+from warnings import simplefilter
+simplefilter("always")
 
-def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
+def test_extended_conditional_formatting(WorkSheetParser, datadir):
     datadir.chdir()
     parser = WorkSheetParser
 
@@ -424,9 +426,10 @@ def test_extended_conditional_formatting(WorkSheetParser, datadir, recwarn):
         sheet = fromstring(src.read())
 
     element = sheet.find("{%s}extLst" % SHEET_MAIN_NS)
-    parser.parse_extensions(element)
-    w = recwarn.pop()
-    assert issubclass(w.category, UserWarning)
+
+    with pytest.warns(UserWarning):
+        parser.parse_extensions(element)
+
 
 
 def test_row_dimensions(WorkSheetParser):

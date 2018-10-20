@@ -444,6 +444,8 @@ def test_array_formula(WorkSheetParser, datadir):
     parser.parse_formula(element)
     assert parser.array_formulae['C10']['ref'] == 'C10:C14'
 
+from warnings import simplefilter, resetwarnings
+simplefilter("always")
 
 def test_extended_conditional_formatting(WorkSheetParser, recwarn):
     parser = WorkSheetParser
@@ -473,8 +475,11 @@ def test_extended_conditional_formatting(WorkSheetParser, recwarn):
 
     parser.parse_extensions(element)
     w = recwarn.pop()
+    resetwarnings()
+
     assert issubclass(w.category, UserWarning)
 
+resetwarnings()
 
 def test_cell_without_coordinates(WorkSheetParser):
     parser = WorkSheetParser
