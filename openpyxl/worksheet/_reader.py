@@ -100,6 +100,7 @@ class WorkSheetParser(object):
         self.styles = styles
         self.number_formats = []
         self.keep_vba = False
+        self.hyperlinks = []
 
 
     def _is_date(self, style_id):
@@ -121,15 +122,11 @@ class WorkSheetParser(object):
 
     def parse(self):
         dispatcher = {
-            MERGE_TAG: self.parse_merge,
             COL_TAG: self.parse_column_dimensions,
-            ROW_TAG: self.parse_row,
-            CF_TAG: self.parser_conditional_formatting,
-            LEGACY_TAG: self.parse_legacy_drawing,
             PROT_TAG: self.parse_sheet_protection,
             EXT_TAG: self.parse_extensions,
             HYPERLINK_TAG: self.parse_hyperlinks,
-            TABLE_TAG: self.parse_tables,
+            LEGACY_TAG: self.parse_legacy_drawing,
                       }
 
         properties = {
@@ -144,6 +141,9 @@ class WorkSheetParser(object):
             FORMAT_TAG: ('sheet_format', SheetFormatProperties),
             ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
+            TABLE_TAG: ('tables', TablePartList),
+            CF_TAG: ('formatting', ConditionalFormatting),
+            MERGE_TAG: ('merged_cells', MergeCells),
         }
 
         it = iterparse(self.source, tag=dispatcher)
@@ -250,13 +250,6 @@ class WorkSheetParser(object):
         return value
 
 
-    def parse_merge(self, element):
-        merged = MergeCells.from_tree(element)
-        #self.ws.merged_cells.ranges = merged.mergeCell
-        #for cr in merged.mergeCell:
-            #self.ws._clean_merge_range(cr)
-
-
     def parse_column_dimensions(self, col):
         attrs = dict(col.attrib)
         attrs['worksheet'] = None
@@ -283,7 +276,6 @@ class WorkSheetParser(object):
             elif key.startswith('{'):
                 del attrs[key]
 
-
         keys = set(attrs)
         print(keys)
         if keys != set(['r', 'spans']) and keys != set(['r']):
@@ -292,16 +284,10 @@ class WorkSheetParser(object):
             dim = RowDimension(**attrs)
             self.row_dimensions[dim.index] = dim
 
+        cells = []
         for cell in safe_iterator(row, CELL_TAG):
-            self.parse_cell(cell)
-
-
-    def parser_conditional_formatting(self, element):
-        cf = ConditionalFormatting.from_tree(element)
-        #for rule in cf.rules:
-            #if rule.dxfId is not None:
-                #rule.dxf = self.differential_styles[rule.dxfId]
-            #self.ws.conditional_formatting[cf] = rule
+            cells.append(self.parse_cell(cell))
+        return cells
 
 
     def parse_sheet_protection(self, element):
@@ -329,23 +315,7 @@ class WorkSheetParser(object):
 
     def parse_hyperlinks(self, element):
         link = Hyperlink.from_tree(element)
-        #if link.id:
-            #rel = self.ws._rels[link.id]
-            #link.target = rel.Target
-        #if ":" in link.ref:
-            ## range of cells
-            #for row in self.ws[link.ref]:
-                #for cell in row:
-                    #cell.hyperlink = link
-        #else:
-            #self.ws[link.ref].hyperlink = link
-
-
-    def parse_tables(self, element):
-        return TablePartList.from_tree(element)
-        #for t in TablePartList.from_tree(element).tablePart:
-            #rel = self.ws._rels[t.id]
-            #self.tables.append(rel.Target)
+        self.hyperlinks.append(link)
 
 
 class Reader(object):
@@ -356,3 +326,38 @@ class Reader(object):
     def __init__(self, ws):
         self.ws = ws
         self.parser = WorkSheetParser(xml_source, shared_strings)
+
+
+    def bind_formatting(self):
+        cf = parser.formatting
+        for rule in cf.rules:
+            if rule.dxfId is not None:
+                rule.dxf = self.differential_styles[rule.dxfId]
+            self.ws.conditional_formatting[cf] = rule
+
+
+    def bind_tables(self):
+        for t in self.parser.tabbles.tablePart:
+            rel = self.ws._rels[t.id]
+            self.ws.tables.append(rel.Target)
+
+
+    def bind_merged_cells(self):
+        self.ws.merged_cells.ranges = merged.mergeCell
+        for cr in merged.mergeCell:
+            self.ws._clean_merge_range(cr)
+
+
+    def bind_hyperlinks(self):
+        for link in parser.hyperlinks:
+            if link.id:
+                rel = self.ws._rels[link.id]
+                link.target = rel.Target
+            if ":" in link.ref:
+                # range of cells
+                for row in self.ws[link.ref]:
+                    for cell in row:
+                        cell.hyperlink = link
+            else:
+                self.ws[link.ref].hyperlink = link
+

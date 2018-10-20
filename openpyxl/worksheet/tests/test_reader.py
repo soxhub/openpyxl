@@ -629,19 +629,17 @@ def test_sheet_format(WorkSheetParser):
 
 
 def test_tables(WorkSheetParser):
-    parser = WorkSheetParser
-
     src = b"""
     <tableParts count="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
       xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         <tablePart r:id="rId1"/>
     </tableParts>
     """
-    element = fromstring(src)
+    parser = WorkSheetParser
+    parser.source = BytesIO(src)
+    parser.parse()
 
-    tables = parser.parse_tables(element)
-
-    assert tables.tablePart[0].id == "rId1"
+    assert parser.tables.tablePart[0].id == "rId1"
 
 
 def test_auto_filter(WorkSheetParser):
