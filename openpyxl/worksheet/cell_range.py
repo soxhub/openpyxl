@@ -371,22 +371,26 @@ class CellRange(Serialisable):
 
 
     @property
-    def _top(self):
+    def top(self):
+        """A list of cell coordinates that comprise the top of the range"""
         return [(self.min_row, col) for col in range(self.min_col, self.max_col+1)]
 
 
     @property
-    def _bottom(self):
+    def bottom(self):
+        """A list of cell coordinates that comprise the bottom of the range"""
         return [(self.max_row, col) for col in range(self.min_col, self.max_col+1)]
 
 
     @property
-    def _left(self):
+    def left(self):
+        """A list of cell coordinates that comprise the left-side of the range"""
         return [(row, self.min_col) for row in range(self.min_row, self.max_row+1)]
 
 
     @property
-    def _right(self):
+    def right(self):
+        """A list of cell coordinates that comprise the right-side of the range"""
         return [(row, self.max_col) for row in range(self.min_row, self.max_row+1)]
 
 

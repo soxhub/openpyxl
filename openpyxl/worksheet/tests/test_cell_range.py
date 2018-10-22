@@ -214,10 +214,10 @@ class TestCellRange:
 
     def test_edge_cells(self,CellRange):
         cr = CellRange("A1:C3")
-        assert cr._top == [(1,1), (1,2), (1,3)]
-        assert cr._bottom == [(3,1), (3,2), (3,3)]
-        assert cr._left == [(1,1), (2,1), (3,1)]
-        assert cr._right == [(1,3), (2,3), (3,3)]
+        assert cr.top == [(1,1), (1,2), (1,3)]
+        assert cr.bottom == [(3,1), (3,2), (3,3)]
+        assert cr.left == [(1,1), (2,1), (3,1)]
+        assert cr.right == [(1,3), (2,3), (3,3)]
 
 
 

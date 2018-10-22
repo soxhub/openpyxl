@@ -174,19 +174,19 @@ class TestMergedCellRange:
 
         mcr.format()
 
-        for coord in mcr._top:
+        for coord in mcr.top:
             cell = ws._cells.get(coord)
             assert cell.border.top == thick_border()
 
-        for coord in mcr._bottom:
+        for coord in mcr.bottom:
             cell = ws._cells.get(coord)
             assert cell.border.bottom== double_border()
 
-        for coord in mcr._left:
+        for coord in mcr.left:
             cell = ws._cells.get(coord)
             assert cell.border.left == thick_border()
 
-        for coord in mcr._right:
+        for coord in mcr.right:
             cell = ws._cells.get(coord)
             assert cell.border.right == thin_border()
 

@@ -124,7 +124,7 @@ class MergedCellRange(CellRange):
         Returns the cells of an edge and its border.
         """
 
-        edge = getattr(self, "_" + edge_name)
+        edge = getattr(self, edge_name)
         side = getattr(self.start_cell.border, edge_name)
         border = Border()
         setattr(border, edge_name, side)
