@@ -389,7 +389,8 @@ def test_sheet_views(WorkSheetParser):
     """
 
     parser.source = BytesIO(src)
-    parser.parse()
+    for _ in parser.parse():
+        pass
 
     view = parser.views.sheetView[0]
 
@@ -523,6 +524,9 @@ def test_external_hyperlinks(WorkSheetParser):
 
     parser = WorkSheetParser
     parser.source = BytesIO(src)
+
+    for _ in parser.parse():
+        pass
     #parser.ws._rels = rels
 
     parser.parse()
@@ -540,7 +544,9 @@ def test_local_hyperlinks(WorkSheetParser):
     element = fromstring(src)
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+
+    for _ in parser.parse():
+        pass
 
     assert len(parser.hyperlinks.hyperlink) == 1
 
@@ -562,7 +568,8 @@ def test_merge_cells(WorkSheetParser):
     parser = WorkSheetParser
     parser.source = BytesIO(src)
 
-    parser.parse()
+    for _ in parser.parse():
+        pass
 
     assert len(parser.merged_cells.mergeCell) == 3
 
@@ -587,7 +594,8 @@ def test_conditonal_formatting(WorkSheetParser):
     #parser.differential_styles = [dxf] * 30
     parser.source = BytesIO(src)
 
-    parser.parse()
+    for _ in parser.parse():
+        pass
     assert len(parser.formatting) == 2
     #assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
@@ -604,7 +612,9 @@ def test_sheet_properties(WorkSheetParser):
     """
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+
+    for _ in parser.parse():
+        pass
 
     assert parser.sheet_properties.tabColor.rgb == "FF92D050"
     assert parser.sheet_properties.codeName == "Sheet3"
@@ -619,7 +629,9 @@ def test_sheet_format(WorkSheetParser):
     """
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+
+    for _ in parser.parse():
+        pass
 
     assert parser.sheet_format.defaultRowHeight == 14.25
     assert parser.sheet_format.baseColWidth == 15
@@ -634,7 +646,9 @@ def test_tables(WorkSheetParser):
     """
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+
+    for _ in parser.parse():
+        pass
 
     assert parser.tables.tablePart[0].id == "rId1"
 
@@ -652,7 +666,8 @@ def test_auto_filter(WorkSheetParser):
 
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+    for _ in parser.parse():
+        pass
 
     assert parser.auto_filter.ref == "A1:AK3237"
     assert parser.auto_filter.sortState.ref == "A2:AM3269"
@@ -671,7 +686,8 @@ def test_page_break(WorkSheetParser):
 
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+    for _ in parser.parse():
+        pass
 
     assert parser.page_breaks == expected_pagebreak
 
@@ -693,6 +709,7 @@ def test_scenarios(WorkSheetParser):
 
     parser = WorkSheetParser
     parser.source = BytesIO(src)
-    parser.parse()
+    for _ in parser.parse():
+        pass
 
     assert parser.scenarios == scenarios

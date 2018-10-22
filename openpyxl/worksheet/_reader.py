@@ -159,6 +159,8 @@ class WorkSheetParser(object):
                 obj = prop[1].from_tree(element)
                 setattr(self, prop[0], obj)
                 element.clear()
+            elif tag_name == ROW_TAG:
+                yield self.parse_row(element)
 
 
     def parse_dimensions(self):
