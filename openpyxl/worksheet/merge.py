@@ -79,20 +79,15 @@ class MergedCellRange(CellRange):
         """
 
         # Top-left cell.
-        if (self.min_row, self.min_col) in self.ws._cells:
-            self.start_cell = self.ws._cells[(self.min_row, self.min_col)]
-        else:
-            self.start_cell = Cell(self.ws, row=self.min_row,
-                    column=self.min_col)
-            self.ws._cells[(self.start_cell.row,
-                self.start_cell.column)] = self.start_cell
+        self.start_cell = self.ws._cells.get((self.min_row, self.min_col))
+        if self.start_cell is None:
+            self.start_cell = self.ws.cell(row=self.min_row, column=self.min_col)
 
-        if (self.max_row, self.max_col) in self.ws._cells:
-            # Bottom-right cell
-            end_cell = self.ws._cells[(self.max_row, self.max_col)]
-
-            self.start_cell.border = self.start_cell.border + Border(
-                right=end_cell.border.right, bottom=end_cell.border.bottom)
+        # Bottom-right cell
+        end_cell = self.ws._cells.get((self.max_row, self.max_col))
+        if end_cell is not None:
+            self.start_cell.border += Border(right=end_cell.border.right,
+                                             bottom=end_cell.border.bottom)
 
 
     def format(self):
