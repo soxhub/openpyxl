@@ -68,7 +68,7 @@ class ReadOnlyWorksheet(object):
             if isinstance(source, ZipExtFile):
                 source.close()
         if dimensions is not None:
-            self.min_column, self.min_row, self.max_column, self.max_row = dimensions
+            self._min_column, self._min_row, self._max_column, self._max_row = dimensions
 
         # Methods from Worksheet
         self.cell = Worksheet.cell.__get__(self)
@@ -257,42 +257,25 @@ class ReadOnlyWorksheet(object):
             cell = r[-1]
             max_col = max(max_col, cell.column)
 
-        self.max_row = cell.row
-        self.max_column = max_col
+        self._max_row = cell.row
+        self._max_column = max_col
 
 
     @property
     def min_row(self):
         return self._min_row
 
-    @min_row.setter
-    def min_row(self, value):
-        self._min_row = value
-
 
     @property
     def max_row(self):
         return self._max_row
-
-    @max_row.setter
-    def max_row(self, value):
-        self._max_row = value
 
 
     @property
     def min_column(self):
         return self._min_column
 
-    @min_column.setter
-    def min_column(self, value):
-        self._min_column = value
-
 
     @property
     def max_column(self):
         return self._max_column
-
-
-    @max_column.setter
-    def max_column(self, value):
-        self._max_column = value
