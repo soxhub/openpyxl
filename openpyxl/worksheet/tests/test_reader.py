@@ -388,7 +388,7 @@ def test_sheet_views(WorkSheetParser):
     </sheetViews>
     """
 
-    parser.source = source = BytesIO(src)
+    parser.source = BytesIO(src)
     parser.parse()
 
     view = parser.views.sheetView[0]

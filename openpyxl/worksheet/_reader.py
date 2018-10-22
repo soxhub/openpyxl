@@ -278,7 +278,6 @@ class WorkSheetParser(object):
                 del attrs[key]
 
         keys = set(attrs)
-        print(keys)
         if keys != set(['r', 'spans']) and keys != set(['r']):
             # don't create dimension objects unless they have relevant information
             attrs['worksheet'] = None
