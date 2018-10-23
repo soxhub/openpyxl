@@ -398,21 +398,16 @@ def test_sheet_views(WorkSheetParser):
     assert len(view.selection) == 3
 
 
-@pytest.mark.parametrize("keep_vba, result",
-                         [
-                             ("True", "rId3"),
-                             ("False", None),
-                         ]
-                         )
-def test_legacy_document_(WorkSheetParserKeepVBA, keep_vba, result):
-    parser = WorkSheetParserKeepVBA
-    parser.keep_vba = keep_vba
+def test_legacy_document_(WorkSheetParser):
+    parser = WorkSheetParser
 
-    src = """<legacyDrawing r:id="rId3" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>"""
-    element = fromstring(src)
+    src = b"""<legacyDrawing r:id="rId3" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>"""
+    parser.source = BytesIO(src)
 
-    legacy = parser.parse_legacy_drawing(element)
-    assert legacy == 'rId3'
+    for _ in parser.parse():
+        pass
+
+    assert parser.related.id == 'rId3'
 
 
 def test_shared_formula(WorkSheetParser):
@@ -553,7 +548,6 @@ def test_local_hyperlinks(WorkSheetParser):
     #assert parser.ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
 
 
-#@pytest.mark.xfail
 def test_merge_cells(WorkSheetParser):
     src = b"""
     <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">

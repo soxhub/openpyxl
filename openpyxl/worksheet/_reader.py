@@ -103,6 +103,7 @@ class WorkSheetParser(object):
         self.keep_vba = False
         self.hyperlinks = HyperlinkList()
         self.formatting = []
+        self.related = None
 
 
     def _is_date(self, style_id):
@@ -127,7 +128,6 @@ class WorkSheetParser(object):
             COL_TAG: self.parse_column_dimensions,
             PROT_TAG: self.parse_sheet_protection,
             EXT_TAG: self.parse_extensions,
-            LEGACY_TAG: self.parse_legacy_drawing,
             CF_TAG: self.parse_formatting,
                       }
 
@@ -146,6 +146,7 @@ class WorkSheetParser(object):
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
+            LEGACY_TAG: ('related', Related),
         }
 
         it = iterparse(self.source, tag=dispatcher)
@@ -304,13 +305,6 @@ class WorkSheetParser(object):
         if password is not None:
             protection.set_password(password, True)
         self.protection = protection
-
-
-    def parse_legacy_drawing(self, element):
-        if self.keep_vba:
-            # For now just save the legacy drawing id.
-            # We will later look up the file name
-            return element.get('{%s}id' % REL_NS)
 
 
     def parse_extensions(self, element):
