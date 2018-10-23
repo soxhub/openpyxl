@@ -773,3 +773,25 @@ class TestWorksheetReader:
         reader.bind_vba()
 
         assert reader.vba == "rId3"
+
+
+    def test_cols(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        reader.bind_col_dimensions()
+
+        assert len(ws.column_dimensions) == 5
+        assert ws.column_dimensions['E'].worksheet == ws
+
+
+    def test_rows(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        reader.bind_row_dimensions()
+
+        assert len(ws.row_dimensions) == 7
+        assert ws.row_dimensions[4].worksheet == ws

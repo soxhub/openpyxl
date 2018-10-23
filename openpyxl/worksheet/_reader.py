@@ -373,3 +373,15 @@ class WorksheetReader(object):
     def bind_vba(self):
         if self.parser.related is not None:
             self.vba = self.parser.related.id
+
+
+    def bind_col_dimensions(self):
+        self.ws.column_dimensions = self.parser.column_dimensions
+        for cd in self.ws.column_dimensions.values():
+            cd.worksheet = self.ws
+
+
+    def bind_row_dimensions(self):
+        self.ws.row_dimensions = self.parser.row_dimensions
+        for rd in self.ws.row_dimensions.values():
+            rd.worksheet = self.ws
