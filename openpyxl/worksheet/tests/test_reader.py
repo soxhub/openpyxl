@@ -383,7 +383,7 @@ def test_legacy(WorkSheetParser):
     for _ in parser.parse():
         pass
 
-    assert parser.related.id == 'rId3'
+    assert parser.legacy_drawing.id == 'rId3'
 
 
 def test_shared_formula(WorkSheetParser):
@@ -753,16 +753,6 @@ class TestWorksheetReader:
         reader.bind_tables()
 
         assert reader.tables == ["../tables/table1.xml"]
-
-
-    def test_vba(self, PrimedWorksheetReader):
-        reader = PrimedWorksheetReader
-        reader.bind_cells()
-        ws = reader.ws
-
-        reader.bind_vba()
-
-        assert reader.vba == "rId3"
 
 
     def test_cols(self, PrimedWorksheetReader):

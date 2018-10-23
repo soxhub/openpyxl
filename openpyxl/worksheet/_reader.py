@@ -103,7 +103,7 @@ class WorkSheetParser(object):
         self.keep_vba = False
         self.hyperlinks = HyperlinkList()
         self.formatting = []
-        self.related = None
+        self.legacy_drawing = None
 
 
     def _is_date(self, style_id):
@@ -146,7 +146,7 @@ class WorkSheetParser(object):
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
-            LEGACY_TAG: ('related', Related),
+            LEGACY_TAG: ('legacy_drawing', Related),
         }
 
         it = iterparse(self.source, tag=dispatcher)
@@ -370,11 +370,6 @@ class WorksheetReader(object):
                 self.ws[link.ref].hyperlink = link
 
 
-    def bind_vba(self):
-        if self.parser.related is not None:
-            self.vba = self.parser.related.id
-
-
     def bind_col_dimensions(self):
         self.ws.column_dimensions = self.parser.column_dimensions
         for cd in self.ws.column_dimensions.values():
@@ -385,3 +380,13 @@ class WorksheetReader(object):
         self.ws.row_dimensions = self.parser.row_dimensions
         for rd in self.ws.row_dimensions.values():
             rd.worksheet = self.ws
+
+
+    def bind_all(self):
+        self.bind_cells()
+        self.bind_merged_cells()
+        self.bind_hyperlinks()
+        self.bind_formatting()
+        self.bind_col_dimensions()
+        self.bind_row_dimensions()
+        self.bind_tables()
