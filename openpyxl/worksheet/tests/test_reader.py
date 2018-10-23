@@ -720,11 +720,11 @@ class TestWorksheetReader:
         datadir.chdir()
         wb = Workbook
         ws = wb.create_sheet("Sheet")
-        with open("sheet_inline_strings.xml", "rb") as src:
+        with open("complex-styles-worksheet.xml", "rb") as src:
             reader = WorksheetReader(ws, src, wb.shared_strings, False)
             reader.bind_cells()
 
-        assert ws['C1'].value == 'col3'
+        assert ws['C1'].value == 'a'
 
 
     def test_formatting(self, Workbook, WorksheetReader, datadir):
