@@ -105,6 +105,7 @@ class WorkSheetParser(object):
         self.hyperlinks = HyperlinkList()
         self.formatting = []
         self.legacy_drawing = None
+        self.merged_cells = None
 
 
     def _is_date(self, style_id):
@@ -352,6 +353,8 @@ class WorksheetReader(object):
 
 
     def bind_merged_cells(self):
+        if not self.parser.merged_cells:
+            return
         self.ws.merged_cells.ranges = self.parser.merged_cells.mergeCell
         for cr in self.parser.merged_cells.mergeCell:
             self.ws._clean_merge_range(cr)
@@ -374,13 +377,13 @@ class WorksheetReader(object):
     def bind_col_dimensions(self):
         self.ws.column_dimensions = self.parser.column_dimensions
         for cd in self.ws.column_dimensions.values():
-            cd.worksheet = self.ws
+            cd.parent = self.ws
 
 
     def bind_row_dimensions(self):
         self.ws.row_dimensions = self.parser.row_dimensions
         for rd in self.ws.row_dimensions.values():
-            rd.worksheet = self.ws
+            rd.parent = self.ws
 
 
     def bind_properties(self):

@@ -754,7 +754,7 @@ class TestWorksheetReader:
         reader.bind_col_dimensions()
 
         assert len(ws.column_dimensions) == 5
-        assert ws.column_dimensions['E'].worksheet == ws
+        assert ws.column_dimensions['I'].parent == ws
 
 
     def test_rows(self, PrimedWorksheetReader):
@@ -765,7 +765,7 @@ class TestWorksheetReader:
         reader.bind_row_dimensions()
 
         assert len(ws.row_dimensions) == 7
-        assert ws.row_dimensions[4].worksheet == ws
+        assert ws.row_dimensions[4].parent == ws
 
 
     def test_properties(self, PrimedWorksheetReader):
