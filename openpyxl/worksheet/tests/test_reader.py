@@ -350,16 +350,6 @@ def test_inline_richtext(WorkSheetParser):
                     'style_id':4, 'value':"11 de September de 2014"}
 
 
-@pytest.mark.xfail
-def test_legacy_drawing(datadir):
-    datadir.chdir()
-    wb = load_workbook("legacy_drawing.xlsm", keep_vba=True)
-    sheet1 = wb['Sheet1']
-    assert sheet1.legacy_drawing == 'xl/drawings/vmlDrawing1.vml'
-    sheet2 = wb['Sheet2']
-    assert sheet2.legacy_drawing == 'xl/drawings/vmlDrawing2.vml'
-
-
 def test_sheet_views(WorkSheetParser):
     parser = WorkSheetParser
 
@@ -384,7 +374,7 @@ def test_sheet_views(WorkSheetParser):
     assert len(view.selection) == 3
 
 
-def test_legacy_document_(WorkSheetParser):
+def test_legacy(WorkSheetParser):
     parser = WorkSheetParser
 
     src = b"""<legacyDrawing r:id="rId3" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>"""
