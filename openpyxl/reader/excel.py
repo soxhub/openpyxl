@@ -54,6 +54,7 @@ from openpyxl.packaging.relationship import (
 )
 
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+from openpyxl.worksheet._reader import WorksheetReader
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
@@ -61,7 +62,6 @@ from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.xml.functions import fromstring
 
 from .drawings import find_images
-from .worksheet import WorkSheetParser
 
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
@@ -257,8 +257,8 @@ class ExcelReader:
                 fh = self.archive.open(rel.target)
                 ws = self.wb.create_sheet(sheet.name)
                 ws._rels = rels
-                ws_parser = WorkSheetParser(ws, fh, self.shared_strings)
-                ws_parser.parse()
+                ws_parser = WorksheetReader(ws, fh, self.shared_strings, self.data_only)
+                ws_parser.bind_all()
 
             # assign any comments to cells
             for r in rels.find(COMMENTS_NS):
@@ -269,7 +269,7 @@ class ExcelReader:
 
             # preserve link to VML file if VBA
             if self.wb.vba_archive and ws.legacy_drawing:
-                ws.legacy_drawing = rels[ws.legacy_drawing].target
+                ws.legacy_drawing = rels[ws.legacy_drawing.id].target
 
             for t in ws_parser.tables:
                 src = self.archive.read(t)
