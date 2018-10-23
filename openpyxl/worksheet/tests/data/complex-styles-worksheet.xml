@@ -394,11 +394,6 @@
     <mergeCell ref="G18:H18"/>
     <mergeCell ref="G23:H24"/>
     <mergeCell ref="A18:B18"/>
-    <mergeCell ref="A23:B24"/>
-    <mergeCell ref="C18:D18"/>
-    <mergeCell ref="C23:D24"/>
-    <mergeCell ref="E18:F18"/>
-    <mergeCell ref="E23:F24"/>
   </mergeCells>
   <conditionalFormatting sqref="S1:S10">
     <cfRule type="top10" dxfId="1" priority="12" percent="1" rank="10"/>

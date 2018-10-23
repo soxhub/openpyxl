@@ -351,8 +351,8 @@ class WorksheetReader(object):
 
 
     def bind_merged_cells(self):
-        self.ws.merged_cells.ranges = merged.mergeCell
-        for cr in merged.mergeCell:
+        self.ws.merged_cells.ranges = self.parser.merged_cells.mergeCell
+        for cr in self.parser.merged_cells.mergeCell:
             self.ws._clean_merge_range(cr)
 
 

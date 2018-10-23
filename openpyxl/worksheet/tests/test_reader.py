@@ -19,25 +19,13 @@ from openpyxl.worksheet.scenario import ScenarioList, Scenario, InputCells
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 from openpyxl.styles.styleable import StyleArray
+from openpyxl.styles import Border
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
 
 
 @pytest.fixture
 def Workbook():
-
-
-    class DummyStyle:
-        number_format = "General"
-        font = ""
-        fill = ""
-        border = ""
-        alignment = ""
-        protection = ""
-
-        def copy(self, **kw):
-            return self
-
 
     class DummyWorkbook:
 
@@ -52,7 +40,7 @@ def Workbook():
             self._fonts = IndexedList()
             self._fills = IndexedList()
             self._number_formats = IndexedList()
-            self._borders = IndexedList()
+            self._borders = IndexedList([Border()] * 30)
             self._alignments = IndexedList()
             self._protections = IndexedList()
             self._cell_styles = IndexedList()
@@ -735,4 +723,16 @@ class TestWorksheetReader:
         ws = reader.ws
 
         reader.bind_formatting()
+
         assert ws.conditional_formatting['T1:T10'][-1].dxf == DifferentialStyle()
+
+
+    def test_merged(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        reader.bind_merged_cells()
+
+        assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
+
