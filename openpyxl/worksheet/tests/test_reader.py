@@ -708,34 +708,31 @@ def test_scenarios(WorkSheetParser):
 
 
 @pytest.fixture
-def WorksheetReader():
+def PrimedWorksheetReader(Workbook, datadir):
     from .._reader import WorksheetReader
-    return WorksheetReader
+    datadir.chdir()
+    wb = Workbook
+    ws = wb.create_sheet("Sheet")
+    src = "complex-styles-worksheet.xml"
+    reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False)
+    return reader
 
 
 class TestWorksheetReader:
 
 
-    def test_cells(self, Workbook, WorksheetReader, datadir):
-        datadir.chdir()
-        wb = Workbook
-        ws = wb.create_sheet("Sheet")
-        with open("complex-styles-worksheet.xml", "rb") as src:
-            reader = WorksheetReader(ws, src, wb.shared_strings, False)
-            reader.bind_cells()
+    def test_cells(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
 
         assert ws['C1'].value == 'a'
 
 
-    def test_formatting(self, Workbook, WorksheetReader, datadir):
-        datadir.chdir()
-        wb = Workbook
-        ws = wb.create_sheet("Sheet")
-
-        with open("complex-styles-worksheet.xml", "rb") as src:
-            reader = WorksheetReader(ws, src, wb.shared_strings, False)
-            reader.bind_cells()
+    def test_formatting(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
 
         reader.bind_formatting()
         assert ws.conditional_formatting['T1:T10'][-1].dxf == DifferentialStyle()
-
