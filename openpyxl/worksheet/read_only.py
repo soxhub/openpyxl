@@ -144,6 +144,24 @@ class ReadOnlyWorksheet(object):
 
                 element.clear()
 
+    def _pad_row(self, row, min_col=1, max_col=None, filler=EMPTY_CELL):
+        """
+        Make sure a row contains always the same number of cells or values
+        """
+        new_row = []
+        counter = min_col
+        for cell in row:
+            counter = cell['column']
+            if min_col <= counter:
+                new_row = [filler] * (counter- min_col)
+            elif counter < max_col:
+                new_row.append(cell)
+
+        if max_col is not None and counter < max_col:
+            new_row.extend([filler] * (max_col - counter))
+
+        return tuple(new_row)
+
 
     def _get_row(self, element, min_col=1, max_col=None, row_counter=None, values_only=False):
         """Return cells from a particular row"""
