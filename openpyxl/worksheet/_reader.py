@@ -315,14 +315,14 @@ class WorkSheetParser(object):
             warn(msg)
 
 
-class Reader(object):
+class WorksheetReader(object):
     """
     Create a parser and apply it to a workbook
     """
 
-    def __init__(self, ws):
+    def __init__(self, ws, xml_source, shared_strings, data_only):
         self.ws = ws
-        self.parser = WorkSheetParser(xml_source, shared_strings)
+        self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._cell_styles)
 
 
     def bind_cells(self):
@@ -331,6 +331,7 @@ class Reader(object):
                 style = self.ws.parent._cell_styles[cell['style_id']]
                 c = Cell(self.ws, row=cell['row'], column=cell['column'], style_array=style)
                 c._value = cell['value']
+                c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
 
 

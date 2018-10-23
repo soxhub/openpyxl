@@ -707,3 +707,26 @@ def test_scenarios(WorkSheetParser):
         pass
 
     assert parser.scenarios == scenarios
+
+
+@pytest.fixture
+def WorksheetReader():
+    from .._reader import WorksheetReader
+    return WorksheetReader
+
+from openpyxl import Workbook
+
+
+class TestWorksheetReader:
+
+
+    def test_cells(self, WorksheetReader, datadir):
+        datadir.chdir()
+        wb = Workbook()
+        ws = wb.active
+        with open("sheet_inline_strings.xml", "rb") as src:
+            reader = WorksheetReader(ws, src, [], False)
+            reader.bind_cells()
+
+        assert ws['C1'].value == 'col3'
+
