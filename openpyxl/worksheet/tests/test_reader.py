@@ -736,3 +736,47 @@ class TestWorksheetReader:
 
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
 
+
+    def test_external_hyperlinks(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        r = Relationship(type="hyperlink", Id="rId1", Target="../")
+        rels = RelationshipList()
+        rels.append(r)
+        ws._rels = rels
+
+        reader.bind_hyperlinks()
+
+        assert ws['A1'].hyperlink.target == "../"
+
+
+    def test_internal_hyperlinks(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        r = Relationship(type="hyperlink", Id="rId1", Target="../")
+        rels = RelationshipList()
+        rels.append(r)
+        ws._rels = rels
+
+        reader.bind_hyperlinks()
+
+        assert ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
+
+
+    def test_tables(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        r = Relationship(type="table", Id="rId1", Target="../tables/table1.xml")
+        rels = RelationshipList()
+        rels.append(r)
+        ws._rels = rels
+
+        reader.bind_tables()
+
+        assert reader.tables == ["../tables/table1.xml"]

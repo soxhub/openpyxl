@@ -401,8 +401,16 @@
   <conditionalFormatting sqref="T1:T10">
     <cfRule type="top10" dxfId="2" priority="11" bottom="1" rank="4"/>
   </conditionalFormatting>
+  <hyperlinks>
+    <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
+    <hyperlink xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+       display="http://test.com" r:id="rId1" ref="A1"/>
+  </hyperlinks>
   <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
   <pageSetup orientation="portrait" horizontalDpi="4294967292" verticalDpi="4294967292"/>
+  <tableParts count="1">
+    <tablePart r:id="rId1"/>
+  </tableParts>
   <extLst>
     <ext xmlns:mx="http://schemas.microsoft.com/office/mac/excel/2008/main" uri="{64002731-A6B0-56B0-2670-7721B7C09600}">
       <mx:PLV Mode="0" OnePage="0" WScale="0"/>

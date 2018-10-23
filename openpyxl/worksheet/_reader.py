@@ -323,6 +323,7 @@ class WorksheetReader(object):
     def __init__(self, ws, xml_source, shared_strings, data_only):
         self.ws = ws
         self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._cell_styles)
+        self.tables = []
 
 
     def bind_cells(self):
@@ -345,9 +346,9 @@ class WorksheetReader(object):
 
 
     def bind_tables(self):
-        for t in self.parser.tabbles.tablePart:
+        for t in self.parser.tables.tablePart:
             rel = self.ws._rels[t.id]
-            self.ws.tables.append(rel.Target)
+            self.tables.append(rel.Target)
 
 
     def bind_merged_cells(self):
@@ -357,7 +358,7 @@ class WorksheetReader(object):
 
 
     def bind_hyperlinks(self):
-        for link in parser.hyperlinks:
+        for link in self.parser.hyperlinks.hyperlink:
             if link.id:
                 rel = self.ws._rels[link.id]
                 link.target = rel.Target
