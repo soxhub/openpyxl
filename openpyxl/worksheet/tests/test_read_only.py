@@ -114,7 +114,6 @@ class TestReadOnlyWorksheet:
         assert values == [None, None]
 
 
-
     def test_read_without_coordinates(self, DummyWorkbook, ReadOnlyWorksheet):
 
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", ["Whatever"]*10)
