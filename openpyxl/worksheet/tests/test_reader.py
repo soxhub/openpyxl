@@ -58,7 +58,7 @@ def Workbook():
 
 
 @pytest.fixture
-def WorkSheetParser(Workbook):
+def WorkSheetParser():
     """Setup a parser instance with an empty source"""
     from .._reader import WorkSheetParser
 
@@ -67,15 +67,6 @@ def WorkSheetParser(Workbook):
         styles.add((StyleArray([i]*9)))
     styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
     return WorkSheetParser(None, {0:'a'}, styles=styles)
-
-
-@pytest.fixture
-def WorkSheetParserKeepVBA(Workbook):
-    """Setup a parser instance with an empty source"""
-    Workbook.vba_archive=True
-    from .._reader import WorkSheetParser
-    ws = Workbook.create_sheet('sheet')
-    return WorkSheetParser(None, {0:'a'}, {})
 
 
 @pytest.mark.parametrize("filename, expected",
