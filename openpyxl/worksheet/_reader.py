@@ -10,7 +10,6 @@ from openpyxl.xml.functions import iterparse
 
 # package imports
 from openpyxl.cell import Cell
-from openpyxl.worksheet.filters import AutoFilter, SortState
 from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet
@@ -19,23 +18,13 @@ from openpyxl.worksheet.dimensions import (
     RowDimension,
     SheetFormatProperties,
 )
-from openpyxl.worksheet.header_footer import HeaderFooter
-from openpyxl.worksheet.hyperlink import HyperlinkList
-from openpyxl.worksheet.merge import MergeCells
-from openpyxl.worksheet.cell_range import CellRange
-from openpyxl.worksheet.page import PageMargins, PrintOptions, PrintPageSetup
-from openpyxl.worksheet.pagebreak import PageBreak
-from openpyxl.worksheet.protection import SheetProtection
-from openpyxl.worksheet.scenario import ScenarioList
-from openpyxl.worksheet.views import SheetViewList
-from openpyxl.worksheet.datavalidation import DataValidationList
+
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
     REL_NS,
     EXT_TYPES,
-    PKG_REL_NS
 )
-from openpyxl.xml.functions import safe_iterator, localname
+from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
 from openpyxl.styles import is_date_format
 from openpyxl.styles.numbers import BUILTIN_FORMATS
@@ -49,9 +38,21 @@ from openpyxl.utils import (
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList, Extension
 
+from .filters import AutoFilter, SortState
+from .header_footer import HeaderFooter
+from .hyperlink import HyperlinkList
+from .merge import MergeCells
+from .cell_range import CellRange
+from .page import PageMargins, PrintOptions, PrintPageSetup
+from .pagebreak import PageBreak
+from .protection import SheetProtection
+from .scenario import ScenarioList
+from .views import SheetViewList
+from .datavalidation import DataValidationList
 from .table import TablePartList
 from .properties import WorksheetProperties
 from .dimensions import SheetDimension
+from .related import Related
 
 
 CELL_TAG = '{%s}c' % SHEET_MAIN_NS
@@ -330,6 +331,15 @@ class Reader(object):
         self.parser = WorkSheetParser(xml_source, shared_strings)
 
 
+    def bind_cells(self):
+        for row in self.parser.parse():
+            for cell in row:
+                style = self.ws.parent._cell_styles[cell['style_id']]
+                c = Cell(self.ws, row=cell['row'], column=cell['column'], style_array=style)
+                c._value = cell['value']
+                self.ws._cells[(cell['row'], cell['column'])] = c
+
+
     def bind_formatting(self):
         cf = parser.formatting
         for rule in cf.rules:
@@ -363,3 +373,6 @@ class Reader(object):
             else:
                 self.ws[link.ref].hyperlink = link
 
+
+    def bind_vba(self):
+        pass
