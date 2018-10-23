@@ -336,10 +336,11 @@ class WorksheetReader(object):
 
 
     def bind_formatting(self):
-        cf = parser.formatting
-        for rule in cf.rules:
-            if rule.dxfId is not None:
-                rule.dxf = self.differential_styles[rule.dxfId]
+
+        for cf in self.parser.formatting:
+            for rule in cf.rules:
+                if rule.dxfId is not None:
+                    rule.dxf = self.ws.parent._differential_styles[rule.dxfId]
             self.ws.conditional_formatting[cf] = rule
 
 

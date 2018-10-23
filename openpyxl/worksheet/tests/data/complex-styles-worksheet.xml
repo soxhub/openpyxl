@@ -400,6 +400,12 @@
     <mergeCell ref="E18:F18"/>
     <mergeCell ref="E23:F24"/>
   </mergeCells>
+  <conditionalFormatting sqref="S1:S10">
+    <cfRule type="top10" dxfId="1" priority="12" percent="1" rank="10"/>
+  </conditionalFormatting>
+  <conditionalFormatting sqref="T1:T10">
+    <cfRule type="top10" dxfId="2" priority="11" bottom="1" rank="4"/>
+  </conditionalFormatting>
   <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
   <pageSetup orientation="portrait" horizontalDpi="4294967292" verticalDpi="4294967292"/>
   <extLst>

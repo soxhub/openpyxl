@@ -19,7 +19,7 @@ from openpyxl.worksheet.scenario import ScenarioList, Scenario, InputCells
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 from openpyxl.styles.styleable import StyleArray
-from openpyxl.styles import numbers
+from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
 
 
@@ -28,7 +28,7 @@ def Workbook():
 
 
     class DummyStyle:
-        number_format = numbers.FORMAT_GENERAL
+        number_format = "General"
         font = ""
         fill = ""
         border = ""
@@ -47,9 +47,8 @@ def Workbook():
         epoch = CALENDAR_WINDOWS_1900
 
         def __init__(self):
-            self._differential_styles = []
-            self.shared_strings = IndexedList()
-            self.shared_strings.add("hello world")
+            self._differential_styles = [DifferentialStyle()] * 5
+            self.shared_strings = ['a'] * 30
             self._fonts = IndexedList()
             self._fills = IndexedList()
             self._number_formats = IndexedList()
@@ -62,7 +61,6 @@ def Workbook():
                 self._cell_styles.add((StyleArray([i]*9)))
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []
-
 
         def create_sheet(self, title):
             return Worksheet(self)
@@ -714,19 +712,30 @@ def WorksheetReader():
     from .._reader import WorksheetReader
     return WorksheetReader
 
-from openpyxl import Workbook
-
 
 class TestWorksheetReader:
 
 
-    def test_cells(self, WorksheetReader, datadir):
+    def test_cells(self, Workbook, WorksheetReader, datadir):
         datadir.chdir()
-        wb = Workbook()
-        ws = wb.active
+        wb = Workbook
+        ws = wb.create_sheet("Sheet")
         with open("sheet_inline_strings.xml", "rb") as src:
-            reader = WorksheetReader(ws, src, [], False)
+            reader = WorksheetReader(ws, src, wb.shared_strings, False)
             reader.bind_cells()
 
         assert ws['C1'].value == 'col3'
+
+
+    def test_formatting(self, Workbook, WorksheetReader, datadir):
+        datadir.chdir()
+        wb = Workbook
+        ws = wb.create_sheet("Sheet")
+
+        with open("complex-styles-worksheet.xml", "rb") as src:
+            reader = WorksheetReader(ws, src, wb.shared_strings, False)
+            reader.bind_cells()
+
+        reader.bind_formatting()
+        assert ws.conditional_formatting['T1:T10'][-1].dxf == DifferentialStyle()
 
