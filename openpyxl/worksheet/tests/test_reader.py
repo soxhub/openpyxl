@@ -496,24 +496,14 @@ def test_external_hyperlinks(WorkSheetParser):
        display="http://test.com" r:id="rId1" ref="A1"/>
     </hyperlinks>
     """
-    element = fromstring(src)
-    #from openpyxl.packaging.relationship import Relationship, RelationshipList
-
-    #r = Relationship(type="hyperlink", Id="rId1", Target="../")
-    #rels = RelationshipList()
-    #rels.append(r)
-
     parser = WorkSheetParser
     parser.source = BytesIO(src)
 
     for _ in parser.parse():
         pass
-    #parser.ws._rels = rels
 
     parser.parse()
     assert len(parser.hyperlinks.hyperlink) == 1
-
-    #assert parser.ws['A1'].hyperlink.target == "../"
 
 
 def test_local_hyperlinks(WorkSheetParser):
@@ -530,8 +520,6 @@ def test_local_hyperlinks(WorkSheetParser):
         pass
 
     assert len(parser.hyperlinks.hyperlink) == 1
-
-    #assert parser.ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
 
 
 def test_merge_cells(WorkSheetParser):
@@ -553,8 +541,6 @@ def test_merge_cells(WorkSheetParser):
 
     assert len(parser.merged_cells.mergeCell) == 3
 
-    #assert parser.ws.merged_cells == "C2:F2 B19:C20 E19:G19"
-
 
 def test_conditonal_formatting(WorkSheetParser):
     src = b"""
@@ -570,14 +556,11 @@ def test_conditonal_formatting(WorkSheetParser):
     from openpyxl.styles.differential import DifferentialStyle
 
     parser = WorkSheetParser
-    #dxf = DifferentialStyle()
-    #parser.differential_styles = [dxf] * 30
     parser.source = BytesIO(src)
 
     for _ in parser.parse():
         pass
     assert len(parser.formatting) == 2
-    #assert parser.ws.conditional_formatting['T1:T10'][-1].dxf == dxf
 
 
 def test_sheet_properties(WorkSheetParser):
@@ -780,3 +763,13 @@ class TestWorksheetReader:
         reader.bind_tables()
 
         assert reader.tables == ["../tables/table1.xml"]
+
+
+    def test_vba(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        reader.bind_vba()
+
+        assert reader.vba == "rId3"

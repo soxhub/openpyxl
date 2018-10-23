@@ -337,7 +337,6 @@ class WorksheetReader(object):
 
 
     def bind_formatting(self):
-
         for cf in self.parser.formatting:
             for rule in cf.rules:
                 if rule.dxfId is not None:
@@ -372,4 +371,5 @@ class WorksheetReader(object):
 
 
     def bind_vba(self):
-        pass
+        if self.parser.related is not None:
+            self.vba = self.parser.related.id
