@@ -85,7 +85,8 @@ DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 class WorkSheetParser(object):
 
-    def __init__(self, xml_source, shared_strings, data_only=False, epoch=WINDOWS_EPOCH, styles={}):
+    def __init__(self, xml_source, shared_strings, data_only=False,
+                 epoch=WINDOWS_EPOCH, styles={}):
         self.min_row = self.min_col = self.max_row = self.max_column = None
         self.epoch = epoch
         self.source = xml_source
@@ -143,10 +144,10 @@ class WorkSheetParser(object):
             FORMAT_TAG: ('sheet_format', SheetFormatProperties),
             ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
+            LEGACY_TAG: ('legacy_drawing', Related),
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
-            LEGACY_TAG: ('legacy_drawing', Related),
         }
 
         it = iterparse(self.source, tag=dispatcher)
@@ -382,6 +383,16 @@ class WorksheetReader(object):
             rd.worksheet = self.ws
 
 
+    def bind_properties(self):
+        for k in ('print_options', 'page_margins', 'page_setup',
+                  'HeaderFooter', 'auto_filter', 'data_validations',
+                  'sheet_properties', 'views', 'sheet_format',
+                  'page_breaks', 'scenarios', 'legacy_drawing'):
+            v = getattr(self.parser, k, None)
+            if v is not None:
+                setattr(self.ws, k, v)
+
+
     def bind_all(self):
         self.bind_cells()
         self.bind_merged_cells()
@@ -390,3 +401,4 @@ class WorksheetReader(object):
         self.bind_col_dimensions()
         self.bind_row_dimensions()
         self.bind_tables()
+        self.bind_properties()

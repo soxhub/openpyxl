@@ -775,3 +775,15 @@ class TestWorksheetReader:
 
         assert len(ws.row_dimensions) == 7
         assert ws.row_dimensions[4].worksheet == ws
+
+
+    def test_properties(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        reader.bind_properties()
+
+        for k in ('page_margins', 'page_setup', 'views', 'sheet_format',
+                  'legacy_drawing'):
+            assert getattr(ws, k) == getattr(reader.parser, k)
