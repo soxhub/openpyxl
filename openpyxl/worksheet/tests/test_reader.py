@@ -49,10 +49,10 @@ def Workbook():
                 self._cell_styles.add((StyleArray([i]*9)))
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []
+            self._date_formats = set()
 
         def create_sheet(self, title):
             return Worksheet(self)
-
 
     return DummyWorkbook()
 
@@ -66,7 +66,8 @@ def WorkSheetParser():
     for i in range(29):
         styles.add((StyleArray([i]*9)))
     styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
-    return WorkSheetParser(None, {0:'a'}, styles=styles)
+    date_formats = set([1, 29])
+    return WorkSheetParser(None, {0:'a'}, date_formats=date_formats)
 
 from warnings import simplefilter
 simplefilter("always")
@@ -644,16 +645,28 @@ class TestWorksheetParser:
         </sheet>
         """
 
-        c = InputCells(r="B2", val="50000")
-        s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
-        scenarios = ScenarioList(scenario=[s], current="0", show="0")
-
         parser = WorkSheetParser
         parser.source = BytesIO(src)
         for _ in parser.parse():
             pass
 
+        c = InputCells(r="B2", val="50000")
+        s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
+        scenarios = ScenarioList(scenario=[s], current="0", show="0")
+
         assert parser.scenarios == scenarios
+
+
+    def test_legacy(self, WorkSheetParser):
+        src = """
+        <legacyDrawing r:id="rId3" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+        """
+        parser = WorkSheetParser
+        element = fromstring(src)
+
+        parser.parse_legacy(element)
+        assert parser.legacy_drawing == "rId3"
 
 
 @pytest.fixture

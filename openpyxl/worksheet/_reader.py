@@ -85,21 +85,21 @@ DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 class WorkSheetParser(object):
 
-    def __init__(self, xml_source, shared_strings, data_only=False,
-                 epoch=WINDOWS_EPOCH, styles={}):
+    def __init__(self, src, shared_strings, data_only=False,
+                 epoch=WINDOWS_EPOCH, date_formats=set()):
         self.min_row = self.min_col = self.max_row = self.max_column = None
         self.epoch = epoch
-        self.source = xml_source
+        self.source = src
         self.shared_strings = shared_strings
         self.data_only = data_only
         self.shared_formulae = {}
         self.array_formulae = {}
         self.max_row = self.max_column = 0
         self.tables = TablePartList()
-        self._number_format_cache = {}
+        self.date_formats = date_formats
         self.row_dimensions = {}
         self.column_dimensions = {}
-        self.styles = styles
+        #self.styles = styles
         self.number_formats = []
         self.keep_vba = False
         self.hyperlinks = HyperlinkList()
@@ -108,29 +108,13 @@ class WorkSheetParser(object):
         self.merged_cells = None
 
 
-    def _is_date(self, style_id):
-        """
-        Check whether a particular style has a date format
-        """
-        if style_id in self._number_format_cache:
-            return self._number_format_cache[style_id]
-
-        style = self.styles[style_id]
-        key = style.numFmtId
-        if key < 164:
-            fmt = BUILTIN_FORMATS.get(key, "General")
-        else:
-            fmt = self.number_formats[key - 164]
-        is_date = is_date_format(fmt)
-        self._number_format_cache[style_id] = is_date
-        return is_date
-
     def parse(self):
         dispatcher = {
             COL_TAG: self.parse_column_dimensions,
             PROT_TAG: self.parse_sheet_protection,
             EXT_TAG: self.parse_extensions,
             CF_TAG: self.parse_formatting,
+            LEGACY_TAG: self.parse_legacy,
                       }
 
         properties = {
@@ -145,7 +129,6 @@ class WorkSheetParser(object):
             FORMAT_TAG: ('sheet_format', SheetFormatProperties),
             ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
-            LEGACY_TAG: ('legacy_drawing', Related),
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
@@ -206,7 +189,7 @@ class WorkSheetParser(object):
         if value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
-                if self._is_date(style_id):
+                if style_id in self.date_formats:
                     data_type = 'd'
                     value = from_excel(value, self.epoch)
             elif data_type == 's':
@@ -309,6 +292,11 @@ class WorkSheetParser(object):
             warn(msg)
 
 
+    def parse_legacy(self, element):
+        obj = Related.from_tree(element)
+        self.legacy_drawing = obj.id
+
+
 class WorksheetReader(object):
     """
     Create a parser and apply it to a workbook
@@ -316,7 +304,7 @@ class WorksheetReader(object):
 
     def __init__(self, ws, xml_source, shared_strings, data_only):
         self.ws = ws
-        self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._cell_styles)
+        self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._date_formats)
         self.tables = []
 
 
