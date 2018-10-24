@@ -366,7 +366,7 @@ class TestWorksheet:
         assert (4, 4) in ws._cells
         ws.merge_cells(range_string="A1:D4")
         assert ws.merged_cells == "A1:D4"
-        assert (4, 4) not in ws._cells
+        assert ws.cell(4, 4).__class__.__name__ == "MergedCell"
         assert (1, 1) in ws._cells
 
 

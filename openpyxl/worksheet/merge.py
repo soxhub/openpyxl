@@ -8,7 +8,7 @@ from openpyxl.descriptors import (
     Sequence,
 )
 
-from openpyxl.cell.cell import Cell, MergedCell
+from openpyxl.cell.cell import MergedCell
 from openpyxl.styles.borders import Border
 
 from .cell_range import CellRange

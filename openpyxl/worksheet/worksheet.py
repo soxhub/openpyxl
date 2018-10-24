@@ -31,7 +31,7 @@ from openpyxl.utils import (
 )
 from openpyxl.utils.cell import COORD_RE
 
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, MergedCell
 from openpyxl.utils.exceptions import (
     SheetTitleException,
     NamedRangeException
@@ -598,9 +598,8 @@ class Worksheet(_WorkbookChild):
         cols = range(min_col, max_col+1)
         cells = product(rows, cols)
 
-        for c in islice(cells, 1, None):
-            if c in self._cells:
-                del self._cells[c]
+        for row, col in islice(cells, 1, None):
+            self._cells[row, col] = MergedCell(self, row, col)
 
 
     @property
