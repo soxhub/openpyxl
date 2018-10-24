@@ -106,26 +106,15 @@ class MergedCellRange(CellRange):
         """
 
 
-        edge_names = ['top', 'left', 'right', 'bottom']
+        names = ['top', 'left', 'right', 'bottom']
 
-        for border_name in edge_names:
-            edge, border = self._side_for_edge(border_name)
-            for coord in edge:
+        for name in names:
+            side = getattr(self.start_cell.border, name)
+            border = Border(**{name:side})
+            for coord in getattr(self, name):
                 cell = self.ws._cells.get(coord)
                 if cell is None:
                     row, col = coord
                     cell = MergedCell(self.ws, row=row, column=col)
                     self.ws._cells[(cell.row, cell.column)] = cell
                 cell.border += border
-
-
-    def _side_for_edge(self, edge_name):
-        """
-        Returns the cells of an edge and its border.
-        """
-
-        edge = getattr(self, edge_name)
-        side = getattr(self.start_cell.border, edge_name)
-        border = Border()
-        setattr(border, edge_name, side)
-        return edge, border

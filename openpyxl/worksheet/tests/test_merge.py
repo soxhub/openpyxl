@@ -99,30 +99,6 @@ class TestMergedCellRange:
         assert mcr.start_cell.border == start_border()
 
 
-    @pytest.mark.parametrize("edge_name, edge, border",
-                             [
-                    ('top', [(1,1),(1,2), (1,3)],
-                     Border(top=thick_border())),
-                    ('bottom', [(3,1), (3,2), (3,3)],
-                     Border(bottom=double_border())),
-                    ('left', [(1,1), (2,1), (3,1)],
-                     Border(left=thick_border())),
-                    ('right', [(1,3), (2,3), (3,3)],
-                     Border(right=thin_border())),
-                ]
-                )
-
-
-    def test_side_for_edge(self, MergedCellRange, edge_name, edge, border):
-        ws = Worksheet(Workbook())
-        mcr = MergedCellRange(ws, 'A1:C3')
-        mcr.start_cell.border = start_border()
-
-        e, b = mcr._side_for_edge(edge_name,)
-        assert e == edge
-        assert b == border
-
-
     def test_format_1x3(self, MergedCellRange):
         ws = Worksheet(Workbook())
         mcr = MergedCellRange(ws, 'A1:C1')
