@@ -91,7 +91,6 @@ class MergedCellRange(CellRange):
 
 
     def format(self):
-
         """
         Each cell of the merged cell is created as MergedCell if it does not
         already exist.
@@ -104,7 +103,6 @@ class MergedCellRange(CellRange):
          - The left MergedCells get the left border from the top left cell.
          - The right MergedCells get the right border from the top left cell.
         """
-
 
         names = ['top', 'left', 'right', 'bottom']
 
