@@ -22,7 +22,7 @@ def Worksheet():
 ### Markers ###
 
 def pytest_runtest_setup(item):
-    if isinstance(item, item.Function):
+    if isinstance(item, pytest.Function):
         try:
             from PIL import Image
         except ImportError:
