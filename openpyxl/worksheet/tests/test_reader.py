@@ -93,9 +93,8 @@ def test_col_width(datadir, WorkSheetParser):
         for _, col in cols:
             parser.parse_column_dimensions(col)
     assert set(parser.column_dimensions) == set(['A', 'C', 'E', 'I', 'G'])
-    assert dict(parser.column_dimensions['A']) == {'max': '1', 'min': '1',
-                                               'customWidth': '1',
-                                               'width': '31.1640625'}
+    assert parser.column_dimensions['A'] == {'max': '1', 'min': '1',
+                                             'index':'A', 'customWidth': '1', 'width': '31.1640625'}
 
 
 def test_hidden_col(WorkSheetParser):
@@ -106,8 +105,8 @@ def test_hidden_col(WorkSheetParser):
 
     parser.parse_column_dimensions(element)
     assert 'D' in parser.column_dimensions
-    assert dict(parser.column_dimensions['D']) == {'customWidth': '1', 'hidden':
-                                               '1', 'max': '4', 'min': '4'}
+    assert parser.column_dimensions['D'] == {'customWidth': '1', 'width':'0',
+                                             'hidden': '1', 'max': '4', 'min': '4', 'index':'D'}
 
 
 def test_styled_col(datadir, WorkSheetParser):
@@ -120,8 +119,7 @@ def test_styled_col(datadir, WorkSheetParser):
             parser.parse_column_dimensions(col)
     assert 'I' in parser.column_dimensions
     cd = parser.column_dimensions['I']
-    assert cd._style == StyleArray([28]*9)
-    assert dict(cd) ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25'}
+    assert cd ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25', 'index':'I', 'style':'28'}
 
 
 def test_row_dimensions(WorkSheetParser):
@@ -143,7 +141,7 @@ def test_hidden_row(WorkSheetParser):
     element = fromstring(src)
 
     parser.parse_row(element)
-    assert dict(parser.row_dimensions[2]) == {'hidden': '1'}
+    assert parser.row_dimensions['2'] == {'r': '2', 'spans': '1:4', 'hidden':'1'}
 
 
 def test_styled_row(datadir, WorkSheetParser):
@@ -152,9 +150,8 @@ def test_styled_row(datadir, WorkSheetParser):
     element = fromstring(src)
 
     parser.parse_row(element)
-    rd = parser.row_dimensions[23]
-    assert rd._style == StyleArray([28]*9)
-    assert dict(rd) == {'customFormat':'1'}
+    rd = parser.row_dimensions['23']
+    assert rd == {'r': '23', 's': '28', 'spans': '1:8'}
 
 
 def test_sheet_protection(datadir, WorkSheetParser):
@@ -443,7 +440,7 @@ def test_cell_without_coordinates(WorkSheetParser):
     parser = WorkSheetParser
 
     src = """
-    <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <row r="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
       <c t="s">
         <v>2</v>
       </c>

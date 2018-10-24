@@ -259,13 +259,9 @@ class WorkSheetParser(object):
 
     def parse_column_dimensions(self, col):
         attrs = dict(col.attrib)
-        attrs['worksheet'] = None
         column = get_column_letter(int(attrs['min']))
         attrs['index'] = column
-        if 'style' in attrs:
-            attrs['style'] = self.styles[int(attrs['style'])]
-        dim = ColumnDimension(**attrs)
-        self.column_dimensions[column] = dim
+        self.column_dimensions[column] = attrs
 
 
     def parse_row(self, row):
@@ -278,17 +274,13 @@ class WorkSheetParser(object):
         self.max_column = 0
         keys = set(attrs)
         for key in keys:
-            if key == "s":
-                attrs['s'] = self.styles[int(attrs['s'])]
-            elif key.startswith('{'):
+            if key.startswith('{'):
                 del attrs[key]
 
         keys = set(attrs)
         if keys != set(['r', 'spans']) and keys != set(['r']):
             # don't create dimension objects unless they have relevant information
-            attrs['worksheet'] = None
-            dim = RowDimension(**attrs)
-            self.row_dimensions[dim.index] = dim
+            self.row_dimensions[attrs['r']] = attrs
 
         cells = []
         for cell in safe_iterator(row, CELL_TAG):
@@ -375,15 +367,19 @@ class WorksheetReader(object):
 
 
     def bind_col_dimensions(self):
-        self.ws.column_dimensions = self.parser.column_dimensions
-        for cd in self.ws.column_dimensions.values():
-            cd.parent = self.ws
+        for col, cd in self.parser.column_dimensions.items():
+            if 'style' in cd:
+                key = int(cd['style'])
+                cd['style'] = self.ws.parent._cell_styles[key]
+            self.ws.column_dimensions[col] = ColumnDimension(self.ws, **cd)
 
 
     def bind_row_dimensions(self):
-        self.ws.row_dimensions = self.parser.row_dimensions
-        for rd in self.ws.row_dimensions.values():
-            rd.parent = self.ws
+        for row, rd in self.parser.row_dimensions.items():
+            if 's' in rd:
+                key = int(rd['s'])
+                rd['s'] = self.ws.parent._cell_styles[key]
+            self.ws.row_dimensions[int(row)] = RowDimension(self.ws, **rd)
 
 
     def bind_properties(self):
