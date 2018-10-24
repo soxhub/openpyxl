@@ -157,6 +157,8 @@ class TestStylesheet:
             "0.00000_ "
         ])
 
+        assert stylesheet.date_formats == set([3])
+
 
     def test_remove_duplicate_number_formats(self, Stylesheet, datadir):
         datadir.chdir()

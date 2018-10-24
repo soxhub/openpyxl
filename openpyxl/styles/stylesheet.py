@@ -19,7 +19,8 @@ from .fonts import Font
 from .numbers import (
     NumberFormatList,
     BUILTIN_FORMATS,
-    BUILTIN_FORMATS_REVERSE
+    BUILTIN_FORMATS_REVERSE,
+    is_date_format,
 )
 from .alignment import Alignment
 from .protection import Protection
@@ -146,17 +147,25 @@ class Stylesheet(Serialisable):
 
     def _normalise_numbers(self):
         """
-        Rebase numFmtIds with a floor of 164
+        Rebase custom numFmtIds with a floor of 164 when reading stylesheet
+        And index datetime formats
         """
+        date_formats = set()
         custom = self.custom_formats
         formats = self.number_formats
-        for style in self.cell_styles:
+        for idx, style in enumerate(self.cell_styles):
             if style.numFmtId in custom:
                 fmt = custom[style.numFmtId]
                 if fmt in BUILTIN_FORMATS_REVERSE: # remove builtins
                     style.numFmtId = BUILTIN_FORMATS_REVERSE[fmt]
-                    continue
-                style.numFmtId = formats.add(fmt) + 164
+                else:
+                    style.numFmtId = formats.add(fmt) + 164
+            else:
+                fmt = BUILTIN_FORMATS[style.numFmtId]
+            if is_date_format(fmt):
+                # Create an index of which styles refer to datetimes
+                date_formats.add(idx)
+        self.date_formats = date_formats
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
@@ -189,6 +198,7 @@ def apply_stylesheet(archive, wb):
     # need to overwrite openpyxl defaults in case workbook has different ones
     wb._cell_styles = stylesheet.cell_styles
     wb._named_styles = stylesheet.named_styles
+    wb._date_formats = stylesheet.date_formats
 
     for ns in wb._named_styles:
         ns.bind(wb)
