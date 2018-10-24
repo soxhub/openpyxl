@@ -345,7 +345,8 @@ class MergedCell(StyleableObject):
 
     _value = None
     data_type = "n"
-    _comment = None
+    comment = None
+    hyperlink = None
 
 
     def __init__(self, worksheet, row=None, column=None):

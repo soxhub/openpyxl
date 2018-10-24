@@ -394,7 +394,7 @@ class TestMergedCell:
 
     def test_comment(self, MergedCell):
         cell = MergedCell
-        assert cell._comment is None
+        assert cell.comment is None
 
 
     def test_coordinate(self, MergedCell):
@@ -409,3 +409,8 @@ class TestMergedCell:
         cell.row = 1
         cell.column = 1
         assert repr(cell) == "<MergedCell 'Dummy Worksheet'.A1>"
+
+
+    def test_hyperlink(self, MergedCell):
+        cell = MergedCell
+        assert cell.hyperlink is None
