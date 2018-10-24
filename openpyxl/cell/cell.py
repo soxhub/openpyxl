@@ -359,6 +359,7 @@ class MergedCell(StyleableObject):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
     coordinate = Cell.coordinate
+    _comment = comment
 
 
 def WriteOnlyCell(ws=None, value=None):
