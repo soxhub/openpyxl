@@ -9,7 +9,6 @@ from openpyxl.tests.helper import compare_xml
 import pytest
 from openpyxl.styles import Border, Side
 from ..cell_range import CellRange
-from ..worksheet import Worksheet
 from openpyxl import Workbook
 
 
@@ -50,23 +49,18 @@ def MergedCellRange():
     return MergedCellRange
 
 
-@pytest.fixture
 def default_border():
     return Side(border_style=None, color=None)
 
-@pytest.fixture
 def thin_border():
     return Side(border_style="thin", color="000000")
 
-@pytest.fixture
 def double_border():
     return Side(border_style="double", color="000000")
 
-@pytest.fixture
 def thick_border():
     return Side(border_style="thick", color="000000")
 
-@pytest.fixture
 def start_border():
     return Border(top=thick_border(), left=thick_border(),
                   right=thin_border(), bottom=double_border())
@@ -76,7 +70,7 @@ class TestMergedCellRange:
 
 
     def test_ctor(self, MergedCellRange):
-        ws = Worksheet(Workbook())
+        ws = Workbook().active
         cells = MergedCellRange(ws, "A1:E4")
         assert cells.start_cell == ws['A1']
 
@@ -90,7 +84,7 @@ class TestMergedCellRange:
                              )
 
     def test_get_borders(self,  MergedCellRange, end):
-        ws = Worksheet(Workbook())
+        ws = Workbook().active
         ws['A1'].border = Border(top=thick_border(), left=thick_border())
         ws[end].border = Border(right=thin_border(), bottom=double_border())
 
@@ -100,7 +94,7 @@ class TestMergedCellRange:
 
 
     def test_format_1x3(self, MergedCellRange):
-        ws = Worksheet(Workbook())
+        ws = Workbook().active
         mcr = MergedCellRange(ws, 'A1:C1')
         mcr.start_cell.border = start_border()
 
@@ -122,7 +116,7 @@ class TestMergedCellRange:
 
 
     def test_format_3x1(self, MergedCellRange):
-        ws = Worksheet(Workbook())
+        ws = Workbook().active
         mcr = MergedCellRange(ws, 'A1:A3')
         mcr.start_cell.border = start_border()
 
@@ -144,7 +138,7 @@ class TestMergedCellRange:
 
 
     def test_format_3x3(self, MergedCellRange):
-        ws = Worksheet(Workbook())
+        ws = Workbook().active
         mcr = MergedCellRange(ws, 'A1:C3')
         mcr.start_cell.border = start_border()
 
