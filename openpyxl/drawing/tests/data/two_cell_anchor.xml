@@ -1,62 +1,62 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
-    <xdr:twoCellAnchor>
-        <xdr:from>
-            <xdr:col>5</xdr:col>
-            <xdr:colOff>114300</xdr:colOff>
-            <xdr:row>0</xdr:row>
-            <xdr:rowOff>0</xdr:rowOff>
-        </xdr:from>
-        <xdr:to>
-            <xdr:col>8</xdr:col>
-            <xdr:colOff>317500</xdr:colOff>
-            <xdr:row>4</xdr:row>
-            <xdr:rowOff>165100</xdr:rowOff>
-        </xdr:to>
-        <xdr:grpSp>
-            <xdr:nvGrpSpPr>
-                <xdr:cNvPr id="2208" name="Group 1">
-                </xdr:cNvPr>
-                <xdr:cNvGrpSpPr>
-                    <a:grpSpLocks/>
-                </xdr:cNvGrpSpPr>
-            </xdr:nvGrpSpPr>
-            <xdr:grpSpPr bwMode="auto">
-                <a:xfrm>
-                    <a:off x="2222500" y="0"/>
-                    <a:ext cx="2806700" cy="825500"/>
-                    <a:chOff x="303" y="0"/>
-                    <a:chExt cx="321" cy="111"/>
-                </a:xfrm>
-            </xdr:grpSpPr>
-            <xdr:pic>
-                <xdr:nvPicPr>
-                    <xdr:cNvPr id="2209" name="Picture 2">
-                    </xdr:cNvPr>
-                    <xdr:cNvPicPr>
-                        <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
-                    </xdr:cNvPicPr>
-                </xdr:nvPicPr>
-                <xdr:blipFill>
-                    <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rId1" cstate="print">
+<?xml version="1.0" standalone="yes"?>
+<wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <twoCellAnchor>
+    <from>
+      <col>5</col>
+      <colOff>114300</colOff>
+      <row>0</row>
+      <rowOff>0</rowOff>
+    </from>
+    <to>
+      <col>8</col>
+      <colOff>317500</colOff>
+      <row>4</row>
+      <rowOff>165100</rowOff>
+    </to>
+    <grpSp>
+      <nvGrpSpPr>
+        <cNvPr id="2208" name="Group 1">
+                </cNvPr>
+        <cNvGrpSpPr>
+          <a:grpSpLocks/>
+        </cNvGrpSpPr>
+      </nvGrpSpPr>
+      <grpSpPr bwMode="auto">
+        <a:xfrm>
+          <a:off x="2222500" y="0"/>
+          <a:ext cx="2806700" cy="825500"/>
+          <a:chOff x="303" y="0"/>
+          <a:chExt cx="321" cy="111"/>
+        </a:xfrm>
+      </grpSpPr>
+      <pic>
+        <nvPicPr>
+          <cNvPr id="2209" name="Picture 2">
+                    </cNvPr>
+          <cNvPicPr>
+            <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+          </cNvPicPr>
+        </nvPicPr>
+        <blipFill>
+          <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rId1" cstate="print">
                     </a:blip>
-                    <a:srcRect/>
-                    <a:stretch>
-                        <a:fillRect/>
-                    </a:stretch>
-                </xdr:blipFill>
-                <xdr:spPr bwMode="auto">
-                    <a:xfrm>
-                        <a:off x="303" y="0"/>
-                        <a:ext cx="321" cy="88"/>
-                    </a:xfrm>
-                    <a:prstGeom prst="rect">
-                        <a:avLst/>
-                    </a:prstGeom>
-                    <a:noFill/>
-                </xdr:spPr>
-            </xdr:pic>
-        </xdr:grpSp>
-        <xdr:clientData/>
-    </xdr:twoCellAnchor>
-</xdr:wsDr>
+          <a:srcRect/>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </blipFill>
+        <spPr bwMode="auto">
+          <a:xfrm>
+            <a:off x="303" y="0"/>
+            <a:ext cx="321" cy="88"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+        </spPr>
+      </pic>
+    </grpSp>
+    <clientData/>
+  </twoCellAnchor>
+</wsDr>
