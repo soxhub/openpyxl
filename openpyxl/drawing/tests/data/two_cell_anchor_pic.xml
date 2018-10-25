@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<wsDr
+  xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <twoCellAnchor editAs="oneCell">
+    <from>
+      <col>0</col>
+      <colOff>0</colOff>
+      <row>0</row>
+      <rowOff>0</rowOff>
+    </from>
+    <to>
+      <col>8</col>
+      <colOff>158506</colOff>
+      <row>10</row>
+      <rowOff>64012</rowOff>
+    </to>
+    <pic>
+      <nvPicPr>
+        <cNvPr id="2" name="Picture 1"/>
+        <cNvPicPr>
+          <a:picLocks noChangeAspect="1"/>
+        </cNvPicPr>
+      </nvPicPr>
+      <blipFill>
+        <a:blip r:embed="rId1" cstate="print">
+      </a:blip>
+        <a:stretch>
+          <a:fillRect/>
+        </a:stretch>
+      </blipFill>
+      <spPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="5035306" cy="1969012"/>
+        </a:xfrm>
+        <a:prstGeom prst="rect">
+          <a:avLst/>
+        </a:prstGeom>
+      </spPr>
+    </pic>
+    <clientData/>
+  </twoCellAnchor>
+</wsDr>
