@@ -290,8 +290,10 @@ class SpreadsheetDrawing(Serialisable):
                     if not anchor.pic:
                         anchor.pic = self._picture_frame(idx)
                 elif isinstance(anchor, TwoCellAnchor):
-                    if not anchor.groupShape.pic:
+                    if anchor.groupShape:
                         anchor.groupShape.pic = self._picture_frame(idx)
+                    elif not anchor.pic:
+                        anchor.pic = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
