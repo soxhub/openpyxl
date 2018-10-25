@@ -310,7 +310,8 @@ class TestSpreadsheetDrawing:
 
     @pytest.mark.parametrize("path", [
         "spreadsheet_drawing_with_blip.xml",
-        "two_cell_anchor.xml",
+        "two_cell_anchor_group.xml",
+        "two_cell_anchor_pic.xml",
     ])
     def test_read_blip(self, SpreadsheetDrawing, datadir, path):
         datadir.chdir()
