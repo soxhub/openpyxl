@@ -286,14 +286,9 @@ class SpreadsheetDrawing(Serialisable):
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", Target=obj.path)
-                if isinstance(anchor, OneCellAnchor):
-                    if not anchor.pic:
-                        anchor.pic = self._picture_frame(idx)
-                elif isinstance(anchor, TwoCellAnchor):
-                    if anchor.groupShape:
-                        anchor.groupShape.pic = self._picture_frame(idx)
-                    elif not anchor.pic:
-                        anchor.pic = self._picture_frame(idx)
+                child = anchor.pic or anchor.groupShape.pic
+                if not child:
+                    child = self._picture_frame(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
@@ -374,13 +369,9 @@ class SpreadsheetDrawing(Serialisable):
         anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
 
         for anchor in anchors:
-            if anchor.pic and anchor.pic.blipFill:
-                rel = anchor.pic.blipFill.blip
-                if rel is not None:
-                    rel.anchor = anchor
-                    rels.append(rel)
-            elif anchor.groupShape and anchor.groupShape.pic:
-                rel = anchor.groupShape.pic.blipFill.blip
+            child = anchor.pic or anchor.groupShape.pic
+            if child and child.blipFill:
+                rel = child.blipFill.blip
                 if rel is not None:
                     rel.anchor = anchor
                     rels.append(rel)
