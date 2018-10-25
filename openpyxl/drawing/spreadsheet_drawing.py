@@ -369,7 +369,7 @@ class SpreadsheetDrawing(Serialisable):
         anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
 
         for anchor in anchors:
-            child = anchor.pic or anchor.groupShape.pic
+            child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
             if child and child.blipFill:
                 rel = child.blipFill.blip
                 if rel is not None:
