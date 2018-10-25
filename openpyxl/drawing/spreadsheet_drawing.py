@@ -286,7 +286,7 @@ class SpreadsheetDrawing(Serialisable):
                 anchor.graphicFrame = self._chart_frame(idx)
             elif isinstance(obj, Image):
                 rel = Relationship(type="image", Target=obj.path)
-                child = anchor.pic or anchor.groupShape.pic
+                child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
                 if not child:
                     child = self._picture_frame(idx)
 
