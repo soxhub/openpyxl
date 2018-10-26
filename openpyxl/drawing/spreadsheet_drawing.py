@@ -289,6 +289,8 @@ class SpreadsheetDrawing(Serialisable):
                 child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
                 if not child:
                     child = self._picture_frame(idx)
+                else:
+                    child.blipFill.blip.embed = "rId{0}".format(idx)
 
             anchors.append(anchor)
             self._rels.append(rel)
