@@ -402,7 +402,8 @@ class TestWorksheetParser:
         </c>"""
         element = fromstring(src)
 
-        parser.parse_formula(element)
+        formula = parser.parse_formula(element)
+        assert formula == "=SUM(A10:A14*B10:B14)"
         assert parser.array_formulae['C10']['ref'] == 'C10:C14'
 
 
@@ -689,6 +690,8 @@ class TestWorksheetReader:
         ws = reader.ws
 
         assert ws['C1'].value == 'a'
+        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
+        assert ws['E2'].value == "=C2:C11*D2:D11"
 
 
     def test_formatting(self, PrimedWorksheetReader):

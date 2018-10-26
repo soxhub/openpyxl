@@ -182,7 +182,7 @@ class WorkSheetParser(object):
         else:
             row, column = self.max_row, self.max_column
 
-        if data_type == "str" and not self.data_only:
+        if not self.data_only and element.find(FORMULA_TAG) is not None:
             data_type = 'f'
             value = self.parse_formula(element)
 
@@ -316,6 +316,7 @@ class WorksheetReader(object):
                 c._value = cell['value']
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
+        self.ws.formula_attributes = self.parser.array_formulae
 
 
     def bind_formatting(self):
