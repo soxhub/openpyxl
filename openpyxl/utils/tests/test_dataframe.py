@@ -49,9 +49,14 @@ def test_expand_levels():
         ['Major', 'Minor',],
         ['a', 'b'],
     ]
+    labels = [
+        [2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+    ]
 
-    expanded = list(expand_levels(levels))
-    assert expanded[0] == ['2018', None, None, None, '2017', None, None, None, '2016', None, None, None]
+    expanded = list(expand_levels(levels, labels))
+    assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
 
