@@ -261,22 +261,22 @@ class CellRange(Serialisable):
 
     def isdisjoint(self, other):
         """
-        Return ``True`` if the range has no elements in common with other.
+        Return ``True`` if this range has no cell in common with *other*.
         Ranges are disjoint if and only if their intersection is the empty range.
 
         :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range.
-        :return: `True`` if the range has no elements in common with other.
+        :return: ``True`` if the range has no cells in common with other.
         """
         self._check_title(other)
 
-        # sort by top-left vertex
+        # Sort by top-left vertex
         if self.bounds > other.bounds:
-            i = self
-            self = other
-            other = i
+            self, other = other, self
 
-        return (self.max_col, self.max_row) < (other.min_col, other.max_row)
+        return (self.max_col < other.min_col
+                or self.max_row < other.min_row
+                or other.max_row < self.min_row)
 
 
     def intersection(self, other):
