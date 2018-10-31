@@ -79,7 +79,7 @@ class CellRange(Serialisable):
     @property
     def coord(self):
         """
-        Excel style representation of the range
+        Excel-style representation of the range
         """
         fmt = "{min_col}{min_row}:{max_col}{max_row}"
         if (self.min_col == self.max_col
@@ -160,7 +160,7 @@ class CellRange(Serialisable):
         """
         Test whether the ranges are not equal.
 
-        :type other: CellRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* != *other*.
         """
@@ -174,14 +174,14 @@ class CellRange(Serialisable):
             or self.max_row != other.max_row
             or other.min_col != self.min_col
             or self.max_col != other.max_col
-                )
+        )
 
 
     def __eq__(self, other):
         """
         Test whether the ranges are equal.
 
-        :type other: CellRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* == *other*.
         """
@@ -190,9 +190,9 @@ class CellRange(Serialisable):
 
     def issubset(self, other):
         """
-        Test whether every element in the range is in *other*.
+        Test whether every cell in this range is also in *other*.
 
-        :type other: SheetRange
+        :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
         :return: ``True`` if *range* <= *other*.
         """
@@ -209,7 +209,7 @@ class CellRange(Serialisable):
 
     def __lt__(self, other):
         """
-        Test whether every element in the range is in *other*, but not all.
+        Test whether *other* contains every cell of this range, and more.
 
         :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
@@ -220,10 +220,10 @@ class CellRange(Serialisable):
 
     def issuperset(self, other):
         """
-        Test whether every element in *other* is in the range.
+        Test whether every cell in *other* is in this range.
 
-        :type other: openpyxl.worksheet.cell_range.CellRange or tuple[int, int]
-        :param other: Other sheet range or cell index (*row_idx*, *col_idx*).
+        :type other: openpyxl.worksheet.cell_range.CellRange
+        :param other: Other sheet range
         :return: ``True`` if *range* >= *other* (or *other* in *range*).
         """
         self._check_title(other)
@@ -233,7 +233,6 @@ class CellRange(Serialisable):
             and
             (self.min_col <= other.min_col <= other.max_col <= self.max_col)
         )
-
 
     __ge__ = issuperset
 
@@ -250,7 +249,7 @@ class CellRange(Serialisable):
 
     def __gt__(self, other):
         """
-        Test whether every element in *other* is in the range, but not all.
+        Test whether this range contains every cell in *other*, and more.
 
         :type other: openpyxl.worksheet.cell_range.CellRange
         :param other: Other sheet range
@@ -281,16 +280,16 @@ class CellRange(Serialisable):
 
     def intersection(self, other):
         """
-        Return a new range with elements common to the range and another
+        Return a new range with cells common to this range and *other*
 
-        :type others: tuple[openpyxl.worksheet.cell_range.CellRange]
-        :param others: Other sheet ranges.
-        :return: the current sheet range.
-        :raise: :class:`ValueError` if an *other* range don't intersect
-            with the current range.
+        :type other: openpyxl.worksheet.cell_range.CellRange
+        :param other: Other sheet range.
+        :return: the intersecting sheet range.
+        :raise: :class:`ValueError` if the *other* range doesn't intersect
+            with this range.
         """
         if self.isdisjoint(other):
-            raise ValueError("Range {0} don't intersect {0}".format(self, other))
+            raise ValueError("Range {0} doesn't intersect {0}".format(self, other))
 
         min_row = max(self.min_row, other.min_row)
         max_row = min(self.max_row, other.max_row)
@@ -305,11 +304,13 @@ class CellRange(Serialisable):
 
     def union(self, other):
         """
-        Return a new range with elements from the range and all *others*.
+        Return the minimal superset of this range and *other*. This new range
+        will contain all cells from this range, *other*, and any additional
+        cells required to form a rectangular ``CellRange``.
 
-        :type others: tuple[openpyxl.worksheet.cell_range.CellRange]
-        :param others: Other sheet ranges.
-        :return: the current sheet range.
+        :type other: openpyxl.worksheet.cell_range.CellRange
+        :param other: Other sheet range.
+        :return: a ``CellRange`` that is a superset of this and *other*.
         """
         self._check_title(other)
 
@@ -319,7 +320,6 @@ class CellRange(Serialisable):
         max_col = max(self.max_col, other.max_col)
         return CellRange(min_col=min_col, min_row=min_row, max_col=max_col,
                          max_row=max_row, title=self.title)
-
 
     __or__ = union
 
@@ -364,7 +364,7 @@ class CellRange(Serialisable):
 
     @property
     def size(self):
-        """ Return the size of the range as a dicitionary of rows and columns. """
+        """ Return the size of the range as a dictionary of rows and columns. """
         cols = self.max_col + 1 - self.min_col
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
