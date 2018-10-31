@@ -117,9 +117,9 @@ class CellRange(Serialisable):
     def _get_range_string(self):
         fmt = "{coord}"
         title = self.title
-        if self.title:
+        if title:
             fmt = u"{title}!{coord}"
-            title = quote_sheetname(self.title)
+            title = quote_sheetname(title)
         return fmt.format(title=title, coord=self.coord)
 
     __unicode__ = _get_range_string
