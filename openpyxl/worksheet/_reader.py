@@ -168,7 +168,9 @@ class WorkSheetParser(object):
 
 
     def parse_cell(self, element):
-        value = element.findtext(VALUE_TAG)
+        value = element.find(VALUE_TAG)
+        if value is not None:
+            value = value.text
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
         self.max_column += 1
