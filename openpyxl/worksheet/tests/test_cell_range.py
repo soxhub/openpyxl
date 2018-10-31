@@ -128,15 +128,44 @@ class TestCellRange:
             assert cr1 & cr2 == CellRange("A1")
 
 
-    def test_isdisjoint(self, CellRange):
+    def test_isdisjoint_order(self, CellRange):
+        ''' Order of the test does not matter '''
         cr1 = CellRange("E5:K10")
         cr2 = CellRange("A1:C12")
+        assert cr1.isdisjoint(cr2) is cr2.isdisjoint(cr1)
+
+
+    def test_isdisjoint_by_col(self, CellRange):
+        ''' Tested ranges differ only by columns '''
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("A5:C10")
+        assert cr1.isdisjoint(cr2) is True
+
+
+    def test_isdisjoint_by_row(self, CellRange):
+        ''' Tested ranges differ only by rows '''
+        cr1 = CellRange("E5:K10")
+        cr2 = CellRange("E12:K12")
+        assert cr1.isdisjoint(cr2) is True
+
+
+    def test_isdisjoint_in_both(self, CellRange):
+        ''' Tested ranges differ in both rows and columns '''
+        cr1 = CellRange("A1:B2")
+        cr2 = CellRange("D4")
         assert cr1.isdisjoint(cr2) is True
 
 
     def test_is_not_disjoint(self, CellRange):
         cr1 = CellRange("E5:K10")
         cr2 = CellRange("D2:F7")
+        assert cr1.isdisjoint(cr2) is False
+
+
+    def test_is_not_disjoint_in_both(self, CellRange):
+        ''' Tested ranges overlap in both rows and columns '''
+        cr1 = CellRange("A1:D4")
+        cr2 = CellRange("B2:C3")
         assert cr1.isdisjoint(cr2) is False
 
 
@@ -180,10 +209,11 @@ class TestCellRange:
                                  ("Sheet1!A1:B4", "D5:E5", None),
                              ]
     )
-    def test_check_title(self, CellRange,r1, r2, expected):
+    def test_check_title(self, CellRange, r1, r2, expected):
         cr1 = CellRange(r1)
         cr2 = CellRange(r2)
         assert cr1._check_title(cr2) is expected
+
 
     @pytest.mark.parametrize("r1, r2",
                              [
