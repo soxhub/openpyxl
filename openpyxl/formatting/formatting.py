@@ -108,6 +108,11 @@ class ConditionalFormattingList(object):
         return self._cf_rules[key]
 
 
+    def __delitem__(self, key):
+        key = ConditionalFormatting(sqref=key)
+        del self._cf_rules[key]
+
+
     def __setitem__(self, key, rule):
         """
         Add a rule for a cell range
