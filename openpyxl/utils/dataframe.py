@@ -32,7 +32,7 @@ def dataframe_to_rows(df, index=True, header=True):
 
     if header:
         if df.columns.nlevels > 1:
-            rows = expand_levels(df.columns.levels)
+            rows = expand_levels(df.columns.levels, df.columns.labels)
         else:
             rows = [list(df.columns.values)]
         for row in rows:
@@ -46,9 +46,6 @@ def dataframe_to_rows(df, index=True, header=True):
                 row = [None]*df.index.nlevels + row
             yield row
 
-    cols = None
-    if df.index.nlevels > 1:
-        cols = zip(*expand_levels(df.index.levels))
 
     if index:
         yield df.index.names
@@ -56,29 +53,22 @@ def dataframe_to_rows(df, index=True, header=True):
     for idx, v in enumerate(df.index):
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            if cols:
-                v = list(next(cols))
-            else:
-                v = [v]
-            row = v + row
+            row = [v] + row
         yield row
 
 
-def expand_levels(levels):
+def expand_levels(levels, labels):
     """
     Multiindexes need expanding so that subtitles repeat
     """
-    widths = (len(s) for s in levels)
-    widths = list(accumulate(widths, operator.mul))
-    size = max(widths)
 
-    for level, width in zip(levels, widths):
-        padding = size//width # how wide a title should be
-        repeat = width//len(level) # how often a title is repeated
+    for label, order in zip(levels, labels):
+        current = None
         row = []
-        for v in level:
-            title = [None]*padding
-            title[0] = v
-            row.extend(title)
-        row = row*repeat
+        for idx in order:
+            if current == idx:
+                row.append(None)
+            else:
+                row.append(label[idx])
+                current = idx
         yield row
