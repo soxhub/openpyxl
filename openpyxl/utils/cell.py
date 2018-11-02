@@ -58,7 +58,7 @@ def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
     m = ABSOLUTE_RE.match(coord_string)
     if not m:
-        raise ValueError("Value is not a valid coordinate range")
+        raise ValueError("{0} is not a valid coordinate range".format(coord_string))
 
     d = m.groupdict('')
     for k, v in d.items():
@@ -132,7 +132,7 @@ def range_boundaries(range_string):
     """
     m = ABSOLUTE_RE.match(range_string)
     if not m:
-        raise ValueError("{0} is not a valid coordinate or range")
+        raise ValueError("{0} is not a valid coordinate or range".format(range_string))
     min_col, min_row, sep, max_col, max_row = m.groups()
 
     if min_col is not None:
