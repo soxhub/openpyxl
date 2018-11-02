@@ -600,6 +600,7 @@ class Worksheet(_WorkbookChild):
 
         for row, col in islice(cells, 1, None):
             self._cells[row, col] = MergedCell(self, row, col)
+        mcr.format()
 
 
     @property
