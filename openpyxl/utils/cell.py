@@ -25,6 +25,12 @@ SHEET_TITLE = r"""
 SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})(?=,?)""".format(
     SHEET_TITLE, RANGE_EXPR), re.VERBOSE)
 
+VALID_RANGE_ITEM_COMBOS = {
+    (0, 1, 0, 1),
+    (1, 0, 1, 0),
+    (1, 1, 1, 1),
+}
+
 
 def get_column_interval(start, end):
     """
@@ -132,8 +138,16 @@ def range_boundaries(range_string):
     """
     m = ABSOLUTE_RE.match(range_string)
     if not m:
-        raise ValueError("{0} is not a valid coordinate or range".format(range_string))
+        raise ValueError(
+            "{0} is not a valid coordinate or range".format(range_string))
     min_col, min_row, sep, max_col, max_row = m.groups()
+
+    items_present = (min_col is not None, min_row is not None,
+                     max_col is not None, max_row is not None)
+
+    if sep and items_present not in VALID_RANGE_ITEM_COMBOS:
+        raise ValueError(
+            "{0} is not a valid coordinate or range".format(range_string))
 
     if min_col is not None:
         min_col = column_index_from_string(min_col)
