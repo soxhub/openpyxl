@@ -130,10 +130,11 @@ def range_boundaries(range_string):
     (min_col, min_row, max_col, max_row)
     Cell coordinates will be converted into a range with the cell at both end
     """
+    msg = "{0} is not a valid coordinate or range".format(range_string)
     m = ABSOLUTE_RE.match(range_string)
     if not m:
-        raise ValueError(
-            "{0} is not a valid coordinate or range".format(range_string))
+        raise ValueError(msg)
+
     min_col, min_row, sep, max_col, max_row = m.groups()
 
     if sep:
@@ -147,8 +148,7 @@ def range_boundaries(range_string):
         )
 
         if not items_present_valid:
-            raise ValueError(
-                "{0} is not a valid coordinate or range".format(range_string))
+            raise ValueError(msg)
 
     if min_col is not None:
         min_col = column_index_from_string(min_col)
