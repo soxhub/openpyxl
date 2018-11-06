@@ -284,7 +284,7 @@ class TestWorksheet:
     )
     def test_getitem_invalid(self, Worksheet, key):
         ws = Worksheet(Workbook())
-        with pytest.raises(IndexError):
+        with pytest.raises((IndexError, ValueError)):
             c = ws[key]
 
 

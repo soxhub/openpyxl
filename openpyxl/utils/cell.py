@@ -28,7 +28,7 @@ SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})(?=,?)""".format(
 
 def get_column_interval(start, end):
     """
-    Given the start and end colums, return all the columns in the series.
+    Given the start and end columns, return all the columns in the series.
 
     The start and end columns can be either column letters or 1-based
     indexes.
@@ -51,7 +51,7 @@ def coordinate_from_string(coord_string):
     if not row:
         msg = "There is no row 0 (%s)" % coord_string
         raise CellCoordinatesException(msg)
-    return (column, row)
+    return column, row
 
 
 def absolute_coordinate(coord_string):
@@ -66,7 +66,7 @@ def absolute_coordinate(coord_string):
             d[k] = "${0}".format(v)
 
     if d['max_col'] or d['max_row']:
-        fmt =  "{min_col}{min_row}:{max_col}{max_row}"
+        fmt = "{min_col}{min_row}:{max_col}{max_row}"
     else:
         fmt = "{min_col}{min_row}"
     return fmt.format(**d)
@@ -130,10 +130,23 @@ def range_boundaries(range_string):
     (min_col, min_row, max_col, max_row)
     Cell coordinates will be converted into a range with the cell at both end
     """
+    msg = "{0} is not a valid coordinate or range".format(range_string)
     m = ABSOLUTE_RE.match(range_string)
     if not m:
-        raise ValueError("{0} is not a valid coordinate or range".format(range_string))
+        raise ValueError(msg)
+
     min_col, min_row, sep, max_col, max_row = m.groups()
+
+    if sep:
+        cols = min_col, max_col
+        rows = min_row, max_row
+
+        if not  (
+            all(cols + rows) or
+            all(cols) and not any(rows) or
+            all(rows) and not any(cols)
+        ):
+            raise ValueError(msg)
 
     if min_col is not None:
         min_col = column_index_from_string(min_col)

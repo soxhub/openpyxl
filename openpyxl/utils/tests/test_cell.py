@@ -162,7 +162,7 @@ def test_cols_from_range():
                              ('C1', (3, 1, 3, 1)),
                              ('D:F', (4, None, 6, None)),
                              ('A', (1, None, 1, None)),
-                             ('1:10',(None, 1, None, 10)),
+                             ('1:10', (None, 1, None, 10)),
                              ('1', (None, 1, None, 1)),
                          ])
 def test_bounds(range_string, coords):
@@ -170,7 +170,23 @@ def test_bounds(range_string, coords):
     assert range_boundaries(range_string) == coords
 
 
-def test_invalid_bounds():
+@pytest.mark.parametrize('range_string',
+                         [
+                             ':',
+                             'A:',
+                             '1:',
+                             ':B',
+                             ':2',
+                             'A1:',
+                             ':B2',
+                             'A:2',
+                             '1:B',
+                             '1:B2',
+                             'A:B2',
+                             'A1:2',
+                             'A1:B',
+                         ])
+def test_invalid_bounds(range_string):
     from ..cell import range_boundaries
     with pytest.raises(ValueError):
-        r = range_boundaries(":-1")
+        range_boundaries(range_string)
