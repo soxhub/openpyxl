@@ -25,16 +25,10 @@ SHEET_TITLE = r"""
 SHEETRANGE_RE = re.compile("""{0}(?P<cells>{1})(?=,?)""".format(
     SHEET_TITLE, RANGE_EXPR), re.VERBOSE)
 
-VALID_RANGE_ITEM_COMBOS = {
-    (0, 1, 0, 1),
-    (1, 0, 1, 0),
-    (1, 1, 1, 1),
-}
-
 
 def get_column_interval(start, end):
     """
-    Given the start and end colums, return all the columns in the series.
+    Given the start and end columns, return all the columns in the series.
 
     The start and end columns can be either column letters or 1-based
     indexes.
@@ -57,7 +51,7 @@ def coordinate_from_string(coord_string):
     if not row:
         msg = "There is no row 0 (%s)" % coord_string
         raise CellCoordinatesException(msg)
-    return (column, row)
+    return column, row
 
 
 def absolute_coordinate(coord_string):
@@ -72,7 +66,7 @@ def absolute_coordinate(coord_string):
             d[k] = "${0}".format(v)
 
     if d['max_col'] or d['max_row']:
-        fmt =  "{min_col}{min_row}:{max_col}{max_row}"
+        fmt = "{min_col}{min_row}:{max_col}{max_row}"
     else:
         fmt = "{min_col}{min_row}"
     return fmt.format(**d)
@@ -142,12 +136,19 @@ def range_boundaries(range_string):
             "{0} is not a valid coordinate or range".format(range_string))
     min_col, min_row, sep, max_col, max_row = m.groups()
 
-    items_present = (min_col is not None, min_row is not None,
-                     max_col is not None, max_row is not None)
+    if sep:
+        cols = min_col, max_col
+        rows = min_row, max_row
 
-    if sep and items_present not in VALID_RANGE_ITEM_COMBOS:
-        raise ValueError(
-            "{0} is not a valid coordinate or range".format(range_string))
+        items_present_valid = (
+            all(cols + rows) or
+            all(cols) and not any(rows) or
+            all(rows) and not any(cols)
+        )
+
+        if not items_present_valid:
+            raise ValueError(
+                "{0} is not a valid coordinate or range".format(range_string))
 
     if min_col is not None:
         min_col = column_index_from_string(min_col)
