@@ -73,7 +73,6 @@ from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
 from .scenario import ScenarioList
-from .writer import WorksheetWriter
 
 
 class Worksheet(_WorkbookChild):

@@ -23,7 +23,7 @@ from ..table import Table
 
 @pytest.fixture
 def writer():
-    from ..writer import WorksheetWriter
+    from .._writer import WorksheetWriter
     wb = Workbook()
     ws = wb.active
     return WorksheetWriter(ws)

@@ -9,8 +9,6 @@ from openpyxl.styles.differential import DifferentialStyle, DifferentialStyleLis
 from openpyxl.formatting.formatting import ConditionalFormattingList
 from openpyxl.formatting.rule import CellIsRule, FormulaRule, Rule
 
-from openpyxl.worksheet.writer import WorksheetWriter
-
 # test imports
 import pytest
 from openpyxl.tests.helper import compare_xml
