@@ -5,7 +5,9 @@
 Pull Requests
 -------------
 
-* PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_Tokenizer failure for quoted sheet name in second half of range
+* PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
+* PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
+
 
 2.5.9 (2018-10-19)
 ==================
