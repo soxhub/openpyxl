@@ -141,13 +141,11 @@ def range_boundaries(range_string):
         cols = min_col, max_col
         rows = min_row, max_row
 
-        items_present_valid = (
+        if not  (
             all(cols + rows) or
             all(cols) and not any(rows) or
             all(rows) and not any(cols)
-        )
-
-        if not items_present_valid:
+        ):
             raise ValueError(msg)
 
     if min_col is not None:
