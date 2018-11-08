@@ -180,7 +180,8 @@ class ColumnDimension(Dimension):
 
     def to_tree(self):
         attrs = dict(self)
-        return Element("col", **attrs)
+        if set(attrs) != set(['min', 'max']):
+            return Element("col", **attrs)
 
 
 class DimensionHolder(BoundDictionary):
