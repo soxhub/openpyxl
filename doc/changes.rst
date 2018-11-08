@@ -2,6 +2,12 @@
 ===================
 
 
+Bugfixes
+--------
+
+* `#1114 <https://bitbucket.org/openpyxl/openpyxl/issues/1114>`_ Empty column dimensions should not be saved.
+
+
 Pull Requests
 -------------
 
