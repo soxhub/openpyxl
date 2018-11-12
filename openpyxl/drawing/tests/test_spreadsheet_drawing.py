@@ -360,7 +360,7 @@ class TestSpreadsheetDrawing:
         assert bool(drawing) is True
 
 
-    def test_image_as_pic(self, SpreadsheetDrawing, TwoCellAnchor):
+    def test_image_as_pic(self, SpreadsheetDrawing):
         src = """
         <wsDr  xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
         xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
@@ -398,6 +398,76 @@ class TestSpreadsheetDrawing:
         <clientData/>
         </twoCellAnchor>
         </wsDr>
+        """
+        node = fromstring(src)
+        drawing = SpreadsheetDrawing.from_tree(node)
+        anchor = drawing.twoCellAnchor[0]
+        drawing.twoCellAnchor = []
+        im = Image(PIL.Image.new(mode="RGB", size=(1, 1)))
+        im.anchor = anchor
+        drawing.images.append(im)
+        xml = tostring(drawing._write())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
+
+
+    def test_image_as_group(self, SpreadsheetDrawing):
+        src = """
+        <wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <twoCellAnchor>
+            <from>
+              <col>5</col>
+              <colOff>114300</colOff>
+              <row>0</row>
+              <rowOff>0</rowOff>
+            </from>
+            <to>
+              <col>8</col>
+              <colOff>317500</colOff>
+              <row>4</row>
+              <rowOff>165100</rowOff>
+            </to>
+            <grpSp>
+              <nvGrpSpPr>
+                <cNvPr id="2208" name="Group 1" />
+                <cNvGrpSpPr>
+                  <a:grpSpLocks/>
+                </cNvGrpSpPr>
+              </nvGrpSpPr>
+              <grpSpPr bwMode="auto">
+              </grpSpPr>
+              <pic>
+                <nvPicPr>
+                  <cNvPr id="2209" name="Picture 2" />
+                  <cNvPicPr>
+                    <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+                  </cNvPicPr>
+                </nvPicPr>
+                <blipFill>
+                  <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rId1" cstate="print">
+                  </a:blip>
+                  <a:srcRect/>
+                  <a:stretch>
+                    <a:fillRect/>
+                  </a:stretch>
+                </blipFill>
+                <spPr bwMode="auto">
+                  <a:xfrm>
+                    <a:off x="303" y="0"/>
+                    <a:ext cx="321" cy="88"/>
+                  </a:xfrm>
+                  <a:prstGeom prst="rect" />
+                <a:noFill/>
+                <a:ln>
+                <a:prstDash val="solid" />
+                </a:ln>
+                </spPr>
+              </pic>
+            </grpSp>
+            <clientData/>
+          </twoCellAnchor>
+        </wsDr>
+
         """
         node = fromstring(src)
         drawing = SpreadsheetDrawing.from_tree(node)
