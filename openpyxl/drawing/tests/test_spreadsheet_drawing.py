@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 import pytest
 
+import PIL
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 from openpyxl.drawing.image import Image
@@ -356,6 +358,57 @@ class TestSpreadsheetDrawing:
         drawing = SpreadsheetDrawing()
         getattr(drawing, attr).append(1)
         assert bool(drawing) is True
+
+
+    def test_image_as_pic(self, SpreadsheetDrawing, TwoCellAnchor):
+        src = """
+        <wsDr  xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <twoCellAnchor>
+        <from>
+          <col>0</col>
+          <colOff>0</colOff>
+          <row>0</row>
+          <rowOff>0</rowOff>
+        </from>
+        <to>
+          <col>8</col>
+          <colOff>158506</colOff>
+          <row>10</row>
+          <rowOff>64012</rowOff>
+        </to>
+        <pic>
+          <nvPicPr>
+            <cNvPr id="2" name="Picture 1"/>
+            <cNvPicPr />
+          </nvPicPr>
+          <blipFill>
+            <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rId1" >
+            </a:blip>
+            <a:stretch>
+              <a:fillRect/>
+            </a:stretch>
+          </blipFill>
+          <spPr>
+            <a:ln>
+              <a:prstDash val="solid" />
+            </a:ln>
+          </spPr>
+         </pic>
+        <clientData/>
+        </twoCellAnchor>
+        </wsDr>
+        """
+        node = fromstring(src)
+        drawing = SpreadsheetDrawing.from_tree(node)
+        anchor = drawing.twoCellAnchor[0]
+        drawing.twoCellAnchor = []
+        im = Image(PIL.Image.new(mode="RGB", size=(1, 1)))
+        im.anchor = anchor
+        drawing.images.append(im)
+        xml = tostring(drawing._write())
+        diff = compare_xml(xml, src)
+        assert diff is None, diff
 
 
 def test_check_anchor_chart():
