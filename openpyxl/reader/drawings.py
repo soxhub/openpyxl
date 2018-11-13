@@ -45,6 +45,10 @@ def find_images(archive, path):
         dep = deps[rel.embed]
         if dep.Type == IMAGE_NS:
             image = Image(BytesIO(archive.read(dep.target)))
+            if image.format.upper() == "WMF": # cannot save
+                msg = "{0} image format is not supported so the image is being dropped".format(image.format)
+                warn(msg)
+                continue
             image.anchor = rel.anchor
             images.append(image)
     return charts, images

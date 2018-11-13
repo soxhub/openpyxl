@@ -161,6 +161,13 @@ class TestColDimension:
             cd.style = "Normal"
 
 
+    def test_empty_col(self, ColumnDimension):
+        ws = DummyWorksheet()
+        cd = ColumnDimension(ws, index="C")
+        cd.reindex()
+        assert cd.to_tree() is None
+
+
 class TestGrouping:
 
     def test_group_columns_simple(self):

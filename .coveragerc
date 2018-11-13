@@ -2,7 +2,7 @@
 directory = $PWD/shippable/codecoverage
 
 [xml]
-output = $PWDshippable/codecoverage/coverage.xml
+output = $PWD/shippable/codecoverage/coverage.xml
 
 [report]
 exclude_lines =

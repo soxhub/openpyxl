@@ -43,8 +43,12 @@ __url__ = constants.__url__
 __version__ = constants.__version__
 
 
-setup(name='openpyxl',
-    packages=find_packages(),
+setup(
+    name='openpyxl',
+    packages=find_packages(
+        exclude=["*.tests", "*.test_.*", "test_.*", "tests", "develop"]
+        ),
+    package_dir={},
     # metadata
     version=__version__,
     description="A Python library to read/write Excel 2010 xlsx/xlsm files",

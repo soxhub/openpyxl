@@ -1,3 +1,20 @@
+2.5.10 (2018-11-13)
+===================
+
+
+Bugfixes
+--------
+
+* `#1114 <https://bitbucket.org/openpyxl/openpyxl/issues/1114>`_ Empty column dimensions should not be saved.
+
+
+Pull Requests
+-------------
+
+* PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
+* PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
+
+
 2.5.9 (2018-10-19)
 ==================
 
@@ -14,7 +31,7 @@ Pull Requests
 -------------
 
 * `PR281 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/281>`_ Allow newlines in formulae
-* `PR284 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/282>`_ Fix whitespace in front of infix operator in formulae
+* `PR284 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/284>`_ Fix whitespace in front of infix operator in formulae
 
 
 2.5.8 (2018-09-25)
