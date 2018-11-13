@@ -46,10 +46,9 @@ __version__ = constants.__version__
 setup(
     name='openpyxl',
     packages=find_packages(
-        'openpyxl/__init__.py',
         exclude=["*.tests", "*.test_.*", "test_.*", "tests", "develop"]
         ),
-    package_dir={'openpyxl':'openpyxl'},
+    package_dir={},
     # metadata
     version=__version__,
     description="A Python library to read/write Excel 2010 xlsx/xlsm files",

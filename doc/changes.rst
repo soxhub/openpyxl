@@ -23,7 +23,11 @@ Deprecations
 * Type inference and coercion for cell values
 
 
-2.5.10 (unreleased)
+2.5.11 (unreleased)
+===================
+
+
+2.5.10 (2018-11-13)
 ===================
 
 
