@@ -3,3 +3,5 @@ prune openpyxl/benchmarks
 prune openpyxl/develop
 prune scratchpad
 prune doc
+
+include *.rst
