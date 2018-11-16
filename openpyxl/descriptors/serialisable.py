@@ -129,6 +129,8 @@ class Serialisable(_Serialiasable):
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
             obj = getattr(self, child_tag)
+            if hasattr(desc, "namespace"):
+                obj.namespace = desc.namespace
 
             if isinstance(obj, seq_types):
                 if isinstance(desc, NestedSequence):
