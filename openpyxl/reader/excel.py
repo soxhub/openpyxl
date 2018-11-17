@@ -153,13 +153,12 @@ class ExcelReader:
     """
 
     def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, guess_types=False, keep_links=True):
+                  data_only=False, keep_links=True):
         self.archive = _validate_archive(fn)
         self.valid_files = self.archive.namelist()
         self.read_only = read_only
         self.keep_vba = keep_vba
         self.data_only = data_only
-        self.guess_types = guess_types
         self.keep_links = keep_links
         self.shared_strings = []
 
@@ -186,7 +185,6 @@ class ExcelReader:
         wb._sheets = []
         wb._data_only = self.data_only
         wb._read_only = self.read_only
-        wb.guess_types = self.guess_types
         wb.template = wb_part.ContentType in (XLTX, XLTM)
 
         # If are going to preserve the vba then attach a copy of the archive to the
@@ -310,7 +308,7 @@ class ExcelReader:
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, guess_types=False, keep_links=True):
+                  data_only=False, keep_links=True):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
@@ -340,6 +338,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     """
     reader = ExcelReader(filename, read_only, keep_vba,
-                        data_only, guess_types, keep_links)
+                        data_only, keep_links)
     reader.read()
     return reader.wb
