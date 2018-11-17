@@ -95,8 +95,7 @@ def _validate_archive(filename):
     Check the file is a valid zipfile
     """
     is_file_like = hasattr(filename, 'read')
-
-    if not is_file_like and os.path.isfile(filename):
+    if not is_file_like:
         file_format = os.path.splitext(filename)[-1].lower()
         if file_format not in SUPPORTED_FORMATS:
             if file_format == '.xls':
@@ -114,20 +113,22 @@ def _validate_archive(filename):
                        'Supported formats are: %s') % (file_format,
                                                        ','.join(SUPPORTED_FORMATS))
             raise InvalidFileException(msg)
-
-
-    if is_file_like:
-        # fileobject must have been opened with 'rb' flag
-        # it is required by zipfile
-        if getattr(filename, 'encoding', None) is not None:
-            raise IOError("File-object must be opened in binary mode")
-
     try:
         archive = ZipFile(filename, 'r', ZIP_DEFLATED)
     except BadZipfile:
         f = repair_central_directory(filename, is_file_like)
         archive = ZipFile(f, 'r', ZIP_DEFLATED)
     return archive
+
+
+def _check_for_binary_mode(fileobject):
+    """
+    The given fileobject has to be opened in binary mode for further
+    processing by ZipFile. If this is not the case, raise an IOError
+    here and now.
+    """
+    if getattr(fileobject, 'encoding', None) is not None:
+        raise IOError("File-object must be opened in binary mode")
 
 
 def _find_workbook_part(package):
