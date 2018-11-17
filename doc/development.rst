@@ -7,7 +7,7 @@ If you find the openpyxl project intriguing and want to contribute a new awesome
 We will look into the coding standards and version control system workflows used, as well as cloning the openpyxl code to your local machine, setting up a virtual Python environment, running tests and building the documentation.
 
 
-What is suppoprted
+What is supported
 ------------------
 
 The primary aim of openpyxl is to support reading and writing Microsoft Excel
