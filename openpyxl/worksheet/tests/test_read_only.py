@@ -161,3 +161,14 @@ class TestReadOnlyWorksheet:
         ws._xml = BytesIO(src)
         cell = ws._get_cell(row, column)
         assert cell is EMPTY_CELL
+
+
+    @pytest.mark.xfail
+    def test_pad_row_left(self, ReadOnlyWorksheet, DummyWorkbook):
+        row = [
+            {'column':4, 'value':4},
+            {'column':5, 'value':5},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, max_col=4)
+        assert list(cells) == [None, None, None, {'column':4, 'value':4}]
