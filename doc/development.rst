@@ -16,6 +16,20 @@ The source code of openpyxl is hosted on `BitBucket <https://bitbucket.org/openp
     $ hg clone \https://bitbucket.org/openpyxl/openpyxl
     $ hg up |version|
 
+It is worthwhile to note that you can add an upstream remote reference to the original repository to update your fork with the latest changes, by adding to the :code:`./hg/hgrc` file the following:
+
+.. parsed-literal::
+
+    [paths]
+    default = ...
+    master = https://bitbucket.org/openpyxl/openpyxl
+
+You can then grab any new changes using:
+
+.. parsed-literal::
+
+    $ hg pull master
+
 After that you should create a virtual environment using :code:`virtualenv` and install the project requirements and the project itself:
 
 .. parsed-literal::
