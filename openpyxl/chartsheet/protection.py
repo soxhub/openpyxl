@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import hashlib
 
 from openpyxl.descriptors import (Bool, Integer, String)

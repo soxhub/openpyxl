@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # copyright openpyxl 2014
 
 import datetime
