@@ -21,7 +21,7 @@ class ControlProperty(Serialisable):
     anchor = Typed(expected_type=ObjectAnchor, )
     locked = Bool(allow_none=True)
     defaultSize = Bool(allow_none=True)
-    print = Bool(allow_none=True)
+    _print = Bool(allow_none=True)
     disabled = Bool(allow_none=True)
     recalcAlways = Bool(allow_none=True)
     uiObject = Bool(allow_none=True)
@@ -41,7 +41,7 @@ class ControlProperty(Serialisable):
                  anchor=None,
                  locked=True,
                  defaultSize=True,
-                 print=True,
+                 _print=True,
                  disabled=False,
                  recalcAlways=False,
                  uiObject=False,
@@ -58,7 +58,7 @@ class ControlProperty(Serialisable):
         self.anchor = anchor
         self.locked = locked
         self.defaultSize = defaultSize
-        self.print = print
+        self._print = _print
         self.disabled = disabled
         self.recalcAlways = recalcAlways
         self.uiObject = uiObject
