@@ -228,11 +228,6 @@ Other topics
     .. toctree::
         :maxdepth: 1
 
-        pivot
-
-    .. toctree::
-        :maxdepth: 1
-
         formula
 
     .. toctree::
@@ -248,7 +243,6 @@ Information for Developers
         :maxdepth: 1
 
         development
-        windows-development
 
 
 API Documentation
