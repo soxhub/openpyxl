@@ -1,8 +1,10 @@
 Development
 ===========
 
-With the ongoing development of openpyxl, there is occasional information
-useful to assist developers.
+
+If you find the openpyxl project intriguing and want to contribute a new awesome feature, fix a nasty bug or improve the documentation this section will guide you in setting up your development environment.
+
+We will look into the coding standards and version control system workflows used, as well as cloning the openpyxl code to your local machine, setting up a virtual Python environment, running tests and building the documentation.
 
 
 What is suppoprted
