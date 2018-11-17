@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 """Workbook is the top-level container for all document information."""

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 """
 This module contains code to translate formulae across cells in a worksheet.
 

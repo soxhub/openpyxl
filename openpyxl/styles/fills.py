@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division
+from __future__ import division
 # Copyright (c) 2010-2018 openpyxl
 
 from openpyxl.descriptors import (
