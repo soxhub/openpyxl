@@ -29,7 +29,7 @@ def read_dimension(source):
     if hasattr(source, "encode"):
         return
 
-    min_row = min_col =  max_row = max_col = None
+    min_row = min_col = max_row = max_col = None
     DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
     DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
     it = iterparse(source, tag=[DIMENSION_TAG, DATA_TAG])
@@ -82,12 +82,10 @@ class ReadOnlyWorksheet(object):
         self.cell = Worksheet.cell.__get__(self)
         self.iter_rows = Worksheet.iter_rows.__get__(self)
 
-
     def __getitem__(self, key):
         # use protected method from Worksheet
         meth = Worksheet.__getitem__.__get__(self)
         return meth(key)
-
 
     @property
     def xml_source(self):
@@ -96,16 +94,13 @@ class ReadOnlyWorksheet(object):
             return self.parent._archive.open(self.worksheet_path)
         return self._xml
 
-
     @xml_source.setter
     def xml_source(self, value):
         self._xml = value
 
-
     @deprecated("Use ws.iter_rows()")
     def get_squared_range(self, min_col, min_row, max_col, max_row):
         return self._cells_by_row(min_col, min_row, max_col, max_row)
-
 
     def _cells_by_row(self, min_col, min_row, max_col, max_row):
         """
@@ -113,7 +108,7 @@ class ReadOnlyWorksheet(object):
         Missing cells will be created.
         """
         if max_col is not None:
-            empty_row = tuple(EMPTY_CELL for column in range(min_col, max_col + 1))
+            empty_row = tuple(EMPTY_CELL for _ in range(min_col, max_col + 1))
         else:
             empty_row = []
         row_counter = min_row
@@ -134,11 +129,16 @@ class ReadOnlyWorksheet(object):
 
                 # return cells from a row
                 if min_row <= row_id:
-                    yield tuple(self._get_row(element, min_col, max_col, row_counter=row_counter))
+                    yield tuple(self._get_row(
+                        element, min_col, max_col, row_counter=row_counter))
                     row_counter += 1
 
                 element.clear()
 
+        # some rows may be missing at end
+        if max_row is not None:
+            for _ in range(row_counter, max_row + 1):
+                yield empty_row
 
     def _get_row(self, element, min_col=1, max_col=None, row_counter=None):
         """Return cells from a particular row"""
@@ -187,7 +187,6 @@ class ReadOnlyWorksheet(object):
             for _ in range(max(min_col, col_counter), max_col+1):
                 yield EMPTY_CELL
 
-
     def _get_cell(self, row, column):
         """Cells are returned by a generator which can be empty"""
         for row in self._cells_by_row(column, row, column, row):
@@ -195,27 +194,24 @@ class ReadOnlyWorksheet(object):
                 return row[0]
         return EMPTY_CELL
 
-
     @property
     def rows(self):
         return self.iter_rows()
 
-
     def __iter__(self):
         return self.iter_rows()
-
 
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
             if force:
                 self._calculate_dimension()
             else:
-                raise ValueError("Worksheet is unsized, use calculate_dimension(force=True)")
+                raise ValueError(
+                    "Worksheet is unsized, use calculate_dimension(force=True)")
         return '%s%d:%s%d' % (
            get_column_letter(self.min_column), self.min_row,
            get_column_letter(self.max_column), self.max_row
-       )
-
+        )
 
     def _calculate_dimension(self):
         """
@@ -264,7 +260,6 @@ class ReadOnlyWorksheet(object):
     @property
     def max_column(self):
         return self._max_column
-
 
     @max_column.setter
     def max_column(self, value):

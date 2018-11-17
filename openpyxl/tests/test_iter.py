@@ -377,6 +377,7 @@ def test_read_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
 
 
 def test_read_empty_row(datadir, DummyWorkbook, ReadOnlyWorksheet):
+    datadir.join("reader").chdir()
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
 
@@ -446,10 +447,23 @@ def test_read_cell_from_empty_row(DummyWorkbook, ReadOnlyWorksheet, row, column)
 
 
 def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
+    datadir.join("reader").chdir()
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7
+
+
+def test_iter_rows_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
+    datadir.join("reader").chdir()
+
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
+
+    rows = tuple(ws.iter_rows(min_row=1, min_col=1, max_row=10, max_col=10))
+    assert len(rows) == 10
+    assert all(len(row) == 10 for row in rows)
+    assert rows[0][0].value is None
+    assert rows[9][9].value is None
 
 
 def test_read_without_coordinates(DummyWorkbook, ReadOnlyWorksheet):
