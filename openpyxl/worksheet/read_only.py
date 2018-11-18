@@ -148,13 +148,11 @@ class ReadOnlyWorksheet(object):
         """
         Make sure a row contains always the same number of cells or values
         """
-        new_row = []
-        counter = min_col
+        first_col = row[0]['column']
+        new_row = [None] * (first_col - min_col)
         for cell in row:
             counter = cell['column']
-            if min_col < counter:
-                new_row.append(None)
-            elif counter < max_col:
+            if max_col is not None and counter <= max_col:
                 new_row.append(cell)
 
         if max_col is not None and counter < max_col:
