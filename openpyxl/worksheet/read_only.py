@@ -17,7 +17,6 @@ from openpyxl.xml.constants import SHEET_MAIN_NS
 
 from openpyxl.worksheet import Worksheet
 from openpyxl.utils import (
-    column_index_from_string,
     get_column_letter,
     coordinate_to_tuple,
 )
@@ -82,10 +81,12 @@ class ReadOnlyWorksheet(object):
         self.cell = Worksheet.cell.__get__(self)
         self.iter_rows = Worksheet.iter_rows.__get__(self)
 
+
     def __getitem__(self, key):
         # use protected method from Worksheet
         meth = Worksheet.__getitem__.__get__(self)
         return meth(key)
+
 
     @property
     def xml_source(self):
@@ -94,13 +95,16 @@ class ReadOnlyWorksheet(object):
             return self.parent._archive.open(self.worksheet_path)
         return self._xml
 
+
     @xml_source.setter
     def xml_source(self, value):
         self._xml = value
 
+
     @deprecated("Use ws.iter_rows()")
     def get_squared_range(self, min_col, min_row, max_col, max_row):
         return self._cells_by_row(min_col, min_row, max_col, max_row)
+
 
     def _cells_by_row(self, min_col, min_row, max_col, max_row):
         """
@@ -139,6 +143,7 @@ class ReadOnlyWorksheet(object):
         if max_row is not None:
             for _ in range(row_counter, max_row + 1):
                 yield empty_row
+
 
     def _get_row(self, element, min_col=1, max_col=None, row_counter=None):
         """Return cells from a particular row"""
@@ -187,6 +192,7 @@ class ReadOnlyWorksheet(object):
             for _ in range(max(min_col, col_counter), max_col+1):
                 yield EMPTY_CELL
 
+
     def _get_cell(self, row, column):
         """Cells are returned by a generator which can be empty"""
         for row in self._cells_by_row(column, row, column, row):
@@ -194,12 +200,15 @@ class ReadOnlyWorksheet(object):
                 return row[0]
         return EMPTY_CELL
 
+
     @property
     def rows(self):
         return self.iter_rows()
 
+
     def __iter__(self):
         return self.iter_rows()
+
 
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
@@ -212,6 +221,7 @@ class ReadOnlyWorksheet(object):
            get_column_letter(self.min_column), self.min_row,
            get_column_letter(self.max_column), self.max_row
         )
+
 
     def _calculate_dimension(self):
         """
