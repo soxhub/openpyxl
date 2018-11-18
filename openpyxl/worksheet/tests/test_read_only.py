@@ -171,3 +171,30 @@ class TestReadOnlyWorksheet:
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
         cells = ws._pad_row(row, max_col=4)
         assert list(cells) == [None, None, None, {'column':4, 'value':4}]
+
+
+    def test_pad_row(self, ReadOnlyWorksheet, DummyWorkbook):
+        row = [
+            {'column':4, 'value':4},
+            {'column':8, 'value':8},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, min_col=4, max_col=8)
+        assert list(cells) == [
+            {'column':4, 'value':4}, None, None, None,
+            {'column':8, 'value':8}
+        ]
+
+
+    def test_pad_row_right(self, ReadOnlyWorksheet, DummyWorkbook):
+        row = [
+            {'column':4, 'value':4},
+            {'column':8, 'value':8},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, min_col=6, max_col=10)
+        assert list(cells) == [
+            None, None,
+            {'column':8, 'value':8},
+            None, None
+        ]

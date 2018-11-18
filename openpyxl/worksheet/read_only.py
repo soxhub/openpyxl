@@ -144,19 +144,21 @@ class ReadOnlyWorksheet(object):
 
                 element.clear()
 
+
     def _pad_row(self, row, min_col=1, max_col=None):
         """
         Make sure a row contains always the same number of cells or values
         """
         first_col = row[0]['column']
-        new_row = [None] * (first_col - min_col)
+        last_col = row[-1]['column']
+        max_col = max_col or last_col
+
+        new_row = [None] * (max_col + 1 - min_col)
+
         for cell in row:
             counter = cell['column']
-            if max_col is not None and counter <= max_col:
-                new_row.append(cell)
-
-        if max_col is not None and counter < max_col:
-            new_row.extend([None] * (max_col - counter))
+            if min_col <= counter <= max_col:
+                new_row[counter-min_col] = cell
 
         return tuple(new_row)
 
