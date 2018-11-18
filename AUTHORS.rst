@@ -49,6 +49,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Jun Omae
 * Kay Webber
 * Khchine Hamza
+* Klaus Bremer
 * Koert van der Veer
 * Laurent Laporte
 * Laurent Vasseur
