@@ -92,7 +92,12 @@ def repair_central_directory(zipFile, is_file_instance):
 
 def _validate_archive(filename):
     """
-    Check the file is a valid zipfile
+    Does a first check whether filename is a string or a file-like
+    object. If it is a string representing a filename, a check is done
+    for supported formats by checking the given file-extension. If the
+    file-extension is not in SUPPORTED_FORMATS an InvalidFileException
+    will raised. Otherwise the filename (resp. file-like object) will
+    forwarded to zipfile.ZipFile returning a ZipFile-Instance.
     """
     is_file_like = hasattr(filename, 'read')
     if not is_file_like:
@@ -119,16 +124,6 @@ def _validate_archive(filename):
         f = repair_central_directory(filename, is_file_like)
         archive = ZipFile(f, 'r', ZIP_DEFLATED)
     return archive
-
-
-def _check_for_binary_mode(fileobject):
-    """
-    The given fileobject has to be opened in binary mode for further
-    processing by ZipFile. If this is not the case, raise an IOError
-    here and now.
-    """
-    if getattr(fileobject, 'encoding', None) is not None:
-        raise IOError("File-object must be opened in binary mode")
 
 
 def _find_workbook_part(package):

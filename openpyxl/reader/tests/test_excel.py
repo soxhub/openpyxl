@@ -2,7 +2,7 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 from io import BytesIO
-from tempfile import TemporaryFile, NamedTemporaryFile
+from tempfile import NamedTemporaryFile
 from zipfile import BadZipfile, ZipFile
 
 from openpyxl.packaging.manifest import Manifest, Override
@@ -104,18 +104,6 @@ def test_invalid_file_extension(extension, load_workbook):
     tmp = NamedTemporaryFile(suffix=extension)
     with pytest.raises(InvalidFileException):
         load_workbook(filename=tmp.name)
-
-
-# @pytest.mark.parametrize("mode, encoding",
-#                          [
-#                             ('w', 'ascii'),
-#                          ]
-#                          )
-# def test_check_for_binary_mode(mode, encoding):
-#     from ..excel import _check_for_binary_mode
-#     with TemporaryFile(mode=mode, encoding=encoding) as tf:
-#         with pytest.raises(IOError):
-#             _check_for_binary_mode(tf)
 
 
 def test_style_assignment(datadir, load_workbook):
