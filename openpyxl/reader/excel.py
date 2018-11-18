@@ -92,7 +92,12 @@ def repair_central_directory(zipFile, is_file_instance):
 
 def _validate_archive(filename):
     """
-    Check the file is a valid zipfile
+    Does a first check whether filename is a string or a file-like
+    object. If it is a string representing a filename, a check is done
+    for supported formats by checking the given file-extension. If the
+    file-extension is not in SUPPORTED_FORMATS an InvalidFileException
+    will raised. Otherwise the filename (resp. file-like object) will
+    forwarded to zipfile.ZipFile returning a ZipFile-Instance.
     """
     is_file_like = hasattr(filename, 'read')
     if not is_file_like:
