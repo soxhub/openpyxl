@@ -23,41 +23,35 @@ with the command line you can use the following:
     $ hg clone \https://bitbucket.org/openpyxl/openpyxl
     $ hg up |version|
 
-Please note, that the default branch should never be used for development work.
+Please note that the default branch should never be used for development
+work. For bug fixes and minor patches you should base your work on the branch
+of the current release, e.g |version|. New features should generally be based
+on the development branch of the **next** minor version. If in doubt get in
+touch with the openpyxl development team.
 
-It is worthwhile to note that you can add an upstream remote reference to the
+It is worthwhile to add an upstream remote reference to the
 original repository to update your fork with the latest changes, by adding
-to the :code:`./hg/hgrc` file the following:
-
-.. parsed-literal::
+to the :code:`./hg/hgrc` file the following::
 
     [paths]
     default = ...
-    master = https://bitbucket.org/openpyxl/openpyxl
+    openpyxl-master = https://bitbucket.org/openpyxl/openpyxl
 
-You can then grab any new changes using:
+You can then grab any new changes using::
 
-.. parsed-literal::
-
-    $ hg pull master
+    $ hg pull openpyxl-master
 
 After that you should create a virtual environment using :code:`virtualenv`
-and install the project requirements and the project itself:
-
-.. parsed-literal::
+and install the project requirements and the project itself::
 
     $ cd openpyxl
     $ virtualenv openpyxl-env
 
-Activate the environment using:
-
-.. parsed-literal::
+Activate the environment using::
 
     $ source bin/activate  # or ./openpyxl-env/Scripts/activate on Windows
 
-Install the dev and prod dependencies and the package itself using:
-
-.. parsed-literal::
+Install the dev and prod dependencies and the package itself using::
 
     (openpyxl-env) $ pip install -U -r requirements.txt
     (openpyxl-env) $ pip install -e .
@@ -71,35 +65,32 @@ Note that contributions to the project without tests will **not** be accepted.
 We use :code:`pytest` as the test runner with :code:`pytest-cov` for coverage information and
 :code:`pytest-flakes` for static code analysis.
 
-To run all the tests you need to either execute:
-
-.. parsed-literal::
+To run all the tests you need to either execute::
 
     (openpxyl-env) $ pytest -xrf openpyxl  # the flags will stop testing at the first error
 
-Or use :code:`tox` to run the tests on different Python versions and configurations:
+Or use :code:`tox` to run the tests on different Python versions and
+configurations::
 
-.. parsed-literal::
-
-    (openpxyl-env) $ tox openpyxl
+    $ tox openpyxl
 
 
 Coverage
 ++++++++
 
 The goal is 100 % coverage for unit tests - data types and utility functions.
-Coverage information can be obtained using
+Coverage information can be obtained using::
 
- :code:`py.test --cov openpyxl`
+    py.test --cov openpyxl
 
 
 Organisation
 ++++++++++++
 
-Tests should be preferably at package / module level e.g openpyxl/cell. This
-makes testing and getting statistics for code under development easier:
+Tests should be preferably at package / module level e.g :code:`openpyxl/cell`. This
+makes testing and getting statistics for code under development easier::
 
- :code:`py.test --cov openpyxl/cell openpyxl/cell`
+    py.test --cov openpyxl/cell openpyxl/cell
 
 
 Checking XML
@@ -143,12 +134,13 @@ programs, but can't guarantee it, because often these do not strictly adhere
 to the above format.
 
 
-Python Support
---------------
+Support of Python Versions
+--------------------------
 
 We have a small library of utility functions to support development for
-Python 2 and 3. This is openpyxl.compat for Python and openpyxl.xml for XML
-functions.
+Python 2 and 3. With the functions code can by developed using Python 3 style
+and idioms. This is :code:`openpyxl.compat` for Python and
+:code:`openpyxl.xml` for XML functions.
 
 However, in version 3.0 we will drop support for Python 2.x versions.
 
@@ -157,8 +149,9 @@ Coding style
 ------------
 
 We orient ourselves at PEP-8 for the coding style, except when implementing
-attributes for roundtripping. Despite that you are encouraged to use Python data
-conventions (boolean, None, etc.). Note exceptions in docstrings.
+attributes for roundtripping. Despite that you are encouraged to use Python
+data conventions (boolean, None, etc.). Note exceptions from this convestion
+in docstrings.
 
 
 Contributing
@@ -192,18 +185,18 @@ to the |version| branch. Exceptions are bug fixes to released versions which
 should be made to the relevant release branch and merged upstream into
 development.
 
-Please use tox to test code for different submissions **before** making a
-pull request. This is especially important for picking up problems across
-Python versions.
+Please use :code:`tox` to test code for different submissions **before**
+making a pull request. This is especially important for picking up problems
+across Python versions.
 
 
 Documentation
 +++++++++++++
 
 Remember to update the documentation when adding or changing features. Check
-that documentation is syntactically correct.
+that documentation is syntactically correct.::
 
-:code:`tox -e doc`
+    tox -e doc
 
 
 Benchmarking
@@ -217,9 +210,9 @@ Memory Use
 ++++++++++
 
 There is a tox profile for long-running memory benchmarks using the
-`memory_utils` package.
+`memory_utils` package.::
 
-:code:`tox -e memory`
+    tox -e memory
 
 
 Pympler
