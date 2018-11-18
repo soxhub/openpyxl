@@ -324,6 +324,20 @@ class TestTokenizer(object):
         assert token.type == OPERAND
         assert token.subtype == ERROR
 
+    def test_parse_defined_name_reference_error(self, tokenizer):
+        formula = "=SUM(MyTable!#REF!)"
+        tok = tokenizer.Tokenizer("=SUM(MyTable!#REF!)")
+        result = [(token.value, token.type, token.subtype)
+                  for token in tok.items]
+        tokens = [
+            ('SUM(', FUNC, OPEN),
+            ('MyTable!#REF!', OPERAND, RANGE),
+            (')', FUNC, CLOSE),
+        ]
+
+        assert result == tokens
+        assert tok.render() == formula
+
     def test_parse_error_error(self, tokenizer):
         tok = tokenizer.Tokenizer("#NotAnError")
         tok.offset = 0

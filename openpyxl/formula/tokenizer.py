@@ -105,7 +105,7 @@ class Tokenizer(object):
         self.offset)
 
         """
-        self.assert_empty_token()
+        self.assert_empty_token(allowed=':')
         delim = self.formula[self.offset]
         assert delim in ('"', "'")
         regex = self.STRING_REGEXES[delim]
@@ -146,12 +146,13 @@ class Tokenizer(object):
         characters matched. (Does not update self.offset)
 
         """
-        self.assert_empty_token()
+        self.assert_empty_token(allowed='!')
         assert self.formula[self.offset] == '#'
         subformula = self.formula[self.offset:]
         for err in self.ERROR_CODES:
             if subformula.startswith(err):
-                self.items.append(Token.make_operand(err))
+                self.items.append(Token.make_operand(''.join(self.token) + err))
+                del self.token[:]
                 return len(err)
         raise TokenizerError(
             "Invalid error code at position %d in '%s'" %
@@ -286,7 +287,7 @@ class Tokenizer(object):
             return True
         return False
 
-    def assert_empty_token(self):
+    def assert_empty_token(self, allowed=()):
         """
         Ensure that there's no token currently being parsed.
 
@@ -294,7 +295,7 @@ class Tokenizer(object):
         token transition. In this case, we raise a TokenizerError
 
         """
-        if self.token and self.token[-1] != ':':
+        if self.token and self.token[-1] not in allowed:
             raise TokenizerError(
                 "Unexpected character at position %d in '%s'" %
                 (self.offset, self.formula))
