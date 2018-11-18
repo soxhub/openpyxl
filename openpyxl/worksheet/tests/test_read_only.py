@@ -198,3 +198,11 @@ class TestReadOnlyWorksheet:
             {'column':8, 'value':8},
             None, None
         ]
+
+
+    @pytest.mark.xfail
+    def test_pad_rows(self, ReadOnlyWorksheet, DummyWorkbook):
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        rows = ws._pad_rows(min_row=1, min_col=1, max_row=10, max_col=10, values_only=True)
+        row = next(rows)
+        assert row == ()

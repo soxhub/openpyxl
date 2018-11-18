@@ -155,9 +155,8 @@ class ReadOnlyWorksheet(object):
             empty_row = [filler] * (max_col + 1 - min_col)
         else:
             empty_row = []
-        parser = WorkSheetParser(self.xml_source)
-        next(parser)
-        for idx, row in parser:
+        parser = WorkSheetParser(self.xml_source, self.shared_strings)
+        for idx, row in parser.parse():
             if max_row is not None and idx > max_row:
                 break
 
@@ -175,9 +174,9 @@ class ReadOnlyWorksheet(object):
                             new_row.append(EMPTY_CELL)
                         else:
                             cell = ReadOnlyCell(self, **cell)
+                            new_row.append(cell)
                     row = tuple(row)
                 yield row
-
 
 
     def _pad_row(self, row, min_col=1, max_col=None):
