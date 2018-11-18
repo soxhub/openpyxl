@@ -121,16 +121,6 @@ def _validate_archive(filename):
     return archive
 
 
-def _check_for_binary_mode(fileobject):
-    """
-    The given fileobject has to be opened in binary mode for further
-    processing by ZipFile. If this is not the case, raise an IOError
-    here and now.
-    """
-    if getattr(fileobject, 'encoding', None) is not None:
-        raise IOError("File-object must be opened in binary mode")
-
-
 def _find_workbook_part(package):
     workbook_types = [XLTM, XLTX, XLSM, XLSX]
     for ct in workbook_types:
