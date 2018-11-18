@@ -144,6 +144,41 @@ class ReadOnlyWorksheet(object):
 
                 element.clear()
 
+    def _pad_rows(self, min_col, min_row, max_col, max_row, values_only=False):
+        """
+        """
+        filler = EMPTY_CELL
+        if values_only:
+            filler = None
+
+        if max_col is not None:
+            empty_row = [filler] * (max_col + 1 - min_col)
+        else:
+            empty_row = []
+        parser = WorkSheetParser(self.xml_source)
+        next(parser)
+        for idx, row in parser:
+            if max_row is not None and idx > max_row:
+                break
+
+            # some rows are missing
+            for row_counter in range(min_row, idx):
+                yield empty_row
+
+            # return cells from a row
+            if min_row <= idx:
+                row = self._pad_row(row, min_col, max_col)
+                if not values_only:
+                    new_row = []
+                    for cell in row:
+                        if cell is None:
+                            new_row.append(EMPTY_CELL)
+                        else:
+                            cell = ReadOnlyCell(self, **cell)
+                    row = tuple(row)
+                yield row
+
+
 
     def _pad_row(self, row, min_col=1, max_col=None):
         """
