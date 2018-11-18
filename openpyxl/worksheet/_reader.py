@@ -270,7 +270,7 @@ class WorkSheetParser(object):
         cells = []
         for cell in safe_iterator(row, CELL_TAG):
             cells.append(self.parse_cell(cell))
-        return cells
+        return self.max_row, cells
 
 
     def parse_formatting(self, element):
@@ -311,7 +311,7 @@ class WorksheetReader(object):
 
 
     def bind_cells(self):
-        for row in self.parser.parse():
+        for idx, row in self.parser.parse():
             for cell in row:
                 style = self.ws.parent._cell_styles[cell['style_id']]
                 c = Cell(self.ws, row=cell['row'], column=cell['column'], style_array=style)
