@@ -162,12 +162,46 @@ class TestReadOnlyWorksheet:
         assert cell is EMPTY_CELL
 
 
-    @pytest.mark.xfail
     def test_pad_row_left(self, ReadOnlyWorksheet, DummyWorkbook):
         row = [
             {'column':4, 'value':4},
-            {'column':5, 'value':5},
+            {'column':8, 'value':8},
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
         cells = ws._pad_row(row, max_col=4)
         assert list(cells) == [None, None, None, {'column':4, 'value':4}]
+
+
+    def test_pad_row(self, ReadOnlyWorksheet, DummyWorkbook):
+        row = [
+            {'column':4, 'value':4},
+            {'column':8, 'value':8},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, min_col=4, max_col=8)
+        assert list(cells) == [
+            {'column':4, 'value':4}, None, None, None,
+            {'column':8, 'value':8}
+        ]
+
+
+    def test_pad_row_right(self, ReadOnlyWorksheet, DummyWorkbook):
+        row = [
+            {'column':4, 'value':4},
+            {'column':8, 'value':8},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, min_col=6, max_col=10)
+        assert list(cells) == [
+            None, None,
+            {'column':8, 'value':8},
+            None, None
+        ]
+
+
+    @pytest.mark.xfail
+    def test_pad_rows(self, ReadOnlyWorksheet, DummyWorkbook):
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        rows = ws._pad_rows(min_row=1, min_col=1, max_row=10, max_col=10, values_only=True)
+        row = next(rows)
+        assert row == ()

@@ -143,21 +143,55 @@ class ReadOnlyWorksheet(object):
 
                 element.clear()
 
+    def _pad_rows(self, min_col, min_row, max_col, max_row, values_only=False):
+        """
+        """
+        filler = EMPTY_CELL
+        if values_only:
+            filler = None
+
+        if max_col is not None:
+            empty_row = [filler] * (max_col + 1 - min_col)
+        else:
+            empty_row = []
+        parser = WorkSheetParser(self.xml_source, self.shared_strings)
+        for idx, row in parser.parse():
+            if max_row is not None and idx > max_row:
+                break
+
+            # some rows are missing
+            for row_counter in range(min_row, idx):
+                yield empty_row
+
+            # return cells from a row
+            if min_row <= idx:
+                row = self._pad_row(row, min_col, max_col)
+                if not values_only:
+                    new_row = []
+                    for cell in row:
+                        if cell is None:
+                            new_row.append(EMPTY_CELL)
+                        else:
+                            cell = ReadOnlyCell(self, **cell)
+                            new_row.append(cell)
+                    row = tuple(row)
+                yield row
+
+
     def _pad_row(self, row, min_col=1, max_col=None):
         """
         Make sure a row contains always the same number of cells or values
         """
-        new_row = []
-        counter = min_col
+        first_col = row[0]['column']
+        last_col = row[-1]['column']
+        max_col = max_col or last_col
+
+        new_row = [None] * (max_col + 1 - min_col)
+
         for cell in row:
             counter = cell['column']
-            if min_col < counter:
-                new_row.append(None)
-            elif counter < max_col:
-                new_row.append(cell)
-
-        if max_col is not None and counter < max_col:
-            new_row.extend([None] * (max_col - counter))
+            if min_col <= counter <= max_col:
+                new_row[counter-min_col] = cell
 
         return tuple(new_row)
 
