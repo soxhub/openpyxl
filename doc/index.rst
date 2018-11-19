@@ -201,6 +201,7 @@ Other topics
 
     .. toctree::
         :maxdepth: 1
+
         pivot
 
     .. toctree::
