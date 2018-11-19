@@ -5,6 +5,7 @@ import datetime
 import gc
 import os
 from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 
@@ -24,6 +25,7 @@ def DummyWorkbook():
 
         def __init__(self):
             self.sheetnames = []
+            self._archive = ZipFile(BytesIO(), "w")
 
     return Workbook()
 
@@ -123,8 +125,9 @@ def test_nonstandard_name(datadir):
                          )
 def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
+    DummyWorkbook._archive.write(filename, "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
     ws.shared_strings = ['A', 'B']
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
