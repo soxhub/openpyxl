@@ -173,7 +173,7 @@ class TestReadOnlyWorksheet:
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
         cells = ws._pad_row(row, max_col=4, values_only=True)
-        assert cells == [None, None, None, 4]
+        assert cells == (None, None, None, 4)
 
 
     def test_pad_row(self, ReadOnlyWorksheet, DummyWorkbook):
@@ -183,9 +183,7 @@ class TestReadOnlyWorksheet:
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
         cells = ws._pad_row(row, min_col=4, max_col=8, values_only=True)
-        assert cells == [
-            4, None, None, None, 8
-        ]
+        assert cells == (4, None, None, None, 8)
 
 
     def test_pad_row_right(self, ReadOnlyWorksheet, DummyWorkbook):
@@ -195,9 +193,7 @@ class TestReadOnlyWorksheet:
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
         cells = ws._pad_row(row, min_col=6, max_col=10, values_only=True)
-        assert cells == [
-            None, None, 8, None, None
-        ]
+        assert cells == (None, None, 8, None, None)
 
 
     def test_pad_row_cells(self, ReadOnlyWorksheet, DummyWorkbook):
@@ -220,6 +216,6 @@ class TestReadOnlyWorksheet:
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
-        rows = ws._pad_rows(min_row=1, min_col=1, max_row=10, max_col=10, values_only=True)
+        rows = ws._pad_rows(min_row=1, min_col=1, max_row=1, max_col=10, values_only=True)
         row = next(rows)
         assert row == ('col1', 'col2', 'col3', None, None, None, None, None, None, None)
