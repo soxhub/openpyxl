@@ -2,10 +2,11 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 
-from openpyxl.cell.read_only import EMPTY_CELL
+from openpyxl.cell.read_only import EMPTY_CELL, ReadOnlyCell
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 
@@ -18,6 +19,7 @@ def DummyWorkbook():
 
         def __init__(self):
             self.sheetnames = []
+            self._archive = ZipFile(BytesIO(), "w")
 
     return Workbook()
 
@@ -30,11 +32,12 @@ def ReadOnlyWorksheet():
 
 class TestReadOnlyWorksheet:
 
-    def test_from_xml(self, datadir, ReadOnlyWorksheet):
-
+    def test_from_xml(self, datadir, ReadOnlyWorksheet, DummyWorkbook):
         datadir.chdir()
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(DummyWorkbook(), "Sheet", "", "sheet_inline_strings.xml", [])
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
         cells = tuple(ws.iter_rows(min_row=1, min_col=1, max_row=1, max_col=1))
         assert len(cells) == 1
         assert cells[0][0].value == "col1"
@@ -165,24 +168,23 @@ class TestReadOnlyWorksheet:
 
     def test_pad_row_left(self, ReadOnlyWorksheet, DummyWorkbook):
         row = [
-            {'column':4, 'value':4},
-            {'column':8, 'value':8},
+            {'column':4, 'value':4,},
+            {'column':8, 'value':8,},
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
-        cells = ws._pad_row(row, max_col=4)
-        assert list(cells) == [None, None, None, {'column':4, 'value':4}]
+        cells = ws._pad_row(row, max_col=4, values_only=True)
+        assert cells == [None, None, None, 4]
 
 
     def test_pad_row(self, ReadOnlyWorksheet, DummyWorkbook):
         row = [
-            {'column':4, 'value':4},
-            {'column':8, 'value':8},
+            {'column':4, 'value':4,},
+            {'column':8, 'value':8,},
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
-        cells = ws._pad_row(row, min_col=4, max_col=8)
-        assert list(cells) == [
-            {'column':4, 'value':4}, None, None, None,
-            {'column':8, 'value':8}
+        cells = ws._pad_row(row, min_col=4, max_col=8, values_only=True)
+        assert cells == [
+            4, None, None, None, 8
         ]
 
 
@@ -192,17 +194,32 @@ class TestReadOnlyWorksheet:
             {'column':8, 'value':8},
         ]
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
-        cells = ws._pad_row(row, min_col=6, max_col=10)
-        assert list(cells) == [
-            None, None,
-            {'column':8, 'value':8},
-            None, None
+        cells = ws._pad_row(row, min_col=6, max_col=10, values_only=True)
+        assert cells == [
+            None, None, 8, None, None
         ]
 
 
-    @pytest.mark.xfail
+    def test_pad_row_cells(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        row = [
+            {'column':4, 'value':4, 'row':2},
+            {'column':8, 'value':8, 'row':2},
+        ]
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        cells = ws._pad_row(row, min_col=6, max_col=10)
+        assert cells == (
+            EMPTY_CELL, EMPTY_CELL,
+            ReadOnlyCell(ws, 2, 8, 8, 'n', 0),
+            EMPTY_CELL, EMPTY_CELL
+        )
+
+
     def test_pad_rows(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
+
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
         rows = ws._pad_rows(min_row=1, min_col=1, max_row=10, max_col=10, values_only=True)
         row = next(rows)
-        assert row == ()
+        assert row == ('col1', 'col2', 'col3', None, None, None, None, None, None, None)

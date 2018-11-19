@@ -166,33 +166,32 @@ class ReadOnlyWorksheet(object):
 
             # return cells from a row
             if min_row <= idx:
-                row = self._pad_row(row, min_col, max_col)
-                if not values_only:
-                    new_row = []
-                    for cell in row:
-                        if cell is None:
-                            new_row.append(EMPTY_CELL)
-                        else:
-                            cell = ReadOnlyCell(self, **cell)
-                            new_row.append(cell)
-                    row = tuple(row)
+                row = self._pad_row(row, min_col, max_col, values_only)
                 yield row
 
 
-    def _pad_row(self, row, min_col=1, max_col=None):
+    def _pad_row(self, row, min_col=1, max_col=None, values_only=False):
         """
         Make sure a row contains always the same number of cells or values
         """
         first_col = row[0]['column']
         last_col = row[-1]['column']
         max_col = max_col or last_col
+        row_width = max_col + 1 - min_col
 
-        new_row = [None] * (max_col + 1 - min_col)
+        if values_only:
+            new_row = [None] * row_width
+        else:
+            new_row = [EMPTY_CELL] * row_width
 
         for cell in row:
             counter = cell['column']
             if min_col <= counter <= max_col:
-                new_row[counter-min_col] = cell
+                idx = counter - min_col
+                if values_only:
+                    new_row[idx] = cell['value']
+                else:
+                    new_row[idx] = ReadOnlyCell(self, **cell)
 
         return tuple(new_row)
 
