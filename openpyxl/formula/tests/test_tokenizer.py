@@ -324,6 +324,20 @@ class TestTokenizer(object):
         assert token.type == OPERAND
         assert token.subtype == ERROR
 
+    def test_parse_defined_name_reference_error(self, tokenizer):
+        formula = "=SUM(MyTable!#REF!)"
+        tok = tokenizer.Tokenizer("=SUM(MyTable!#REF!)")
+        result = [(token.value, token.type, token.subtype)
+                  for token in tok.items]
+        tokens = [
+            ('SUM(', FUNC, OPEN),
+            ('MyTable!#REF!', OPERAND, RANGE),
+            (')', FUNC, CLOSE),
+        ]
+
+        assert result == tokens
+        assert tok.render() == formula
+
     def test_parse_error_error(self, tokenizer):
         tok = tokenizer.Tokenizer("#NotAnError")
         tok.offset = 0
@@ -490,16 +504,26 @@ class TestTokenizer(object):
             assert offset == tok.offset
             assert token == tok.token
 
-    def test_assert_empty_token(self, tokenizer):
-        tok = tokenizer.Tokenizer("")
-        try:
-            tok.assert_empty_token()
-        except tokenizer.TokenizerError:
-            pytest.fail(
-                "assert_empty_token raised TokenizerError incorrectly")
-        tok.token.append("test")
-        with pytest.raises(tokenizer.TokenizerError):
-            tok.assert_empty_token()
+    @pytest.mark.parametrize('token, can_follow, raises', [
+        ('', {}, False),
+        ('test', {}, True),
+        ('test:', {'can_follow': ':'}, False),  # sheetname in range
+        ('test', {'can_follow': ':'}, True),
+        ('test!', {'can_follow': '!'}, False),  # #ERR! in defined name
+        ('test', {'can_follow': '!'}, True),
+    ])
+    def test_assert_empty_token(self, tokenizer, token, can_follow, raises):
+        tok = tokenizer.Tokenizer('')
+        tok.token.extend(list(token))
+        if not raises:
+            try:
+                tok.assert_empty_token(**can_follow)
+            except tokenizer.TokenizerError:
+                pytest.fail(
+                    "assert_empty_token raised TokenizerError incorrectly")
+        else:
+            with pytest.raises(tokenizer.TokenizerError):
+                tok.assert_empty_token(**can_follow)
 
     def test_save_token(self, tokenizer):
         tok = tokenizer.Tokenizer("")

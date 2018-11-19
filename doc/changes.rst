@@ -27,6 +27,12 @@ Deprecations
 ===================
 
 
+Pull Requests
+-------------
+
+* PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
+
+
 2.5.10 (2018-11-13)
 ===================
 
