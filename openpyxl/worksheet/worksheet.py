@@ -514,7 +514,7 @@ class Worksheet(_WorkbookChild):
         return self._cells_by_col(min_col, min_row, max_col, max_row, values_only)
 
 
-    def _cells_by_col(self, min_col, min_row, max_col, max_row, values_only=True):
+    def _cells_by_col(self, min_col, min_row, max_col, max_row, values_only=False):
         """
         Get cells by column
         """
