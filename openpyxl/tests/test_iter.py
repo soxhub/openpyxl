@@ -38,7 +38,7 @@ def ReadOnlyWorksheet():
 
 def test_open_many_sheets(datadir):
     datadir.join("reader").chdir()
-    wb = load_workbook("bigfoot.xlsx", True) # if
+    wb = load_workbook("bigfoot.xlsx", read_only=True)
     assert len(wb.worksheets) == 1024
 
 
@@ -302,7 +302,6 @@ def test_read_style_iter(tmpdir):
 def test_read_hyperlinks_read_only(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
     wb = DummyWorkbook
-    wb._data_only = True
     wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
 
     ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, ['SOMETEXT'])
