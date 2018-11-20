@@ -98,7 +98,10 @@ class ReadOnlyWorksheet(object):
             empty_row = (filler,) * (max_col + 1 - min_col)
 
         counter = min_row
-        parser = WorkSheetParser(self.xml_source, self.shared_strings)
+        idx = 1
+        parser = WorkSheetParser(self.xml_source, self.shared_strings,
+                                 data_only=self.parent.data_only, epoch=self.base_date,
+                                 date_formats=self.parent._date_formats)
         for idx, row in parser.parse():
             if max_row is not None and idx > max_row:
                 break
