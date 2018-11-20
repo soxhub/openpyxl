@@ -54,7 +54,7 @@ class ReadOnlyWorksheet(object):
         self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
-        self.base_date = parent_workbook.epoch
+        #self.base_date = parent_workbook.epoch
         dimensions = None
         try:
             source = self.xml_source
@@ -100,7 +100,7 @@ class ReadOnlyWorksheet(object):
         counter = min_row
         idx = 1
         parser = WorkSheetParser(self.xml_source, self.shared_strings,
-                                 data_only=self.parent.data_only, epoch=self.base_date,
+                                 data_only=self.parent.data_only, epoch=self.parent.epoch,
                                  date_formats=self.parent._date_formats)
         for idx, row in parser.parse():
             if max_row is not None and idx > max_row:
