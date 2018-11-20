@@ -91,9 +91,11 @@ class ReadOnlyWorksheet(object):
         if values_only:
             filler = None
 
+        max_col = max_col or self.max_column
+        max_row = max_row or self.max_row
         empty_row = []
         if max_col is not None:
-            empty_row = [filler] * (max_col + 1 - min_col)
+            empty_row = (filler,) * (max_col + 1 - min_col)
 
         counter = min_row
         parser = WorkSheetParser(self.xml_source, self.shared_strings)
@@ -163,7 +165,7 @@ class ReadOnlyWorksheet(object):
 
     @property
     def values(self):
-        for row in self._cells_by_row(0, 0, None, None, values_only=True):
+        for row in self._cells_by_row(1, 1, None, None, values_only=True):
             yield row
 
 

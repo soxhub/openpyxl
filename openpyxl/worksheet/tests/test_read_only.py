@@ -129,8 +129,8 @@ class TestReadOnlyWorksheet:
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._cells_by_row(min_row=8, max_row=10, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
-            [None, None, None],
-            [None, None, None],
+            (None, None, None),
+            (None, None, None),
             (7, 8, 9),
         ]
 
@@ -143,8 +143,8 @@ class TestReadOnlyWorksheet:
         rows = ws._cells_by_row(min_row=4, max_row=6, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
             (7, 8, 9),
-            [None, None, None],
-            [None, None, None],
+            (None, None, None),
+            (None, None, None),
         ]
 
 
@@ -155,7 +155,7 @@ class TestReadOnlyWorksheet:
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._cells_by_row(min_row=8, max_row=15, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
-            [None, None, None],
-            [None, None, None],
+            (None, None, None),
+            (None, None, None),
             (7, 8, 9),
         ]
