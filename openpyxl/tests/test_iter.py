@@ -53,14 +53,16 @@ def test_ctor(datadir, DummyWorkbook, ReadOnlyWorksheet, filename, expected):
     wb = DummyWorkbook
     wb._archive.write(filename, "sheet1.xml")
     with open(filename) as src:
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     assert (ws.min_row, ws.min_column, ws.max_row, ws.max_column) == expected
 
 
 def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("sheet2_no_dimension.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     ws.shared_strings = ['A', 'B']
 
     dims = ws.calculate_dimension(True)
@@ -129,7 +131,7 @@ def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
     DummyWorkbook._archive.write(filename, "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     ws.shared_strings = ['A', 'B']
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
@@ -304,7 +306,7 @@ def test_read_hyperlinks_read_only(datadir, DummyWorkbook, ReadOnlyWorksheet):
     wb = DummyWorkbook
     wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, ['SOMETEXT'])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", ['SOMETEXT'])
     assert ws['F2'].value is None
 
 
@@ -313,7 +315,7 @@ def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
     wb = DummyWorkbook
     wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
     rows = tuple(ws.rows)
 
     row = rows[1] # second row
@@ -346,6 +348,6 @@ def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     wb = DummyWorkbook
     wb._archive.write("empty_rows.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7

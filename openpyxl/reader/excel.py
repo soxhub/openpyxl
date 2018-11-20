@@ -244,7 +244,7 @@ class ExcelReader:
                 rels = get_dependents(self.archive, rels_path)
 
             if self.read_only:
-                ws = ReadOnlyWorksheet(self.wb, sheet.name, rel.target, None, self.shared_strings)
+                ws = ReadOnlyWorksheet(self.wb, sheet.name, rel.target, self.shared_strings)
                 self.wb._sheets.append(ws)
                 continue
             else:
