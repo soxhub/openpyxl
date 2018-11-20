@@ -50,8 +50,10 @@ def test_open_many_sheets(datadir):
                          )
 def test_ctor(datadir, DummyWorkbook, ReadOnlyWorksheet, filename, expected):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write(filename, "sheet1.xml")
     with open(filename) as src:
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", src, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
     assert (ws.min_row, ws.min_column, ws.max_row, ws.max_column) == expected
 
 
@@ -297,23 +299,22 @@ def test_read_style_iter(tmpdir):
     assert cell.font == ft
 
 
-def test_read_hyperlinks_read_only(datadir, Workbook, ReadOnlyWorksheet):
-
+def test_read_hyperlinks_read_only(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
-    filename = 'bug328_hyperlinks.xml'
-    wb = Workbook()
-    wb._read_only = True
+    wb = DummyWorkbook
     wb._data_only = True
-    ws = ReadOnlyWorksheet(wb, "Sheet", "", filename, ['SOMETEXT'])
+    wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
+
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, ['SOMETEXT'])
     assert ws['F2'].value is None
 
 
 def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
 
-    filename = "bug393-worksheet.xml"
-
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
     rows = tuple(ws.rows)
 
     row = rows[1] # second row
@@ -343,7 +344,9 @@ def test_read_mac_date(datadir, read_only):
 
 def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("empty_rows.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
     rows = tuple(ws.rows)
     assert len(rows) == 7
