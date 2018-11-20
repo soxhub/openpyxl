@@ -4,6 +4,7 @@ import datetime
 import gc
 import os
 from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 
@@ -23,6 +24,8 @@ def DummyWorkbook():
 
         def __init__(self):
             self.sheetnames = []
+            self._archive = ZipFile(BytesIO(), "w")
+            self._date_formats = set()
 
     return Workbook()
 
@@ -35,7 +38,7 @@ def ReadOnlyWorksheet():
 
 def test_open_many_sheets(datadir):
     datadir.join("reader").chdir()
-    wb = load_workbook("bigfoot.xlsx", True) # if
+    wb = load_workbook("bigfoot.xlsx", read_only=True)
     assert len(wb.worksheets) == 1024
 
 
@@ -47,15 +50,19 @@ def test_open_many_sheets(datadir):
                          )
 def test_ctor(datadir, DummyWorkbook, ReadOnlyWorksheet, filename, expected):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write(filename, "sheet1.xml")
     with open(filename) as src:
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", src, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     assert (ws.min_row, ws.min_column, ws.max_row, ws.max_column) == expected
 
 
 def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("sheet2_no_dimension.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "sheet2_no_dimension.xml", [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     ws.shared_strings = ['A', 'B']
 
     dims = ws.calculate_dimension(True)
@@ -122,8 +129,9 @@ def test_nonstandard_name(datadir):
                          )
 def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     datadir.join("reader").chdir()
+    DummyWorkbook._archive.write(filename, "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
+    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
     ws.shared_strings = ['A', 'B']
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
@@ -176,18 +184,17 @@ class TestRead:
 
     def test_read_fast_integrated_text(self, sample_workbook):
         expected = [
-            ['This is cell A1 in Sheet 1', None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, 'This is cell G5'],
+            ('This is cell A1 in Sheet 1', None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, 'This is cell G5'),
         ]
 
         wb = sample_workbook
         ws = wb['Sheet1 - Text']
-        for row, expected_row in zip(ws.rows, expected):
-            row_values = [x.value for x in row]
-            assert row_values == expected_row
+        for row, expected_row in zip(ws.values, expected):
+            assert row == expected_row
 
 
     def test_read_single_cell_range(self, sample_workbook):
@@ -293,23 +300,21 @@ def test_read_style_iter(tmpdir):
     assert cell.font == ft
 
 
-def test_read_hyperlinks_read_only(datadir, Workbook, ReadOnlyWorksheet):
-
+def test_read_hyperlinks_read_only(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
-    filename = 'bug328_hyperlinks.xml'
-    wb = Workbook()
-    wb._read_only = True
-    wb._data_only = True
-    ws = ReadOnlyWorksheet(wb, "Sheet", "", filename, ['SOMETEXT'])
+    wb = DummyWorkbook
+    wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
+
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", ['SOMETEXT'])
     assert ws['F2'].value is None
 
 
 def test_read_with_missing_cells(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("bug393-worksheet.xml", "sheet1.xml")
 
-    filename = "bug393-worksheet.xml"
-
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", filename, [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
     rows = tuple(ws.rows)
 
     row = rows[1] # second row
@@ -339,7 +344,9 @@ def test_read_mac_date(datadir, read_only):
 
 def test_read_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     datadir.join("reader").chdir()
+    wb = DummyWorkbook
+    wb._archive.write("empty_rows.xml", "sheet1.xml")
 
-    ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
+    ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
     rows = tuple(ws.rows)
     assert len(rows) == 7

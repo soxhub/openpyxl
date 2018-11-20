@@ -212,7 +212,7 @@ class WorkSheetParser(object):
                     data_type = 's'
                     richtext = Text.from_tree(child)
                     value = richtext.content
-
+        element.clear()
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 
 
@@ -238,6 +238,7 @@ class WorkSheetParser(object):
                 value = trans.translate_formula(coordinate)
             elif value != "=":
                 self.shared_formulae[idx] = Translator(value, coordinate)
+        element.clear()
         return value
 
 
@@ -269,6 +270,7 @@ class WorkSheetParser(object):
         cells = []
         for cell in safe_iterator(row, CELL_TAG):
             cells.append(self.parse_cell(cell))
+        row.clear()
         return self.max_row, cells
 
 
