@@ -26,6 +26,7 @@ def DummyWorkbook():
         def __init__(self):
             self.sheetnames = []
             self._archive = ZipFile(BytesIO(), "w")
+            self._date_formats = set()
 
     return Workbook()
 
@@ -184,18 +185,17 @@ class TestRead:
 
     def test_read_fast_integrated_text(self, sample_workbook):
         expected = [
-            ['This is cell A1 in Sheet 1', None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, 'This is cell G5'],
+            ('This is cell A1 in Sheet 1', None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, None),
+            (None, None, None, None, None, None, 'This is cell G5'),
         ]
 
         wb = sample_workbook
         ws = wb['Sheet1 - Text']
-        for row, expected_row in zip(ws.rows, expected):
-            row_values = [x.value for x in row]
-            assert row_values == expected_row
+        for row, expected_row in zip(ws.values, expected):
+            assert row == expected_row
 
 
     def test_read_single_cell_range(self, sample_workbook):
