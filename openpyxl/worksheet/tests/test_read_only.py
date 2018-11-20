@@ -20,6 +20,7 @@ def DummyWorkbook():
         def __init__(self):
             self.sheetnames = []
             self._archive = ZipFile(BytesIO(), "w")
+            self._date_formats = set()
 
     return Workbook()
 
@@ -115,9 +116,9 @@ class TestReadOnlyWorksheet:
 
     def test_read_rows(self, ReadOnlyWorksheet):
         ws = ReadOnlyWorksheet
-        rows = ws._cells_by_row(min_row=1, max_row=1, min_col=1, max_col=3, values_only=True)
-        row = next(rows)
-        assert row == ('col1', 'col2', 'col3')
+        rows = ws._cells_by_row(min_row=1, max_row=None, min_col=1, max_col=3, values_only=True)
+        rows = list(ws.rows)
+        assert len(rows) == 10
 
 
     def test_pad_rows_before(self, ReadOnlyWorksheet):
