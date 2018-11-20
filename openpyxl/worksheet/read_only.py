@@ -151,23 +151,29 @@ class ReadOnlyWorksheet(object):
         if values_only:
             filler = None
 
+        empty_row = []
         if max_col is not None:
             empty_row = [filler] * (max_col + 1 - min_col)
-        else:
-            empty_row = []
+
+        counter = min_row
         parser = WorkSheetParser(self.xml_source, self.shared_strings)
         for idx, row in parser.parse():
             if max_row is not None and idx > max_row:
                 break
 
             # some rows are missing
-            for row_counter in range(min_row, idx):
+            for _ in range(min_row, idx):
                 yield empty_row
 
             # return cells from a row
             if min_row <= idx:
                 row = self._pad_row(row, min_col, max_col, values_only)
+                counter = idx
                 yield row
+
+        if max_row is not None and max_row < idx:
+            for _ in range(counter, max_row):
+                yield empty_row
 
 
     def _pad_row(self, row, min_col=1, max_col=None, values_only=False):

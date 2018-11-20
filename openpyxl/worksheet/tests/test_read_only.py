@@ -211,11 +211,50 @@ class TestReadOnlyWorksheet:
         )
 
 
-    def test_pad_rows(self, ReadOnlyWorksheet, DummyWorkbook):
+    def test_read_rows(self, ReadOnlyWorksheet, DummyWorkbook):
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
         ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
-        rows = ws._pad_rows(min_row=1, min_col=1, max_row=1, max_col=10, values_only=True)
+        rows = ws._pad_rows(min_row=1, max_row=1, min_col=1, max_col=3, values_only=True)
         row = next(rows)
-        assert row == ('col1', 'col2', 'col3', None, None, None, None, None, None, None)
+        assert row == ('col1', 'col2', 'col3')
+
+
+    def test_pad_rows_before(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
+
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        rows = ws._pad_rows(min_row=8, max_row=10, min_col=1, max_col=3, values_only=True)
+        assert list(rows) == [
+            [None, None, None],
+            [None, None, None],
+            (7, 8, 9),
+        ]
+
+
+    def test_pad_rows_after(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
+
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        rows = ws._pad_rows(min_row=4, max_row=6, min_col=1, max_col=3, values_only=True)
+        assert list(rows) == [
+            (7, 8, 9),
+            [None, None, None],
+            [None, None, None],
+        ]
+
+
+    def test_pad_rows_bounded(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
+
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        rows = ws._pad_rows(min_row=8, max_row=15, min_col=1, max_col=3, values_only=True)
+        assert list(rows) == [
+            [None, None, None],
+            [None, None, None],
+            (7, 8, 9),
+        ]

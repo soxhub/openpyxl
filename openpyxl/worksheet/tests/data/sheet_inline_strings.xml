@@ -57,6 +57,17 @@
         <v>9</v>
       </c>
     </row>
+    <row r="10">
+      <c r="A10">
+        <v>7</v>
+      </c>
+      <c r="B10">
+        <v>8</v>
+      </c>
+      <c r="C10">
+        <v>9</v>
+      </c>
+    </row>
   </sheetData>
   <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
 </worksheet>
