@@ -108,10 +108,11 @@ class ReadOnlyWorksheet(object):
 
             # some rows are missing
             for _ in range(counter, idx):
+                counter += 1
                 yield empty_row
 
             # return cells from a row
-            if min_row <= idx:
+            if counter <= idx:
                 row = self._get_row(row, min_col, max_col, values_only)
                 counter += 1
                 yield row
