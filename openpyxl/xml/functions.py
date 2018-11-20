@@ -18,39 +18,49 @@ if LXML is True:
     Element,
     ElementTree,
     SubElement,
-    fromstring,
-    tostring,
     register_namespace,
     QName,
     xmlfile,
     XMLParser,
     )
-    from xml.etree.cElementTree import iterparse
-    # do not resolve entities
-    safe_parser = XMLParser(resolve_entities=False)
-    fromstring = partial(fromstring, parser=safe_parser)
+
+    from defusedxml.common import DefusedXmlException
+    from defusedxml.cElementTree import iterparse
+    from defusedxml.lxml import fromstring as _fromstring, tostring
+    from lxml.etree import XMLSyntaxError
+
+    def fromstring(*args, **kwargs):
+        try:
+            return _fromstring(*args, **kwargs)
+        except XMLSyntaxError as e:
+            raise DefusedXmlException(str(e))
+
 else:
     try:
         from xml.etree.cElementTree import (
         ElementTree,
         Element,
         SubElement,
+        QName,
+        register_namespace
+        )
+        from defusedxml.cElementTree import (
         fromstring,
         tostring,
         iterparse,
-        QName,
-        register_namespace
         )
     except ImportError:
         from xml.etree.ElementTree import (
         ElementTree,
         Element,
         SubElement,
+        QName,
+        register_namespace
+        )
+        from defusedxml.ElementTree import (
         fromstring,
         tostring,
         iterparse,
-        QName,
-        register_namespace
         )
     from et_xmlfile import xmlfile
 
