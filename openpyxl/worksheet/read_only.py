@@ -44,29 +44,25 @@ INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
 
 class ReadOnlyWorksheet(object):
 
-    _xml = None
     _min_column = 1
     _min_row = 1
     _max_column = _max_row = None
 
-    def __init__(self, parent_workbook, title, worksheet_path,
-                 xml_source, shared_strings):
+    def __init__(self, parent_workbook, title, worksheet_path, shared_strings):
         self.parent = parent_workbook
         self.title = title
         self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
         self.base_date = parent_workbook.epoch
-        self.xml_source = xml_source
         self._number_format_cache = {}
         dimensions = None
         try:
             source = self.xml_source
-            if source:
-                dimensions = read_dimension(source)
-        finally:
-            if isinstance(source, ZipExtFile):
-                source.close()
+            dimensions = read_dimension(source)
+            source.close()
+        except KeyError:
+            pass
         if dimensions is not None:
             self._min_column, self._min_row, self._max_column, self._max_row = dimensions
 
@@ -84,9 +80,7 @@ class ReadOnlyWorksheet(object):
     @property
     def xml_source(self):
         """Parse xml source on demand, default to Excel archive"""
-        if self._xml is None:
-            return self.parent._archive.open(self.worksheet_path)
-        return self._xml
+        return self.parent._archive.open(self.worksheet_path)
 
 
     @xml_source.setter

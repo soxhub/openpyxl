@@ -37,7 +37,7 @@ class TestReadOnlyWorksheet:
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
         cells = tuple(ws.iter_rows(min_row=1, min_col=1, max_row=1, max_col=1))
         assert len(cells) == 1
         assert cells[0][0].value == "col1"
@@ -60,8 +60,10 @@ class TestReadOnlyWorksheet:
         </row>
         </sheetData>
         """
+        wb = DummyWorkbook
+        wb._archive.writestr("sheet1.xml", src)
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
 
         xml = fromstring(src)
         row = tuple(ws._get_row(xml, 11, 11))
@@ -75,11 +77,13 @@ class TestReadOnlyWorksheet:
 
     def test_read_empty_row(self, DummyWorkbook, ReadOnlyWorksheet):
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
-
         src = """
         <row r="2" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />
         """
+        wb = DummyWorkbook
+        wb._archive.writestr("sheet1.xml", src)
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
+
         element = fromstring(src)
         row = ws._get_row(element, max_col=10)
         row = tuple(row)
@@ -103,7 +107,9 @@ class TestReadOnlyWorksheet:
         </sheetData>
         """
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        wb = DummyWorkbook
+        wb._archive.writestr("sheet1.xml", src)
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml",  [])
 
         xml = fromstring(src)
 
@@ -119,7 +125,6 @@ class TestReadOnlyWorksheet:
 
     def test_read_without_coordinates(self, DummyWorkbook, ReadOnlyWorksheet):
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", ["Whatever"]*10)
         src = """
         <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <c t="s">
@@ -139,6 +144,10 @@ class TestReadOnlyWorksheet:
           </c>
         </row>
         """
+
+        wb = DummyWorkbook
+        wb._archive.writestr("sheet1.xml", src)
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", ["Whatever"]*10)
 
         element = fromstring(src)
         row = tuple(ws._get_row(element, min_col=1, max_col=None, row_counter=1))
@@ -160,7 +169,9 @@ class TestReadOnlyWorksheet:
         </worksheet>
         """
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        wb = DummyWorkbook
+        wb._archive.writestr("sheet1.xml", src)
+        ws = ReadOnlyWorksheet(wb, "Sheet", "sheet1.xml", [])
         ws._xml = BytesIO(src)
         cell = ws._get_cell(row, column)
         assert cell is EMPTY_CELL
@@ -171,7 +182,7 @@ class TestReadOnlyWorksheet:
             {'column':4, 'value':4,},
             {'column':8, 'value':8,},
         ]
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", [])
         cells = ws._pad_row(row, max_col=4, values_only=True)
         assert cells == (None, None, None, 4)
 
@@ -181,7 +192,7 @@ class TestReadOnlyWorksheet:
             {'column':4, 'value':4,},
             {'column':8, 'value':8,},
         ]
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", [])
         cells = ws._pad_row(row, min_col=4, max_col=8, values_only=True)
         assert cells == (4, None, None, None, 8)
 
@@ -191,7 +202,7 @@ class TestReadOnlyWorksheet:
             {'column':4, 'value':4},
             {'column':8, 'value':8},
         ]
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", [])
         cells = ws._pad_row(row, min_col=6, max_col=10, values_only=True)
         assert cells == (None, None, 8, None, None)
 
@@ -202,7 +213,7 @@ class TestReadOnlyWorksheet:
             {'column':4, 'value':4, 'row':2},
             {'column':8, 'value':8, 'row':2},
         ]
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "", [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", [])
         cells = ws._pad_row(row, min_col=6, max_col=10)
         assert cells == (
             EMPTY_CELL, EMPTY_CELL,
@@ -215,7 +226,7 @@ class TestReadOnlyWorksheet:
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._pad_rows(min_row=1, max_row=1, min_col=1, max_col=3, values_only=True)
         row = next(rows)
         assert row == ('col1', 'col2', 'col3')
@@ -225,7 +236,7 @@ class TestReadOnlyWorksheet:
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._pad_rows(min_row=8, max_row=10, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
             [None, None, None],
@@ -238,7 +249,7 @@ class TestReadOnlyWorksheet:
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._pad_rows(min_row=4, max_row=6, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
             (7, 8, 9),
@@ -251,7 +262,7 @@ class TestReadOnlyWorksheet:
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
 
-        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", None, [])
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
         rows = ws._pad_rows(min_row=8, max_row=15, min_col=1, max_col=3, values_only=True)
         assert list(rows) == [
             [None, None, None],
