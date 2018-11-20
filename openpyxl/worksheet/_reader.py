@@ -168,16 +168,17 @@ class WorkSheetParser(object):
 
 
     def parse_cell(self, element):
-        value = element.find(VALUE_TAG)
-        if value is not None:
-            value = value.text
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
         self.max_column += 1
         style_id = element.get('s', 0)
-
         if style_id is not None:
             style_id = int(style_id)
+
+        if data_type == "inlineStr":
+            value = None
+        else:
+            value = element.findtext(VALUE_TAG)
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
@@ -188,7 +189,7 @@ class WorkSheetParser(object):
             data_type = 'f'
             value = self.parse_formula(element)
 
-        if value is not None:
+        elif value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
                 if style_id in self.date_formats:
@@ -213,7 +214,7 @@ class WorkSheetParser(object):
                     data_type = 's'
                     richtext = Text.from_tree(child)
                     value = richtext.content
-        element.clear()
+
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 
 
@@ -239,7 +240,7 @@ class WorkSheetParser(object):
                 value = trans.translate_formula(coordinate)
             elif value != "=":
                 self.shared_formulae[idx] = Translator(value, coordinate)
-        element.clear()
+
         return value
 
 
@@ -257,7 +258,6 @@ class WorkSheetParser(object):
             self.max_row = int(attrs['r'])
         else:
             self.max_row += 1
-        self.max_column = 0
         keys = set(attrs)
         for key in keys:
             if key.startswith('{'):
@@ -268,9 +268,8 @@ class WorkSheetParser(object):
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 
-        cells = []
-        for cell in safe_iterator(row, CELL_TAG):
-            cells.append(self.parse_cell(cell))
+        cells = tuple(self.parse_cell(el) for el in safe_iterator(row, CELL_TAG))
+
         row.clear()
         return self.max_row, cells
 
