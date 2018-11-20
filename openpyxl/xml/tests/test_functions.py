@@ -1,5 +1,9 @@
 import pytest
-from xml.etree.cElementTree import ParseError
+
+from io import BytesIO
+from defusedxml.common import DefusedXmlException
+from ..functions import fromstring, iterparse
+
 
 def test_safe_iterator_none():
     from .. functions import safe_iterator
@@ -20,24 +24,41 @@ def test_localtag(xml, tag):
     assert localname(node) == tag
 
 
-@pytest.mark.lxml_required
-def test_dont_resolve():
-    from ..functions import fromstring
-    s = b"""<?xml version="1.0" encoding="ISO-8859-1"?>
+vulnerable_xml_strings = (
+    b"""<?xml version="1.0" encoding="ISO-8859-1"?>
             <!DOCTYPE foo [
             <!ELEMENT foo ANY >
             <!ENTITY xxe SYSTEM "file:///dev/random" >]>
-            <foo>&xxe;</foo>"""
-    node = fromstring(s)
+            <foo>&xxe;</foo>""",
+    b"""<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE xmlbomb [
+          <!ENTITY a "1234567890" >
+          <!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;">
+          <!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;">
+          <!ENTITY d "&c;&c;&c;&c;&c;&c;&c;&c;">
+          ]>
+          <foo>&d;</foo>""",
+    b"""<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE test [
+          <!ENTITY % one SYSTEM "http://127.0.0.1:8100/x.xml" >
+          %one;
+          ]>""",
+    b"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <!DOCTYPE bomb [
+        <!ENTITY a "{loads_of_bs}">
+        ]>
+        <foo>&a;&a;&a</foo>""",
+)
 
 
-@pytest.mark.no_lxml
-def test_dont_resolve():
-    from ..functions import fromstring
-    s = b"""<?xml version="1.0" encoding="ISO-8859-1"?>
-            <!DOCTYPE foo [
-            <!ELEMENT foo ANY >
-            <!ENTITY xxe SYSTEM "file:///dev/random" >]>
-            <foo>&xxe;</foo>"""
-    with pytest.raises(ParseError):
-        node = fromstring(s)
+@pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
+def test_fromstring(xml_input):
+    with pytest.raises(DefusedXmlException):
+        fromstring(xml_input)
+
+
+@pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
+def test_iterparse(xml_input):
+    with pytest.raises(DefusedXmlException):
+        f = BytesIO(xml_input)
+        list(iterparse(f))
