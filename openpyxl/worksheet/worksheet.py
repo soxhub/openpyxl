@@ -479,7 +479,7 @@ class Worksheet(_WorkbookChild):
             yield row
 
 
-    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None, values_only=True):
+    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None, values_only=False):
         """
         Produces cells from the worksheet, by column. Specify the iteration range
         using indices of rows and columns.
@@ -524,7 +524,7 @@ class Worksheet(_WorkbookChild):
             if values_only:
                 yield tuple(cell.value for cell in cells)
             else:
-                yield cells
+                yield tuple(cells)
 
 
     @property
