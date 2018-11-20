@@ -148,6 +148,23 @@ class TestReadOnlyWorksheet:
         ]
 
 
+    def test_pad_rows_between(self, ReadOnlyWorksheet, DummyWorkbook):
+        wb = DummyWorkbook
+        wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")
+
+        ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
+        rows = ws._cells_by_row(min_row=4, max_row=None, min_col=1, max_col=3, values_only=True)
+        assert list(rows) == [
+            (7, 8, 9),
+            (None, None, None),
+            (None, None, None),
+            (None, None, None),
+            (None, None, None),
+            (None, None, None),
+            (7, 8, 9),
+        ]
+
+
     def test_pad_rows_bounded(self, ReadOnlyWorksheet, DummyWorkbook):
         wb = DummyWorkbook
         wb._archive.write("sheet_inline_strings.xml", "sheet1.xml")

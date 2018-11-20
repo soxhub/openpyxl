@@ -104,17 +104,17 @@ class ReadOnlyWorksheet(object):
                 break
 
             # some rows are missing
-            for _ in range(min_row, idx):
+            for _ in range(counter, idx):
                 yield empty_row
 
             # return cells from a row
             if min_row <= idx:
                 row = self._get_row(row, min_col, max_col, values_only)
-                counter = idx
+                counter += 1
                 yield row
 
         if max_row is not None and max_row < idx:
-            for _ in range(counter, max_row):
+            for _ in range(counter, max_row+1):
                 yield empty_row
 
 
