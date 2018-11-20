@@ -416,7 +416,7 @@ class Worksheet(_WorkbookChild):
         return self.calculate_dimension()
 
 
-    def iter_rows(self, min_row=None, max_row=None, min_col=None, max_col=None,):
+    def iter_rows(self, min_row=None, max_row=None, min_col=None, max_col=None, values_only=False):
         """
         Produces cells from the worksheet, by row. Specify the iteration range
         using indices of rows and columns.
@@ -448,13 +448,16 @@ class Worksheet(_WorkbookChild):
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
-        return self._cells_by_row(min_col, min_row, max_col, max_row)
+        return self._cells_by_row(min_col, min_row, max_col, max_row, values_only)
 
 
-    def _cells_by_row(self, min_col, min_row, max_col, max_row):
+    def _cells_by_row(self, min_col, min_row, max_col, max_row, values_only=False):
         for row in range(min_row, max_row + 1):
-            yield tuple(self.cell(row=row, column=column)
-                    for column in range(min_col, max_col + 1))
+            cells = (self.cell(row=row, column=column) for column in range(min_col, max_col + 1))
+            if values_only:
+                yield tuple(cell.value for cell in cells)
+            else:
+                yield tuple(cells)
 
 
     @property
@@ -472,11 +475,11 @@ class Worksheet(_WorkbookChild):
 
         :type: generator
         """
-        for row in self.iter_rows():
-            yield tuple(c.value for c in row)
+        for row in self.iter_rows(values_only=True):
+            yield row
 
 
-    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None):
+    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None, values_only=True):
         """
         Produces cells from the worksheet, by column. Specify the iteration range
         using indices of rows and columns.
@@ -500,7 +503,7 @@ class Worksheet(_WorkbookChild):
         :rtype: generator
         """
 
-        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
+        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row]):
             return ()
 
         min_col = min_col or 1
@@ -508,18 +511,20 @@ class Worksheet(_WorkbookChild):
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
-        return self._cells_by_col(
-            min_col, min_row, max_col, max_row
-        )
+        return self._cells_by_col(min_col, min_row, max_col, max_row, values_only)
 
 
-    def _cells_by_col(self, min_col, min_row, max_col, max_row):
+    def _cells_by_col(self, min_col, min_row, max_col, max_row, values_only=True):
         """
         Get cells by column
         """
         for column in range(min_col, max_col+1):
-            yield tuple(self.cell(row=row, column=column)
+            cells = (self.cell(row=row, column=column)
                         for row in range(min_row, max_row+1))
+            if values_only:
+                yield tuple(cell.value for cell in cells)
+            else:
+                yield cells
 
 
     @property
