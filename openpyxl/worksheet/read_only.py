@@ -210,6 +210,12 @@ class ReadOnlyWorksheet(object):
         return self.iter_rows()
 
 
+    @property
+    def values(self):
+        for row in self.iter_rows():
+            yield tuple(c.value for c in row)
+
+
     def calculate_dimension(self, force=False):
         if not all([self.max_column, self.max_row]):
             if force:
