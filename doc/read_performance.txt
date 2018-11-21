@@ -1,168 +1,84 @@
 
 Versions:
-python: 2.7.1
+python: 3.6.7
 xlread: 1.1.0
-openpyxl: 2.6.0dev
+openpyxl: 3.0.0dev
 
 xlrd
-    Workbook loaded 66.72s
-    OptimizationData 0.19s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.07s
-    Store days 100% 0.06s
-    Total time 67.04s
-
-openpyxl
-    Workbook loaded 106.64s
-    OptimizationData 0.00s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.00s
-    Store days 100% 0.00s
-    Total time 106.64s
-
-openpyxl, read-only
-    Workbook loaded 0.97s
-    OptimizationData 24.77s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 24.19s
-    Store days 100% 19.18s
-    Total time 69.11s
-
-openpyxl, read-only, values only
-    Workbook loaded 0.95s
-    OptimizationData 21.84s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 21.94s
-    Store days 100% 17.09s
-    Total time 61.82s
-
-
-Versions:
-python: 3.5.6
-xlread: 1.1.0
-openpyxl: 2.6.0dev
-
-xlrd
-    Workbook loaded 67.13s
+    Workbook loaded 59.81s
     OptimizationData 0.24s
     Output Model 0.00s
     >>DATA>> 0.00s
     Store days 0% 0.08s
     Store days 100% 0.07s
-    Total time 67.52s
+    Total time 60.20s
 
 openpyxl
-    Workbook loaded 115.50s
+    Workbook loaded 103.85s
     OptimizationData 0.00s
     Output Model 0.00s
     >>DATA>> 0.00s
     Store days 0% 0.00s
     Store days 100% 0.00s
-    Total time 115.50s
+    Total time 103.85s
 
 openpyxl, read-only
-    Workbook loaded 1.25s
-    OptimizationData 38.46s
+    Workbook loaded 1.20s
+    OptimizationData 28.57s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 29.54s
-    Store days 100% 22.78s
-    Total time 92.04s
+    Store days 0% 23.92s
+    Store days 100% 18.53s
+    Total time 72.22s
 
 openpyxl, read-only, values only
-    Workbook loaded 1.30s
-    OptimizationData 27.08s
+    Workbook loaded 1.10s
+    OptimizationData 21.50s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 27.09s
-    Store days 100% 21.13s
-    Total time 76.59s
-
-
-Versions:
-python: 3.6.7
-xlread: 1.1.0
-openpyxl: 2.6.0dev
-
-xlrd
-    Workbook loaded 52.04s
-    OptimizationData 0.23s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.08s
-    Store days 100% 0.07s
-    Total time 52.42s
-
-openpyxl
-    Workbook loaded 91.79s
-    OptimizationData 0.00s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.00s
-    Store days 100% 0.00s
-    Total time 91.79s
-
-openpyxl, read-only
-    Workbook loaded 1.08s
-    OptimizationData 25.53s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 23.02s
-    Store days 100% 17.97s
-    Total time 67.61s
-
-openpyxl, read-only, values only
-    Workbook loaded 1.08s
-    OptimizationData 20.90s
-    Output Model 0.01s
-    >>DATA>> 0.00s
-    Store days 0% 21.05s
-    Store days 100% 16.15s
-    Total time 59.20s
+    Store days 0% 21.94s
+    Store days 100% 16.96s
+    Total time 61.51s
 
 
 Versions:
 python: 3.7.1
 xlread: 1.1.0
-openpyxl: 2.6.0dev
+openpyxl: 3.0.0dev
 
 xlrd
-    Workbook loaded 49.78s
+    Workbook loaded 49.32s
     OptimizationData 0.22s
     Output Model 0.00s
     >>DATA>> 0.00s
     Store days 0% 0.07s
     Store days 100% 0.06s
-    Total time 50.13s
+    Total time 49.68s
 
 openpyxl
-    Workbook loaded 88.81s
+    Workbook loaded 88.26s
     OptimizationData 0.00s
     Output Model 0.00s
     >>DATA>> 0.00s
     Store days 0% 0.00s
     Store days 100% 0.00s
-    Total time 88.81s
+    Total time 88.26s
 
 openpyxl, read-only
-    Workbook loaded 0.94s
-    OptimizationData 21.73s
+    Workbook loaded 0.93s
+    OptimizationData 24.37s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 24.94s
-    Store days 100% 17.21s
-    Total time 64.82s
+    Store days 0% 21.95s
+    Store days 100% 17.08s
+    Total time 64.33s
 
 openpyxl, read-only, values only
-    Workbook loaded 0.97s
-    OptimizationData 19.94s
+    Workbook loaded 0.95s
+    OptimizationData 19.62s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 19.88s
-    Store days 100% 15.42s
-    Total time 56.20s
+    Store days 0% 19.80s
+    Store days 100% 15.39s
+    Total time 55.77s
 
