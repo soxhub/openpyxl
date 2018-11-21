@@ -6,7 +6,7 @@ Major changes
 -------------
 
 * Implement robust for merged cells so that these can be formatted the way
-Excel does without confusion. Thanks to Magnus Schieder.
+  Excel does without confusion. Thanks to Magnus Schieder.
 
 
 Minor changes
