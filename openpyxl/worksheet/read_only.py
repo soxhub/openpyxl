@@ -54,7 +54,6 @@ class ReadOnlyWorksheet(object):
         self._current_row = None
         self.worksheet_path = worksheet_path
         self.shared_strings = shared_strings
-        #self.base_date = parent_workbook.epoch
         dimensions = None
         try:
             source = self.xml_source
@@ -68,6 +67,7 @@ class ReadOnlyWorksheet(object):
         # Methods from Worksheet
         self.cell = Worksheet.cell.__get__(self)
         self.iter_rows = Worksheet.iter_rows.__get__(self)
+        self.values = Worksheet.values.__get__(self)
 
 
     def __getitem__(self, key):
@@ -165,12 +165,6 @@ class ReadOnlyWorksheet(object):
 
     def __iter__(self):
         return self.iter_rows()
-
-
-    @property
-    def values(self):
-        for row in self._cells_by_row(1, 1, None, None, values_only=True):
-            yield row
 
 
     def calculate_dimension(self, force=False):
