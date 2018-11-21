@@ -29,28 +29,16 @@ if LXML is True:
     safe_parser = XMLParser(resolve_entities=False)
     fromstring = partial(fromstring, parser=safe_parser)
 else:
-    try:
-        from xml.etree.cElementTree import (
-        ElementTree,
-        Element,
-        SubElement,
-        fromstring,
-        tostring,
-        iterparse,
-        QName,
-        register_namespace
-        )
-    except ImportError:
-        from xml.etree.ElementTree import (
-        ElementTree,
-        Element,
-        SubElement,
-        fromstring,
-        tostring,
-        iterparse,
-        QName,
-        register_namespace
-        )
+    from xml.etree.ElementTree import (
+    ElementTree,
+    Element,
+    SubElement,
+    fromstring,
+    tostring,
+    iterparse,
+    QName,
+    register_namespace
+    )
     from et_xmlfile import xmlfile
 
 
