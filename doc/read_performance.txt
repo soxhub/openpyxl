@@ -1,0 +1,168 @@
+
+Versions:
+python: 2.7.1
+xlread: 1.1.0
+openpyxl: 2.5.11
+
+xlrd
+    Workbook loaded 61.26s
+    OptimizationData 0.18s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 0.07s
+    Store days 100% 0.07s
+    Total time 61.59s
+
+openpyxl
+    Workbook loaded 131.36s
+    OptimizationData 4.03s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 3.46s
+    Store days 100% 3.50s
+    Total time 142.36s
+
+openpyxl, read-only
+    Workbook loaded 0.97s
+    OptimizationData 23.39s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 21.69s
+    Store days 100% 17.02s
+    Total time 63.07s
+
+openpyxl, read-only, values only
+    Workbook loaded 0.94s
+    OptimizationData 35.88s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 29.64s
+    Store days 100% 22.53s
+    Total time 89.00s
+
+
+Versions:
+python: 3.5.6
+xlread: 1.1.0
+openpyxl: 2.5.11
+
+xlrd
+    Workbook loaded 67.22s
+    OptimizationData 0.25s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 0.08s
+    Store days 100% 0.08s
+    Total time 67.63s
+
+openpyxl
+    Workbook loaded 140.84s
+    OptimizationData 4.27s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 3.67s
+    Store days 100% 3.88s
+    Total time 152.66s
+
+openpyxl, read-only
+    Workbook loaded 1.30s
+    OptimizationData 37.25s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 26.24s
+    Store days 100% 20.37s
+    Total time 85.17s
+
+openpyxl, read-only, values only
+    Workbook loaded 1.29s
+    OptimizationData 40.53s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 34.11s
+    Store days 100% 26.61s
+    Total time 102.54s
+
+
+Versions:
+python: 3.6.7
+xlread: 1.1.0
+openpyxl: 2.5.11
+
+xlrd
+    Workbook loaded 51.13s
+    OptimizationData 0.24s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 0.08s
+    Store days 100% 0.07s
+    Total time 51.51s
+
+openpyxl
+    Workbook loaded 114.45s
+    OptimizationData 3.27s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 2.70s
+    Store days 100% 3.08s
+    Total time 123.51s
+
+openpyxl, read-only
+    Workbook loaded 1.07s
+    OptimizationData 24.99s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 20.25s
+    Store days 100% 16.48s
+    Total time 62.79s
+
+openpyxl, read-only, values only
+    Workbook loaded 1.10s
+    OptimizationData 34.35s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 28.17s
+    Store days 100% 21.69s
+    Total time 85.32s
+
+
+Versions:
+python: 3.7.1
+xlread: 1.1.0
+openpyxl: 2.5.11
+
+xlrd
+    Workbook loaded 59.14s
+    OptimizationData 0.24s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 0.08s
+    Store days 100% 0.07s
+    Total time 59.53s
+
+openpyxl
+    Workbook loaded 114.90s
+    OptimizationData 3.27s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 2.78s
+    Store days 100% 3.16s
+    Total time 124.12s
+
+openpyxl, read-only
+    Workbook loaded 0.95s
+    OptimizationData 24.66s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 19.98s
+    Store days 100% 15.51s
+    Total time 61.10s
+
+openpyxl, read-only, values only
+    Workbook loaded 0.92s
+    OptimizationData 31.89s
+    Output Model 0.00s
+    >>DATA>> 0.00s
+    Store days 0% 27.09s
+    Store days 100% 21.85s
+    Total time 81.75s
+
