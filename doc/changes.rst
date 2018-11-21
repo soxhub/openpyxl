@@ -1,3 +1,14 @@
+2.5.11 (2018-11-21)
+===================
+
+
+Pull Requests
+-------------
+
+* PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
+* PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
+
+
 2.5.10 (2018-11-13)
 ===================
 

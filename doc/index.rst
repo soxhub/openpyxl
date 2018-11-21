@@ -202,6 +202,11 @@ Other topics
     .. toctree::
         :maxdepth: 1
 
+        pivot
+
+    .. toctree::
+        :maxdepth: 1
+
         print_settings
 
     .. toctree::
