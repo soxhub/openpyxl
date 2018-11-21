@@ -436,6 +436,9 @@ class Worksheet(_WorkbookChild):
         :param max_row: largest row index (1-based index)
         :type max_row: int
 
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
         :rtype: generator
         """
 
@@ -498,6 +501,9 @@ class Worksheet(_WorkbookChild):
 
         :param max_row: largest row index (1-based index)
         :type max_row: int
+
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
 
         :rtype: generator
         """
