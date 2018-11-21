@@ -1,11 +1,12 @@
-2.6-a1 (unreleased)
-=====================
+2.6-a1 (2018-11-21)
+===================
 
 
 Major changes
 -------------
 
-* Implement robust for merged cells so that these can be formatted the way Excel does without confusion. Thanks to Magnus Schieder.
+* Implement robust for merged cells so that these can be formatted the way
+Excel does without confusion. Thanks to Magnus Schieder.
 
 
 Minor changes
