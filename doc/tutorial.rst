@@ -1,28 +1,26 @@
-Manipulating a workbook in memory
-=================================
+Tutorial
+========
 
 Create a workbook
 -----------------
 
 There is no need to create a file on the filesystem to get started with openpyxl.
-Just import the Workbook class and start using it ::
+Just import the :class:`Workbook` class and start work::
 
     >>> from openpyxl import Workbook
     >>> wb = Workbook()
 
 A workbook is always created with at least one worksheet. You can get it by
-using the :func:`openpyxl.workbook.Workbook.active` property ::
+using the :obj:`Workbook.active` property::
 
     >>> ws = wb.active
 
 .. note::
 
-    This function uses the `_active_sheet_index` property, set to 0 by default.
-    Unless you modify its value, you will always get the
-    first worksheet by using this method.
+    This is set to 0 by default. Unless you modify its value, you will always
+    get the first worksheet by using this method.
 
-You can also create new worksheets by using the
-:func:`openpyxl.workbook.Workbook.create_sheet` method ::
+You can create new worksheets using the :meth:`Workbook.create_sheet` method::
 
     >>> ws1 = wb.create_sheet("Mysheet") # insert at the end (default)
     # or
@@ -30,12 +28,13 @@ You can also create new worksheets by using the
 
 Sheets are given a name automatically when they are created.
 They are numbered in sequence (Sheet, Sheet1, Sheet2, ...).
-You can change this name at any time with the `title` property::
+You can change this name at any time with the :obj:`Worksheet.title` property::
 
     ws.title = "New Title"
 
 The background color of the tab holding this title is white by default.
-You can change this providing an RRGGBB color code to the sheet_properties.tabColor property::
+You can change this providing an :code:`RRGGBB` color code to the
+:obj:`Worksheet.sheet_properties.tabColor` attribute::
 
     ws.sheet_properties.tabColor = "1072BA"
 
@@ -44,7 +43,7 @@ Once you gave a worksheet a name, you can get it as a key of the workbook::
     >>> ws3 = wb["New Title"]
 
 You can review the names of all worksheets of the workbook with the
-:func:`openpyxl.workbook.Workbook.sheetnames` property ::
+:obj:`Workbook.sheetname` attribute ::
 
     >>> print(wb.sheetnames)
     ['Sheet2', 'New Title', 'Sheet1']
@@ -54,9 +53,9 @@ You can loop through worksheets ::
     >>> for sheet in wb:
     ...     print(sheet.title)
 
-You can create copies of worksheets *within a single workbook*:
+You can create copies of worksheets **within a single workbook**:
 
-:func:`openpyxl.workbook.Workbook.copy_worksheet` method::
+:meth:`Workbook.copy_worksheet` method::
 
     >>> source = wb.active
     >>> target = wb.copy_worksheet(source)
@@ -68,9 +67,7 @@ You can create copies of worksheets *within a single workbook*:
     properties) are copied. All other workbook / worksheet attributes
     are not copied - e.g. Images, Charts.
 
-.. note::
-
-    You cannot copy worksheets between workbooks. You also cannot copy
+    You also **cannot** copy worksheets between workbooks. You cannot copy
     a worksheet if the workbook is open in `read-only` or `write-only`
     mode.
 
@@ -81,18 +78,17 @@ Playing with data
 Accessing one cell
 ++++++++++++++++++
 
-Now we know how to access a worksheet, we can start modifying cells content.
-
-Cells can be accessed directly as keys of the worksheet ::
+Now we know how to get a worksheet, we can start modifying cells content.
+Cells can be accessed directly as keys of the worksheet::
 
     >>> c = ws['A4']
 
-This will return the cell at A4 or create one if it does not exist yet.
-Values can be directly assigned ::
+This will return the cell at A4, or create one if it does not exist yet.
+Values can be directly assigned::
 
     >>> ws['A4'] = 4
 
-There is also the :func:`openpyxl.worksheet.Worksheet.cell` method.
+There is also the :meth:`Worksheet.cell` method.
 
 This provides access to cells using row and column notation::
 
@@ -110,18 +106,17 @@ This provides access to cells using row and column notation::
 
     Something like ::
 
-        >>> for i in range(1,101):
-        ...        for j in range(1,101):
-        ...            ws.cell(row=i, column=j)
+        >>> for x in range(1,101):
+        ...        for y in range(1,101):
+        ...            ws.cell(row=x, column=y)
 
     will create 100x100 cells in memory, for nothing.
-
 
 
 Accessing many cells
 ++++++++++++++++++++
 
-Ranges of cells can be accessed using slicing ::
+Ranges of cells can be accessed using slicing::
 
     >>> cell_range = ws['A1':'C2']
 
@@ -133,7 +128,7 @@ Ranges of rows or columns can be obtained similarly::
     >>> row10 = ws[10]
     >>> row_range = ws[5:10]
 
-You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
+You can also use the :meth:`Worksheet.iter_rows` method::
 
     >>> for row in ws.iter_rows(min_row=1, max_col=3, max_row=2):
     ...    for cell in row:
@@ -145,7 +140,7 @@ You can also use the :func:`openpyxl.worksheet.Worksheet.iter_rows` method::
     <Cell Sheet1.B2>
     <Cell Sheet1.C2>
 
-Likewise the :func:`openpyxl.worksheet.Worksheet.iter_cols` method will return columns::
+Likewise the :obj:`Worksheet.iter_cols()` method will return columns::
 
     >>> for col in ws.iter_cols(min_row=1, max_col=3, max_row=2):
     ...     for cell in col:
@@ -157,9 +152,13 @@ Likewise the :func:`openpyxl.worksheet.Worksheet.iter_cols` method will return c
     <Cell Sheet1.C1>
     <Cell Sheet1.C2>
 
+.. note::
+
+  For performance reasons the :obj:`Worksheet.iter_cols()` method is not available in read-only mode.
+
 
 If you need to iterate through all the rows or columns of a file, you can instead use the
-:func:`openpyxl.worksheet.Worksheet.rows` property::
+:obj:`Worksheet.rows` property::
 
     >>> ws = wb.active
     >>> ws['C9'] = 'hello world'
@@ -174,7 +173,7 @@ If you need to iterate through all the rows or columns of a file, you can instea
     (<Cell Sheet.A8>, <Cell Sheet.B8>, <Cell Sheet.C8>),
     (<Cell Sheet.A9>, <Cell Sheet.B9>, <Cell Sheet.C9>))
 
-or the :func:`openpyxl.worksheet.Worksheet.columns` property::
+or the :obj:`Worksheet.columns` property::
 
     >>> tuple(ws.columns)
     ((<Cell Sheet.A1>,
@@ -197,11 +196,26 @@ or the :func:`openpyxl.worksheet.Worksheet.columns` property::
     <Cell Sheet.C8>,
     <Cell Sheet.C9>))
 
+.. note::
+
+  For performance reasons the :obj:`Worksheet.columns` property is not available in read-only mode.
+
+
+Values only
++++++++++++
+
+If you just want the values from a worksheet you can use the :obj:`Worksheet.values` property.
+This iterates over all the rows in a worksheet but returns just the cell values::
+
+    for row in ws.values:
+       for value in row:
+         print(value)
+
 
 Data storage
 ------------
 
-Once we have a :class:`openpyxl.cell.Cell`, we can assign it a value::
+Once we have a :class:`Cell`, we can assign it a value::
 
     >>> c.value = 'hello, world'
     >>> print(c.value)
@@ -216,8 +230,7 @@ Saving to a file
 ++++++++++++++++
 
 The simplest and safest way to save a workbook is by using the
-:func:`openpyxl.workbook.Workbook.save()` method of the
-:class:`openpyxl.workbook.Workbook` object::
+:func:`Workbook.save` method of the :class:`Workbook` object::
 
     >>> wb = Workbook()
     >>> wb.save('balances.xlsx')
@@ -228,7 +241,7 @@ The simplest and safest way to save a workbook is by using the
 
 .. note::
 
-    Extension is not forced to be xlsx or xlsm, although you might have
+    The filename extension is not forced to be xlsx or xlsm, although you might have
     some trouble opening it directly with another application if you don't
     use an official extension.
 
@@ -241,7 +254,7 @@ Saving as a stream
 
 If you want to save the file to a stream, e.g. when using a web application
 such as Pyramid, Flask or Django then you can simply provide a
-`NamedTemporaryFile`::
+:func:`NamedTemporaryFile`::
 
 
     >>> from tempfile import NamedTemporaryFile
@@ -299,7 +312,7 @@ or set this attribute to `False` (default), to save as a document::
 Loading from a file
 ===================
 
-The same way as writing, you can import :func:`openpyxl.load_workbook` to
+The same way as writing, you can use the :func:`openpyxl.load_workbook` to
 open an existing workbook::
 
     >>> from openpyxl import load_workbook

@@ -30,6 +30,7 @@ Deprecations
 Pull Requests
 -------------
 
+* PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
 * PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
 
 

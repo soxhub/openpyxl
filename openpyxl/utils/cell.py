@@ -58,7 +58,8 @@ def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
     m = ABSOLUTE_RE.match(coord_string)
     if not m:
-        raise ValueError("{0} is not a valid coordinate range".format(coord_string))
+        raise ValueError("{0} is not a valid coordinate range".format(
+            coord_string))
 
     d = m.groupdict('')
     for k, v in d.items():
@@ -141,7 +142,7 @@ def range_boundaries(range_string):
         cols = min_col, max_col
         rows = min_row, max_row
 
-        if not  (
+        if not (
             all(cols + rows) or
             all(cols) and not any(rows) or
             all(rows) and not any(cols)
@@ -173,8 +174,8 @@ def rows_from_range(range_string):
     Yields one row at a time.
     """
     min_col, min_row, max_col, max_row = range_boundaries(range_string)
-    rows = range(min_row, max_row+1)
-    cols = [get_column_letter(col) for col in range(min_col, max_col+1)]
+    rows = range(min_row, max_row + 1)
+    cols = [get_column_letter(col) for col in range(min_col, max_col + 1)]
     for row in rows:
         yield tuple('{0}{1}'.format(col, row) for col in cols)
 
