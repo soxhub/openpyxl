@@ -140,7 +140,7 @@ class ReadOnlyWorksheet(object):
                 element.clear()
 
         # some rows may be missing at end
-        if max_row is not None:
+        if max_row is not None and max_row < row_counter:
             for _ in range(row_counter, max_row + 1):
                 yield empty_row
 

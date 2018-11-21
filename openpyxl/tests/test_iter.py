@@ -460,10 +460,9 @@ def test_iter_rows_empty_rows(datadir, DummyWorkbook, ReadOnlyWorksheet):
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "", "empty_rows.xml", [])
 
     rows = tuple(ws.iter_rows(min_row=1, min_col=1, max_row=10, max_col=10))
-    assert len(rows) == 10
-    assert all(len(row) == 10 for row in rows)
+    assert len(rows) == 7
     assert rows[0][0].value is None
-    assert rows[9][9].value is None
+    assert rows[6][6].value is None
 
 
 def test_read_without_coordinates(DummyWorkbook, ReadOnlyWorksheet):
