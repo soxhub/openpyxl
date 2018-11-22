@@ -288,7 +288,7 @@ class SpreadsheetDrawing(Serialisable):
                 rel = Relationship(type="image", Target=obj.path)
                 child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
                 if not child:
-                    child = self._picture_frame(idx)
+                    anchor.pic = self._picture_frame(idx)
                 else:
                     child.blipFill.blip.embed = "rId{0}".format(idx)
 
