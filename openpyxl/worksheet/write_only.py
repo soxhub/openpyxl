@@ -28,65 +28,25 @@ class WriteOnlyWorksheet(_WorkbookChild):
     _path = Worksheet._path
     mime_type = Worksheet.mime_type
 
+    # copy methods from Standard worksheet
+    _add_row = Worksheet._add_row
+    _add_column = Worksheet._add_column
+    add_chart = Worksheet.add_chart
+    add_image = Worksheet.add_image
+    add_table = Worksheet.add_table
+    print_titles = Worksheet.print_titles
+    print_title_cols = Worksheet.print_title_cols
+    print_title_rows = Worksheet.print_title_rows
+    freeze_panes = Worksheet.freeze_panes
+    print_area = Worksheet.print_area
+    sheet_view = Worksheet.sheet_view
+    _setup = Worksheet._setup
 
     def __init__(self, parent, title):
         super(WriteOnlyWorksheet, self).__init__(parent, title)
         self._max_col = 0
         self._max_row = 0
-
-        # Methods from Worksheet
-        self._add_row = Worksheet._add_row.__get__(self)
-        self._add_column = Worksheet._add_column.__get__(self)
-        self.add_chart = Worksheet.add_chart.__get__(self)
-        self.add_image = Worksheet.add_image.__get__(self)
-        self.add_table = Worksheet.add_table.__get__(self)
-
-        setup = Worksheet._setup.__get__(self)
-        setup()
-
-        self.print_titles = Worksheet.print_titles.__get__(self)
-        self.sheet_view = Worksheet.sheet_view.__get__(self)
-
-
-    @property
-    def freeze_panes(self):
-        return Worksheet.freeze_panes.__get__(self)
-
-
-    @freeze_panes.setter
-    def freeze_panes(self, value):
-        Worksheet.freeze_panes.__set__(self, value)
-
-
-    @property
-    def print_title_cols(self):
-        return Worksheet.print_title_cols.__get__(self)
-
-
-    @print_title_cols.setter
-    def print_title_cols(self, value):
-        Worksheet.print_title_cols.__set__(self, value)
-
-
-    @property
-    def print_title_rows(self):
-        return Worksheet.print_title_rows.__get__(self)
-
-
-    @print_title_rows.setter
-    def print_title_rows(self, value):
-        Worksheet.print_title_rows.__set__(self, value)
-
-
-    @property
-    def print_area(self):
-        return Worksheet.print_area.__get__(self)
-
-
-    @print_area.setter
-    def print_area(self, value):
-        Worksheet.print_area.__set__(self, value)
-
+        self._setup()
 
     @property
     def closed(self):
