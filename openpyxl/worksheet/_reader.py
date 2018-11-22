@@ -171,7 +171,7 @@ class WorkSheetParser(object):
         coordinate = element.get('r')
         self.max_column += 1
         style_id = element.get('s', 0)
-        if style_id is not None:
+        if style_id:
             style_id = int(style_id)
 
         if data_type == "inlineStr":
