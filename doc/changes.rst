@@ -1,6 +1,8 @@
 2.5.12 (unreleased)
 ===================
 
+* `#1133 <https://bitbucket.org/openpyxl/openpyxl/issues/1133>`_ Images not added to anchors.
+
 
 2.5.11 (2018-11-21)
 ===================
