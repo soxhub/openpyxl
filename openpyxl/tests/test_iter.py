@@ -64,7 +64,7 @@ def test_force_dimension(datadir, DummyWorkbook, ReadOnlyWorksheet):
     wb._archive.write("sheet2_no_dimension.xml", "sheet1.xml")
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
-    ws.shared_strings = ['A', 'B']
+    ws._shared_strings = ['A', 'B']
 
     dims = ws.calculate_dimension(True)
     assert dims == "A1:AA30"
@@ -133,7 +133,7 @@ def test_get_max_cell(datadir, DummyWorkbook, ReadOnlyWorksheet, filename):
     DummyWorkbook._archive.write(filename, "sheet1.xml")
 
     ws = ReadOnlyWorksheet(DummyWorkbook, "Sheet", "sheet1.xml", [])
-    ws.shared_strings = ['A', 'B']
+    ws._shared_strings = ['A', 'B']
     rows = tuple(ws.rows)
     assert rows[-1][-1].coordinate == "AA30"
 

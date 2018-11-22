@@ -3,28 +3,10 @@ from __future__ import absolute_import
 
 """ Read worksheets on-demand
 """
-from zipfile import ZipExtFile
-# compatibility
-from openpyxl.compat import (
-    range,
-    deprecated
-)
-
-# package
-from openpyxl.cell.text import Text
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.styles import is_date_format
-from openpyxl.styles.numbers import BUILTIN_FORMATS
 
 from openpyxl.worksheet import Worksheet
-from openpyxl.utils import (
-    column_index_from_string,
-    get_column_letter,
-    coordinate_to_tuple,
-)
-from openpyxl.utils.datetime import from_excel
-from openpyxl.worksheet.dimensions import SheetDimension
-from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL, _cast_number
+from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
+from openpyxl.utils import get_column_letter
 
 from ._reader import WorkSheetParser
 
@@ -32,13 +14,6 @@ from ._reader import WorkSheetParser
 def read_dimension(source):
     parser = WorkSheetParser(source, {})
     return parser.parse_dimensions()
-
-
-ROW_TAG = '{%s}row' % SHEET_MAIN_NS
-CELL_TAG = '{%s}c' % SHEET_MAIN_NS
-VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
-FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
-INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
 
 
 class ReadOnlyWorksheet(object):
@@ -120,6 +95,7 @@ class ReadOnlyWorksheet(object):
             for _ in range(counter, max_row+1):
                 yield empty_row
 
+        self._source.close()
 
     def _get_row(self, row, min_col=1, max_col=None, values_only=False):
         """
