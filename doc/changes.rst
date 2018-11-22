@@ -35,8 +35,8 @@ Deprecations
 Pull Requests
 -------------
 
-* PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
-* PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
+* `PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
+* `PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
 
 
 2.5.10 (2018-11-13)
@@ -52,8 +52,8 @@ Bugfixes
 Pull Requests
 -------------
 
-* PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
-* PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
+* `PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
+* `PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
 
 
 2.5.9 (2018-10-19)
