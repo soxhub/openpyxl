@@ -3,8 +3,6 @@ from __future__ import absolute_import
 import pytest
 
 from copy import copy
-from ..worksheet import Worksheet
-from openpyxl.workbook import Workbook
 
 @pytest.fixture
 def CellRange():
@@ -23,12 +21,12 @@ class TestCellRange:
 
     def test_max_row_too_small(self, CellRange):
         with pytest.raises(ValueError):
-            cr = CellRange("A4:B1")
+            CellRange("A4:B1")
 
 
     def test_max_col_too_small(self, CellRange):
         with pytest.raises(ValueError):
-            cr = CellRange("F1:B5")
+            CellRange("F1:B5")
 
 
     @pytest.mark.parametrize("range_string, title, coord",
@@ -96,7 +94,7 @@ class TestCellRange:
         cr1 = CellRange("Sheet1!A1:D4")
         cr2 = CellRange("Sheet2!E5:K10")
         with pytest.raises(ValueError):
-            cr3 = cr1.union(cr2)
+            cr1.union(cr2)
 
 
     def test_expand(self, CellRange):

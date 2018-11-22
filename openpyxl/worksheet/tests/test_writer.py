@@ -4,7 +4,6 @@ from __future__ import absolute_import
 import pytest
 import os
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -15,7 +14,6 @@ from openpyxl.comments import Comment
 
 from ..dimensions import RowDimension
 from ..protection import SheetProtection
-from ..filters import AutoFilter
 from ..filters import SortState
 from ..scenario import Scenario, InputCells
 from ..table import Table
@@ -581,5 +579,5 @@ class TestWorksheetWriter:
     def test_cleanup(self, writer):
         assert os.path.exists(writer.out) is True
         writer.close()
-        x = writer.cleanup()
+        writer.cleanup()
         assert os.path.exists(writer.out) is False

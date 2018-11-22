@@ -11,7 +11,6 @@ from openpyxl.xml.functions import iterparse
 # package imports
 from openpyxl.cell import Cell
 from openpyxl.cell.text import Text
-from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.dimensions import (
     ColumnDimension,
     RowDimension,
@@ -20,13 +19,8 @@ from openpyxl.worksheet.dimensions import (
 
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
-    REL_NS,
     EXT_TYPES,
 )
-from openpyxl.styles import Color
-from openpyxl.styles import is_date_format
-from openpyxl.styles.numbers import BUILTIN_FORMATS
-from openpyxl.formatting import Rule
 from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
 from openpyxl.utils import (
@@ -34,13 +28,12 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
-from openpyxl.descriptors.excel import ExtensionList, Extension
+from openpyxl.descriptors.excel import ExtensionList
 
-from .filters import AutoFilter, SortState
+from .filters import AutoFilter
 from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
 from .merge import MergeCells
-from .cell_range import CellRange
 from .page import PageMargins, PrintOptions, PrintPageSetup
 from .pagebreak import PageBreak
 from .protection import SheetProtection
@@ -107,7 +100,6 @@ class WorkSheetParser(object):
         self.date_formats = date_formats
         self.row_dimensions = {}
         self.column_dimensions = {}
-        #self.styles = styles
         self.number_formats = []
         self.keep_vba = False
         self.hyperlinks = HyperlinkList()
@@ -231,7 +223,6 @@ class WorkSheetParser(object):
         possible formulae types: shared, array, datatable
         """
         formula = element.find(FORMULA_TAG)
-        data_type = 'f'
         formula_type = formula.get('t')
         coordinate = element.get('r')
         value = "="

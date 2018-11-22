@@ -7,14 +7,9 @@ from __future__ import absolute_import
 from inspect import isgenerator
 
 from openpyxl.cell import Cell, WriteOnlyCell
-from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl.workbook.child import _WorkbookChild
 from .worksheet import Worksheet
-from .related import Related
-
 from openpyxl.utils.exceptions import WorkbookAlreadySaved
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import xmlfile
 
 from ._writer import WorksheetWriter
 

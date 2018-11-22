@@ -52,7 +52,6 @@ class TestRowDimension:
     @pytest.mark.parametrize("key, value, expected",
                              [
                                  ('ht', 1, {'ht':'1', 'customHeight':'1'}),
-                                 ('_font_id', 10, {'s':'1', 'customFormat':'1'}),
                                  ('thickBot', True, {'thickBot':'1'}),
                                  ('thickTop', True, {'thickTop':'1'}),
                              ]
@@ -63,7 +62,7 @@ class TestRowDimension:
         assert dict(rd) == expected
 
 
-    def test_row_dimension(self, RowDimension):
+    def test_row_auto_assign(self, RowDimension):
         from ..worksheet import Worksheet
         ws = Worksheet(DummyWorkbook())
         row_info = ws.row_dimensions

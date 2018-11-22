@@ -1,16 +1,10 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
-
 import datetime
-from io import BytesIO
-import os
-
-from openpyxl.xml.functions import xmlfile
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
-
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.tests.helper import compare_xml
 

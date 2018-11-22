@@ -4,7 +4,7 @@ from __future__ import absolute_import
 """ Read worksheets on-demand
 """
 
-from openpyxl.worksheet import Worksheet
+from .worksheet import Worksheet
 from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 from openpyxl.utils import get_column_letter
 
@@ -12,7 +12,7 @@ from ._reader import WorkSheetParser
 
 
 def read_dimension(source):
-    parser = WorkSheetParser(source, {})
+    parser = WorkSheetParser(source, [])
     return parser.parse_dimensions()
 
 
@@ -103,7 +103,6 @@ class ReadOnlyWorksheet(object):
         """
         if not row:
             return ()
-        first_col = row[0]['column']
         last_col = row[-1]['column']
         max_col = max_col or last_col
         row_width = max_col + 1 - min_col
