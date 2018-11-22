@@ -11,11 +11,6 @@ from openpyxl.utils import get_column_letter
 from ._reader import WorkSheetParser
 
 
-def read_dimension(source):
-    parser = WorkSheetParser(source, [])
-    return parser.parse_dimensions()
-
-
 class ReadOnlyWorksheet(object):
 
     _min_column = 1
@@ -28,15 +23,7 @@ class ReadOnlyWorksheet(object):
         self._current_row = None
         self._worksheet_path = worksheet_path
         self._shared_strings = shared_strings
-        dimensions = None
-        try:
-            source = self._source
-            dimensions = read_dimension(source)
-            source.close()
-        except KeyError:
-            pass
-        if dimensions is not None:
-            self._min_column, self._min_row, self._max_column, self._max_row = dimensions
+        self._get_size()
 
         # Methods from Worksheet
         self.cell = Worksheet.cell.__get__(self)
@@ -48,6 +35,15 @@ class ReadOnlyWorksheet(object):
         # use protected method from Worksheet
         meth = Worksheet.__getitem__.__get__(self)
         return meth(key)
+
+
+    def _get_size(self):
+        src = self._source
+        parser = WorkSheetParser(src, [])
+        dimensions = parser.parse_dimensions()
+        src.close()
+        if dimensions is not None:
+            self._min_column, self._min_row, self._max_column, self._max_row = dimensions
 
 
     @property
