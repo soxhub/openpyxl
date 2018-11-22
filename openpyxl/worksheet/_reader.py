@@ -24,7 +24,6 @@ from openpyxl.xml.constants import (
     REL_NS,
     EXT_TYPES,
 )
-from openpyxl.xml.functions import safe_iterator
 from openpyxl.styles import Color
 from openpyxl.styles import is_date_format
 from openpyxl.styles.numbers import BUILTIN_FORMATS
@@ -134,7 +133,7 @@ class WorkSheetParser(object):
             MERGE_TAG: ('merged_cells', MergeCells),
         }
 
-        it = iterparse(self.source, tag=dispatcher)
+        it = iterparse(self.source)
 
         for _, element in it:
             tag_name = element.tag
@@ -268,7 +267,7 @@ class WorkSheetParser(object):
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 
-        cells = tuple(self.parse_cell(el) for el in safe_iterator(row, CELL_TAG))
+        cells = tuple(self.parse_cell(el) for el in row)
 
         row.clear()
         return self.max_row, cells

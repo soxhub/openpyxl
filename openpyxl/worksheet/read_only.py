@@ -12,7 +12,6 @@ from openpyxl.compat import (
 
 # package
 from openpyxl.cell.text import Text
-from openpyxl.xml.functions import iterparse, safe_iterator
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.styles import is_date_format
 from openpyxl.styles.numbers import BUILTIN_FORMATS
