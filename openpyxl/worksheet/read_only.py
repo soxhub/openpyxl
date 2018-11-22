@@ -51,11 +51,11 @@ class ReadOnlyWorksheet(object):
         self.parent = parent_workbook
         self.title = title
         self._current_row = None
-        self.worksheet_path = worksheet_path
-        self.shared_strings = shared_strings
+        self._worksheet_path = worksheet_path
+        self._shared_strings = shared_strings
         dimensions = None
         try:
-            source = self.xml_source
+            source = self._source
             dimensions = read_dimension(source)
             source.close()
         except KeyError:
@@ -76,9 +76,9 @@ class ReadOnlyWorksheet(object):
 
 
     @property
-    def xml_source(self):
+    def _source(self):
         """Parse xml source on demand, default to Excel archive"""
-        return self.parent._archive.open(self.worksheet_path)
+        return self.parent._archive.open(self._worksheet_path)
 
 
     def _cells_by_row(self, min_col, min_row, max_col, max_row, values_only=False):
@@ -98,7 +98,7 @@ class ReadOnlyWorksheet(object):
 
         counter = min_row
         idx = 1
-        parser = WorkSheetParser(self.xml_source, self.shared_strings,
+        parser = WorkSheetParser(self._source, self._shared_strings,
                                  data_only=self.parent.data_only, epoch=self.parent.epoch,
                                  date_formats=self.parent._date_formats)
         for idx, row in parser.parse():
