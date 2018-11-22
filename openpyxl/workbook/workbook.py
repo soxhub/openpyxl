@@ -3,7 +3,7 @@
 """Workbook is the top-level container for all document information."""
 
 from openpyxl.compat import deprecated, long
-from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.write_only import WriteOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy

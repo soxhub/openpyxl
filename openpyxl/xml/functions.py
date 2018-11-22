@@ -55,14 +55,6 @@ from openpyxl.xml.constants import (
     DCTERMS_PREFIX
 )
 
-# allow LXML interface
-_iterparse = iterparse
-def safe_iterparse(source, *args, **kw):
-    return _iterparse(source)
-
-iterparse = safe_iterparse
-
-
 register_namespace(DCTERMS_PREFIX, DCTERMS_NS)
 register_namespace('dcmitype', 'http://purl.org/dc/dcmitype/')
 register_namespace('cp', COREPROPS_NS)
@@ -76,15 +68,6 @@ register_namespace('cdr', CHART_DRAWING_NS)
 
 
 tostring = partial(tostring, encoding="utf-8")
-
-
-def safe_iterator(node, tag=None):
-    """Return an iterator or an empty list"""
-    if node is None:
-        return []
-    return node.iter(tag)
-
-
 
 NS_REGEX = re.compile("({(?P<namespace>.*)})?(?P<localname>.*)")
 

@@ -5,9 +5,7 @@ from openpyxl.descriptors import (
     Float,
     Bool,
     Integer,
-    String,
     NoneSet,
-    Alias,
     )
 from openpyxl.descriptors.excel import UniversalMeasure, Relation
 

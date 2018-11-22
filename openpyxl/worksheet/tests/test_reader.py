@@ -4,23 +4,37 @@ import pytest
 
 import datetime
 from io import BytesIO
-from zipfile import ZipFile
 
 from lxml.etree import iterparse, fromstring
 
-from openpyxl import load_workbook
-from openpyxl.compat import unicode
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.worksheet import Worksheet
-from openpyxl.worksheet.pagebreak import Break, PageBreak
-from openpyxl.worksheet.scenario import ScenarioList, Scenario, InputCells
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles import Border
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
+from ..worksheet import Worksheet
+from ..pagebreak import Break, PageBreak
+from ..scenario import ScenarioList, Scenario, InputCells
+
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ('4.2', 4.2),
+                             ('-42.000', -42),
+                             ('0', 0),
+                             ('0.9999', 0.9999),
+                             ('99E-02', 0.99),
+                             ('4', 4),
+                             ('-1E3', -1000),
+                             ('1E-3', 0.001),
+                             ('2e+2', 200.0),
+                         ]
+                         )
+def test_number_convesion(value, expected):
+    from .._reader import _cast_number
+    assert _cast_number(value) == expected
 
 
 @pytest.fixture
@@ -366,18 +380,6 @@ class TestWorksheetParser:
         assert len(view.selection) == 3
 
 
-    def test_legacy(self, WorkSheetParser):
-        parser = WorkSheetParser
-
-        src = b"""<legacyDrawing r:id="rId3" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>"""
-        parser.source = BytesIO(src)
-
-        for _ in parser.parse():
-            pass
-
-        assert parser.legacy_drawing.id == 'rId3'
-
-
     def test_shared_formula(self, WorkSheetParser):
         parser = WorkSheetParser
         src = """
@@ -491,7 +493,6 @@ class TestWorksheetParser:
             <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
         </hyperlinks>
         """
-        element = fromstring(src)
         parser = WorkSheetParser
         parser.source = BytesIO(src)
 
@@ -532,8 +533,6 @@ class TestWorksheetParser:
         </conditionalFormatting>
         </sheet>
         """
-        from openpyxl.styles.differential import DifferentialStyle
-
         parser = WorkSheetParser
         parser.source = BytesIO(src)
 

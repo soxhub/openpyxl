@@ -8,7 +8,6 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.excel import (
-    HexBinary,
     Base64Binary,
 )
 from openpyxl.utils.protection import hash_password

@@ -1,7 +1,5 @@
 # Copyright (c) 2010-2018 openpyxl
 
-import re
-
 from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -14,9 +12,7 @@ from openpyxl.descriptors import (
     Bool,
     Integer,
     String,
-    MatchPattern,
     Sequence,
-    Convertible,
     MinMax,
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange

@@ -55,7 +55,7 @@ class TestTable:
         assert diff is None, diff
 
 
-    def test_ctor(self, Table, TableColumn):
+    def test_columns(self, Table, TableColumn):
         table = Table(displayName="A_Sample_Table", ref="A1:D5")
         table._initialise_columns()
         xml = tostring(table.to_tree())
@@ -73,7 +73,6 @@ class TestTable:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
 
     def test_from_xml(self, Table):

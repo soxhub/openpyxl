@@ -6,17 +6,13 @@
 # Python stdlib imports
 from itertools import islice, product
 from operator import itemgetter
-import re
 from inspect import isgenerator
-from warnings import warn
 
 # compatibility imports
 from openpyxl.compat import (
-    unicode,
     range,
     basestring,
     deprecated,
-    safe_string
 )
 
 # package imports
@@ -24,27 +20,14 @@ from openpyxl.utils import (
     column_index_from_string,
     get_column_letter,
     range_boundaries,
-    rows_from_range,
     coordinate_to_tuple,
     absolute_coordinate,
 )
-from openpyxl.utils.cell import COORD_RE
-
 from openpyxl.cell import Cell, MergedCell
-from openpyxl.utils.exceptions import (
-    SheetTitleException,
-    NamedRangeException
-)
-from openpyxl.utils.units import (
-    points_to_pixels,
-    DEFAULT_COLUMN_WIDTH,
-    DEFAULT_ROW_HEIGHT,
-)
 from openpyxl.formatting.formatting import ConditionalFormattingList
 from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
-from openpyxl.utils.bound_dictionary import BoundDictionary
 from openpyxl.formula.translate import Translator
 
 from .datavalidation import DataValidationList
@@ -60,9 +43,8 @@ from .dimensions import (
     SheetFormatProperties,
 )
 from .protection import SheetProtection
-from .filters import AutoFilter, SortState
+from .filters import AutoFilter
 from .views import (
-    SheetView,
     Pane,
     Selection,
     SheetViewList,

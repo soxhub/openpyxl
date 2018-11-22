@@ -2,43 +2,17 @@
 
 """ Read worksheets on-demand
 """
-from zipfile import ZipExtFile
-# compatibility
-from openpyxl.compat import (
-    range,
-    deprecated
-)
 
-# package
-from openpyxl.cell.text import Text
-from openpyxl.xml.functions import iterparse, safe_iterator
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.styles import is_date_format
-from openpyxl.styles.numbers import BUILTIN_FORMATS
-
-from openpyxl.worksheet import Worksheet
-from openpyxl.utils import (
-    column_index_from_string,
-    get_column_letter,
-    coordinate_to_tuple,
-)
-from openpyxl.utils.datetime import from_excel
-from openpyxl.worksheet.dimensions import SheetDimension
-from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL, _cast_number
+from .worksheet import Worksheet
+from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
+from openpyxl.utils import get_column_letter
 
 from ._reader import WorkSheetParser
 
 
 def read_dimension(source):
-    parser = WorkSheetParser(source, {})
+    parser = WorkSheetParser(source, [])
     return parser.parse_dimensions()
-
-
-ROW_TAG = '{%s}row' % SHEET_MAIN_NS
-CELL_TAG = '{%s}c' % SHEET_MAIN_NS
-VALUE_TAG = '{%s}v' % SHEET_MAIN_NS
-FORMULA_TAG = '{%s}f' % SHEET_MAIN_NS
-INLINE_TAG = '{%s}is' % SHEET_MAIN_NS
 
 
 class ReadOnlyWorksheet(object):
@@ -51,11 +25,11 @@ class ReadOnlyWorksheet(object):
         self.parent = parent_workbook
         self.title = title
         self._current_row = None
-        self.worksheet_path = worksheet_path
-        self.shared_strings = shared_strings
+        self._worksheet_path = worksheet_path
+        self._shared_strings = shared_strings
         dimensions = None
         try:
-            source = self.xml_source
+            source = self._source
             dimensions = read_dimension(source)
             source.close()
         except KeyError:
@@ -76,9 +50,9 @@ class ReadOnlyWorksheet(object):
 
 
     @property
-    def xml_source(self):
+    def _source(self):
         """Parse xml source on demand, default to Excel archive"""
-        return self.parent._archive.open(self.worksheet_path)
+        return self.parent._archive.open(self._worksheet_path)
 
 
     def _cells_by_row(self, min_col, min_row, max_col, max_row, values_only=False):
@@ -98,7 +72,7 @@ class ReadOnlyWorksheet(object):
 
         counter = min_row
         idx = 1
-        parser = WorkSheetParser(self.xml_source, self.shared_strings,
+        parser = WorkSheetParser(self._source, self._shared_strings,
                                  data_only=self.parent.data_only, epoch=self.parent.epoch,
                                  date_formats=self.parent._date_formats)
         for idx, row in parser.parse():
@@ -120,6 +94,7 @@ class ReadOnlyWorksheet(object):
             for _ in range(counter, max_row+1):
                 yield empty_row
 
+        self._source.close()
 
     def _get_row(self, row, min_col=1, max_col=None, values_only=False):
         """
@@ -127,7 +102,6 @@ class ReadOnlyWorksheet(object):
         """
         if not row:
             return ()
-        first_col = row[0]['column']
         last_col = row[-1]['column']
         max_col = max_col or last_col
         row_width = max_col + 1 - min_col

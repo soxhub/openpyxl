@@ -2,7 +2,6 @@
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Typed,
     String,
     Integer,
     Bool,

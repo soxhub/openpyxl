@@ -2,7 +2,7 @@
 
 from copy import copy
 
-from openpyxl.compat import safe_string, deprecated
+from openpyxl.compat import safe_string
 from openpyxl.utils import (
     get_column_interval,
     column_index_from_string,
@@ -18,8 +18,6 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.styles.styleable import StyleableObject
-from openpyxl.styles.cell_style import StyleArray
-
 from openpyxl.utils.bound_dictionary import BoundDictionary
 from openpyxl.xml.functions import Element
 

@@ -1,17 +1,15 @@
 # Copyright (c) 2010-2018 openpyxl
 
 """Reader for a single worksheet."""
-from io import BytesIO
 from warnings import warn
 
 # compatibility imports
+from openpyxl.compat import long
 from openpyxl.xml.functions import iterparse
 
 # package imports
 from openpyxl.cell import Cell
-from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
-from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.dimensions import (
     ColumnDimension,
     RowDimension,
@@ -20,14 +18,8 @@ from openpyxl.worksheet.dimensions import (
 
 from openpyxl.xml.constants import (
     SHEET_MAIN_NS,
-    REL_NS,
     EXT_TYPES,
 )
-from openpyxl.xml.functions import safe_iterator
-from openpyxl.styles import Color
-from openpyxl.styles import is_date_format
-from openpyxl.styles.numbers import BUILTIN_FORMATS
-from openpyxl.formatting import Rule
 from openpyxl.formatting.formatting import ConditionalFormatting
 from openpyxl.formula.translate import Translator
 from openpyxl.utils import (
@@ -35,13 +27,12 @@ from openpyxl.utils import (
     coordinate_to_tuple,
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
-from openpyxl.descriptors.excel import ExtensionList, Extension
+from openpyxl.descriptors.excel import ExtensionList
 
-from .filters import AutoFilter, SortState
+from .filters import AutoFilter
 from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
 from .merge import MergeCells
-from .cell_range import CellRange
 from .page import PageMargins, PrintOptions, PrintPageSetup
 from .pagebreak import PageBreak
 from .protection import SheetProtection
@@ -82,6 +73,16 @@ DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 
 
+def _cast_number(value):
+    "Convert numbers as string to an int or float"
+    if "." in value or "E" in value or "e" in value:
+        value = float(value)
+    else:
+        value = long(value)
+    return value
+
+
+
 class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
@@ -98,7 +99,6 @@ class WorkSheetParser(object):
         self.date_formats = date_formats
         self.row_dimensions = {}
         self.column_dimensions = {}
-        #self.styles = styles
         self.number_formats = []
         self.keep_vba = False
         self.hyperlinks = HyperlinkList()
@@ -133,7 +133,7 @@ class WorkSheetParser(object):
             MERGE_TAG: ('merged_cells', MergeCells),
         }
 
-        it = iterparse(self.source, tag=dispatcher)
+        it = iterparse(self.source)
 
         for _, element in it:
             tag_name = element.tag
@@ -171,7 +171,7 @@ class WorkSheetParser(object):
         coordinate = element.get('r')
         self.max_column += 1
         style_id = element.get('s', 0)
-        if style_id is not None:
+        if style_id:
             style_id = int(style_id)
 
         if data_type == "inlineStr":
@@ -222,7 +222,6 @@ class WorkSheetParser(object):
         possible formulae types: shared, array, datatable
         """
         formula = element.find(FORMULA_TAG)
-        data_type = 'f'
         formula_type = formula.get('t')
         coordinate = element.get('r')
         value = "="
@@ -267,7 +266,7 @@ class WorkSheetParser(object):
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 
-        cells = tuple(self.parse_cell(el) for el in safe_iterator(row, CELL_TAG))
+        cells = tuple(self.parse_cell(el) for el in row)
 
         row.clear()
         return self.max_row, cells

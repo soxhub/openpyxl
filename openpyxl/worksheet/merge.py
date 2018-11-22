@@ -3,7 +3,6 @@
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Integer,
-    String,
     Sequence,
 )
 

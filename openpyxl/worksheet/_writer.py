@@ -5,8 +5,8 @@ from collections import defaultdict
 from io import BytesIO
 import os
 from tempfile import NamedTemporaryFile
+from warnings import warn
 
-from operator import itemgetter, attrgetter
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.compat import unicode
@@ -143,7 +143,7 @@ class WorksheetWriter:
                     and not cell._comment
                     ):
                     continue
-                el = write_cell(xf, self.ws, cell, cell.has_style)
+                write_cell(xf, self.ws, cell, cell.has_style)
 
 
     def write_protection(self):

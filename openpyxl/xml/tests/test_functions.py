@@ -1,11 +1,6 @@
 import pytest
 from xml.etree.cElementTree import ParseError
 
-def test_safe_iterator_none():
-    from .. functions import safe_iterator
-    seq = safe_iterator(None)
-    assert seq == []
-
 
 @pytest.mark.parametrize("xml, tag",
                          [

@@ -15,16 +15,12 @@ from openpyxl.descriptors import (
     Convertible,
 )
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import (
-    safe_string,
-    unicode,
-)
+from openpyxl.compat import unicode
 from openpyxl.utils import (
     rows_from_range,
     coordinate_to_tuple,
     get_column_letter,
 )
-from openpyxl.cell import Cell
 
 
 def collapse_cell_addresses(cells, input_ranges=()):

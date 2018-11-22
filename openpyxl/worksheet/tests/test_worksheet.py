@@ -7,9 +7,7 @@ from itertools import islice
 
 # package imports
 from openpyxl.workbook import Workbook
-from openpyxl.cell import Cell, MergedCell
-from openpyxl.utils.exceptions import NamedRangeException
-
+from openpyxl.cell import Cell
 from ..cell_range import CellRange
 
 
@@ -50,7 +48,7 @@ class TestWorksheet:
         wb = Workbook()
         ws = Worksheet(wb)
         with pytest.raises(ValueError):
-            cell = ws.cell(row=0, column=0)
+            ws.cell(row=0, column=0)
 
 
     def test_worksheet_dimension(self, Worksheet):
@@ -169,7 +167,6 @@ class TestWorksheet:
         ws.append(['This is A1', 'This is B1'])
         ws.append(['This is A2', 'This is B2'])
 
-        vals = ws.iter_rows(min_row=1, min_col=1, max_row=2, max_col=2)
         expected = (
             ('This is A1', 'This is B1'),
             ('This is A2', 'This is B2'),
@@ -285,7 +282,7 @@ class TestWorksheet:
     def test_getitem_invalid(self, Worksheet, key):
         ws = Worksheet(Workbook())
         with pytest.raises((IndexError, ValueError)):
-            c = ws[key]
+            ws[key]
 
 
     def test_setitem(self, Worksheet):
@@ -651,8 +648,6 @@ class TestEditableWorksheet:
                              )
     def test_remainder(self, dummy_worksheet, idx, offset, max_val, remainder):
         from ..worksheet import _gutter
-        ws = dummy_worksheet
-
         assert set(_gutter(idx, offset, max_val)) == remainder
 
 

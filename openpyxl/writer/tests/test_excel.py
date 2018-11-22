@@ -145,7 +145,7 @@ def test_merge_vba(ExcelWriter, archive, datadir):
     ])
 
 
-def test_duplicate_chart(ExcelWriter, archive, Workbook):
+def test_duplicate_chart(ExcelWriter, archive):
     from openpyxl.chart import PieChart
     pc = PieChart()
     wb = Workbook()
