@@ -2,15 +2,14 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 """Reader for a single worksheet."""
-from io import BytesIO
 from warnings import warn
 
 # compatibility imports
+from openpyxl.compat import long
 from openpyxl.xml.functions import iterparse
 
 # package imports
 from openpyxl.cell import Cell
-from openpyxl.cell.read_only import _cast_number
 from openpyxl.cell.text import Text
 from openpyxl.worksheet import Worksheet
 from openpyxl.worksheet.dimensions import (
@@ -80,6 +79,16 @@ ROW_BREAK_TAG = '{%s}rowBreaks' % SHEET_MAIN_NS
 SCENARIOS_TAG = '{%s}scenarios' % SHEET_MAIN_NS
 DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
+
+
+def _cast_number(value):
+    "Convert numbers as string to an int or float"
+    if "." in value or "E" in value or "e" in value:
+        value = float(value)
+    else:
+        value = long(value)
+    return value
+
 
 
 class WorkSheetParser(object):

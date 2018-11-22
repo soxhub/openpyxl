@@ -24,6 +24,24 @@ from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
 
 
+@pytest.mark.parametrize("value, expected",
+                         [
+                             ('4.2', 4.2),
+                             ('-42.000', -42),
+                             ('0', 0),
+                             ('0.9999', 0.9999),
+                             ('99E-02', 0.99),
+                             ('4', 4),
+                             ('-1E3', -1000),
+                             ('1E-3', 0.001),
+                             ('2e+2', 200.0),
+                         ]
+                         )
+def test_number_convesion(value, expected):
+    from .._reader import _cast_number
+    assert _cast_number(value) == expected
+
+
 @pytest.fixture
 def Workbook():
 
