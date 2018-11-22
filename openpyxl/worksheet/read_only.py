@@ -17,6 +17,10 @@ class ReadOnlyWorksheet(object):
     _min_row = 1
     _max_column = _max_row = None
 
+    cell = Worksheet.cell
+    __iter__ = Worksheet.__iter__
+
+
     def __init__(self, parent_workbook, title, worksheet_path, shared_strings):
         self.parent = parent_workbook
         self.title = title
@@ -26,9 +30,9 @@ class ReadOnlyWorksheet(object):
         self._get_size()
 
         # Methods from Worksheet
-        self.cell = Worksheet.cell.__get__(self)
         self.iter_rows = Worksheet.iter_rows.__get__(self)
         self.values = Worksheet.values.__get__(self)
+        self.rows = Worksheet.rows.__get__(self)
 
 
     def __getitem__(self, key):
@@ -126,15 +130,6 @@ class ReadOnlyWorksheet(object):
             if row:
                 return row[0]
         return EMPTY_CELL
-
-
-    @property
-    def rows(self):
-        return self.iter_rows()
-
-
-    def __iter__(self):
-        return self.iter_rows()
 
 
     def calculate_dimension(self, force=False):
