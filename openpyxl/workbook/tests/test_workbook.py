@@ -3,9 +3,9 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2018 openpyxl
 
 # package imports
-from openpyxl.workbook import Workbook
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
+from openpyxl.worksheet.worksheet import Worksheet
 
 from openpyxl.xml.constants import (
     XLSM,
@@ -16,6 +16,12 @@ from openpyxl.xml.constants import (
 
 # test imports
 import pytest
+
+@pytest.fixture
+def Workbook():
+    """Workbook Class"""
+    from openpyxl import Workbook
+    return Workbook
 
 
 class TestWorkbook:
@@ -28,25 +34,24 @@ class TestWorkbook:
                                  (True, True, XLTM)
                              ]
                              )
-    def test_template(self, has_vba, as_template, content_type):
-        from openpyxl.workbook import Workbook
+    def test_template(self, has_vba, as_template, content_type, Workbook):
         wb = Workbook()
         wb.vba_archive = has_vba
         wb.template = as_template
         assert wb.mime_type == content_type
 
 
-    def test_named_styles(self):
+    def test_named_styles(self, Workbook):
         wb = Workbook()
         assert wb.named_styles == ['Normal']
 
 
-def test_get_active_sheet():
+def test_get_active_sheet(Workbook):
     wb = Workbook()
     assert wb.active == wb.worksheets[0]
 
 
-def test_set_active_by_sheet():
+def test_set_active_by_sheet(Workbook):
     wb = Workbook()
     names = ['Sheet', 'Sheet1', 'Sheet2',]
     for n in names:
@@ -58,7 +63,7 @@ def test_set_active_by_sheet():
         assert wb.active == wb[n]
 
 
-def test_set_active_by_index():
+def test_set_active_by_index(Workbook):
     wb = Workbook()
     names = ['Sheet', 'Sheet1', 'Sheet2',]
     for n in names:
@@ -70,19 +75,19 @@ def test_set_active_by_index():
 
 
 @pytest.mark.xfail
-def test_set_invalid_active_index():
+def test_set_invalid_active_index(Workbook):
     wb = Workbook()
     with pytest.raises(ValueError):
         wb.active = 1
 
 
-def test_set_invalid_sheet_by_name():
+def test_set_invalid_sheet_by_name(Workbook):
     wb = Workbook()
     with pytest.raises(TypeError):
         wb.active = "Sheet"
 
 
-def test_set_invalid_child_as_active():
+def test_set_invalid_child_as_active(Workbook):
     wb1 = Workbook()
     wb2 = Workbook()
     ws2 = wb2['Sheet']
@@ -90,7 +95,7 @@ def test_set_invalid_child_as_active():
         wb1.active = ws2
 
 
-def test_set_hidden_sheet_as_active():
+def test_set_hidden_sheet_as_active(Workbook):
     wb = Workbook()
     ws = wb.create_sheet()
     ws.sheet_state = 'hidden'
@@ -98,34 +103,34 @@ def test_set_hidden_sheet_as_active():
         wb.active = ws
 
 
-def test_no_active():
+def test_no_active(Workbook):
     wb = Workbook(write_only=True)
     assert wb.active is None
 
 
-def test_create_sheet():
+def test_create_sheet(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     assert new_sheet == wb.worksheets[-1]
 
-def test_create_sheet_with_name():
+def test_create_sheet_with_name(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet(title='LikeThisName')
     assert new_sheet == wb.worksheets[-1]
 
-def test_add_correct_sheet():
+def test_add_correct_sheet(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     wb._add_sheet(new_sheet)
     assert new_sheet == wb.worksheets[2]
 
-def test_add_sheetname():
+def test_add_sheetname(Workbook):
     wb = Workbook()
     with pytest.raises(TypeError):
         wb._add_sheet("Test")
 
 
-def test_add_sheet_from_other_workbook():
+def test_add_sheet_from_other_workbook(Workbook):
     wb1 = Workbook()
     wb2 = Workbook()
     ws = wb1.active
@@ -133,21 +138,21 @@ def test_add_sheet_from_other_workbook():
         wb2._add_sheet(ws)
 
 
-def test_create_sheet_readonly():
+def test_create_sheet_readonly(Workbook):
     wb = Workbook()
     wb._read_only = True
     with pytest.raises(ReadOnlyWorkbookException):
         wb.create_sheet()
 
 
-def test_remove_sheet():
+def test_remove_sheet(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet(0)
     wb.remove(new_sheet)
     assert new_sheet not in wb.worksheets
 
 
-def test_getitem(Workbook, Worksheet):
+def test_getitem(Workbook):
     wb = Workbook()
     ws = wb['Sheet']
     assert isinstance(ws, Worksheet)
@@ -185,14 +190,14 @@ def test_iter(Workbook):
         pass
     assert ws.title == "Sheet"
 
-def test_index():
+def test_index(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     sheet_index = wb.index(new_sheet)
     assert sheet_index == 1
 
 
-def test_get_sheet_names():
+def test_get_sheet_names(Workbook):
     wb = Workbook()
     names = ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet4', 'Sheet5']
     for count in range(5):
@@ -200,12 +205,12 @@ def test_get_sheet_names():
     assert wb.sheetnames == names
 
 
-def test_get_named_ranges():
+def test_get_named_ranges(Workbook):
     wb = Workbook()
     assert wb.get_named_ranges() == wb.defined_names.definedName
 
 
-def test_add_named_range():
+def test_add_named_range(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     named_range = DefinedName('test_nr')
@@ -215,14 +220,14 @@ def test_add_named_range():
     assert named_range in named_ranges_list
 
 
-def test_get_named_range():
+def test_get_named_range(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     wb.create_named_range('test_nr', new_sheet, 'A1')
     assert wb.defined_names['test_nr'].value == 'Sheet1!A1'
 
 
-def test_remove_named_range():
+def test_remove_named_range(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     wb.create_named_range('test_nr', new_sheet, 'A1')
@@ -231,7 +236,7 @@ def test_remove_named_range():
     assert 'test_nr' not in named_ranges_list
 
 
-def test_remove_sheet_with_names():
+def test_remove_sheet_with_names(Workbook):
     wb = Workbook()
     new_sheet = wb.create_sheet()
     wb.create_named_range('test_nr', new_sheet, 'A1', 1)
@@ -257,7 +262,7 @@ def test_add_invalid_worksheet_class_instance():
 class TestCopy:
 
 
-    def test_worksheet_copy(self):
+    def test_worksheet_copy(self, Workbook):
         wb = Workbook()
         ws1 = wb.active
         ws2 = wb.copy_worksheet(ws1)
@@ -270,7 +275,7 @@ class TestCopy:
                                  (u"D\xfcsseldorf", u"D\xfcsseldorf Copy")
                                  ]
                              )
-    def test_worksheet_copy_name(self, title, copy):
+    def test_worksheet_copy_name(self, title, copy, Workbook):
         wb = Workbook()
         ws1 = wb.active
         ws1.title = title
@@ -278,7 +283,7 @@ class TestCopy:
         assert ws2.title == copy
 
 
-    def test_cannot_copy_readonly(self):
+    def test_cannot_copy_readonly(self, Workbook):
         wb = Workbook()
         ws = wb.active
         wb._read_only = True
@@ -286,7 +291,7 @@ class TestCopy:
             wb.copy_worksheet(ws)
 
 
-    def test_cannot_copy_writeonly(self):
+    def test_cannot_copy_writeonly(self, Workbook):
         wb = Workbook(write_only=True)
         ws = wb.create_sheet()
         with pytest.raises(ValueError):
