@@ -42,7 +42,7 @@ class ReadOnlyWorksheet(object):
 
 
     def _get_size(self):
-        src = self._source
+        src = self._get_source()
         parser = WorkSheetParser(src, [])
         dimensions = parser.parse_dimensions()
         src.close()
@@ -50,9 +50,8 @@ class ReadOnlyWorksheet(object):
             self._min_column, self._min_row, self._max_column, self._max_row = dimensions
 
 
-    @property
-    def _source(self):
-        """Parse xml source on demand, default to Excel archive"""
+    def _get_source(self):
+        """Parse xml source on demand, must close after use"""
         return self.parent._archive.open(self._worksheet_path)
 
 
@@ -73,7 +72,8 @@ class ReadOnlyWorksheet(object):
 
         counter = min_row
         idx = 1
-        parser = WorkSheetParser(self._source, self._shared_strings,
+        src = self._get_source()
+        parser = WorkSheetParser(src, self._shared_strings,
                                  data_only=self.parent.data_only, epoch=self.parent.epoch,
                                  date_formats=self.parent._date_formats)
         for idx, row in parser.parse():
@@ -95,7 +95,8 @@ class ReadOnlyWorksheet(object):
             for _ in range(counter, max_row+1):
                 yield empty_row
 
-        self._source.close()
+        src.close()
+
 
     def _get_row(self, row, min_col=1, max_col=None, values_only=False):
         """
