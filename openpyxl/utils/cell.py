@@ -196,13 +196,9 @@ def coordinate_to_tuple(coordinate):
     """
     Convert an Excel style coordinate to (row, colum) tuple
     """
-    match = COORD_RE.match(coordinate)
-    if not match:
-        msg = 'Invalid cell coordinate (%s)' % coordinate
-        raise ValueError(msg)
-    column, row = match.groups()
-    row = int(row)
-    return row, _COL_STRING_CACHE[column]
+    match = COORD_RE.split(coordinate)
+    col, row = match[1:3]
+    return int(row), _COL_STRING_CACHE[col]
 
 
 def range_to_tuple(range_string):
