@@ -213,7 +213,7 @@ class TestWorksheetParser:
         parser.data_only = True
 
         src = """
-        <c r="A1" t="str" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <c r="A1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
             <f>1+2</f>
             <v>3</v>
         </c>
