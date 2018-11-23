@@ -83,7 +83,6 @@ def _cast_number(value):
     return value
 
 
-
 class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
