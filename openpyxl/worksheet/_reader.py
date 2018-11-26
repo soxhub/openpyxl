@@ -76,11 +76,8 @@ DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
 def _cast_number(value):
     "Convert numbers as string to an int or float"
     if "." in value or "E" in value or "e" in value:
-        value = float(value)
-    else:
-        value = long(value)
-    return value
-
+        return float(value)
+    return long(value)
 
 
 class WorkSheetParser(object):
@@ -199,11 +196,7 @@ class WorkSheetParser(object):
             elif data_type == 'b':
                 value = bool(int(value))
             elif data_type == "str":
-                try:
-                    value = _cast_number(value)
-                    data_type = "n"
-                except ValueError:
-                    data_type = "s"
+                data_type = "s"
             elif data_type == 'd':
                 value = from_ISO8601(value)
 

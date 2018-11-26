@@ -45,11 +45,14 @@ files but it does have limited support for XLSX.
 The code for the `benchmark
 <https://bitbucket.org/snippets/openpyxl/Ee9zqo>`_ shows the importance of
 choosing the right options when working with a file. In this case disabling
-external links.
+external links stops openpyxl opening cached copies of the linked worksheets.
 
 One major difference between the libraries is that openpyxl's read-only mode
 opens a workbook almost immediately making it suitable for multiple
-processes.
+processes, this also readuces memory use significantly. xlrd does also not
+automatically convert dates and times into Python datetimes, though it does
+annotate cells accordingly but to do this in client code significantly
+reduces performance.
 
 
 .. literalinclude:: read_performance.txt
