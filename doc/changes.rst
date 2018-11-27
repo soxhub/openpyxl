@@ -1,6 +1,11 @@
 2.5.12 (unreleased)
 ===================
 
+
+Bugfixes
+--------
+
+* `#1130 <https://bitbucket.org/openpyxl/openpyxl/issues/1130>`_ Overwriting default font in Normal style affects library default
 * `#1133 <https://bitbucket.org/openpyxl/openpyxl/issues/1133>`_ Images not added to anchors.
 * `#1134 <https://bitbucket.org/openpyxl/openpyxl/issues/1134>`_ Cannot read pivot table formats without dxId
 
