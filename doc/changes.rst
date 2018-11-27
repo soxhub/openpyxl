@@ -2,6 +2,7 @@
 ===================
 
 * `#1133 <https://bitbucket.org/openpyxl/openpyxl/issues/1133>`_ Images not added to anchors.
+* `#1134 <https://bitbucket.org/openpyxl/openpyxl/issues/1134>`_ Cannot read pivot table formats without dxId
 
 
 2.5.11 (2018-11-21)
