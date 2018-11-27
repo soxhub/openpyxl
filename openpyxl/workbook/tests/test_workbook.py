@@ -46,6 +46,14 @@ class TestWorkbook:
         assert wb.named_styles == ['Normal']
 
 
+    def test_immutable_builtins(self):
+        wb1 = Workbook()
+        wb2 = Workbook()
+        normal = wb1._named_styles['Normal']
+        normal.font.color = "FF0000"
+        assert wb2._named_styles['Normal'].font.color.index == 1
+
+
 def test_get_active_sheet(Workbook):
     wb = Workbook()
     assert wb.active == wb.worksheets[0]
