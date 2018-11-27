@@ -487,14 +487,14 @@ class Format(Serialisable):
     tagname = "format"
 
     action = NoneSet(values=(['blank', 'formatting', 'drill', 'formula']))
-    dxfId = Integer()
+    dxfId = Integer(allow_none=True)
     pivotArea = Typed(expected_type=PivotArea, )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('pivotArea',)
 
     def __init__(self,
-                 action=None,
+                 action="formatting",
                  dxfId=None,
                  pivotArea=None,
                  extLst=None,

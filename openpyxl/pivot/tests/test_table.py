@@ -436,3 +436,37 @@ class TestPivotFilter:
         node = fromstring(src)
         flt = PivotFilter.from_tree(node)
         assert flt == PivotFilter(fld=0, id=6, evalOrder=-1, type="dateBetween", autoFilter=Autofilter)
+
+
+
+@pytest.fixture
+def Format():
+    from ..table import Format
+    return Format
+
+
+class TestFormat:
+
+    def test_ctor(self, Format, PivotArea):
+        area = PivotArea()
+        fmt = Format(pivotArea=area)
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <format action="formatting">
+          <pivotArea dataOnly="1" outline="1" type="normal"/>
+        </format>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Format, PivotArea):
+        src = """
+        <format action="blank">
+          <pivotArea dataOnly="0" labelOnly="1" outline="0" fieldPosition="0" />
+        </format>
+        """
+        node = fromstring(src)
+        fmt = Format.from_tree(node)
+        area = PivotArea(outline=False, fieldPosition=False, labelOnly=True, dataOnly=False)
+        assert fmt == Format(action="blank", pivotArea=area)

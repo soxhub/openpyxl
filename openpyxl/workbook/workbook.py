@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2018 openpyxl
 
 """Workbook is the top-level container for all document information."""
+from copy import copy
 
 from openpyxl.compat import deprecated, long
 from openpyxl.worksheet.worksheet import Worksheet
@@ -109,7 +110,7 @@ class Workbook(object):
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleArray()])
         self._named_styles = NamedStyleList()
-        self.add_named_style(NamedStyle(font=DEFAULT_FONT, builtinId=0))
+        self.add_named_style(NamedStyle(font=copy(DEFAULT_FONT), builtinId=0))
         self._table_styles = TableStyleList()
 
 
