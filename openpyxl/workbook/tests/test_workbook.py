@@ -46,7 +46,7 @@ class TestWorkbook:
         assert wb.named_styles == ['Normal']
 
 
-    def test_immutable_builtins(self):
+    def test_immutable_builtins(self, Workbook):
         wb1 = Workbook()
         wb2 = Workbook()
         normal = wb1._named_styles['Normal']
