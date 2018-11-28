@@ -1,7 +1,6 @@
-pip>=6.0
-lxml>=3.5.0
+pip>=9.0
+lxml>=4.0.0
 pytest
-pytest-cov
 pillow
 tox
 pandas
