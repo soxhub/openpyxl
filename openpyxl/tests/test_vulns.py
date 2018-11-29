@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 
 import pytest
-from defusedxml.common import DefusedXmlException
 from openpyxl.reader.excel import load_workbook
 
 from .helper import modify_zip_file
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("file, old, new", (
     (
         'xl/sharedStrings.xml',
@@ -20,6 +20,7 @@ from .helper import modify_zip_file
     ),
 ))
 def test_quadratic_blowup(datadir, file, old, new):
+    from defusedxml.common import DefusedXmlException
     datadir.join("genuine").chdir()
 
     attack_entity = (
@@ -41,6 +42,7 @@ def test_quadratic_blowup(datadir, file, old, new):
     # print(list(wb['Sheet1 - Text'].iter_rows())[0][0].value)
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("file, old, new", (
     (
         'xl/sharedStrings.xml',
@@ -54,6 +56,7 @@ def test_quadratic_blowup(datadir, file, old, new):
     ),
 ))
 def test_billion_laughs(datadir, file, old, new):
+    from defusedxml.common import DefusedXmlException
     attack_entity = (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<!DOCTYPE xmlbomb ['
@@ -80,6 +83,7 @@ def test_billion_laughs(datadir, file, old, new):
     # print(list(wb['Sheet1 - Text'].iter_rows())[0][0].value)
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("file, old, new", (
     (
         'xl/sharedStrings.xml',
@@ -97,6 +101,7 @@ def test_xxe_external_file(datadir, file, old, new):
     I never was able to trigger this attack. The version of libxml2/lxml
     (libxml2 2.9.3) I am using is not vulnerable.
     """
+    from defusedxml.common import DefusedXmlException
     attack_entity = (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<!DOCTYPE foo [  '
@@ -112,6 +117,7 @@ def test_xxe_external_file(datadir, file, old, new):
     pytest.raises(DefusedXmlException, load_workbook, new_file)
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("file", (
     'xl/sharedStrings.xml',
     '[Content_Types].xml',
@@ -121,6 +127,7 @@ def test_xxe_remote(datadir, file):
     I never triggered this attack. I don't this this was ever an existing
     vulnerability.
     """
+    from defusedxml.common import DefusedXmlException
     attack_entity = (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<!DOCTYPE test [ '

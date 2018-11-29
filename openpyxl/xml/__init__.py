@@ -25,3 +25,19 @@ def lxml_env_set():
 
 
 LXML = lxml_available() and lxml_env_set()
+
+
+def defusedxml_available():
+    try:
+        import defusedxml # noqa
+    except ImportError:
+        return False
+    else:
+        return True
+
+
+def defusedxml_env_set():
+    return os.environ.get("OPENPYXL_DEFUSEDXML", "True") == "True"
+
+
+DEFUSEDXML = defusedxml_available() and defusedxml_env_set()

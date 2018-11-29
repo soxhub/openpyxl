@@ -1,7 +1,6 @@
 import pytest
 
 from io import BytesIO
-from defusedxml.common import DefusedXmlException
 from ..functions import fromstring, iterparse
 
 
@@ -51,14 +50,18 @@ vulnerable_xml_strings = (
 )
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
 def test_fromstring(xml_input):
+    from defusedxml.common import DefusedXmlException
     with pytest.raises(DefusedXmlException):
         fromstring(xml_input)
 
 
+@pytest.mark.defusedxml_required
 @pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
 def test_iterparse(xml_input):
+    from defusedxml.common import DefusedXmlException
     with pytest.raises(DefusedXmlException):
         f = BytesIO(xml_input)
         list(iterparse(f))

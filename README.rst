@@ -13,6 +13,12 @@ the Office Open XML format.
 All kudos to the PHPExcel team as openpyxl was initially based on PHPExcel.
 
 
+Security
+--------
+
+By default openpyxl does not guard against quadratic blowup or billion laughs
+xml attacks. To guard against these attacks install defusedxml.
+
 Mailing List
 ------------
 

@@ -11,7 +11,7 @@ from functools import partial
 # compatibility
 
 # package imports
-from openpyxl import LXML
+from openpyxl import DEFUSEDXML, LXML
 
 if LXML is True:
     from lxml.etree import (
@@ -23,17 +23,24 @@ if LXML is True:
     xmlfile,
     XMLParser,
     )
-
-    from defusedxml.common import DefusedXmlException
-    from defusedxml.cElementTree import iterparse
-    from defusedxml.lxml import fromstring as _fromstring, tostring
     from lxml.etree import XMLSyntaxError
 
-    def fromstring(*args, **kwargs):
-        try:
-            return _fromstring(*args, **kwargs)
-        except XMLSyntaxError as e:
-            raise DefusedXmlException(str(e))
+    if DEFUSEDXML is True:
+        from defusedxml.common import DefusedXmlException
+        from defusedxml.cElementTree import iterparse
+        from defusedxml.lxml import fromstring as _fromstring, tostring
+
+        def fromstring(*args, **kwargs):
+            try:
+                return _fromstring(*args, **kwargs)
+            except XMLSyntaxError as e:
+                raise DefusedXmlException(str(e))
+    else:
+        from lxml.etree import fromstring, tostring
+        from xml.etree.cElementTree import iterparse
+        # do not resolve entities
+        safe_parser = XMLParser(resolve_entities=False)
+        fromstring = partial(fromstring, parser=safe_parser)
 
 else:
     try:
@@ -44,11 +51,18 @@ else:
         QName,
         register_namespace
         )
-        from defusedxml.cElementTree import (
-        fromstring,
-        tostring,
-        iterparse,
-        )
+        if DEFUSEDXML is True:
+            from defusedxml.cElementTree import (
+            fromstring,
+            tostring,
+            iterparse,
+            )
+        else:
+            from xml.etree.cElementTree import (
+            fromstring,
+            tostring,
+            iterparse
+            )
     except ImportError:
         from xml.etree.ElementTree import (
         ElementTree,
@@ -57,11 +71,18 @@ else:
         QName,
         register_namespace
         )
-        from defusedxml.ElementTree import (
-        fromstring,
-        tostring,
-        iterparse,
-        )
+        if DEFUSEDXML is True:
+            from defusedxml.ElementTree import (
+            fromstring,
+            tostring,
+            iterparse,
+            )
+        else:
+            from xml.etree.ElementTree import (
+            fromstring,
+            tostring,
+            iterparse,
+            )
     from et_xmlfile import xmlfile
 
 
