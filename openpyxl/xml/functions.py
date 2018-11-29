@@ -10,24 +10,37 @@ from functools import partial
 # compatibility
 
 # package imports
-from openpyxl import LXML
+from openpyxl import DEFUSEDXML, LXML
 
 if LXML is True:
     from lxml.etree import (
     Element,
     ElementTree,
     SubElement,
-    fromstring,
-    tostring,
     register_namespace,
     QName,
     xmlfile,
     XMLParser,
     )
-    from xml.etree.cElementTree import iterparse
-    # do not resolve entities
-    safe_parser = XMLParser(resolve_entities=False)
-    fromstring = partial(fromstring, parser=safe_parser)
+    from lxml.etree import XMLSyntaxError
+
+    if DEFUSEDXML is True:
+        from defusedxml.common import DefusedXmlException
+        from defusedxml.cElementTree import iterparse
+        from defusedxml.lxml import fromstring as _fromstring, tostring
+
+        def fromstring(*args, **kwargs):
+            try:
+                return _fromstring(*args, **kwargs)
+            except XMLSyntaxError as e:
+                raise DefusedXmlException(str(e))
+    else:
+        from lxml.etree import fromstring, tostring
+        from xml.etree.cElementTree import iterparse
+        # do not resolve entities
+        safe_parser = XMLParser(resolve_entities=False)
+        fromstring = partial(fromstring, parser=safe_parser)
+
 else:
     from xml.etree.ElementTree import (
     ElementTree,
@@ -39,6 +52,12 @@ else:
     QName,
     register_namespace
     )
+    if DEFUSEDXML is True:
+        from defusedxml.cElementTree import (
+        fromstring,
+        tostring,
+        iterparse,
+        )
     from et_xmlfile import xmlfile
 
 
