@@ -11,6 +11,12 @@ Bugfixes
 * `#1138 <https://bitbucket.org/openpyxl/openpyxl/issues/1138>`_ Repeated registration of simple filter could lead to memory leaks
 
 
+Pull Requests
+-------------
+
+* `PR300 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/300/>`_ Use defusedxml if available
+
+
 2.5.11 (2018-11-21)
 ===================
 
