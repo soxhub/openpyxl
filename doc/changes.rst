@@ -1,3 +1,22 @@
+2.5.12 (2018-11-29)
+===================
+
+
+Bugfixes
+--------
+
+* `#1130 <https://bitbucket.org/openpyxl/openpyxl/issues/1130>`_ Overwriting default font in Normal style affects library default
+* `#1133 <https://bitbucket.org/openpyxl/openpyxl/issues/1133>`_ Images not added to anchors.
+* `#1134 <https://bitbucket.org/openpyxl/openpyxl/issues/1134>`_ Cannot read pivot table formats without dxId
+* `#1138 <https://bitbucket.org/openpyxl/openpyxl/issues/1138>`_ Repeated registration of simple filter could lead to memory leaks
+
+
+Pull Requests
+-------------
+
+* `PR300 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/300/>`_ Use defusedxml if available
+
+
 2.5.11 (2018-11-21)
 ===================
 
@@ -5,8 +24,8 @@
 Pull Requests
 -------------
 
-* PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
-* PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
+* `PR295 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/295>`_ Improved handling of missing rows
+* `PR296 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/296>`_ Add support for defined names to tokeniser
 
 
 2.5.10 (2018-11-13)
@@ -22,8 +41,8 @@ Bugfixes
 Pull Requests
 -------------
 
-* PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
-* PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
+* `PR285 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/285>`_ Tokenizer failure for quoted sheet name in second half of range
+* `PR289 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/289>`_ Improved error detection in ranges.
 
 
 2.5.9 (2018-10-19)

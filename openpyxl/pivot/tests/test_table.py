@@ -9,8 +9,6 @@ from openpyxl.packaging.manifest import Manifest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
-from openpyxl.tests.schema import sheet_schema
-
 
 
 @pytest.fixture
@@ -151,6 +149,7 @@ class TestLocation:
         loc = Location.from_tree(node)
         assert loc == Location(ref="A3:E14", firstHeaderRow=1, firstDataRow=2, firstDataCol=1)
 
+
 @pytest.fixture
 def PivotTableStyle():
     from ..table import PivotTableStyle
@@ -231,22 +230,6 @@ class TestPivotTableDefinition:
         node = fromstring(src)
         defn = TableDefinition.from_tree(node)
         assert defn == DummyPivotTable
-
-
-    @pytest.mark.lxml_required
-    def test_validate(self, datadir, TableDefinition):
-        datadir.chdir()
-        with open("pivotTable.xml", "rb") as src:
-            xml = src.read()
-        node = fromstring(xml)
-
-        # need to convert to and from string to get namespace
-        defn = TableDefinition.from_tree(node)
-        tree = defn.to_tree()
-        generated = tostring(tree)
-        tree = fromstring(generated)
-
-        sheet_schema.assertValid(tree)
 
 
     def test_write(self, DummyPivotTable):
@@ -437,3 +420,37 @@ class TestPivotFilter:
         node = fromstring(src)
         flt = PivotFilter.from_tree(node)
         assert flt == PivotFilter(fld=0, id=6, evalOrder=-1, type="dateBetween", autoFilter=Autofilter)
+
+
+
+@pytest.fixture
+def Format():
+    from ..table import Format
+    return Format
+
+
+class TestFormat:
+
+    def test_ctor(self, Format, PivotArea):
+        area = PivotArea()
+        fmt = Format(pivotArea=area)
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <format action="formatting">
+          <pivotArea dataOnly="1" outline="1" type="normal"/>
+        </format>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, Format, PivotArea):
+        src = """
+        <format action="blank">
+          <pivotArea dataOnly="0" labelOnly="1" outline="0" fieldPosition="0" />
+        </format>
+        """
+        node = fromstring(src)
+        fmt = Format.from_tree(node)
+        area = PivotArea(outline=False, fieldPosition=False, labelOnly=True, dataOnly=False)
+        assert fmt == Format(action="blank", pivotArea=area)

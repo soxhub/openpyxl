@@ -56,7 +56,7 @@ def deprecated(reason):
 
             @wraps(func1)
             def new_func1(*args, **kwargs):
-                warnings.simplefilter('default', DeprecationWarning)
+                #warnings.simplefilter('default', DeprecationWarning)
                 warnings.warn(
                     fmt1.format(name=func1.__name__, reason=reason),
                     category=DeprecationWarning,
