@@ -1,20 +1,12 @@
 # Copyright (c) 2010-2018 openpyxl
 
-#stdlib
-from io import BytesIO
-import os
-
 # test
 import pytest
 from openpyxl.tests.helper import compare_xml
 
 # package
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
 from openpyxl.xml.functions import tostring
-from .. excel import (
-    save_workbook,
-    save_virtual_workbook,
-    )
 
 
 @pytest.fixture
@@ -27,7 +19,7 @@ def Unicode_Workbook():
 
 @pytest.fixture
 def WorkbookWriter():
-    from ..workbook import WorkbookWriter
+    from .._writer import WorkbookWriter
     return WorkbookWriter
 
 
@@ -219,24 +211,9 @@ def test_write_hidden_single_worksheet():
     wb = Workbook()
     ws = wb.active
     ws.sheet_state = "hidden"
-    from ..workbook import get_active_sheet
+    from .._writer import get_active_sheet
     with pytest.raises(IndexError):
         get_active_sheet(wb)
-
-
-def test_write_empty_workbook(tmpdir):
-    tmpdir.chdir()
-    wb = Workbook()
-    dest_filename = 'empty_book.xlsx'
-    save_workbook(wb, dest_filename)
-    assert os.path.isfile(dest_filename)
-
-
-def test_write_virtual_workbook():
-    old_wb = Workbook()
-    saved_wb = save_virtual_workbook(old_wb)
-    new_wb = load_workbook(BytesIO(saved_wb))
-    assert new_wb
 
 
 @pytest.mark.parametrize("vba, filename",

@@ -91,5 +91,7 @@ tostring = partial(tostring, encoding="utf-8")
 NS_REGEX = re.compile("({(?P<namespace>.*)})?(?P<localname>.*)")
 
 def localname(node):
+    if callable(node.tag):
+        return "comment"
     m = NS_REGEX.match(node.tag)
     return m.group('localname')
