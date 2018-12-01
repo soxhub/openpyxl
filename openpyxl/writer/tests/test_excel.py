@@ -1,8 +1,14 @@
+from __future__ import absolute_import
+# Copyright (c) 2010-2018 openpyxl
+
 from io import BytesIO
+import os
 from string import ascii_letters
 from zipfile import ZipFile
 
 import pytest
+
+from openpyxl import load_workbook
 
 from openpyxl.chart import BarChart
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
@@ -154,3 +160,20 @@ def test_duplicate_chart(ExcelWriter, archive):
     writer._charts = [pc]*2
     with pytest.raises(InvalidFileException):
         writer._write_charts()
+
+
+def test_write_empty_workbook(tmpdir):
+    tmpdir.chdir()
+    wb = Workbook()
+    from ..excel import save_workbook
+    dest_filename = 'empty_book.xlsx'
+    save_workbook(wb, dest_filename)
+    assert os.path.isfile(dest_filename)
+
+
+def test_write_virtual_workbook():
+    old_wb = Workbook()
+    from ..excel import save_virtual_workbook
+    saved_wb = save_virtual_workbook(old_wb)
+    new_wb = load_workbook(BytesIO(saved_wb))
+    assert new_wb
