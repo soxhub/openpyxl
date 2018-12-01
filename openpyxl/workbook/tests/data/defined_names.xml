@@ -1,0 +1,8 @@
+<definedNames>
+  <definedName name="MyRef">Sheet1!$A$1</definedName>
+  <definedName name="MySheetRef" localSheetId="0">Sheet1!$A$3</definedName>
+  <definedName name="MySheetRef" localSheetId="1">Sheet2!$A$1</definedName>
+  <definedName name="MySheetValue" localSheetId="0">3.33</definedName>
+  <definedName name="MySheetValue" localSheetId="1">14.4</definedName>
+  <definedName name="MyValue">9.99</definedName>
+</definedNames>

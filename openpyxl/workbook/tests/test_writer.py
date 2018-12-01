@@ -12,7 +12,7 @@ from openpyxl.tests.helper import compare_xml
 # package
 from openpyxl import Workbook, load_workbook
 from openpyxl.xml.functions import tostring
-from .. excel import (
+from openpyxl.writer.excel import (
     save_workbook,
     save_virtual_workbook,
     )
@@ -28,7 +28,7 @@ def Unicode_Workbook():
 
 @pytest.fixture
 def WorkbookWriter():
-    from ..workbook import WorkbookWriter
+    from .._writer import WorkbookWriter
     return WorkbookWriter
 
 
@@ -220,7 +220,7 @@ def test_write_hidden_single_worksheet():
     wb = Workbook()
     ws = wb.active
     ws.sheet_state = "hidden"
-    from ..workbook import get_active_sheet
+    from .._writer import get_active_sheet
     with pytest.raises(IndexError):
         get_active_sheet(wb)
 
