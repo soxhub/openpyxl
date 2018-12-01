@@ -205,7 +205,7 @@ We want to higlight the rows where the developer is Microsoft. We do this by cre
 >>> red_fill = PatternFill(bgColor="FFC7CE")
 >>> dxf = DifferentialStyle(fill=red_fill)
 >>> r = Rule(type="expression", dxf=dxf, stopIfTrue=True)
->>> r.formula = ['=$A2="Microsoft"']
+>>> r.formula = ['$A2="Microsoft"']
 >>> ws.conditional_formatting.add("A1:C10", r)
 
 .. note::
