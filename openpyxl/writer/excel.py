@@ -40,7 +40,7 @@ from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.styles.stylesheet import write_stylesheet
 from openpyxl.worksheet._writer import WorksheetWriter
 from openpyxl.workbook._writer import WorkbookWriter
-from .theme import write_theme
+from .theme import theme_xml
 
 
 class ExcelWriter(object):
@@ -71,7 +71,7 @@ class ExcelWriter(object):
         if self.workbook.loaded_theme:
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)
         else:
-            archive.writestr(ARC_THEME, write_theme())
+            archive.writestr(ARC_THEME, theme_xml)
 
         self._write_worksheets()
         self._write_chartsheets()
