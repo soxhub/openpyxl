@@ -43,7 +43,12 @@ def find_images(archive, path):
     for rel in drawing._blip_rels:
         dep = deps[rel.embed]
         if dep.Type == IMAGE_NS:
-            image = Image(BytesIO(archive.read(dep.target)))
+            try:
+                image = Image(BytesIO(archive.read(dep.target)))
+            except OSError:
+                msg = "The image {0} will be removed because it cannot be read".format(dep.target)
+                warn(msg)
+                continue
             if image.format.upper() == "WMF": # cannot save
                 msg = "{0} image format is not supported so the image is being dropped".format(image.format)
                 warn(msg)

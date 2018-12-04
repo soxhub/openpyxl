@@ -41,21 +41,6 @@ def test_load_workbook_from_fileobj(datadir, load_workbook):
         load_workbook(f)
 
 
-def test_repair_central_directory():
-    from ..excel import repair_central_directory, CENTRAL_DIRECTORY_SIGNATURE
-
-    data_a = b"foobarbaz" + CENTRAL_DIRECTORY_SIGNATURE
-    data_b = b"bazbarfoo1234567890123456890"
-
-    # The repair_central_directory looks for a magic set of bytes
-    # (CENTRAL_DIRECTORY_SIGNATURE) and strips off everything 18 bytes past the sequence
-    f = repair_central_directory(BytesIO(data_a + data_b), True)
-    assert f.read() == data_a + data_b[:18]
-
-    f = repair_central_directory(BytesIO(data_b), True)
-    assert f.read() == data_b
-
-
 @pytest.mark.parametrize('wb_type, wb_name', [
     (ct, name) for ct in [XLSX, XLSM, XLTX, XLTM]
                for name in ['/' + ARC_WORKBOOK, '/xl/spqr.xml']

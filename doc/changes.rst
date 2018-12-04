@@ -32,6 +32,11 @@ Deprecations
 ===================
 
 
+Bugfixes
+--------
+
+* `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsuppoted image files
+
 2.5.12 (2018-11-29)
 ===================
 

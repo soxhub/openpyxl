@@ -62,32 +62,8 @@ from openpyxl.xml.functions import fromstring
 
 from .drawings import find_images
 
-# Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
-
-CENTRAL_DIRECTORY_SIGNATURE = b'\x50\x4b\x05\x06'
 SUPPORTED_FORMATS = ('.xlsx', '.xlsm', '.xltx', '.xltm')
-
-
-def repair_central_directory(zipFile, is_file_instance):
-    ''' trims trailing data from the central directory
-    code taken from http://stackoverflow.com/a/7457686/570216, courtesy of Uri Cohen
-    '''
-
-    f = zipFile if is_file_instance else open(zipFile, 'rb+')
-    data = f.read()
-    pos = data.find(CENTRAL_DIRECTORY_SIGNATURE)  # End of central directory signature
-    if (pos > 0):
-        sio = BytesIO(data)
-        sio.seek(pos + 22)  # size of 'ZIP end of central directory record'
-        sio.truncate()
-        sio.seek(0)
-        return sio
-
-    f.seek(0)
-    return f
-
-
 
 def _validate_archive(filename):
     """
@@ -117,11 +93,8 @@ def _validate_archive(filename):
                        'Supported formats are: %s') % (file_format,
                                                        ','.join(SUPPORTED_FORMATS))
             raise InvalidFileException(msg)
-    try:
-        archive = ZipFile(filename, 'r', ZIP_DEFLATED)
-    except BadZipfile:
-        f = repair_central_directory(filename, is_file_like)
-        archive = ZipFile(f, 'r', ZIP_DEFLATED)
+
+    archive = ZipFile(filename, 'r')
     return archive
 
 

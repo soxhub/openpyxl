@@ -1,9 +1,7 @@
 # Copyright (c) 2010-2018 openpyxl
 
-
 """Write the theme xml based on a fixed string."""
 
-# package imports
 
 theme_xml = """<?xml version="1.0"?>
 <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">
