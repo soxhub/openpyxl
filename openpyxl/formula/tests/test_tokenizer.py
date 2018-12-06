@@ -297,8 +297,33 @@ class TestTokenizer(object):
         assert tok.token[0] == result
         assert len(tok.token) == 1
 
-    def test_parse_brackets_error(self, tokenizer):
-        tok = tokenizer.Tokenizer('[unfinished business')
+    @pytest.mark.parametrize('formula, offset, result', [
+        ('[a[b]c]def', 0, '[a[b]c]'),
+        ('[[]]abcdef', 0, '[[]]'),
+        ('[[abc]def]', 0, '[[abc]def]'),
+        ('a[b[c]d]ef', 1, '[b[c]d]'),
+        ('ab[c[d][e]]f', 2, '[c[d][e]]'),
+        ('TableX[[#Data],[COL1]]', 6, '[[#Data],[COL1]]'),
+        ('TableX[[#Data],[COL1]:[COL2]]', 6, '[[#Data],[COL1]:[COL2]]'),
+    ])
+    def test_parse_nested_brackets(self, tokenizer, formula, offset, result):
+        tok = tokenizer.Tokenizer(formula)
+        del tok.items[:]
+        tok.offset = offset
+        assert tok._parse_brackets() == len(result)
+        assert not tok.items
+        assert tok.token[0] == result
+        assert len(tok.token) == 1
+
+    @pytest.mark.parametrize('formula, offset', [
+        ('[unfinished business', 0),
+        ('unfinished [business', 11),
+        ('[un[finished business]', 0),
+        ('un[finished [business]', 2),
+    ])
+    def test_parse_brackets_error(self, tokenizer, formula, offset):
+        tok = tokenizer.Tokenizer(formula)
+        tok.offset = offset
         with pytest.raises(tokenizer.TokenizerError):
             tok._parse_brackets()
 
