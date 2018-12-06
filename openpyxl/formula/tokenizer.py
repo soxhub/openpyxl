@@ -131,10 +131,16 @@ class Tokenizer(object):
 
         """
         assert self.formula[self.offset] == '['
-        right = self.formula.find(']', self.offset) + 1
-        if right == 0:
-            raise TokenizerError(
-                "Encountered unmatched '[' in %s" % self.formula)
+        left_count = 1
+        right_count = 0
+        right = self.offset
+        while left_count > right_count:
+            right = self.formula.find(']', right) + 1
+            right_count += 1
+            left_count = self.formula.count('[', self.offset, right)
+            if right == 0:
+                raise TokenizerError(
+                    "Encountered unmatched '[' in %s" % self.formula)
         self.token.append(self.formula[self.offset: right])
         return right - self.offset
 
