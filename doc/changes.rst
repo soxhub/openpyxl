@@ -1,3 +1,13 @@
+2.6.-dev (unreleased)
+=====================
+
+
+Bugfixes
+--------
+
+* `#1143 <https://bitbucket.org/openpyxl/openpyxl/issues/1143>`_ Hyperlinks always set on A1
+
+
 2.6-a1 (2018-11-21)
 ===================
 
