@@ -26,13 +26,13 @@ def worksheet():
 
 @pytest.fixture
 def etree_write_cell():
-    from ..writer import etree_write_cell
+    from .._writer import etree_write_cell
     return etree_write_cell
 
 
 @pytest.fixture
 def lxml_write_cell():
-    from ..writer import lxml_write_cell
+    from .._writer import lxml_write_cell
     return lxml_write_cell
 
 
@@ -147,7 +147,7 @@ def test_write_hyperlink(worksheet, write_cell_implementation):
                          ]
                          )
 def test_attributes(worksheet, value, result, attrs):
-    from ..writer import _set_attributes
+    from .._writer import _set_attributes
 
     ws = worksheet
     cell = ws['A1']
