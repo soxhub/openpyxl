@@ -292,10 +292,8 @@ class TestTokenizer(object):
         tok = tokenizer.Tokenizer(formula)
         del tok.items[:]
         tok.offset = offset
-        assert tok._parse_brackets() == len(result)
-        assert not tok.items
-        assert tok.token[0] == result
-        assert len(tok.token) == 1
+        tok._parse_brackets()
+        assert tok.token[-1] == result
 
     @pytest.mark.parametrize('formula, offset, result', [
         ('[a[b]c]def', 0, '[a[b]c]'),
@@ -310,10 +308,8 @@ class TestTokenizer(object):
         tok = tokenizer.Tokenizer(formula)
         del tok.items[:]
         tok.offset = offset
-        assert tok._parse_brackets() == len(result)
-        assert not tok.items
+        tok._parse_brackets()
         assert tok.token[0] == result
-        assert len(tok.token) == 1
 
     @pytest.mark.parametrize('formula, offset', [
         ('[unfinished business', 0),

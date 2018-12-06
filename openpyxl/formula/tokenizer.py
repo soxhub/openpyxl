@@ -137,9 +137,8 @@ class Tokenizer(object):
         if len(left) != len(right):
             raise TokenizerError("Encountered unmatched '[' in %s" %\
                                  self.formula)
-        outer = right[-1].start() + 1
-        self.token.append(self.formula[self.offset:outer])
-        return outer - self.offset
+        outer_right = right[-1].start() + 1
+        self.token.append(self.formula[self.offset:outer_right])
 
 
     def _parse_error(self):
