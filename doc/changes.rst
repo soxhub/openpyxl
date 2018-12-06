@@ -7,6 +7,13 @@ Bugfixes
 
 * `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsuppoted image files
 
+
+Pull Requests
+-------------
+
+* `PR301 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Add support for nested brackets to the tokeniser
+
+
 2.5.12 (2018-11-29)
 ===================
 
