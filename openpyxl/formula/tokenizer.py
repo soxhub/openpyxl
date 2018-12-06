@@ -122,6 +122,7 @@ class Tokenizer(object):
             self.token.append(match)
         return len(match)
 
+
     def _parse_brackets(self):
         """
         Consume all the text between square brackets [].
@@ -131,18 +132,15 @@ class Tokenizer(object):
 
         """
         assert self.formula[self.offset] == '['
-        left_count = 1
-        right_count = 0
-        right = self.offset
-        while left_count > right_count:
-            right = self.formula.find(']', right) + 1
-            right_count += 1
-            left_count = self.formula.count('[', self.offset, right)
-            if right == 0:
-                raise TokenizerError(
-                    "Encountered unmatched '[' in %s" % self.formula)
-        self.token.append(self.formula[self.offset: right])
-        return right - self.offset
+        left = list(re.finditer(r"\[", self.formula))
+        right = list(re.finditer(r"\]", self.formula))
+        if len(left) != len(right):
+            raise TokenizerError("Encountered unmatched '[' in %s" %\
+                                 self.formula)
+        outer = right[-1].start() + 1
+        self.token.append(self.formula[self.offset:outer])
+        return outer - self.offset
+
 
     def _parse_error(self):
         """
