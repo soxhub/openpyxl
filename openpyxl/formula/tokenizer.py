@@ -139,6 +139,7 @@ class Tokenizer(object):
                                  self.formula)
         outer_right = right[-1].start() + 1
         self.token.append(self.formula[self.offset:outer_right])
+        return outer_right - self.offset
 
 
     def _parse_error(self):
