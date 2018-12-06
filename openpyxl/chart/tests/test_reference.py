@@ -33,22 +33,22 @@ class TestReference:
             max_col=10,
             max_row=12
         )
-        assert str(ref) == "dummy!$A$1:$J$12"
+        assert str(ref) == "'dummy'!$A$1:$J$12"
 
 
     def test_single_cell(self, Reference, Worksheet):
         ref = Reference(Worksheet(), min_col=1, min_row=1)
-        assert str(ref) == "dummy!$A$1"
+        assert str(ref) == "'dummy'!$A$1"
 
 
     def test_from_string(self, Reference):
-        ref = Reference(range_string="Sheet1!$A$1:$A$10")
+        ref = Reference(range_string="'Sheet1'!$A$1:$A$10")
         assert (ref.min_col, ref.min_row, ref.max_col, ref.max_row) == (1,1, 1,10)
-        assert str(ref) == "Sheet1!$A$1:$A$10"
+        assert str(ref) == "'Sheet1'!$A$1:$A$10"
 
 
     def test_cols(self, Reference):
-        ref = Reference(range_string="Sheet!A1:B2")
+        ref = Reference(range_string="'Sheet'!A1:B2")
         assert list(ref.cols) == [
             ('A1', 'A2'),
             ('B1', 'B2')
@@ -56,7 +56,7 @@ class TestReference:
 
 
     def test_rows(self, Reference):
-        ref = Reference(range_string="Sheet!A1:B2")
+        ref = Reference(range_string="'Sheet'!A1:B2")
         assert list(ref.rows) == [
             ('A1', 'B1'),
             ('A2', 'B2')
@@ -98,5 +98,5 @@ class TestReference:
 
 
     def test_repr(self, Reference):
-        ref = Reference(range_string=b'D\xc3\xbcsseldorf!A1:A10'.decode("utf8"))
-        assert unicode(ref) == b'D\xc3\xbcsseldorf!$A$1:$A$10'.decode("utf8")
+        ref = Reference(range_string=b"'D\xc3\xbcsseldorf'!A1:A10".decode("utf8"))
+        assert unicode(ref) == b"'D\xc3\xbcsseldorf'!$A$1:$A$10".decode("utf8")

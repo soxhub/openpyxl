@@ -25,7 +25,7 @@ class TestSeriesFactory:
           <order val="0"></order>
           <val>
             <numRef>
-              <f>Sheet1!$A$1:$A$10</f>
+              <f>'Sheet1'!$A$1:$A$10</f>
             </numRef>
           </val>
         </ser>
@@ -44,7 +44,7 @@ class TestSeriesFactory:
           <order val="5"></order>
           <val>
             <numRef>
-              <f>Sheet1!$A$1:$A$10</f>
+              <f>'Sheet1'!$A$1:$A$10</f>
             </numRef>
           </val>
         </ser>
@@ -64,7 +64,7 @@ class TestSeriesFactory:
           <order val="2"></order>
           <val>
             <numRef>
-              <f>Sheet1!$A$1:$A$10</f>
+              <f>'Sheet1'!$A$1:$A$10</f>
             </numRef>
           </val>
         </ser>
@@ -98,12 +98,12 @@ class TestSeriesFactory:
         <ser>
         <tx>
           <strRef>
-            <f>Sheet1!A1</f>
+            <f>'Sheet1'!A1</f>
           </strRef>
          </tx>
         <val>
         <numRef>
-           <f>Sheet1!$A$2:$A$10</f>
+           <f>'Sheet1'!$A$2:$A$10</f>
           </numRef>
         </val>
         </ser>
@@ -126,17 +126,17 @@ class TestSeriesFactory:
         <ser>
           <xVal>
             <numRef>
-              <f>Sheet!$B$2:$B$5</f>
+              <f>'Sheet'!$B$2:$B$5</f>
             </numRef>
           </xVal>
           <yVal>
             <numRef>
-              <f>Sheet!$A$2:$A$5</f>
+              <f>'Sheet'!$A$2:$A$5</f>
             </numRef>
           </yVal>
           <bubbleSize>
             <numRef>
-              <f>Sheet!$C$2:$C$5</f>
+              <f>'Sheet'!$C$2:$C$5</f>
             </numRef>
           </bubbleSize>
         </ser>
