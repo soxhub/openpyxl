@@ -49,7 +49,7 @@ class TestChartBase:
         <ser>
           <cat>
             <numRef>
-              <f>Sheet!$A$1:$A$4</f>
+              <f>'Sheet'!$A$1:$A$4</f>
             </numRef>
           </cat>
         </ser>
@@ -63,8 +63,8 @@ class TestChartBase:
         chart.ser = []
         chart.add_data("Sheet!A1:E4")
         assert len(chart.ser) == 5
-        assert chart.ser[0].val.numRef.f == "Sheet!$A$1:$A$4"
-        assert chart.ser[-1].val.numRef.f == "Sheet!$E$1:$E$4"
+        assert chart.ser[0].val.numRef.f == "'Sheet'!$A$1:$A$4"
+        assert chart.ser[-1].val.numRef.f == "'Sheet'!$E$1:$E$4"
 
 
     def test_add_data_rows(self, ChartBase):
@@ -72,8 +72,8 @@ class TestChartBase:
         chart.ser = []
         chart.add_data("Sheet!A1:E4", from_rows=True)
         assert len(chart.ser) == 4
-        assert chart.ser[0].val.numRef.f == "Sheet!$A$1:$E$1"
-        assert chart.ser[-1].val.numRef.f == "Sheet!$A$4:$E$4"
+        assert chart.ser[0].val.numRef.f == "'Sheet'!$A$1:$E$1"
+        assert chart.ser[-1].val.numRef.f == "'Sheet'!$A$4:$E$4"
 
 
     def test_hash_function(self, ChartBase):
