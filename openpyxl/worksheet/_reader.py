@@ -144,7 +144,9 @@ class WorkSheetParser(object):
                 setattr(self, prop[0], obj)
                 element.clear()
             elif tag_name == ROW_TAG:
-                yield self.parse_row(element)
+                row = self.parse_row(element)
+                element.clear()
+                yield row
 
 
     def parse_dimensions(self):
@@ -260,9 +262,7 @@ class WorkSheetParser(object):
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 
-        cells = tuple(self.parse_cell(el) for el in row)
-
-        row.clear()
+        cells = [self.parse_cell(el) for el in row]
         return self.max_row, cells
 
 
