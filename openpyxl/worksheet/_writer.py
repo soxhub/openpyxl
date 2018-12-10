@@ -20,7 +20,7 @@ from .merge import MergeCell, MergeCells
 from .related import Related
 from .table import TablePartList
 
-from openpyxl.cell.writer import write_cell
+from openpyxl.cell._writer import write_cell
 
 
 ALL_TEMP_FILES = []

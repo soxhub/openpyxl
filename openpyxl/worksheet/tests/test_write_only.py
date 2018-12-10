@@ -2,6 +2,8 @@
 
 import datetime
 
+from openpyxl.cell import WriteOnlyCell
+from openpyxl.comments import Comment
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
 from openpyxl.styles.styleable import StyleArray
@@ -167,7 +169,6 @@ def test_read_after_closing(WriteOnlyWorksheet):
 
 
 def test_write_only_cell(WriteOnlyWorksheet):
-    from openpyxl.cell import WriteOnlyCell
     ws = WriteOnlyWorksheet
     c = WriteOnlyCell(ws, value=5)
     ws.append([c])
@@ -198,3 +199,13 @@ def test_write_only_cell(WriteOnlyWorksheet):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_hyperlink(WriteOnlyWorksheet):
+    ws = WriteOnlyWorksheet
+    cell = WriteOnlyCell(ws, 'should have hyperlink')
+    cell.hyperlink = 'http://bbc.co.uk'
+    ws.append([])
+    ws.append([cell])
+    assert cell.hyperlink.ref == "A2"
+    ws.close()

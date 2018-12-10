@@ -2,6 +2,16 @@
 ==================
 
 
+2.6.-dev (unreleased)
+=====================
+
+
+Bugfixes
+--------
+
+* `#1143 <https://bitbucket.org/openpyxl/openpyxl/issues/1143>`_ Hyperlinks always set on A1
+
+
 2.6-a1 (2018-11-21)
 ===================
 
@@ -35,13 +45,14 @@ Deprecations
 Bugfixes
 --------
 
-* `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsuppoted image files
+* `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsupported image files
 
 
 Pull Requests
 -------------
 
 * `PR301 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Add support for nested brackets to the tokeniser
+* `PR303 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Improvements on handling nested brackets in the tokeniser
 
 
 2.5.12 (2018-11-29)

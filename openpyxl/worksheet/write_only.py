@@ -139,9 +139,13 @@ class WriteOnlyWorksheet(_WorkbookChild):
             cell.column = col_idx
             cell.row = row_idx
 
+            if cell.hyperlink is not None:
+                cell.hyperlink.ref = cell.coordinate
+
             yield cell
+
             # reset cell if style applied
-            if cell.has_style:
+            if cell.has_style or cell.hyperlink:
                 cell = WriteOnlyCell(self)
 
 

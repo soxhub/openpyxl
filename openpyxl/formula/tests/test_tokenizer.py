@@ -297,8 +297,8 @@ class TestTokenizer(object):
         ('[a[b]c]def', 0, '[a[b]c]'),
         ('[[]]abcdef', 0, '[[]]'),
         ('[[abc]def]', 0, '[[abc]def]'),
-        ('a[b[c]d]ef', 1, '[b[c]d]'),
-        ('ab[c[d][e]]f', 2, '[c[d][e]]'),
+        ('a[b[c]d]e[f]', 1, '[b[c]d]'),
+        ('ab[c[d][e]][f]', 2, '[c[d][e]]'),
         ('TableX[[#Data],[COL1]]', 6, '[[#Data],[COL1]]'),
         ('TableX[[#Data],[COL1]:[COL2]]', 6, '[[#Data],[COL1]:[COL2]]'),
     ])
