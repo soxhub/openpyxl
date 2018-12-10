@@ -46,7 +46,7 @@ def find_images(archive, path):
         if dep.Type == IMAGE_NS:
             try:
                 image = Image(BytesIO(archive.read(dep.target)))
-            except OSError:
+            except (OSError, IOError): # Python 2.7
                 msg = "The image {0} will be removed because it cannot be read".format(dep.target)
                 warn(msg)
                 continue
