@@ -125,7 +125,7 @@ class LineProperties(Serialisable):
     extLst = Typed(expected_type=OfficeArtExtensionList, allow_none=True)
 
     __elements__ = ('noFill', 'solidFill', 'gradFill', 'pattFill',
-                    'prstDash', 'custDash', 'round', 'bevel', 'mitre', 'headEnd', 'tailEnd')
+                    'prstDash', 'custDash', 'round', 'bevel', 'miter', 'headEnd', 'tailEnd')
 
     def __init__(self,
                  w=None,
@@ -159,6 +159,6 @@ class LineProperties(Serialisable):
         self.custDash = custDash
         self.round = round
         self.bevel = bevel
-        self.mitre = bevel
+        self.miter = miter
         self.headEnd = headEnd
         self.tailEnd = tailEnd
