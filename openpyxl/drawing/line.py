@@ -17,6 +17,7 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import Coordinate, Percentage
 
 from openpyxl.descriptors.nested import (
+    NestedInteger,
     NestedSet,
     NestedNoneSet,
     EmptyTag,
@@ -80,19 +81,6 @@ class DashStopList(Serialisable):
         self.ds = ds
 
 
-class LineJoinMiterProperties(Serialisable):
-
-    tagname = "miter"
-    namespace = DRAWING_NS
-
-    lim = Integer(allow_none=True)
-
-    def __init__(self,
-                 lim=None,
-                ):
-        self.lim = lim
-
-
 class LineProperties(Serialisable):
 
     tagname = "ln"
@@ -118,7 +106,7 @@ class LineProperties(Serialisable):
 
     round = EmptyTag()
     bevel = EmptyTag()
-    miter = Typed(expected_type=LineJoinMiterProperties, allow_none=True)
+    miter = NestedInteger(allow_none=True, attribute="lim")
 
     headEnd = Typed(expected_type=LineEndProperties, allow_none=True)
     tailEnd = Typed(expected_type=LineEndProperties, allow_none=True)
