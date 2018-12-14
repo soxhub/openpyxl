@@ -353,7 +353,7 @@ class TestWorksheet:
 
     def test_merged_cell_ranges(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.merged_cell_ranges == []
+        assert ws.merged_cells.ranges == []
 
 
     def test_merge_range_string(self, Worksheet):
