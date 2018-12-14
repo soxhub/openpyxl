@@ -177,7 +177,7 @@ class WorkSheetParser(object):
         if data_type == "inlineStr":
             value = None
         else:
-            value = element.findtext(VALUE_TAG)
+            value = element.findtext(VALUE_TAG, None) or None
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)

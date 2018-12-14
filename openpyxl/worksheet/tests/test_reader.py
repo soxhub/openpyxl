@@ -257,6 +257,20 @@ class TestWorksheetParser:
                         'style_id':0, 'value': 1}
 
 
+    def test_empty_cell(self, WorkSheetParser):
+        parser = WorkSheetParser
+
+        src = """
+        <c r="A1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <v />
+        </c>
+        """
+        element = fromstring(src)
+
+        cell = parser.parse_cell(element)
+        assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
+                        'style_id':0, 'value': None}
+
 
     def test_datetime(self, WorkSheetParser):
         parser = WorkSheetParser
