@@ -312,6 +312,7 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
+        self.ws._current_row = self.parser.max_row
 
 
     def bind_formatting(self):

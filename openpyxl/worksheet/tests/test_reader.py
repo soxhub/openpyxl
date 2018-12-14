@@ -691,6 +691,7 @@ class TestWorksheetReader:
         assert ws['C1'].value == 'a'
         assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
         assert ws['E2'].value == "=C2:C11*D2:D11"
+        assert ws._current_row == 26
 
 
     def test_formatting(self, PrimedWorksheetReader):
