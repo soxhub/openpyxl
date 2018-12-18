@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#1143 <https://bitbucket.org/openpyxl/openpyxl/issues/1143>`_ Hyperlinks always set on A1
+* `#1151 <https://bitbucket.org/openpyxl/openpyxl/issues/1151>`_ Internal row counter not initialised when reading files
 
 
 2.6-a1 (2018-11-21)
