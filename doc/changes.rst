@@ -42,6 +42,7 @@ Deprecations
 Bugfixes
 --------
 
+* `#1150 <https://bitbucket.org/openpyxl/openpyxl/issues/1150>`_ Correct typo in LineProperties
 * `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsupported image files
 
 

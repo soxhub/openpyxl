@@ -4,6 +4,10 @@ from __future__ import division
 
 from io import BytesIO
 
+try:
+    from PIL import Image as PILImage
+except ImportError:
+    PILImage = False
 
 def bounding_box(bw, bh, w, h):
     """
@@ -22,13 +26,8 @@ def bounding_box(bw, bh, w, h):
 
 
 def _import_image(img):
-    try:
-        try:
-            import Image as PILImage
-        except ImportError:
-            from PIL import Image as PILImage
-    except ImportError:
-        raise ImportError('You must install PIL to fetch image objects')
+    if not PILImage:
+        raise ImportError('You must install Pillow to fetch image objects')
 
     if not isinstance(img, PILImage.Image):
         img = PILImage.open(img)
@@ -55,6 +54,7 @@ class Image(object):
             self.format = image.format.lower()
         except AttributeError:
             self.format = "png"
+        image.close()
 
 
     def _data(self):
