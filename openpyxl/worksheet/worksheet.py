@@ -103,7 +103,7 @@ class Worksheet(_WorkbookChild):
                                               default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
-        self.page_breaks = PageBreak()
+        self.page_breaks = [PageBreak()]
         self._cells = {}
         self._charts = []
         self._images = []
