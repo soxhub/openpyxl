@@ -26,7 +26,6 @@ from openpyxl.cell._writer import write_cell
 
 ALL_TEMP_FILES = []
 
-
 @atexit.register
 def _openpyxl_shutdown():
     for path in ALL_TEMP_FILES:
@@ -45,6 +44,7 @@ def create_temporary_file(suffix=''):
 
 class WorksheetWriter:
 
+
     def __init__(self, ws, out=None):
         self.ws = ws
         if out is None:
@@ -52,11 +52,13 @@ class WorksheetWriter:
         self.out = out
         self._rels = RelationshipList()
         self.xf = self.get_stream()
-        next(self.xf)  # start generator
+        next(self.xf) # start generator
+
 
     def write_properties(self):
         props = self.ws.sheet_properties
         self.xf.send(props.to_tree())
+
 
     def write_dimensions(self):
         """
@@ -67,18 +69,22 @@ class WorksheetWriter:
             dim = SheetDimension(ref())
             self.xf.send(dim.to_tree())
 
+
     def write_format(self):
         self.ws.sheet_format.outlineLevelCol = self.ws.column_dimensions.max_outline
         fmt = self.ws.sheet_format
         self.xf.send(fmt.to_tree())
 
+
     def write_views(self):
         views = self.ws.views
         self.xf.send(views.to_tree())
 
+
     def write_cols(self):
         cols = self.ws.column_dimensions
         self.xf.send(cols.to_tree())
+
 
     def write_top(self):
         """
@@ -95,6 +101,7 @@ class WorksheetWriter:
         self.write_format()
         self.write_cols()
 
+
     def rows(self):
         """Return all rows, and any cells that they contain"""
         # order cells by row
@@ -108,6 +115,7 @@ class WorksheetWriter:
 
         return sorted(rows.items())
 
+
     def write_rows(self):
         xf = self.xf.send(True)
 
@@ -115,7 +123,8 @@ class WorksheetWriter:
             for row_idx, row in self.rows():
                 self.write_row(xf, row, row_idx)
 
-        self.xf.send(None)  # return control to generator
+        self.xf.send(None) # return control to generator
+
 
     def write_row(self, xf, row, row_idx):
 
@@ -133,24 +142,28 @@ class WorksheetWriter:
                     cell._value is None
                     and not cell.has_style
                     and not cell._comment
-                ):
+                    ):
                     continue
                 write_cell(xf, self.ws, cell, cell.has_style)
+
 
     def write_protection(self):
         prot = self.ws.protection
         if prot:
             self.xf.send(prot.to_tree())
 
+
     def write_scenarios(self):
         scenarios = self.ws.scenarios
         if scenarios:
             self.xf.send(scenarios.to_tree())
 
+
     def write_filter(self):
         flt = self.ws.auto_filter
         if flt:
             self.xf.send(flt.to_tree())
+
 
     def write_sort(self):
         """
@@ -159,11 +172,13 @@ class WorksheetWriter:
         """
         pass
 
+
     def write_merged_cells(self):
         merged = self.ws.merged_cells
         if merged:
             cells = [MergeCell(str(ref)) for ref in self.ws.merged_cells]
             self.xf.send(MergeCells(mergeCell=cells).to_tree())
+
 
     def write_formatting(self):
         df = DifferentialStyle()
@@ -174,18 +189,19 @@ class WorksheetWriter:
                     rule.dxfId = wb._differential_styles.add(rule.dxf)
             self.xf.send(cf.to_tree())
 
+
     def write_validations(self):
         dv = self.ws.data_validations
         if dv:
             self.xf.send(dv.to_tree())
+
 
     def write_hyperlinks(self):
         links = HyperlinkList()
 
         for link in self.ws._hyperlinks:
             if link.target:
-                rel = Relationship(
-                    type="hyperlink", TargetMode="External", Target=link.target)
+                rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
                 self._rels.append(rel)
                 link.id = rel.id
             links.hyperlink.append(link)
@@ -193,31 +209,37 @@ class WorksheetWriter:
         if links:
             self.xf.send(links.to_tree())
 
+
     def write_print(self):
         print_options = self.ws.print_options
         if print_options:
             self.xf.send(print_options.to_tree())
+
 
     def write_margins(self):
         margins = self.ws.page_margins
         if margins:
             self.xf.send(margins.to_tree())
 
+
     def write_page(self):
         setup = self.ws.page_setup
         if setup:
             self.xf.send(setup.to_tree())
+
 
     def write_header(self):
         hf = self.ws.HeaderFooter
         if hf:
             self.xf.send(hf.to_tree())
 
+
     def write_breaks(self):
         brks = self.ws.page_breaks
         for brk in brks:
             if brk:
                 self.xf.send(brk.to_tree())
+
 
     def write_drawings(self):
         if self.ws._charts or self.ws._images:
@@ -227,6 +249,7 @@ class WorksheetWriter:
             drawing.id = rel.id
             self.xf.send(drawing.to_tree("drawing"))
 
+
     def write_legacy(self):
         """
         Comments & VBA controls use VML and require an additional element
@@ -235,6 +258,7 @@ class WorksheetWriter:
         if (self.ws.legacy_drawing is not None or self.ws._comments):
             legacy = Related(id="anysvml")
             self.xf.send(legacy.to_tree("legacyDrawing"))
+
 
     def write_tables(self):
         tables = TablePartList()
@@ -246,8 +270,7 @@ class WorksheetWriter:
                     row = self.ws[table.ref][0]
                     for cell, col in zip(row, table.tableColumns):
                         if cell.data_type != "s":
-                            warn(
-                                "File may not be readable: column headings must be strings.")
+                            warn("File may not be readable: column headings must be strings.")
                         col.name = unicode(cell.value)
             rel = Relationship(Type=table._rel_type, Target="")
             self._rels.append(rel)
@@ -257,6 +280,7 @@ class WorksheetWriter:
         if tables:
             self.xf.send(tables.to_tree())
 
+
     def get_stream(self):
         with xmlfile(self.out) as xf:
             with xf.element("worksheet", xmlns=SHEET_MAIN_NS):
@@ -265,12 +289,13 @@ class WorksheetWriter:
                         el = (yield)
                         if el is True:
                             yield xf
-                        elif el is None:  # et_xmlfile chokes
+                        elif el is None: # et_xmlfile chokes
                             continue
                         else:
                             xf.write(el)
                 except GeneratorExit:
                     pass
+
 
     def write_tail(self):
         """
@@ -322,6 +347,7 @@ class WorksheetWriter:
         self.write_legacy()
         self.write_tables()
 
+
     def write(self):
         """
         High level
@@ -331,12 +357,14 @@ class WorksheetWriter:
         self.write_tail()
         self.close()
 
+
     def close(self):
         """
         Close the context manager
         """
         if self.xf:
             self.xf.close()
+
 
     def read(self):
         """
@@ -349,6 +377,7 @@ class WorksheetWriter:
             out = src.read()
 
         return out
+
 
     def cleanup(self):
         """
