@@ -336,7 +336,6 @@ class TestWorksheetWriter:
            <firstFooter />
          </headerFooter>
         </worksheet>"""
-        print(xml)
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
