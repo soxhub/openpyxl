@@ -336,6 +336,7 @@ class TestWorksheetWriter:
            <firstFooter />
          </headerFooter>
         </worksheet>"""
+        print(xml)
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -353,12 +354,13 @@ class TestWorksheetWriter:
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <rowBreaks count="1" manualBreakCount="1">
-            <brk id="1" man="1" max="16383" min="0" />
+                <brk id="1" man="1" max="16383" min="0"/>        
           </rowBreaks>
-          <colBreaks>
-            <brk id="1" man="1" max="16383" min="0" />
+          <colBreaks count="1" manualBreakCount="1">
+                <brk id="1" man="1" max="16383" min="0"/>
           </colBreaks>
-        </worksheet>"""
+        </worksheet>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
