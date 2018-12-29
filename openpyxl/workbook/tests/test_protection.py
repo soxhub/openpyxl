@@ -78,3 +78,22 @@ class TestFileSharing:
         node = fromstring(src)
         share = FileSharing.from_tree(node)
         assert share == FileSharing(userName="Alice")
+
+    def test_from_xml_with_password(self, FileSharing):
+        src = """
+        <fileSharing
+          userName="Alice"
+          algorithmName="SHA-512"
+          hashValue="wDZaZrfM8uKpKghbfws7rY7pmVoOwHjy5qg5d2ABHdSMtH1y0IIkgwJT5Hl2lacSw1sNusImGBUQs/sHcql3hw=="
+          saltValue="ah1OevWahpb3tQiJO3qrnQ=="
+          spinCount="100000"
+        />
+        """
+        node = fromstring(src)
+        share = FileSharing.from_tree(node)
+        assert share == FileSharing(userName="Alice",
+                algorithmName="SHA-512",
+                hashValue="wDZaZrfM8uKpKghbfws7rY7pmVoOwHjy5qg5d2ABHdSMtH1y0IIkgwJT5Hl2lacSw1sNusImGBUQs/sHcql3hw==",
+                saltValue="ah1OevWahpb3tQiJO3qrnQ==",
+                spinCount="100000")
+
