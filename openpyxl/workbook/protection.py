@@ -142,8 +142,8 @@ class FileSharing(Serialisable):
     userName = String(allow_none=True)
     reservationPassword = HexBinary(allow_none=True)
     algorithmName = String(allow_none=True)
-    hashValue = HexBinary(allow_none=True)
-    saltValue = HexBinary(allow_none=True)
+    hashValue = Base64Binary(allow_none=True)
+    saltValue = Base64Binary(allow_none=True)
     spinCount = Integer(allow_none=True)
 
     def __init__(self,
