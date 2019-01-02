@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 
 """Constants for fixed paths in a file and xml namespace urls."""

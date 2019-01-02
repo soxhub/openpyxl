@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 """
 Collection of utilities used within the package and also available for client code
