@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 import os
@@ -353,7 +353,7 @@ class TestWorksheetWriter:
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <rowBreaks count="1" manualBreakCount="1">
-                <brk id="1" man="1" max="16383" min="0"/>        
+                <brk id="1" man="1" max="16383" min="0"/>
           </rowBreaks>
           <colBreaks count="1" manualBreakCount="1">
                 <brk id="1" man="1" max="16383" min="0"/>

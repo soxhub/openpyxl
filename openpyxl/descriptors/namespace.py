@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# copyright openpyxl 2010-2015
+# Copyright (c) 2010-2019 openpyxl
 
 
 def namespaced(obj, tagname, namespace=None):

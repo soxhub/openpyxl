@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# copyright openpyxl 2014
+# Copyright (c) 2010-2019 openpyxl
 
 import datetime
 
