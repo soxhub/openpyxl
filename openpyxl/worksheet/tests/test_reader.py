@@ -287,6 +287,23 @@ class TestWorksheetParser:
                         'style_id':0, 'value': datetime.datetime(2011, 12, 25, 14, 23, 55)}
 
 
+    def test_invalid_date(self, WorkSheetParser):
+        parser = WorkSheetParser
+        parser.epoch = CALENDAR_WINDOWS_1900
+
+        src = """
+        <c r="A1" t="n" s="29" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <v>2958466</v>
+        </c>
+        """
+        element = fromstring(src)
+
+        cell = parser.parse_cell(element)
+        assert cell == {'column': 1, 'data_type': 'e', 'row': 1,
+                        'style_id':29, 'value':"#VALUE!"}
+
+
+
     def test_mac_date(self, WorkSheetParser):
         parser = WorkSheetParser
         parser.epoch = CALENDAR_MAC_1904

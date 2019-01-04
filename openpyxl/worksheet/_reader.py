@@ -193,7 +193,13 @@ class WorkSheetParser(object):
                 value = _cast_number(value)
                 if style_id in self.date_formats:
                     data_type = 'd'
-                    value = from_excel(value, self.epoch)
+                    try:
+                        value = from_excel(value, self.epoch)
+                    except ValueError:
+                        msg = "{0} has an invalid date".format(coordinate)
+                        warn(msg)
+                        data_type = "e"
+                        value = "#VALUE!"
             elif data_type == 's':
                 value = self.shared_strings[int(value)]
             elif data_type == 'b':
