@@ -125,7 +125,7 @@ def test_close_write(wo):
     wb.close()
 
 
-def test_read_stringio(load_workbook):
+def test_read_invalid_stream(load_workbook):
     filelike = BytesIO(b"certainly not a valid XSLX content")
     # Test invalid file-like objects are detected and not handled as regular files
     with pytest.raises(BadZipfile):
