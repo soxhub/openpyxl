@@ -196,7 +196,7 @@ class WorkSheetParser(object):
                     try:
                         value = from_excel(value, self.epoch)
                     except ValueError:
-                        msg = "{0} has an invalid date".format(coordinate)
+                        msg = """Cell {0} is marked as a date but the serial value {1} is outside the limits for dates. The cell will be treated as an error.""".format(coordinate, value)
                         warn(msg)
                         data_type = "e"
                         value = "#VALUE!"
