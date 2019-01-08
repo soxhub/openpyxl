@@ -223,3 +223,13 @@ class TestExcelReader:
 
         reader.read_chartsheet(sheet, rel)
         assert reader.wb['chart'].title == "chart"
+
+
+    def test_read_only_stream(self, load_workbook):
+        from openpyxl import Workbook
+        wb = Workbook()
+        out = BytesIO()
+        wb.save(out)
+        reader = ExcelReader(out, read_only=True)
+        reader.read()
+        assert reader.wb._archive.fp is not None
