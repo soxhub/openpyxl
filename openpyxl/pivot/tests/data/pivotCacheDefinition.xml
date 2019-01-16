@@ -1,51 +1,51 @@
 <?xml version="1.0" standalone="yes"?>
 <pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1" refreshedBy="Bartev Vartanian" refreshedDate="41723.476884722222" createdVersion="4" refreshedVersion="4" minRefreshableVersion="3" recordCount="17">
-	<cacheSource type="worksheet">
-		<worksheetSource name="mydata"/>
-	</cacheSource>
-	<cacheFields count="6">
-		<cacheField name="ID" numFmtId="0">
-			<sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="1" maxValue="17"/>
-		</cacheField>
-		<cacheField name="campaign_name" numFmtId="0">
-			<sharedItems count="10">
-				<s v="Stanford"/>
-				<s v="Cal"/>
-				<s v="UCLA"/>
-				<s v="Universal Orlando UPRV NAM 2014 - RTG" u="1"/>
-				<s v="Universal Orlando UPRV NAM 2014 - MC" u="1"/>
-				<s v="Santa Catalina Island MAR-JUN14 - Inmkt LA" u="1"/>
-				<s v="Santa Catalina Island MAR-JUN14 - Inmkt RTG LA" u="1"/>
-				<s v="Santa Catalina Island MAR-JUN14 - Inmkt RTG Northern States" u="1"/>
-				<s v="Aer Lingus Rome" u="1"/>
-				<s v="Santa Catalina Island MAR-JUN14 - Inmkt Northern States" u="1"/>
-			</sharedItems>
-		</cacheField>
-		<cacheField name="budget_date" numFmtId="0">
-			<sharedItems/>
-		</cacheField>
-		<cacheField name="hour" numFmtId="0">
-			<sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="9" maxValue="11" count="3">
-				<n v="10"/>
-				<n v="11"/>
-				<n v="9"/>
-			</sharedItems>
-		</cacheField>
-		<cacheField name="impressions" numFmtId="0">
-			<sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="1" maxValue="1094"/>
-		</cacheField>
-		<cacheField name="owner" numFmtId="0">
-			<sharedItems count="4">
-				<s v="Jack"/>
-				<s v="Jill"/>
-				<s v="Geraldine Micoulloud" u="1"/>
-				<s v="Darren Huntley" u="1"/>
-			</sharedItems>
-		</cacheField>
-	</cacheFields>
-	<extLst>
-		<ext xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}">
-			<x14:pivotCacheDefinition/>
-		</ext>
-	</extLst>
+  <cacheSource type="worksheet">
+    <worksheetSource name="mydata"/>
+  </cacheSource>
+  <cacheFields count="6">
+    <cacheField name="ID" numFmtId="0">
+      <sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="1" maxValue="17"/>
+    </cacheField>
+    <cacheField name="campaign_name" numFmtId="0">
+      <sharedItems count="10">
+        <s v="Stanford"/>
+        <s v="Cal"/>
+        <s v="UCLA"/>
+        <s v="Universal Orlando UPRV NAM 2014 - RTG" u="1"/>
+        <s v="Universal Orlando UPRV NAM 2014 - MC" u="1"/>
+        <s v="Santa Catalina Island MAR-JUN14 - Inmkt LA" u="1"/>
+        <s v="Santa Catalina Island MAR-JUN14 - Inmkt RTG LA" u="1"/>
+        <s v="Santa Catalina Island MAR-JUN14 - Inmkt RTG Northern States" u="1"/>
+        <s v="Aer Lingus Rome" u="1"/>
+        <s v="Santa Catalina Island MAR-JUN14 - Inmkt Northern States" u="1"/>
+      </sharedItems>
+    </cacheField>
+    <cacheField name="budget_date" numFmtId="0">
+      <sharedItems/>
+    </cacheField>
+    <cacheField name="hour" numFmtId="0">
+      <sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="9" maxValue="11" count="3">
+        <n v="10"/>
+        <n v="11"/>
+        <n v="9"/>
+      </sharedItems>
+    </cacheField>
+    <cacheField name="impressions" numFmtId="0">
+      <sharedItems containsSemiMixedTypes="0" containsString="0" containsNumber="1" containsInteger="1" minValue="1" maxValue="1094"/>
+    </cacheField>
+    <cacheField name="owner" numFmtId="0">
+      <sharedItems count="4">
+        <s v="Jack"/>
+        <s v="Jill"/>
+        <s v="Geraldine Micoulloud" u="1"/>
+        <s v="Darren Huntley" u="1"/>
+      </sharedItems>
+    </cacheField>
+  </cacheFields>
+  <extLst>
+    <ext xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}">
+      <x14:pivotCacheDefinition/>
+    </ext>
+  </extLst>
 </pivotCacheDefinition>
