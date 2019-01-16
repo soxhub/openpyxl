@@ -252,7 +252,7 @@ def test_remove_sheet_with_names(Workbook):
     assert wb.defined_names.definedName == []
 
 
-def test_add_invalid_worksheet_class_instance():
+def test_add_invalid_worksheet_class_instance(Workbook):
 
     class AlternativeWorksheet(object):
         def __init__(self, parent_workbook, title=None):
@@ -261,7 +261,7 @@ def test_add_invalid_worksheet_class_instance():
                 title = 'AlternativeSheet'
             self.title = title
 
-    wb = Workbook()
+    wb = Workbook
     ws = AlternativeWorksheet(parent_workbook=wb)
     with pytest.raises(TypeError):
         wb._add_sheet(worksheet=ws)

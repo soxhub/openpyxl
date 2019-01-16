@@ -375,9 +375,9 @@ def test_remove_hyperlink(dummy_cell):
 
 
 @pytest.fixture
-def MergedCell():
+def MergedCell(DummyWorksheet):
     from ..cell import MergedCell
-    return MergedCell(DummyWorksheet())
+    return MergedCell(DummyWorksheet)
 
 
 class TestMergedCell:
