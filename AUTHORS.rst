@@ -79,6 +79,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Wolfgane Scherer
 * Yaroslav Halchenko
 * Yingjie Lan
+* Leetao
 
 Project logo designed by Eric Gazoni, font by claudeserieux
 (http://www.dafont.com/profile.php?user=337503)

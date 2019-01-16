@@ -2,14 +2,17 @@
 ==================
 
 
-2.6.-dev (unreleased)
-=====================
+2.6.-b1 (2019-01-08)
+====================
 
 
 Bugfixes
 --------
 
+* `#1141 <https://bitbucket.org/openpyxl/openpyxl/issues/1141>`_ Cannot use read-only mode with stream
 * `#1143 <https://bitbucket.org/openpyxl/openpyxl/issues/1143>`_ Hyperlinks always set on A1
+* `#1151 <https://bitbucket.org/openpyxl/openpyxl/issues/1151>`_ Internal row counter not initialised when reading files
+* `#1152 <https://bitbucket.org/openpyxl/openpyxl/issues/1152>`_ Exception raised on out of bounds date
 
 
 2.6-a1 (2018-11-21)
@@ -45,7 +48,9 @@ Deprecations
 Bugfixes
 --------
 
+* `#1150 <https://bitbucket.org/openpyxl/openpyxl/issues/1150>`_ Correct typo in LineProperties
 * `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsupported image files
+* `#1159 <https://bitbucket.org/openpyxl/openpyxl/issues/1159>`_ Exception raised when cannot find source for non-local cache object
 
 
 Pull Requests

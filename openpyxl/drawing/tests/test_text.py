@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 
@@ -208,12 +208,12 @@ class TestLineBreak:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    
+
     def test_from_xml(self, LineBreak):
         src = """
         <br />
         """
         node = fromstring(src)
         fut = LineBreak.from_tree(node)
-        assert fut == LineBreak()  
+        assert fut == LineBreak()
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 # test imports
 import pytest
@@ -353,7 +353,7 @@ class TestWorksheet:
 
     def test_merged_cell_ranges(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.merged_cell_ranges == []
+        assert ws.merged_cells.ranges == []
 
 
     def test_merge_range_string(self, Worksheet):

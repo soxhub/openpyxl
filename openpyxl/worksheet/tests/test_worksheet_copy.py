@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 
@@ -71,7 +71,7 @@ class TestWorksheetCopy:
         ws1.merge_cells('A10:A11')
         ws1.merge_cells('F20:J23')
         copier.copy_worksheet()
-        assert ws1.merged_cell_ranges == ws2.merged_cell_ranges
+        assert ws1.merged_cells.ranges == ws2.merged_cells.ranges
 
 
     def test_cell_copy_value(self, copier):

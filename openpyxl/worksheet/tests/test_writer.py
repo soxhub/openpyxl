@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 import os
@@ -16,6 +16,7 @@ from ..protection import SheetProtection
 from ..filters import SortState
 from ..scenario import Scenario, InputCells
 from ..table import Table
+from ..pagebreak import PageBreak, Break
 
 
 @pytest.fixture
@@ -340,15 +341,24 @@ class TestWorksheetWriter:
 
     def test_breaks(self, writer):
 
-        writer.ws.page_breaks.append()
+        col_page_break = PageBreak()
+        col_page_break.tagname = 'colBreaks'
+        col_page_break.append(Break(id=1))
+
+        writer.ws.page_breaks[0].append(Break(id=1))
+        writer.ws.page_breaks.append(col_page_break)
         writer.write_breaks()
         xml = writer.read()
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
           <rowBreaks count="1" manualBreakCount="1">
-            <brk id="1" man="1" max="16383" min="0" />
+                <brk id="1" man="1" max="16383" min="0"/>
           </rowBreaks>
-        </worksheet>"""
+          <colBreaks count="1" manualBreakCount="1">
+                <brk id="1" man="1" max="16383" min="0"/>
+          </colBreaks>
+        </worksheet>
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 

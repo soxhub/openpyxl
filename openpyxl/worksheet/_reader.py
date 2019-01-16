@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 """Reader for a single worksheet."""
 from warnings import warn
@@ -176,7 +176,7 @@ class WorkSheetParser(object):
         if data_type == "inlineStr":
             value = None
         else:
-            value = element.findtext(VALUE_TAG)
+            value = element.findtext(VALUE_TAG, None) or None
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
@@ -192,7 +192,13 @@ class WorkSheetParser(object):
                 value = _cast_number(value)
                 if style_id in self.date_formats:
                     data_type = 'd'
-                    value = from_excel(value, self.epoch)
+                    try:
+                        value = from_excel(value, self.epoch)
+                    except ValueError:
+                        msg = """Cell {0} is marked as a date but the serial value {1} is outside the limits for dates. The cell will be treated as an error.""".format(coordinate, value)
+                        warn(msg)
+                        data_type = "e"
+                        value = "#VALUE!"
             elif data_type == 's':
                 value = self.shared_strings[int(value)]
             elif data_type == 'b':
@@ -311,6 +317,7 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
+        self.ws._current_row = self.parser.max_row
 
 
     def bind_formatting(self):

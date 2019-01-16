@@ -1,4 +1,5 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
+
 
 import posixpath
 
@@ -149,7 +150,10 @@ def get_rel(archive, deps, id=None, cls=None):
     if id is not None:
         rel = deps[id]
     else:
-        rel = next(deps.find(cls.rel_type))
+        try:
+            rel = next(deps.find(cls.rel_type))
+        except StopIteration: # no known dependency
+            return
 
     path = rel.target
     src = archive.read(path)

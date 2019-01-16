@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 
 # Python stdlib imports
@@ -374,9 +374,9 @@ def test_remove_hyperlink(dummy_cell):
 
 
 @pytest.fixture
-def MergedCell():
+def MergedCell(DummyWorksheet):
     from ..cell import MergedCell
-    return MergedCell(DummyWorksheet())
+    return MergedCell(DummyWorksheet)
 
 
 class TestMergedCell:

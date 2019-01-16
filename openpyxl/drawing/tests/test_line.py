@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 
@@ -14,11 +14,12 @@ def LineProperties():
 class TestLineProperties:
 
     def test_ctor(self, LineProperties):
-        line = LineProperties(w=10)
+        line = LineProperties(w=10, miter=4)
         xml = tostring(line.to_tree())
         expected = """
         <ln w="10" xmlns="http://schemas.openxmlformats.org/drawingml/2006/main">
           <prstDash val="solid" />
+          <miter lim="4" />
         </ln>
         """
         diff = compare_xml(xml, expected)
@@ -45,11 +46,12 @@ class TestLineProperties:
         src = """
         <ln w="38100" cmpd="sng">
           <prstDash val="solid"/>
+          <miter lim="5" />
         </ln>
         """
         node = fromstring(src)
         line = LineProperties.from_tree(node)
-        assert line == LineProperties(w=38100, cmpd="sng")
+        assert line == LineProperties(w=38100, cmpd="sng", miter=5)
 
 
 @pytest.fixture
@@ -104,30 +106,3 @@ class TestDashStop:
         node = fromstring(src)
         line = DashStop.from_tree(node)
         assert line == DashStop(d=10, sp=15)
-
-
-@pytest.fixture
-def LineJoinMiterProperties():
-    from ..line import LineJoinMiterProperties
-    return LineJoinMiterProperties
-
-
-class TestLineJoinMiterProperties:
-
-    def test_ctor(self, LineJoinMiterProperties):
-        line = LineJoinMiterProperties()
-        xml = tostring(line.to_tree())
-        expected = """
-        <miter xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, LineJoinMiterProperties):
-        src = """
-        <miter />
-        """
-        node = fromstring(src)
-        line = LineJoinMiterProperties.from_tree(node)
-        assert line == LineJoinMiterProperties()

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
@@ -102,7 +102,7 @@ class Worksheet(_WorkbookChild):
                                               default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
-        self.page_breaks = PageBreak()
+        self.page_breaks = [PageBreak()]
         self._cells = {}
         self._charts = []
         self._images = []

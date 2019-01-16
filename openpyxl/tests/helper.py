@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 # Python stdlib imports
 from lxml.doctestcompare import LXMLOutputChecker, PARSE_XML

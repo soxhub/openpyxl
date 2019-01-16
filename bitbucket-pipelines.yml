@@ -1,6 +1,13 @@
 image: openpyxl/openpyxl-ci
 
 pipelines:
+  pull-requests:
+    '**':
+      - step:
+          caches:
+            - pip
+          script:
+            - /tools/clean-launch.sh tox --skip-missing-interpreters -e py27,py37 -- -qrf
   default:
   - step:
       caches:

@@ -1,4 +1,5 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
+
 
 """Read an xlsx file into Python"""
 
@@ -163,7 +164,7 @@ class ExcelReader:
                 wb.vba_archive.writestr(name, self.archive.read(name))
 
         if self.read_only:
-            wb._archive = ZipFile(self.archive.filename)
+            wb._archive = self.archive
 
         self.wb = wb
 
@@ -272,7 +273,8 @@ class ExcelReader:
         apply_stylesheet(self.archive, self.wb)
         self.read_worksheets()
         self.parser.assign_names()
-        self.archive.close()
+        if not self.read_only:
+            self.archive.close()
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,

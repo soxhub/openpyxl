@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2015 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
 from openpyxl.xml.functions import fromstring

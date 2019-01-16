@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import atexit
 from collections import defaultdict
@@ -234,9 +234,10 @@ class WorksheetWriter:
 
 
     def write_breaks(self):
-        brk = self.ws.page_breaks
-        if brk:
-            self.xf.send(brk.to_tree())
+        brks = self.ws.page_breaks
+        for brk in brks:
+            if brk:
+                self.xf.send(brk.to_tree())
 
 
     def write_drawings(self):
