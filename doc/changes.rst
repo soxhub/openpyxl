@@ -21,7 +21,7 @@ Pull Requests
 * `PR303 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Improvements on handling nested brackets in the tokeniser
 
 
-2.5.13 (brow bag)
+2.5.13 (brown bag)
 =================
 
 
