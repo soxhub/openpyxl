@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
 from warnings import warn
@@ -8,7 +8,7 @@ from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import IMAGE_NS
 from openpyxl.packaging.relationship import get_rel, get_rels_path, get_dependents
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.drawing.image import Image
+from openpyxl.drawing.image import Image, PILImage
 from openpyxl.chart.chartspace import ChartSpace
 from openpyxl.chart.reader import read_chart
 
@@ -41,10 +41,18 @@ def find_images(archive, path):
         charts.append(chart)
 
     images = []
+    if not PILImage: # Pillow not installed, drop images
+        return charts, images
+
     for rel in drawing._blip_rels:
         dep = deps[rel.embed]
         if dep.Type == IMAGE_NS:
-            image = Image(BytesIO(archive.read(dep.target)))
+            try:
+                image = Image(BytesIO(archive.read(dep.target)))
+            except (OSError, IOError): # Python 2.7
+                msg = "The image {0} will be removed because it cannot be read".format(dep.target)
+                warn(msg)
+                continue
             if image.format.upper() == "WMF": # cannot save
                 msg = "{0} image format is not supported so the image is being dropped".format(image.format)
                 warn(msg)

@@ -1,3 +1,5 @@
+# Copyright (c) 2010-2019 openpyxl
+
 from io import BytesIO
 from string import ascii_letters
 from zipfile import ZipFile

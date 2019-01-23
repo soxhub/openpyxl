@@ -53,7 +53,7 @@ class Tokenizer(object):
         self._parse()
 
     def _parse(self):
-        "Populate self.items with the tokens from the formula."
+        """Populate self.items with the tokens from the formula."""
         if self.offset:
             return  # Already parsed!
         if not self.formula:
@@ -131,12 +131,18 @@ class Tokenizer(object):
 
         """
         assert self.formula[self.offset] == '['
-        right = self.formula.find(']', self.offset) + 1
-        if right == 0:
-            raise TokenizerError(
-                "Encountered unmatched '[' in %s" % self.formula)
-        self.token.append(self.formula[self.offset: right])
-        return right - self.offset
+        lefts = [(t.start(), 1) for t in re.finditer(r"\[", self.formula)]
+        rights = [(t.start(), -1) for t in re.finditer(r"\]", self.formula)]
+
+        open_count = 0
+        for idx, open_close in sorted(lefts + rights):
+            open_count += open_close
+            if open_count == 0:
+                outer_right = idx + 1
+                self.token.append(self.formula[self.offset:outer_right])
+                return outer_right - self.offset
+
+        raise TokenizerError("Encountered unmatched '[' in %s" % self.formula)
 
     def _parse_error(self):
         """

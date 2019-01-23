@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 # coding: utf-8
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 # package imports
 from openpyxl.workbook import Workbook
@@ -222,7 +222,7 @@ def test_get_named_range():
     wb = Workbook()
     new_sheet = wb.create_sheet()
     wb.create_named_range('test_nr', new_sheet, 'A1')
-    assert wb.defined_names['test_nr'].value == 'Sheet1!A1'
+    assert wb.defined_names['test_nr'].value == "'Sheet1'!A1"
 
 
 def test_remove_named_range():

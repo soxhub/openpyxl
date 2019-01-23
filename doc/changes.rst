@@ -1,3 +1,22 @@
+2.5.13 (2019-01-23)
+===================
+
+
+Bugfixes
+--------
+
+* `#1150 <https://bitbucket.org/openpyxl/openpyxl/issues/1150>`_ Correct typo in LineProperties
+* `#1142 <https://bitbucket.org/openpyxl/openpyxl/issues/1142>`_ Exception raised for unsupported image files
+* `#1159 <https://bitbucket.org/openpyxl/openpyxl/issues/1159>`_ Exception raised when cannot find source for non-local cache object
+
+
+Pull Requests
+-------------
+
+* `PR301 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Add support for nested brackets to the tokeniser
+* `PR303 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Improvements on handling nested brackets in the tokeniser
+
+
 2.5.12 (2018-11-29)
 ===================
 

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 """Manage individual cells in a spreadsheet.
 
@@ -230,7 +230,7 @@ class Cell(StyleableObject):
 
 
     def _cast_numeric(self, value):
-        """Explicity convert a string to a numeric value"""
+        """Explicitly convert a string to a numeric value"""
         if NUMBER_REGEX.match(value):
             try:
                 return int(value)

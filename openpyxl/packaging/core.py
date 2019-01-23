@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import datetime
 
@@ -73,12 +73,12 @@ class DocumentProperties(Serialisable):
     creator = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
     description = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
     identifier = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    language = NestedText(expected_type=unicode,allow_none=True, namespace=DCORE_NS)
-    # Dubline Core Terms
+    language = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    # Dublin Core Terms
     created = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
     modified = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
 
-    __elements__ = ("creator","title", "description", "subject","identifier",
+    __elements__ = ("creator", "title", "description", "subject","identifier",
                   "language", "created", "modified", "lastModifiedBy", "category",
                   "contentStatus", "version", "revision", "keywords", "lastPrinted",
                   )

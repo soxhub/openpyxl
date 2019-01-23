@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 """
 XML compatability functions
@@ -133,5 +133,7 @@ def safe_iterator(node, tag=None):
 NS_REGEX = re.compile("({(?P<namespace>.*)})?(?P<localname>.*)")
 
 def localname(node):
+    if callable(node.tag):
+        return "comment"
     m = NS_REGEX.match(node.tag)
     return m.group('localname')

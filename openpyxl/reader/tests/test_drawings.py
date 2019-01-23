@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -35,3 +35,14 @@ def test_unsupport_drawing(datadir):
     from ..drawings import find_images
     charts, images = find_images(archive, "drawing1.xml")
     assert charts == images == []
+
+
+def test_unsupported_image_format(datadir):
+    datadir.chdir()
+
+    archive = ZipFile("sample_with_unsupported_image_format.xlsx", "r")
+    path = "xl/drawings/drawing1.xml"
+
+    from ..drawings import find_images
+    images = find_images(archive, path)
+    assert images == ([], [])

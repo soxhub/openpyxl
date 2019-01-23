@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2018 openpyxl
+# Copyright (c) 2010-2019 openpyxl
 
 import pytest
 
@@ -118,7 +118,7 @@ class TestBarChart:
             </spPr>
             <val>
               <numRef>
-                <f>Sheet1!$A$1:$A$10</f>
+                <f>'Sheet1'!$A$1:$A$10</f>
               </numRef>
             </val>
           </ser>
@@ -132,7 +132,7 @@ class TestBarChart:
             </spPr>
             <val>
               <numRef>
-                <f>Sheet1!$B$1:$B$10</f>
+                <f>'Sheet1'!$B$1:$B$10</f>
               </numRef>
             </val>
           </ser>
