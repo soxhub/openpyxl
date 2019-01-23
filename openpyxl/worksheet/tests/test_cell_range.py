@@ -19,6 +19,12 @@ class TestCellRange:
         assert cr.coord == "A1:E7"
 
 
+    def test_dict(self, CellRange):
+        cr = CellRange("Sheet1!A1:E7")
+        assert cr.coord == "A1:E7"
+        assert dict(cr) == {'max_col': 5, 'max_row': 7, 'min_col': 1, 'min_row': 1}
+
+
     def test_max_row_too_small(self, CellRange):
         with pytest.raises(ValueError):
             CellRange("A4:B1")

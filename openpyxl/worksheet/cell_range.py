@@ -324,6 +324,17 @@ class CellRange(Serialisable):
     __or__ = union
 
 
+    def __iter__(self):
+        """
+        For use as a dictionary elsewhere in the library.
+        """
+        for x in self.__attrs__:
+            if x == "title":
+                continue
+            v = getattr(self, x)
+            yield x, v
+
+
     def expand(self, right=0, down=0, left=0, up=0):
         """
         Expand the range by the dimensions provided.
