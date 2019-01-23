@@ -49,9 +49,9 @@ class CellRange(Serialisable):
     def __init__(self, range_string=None, min_col=None, min_row=None,
                  max_col=None, max_row=None, title=None):
         if range_string is not None:
-            try:
+            if "!" in range_string:
                 title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
-            except ValueError:
+            else:
                 min_col, min_row, max_col, max_row = range_boundaries(range_string)
 
         self.min_col = min_col
@@ -322,6 +322,17 @@ class CellRange(Serialisable):
                          max_row=max_row, title=self.title)
 
     __or__ = union
+
+
+    def __iter__(self):
+        """
+        For use as a dictionary elsewhere in the library.
+        """
+        for x in self.__attrs__:
+            if x == "title":
+                continue
+            v = getattr(self, x)
+            yield x, v
 
 
     def expand(self, right=0, down=0, left=0, up=0):
