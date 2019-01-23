@@ -103,7 +103,8 @@ row in column ``F``::
     >>> from openpyxl.formula.translate import Translator
     >>> ws['F2'] = "=SUM(B2:E2)"
     >>> # move the formula one colum to the right
-    >>> formula = Translator("=SUM(B2:E2)", "G2")
+    >>> ws['G2'] = Translator("=SUM(B2:E2)", origin="F2").translate_formula("G2")
+    >>> ws['G2'].value
     '=SUM(C2:F2)'
 
 .. note::
