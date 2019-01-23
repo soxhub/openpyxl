@@ -49,9 +49,9 @@ class CellRange(Serialisable):
     def __init__(self, range_string=None, min_col=None, min_row=None,
                  max_col=None, max_row=None, title=None):
         if range_string is not None:
-            try:
+            if "!" in range_string:
                 title, (min_col, min_row, max_col, max_row) = range_to_tuple(range_string)
-            except ValueError:
+            else:
                 min_col, min_row, max_col, max_row = range_boundaries(range_string)
 
         self.min_col = min_col

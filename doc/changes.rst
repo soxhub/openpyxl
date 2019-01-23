@@ -37,7 +37,11 @@ Deprecations
 * Type inference and coercion for cell values
 
 
-2.5.13 (unreleased)
+2.5.15 (unreleased)
+===================
+
+
+2.5.14 (2019-01-23)
 ===================
 
 
@@ -54,6 +58,10 @@ Pull Requests
 
 * `PR301 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Add support for nested brackets to the tokeniser
 * `PR303 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Improvements on handling nested brackets in the tokeniser
+
+
+2.5.13 (brown bag)
+=================
 
 
 2.5.12 (2018-11-29)
