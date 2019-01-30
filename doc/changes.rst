@@ -1,5 +1,14 @@
-3.0.0 (unreleased)
+3.0-dev (unreleased)
+====================
+
+
+2.6.0 (unreleased)
 ==================
+
+Bugfixes
+--------
+
+* `#1162 <https://bitbucket.org/openpyxl/openpyxl/issues/1162>`_ Exception on tables with names containing spaces.
 
 
 2.6.-b1 (2019-01-08)
@@ -65,7 +74,7 @@ Pull Requests
 
 
 2.5.13 (brown bag)
-=================
+==================
 
 
 2.5.12 (2018-11-29)

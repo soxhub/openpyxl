@@ -10,10 +10,13 @@ from inspect import isgenerator
 
 # compatibility imports
 from openpyxl.compat import (
-    range,
     basestring,
     deprecated,
 )
+try:
+    range = xrange
+except NameError:
+    pass
 
 # package imports
 from openpyxl.utils import (

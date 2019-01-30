@@ -11,7 +11,6 @@ import pytest
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 from openpyxl.reader.excel import load_workbook
-from openpyxl.compat import range
 from openpyxl.cell.read_only import EMPTY_CELL
 
 
@@ -32,7 +31,7 @@ def DummyWorkbook():
 
 @pytest.fixture
 def ReadOnlyWorksheet():
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+    from openpyxl.worksheet._read_only import ReadOnlyWorksheet
     return ReadOnlyWorksheet
 
 

@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
 import operator
-from openpyxl.compat import accumulate, zip
+from openpyxl.compat import accumulate
 
 
 def dataframe_to_rows(df, index=True, header=True):
