@@ -178,7 +178,6 @@ def test_set_bad_type(dummy_cell):
 
 def test_illegal_characters(dummy_cell):
     from openpyxl.utils.exceptions import IllegalCharacterError
-    from openpyxl.compat import range
     from itertools import chain
     cell = dummy_cell
 

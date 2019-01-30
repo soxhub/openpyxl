@@ -23,7 +23,6 @@ from openpyxl.compat import (
     basestring,
     bytes,
     NUMERIC_TYPES,
-    range,
     deprecated,
 )
 from openpyxl.utils.units import (
