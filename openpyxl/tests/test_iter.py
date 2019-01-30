@@ -12,7 +12,6 @@ import pytest
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.xml.functions import fromstring
 from openpyxl.reader.excel import load_workbook
-from openpyxl.compat import range
 from openpyxl.cell.read_only import EMPTY_CELL
 
 
