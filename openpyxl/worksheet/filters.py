@@ -1,6 +1,6 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
@@ -242,7 +242,7 @@ class Filters(Serialisable):
                                    "gregorianMeFrench","gregorianArabic", "hijri","hebrew",
                                    "taiwan","japan", "thai","korea",
                                    "saka","gregorianXlitEnglish","gregorianXlitFrench"])
-    filter = ValueSequence(expected_type=unicode)
+    filter = ValueSequence(expected_type=str)
     dateGroupItem = Sequence(expected_type=DateGroupItem, allow_none=True)
 
     __elements__ = ('filter', 'dateGroupItem')

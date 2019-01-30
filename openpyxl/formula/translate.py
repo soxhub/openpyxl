@@ -35,7 +35,7 @@ class Translator(object):
     """
     Modifies a formula so that it can be translated from one cell to another.
 
-    `formula`: The unicode string to translate. Must include the leading '='
+    `formula`: The str string to translate. Must include the leading '='
                character.
     `origin`: The cell address (in A1 notation) where this formula was
               defined (excluding the worksheet name).

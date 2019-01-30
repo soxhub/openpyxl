@@ -3,8 +3,6 @@
 import re
 import warnings
 
-from openpyxl.compat import unicode, safe_repr
-
 from openpyxl.worksheet.header_footer import HeaderFooter
 
 """
@@ -51,7 +49,7 @@ class _WorkbookChild(object):
 
 
     def __repr__(self):
-        return '<{0} "{1}">'.format(self.__class__.__name__, safe_repr(self.title))
+        return '<{0} "{1}">'.format(self.__class__.__name__, self.title)
 
 
     @property
@@ -83,11 +81,11 @@ class _WorkbookChild(object):
             raise ValueError("Title must have at least one character")
 
         if hasattr(value, "decode"):
-            if not isinstance(value, unicode):
+            if not isinstance(value, str):
                 try:
                     value = value.decode("ascii")
                 except UnicodeDecodeError:
-                    raise ValueError("Worksheet titles must be unicode")
+                    raise ValueError("Worksheet titles must be str")
 
         m = INVALID_TITLE_REGEX.search(value)
         if m:

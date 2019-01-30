@@ -1,6 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -359,7 +358,7 @@ class ParagraphProperties(Serialisable):
     buFont = Typed(expected_type=Font, allow_none=True)
     buNone = EmptyTag()
     buAutoNum = EmptyTag()
-    buChar = NestedValue(expected_type=unicode, attribute="char", allow_none=True)
+    buChar = NestedValue(expected_type=str, attribute="char", allow_none=True)
     buBlip = NestedValue(expected_type=Blip, attribute="blip", allow_none=True)
 
     __elements__ = ('lnSpc', 'spcBef', 'spcAft', 'tabLst', 'defRPr',
@@ -478,7 +477,7 @@ class RegularTextRun(Serialisable):
 
     rPr = Typed(expected_type=CharacterProperties, allow_none=True)
     properties = Alias("rPr")
-    t = NestedText(expected_type=unicode)
+    t = NestedText(expected_type=str)
     value = Alias("t")
 
     __elements__ = ('rPr', 't')

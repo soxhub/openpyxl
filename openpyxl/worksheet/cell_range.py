@@ -1,9 +1,7 @@
-from __future__ import unicode_literals
 # Copyright (c) 2010-2019 openpyxl
 
 from copy import copy
 
-from openpyxl.compat.strings import safe_repr
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors import MinMax, Sequence
 from openpyxl.descriptors.serialisable import Serialisable
@@ -111,23 +109,16 @@ class CellRange(Serialisable):
         fmt = u"<{cls} {coord}>"
         if self.title:
             fmt = u"<{cls} {title!r}!{coord}>"
-        return safe_repr(fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord))
+        return fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord)
 
 
-    def _get_range_string(self):
+    def __str__(self):
         fmt = "{coord}"
         title = self.title
         if title:
             fmt = u"{title}!{coord}"
             title = quote_sheetname(title)
         return fmt.format(title=title, coord=self.coord)
-
-    __unicode__ = _get_range_string
-
-
-    def __str__(self):
-        coord = self._get_range_string()
-        return safe_repr(coord)
 
 
     def __copy__(self):
@@ -433,7 +424,7 @@ class MultiCellRange(Strict):
         ranges = u" ".join([str(r) for r in self.ranges])
         return ranges
 
-    __unicode__ = __str__
+    __str__ = __str__
 
 
     def add(self, coord):

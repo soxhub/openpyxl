@@ -80,11 +80,11 @@ class TestHeaderFooterPart:
         assert bool(hf) is True
 
 
-    def test_unicode(self, _HeaderFooterPart):
-        from openpyxl.compat import unicode
+    def test_str(self, _HeaderFooterPart):
+
         hf = _HeaderFooterPart()
         hf.text = u"D\xfcsseldorf"
-        assert unicode(hf) == u"D\xfcsseldorf"
+        assert str(hf) == u"D\xfcsseldorf"
 
 
 @pytest.fixture
@@ -134,11 +134,11 @@ class TestHeaderFooterItem:
         assert bool(hf) is True
 
 
-    def test_unicode(self, HeaderFooterItem):
-        from openpyxl.compat import unicode
+    def test_str(self, HeaderFooterItem):
+
         hf = HeaderFooterItem()
         hf.left.text = u'D\xfcsseldorf'
-        assert unicode(hf) == u'&LD\xfcsseldorf'
+        assert str(hf) == u'&LD\xfcsseldorf'
 
 
 @pytest.fixture

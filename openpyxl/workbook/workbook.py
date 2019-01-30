@@ -3,7 +3,7 @@
 """Workbook is the top-level container for all document information."""
 from copy import copy
 
-from openpyxl.compat import deprecated, long
+from openpyxl.compat import deprecated
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet._write_only import WriteOnlyWorksheet
@@ -45,7 +45,7 @@ from openpyxl.xml.constants import (
     XLTX
 )
 
-INTEGER_TYPES = (int, long)
+INTEGER_TYPES = (int,)
 
 class Workbook(object):
     """Workbook is the container for all other parts of the document."""
@@ -183,7 +183,7 @@ class Workbook(object):
         """Create a worksheet (at an optional index).
 
         :param title: optional title of the sheet
-        :type title: unicode
+        :type title: str
         :param index: optional position at which the sheet will be inserted
         :type index: int
 

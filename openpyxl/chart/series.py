@@ -1,6 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -53,7 +52,7 @@ class SeriesLabel(Serialisable):
     tagname = "tx"
 
     strRef = Typed(expected_type=StrRef, allow_none=True)
-    v = NestedText(expected_type=unicode, allow_none=True)
+    v = NestedText(expected_type=str, allow_none=True)
     value = Alias('v')
 
     __elements__ = ('strRef', 'v')

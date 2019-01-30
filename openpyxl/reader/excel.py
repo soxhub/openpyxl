@@ -10,8 +10,6 @@ from io import BytesIO
 import os.path
 import warnings
 
-# compatibility imports
-from openpyxl.compat import unicode, file
 from openpyxl.pivot.table import TableDefinition
 
 # Allow blanket setting of KEEP_VBA for testing

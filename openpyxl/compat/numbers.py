@@ -1,15 +1,8 @@
 # Copyright (c) 2010-2019 openpyxl
 
-try:
-    # Python 2
-    long = long
-except NameError:
-    # Python 3
-    long = int
-
 from decimal import Decimal
 
-NUMERIC_TYPES = (int, float, long, Decimal)
+NUMERIC_TYPES = (int, float, Decimal)
 
 
 try:

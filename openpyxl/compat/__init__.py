@@ -1,23 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
-
-from .strings import (
-    basestring,
-    unicode,
-    bytes,
-    file,
-    tempfile,
-    safe_string,
-    safe_repr,
-    )
-from .numbers import long, NUMERIC_TYPES
-
-
-try:
-    from itertools import accumulate
-except ImportError:
-    from .accumulate import accumulate
-
+from .numbers import NUMERIC_TYPES
+from .strings import safe_string
 
 import warnings
 from functools import wraps

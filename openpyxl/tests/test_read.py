@@ -3,7 +3,7 @@
 import pytest
 
 # compatibility imports
-from openpyxl.compat import unicode
+
 
 # package imports
 from openpyxl.styles import numbers

@@ -5,7 +5,7 @@ Excel specific descriptors
 """
 
 from openpyxl.xml.constants import REL_NS
-from openpyxl.compat import safe_string, unicode
+from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
 
 from . import (
@@ -50,7 +50,7 @@ class Percentage(MinMax):
     max = 1000000
 
     def __set__(self, instance, value):
-        if isinstance(value, unicode) and "%" in value:
+        if isinstance(value, str) and "%" in value:
             value = value.replace("%", "")
             value = int(float(value) * 1000)
         super(Percentage, self).__set__(instance, value)

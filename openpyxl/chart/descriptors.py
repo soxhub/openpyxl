@@ -1,6 +1,6 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import basestring
+
 
 from openpyxl.descriptors.nested import (
     NestedMinMax
@@ -38,6 +38,6 @@ class NumberFormatDescriptor(Typed):
     allow_none = True
 
     def __set__(self, instance, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = NumFmt(value)
         super(NumberFormatDescriptor, self).__set__(instance, value)

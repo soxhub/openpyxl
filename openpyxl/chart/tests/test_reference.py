@@ -2,8 +2,6 @@
 
 import pytest
 
-from openpyxl.compat import unicode
-
 
 @pytest.fixture
 def Reference():
@@ -98,4 +96,4 @@ class TestReference:
 
     def test_repr(self, Reference):
         ref = Reference(range_string=b"'D\xc3\xbcsseldorf'!A1:A10".decode("utf8"))
-        assert unicode(ref) == b"'D\xc3\xbcsseldorf'!$A$1:$A$10".decode("utf8")
+        assert str(ref) == b"'D\xc3\xbcsseldorf'!$A$1:$A$10".decode("utf8")

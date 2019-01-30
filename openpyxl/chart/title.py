@@ -1,7 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import basestring
-
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -69,6 +67,6 @@ class TitleDescriptor(Typed):
     allow_none = True
 
     def __set__(self, instance, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = title_maker(value)
         super(TitleDescriptor, self).__set__(instance, value)

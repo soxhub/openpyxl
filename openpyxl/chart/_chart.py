@@ -2,8 +2,6 @@
 
 from collections import OrderedDict
 
-from openpyxl.compat import basestring
-
 from openpyxl.descriptors import (
     Typed,
     Integer,

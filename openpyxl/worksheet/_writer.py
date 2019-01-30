@@ -9,7 +9,7 @@ from warnings import warn
 
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.compat import unicode
+
 from openpyxl.comments.comment_sheet import CommentRecord
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
@@ -270,7 +270,7 @@ class WorksheetWriter:
                     for cell, col in zip(row, table.tableColumns):
                         if cell.data_type != "s":
                             warn("File may not be readable: column headings must be strings.")
-                        col.name = unicode(cell.value)
+                        col.name = str(cell.value)
             rel = Relationship(Type=table._rel_type, Target="")
             self._rels.append(rel)
             table._rel_id = rel.Id

@@ -1,7 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import basestring, unicode
-
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
@@ -343,7 +341,7 @@ class ColorChoice(Serialisable):
 
     scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
     RGBPercent = Alias('scrgbClr')
-    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    srgbClr = NestedValue(expected_type=str, allow_none=True) # needs pattern and can have transform
     RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HSLColor, allow_none=True)
     sysClr = Typed(expected_type=SystemColor, allow_none=True)
@@ -429,7 +427,7 @@ class ColorChoiceDescriptor(Typed):
     allow_none = True
 
     def __set__(self, instance, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = ColorChoice(srgbClr=value)
         else:
             if hasattr(self, "namespace") and value is not None:

@@ -3,7 +3,6 @@
 """
 Richtext definition
 """
-from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -50,7 +49,7 @@ class PhoneticText(Serialisable):
 
     sb = Integer()
     eb = Integer()
-    t = NestedText(expected_type=unicode)
+    t = NestedText(expected_type=str)
     text = Alias('t')
 
     def __init__(self,
@@ -131,7 +130,7 @@ class RichText(Serialisable):
 
     rPr = Typed(expected_type=InlineFont, allow_none=True)
     font = Alias("rPr")
-    t = NestedText(expected_type=unicode, allow_none=True)
+    t = NestedText(expected_type=str, allow_none=True)
     text = Alias("t")
 
     __elements__ = ('rPr', 't')
@@ -148,7 +147,7 @@ class Text(Serialisable):
 
     tagname = "text"
 
-    t = NestedText(allow_none=True, expected_type=unicode)
+    t = NestedText(allow_none=True, expected_type=str)
     plain = Alias("t")
     r = Sequence(expected_type=RichText, allow_none=True)
     formatted = Alias("r")

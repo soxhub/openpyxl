@@ -1,6 +1,4 @@
-# copyright openpyxl 2010-2015
-
-from openpyxl.compat import basestring, unicode
+# copyright openpyxl 2010-2019
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -29,10 +27,10 @@ class ValueDescriptor(Float):
 
     def __set__(self, instance, value):
         ref = None
-        if value is not None and isinstance(value, basestring):
+        if value is not None and isinstance(value, str):
             ref = COORD_RE.match(value)
         if instance.type == "formula" or ref:
-            self.expected_type = basestring
+            self.expected_type = str
         else:
             self.expected_type = float
         super(ValueDescriptor, self).__set__(instance, value)
@@ -159,7 +157,7 @@ class Rule(Serialisable):
     rank = Integer(allow_none=True)
     stdDev = Integer(allow_none=True)
     equalAverage = Bool(allow_none=True)
-    formula = Sequence(expected_type=unicode)
+    formula = Sequence(expected_type=str)
     colorScale = Typed(expected_type=ColorScale, allow_none=True)
     dataBar = Typed(expected_type=DataBar, allow_none=True)
     iconSet = Typed(expected_type=IconSet, allow_none=True)

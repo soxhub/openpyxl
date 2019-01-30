@@ -3,13 +3,12 @@
 
 """
 Based on Python Cookbook 3rd Edition, 8.13
-http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussion_130
+http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussiuncion_130
 """
 
 import datetime
 import re
 
-from openpyxl.compat import basestring, bytes, long
 from openpyxl.utils.datetime import from_ISO8601
 
 from .namespace import namespaced
@@ -146,7 +145,7 @@ class NoneSet(Set):
 
 class Integer(Convertible):
 
-    expected_type = long
+    expected_type = int
 
 
 class Float(Convertible):
@@ -167,7 +166,7 @@ class Bool(Convertible):
 
 class String(Typed):
 
-    expected_type = basestring
+    expected_type = str
 
 
 class Text(String, Convertible):
@@ -261,7 +260,7 @@ class DateTime(Typed):
     expected_type = datetime.datetime
 
     def __set__(self, instance, value):
-        if value is not None and isinstance(value, basestring):
+        if value is not None and isinstance(value, str):
             try:
                 value = from_ISO8601(value)
             except ValueError:

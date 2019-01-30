@@ -1,6 +1,6 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
@@ -117,7 +117,7 @@ class GradientStop(Serialisable):
     # Color Choice Group
     scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
     RGBPercent = Alias('scrgbClr')
-    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    srgbClr = NestedValue(expected_type=str, allow_none=True) # needs pattern and can have transform
     RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HSLColor, allow_none=True)
     sysClr = Typed(expected_type=SystemColor, allow_none=True)
@@ -221,7 +221,7 @@ class SolidColorFillProperties(Serialisable):
     # uses element group EG_ColorChoice
     scrgbClr = Typed(expected_type=RGBPercent, allow_none=True)
     RGBPercent = Alias('scrgbClr')
-    srgbClr = NestedValue(expected_type=unicode, allow_none=True) # needs pattern and can have transform
+    srgbClr = NestedValue(expected_type=str, allow_none=True) # needs pattern and can have transform
     RGB = Alias('srgbClr')
     hslClr = Typed(expected_type=HSLColor, allow_none=True)
     sysClr = Typed(expected_type=SystemColor, allow_none=True)
