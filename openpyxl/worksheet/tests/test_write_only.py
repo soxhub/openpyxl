@@ -29,7 +29,7 @@ class DummyWorkbook:
 
 @pytest.fixture
 def WriteOnlyWorksheet():
-    from ..write_only import WriteOnlyWorksheet
+    from .._write_only import WriteOnlyWorksheet
     return WriteOnlyWorksheet(DummyWorkbook(), title="TestWorksheet")
 
 
@@ -109,7 +109,7 @@ def test_invalid_append(WriteOnlyWorksheet, row):
 
 
 def test_cannot_save_twice(WriteOnlyWorksheet):
-    from .. write_only import WorkbookAlreadySaved
+    from .._write_only import WorkbookAlreadySaved
 
     ws = WriteOnlyWorksheet
     ws.close()

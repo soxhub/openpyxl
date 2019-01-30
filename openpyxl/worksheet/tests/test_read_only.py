@@ -27,7 +27,7 @@ def DummyWorkbook():
 
 @pytest.fixture
 def ReadOnlyWorksheet(DummyWorkbook, datadir):
-    from ..read_only import ReadOnlyWorksheet
+    from .._read_only import ReadOnlyWorksheet
     datadir.chdir()
 
     wb = DummyWorkbook

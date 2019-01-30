@@ -6,8 +6,8 @@ from copy import copy
 
 from openpyxl.compat import deprecated, long
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.worksheet.read_only import ReadOnlyWorksheet
-from openpyxl.worksheet.write_only import WriteOnlyWorksheet
+from openpyxl.worksheet._read_only import ReadOnlyWorksheet
+from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils import quote_sheetname

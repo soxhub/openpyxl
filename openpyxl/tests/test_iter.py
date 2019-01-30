@@ -33,7 +33,7 @@ def DummyWorkbook():
 
 @pytest.fixture
 def ReadOnlyWorksheet():
-    from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+    from openpyxl.worksheet._read_only import ReadOnlyWorksheet
     return ReadOnlyWorksheet
 
 

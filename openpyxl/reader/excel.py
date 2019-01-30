@@ -53,7 +53,7 @@ from openpyxl.packaging.relationship import (
     get_rels_path,
 )
 
-from openpyxl.worksheet.read_only import ReadOnlyWorksheet
+from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet._reader import WorksheetReader
 from openpyxl.chartsheet import Chartsheet
 from openpyxl.worksheet.table import Table
