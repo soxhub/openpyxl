@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from __future__ import division
 # Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
@@ -8,21 +7,6 @@ try:
     from PIL import Image as PILImage
 except ImportError:
     PILImage = False
-
-def bounding_box(bw, bh, w, h):
-    """
-    Returns a tuple (new_width, new_height) which has the property
-    that it fits within box_width and box_height and has (close to)
-    the same aspect ratio as the original size
-    """
-    new_width, new_height = w, h
-    if bw and new_width > bw:
-        new_width = bw
-        new_height = new_width / (w / h)
-    if bh and new_height > bh:
-        new_height = bh
-        new_width = new_height * (w / h)
-    return (new_width, new_height)
 
 
 def _import_image(img):

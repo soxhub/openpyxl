@@ -3,14 +3,6 @@ from __future__ import absolute_import
 
 import pytest
 
-
-def test_bounding_box():
-    from ..image import bounding_box
-    w, h = bounding_box(80, 80, 90, 100)
-    assert w == 72
-    assert h == 80
-
-
 @pytest.fixture
 def Image():
     from ..image import Image
