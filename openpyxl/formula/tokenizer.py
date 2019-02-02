@@ -131,16 +131,19 @@ class Tokenizer(object):
 
         """
         assert self.formula[self.offset] == '['
-        lefts = [(t.start(), 1) for t in re.finditer(r"\[", self.formula)]
-        rights = [(t.start(), -1) for t in re.finditer(r"\]", self.formula)]
+        lefts = [(t.start(), 1) for t in
+                 re.finditer(r"\[", self.formula[self.offset:])]
+        rights = [(t.start(), -1) for t in
+                  re.finditer(r"\]", self.formula[self.offset:])]
 
         open_count = 0
         for idx, open_close in sorted(lefts + rights):
             open_count += open_close
             if open_count == 0:
                 outer_right = idx + 1
-                self.token.append(self.formula[self.offset:outer_right])
-                return outer_right - self.offset
+                self.token.append(
+                    self.formula[self.offset:self.offset + outer_right])
+                return outer_right
 
         raise TokenizerError("Encountered unmatched '[' in %s" % self.formula)
 
