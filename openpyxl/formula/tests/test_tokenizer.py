@@ -236,10 +236,13 @@ class TestTokenizer(object):
         ("", []),
 
         ('=A1+\nA2',
-         [('A1', OPERAND, RANGE ),
+         [('A1', OPERAND, RANGE),
           ('+', OP_IN, ''),
           ('\n', WSPACE, ''),
-          ('A2', OPERAND, RANGE )]),
+          ('A2', OPERAND, RANGE)]),
+
+        ('=R[41]C[2]',
+         [('R[41]C[2]', 'OPERAND', 'RANGE')]),
     ])
     def test_parse(self, tokenizer, formula, tokens):
         tok = tokenizer.Tokenizer(formula)
@@ -287,6 +290,8 @@ class TestTokenizer(object):
         ('[abcdef]', 0, '[abcdef]'),
         ('a[bcd]ef', 1, '[bcd]'),
         ('ab[cde]f', 2, '[cde]'),
+        ('R[1]C[2]', 1, '[1]'),
+        ('R[1]C[2]', 5, '[2]'),
     ])
     def test_parse_brackets(self, tokenizer, formula, offset, result):
         tok = tokenizer.Tokenizer(formula)
