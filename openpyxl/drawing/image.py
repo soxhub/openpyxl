@@ -54,7 +54,8 @@ class Image(object):
             fp = img.fp
         else:
             fp = BytesIO()
-            img.save(fp, format=self.format)
+            img.save(fp, format="png")
+            fp.seek(0)
 
         return fp.read()
 

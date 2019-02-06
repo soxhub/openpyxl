@@ -44,3 +44,17 @@ class TestImage:
         obj = PILImage.open("plain.png")
         img = Image(obj)
         assert img.ref.fp is not None
+
+
+    @pytest.mark.pil_required
+    def test_save(self, Image, datadir):
+        datadir.chdir()
+        img = Image("plain.png")
+        assert img._data()[:10] == b'\x89PNG\r\n\x1a\n\x00\x00'
+
+
+    @pytest.mark.pil_required
+    def test_convert(self, Image, datadir):
+        datadir.chdir()
+        img = Image("plain.tif")
+        assert img._data()[:10] == b'\x89PNG\r\n\x1a\n\x00\x00'
