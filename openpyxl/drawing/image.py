@@ -32,8 +32,8 @@ class Image(object):
         self.ref = img
         mark_to_close = isinstance(img, basestring)
         image = _import_image(img)
-        self.width = image.size[0]
-        self.height = image.size[1]
+        self.width, self.height = image.size
+
         try:
             self.format = image.format.lower()
         except AttributeError:
