@@ -45,16 +45,14 @@ class Image(object):
 
     def _data(self):
         """
-        Open image and write it to a buffer when saving the workbook
+        Return image data, convert to supported types if necessary
         """
         img = _import_image(self.ref)
-        fp = None
         # don't convert these file formats
         if self.format in ['gif', 'jpeg', 'png']:
-            if img.fp:
-                img.fp.seek(0)
-                fp = img.fp
-        if not fp:
+            img.fp.seek(0)
+            fp = img.fp
+        else:
             fp = BytesIO()
             img.save(fp, format=self.format)
 

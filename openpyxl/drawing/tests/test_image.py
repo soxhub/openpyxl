@@ -44,4 +44,3 @@ class TestImage:
         obj = PILImage.open("plain.png")
         img = Image(obj)
         assert img.ref.fp is not None
-
