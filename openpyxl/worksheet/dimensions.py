@@ -121,7 +121,7 @@ class RowDimension(Dimension):
 class ColumnDimension(Dimension):
     """Information about the display properties of a column."""
 
-    width = Float(allow_none=True)
+    width = Float()
     bestFit = Bool()
     auto_size = Alias('bestFit')
     index = String()
@@ -135,7 +135,7 @@ class ColumnDimension(Dimension):
     def __init__(self,
                  worksheet,
                  index='A',
-                 width=None,
+                 width=0,
                  bestFit=False,
                  hidden=False,
                  outlineLevel=0,
@@ -165,7 +165,7 @@ class ColumnDimension(Dimension):
     @property
     def customWidth(self):
         """Always true if there is a width for the column"""
-        return self.width is not None
+        return bool(self.width)
 
 
     def reindex(self):
