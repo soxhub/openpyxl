@@ -5,6 +5,7 @@ Bugfixes
 --------
 
 * `#1162 <https://bitbucket.org/openpyxl/openpyxl/issues/1162>`_ Exception on tables with names containing spaces.
+* `#1170 <https://bitbucket.org/openpyxl/openpyxl/issues/1170>`_ Cannot save files with existing images.
 
 
 2.6.-b1 (2019-01-08)
