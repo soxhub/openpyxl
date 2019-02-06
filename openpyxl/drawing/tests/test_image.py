@@ -35,3 +35,13 @@ class TestImage:
         i = Image("plain.png")
         with open("plain.png", "rb") as src:
             assert i._data() == src.read()
+
+
+    @pytest.mark.pil_required
+    def test_dont_close_pil(self, Image, datadir):
+        datadir.chdir()
+        from ..image import PILImage, Image
+        obj = PILImage.open("plain.png")
+        img = Image(obj)
+        assert img.ref.fp is not None
+
