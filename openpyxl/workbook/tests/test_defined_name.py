@@ -256,7 +256,7 @@ class TestDefinitionList:
 
     def test_read(self, DefinedNameList, datadir):
         datadir.chdir()
-        with open("workbook.xml") as src:
+        with open("defined_names.xml") as src:
             xml = src.read()
         node = fromstring(xml)
         dl = DefinedNameList.from_tree(node)
@@ -311,7 +311,7 @@ class TestDefinitionList:
 
     def test_localnames(self, DefinedNameList, datadir):
         datadir.chdir()
-        with open("workbook.xml", "rb") as src:
+        with open("defined_names.xml", "rb") as src:
             xml = src.read()
         node = fromstring(xml)
         dl = DefinedNameList.from_tree(node)
@@ -327,7 +327,7 @@ class TestDefinitionList:
                              )
     def test_get(self, DefinedNameList, datadir, name, scope, result):
         datadir.chdir()
-        with open("workbook.xml", "rb") as src:
+        with open("defined_names.xml", "rb") as src:
             xml = src.read()
         node = fromstring(xml)
         dl = DefinedNameList.from_tree(node)

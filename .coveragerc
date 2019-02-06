@@ -5,3 +5,12 @@ exclude_lines =
 omit =
     */tests/*
     */test_*
+    *conftest.py
+    */openpyxl/packaging/interface.py
+    */openpyxl/worksheet/cell_watch.py
+    */openpyxl/workhseet/controls.py
+    */openpyxl/worksheet/custom.py
+    */openpyxl/worksheet/errors.py
+    */openpyxl/worksheet/ole.py
+    */openpyxl/worksheet/picture.py
+    */openpyxl/worksheet/smart_tag.py

@@ -6,47 +6,33 @@ from __future__ import absolute_import
 
 # Python stdlib imports
 from itertools import islice, product
-from operator import attrgetter
-import re
+from operator import itemgetter
 from inspect import isgenerator
-from warnings import warn
 
 # compatibility imports
 from openpyxl.compat import (
-    unicode,
-    range,
     basestring,
     deprecated,
-    safe_string
 )
+try:
+    range = xrange
+except NameError:
+    pass
 
 # package imports
 from openpyxl.utils import (
-    coordinate_from_string,
     column_index_from_string,
     get_column_letter,
     range_boundaries,
-    rows_from_range,
     coordinate_to_tuple,
     absolute_coordinate,
 )
-from openpyxl.utils.cell import COORD_RE
-
-from openpyxl.cell import Cell
-from openpyxl.utils.exceptions import (
-    SheetTitleException,
-    NamedRangeException
-)
-from openpyxl.utils.units import (
-    points_to_pixels,
-    DEFAULT_COLUMN_WIDTH,
-    DEFAULT_ROW_HEIGHT,
-)
+from openpyxl.cell import Cell, MergedCell
 from openpyxl.formatting.formatting import ConditionalFormattingList
 from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
-from openpyxl.utils.bound_dictionary import BoundDictionary
+from openpyxl.formula.translate import Translator
 
 from .datavalidation import DataValidationList
 from .page import (
@@ -61,24 +47,17 @@ from .dimensions import (
     SheetFormatProperties,
 )
 from .protection import SheetProtection
-from .filters import AutoFilter, SortState
+from .filters import AutoFilter
 from .views import (
-    SheetView,
     Pane,
     Selection,
     SheetViewList,
 )
 from .cell_range import MultiCellRange, CellRange
+from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import PageBreak
-
-
-@deprecated("Use the worksheet.values property")
-def flatten(results):
-    """Return cell values row-by-row"""
-
-    for row in results:
-        yield(c.value for c in row)
+from .scenario import ScenarioList
 
 
 class Worksheet(_WorkbookChild):
@@ -127,7 +106,7 @@ class Worksheet(_WorkbookChild):
                                               default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
-        self.page_breaks = PageBreak()
+        self.page_breaks = [PageBreak()]
         self._cells = {}
         self._charts = []
         self._images = []
@@ -151,7 +130,6 @@ class Worksheet(_WorkbookChild):
 
         self._current_row = 0
         self.auto_filter = AutoFilter()
-        self.sort_state = SortState()
         self.paper_size = None
         self.formula_attributes = {}
         self.orientation = None
@@ -159,6 +137,8 @@ class Worksheet(_WorkbookChild):
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
+        self._merged_cell_range = {}
+        self.scenarios = ScenarioList()
 
 
     @property
@@ -188,31 +168,6 @@ class Worksheet(_WorkbookChild):
     @property
     def show_summary_right(self):
         return self.sheet_properties.outlinePr.summaryRight
-
-    @property
-    def vba_code(self):
-        for attr in ("codeName", "enableFormatConditionsCalculation",
-                     "filterMode", "published", "syncHorizontal", "syncRef",
-                     "syncVertical", "transitionEvaluation", "transitionEntry"):
-            value = getattr(self.sheet_properties, attr)
-            if value is not None:
-                yield attr, safe_string(value)
-
-    @vba_code.setter
-    def vba_code(self, value):
-        for k, v in value.items():
-            if k in ("codeName", "enableFormatConditionsCalculation",
-                     "filterMode", "published", "syncHorizontal", "syncRef",
-                     "syncVertical", "transitionEvaluation", "transitionEntry"):
-                setattr(self.sheet_properties, k, v)
-
-    """ End To keep compatibility with previous versions"""
-
-
-    @deprecated("Use the ws.values property")
-    def get_cell_collection(self):
-        """Return an unordered list of the cells in this worksheet."""
-        return self._cells.values()
 
 
     @property
@@ -256,21 +211,6 @@ class Worksheet(_WorkbookChild):
             view.selection = sel
 
 
-    @deprecated("Set print titles rows or columns directly")
-    def add_print_title(self, n, rows_or_cols='rows'):
-        """ Print Titles are rows or columns that are repeated on each printed sheet.
-        This adds n rows or columns at the top or left of the sheet
-        """
-
-        scope = self.parent.get_index(self)
-
-        if rows_or_cols == 'cols':
-            self.print_title_cols = 'A:%s' % get_column_letter(n)
-
-        else:
-            self.print_title_rows = '1:%d' % n
-
-
     def cell(self, row, column, value=None):
         """
         Returns a cell object based on the given coordinates.
@@ -309,7 +249,7 @@ class Worksheet(_WorkbookChild):
         """
         coordinate = (row, column)
         if not coordinate in self._cells:
-            cell = Cell(self, row=row, col_idx=column)
+            cell = Cell(self, row=row, column=column)
             self._add_cell(cell)
         return self._cells[coordinate]
 
@@ -461,8 +401,7 @@ class Worksheet(_WorkbookChild):
         return self.calculate_dimension()
 
 
-    def iter_rows(self, range_string=None, min_row=None, max_row=None, min_col=None, max_col=None,
-                  row_offset=0, column_offset=0):
+    def iter_rows(self, min_row=None, max_row=None, min_col=None, max_col=None, values_only=False):
         """
         Produces cells from the worksheet, by row. Specify the iteration range
         using indices of rows and columns.
@@ -470,9 +409,6 @@ class Worksheet(_WorkbookChild):
         If no indices are specified the range starts at A1.
 
         If no cells are in the worksheet an empty tuple will be returned.
-
-        :param range_string: range string (e.g. 'A1:B2') *deprecated*
-        :type range_string: string
 
         :param min_col: smallest column index (1-based index)
         :type min_col: int
@@ -483,21 +419,14 @@ class Worksheet(_WorkbookChild):
         :param max_col: largest column index (1-based index)
         :type max_col: int
 
-        :param max_row: smallest row index (1-based index)
+        :param max_row: largest row index (1-based index)
         :type max_row: int
 
-        :param row_offset: added to min_row and max_row (e.g. 4)
-        :type row_offset: int
-
-        :param column_offset: added to min_col and max_col (e.g. 3)
-        :type column_offset: int
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
 
         :rtype: generator
         """
-
-        if range_string is not None:
-            warn("Using a range string with iter_rows is deprecated. Use ws[range_string]")
-            min_col, min_row, max_col, max_row = range_boundaries(range_string.upper())
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
             return ()
@@ -507,20 +436,16 @@ class Worksheet(_WorkbookChild):
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
-        if max_col is not None:
-            max_col += column_offset
-        if max_row is not None:
-            max_row += row_offset
-        return self._cells_by_row(min_col + column_offset,
-                                  min_row + row_offset,
-                                  max_col,
-                                  max_row)
+        return self._cells_by_row(min_col, min_row, max_col, max_row, values_only)
 
 
-    def _cells_by_row(self, min_col, min_row, max_col, max_row):
+    def _cells_by_row(self, min_col, min_row, max_col, max_row, values_only=False):
         for row in range(min_row, max_row + 1):
-            yield tuple(self.cell(row=row, column=column)
-                    for column in range(min_col, max_col + 1))
+            cells = (self.cell(row=row, column=column) for column in range(min_col, max_col + 1))
+            if values_only:
+                yield tuple(cell.value for cell in cells)
+            else:
+                yield tuple(cells)
 
 
     @property
@@ -538,11 +463,11 @@ class Worksheet(_WorkbookChild):
 
         :type: generator
         """
-        for row in self.iter_rows():
-            yield tuple(c.value for c in row)
+        for row in self.iter_rows(values_only=True):
+            yield row
 
 
-    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None):
+    def iter_cols(self, min_col=None, max_col=None, min_row=None, max_row=None, values_only=False):
         """
         Produces cells from the worksheet, by column. Specify the iteration range
         using indices of rows and columns.
@@ -563,10 +488,13 @@ class Worksheet(_WorkbookChild):
         :param max_row: largest row index (1-based index)
         :type max_row: int
 
+        :param values_only: whether only cell values should be returned
+        :type values_only: bool
+
         :rtype: generator
         """
 
-        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
+        if self._current_row == 0 and not any([min_col, min_row, max_col, max_row]):
             return ()
 
         min_col = min_col or 1
@@ -574,18 +502,20 @@ class Worksheet(_WorkbookChild):
         max_col = max_col or self.max_column
         max_row = max_row or self.max_row
 
-        return self._cells_by_col(
-            min_col, min_row, max_col, max_row
-        )
+        return self._cells_by_col(min_col, min_row, max_col, max_row, values_only)
 
 
-    def _cells_by_col(self, min_col, min_row, max_col, max_row):
+    def _cells_by_col(self, min_col, min_row, max_col, max_row, values_only=False):
         """
         Get cells by column
         """
         for column in range(min_col, max_col+1):
-            yield tuple(self.cell(row=row, column=column)
+            cells = (self.cell(row=row, column=column)
                         for row in range(min_row, max_row+1))
+            if values_only:
+                yield tuple(cell.value for cell in cells)
+            else:
+                yield tuple(cells)
 
 
     @property
@@ -594,73 +524,10 @@ class Worksheet(_WorkbookChild):
         return self.iter_cols()
 
 
-    @deprecated("""
-    Use ws.iter_rows() or ws.iter_cols() depending whether you
-    want rows or columns returned.
-    """)
-    def get_squared_range(self, min_col, min_row, max_col, max_row):
-        """Returns a 2D array of cells. Will create any cells within the
-        boundaries that do not already exist
-
-        :param min_col: smallest column index (1-based index)
-        :type min_col: int
-
-        :param min_row: smallest row index (1-based index)
-        :type min_row: int
-
-        :param max_col: largest column index (1-based index)
-        :type max_col: int
-
-        :param max_row: largest row index (1-based index)
-        :type max_row: int
-
-        :rtype: generator
-        """
-
-        return self._cells_by_row(min_col, min_row, max_col, max_row)
-
-
-    @deprecated("""Ranges are workbook objects. Use wb.defined_names[range_name]""")
-    def get_named_range(self, range_name):
-        """
-        Returns a 2D array of cells, with optional row and column offsets.
-
-        :param range_name: `named range` name
-        :type range_name: string
-
-        :rtype: tuple[tuple[openpyxl.cell.cell.Cell]]
-        """
-        defn = self.parent.defined_names[range_name]
-        if defn.localSheetId and defn.localSheetId != self.parent.get_index(self):
-            msg = "{0} not available in this worksheet".format(range_name)
-            raise KeyError(msg)
-
-        if defn.type != "RANGE":
-            msg = '{0} refers to a value, not a range'.format(range_name)
-            raise NameError(msg)
-
-        result = []
-        for title, cells_range in defn.destinations:
-            ws = self.parent[title]
-            if ws != self:
-                raise NamedRangeException("Range includes cells from another worksheet")
-
-            rows = ws[cells_range]
-            if isinstance(rows, Cell):
-                rows = [(rows, )]
-
-            for row in rows:
-                result.extend(row)
-
-        return tuple(result)
-
-
     def set_printer_settings(self, paper_size, orientation):
         """Set printer settings """
 
         self.page_setup.paperSize = paper_size
-        if orientation not in (self.ORIENTATION_PORTRAIT, self.ORIENTATION_LANDSCAPE):
-            raise ValueError("Values should be %s or %s" % (self.ORIENTATION_PORTRAIT, self.ORIENTATION_LANDSCAPE))
         self.page_setup.orientation = orientation
 
 
@@ -712,16 +579,23 @@ class Worksheet(_WorkbookChild):
     def _clean_merge_range(self, cr):
         """
         Remove all but the top left-cell from a range of merged cells
+        and creates a MergedCellRange object to recreate the lost border
+        information.
+        After deletion of cells a reformat is issued.
         """
 
         min_col, min_row, max_col, max_row = cr.bounds
+
+        mcr = MergedCellRange(self, cr.coord)
+        self._merged_cell_range.update({cr.bounds:mcr})
+
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
         cells = product(rows, cols)
 
-        for c in islice(cells, 1, None):
-            if c in self._cells:
-                del self._cells[c]
+        for row, col in islice(cells, 1, None):
+            self._cells[row, col] = MergedCell(self, row, col)
+        mcr.format()
 
 
     @property
@@ -740,6 +614,9 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
         self.merged_cells.remove(cr)
+
+        # Deletes the MergedCellRange.
+        del self._merged_cell_range[cr.bounds]
 
 
     def append(self, iterable):
@@ -771,17 +648,17 @@ class Worksheet(_WorkbookChild):
                     if cell.parent and cell.parent != self:
                         raise ValueError("Cells cannot be copied from other worksheets")
                     cell.parent = self
-                    cell.col_idx = col_idx
+                    cell.column = col_idx
                     cell.row = row_idx
                 else:
-                    cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                    cell = Cell(self, row=row_idx, column=col_idx, value=content)
                 self._cells[(row_idx, col_idx)] = cell
 
         elif isinstance(iterable, dict):
             for col_idx, content in iterable.items():
                 if isinstance(col_idx, basestring):
                     col_idx = column_index_from_string(col_idx)
-                cell = Cell(self, row=row_idx, col_idx=col_idx, value=content)
+                cell = Cell(self, row=row_idx, column=col_idx, value=content)
                 self._cells[(row_idx, col_idx)] = cell
 
         else:
@@ -795,28 +672,27 @@ class Worksheet(_WorkbookChild):
         Move either rows or columns around by the offset
         """
         reverse = offset > 0 # start at the end if inserting
+        row_offset = 0
+        col_offset = 0
 
         # need to make affected ranges contiguous
-        cells = self.iter_rows(min_row=min_row)
-
-        if row_or_col == 'col':
+        if row_or_col == 'row':
+            cells = self.iter_rows(min_row=min_row)
+            row_offset = offset
+            key = 0
+        else:
             cells = self.iter_cols(min_col=min_col)
+            col_offset = offset
+            key = 1
         cells = list(cells)
 
-        cells = sorted(self._cells.values(), key=attrgetter(row_or_col), reverse=reverse)
-
-        for cell in cells:
-            if min_row and cell.row < min_row:
+        for row, column in sorted(self._cells, key=itemgetter(key), reverse=reverse):
+            if min_row and row < min_row:
                 continue
-            elif min_col and cell.col_idx < min_col:
+            elif min_col and column < min_col:
                 continue
 
-            del self._cells[(cell.row, cell.col_idx)] # remove old ref
-
-            val = getattr(cell, row_or_col)
-            setattr(cell, row_or_col, val+offset) # calculate new coords
-
-            self._cells[(cell.row, cell.col_idx)] = cell # add new ref
+            self._move_cell(row, column, row_offset, col_offset)
 
 
     def insert_rows(self, idx, amount=1):
@@ -831,7 +707,7 @@ class Worksheet(_WorkbookChild):
         """
         Insert column or columns before col==idx
         """
-        self._move_cells(min_col=idx, offset=amount, row_or_col="col_idx")
+        self._move_cells(min_col=idx, offset=amount, row_or_col="column")
 
 
     def delete_rows(self, idx, amount=1):
@@ -859,12 +735,56 @@ class Worksheet(_WorkbookChild):
 
         remainder = _gutter(idx, amount, self.max_column)
 
-        self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="col_idx")
+        self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="column")
 
         for col in remainder:
             for row in range(self.min_row, self.max_row+1):
                 if (row, col) in self._cells:
                     del self._cells[row, col]
+
+
+    def move_range(self, cell_range, rows=0, cols=0, translate=False):
+        """
+        Move a cell range by the number of rows and/or columns:
+        down if rows > 0 and up if rows < 0
+        right if cols > 0 and left if cols < 0
+        Existing cells will be overwritten.
+        Formulae and references will not be updated.
+        """
+        if isinstance(cell_range, basestring):
+            cell_range = CellRange(cell_range)
+        if not isinstance(cell_range, CellRange):
+            raise ValueError("Only CellRange objects can be moved")
+        if not rows and not cols:
+            return
+        min_col, min_row, max_col, max_row = cell_range.bounds
+        # rebase moved range
+        cell_range.shift(row_shift=rows, col_shift=cols)
+
+        down = rows > 0
+        right = cols > 0
+        r = sorted(range(min_row, max_row+1), reverse=down)
+        c = sorted(range(min_col, max_col+1), reverse=right)
+        for row, column in product(r, c):
+            self._move_cell(row, column, rows, cols, translate)
+
+
+    def _move_cell(self, row, column, row_offset, col_offset, translate=False):
+        """
+        Move a cell from one place to another.
+        Delete at old index
+        Rebase coordinate
+        """
+        cell = self._get_cell(row, column)
+        new_row = cell.row + row_offset
+        new_col = cell.column + col_offset
+        self._cells[new_row, new_col] = cell
+        del self._cells[(cell.row, cell.column)]
+        cell.row = new_row
+        cell.column = new_col
+        if translate and cell.data_type == "f":
+            t = Translator(cell.value, cell.coordinate)
+            cell.value = t.translate_formula(row_delta=row_offset, col_delta=col_offset)
 
 
     def _invalid_row(self, iterable):
@@ -882,15 +802,6 @@ class Worksheet(_WorkbookChild):
         """Dimension factory for row information"""
 
         return RowDimension(self)
-
-
-    def _write(self):
-        from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-        from openpyxl.writer.worksheet import write_worksheet
-        self._drawing = SpreadsheetDrawing()
-        self._drawing.charts = self._charts
-        self._drawing.images = self._images
-        return write_worksheet(self)
 
 
     @property

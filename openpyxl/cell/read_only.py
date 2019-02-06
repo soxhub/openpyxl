@@ -1,26 +1,11 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
-import re
-
-from openpyxl.compat import unicode, long
-
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.datetime import from_excel
 from openpyxl.styles import is_date_format
 from openpyxl.styles.numbers import BUILTIN_FORMATS
-
-
-FLOAT_REGEX = re.compile(r"\.|[E-e]")
-
-
-def _cast_number(value):
-    "Convert numbers as string to an int or float"
-    m = FLOAT_REGEX.search(value)
-    if m is not None:
-        return float(value)
-    return long(value)
 
 
 class ReadOnlyCell(object):
@@ -49,13 +34,6 @@ class ReadOnlyCell(object):
     def __repr__(self):
         return "<ReadOnlyCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-    @property
-    def shared_strings(self):
-        return self.parent.shared_strings
-
-    @property
-    def base_date(self):
-        return self.parent.base_date
 
     @property
     def coordinate(self):
@@ -109,29 +87,12 @@ class ReadOnlyCell(object):
 
     @property
     def value(self):
-        if self._value is None:
-            return
-        if self.data_type == 'n':
-            if self.style_array:
-                if is_date_format(self.number_format):
-                    return from_excel(self._value, self.base_date)
-            return self._value
-        if self.data_type == 'b':
-            return self._value == '1'
-        elif self.data_type in(Cell.TYPE_INLINE, Cell.TYPE_FORMULA_CACHE_STRING):
-            return unicode(self._value)
-        elif self.data_type == 's':
-            return unicode(self.shared_strings[int(self._value)])
         return self._value
 
     @value.setter
     def value(self, value):
         if self._value is not None:
             raise AttributeError("Cell is read only")
-        if value is None:
-            self.data_type = 'n'
-        elif self.data_type == 'n':
-            value = _cast_number(value)
         self._value = value
 
 

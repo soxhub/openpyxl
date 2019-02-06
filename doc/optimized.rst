@@ -65,7 +65,7 @@ If you want to have cells with styles or comments then use a :func:`openpyxl.wor
 >>> from openpyxl import Workbook
 >>> wb = Workbook(write_only = True)
 >>> ws = wb.create_sheet()
->>> from openpyxl.worksheet.write_only import WriteOnlyCell
+>>> from openpyxl.cell import WriteOnlyCell
 >>> from openpyxl.comments import Comment
 >>> from openpyxl.styles import Font
 >>> cell = WriteOnlyCell(ws, value="hello world")

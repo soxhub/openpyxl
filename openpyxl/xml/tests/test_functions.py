@@ -6,11 +6,6 @@ from io import BytesIO
 from ..functions import fromstring, iterparse
 
 
-def test_safe_iterator_none():
-    from .. functions import safe_iterator
-    seq = safe_iterator(None)
-    assert seq == []
-
 
 @pytest.mark.parametrize("xml, tag",
                          [

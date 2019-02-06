@@ -1,7 +1,7 @@
 
 Versions:
 python: 2.7.1
-openpyxl: 2.5.7
+openpyxl: 2.6.0dev
 xlsxwriter: 1.0.9
 
 Dimensions:
@@ -11,15 +11,15 @@ Dimensions:
     Proportion text = 0.10
 
 Times:
-    xlsxwriter            :   2.69
-    xlsxwriter (optimised):   2.48
-    openpyxl              :   4.59
-    openpyxl (optimised)  :   3.65
+    xlsxwriter            :   2.45
+    xlsxwriter (optimised):   2.64
+    openpyxl              :   3.96
+    openpyxl (optimised)  :   2.78
 
 
 Versions:
 python: 3.5.6
-openpyxl: 2.5.7
+openpyxl: 2.6.0dev
 xlsxwriter: 1.0.9
 
 Dimensions:
@@ -29,15 +29,15 @@ Dimensions:
     Proportion text = 0.10
 
 Times:
-    xlsxwriter            :   3.20
-    xlsxwriter (optimised):   3.08
-    openpyxl              :   5.54
-    openpyxl (optimised)  :   3.95
+    xlsxwriter            :   2.29
+    xlsxwriter (optimised):   2.22
+    openpyxl              :   4.35
+    openpyxl (optimised)  :   2.90
 
 
 Versions:
 python: 3.6.6
-openpyxl: 2.5.7
+openpyxl: 2.6.0dev
 xlsxwriter: 1.0.9
 
 Dimensions:
@@ -47,15 +47,15 @@ Dimensions:
     Proportion text = 0.10
 
 Times:
-    xlsxwriter            :   3.18
-    xlsxwriter (optimised):   3.02
-    openpyxl              :   4.28
-    openpyxl (optimised)  :   3.34
+    xlsxwriter            :   2.32
+    xlsxwriter (optimised):   2.22
+    openpyxl              :   3.35
+    openpyxl (optimised)  :   2.64
 
 
 Versions:
 python: 3.7.0
-openpyxl: 2.5.7
+openpyxl: 2.6.0dev
 xlsxwriter: 1.0.9
 
 Dimensions:
@@ -65,8 +65,8 @@ Dimensions:
     Proportion text = 0.10
 
 Times:
-    xlsxwriter            :   3.02
-    xlsxwriter (optimised):   2.94
-    openpyxl              :   4.11
-    openpyxl (optimised)  :   3.12
+    xlsxwriter            :   2.34
+    xlsxwriter (optimised):   2.23
+    openpyxl              :   2.93
+    openpyxl (optimised)  :   2.49
 

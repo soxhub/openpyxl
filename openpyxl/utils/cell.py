@@ -10,7 +10,7 @@ from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
 
 # constants
-COORD_RE = re.compile(r'^[$]?([A-Z]+)[$]?(\d+)$')
+COORD_RE = re.compile(r'^[$]?([A-Za-z]{1,3})[$]?(\d+)$')
 COL_RANGE = """[A-Z]{1,3}:[A-Z]{1,3}:"""
 ROW_RANGE = r"""\d+:\d+:"""
 RANGE_EXPR = r"""
@@ -42,7 +42,7 @@ def get_column_interval(start, end):
 
 def coordinate_from_string(coord_string):
     """Convert a coordinate string like 'B12' to a tuple ('B', 12)"""
-    match = COORD_RE.match(coord_string.upper())
+    match = COORD_RE.match(coord_string)
     if not match:
         msg = 'Invalid cell coordinates (%s)' % coord_string
         raise CellCoordinatesException(msg)
@@ -56,7 +56,7 @@ def coordinate_from_string(coord_string):
 
 def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
-    m = ABSOLUTE_RE.match(coord_string.upper())
+    m = ABSOLUTE_RE.match(coord_string)
     if not m:
         raise ValueError("{0} is not a valid coordinate range".format(
             coord_string))
@@ -196,8 +196,9 @@ def coordinate_to_tuple(coordinate):
     """
     Convert an Excel style coordinate to (row, colum) tuple
     """
-    col, row = coordinate_from_string(coordinate)
-    return row, _COL_STRING_CACHE[col]
+    match = COORD_RE.split(coordinate)
+    col, row = match[1:3]
+    return int(row), _COL_STRING_CACHE[col]
 
 
 def range_to_tuple(range_string):

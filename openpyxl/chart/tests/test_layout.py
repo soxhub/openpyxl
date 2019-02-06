@@ -21,10 +21,10 @@ class TestManualLayout:
             yMode="factor",
             wMode="factor",
             hMode="edge",
-            x=10,
-            y=50,
-            w=4,
-            h=100
+            x=.1,
+            y=.5,
+            w=.5,
+            h=.1
         )
         xml = tostring(layout.to_tree())
         expected = """
@@ -34,10 +34,10 @@ class TestManualLayout:
           <yMode val="factor"></yMode>
           <wMode val="factor"></wMode>
           <hMode val="edge"></hMode>
-          <x val="10"></x>
-          <y val="50"></y>
-          <w val="4"></w>
-          <h val="100"></h>
+          <x val="0.1"></x>
+          <y val="0.5"></y>
+          <w val="0.5"></w>
+          <h val="0.1"></h>
         </manualLayout>
         """
         diff = compare_xml(xml, expected)
@@ -52,16 +52,16 @@ class TestManualLayout:
           <yMode val="factor"></yMode>
           <wMode val="factor"></wMode>
           <hMode val="edge"></hMode>
-          <x val="10"></x>
-          <y val="50"></y>
-          <w val="4"></w>
-          <h val="100"></h>
+          <x val="0.1"></x>
+          <y val="0.5"></y>
+          <w val="0.5"></w>
+          <h val="0.1"></h>
         </manualLayout>
         """
         node = fromstring(src)
         layout = ManualLayout.from_tree(node)
         assert layout == ManualLayout(layoutTarget="inner", xMode="edge",
-                                      yMode="factor", wMode="factor", hMode="edge", x=10, y=50, w=4, h=100
+                                      yMode="factor", wMode="factor", hMode="edge", x=.1, y=.5, w=.5, h=.1
                                       )
 
 

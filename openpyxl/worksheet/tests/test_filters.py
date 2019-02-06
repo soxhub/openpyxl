@@ -54,10 +54,11 @@ class TestSortCondition:
     def test_ctor(self, SortCondition):
         cond = SortCondition(ref='A2:A3', descending=True)
         expected = """
-        <sortCondtion descending="1" ref="A2:A3"></sortCondtion>
+        <sortCondition descending="1" ref="A2:A3"></sortCondition>
         """
         xml = tostring(cond.to_tree())
         diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
     def test_from_xml(self, SortCondition):

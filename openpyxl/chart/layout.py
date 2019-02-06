@@ -12,8 +12,8 @@ from openpyxl.descriptors import (
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (
     NestedNoneSet,
-    NestedFloat
-
+    NestedSet,
+    NestedMinMax,
 )
 
 class ManualLayout(Serialisable):
@@ -23,13 +23,13 @@ class ManualLayout(Serialisable):
     layoutTarget = NestedNoneSet(values=(['inner', 'outer']))
     xMode = NestedNoneSet(values=(['edge', 'factor']))
     yMode = NestedNoneSet(values=(['edge', 'factor']))
-    wMode = NestedNoneSet(values=(['edge', 'factor']))
-    hMode = NestedNoneSet(values=(['edge', 'factor']))
-    x = NestedFloat(allow_none=True)
-    y = NestedFloat(allow_none=True)
-    w = NestedFloat(allow_none=True)
+    wMode = NestedSet(values=(['edge', 'factor']))
+    hMode = NestedSet(values=(['edge', 'factor']))
+    x = NestedMinMax(min=-1, max=1, allow_none=True)
+    y = NestedMinMax(min=-1, max=1, allow_none=True)
+    w = NestedMinMax(min=0, max=1, allow_none=True)
     width = Alias('w')
-    h = NestedFloat(allow_none=True)
+    h = NestedMinMax(min=0, max=1,  allow_none=True)
     height = Alias('h')
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -40,8 +40,8 @@ class ManualLayout(Serialisable):
                  layoutTarget=None,
                  xMode=None,
                  yMode=None,
-                 wMode=None,
-                 hMode=None,
+                 wMode="factor",
+                 hMode="factor",
                  x=None,
                  y=None,
                  w=None,

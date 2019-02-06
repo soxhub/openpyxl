@@ -8,7 +8,7 @@ from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
 def PivotCache():
-    from ..parser import PivotCache
+    from ..workbook import PivotCache
     return PivotCache
 
 

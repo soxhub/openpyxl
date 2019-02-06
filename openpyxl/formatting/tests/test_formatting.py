@@ -4,7 +4,6 @@ from __future__ import absolute_import
 # package imports
 from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.functions import tostring, fromstring
-from openpyxl.writer.worksheet import write_conditional_formatting
 from openpyxl.styles import Border, Side, PatternFill, Color, Font, fills, borders, colors
 from openpyxl.styles.differential import DifferentialStyle, DifferentialStyleList
 from openpyxl.formatting.formatting import ConditionalFormattingList
@@ -26,97 +25,6 @@ class DummyWorksheet():
     def __init__(self):
         self.conditional_formatting = ConditionalFormattingList()
         self.parent = DummyWorkbook()
-
-
-class TestConditionalFormattingList(object):
-
-
-    def setup(self):
-        self.ws = DummyWorksheet()
-
-    def test_conditional_formatting_customRule(self):
-
-        worksheet = self.ws
-        worksheet.conditional_formatting.add('C1:C10',
-                                             Rule(**{'type': 'expression', 'formula': ['ISBLANK(C1)'],
-                                                     'stopIfTrue': '1',}
-                                                  )
-                                             )
-        cfs = write_conditional_formatting(worksheet)
-        xml = b""
-        for cf in cfs:
-            xml += tostring(cf)
-
-        diff = compare_xml(xml, """
-        <conditionalFormatting sqref="C1:C10">
-          <cfRule type="expression" stopIfTrue="1" priority="1">
-            <formula>ISBLANK(C1)</formula>
-          </cfRule>
-        </conditionalFormatting>
-        """)
-        assert diff is None, diff
-
-    def test_write_conditional_formatting(self):
-        ws = self.ws
-        cf = ConditionalFormattingList()
-        ws.conditional_formatting = cf
-
-        fill = PatternFill(start_color=Color('FFEE1111'),
-                    end_color=Color('FFEE1111'),
-                    patternType=fills.FILL_SOLID)
-        font = Font(name='Arial', size=12, bold=True,
-                    underline=Font.UNDERLINE_SINGLE)
-        border = Border(top=Side(border_style=borders.BORDER_THIN,
-                                 color=Color(colors.DARKYELLOW)),
-                        bottom=Side(border_style=borders.BORDER_THIN,
-                                    color=Color(colors.BLACK)))
-        cf.add('C1:C10', FormulaRule(formula=['ISBLANK(C1)'], font=font, border=border, fill=fill))
-        cf.add('D1:D10', FormulaRule(formula=['ISBLANK(D1)'], fill=fill))
-        from openpyxl.writer.worksheet import write_conditional_formatting
-        for _ in write_conditional_formatting(ws):
-            pass # exhaust generator
-
-        wb = ws.parent
-        assert len(wb._differential_styles.styles) == 2
-        ft1, ft2 = wb._differential_styles.styles
-        assert ft1.font == font
-        assert ft1.border == border
-        assert ft1.fill == fill
-        assert ft2.fill == fill
-
-
-    def test_conditional_font(self):
-        """Test to verify font style written correctly."""
-
-        ws = self.ws
-        cf = ConditionalFormattingList()
-        ws.conditional_formatting = cf
-
-        # Create cf rule
-        redFill = PatternFill(start_color=Color('FFEE1111'),
-                       end_color=Color('FFEE1111'),
-                       patternType=fills.FILL_SOLID)
-        whiteFont = Font(color=Color("FFFFFFFF"))
-        ws.conditional_formatting.add('A1:A3',
-                                      CellIsRule(operator='equal', formula=['"Fail"'], stopIfTrue=False,
-                                                 font=whiteFont, fill=redFill))
-
-        from openpyxl.writer.worksheet import write_conditional_formatting
-
-        # First, verify conditional formatting xml
-        cfs = write_conditional_formatting(ws)
-        xml = b""
-        for cf in cfs:
-            xml += tostring(cf)
-
-        diff = compare_xml(xml, """
-        <conditionalFormatting sqref="A1:A3">
-          <cfRule dxfId="0" operator="equal" priority="1" type="cellIs" stopIfTrue="0">
-            <formula>"Fail"</formula>
-          </cfRule>
-        </conditionalFormatting>
-        """)
-        assert diff is None, diff
 
 
 def test_conditional_formatting_read(datadir):

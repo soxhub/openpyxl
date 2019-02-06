@@ -4,11 +4,12 @@ from __future__ import absolute_import
 """Write a .xlsx file."""
 
 # Python stdlib imports
-from io import BytesIO
 import re
+from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 
 # package imports
+from openpyxl.compat import deprecated
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
@@ -34,19 +35,12 @@ from openpyxl.packaging.relationship import (
     RelationshipList,
     Relationship,
 )
-from openpyxl.packaging.extended import ExtendedProperties
-
-from openpyxl.writer.strings import write_string_table
-from openpyxl.writer.workbook import (
-    write_root_rels,
-    write_workbook_rels,
-    write_workbook,
-)
-from openpyxl.writer.theme import write_theme
-from openpyxl.writer.worksheet import write_worksheet
-from openpyxl.styles.stylesheet import write_stylesheet
-
 from openpyxl.comments.comment_sheet import CommentSheet
+from openpyxl.packaging.extended import ExtendedProperties
+from openpyxl.styles.stylesheet import write_stylesheet
+from openpyxl.worksheet._writer import WorksheetWriter
+from openpyxl.workbook._writer import WorkbookWriter
+from .theme import theme_xml
 
 
 class ExcelWriter(object):
@@ -70,7 +64,6 @@ class ExcelWriter(object):
         # cleanup all worksheets
         archive = self._archive
 
-        archive.writestr(ARC_ROOT_RELS, write_root_rels(self.workbook))
         props = ExtendedProperties()
         archive.writestr(ARC_APP, tostring(props.to_tree()))
 
@@ -78,22 +71,24 @@ class ExcelWriter(object):
         if self.workbook.loaded_theme:
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)
         else:
-            archive.writestr(ARC_THEME, write_theme())
+            archive.writestr(ARC_THEME, theme_xml)
 
         self._write_worksheets()
         self._write_chartsheets()
         self._write_images()
         self._write_charts()
 
-        self._archive.writestr(ARC_SHARED_STRINGS,
-                              write_string_table(self.workbook.shared_strings))
+        #self._archive.writestr(ARC_SHARED_STRINGS,
+                              #write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
         stylesheet = write_stylesheet(self.workbook)
         archive.writestr(ARC_STYLE, tostring(stylesheet))
 
-        archive.writestr(ARC_WORKBOOK, write_workbook(self.workbook))
-        archive.writestr(ARC_WORKBOOK_RELS, write_workbook_rels(self.workbook))
+        writer = WorkbookWriter(self.workbook)
+        archive.writestr(ARC_ROOT_RELS, writer.write_root_rels())
+        archive.writestr(ARC_WORKBOOK, writer.write())
+        archive.writestr(ARC_WORKBOOK_RELS, writer.write_rels())
 
         self._merge_vba()
 
@@ -193,6 +188,24 @@ class ExcelWriter(object):
         ws._rels.append(comment_rel)
 
 
+    def write_worksheet(self, ws):
+        ws._drawing = SpreadsheetDrawing()
+        ws._drawing.charts = ws._charts
+        ws._drawing.images = ws._images
+        if self.workbook.write_only:
+            if not ws.closed:
+                ws.close()
+            writer = ws._writer
+        else:
+            writer = WorksheetWriter(ws)
+            writer.write()
+
+        ws._rels = writer._rels
+        self._archive.write(writer.out, ws.path[1:])
+        self.manifest.append(ws)
+        writer.cleanup()
+
+
     def _write_worksheets(self):
 
         pivot_caches = set()
@@ -200,11 +213,7 @@ class ExcelWriter(object):
         for idx, ws in enumerate(self.workbook.worksheets, 1):
 
             ws._id = idx
-            xml = ws._write()
-            rels_path = get_rels_path(ws.path)[1:]
-
-            self._archive.writestr(ws.path[1:], xml)
-            self.manifest.append(ws)
+            self.write_worksheet(ws)
 
             if ws._drawing:
                 self._write_drawing(ws._drawing)
@@ -242,6 +251,7 @@ class ExcelWriter(object):
 
             if ws._rels:
                 tree = ws._rels.to_tree()
+                rels_path = get_rels_path(ws.path)[1:]
                 self._archive.writestr(rels_path, tostring(tree))
 
 
@@ -261,13 +271,13 @@ class ExcelWriter(object):
             self.manifest.append(link)
 
 
-    def save(self, filename):
+    def save(self):
         """Write data into the archive."""
         self.write_data()
         self._archive.close()
 
 
-def save_workbook(workbook, filename,):
+def save_workbook(workbook, filename):
     """Save the given workbook on the filesystem under the name filename.
 
     :param workbook: the workbook to save
@@ -281,34 +291,21 @@ def save_workbook(workbook, filename,):
     """
     archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
     writer = ExcelWriter(workbook, archive)
-    writer.save(filename)
+    writer.save()
     return True
 
 
-def save_virtual_workbook(workbook,):
+@deprecated("Use a NamedTemporaryFile")
+def save_virtual_workbook(workbook):
     """Return an in-memory workbook, suitable for a Django response."""
-    temp_buffer = BytesIO()
-    archive = ZipFile(temp_buffer, 'w', ZIP_DEFLATED, allowZip64=True)
+    tmp = TemporaryFile()
+    archive = ZipFile(tmp, 'w', ZIP_DEFLATED, allowZip64=True)
 
     writer = ExcelWriter(workbook, archive)
+    writer.save()
 
-    try:
-        writer.write_data()
-    finally:
-        archive.close()
+    tmp.seek(0)
+    virtual_workbook = tmp.read()
+    tmp.close()
 
-    virtual_workbook = temp_buffer.getvalue()
-    temp_buffer.close()
     return virtual_workbook
-
-
-def save_dump(workbook, filename):
-    """
-    Save a write-only workbook
-    """
-    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
-    if workbook.worksheets == []:
-        workbook.create_sheet()
-    writer = ExcelWriter(workbook, archive)
-    writer.save(filename)
-    return True

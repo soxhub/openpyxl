@@ -16,12 +16,13 @@ from copy import copy
 import datetime
 import re
 
+from itertools import islice, product
+
 from openpyxl.compat import (
     unicode,
     basestring,
     bytes,
     NUMERIC_TYPES,
-    range,
     deprecated,
 )
 from openpyxl.utils.units import (
@@ -42,35 +43,52 @@ from openpyxl.utils import (
     get_column_letter,
     column_index_from_string,
 )
+from openpyxl.utils.inference import (
+    cast_numeric,
+    cast_percentage,
+    cast_percentage,
+)
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
 
 # constants
 
-
 TIME_TYPES = (datetime.datetime, datetime.date, datetime.time, datetime.timedelta)
+TIME_FORMATS = {
+    datetime.datetime:numbers.FORMAT_DATE_DATETIME,
+    datetime.date:numbers.FORMAT_DATE_YYYYMMDD2,
+    datetime.time:numbers.FORMAT_DATE_TIME6,
+    datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
+                }
+try:
+    from pandas import Timestamp
+    TIME_TYPES = TIME_TYPES + (Timestamp,)
+    TIME_FORMATS[Timestamp] = numbers.FORMAT_DATE_DATETIME
+except ImportError:
+    pass
+
 STRING_TYPES = (basestring, unicode, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
-PERCENT_REGEX = re.compile(r'^(?P<number>\-?[0-9]*\.?[0-9]*\s?)\%$')
-TIME_REGEX = re.compile(r"""
-^(?: # HH:MM and HH:MM:SS
-(?P<hour>[0-1]{0,1}[0-9]{2}):
-(?P<minute>[0-5][0-9]):?
-(?P<second>[0-5][0-9])?$)
-|
-^(?: # MM:SS.
-([0-5][0-9]):
-([0-5][0-9])?\.
-(?P<microsecond>\d{1,6}))
-""", re.VERBOSE)
-NUMBER_REGEX = re.compile(r'^-?([\d]|[\d]+\.[\d]*|\.[\d]+|[1-9][\d]+\.?[\d]*)((E|e)[-+]?[\d]+)?$')
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
-
 ERROR_CODES = ('#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!',
                '#N/A')
 
+
+ERROR_CODES = ERROR_CODES
+
+TYPE_STRING = 's'
+TYPE_FORMULA = 'f'
+TYPE_NUMERIC = 'n'
+TYPE_BOOL = 'b'
+TYPE_NULL = 'n'
+TYPE_INLINE = 'inlineStr'
+TYPE_ERROR = 'e'
+TYPE_FORMULA_CACHE_STRING = 'str'
+
+VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
+               TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
 class Cell(StyleableObject):
     """Describes cell associated properties.
@@ -80,7 +98,7 @@ class Cell(StyleableObject):
     """
     __slots__ = (
         'row',
-        'col_idx',
+        'column',
         '_value',
         'data_type',
         'parent',
@@ -88,25 +106,12 @@ class Cell(StyleableObject):
         '_comment',
                  )
 
-    ERROR_CODES = ERROR_CODES
-
-    TYPE_STRING = 's'
-    TYPE_FORMULA = 'f'
-    TYPE_NUMERIC = 'n'
-    TYPE_BOOL = 'b'
-    TYPE_NULL = 'n'
-    TYPE_INLINE = 'inlineStr'
-    TYPE_ERROR = 'e'
-    TYPE_FORMULA_CACHE_STRING = 'str'
-
-    VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
-                   TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
-
-
-    def __init__(self, worksheet, column=None, row=None, value=None, col_idx=None, style_array=None):
+    def __init__(self, worksheet, row=None, column=None, value=None, style_array=None):
         super(Cell, self).__init__(worksheet, style_array)
         self.row = row
         """Row number of this cell (1-based)"""
+        self.column = column
+        """Column number of this cell (1-based)"""
         # _value is the stored value, while value is the displayed value
         self._value = None
         self._hyperlink = None
@@ -114,21 +119,25 @@ class Cell(StyleableObject):
         if value is not None:
             self.value = value
         self._comment = None
-        if column is not None:
-            col_idx = column_index_from_string(column)
-        self.col_idx = col_idx
-        """Column number of this cell (1-based)"""
 
 
     @property
     def coordinate(self):
         """This cell's coordinate (ex. 'A5')"""
-        return '%s%d' % (self.column, self.row)
+        col = get_column_letter(self.column)
+        return "%s%d" % (col, self.row)
+
 
     @property
-    def column(self):
-        """The letter of this cell's column (ex. 'A')"""
-        return get_column_letter(self.col_idx)
+    def col_idx(self):
+        """The numerical index of the column"""
+        return self.column
+
+
+    @property
+    def column_letter(self):
+        return get_column_letter(self.column)
+
 
     @property
     def encoding(self):
@@ -167,9 +176,10 @@ class Cell(StyleableObject):
         except UnicodeDecodeError:
             return u'#N/A'
 
+    @deprecated("Type coercion will no longer be supported")
     def set_explicit_value(self, value=None, data_type=TYPE_STRING):
         """Coerce values according to their explicit type"""
-        if data_type not in self.VALID_TYPES:
+        if data_type not in VALID_TYPES:
             raise ValueError('Invalid data type: %s' % data_type)
         if isinstance(value, STRING_TYPES):
             value = self.check_string(value)
@@ -181,27 +191,28 @@ class Cell(StyleableObject):
         """Given a value, infer the correct data type"""
 
         self.data_type = "n"
+        t = type(value)
 
-        if value is True or value is False:
-            self.data_type = self.TYPE_BOOL
-
-        elif isinstance(value, NUMERIC_TYPES):
+        if t in NUMERIC_TYPES:
             pass
 
-        elif isinstance(value, TIME_TYPES):
+        elif t in TIME_TYPES:
             if not is_date_format(self.number_format):
-                self._set_time_format(value)
+                self.number_format = TIME_FORMATS[t]
             self.data_type = "d"
 
-        elif isinstance(value, STRING_TYPES):
+        elif t in STRING_TYPES:
             value = self.check_string(value)
-            self.data_type = self.TYPE_STRING
+            self.data_type = 's'
             if len(value) > 1 and value.startswith("="):
-                self.data_type = self.TYPE_FORMULA
-            elif value in self.ERROR_CODES:
-                self.data_type = self.TYPE_ERROR
-            elif self.guess_types:
+                self.data_type = 'f'
+            elif value in ERROR_CODES:
+                self.data_type = 'e'
+            elif self.guess_types: # deprecated
                 value = self._infer_value(value)
+
+        elif t is bool:
+            self.data_type = 'b'
 
         elif value is not None:
             raise ValueError("Cannot convert {0!r} to Excel".format(value))
@@ -215,69 +226,16 @@ class Cell(StyleableObject):
             value = str(value)
 
         # number detection
-        v = self._cast_numeric(value)
+        v = cast_numeric(value)
         if v is None:
             # percentage detection
-            v = self._cast_percentage(value)
+            v = cast_percentage(value)
         if v is None:
             # time detection
-            v = self._cast_time(value)
-        if v is not None:
-            self.data_type = self.TYPE_NUMERIC
-            return v
+            v = cast_percentage(value)
 
         return value
 
-
-    def _cast_numeric(self, value):
-        """Explicitly convert a string to a numeric value"""
-        if NUMBER_REGEX.match(value):
-            try:
-                return int(value)
-            except ValueError:
-                return float(value)
-
-    def _cast_percentage(self, value):
-        """Explicitly convert a string to numeric value and format as a
-        percentage"""
-        match = PERCENT_REGEX.match(value)
-        if match:
-            self.number_format = numbers.FORMAT_PERCENTAGE
-            return float(match.group('number')) / 100
-
-
-    def _cast_time(self, value):
-        """Explicitly convert a string to a number and format as datetime or
-        time"""
-        match = TIME_REGEX.match(value)
-        if match:
-            if match.group("microsecond") is not None:
-                value = value[:12]
-                pattern = "%M:%S.%f"
-                fmt = numbers.FORMAT_DATE_TIME5
-            elif match.group('second') is None:
-                fmt = numbers.FORMAT_DATE_TIME3
-                pattern = "%H:%M"
-            else:
-                pattern = "%H:%M:%S"
-                fmt = numbers.FORMAT_DATE_TIME6
-            self.number_format = fmt
-            value = datetime.datetime.strptime(value, pattern)
-            return value.time()
-
-
-    def _set_time_format(self, value):
-        """Set number format for Python date or time"""
-        fmts = (
-            (datetime.datetime, numbers.FORMAT_DATE_DATETIME),
-            (datetime.date, numbers.FORMAT_DATE_YYYYMMDD2),
-            (datetime.time, numbers.FORMAT_DATE_TIME6),
-            (datetime.timedelta, numbers.FORMAT_DATE_TIMEDELTA),
-        )
-        for k, v in fmts:
-            if isinstance(value, k):
-                self.number_format = v
-                return
 
     @property
     def value(self):
@@ -373,5 +331,35 @@ class Cell(StyleableObject):
         self._comment = value
 
 
+class MergedCell(StyleableObject):
+
+    """
+    Describes the properties of a cell in a merged cell and helps to
+    display the borders of the merged cell.
+
+    The value of a MergedCell is always None.
+    """
+
+    __slots__ = ('row', 'column')
+
+    _value = None
+    data_type = "n"
+    comment = None
+    hyperlink = None
+
+
+    def __init__(self, worksheet, row=None, column=None):
+        super(MergedCell, self).__init__(worksheet)
+        self.row = row
+        self.column = column
+
+
+    def __repr__(self):
+        return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
+
+    coordinate = Cell.coordinate
+    _comment = comment
+
+
 def WriteOnlyCell(ws=None, value=None):
-    return Cell(worksheet=ws, column='A', row=1, value=value)
+    return Cell(worksheet=ws, column=1, row=1, value=value)

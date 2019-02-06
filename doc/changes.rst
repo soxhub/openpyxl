@@ -1,3 +1,56 @@
+2.6.0 (2019-02-06)
+==================
+
+Bugfixes
+--------
+
+* `#1162 <https://bitbucket.org/openpyxl/openpyxl/issues/1162>`_ Exception on tables with names containing spaces.
+* `#1170 <https://bitbucket.org/openpyxl/openpyxl/issues/1170>`_ Cannot save files with existing images.
+
+
+2.6.-b1 (2019-01-08)
+====================
+
+
+Bugfixes
+--------
+
+* `#1141 <https://bitbucket.org/openpyxl/openpyxl/issues/1141>`_ Cannot use read-only mode with stream
+* `#1143 <https://bitbucket.org/openpyxl/openpyxl/issues/1143>`_ Hyperlinks always set on A1
+* `#1151 <https://bitbucket.org/openpyxl/openpyxl/issues/1151>`_ Internal row counter not initialised when reading files
+* `#1152 <https://bitbucket.org/openpyxl/openpyxl/issues/1152>`_ Exception raised on out of bounds date
+
+
+2.6-a1 (2018-11-21)
+===================
+
+
+Major changes
+-------------
+
+* Implement robust for merged cells so that these can be formatted the way
+  Excel does without confusion. Thanks to Magnus Schieder.
+
+
+Minor changes
+-------------
+
+* Add support for worksheet scenarios
+* Add read support for chartsheets
+* Add method for moving ranges of cells on a worksheet
+* Last version to support Python 2.7
+
+
+Deprecations
+------------
+
+* Type inference and coercion for cell values
+
+
+2.5.15 (unreleased)
+===================
+
+
 2.5.14 (2019-01-23)
 ===================
 
@@ -17,8 +70,8 @@ Pull Requests
 * `PR303 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/301/>`_ Improvements on handling nested brackets in the tokeniser
 
 
-2.5.13 (brow bag)
-=================
+2.5.13 (brown bag)
+==================
 
 
 2.5.12 (2018-11-29)

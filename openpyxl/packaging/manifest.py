@@ -76,7 +76,6 @@ DEFAULT_TYPES = [
 ]
 
 DEFAULT_OVERRIDE = [
-    Override("/" + ARC_SHARED_STRINGS, SHARED_STRINGS), # Shared strings
     Override("/" + ARC_STYLE, STYLES_TYPE), # Styles
     Override("/" + ARC_THEME, THEME_TYPE), # Theme
     Override("/docProps/core.xml", "application/vnd.openxmlformats-package.core-properties+xml"),

@@ -19,14 +19,20 @@ class TestCellRange:
         assert cr.coord == "A1:E7"
 
 
+    def test_dict(self, CellRange):
+        cr = CellRange("Sheet1!A1:E7")
+        assert cr.coord == "A1:E7"
+        assert dict(cr) == {'max_col': 5, 'max_row': 7, 'min_col': 1, 'min_row': 1}
+
+
     def test_max_row_too_small(self, CellRange):
         with pytest.raises(ValueError):
-            cr = CellRange("A4:B1")
+            CellRange("A4:B1")
 
 
     def test_max_col_too_small(self, CellRange):
         with pytest.raises(ValueError):
-            cr = CellRange("F1:B5")
+            CellRange("F1:B5")
 
 
     @pytest.mark.parametrize("range_string, title, coord",
@@ -94,7 +100,7 @@ class TestCellRange:
         cr1 = CellRange("Sheet1!A1:D4")
         cr2 = CellRange("Sheet2!E5:K10")
         with pytest.raises(ValueError):
-            cr3 = cr1.union(cr2)
+            cr1.union(cr2)
 
 
     def test_expand(self, CellRange):
@@ -238,6 +244,15 @@ class TestCellRange:
         cr1 = CellRange("A1:F5")
         cr2 = CellRange("A2:F4")
         assert cr1 > cr2
+
+
+    def test_edge_cells(self,CellRange):
+        cr = CellRange("A1:C3")
+        assert cr.top == [(1,1), (1,2), (1,3)]
+        assert cr.bottom == [(3,1), (3,2), (3,3)]
+        assert cr.left == [(1,1), (2,1), (3,1)]
+        assert cr.right == [(1,3), (2,3), (3,3)]
+
 
 
 @pytest.fixture

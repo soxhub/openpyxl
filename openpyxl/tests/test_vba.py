@@ -45,7 +45,6 @@ def test_save_with_vba(datadir):
                     'customUI/customUI.xml',
                     'xl/styles.xml',
                     'xl/worksheets/sheet1.xml',
-                    'xl/sharedStrings.xml',
                     'docProps/app.xml',
                     'xl/ctrlProps/ctrlProp2.xml',
                     'xl/workbook.xml',
@@ -75,7 +74,6 @@ def test_save_with_saved_comments(datadir):
         'docProps/app.xml',
         '[Content_Types].xml',
         'xl/worksheets/sheet1.xml',
-        'xl/sharedStrings.xml',
         'xl/worksheets/_rels/sheet1.xml.rels',
         '_rels/.rels',
         'xl/workbook.xml',
@@ -107,6 +105,7 @@ def test_save_without_vba(datadir):
     wb = load_workbook(fname, keep_vba=False)
     buf = save_virtual_workbook(wb)
     files1 = set(zipfile.ZipFile(fname, 'r').namelist())
+    files1.discard('xl/sharedStrings.xml')
     files2 = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
     difference = files1.difference(files2)
     assert difference.issubset(vbFiles), "Missing files: %s" % ', '.join(difference - vbFiles)

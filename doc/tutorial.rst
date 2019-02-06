@@ -140,7 +140,7 @@ You can also use the :meth:`Worksheet.iter_rows` method::
     <Cell Sheet1.B2>
     <Cell Sheet1.C2>
 
-Likewise the :obj:`Worksheet.iter_cols()` method will return columns::
+Likewise the :meth:`Worksheet.iter_cols` method will return columns::
 
     >>> for col in ws.iter_cols(min_row=1, max_col=3, max_row=2):
     ...     for cell in col:
@@ -155,7 +155,6 @@ Likewise the :obj:`Worksheet.iter_cols()` method will return columns::
 .. note::
 
   For performance reasons the :obj:`Worksheet.iter_cols()` method is not available in read-only mode.
-
 
 If you need to iterate through all the rows or columns of a file, you can instead use the
 :obj:`Worksheet.rows` property::
@@ -211,6 +210,15 @@ This iterates over all the rows in a worksheet but returns just the cell values:
        for value in row:
          print(value)
 
+Both :meth:`Worksheet.iter_rows` and :meth:`Worksheet.iter_cols` can
+take the :code:`values_only` parameter to return just the cell's value::
+
+  >>> for row in ws.iter_rows(min_row=1, max_col=3, max_row=2, values_only=True):
+  ...   print(row)
+
+  (None, None, None)
+  (None, None, None)
+
 
 Data storage
 ------------
@@ -245,8 +253,8 @@ The simplest and safest way to save a workbook is by using the
     some trouble opening it directly with another application if you don't
     use an official extension.
 
-    As OOXML files are basically ZIP files, you can also end the filename
-    with .zip and open it with your favourite ZIP archive manager.
+    As OOXML files are basically ZIP files, you can also  open it with your
+    favourite ZIP archive manager.
 
 
 Saving as a stream

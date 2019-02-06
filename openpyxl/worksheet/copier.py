@@ -4,9 +4,7 @@ from __future__ import absolute_import
 #standard lib imports
 from copy import copy
 
-#openpyxl imports
-from openpyxl.comments import Comment
-from openpyxl.worksheet import Worksheet
+from .worksheet import Worksheet
 
 
 class WorksheetCopy(object):

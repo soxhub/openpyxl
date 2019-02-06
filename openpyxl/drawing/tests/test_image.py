@@ -3,14 +3,6 @@ from __future__ import absolute_import
 
 import pytest
 
-
-def test_bounding_box():
-    from ..image import bounding_box
-    w, h = bounding_box(80, 80, 90, 100)
-    assert w == 72
-    assert h == 80
-
-
 @pytest.fixture
 def Image():
     from ..image import Image
@@ -43,3 +35,26 @@ class TestImage:
         i = Image("plain.png")
         with open("plain.png", "rb") as src:
             assert i._data() == src.read()
+
+
+    @pytest.mark.pil_required
+    def test_dont_close_pil(self, Image, datadir):
+        datadir.chdir()
+        from ..image import PILImage, Image
+        obj = PILImage.open("plain.png")
+        img = Image(obj)
+        assert img.ref.fp is not None
+
+
+    @pytest.mark.pil_required
+    def test_save(self, Image, datadir):
+        datadir.chdir()
+        img = Image("plain.png")
+        assert img._data()[:10] == b'\x89PNG\r\n\x1a\n\x00\x00'
+
+
+    @pytest.mark.pil_required
+    def test_convert(self, Image, datadir):
+        datadir.chdir()
+        img = Image("plain.tif")
+        assert img._data()[:10] == b'\x89PNG\r\n\x1a\n\x00\x00'

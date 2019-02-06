@@ -63,6 +63,10 @@ class Serialisable(_Serialiasable):
             elif key in KEYWORDS:
                 attrib["_" + key] = attrib[key]
                 del attrib[key]
+            elif "-" in key:
+                n = key.replace("-", "_")
+                attrib[n] = attrib[key]
+                del attrib[key]
 
         if node.text and "attr_text" in cls.__attrs__:
             attrib["attr_text"] = node.text
@@ -125,6 +129,8 @@ class Serialisable(_Serialiasable):
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
             obj = getattr(self, child_tag)
+            if hasattr(desc, "namespace") and hasattr(obj, 'namespace'):
+                obj.namespace = desc.namespace
 
             if isinstance(obj, seq_types):
                 if isinstance(desc, NestedSequence):
@@ -157,6 +163,10 @@ class Serialisable(_Serialiasable):
             value = getattr(self, attr)
             if attr.startswith("_"):
                 attr = attr[1:]
+            elif attr != "attr_text" and "_" in attr:
+                desc = getattr(self.__class__, attr)
+                if getattr(desc, "hyphenated", False):
+                    attr = attr.replace("_", "-")
             if attr != "attr_text" and value is not None:
                 yield attr, safe_string(value)
 

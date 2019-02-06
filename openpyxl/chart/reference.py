@@ -11,7 +11,7 @@ from openpyxl.descriptors import (
     String,
     Strict,
 )
-from openpyxl.worksheet import Worksheet
+from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils import (
     get_column_letter,
     range_to_tuple,

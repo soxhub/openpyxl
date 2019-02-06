@@ -138,7 +138,7 @@ class CellRange(Serialisable):
 
     def shift(self, col_shift=0, row_shift=0):
         """
-        Shift the range according to the shift values (*col_shift*, *row_shift*).
+        Shift the focus of the range according to the shift values (*col_shift*, *row_shift*).
 
         :type col_shift: int
         :param col_shift: number of columns to be moved by, can be negative
@@ -324,6 +324,17 @@ class CellRange(Serialisable):
     __or__ = union
 
 
+    def __iter__(self):
+        """
+        For use as a dictionary elsewhere in the library.
+        """
+        for x in self.__attrs__:
+            if x == "title":
+                continue
+            v = getattr(self, x)
+            yield x, v
+
+
     def expand(self, right=0, down=0, left=0, up=0):
         """
         Expand the range by the dimensions provided.
@@ -368,6 +379,30 @@ class CellRange(Serialisable):
         cols = self.max_col + 1 - self.min_col
         rows = self.max_row + 1 - self.min_row
         return {'columns':cols, 'rows':rows}
+
+
+    @property
+    def top(self):
+        """A list of cell coordinates that comprise the top of the range"""
+        return [(self.min_row, col) for col in range(self.min_col, self.max_col+1)]
+
+
+    @property
+    def bottom(self):
+        """A list of cell coordinates that comprise the bottom of the range"""
+        return [(self.max_row, col) for col in range(self.min_col, self.max_col+1)]
+
+
+    @property
+    def left(self):
+        """A list of cell coordinates that comprise the left-side of the range"""
+        return [(row, self.min_col) for row in range(self.min_row, self.max_row+1)]
+
+
+    @property
+    def right(self):
+        """A list of cell coordinates that comprise the right-side of the range"""
+        return [(row, self.max_col) for row in range(self.min_row, self.max_row+1)]
 
 
 class MultiCellRange(Strict):
