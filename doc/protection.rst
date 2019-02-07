@@ -51,7 +51,7 @@ protection may be enabled with or without using a password. Sheet protection is 
     >>> ws = wb.active
     >>> wb.protection.sheet = True
     >>> wb.protection.enable()
-    >>> wb.protection.disabe()
+    >>> wb.protection.disable()
 
 
 If no password is specified, users can disable configured sheet protection without specifying a password.
