@@ -41,6 +41,17 @@ class ReadOnlyCell(object):
         column = get_column_letter(self.column)
         return "{1}{0}".format(self.row, column)
 
+
+    @property
+    def coordinate(self):
+        return Cell.coordinate.__get__(self)
+
+
+    @property
+    def column_letter(self):
+        return Cell.column_letter.__get__(self)
+
+
     @property
     def style_array(self):
         return self.parent.parent._cell_styles[self._style_id]
