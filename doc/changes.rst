@@ -5,6 +5,7 @@
 Bugfixes
 --------
 
+* `#1174 <https://bitbucket.org/openpyxl/openpyxl/issues/1174>`_ ReadOnlyCell.is_date does not work properly
 * `#1175 <https://bitbucket.org/openpyxl/openpyxl/issues/1175>`_ Cannot read Google Docs spreadsheet with a Pivot Table
 
 
