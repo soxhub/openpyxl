@@ -2,8 +2,15 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1175 <https://bitbucket.org/openpyxl/openpyxl/issues/1175>`_ Cannot read Google Docs spreadsheet with a Pivot Table
+
+
 2.6.0 (2019-02-06)
 ==================
+
 
 Bugfixes
 --------
@@ -49,10 +56,6 @@ Deprecations
 ------------
 
 * Type inference and coercion for cell values
-
-
-2.5.15 (unreleased)
-===================
 
 
 2.5.14 (2019-01-23)
