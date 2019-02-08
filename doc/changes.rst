@@ -50,6 +50,7 @@ Minor changes
 * Add support for worksheet scenarios
 * Add read support for chartsheets
 * Add method for moving ranges of cells on a worksheet
+* Drop support for Python 3.4
 * Last version to support Python 2.7
 
 
