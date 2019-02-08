@@ -193,7 +193,7 @@ class Cell(StyleableObject):
         self.data_type = "n"
         t = type(value)
 
-        if t in NUMERIC_TYPES:
+        if isinstance(value, NUMERIC_TYPES):
             pass
 
         elif t in TIME_TYPES:
