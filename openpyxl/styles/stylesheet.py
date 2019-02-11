@@ -20,9 +20,9 @@ from .fills import Fill
 from .fonts import Font
 from .numbers import (
     NumberFormatList,
-    BUILTIN_FORMATS,
     BUILTIN_FORMATS_REVERSE,
     is_date_format,
+    builtin_format_code
 )
 from .alignment import Alignment
 from .protection import Protection
@@ -163,7 +163,7 @@ class Stylesheet(Serialisable):
                 else:
                     style.numFmtId = formats.add(fmt) + 164
             else:
-                fmt = BUILTIN_FORMATS[style.numFmtId]
+                fmt = builtin_format_code(style.numFmtId)
             if is_date_format(fmt):
                 # Create an index of which styles refer to datetimes
                 date_formats.add(idx)
