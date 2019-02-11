@@ -21,10 +21,7 @@ except ImportError:
 
 
 if NUMPY:
-    NUMERIC_TYPES = NUMERIC_TYPES + (numpy.bool,
-                                     numpy.byte,
-                                     numpy.ubyte,
-                                     numpy.short,
+    NUMERIC_TYPES = NUMERIC_TYPES + (numpy.short,
                                      numpy.ushort,
                                      numpy.intc,
                                      numpy.uintc,
