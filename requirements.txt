@@ -5,4 +5,3 @@ pillow
 tox
 pandas
 defusedxml
-numpy

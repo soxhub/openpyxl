@@ -11,7 +11,6 @@ from datetime import (
 )
 
 # 3rd party imports
-import numpy
 import pytest
 
 # package imports
@@ -416,7 +415,9 @@ class TestMergedCell:
         assert cell.hyperlink is None
 
 
+@pytest.mark.numpy_required
 def test_write_numpy_to_cell(dummy_cell):
+    import numpy
     data = numpy.array([1.0])
     cell = dummy_cell
-    dummy_cell.value = data[0]
+    cell.value = data[0]
