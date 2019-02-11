@@ -662,7 +662,7 @@ class TestWorksheetParser:
         for _ in parser.parse():
             pass
 
-        assert parser.page_breaks == expected_pagebreak
+        assert parser.page_breaks == [expected_pagebreak]
 
 
     def test_scenarios(self, WorkSheetParser):
