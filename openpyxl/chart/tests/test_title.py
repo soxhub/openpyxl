@@ -59,11 +59,17 @@ def test_title_maker():
             <rich>
               <a:bodyPr />
               <a:p>
+                <a:pPr>
+                  <a:defRPr />
+                </a:pPr>
                 <a:r>
                   <a:t>Two-line</a:t>
                 </a:r>
               </a:p>
               <a:p>
+                <a:pPr>
+                  <a:defRPr />
+                </a:pPr>
                 <a:r>
                   <a:t>Text</a:t>
                 </a:r>
