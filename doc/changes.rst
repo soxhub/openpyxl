@@ -7,6 +7,7 @@ Bugfixes
 
 * `#1174 <https://bitbucket.org/openpyxl/openpyxl/issues/1174>`_ ReadOnlyCell.is_date does not work properly
 * `#1175 <https://bitbucket.org/openpyxl/openpyxl/issues/1175>`_ Cannot read Google Docs spreadsheet with a Pivot Table
+* `#1180 <https://bitbucket.org/openpyxl/openpyxl/issues/1180>`_ Charts created with openpyxl cannot be styled
 * `#1181 <https://bitbucket.org/openpyxl/openpyxl/issues/1181>`_ Cannot handle some numpy number types
 * `#1182 <https://bitbucket.org/openpyxl/openpyxl/issues/1182>`_ Exception when reading unknowable number formats
 
