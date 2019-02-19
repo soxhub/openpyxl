@@ -203,5 +203,7 @@ class Manifest(Serialisable):
             mf = Manifest.from_tree(node)
             filenames = self.filenames
             for override in mf.Override:
+                if override.PartName == "/xl/sharedStrings.xml":
+                    continue
                 if override.PartName not in filenames:
                     self.Override.append(override)
