@@ -82,3 +82,8 @@ def test_equality():
     assert c1 == c2
     c3 = ReadOnlyCell(None, None, 5, None)
     assert c3 != c1
+
+
+def test_is_date():
+    c1 = ReadOnlyCell(None, None, None, None, 'd')
+    assert c1.is_date is True

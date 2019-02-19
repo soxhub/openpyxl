@@ -58,7 +58,7 @@ When you want to dump large amounts of data make sure you have `lxml` installed.
 >>> # save the file
 >>> wb.save('new_big_file.xlsx') # doctest: +SKIP
 
-If you want to have cells with styles or comments then use a :func:`openpyxl.worksheet.write_only.WriteOnlyCell`
+If you want to have cells with styles or comments then use a :func:`openpyxl.cell.WriteOnlyCell`
 
 .. :: doctest
 

@@ -355,6 +355,7 @@ class MergedCell(StyleableObject):
 
     coordinate = Cell.coordinate
     _comment = comment
+    value = _value
 
 
 def WriteOnlyCell(ws=None, value=None):

@@ -412,3 +412,11 @@ class TestMergedCell:
     def test_hyperlink(self, MergedCell):
         cell = MergedCell
         assert cell.hyperlink is None
+
+
+@pytest.mark.numpy_required
+def test_write_numpy_to_cell(dummy_cell):
+    import numpy
+    data = numpy.array([1.0])
+    cell = dummy_cell
+    cell.value = data[0]

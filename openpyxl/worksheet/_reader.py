@@ -67,6 +67,7 @@ PROPERTIES_TAG = '{%s}sheetPr' % SHEET_MAIN_NS
 VIEWS_TAG = '{%s}sheetViews' % SHEET_MAIN_NS
 FORMAT_TAG = '{%s}sheetFormatPr' % SHEET_MAIN_NS
 ROW_BREAK_TAG = '{%s}rowBreaks' % SHEET_MAIN_NS
+COL_BREAK_TAG = '{%s}colBreaks' % SHEET_MAIN_NS
 SCENARIOS_TAG = '{%s}scenarios' % SHEET_MAIN_NS
 DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
@@ -101,6 +102,7 @@ class WorkSheetParser(object):
         self.formatting = []
         self.legacy_drawing = None
         self.merged_cells = None
+        self.page_breaks = []
 
 
     def parse(self):
@@ -110,6 +112,8 @@ class WorkSheetParser(object):
             EXT_TAG: self.parse_extensions,
             CF_TAG: self.parse_formatting,
             LEGACY_TAG: self.parse_legacy,
+            ROW_BREAK_TAG: self.parse_breaks,
+            COL_BREAK_TAG: self.page_breaks,
                       }
 
         properties = {
@@ -122,7 +126,6 @@ class WorkSheetParser(object):
             PROPERTIES_TAG: ('sheet_properties', WorksheetProperties),
             VIEWS_TAG: ('views', SheetViewList),
             FORMAT_TAG: ('sheet_format', SheetFormatProperties),
-            ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
@@ -294,6 +297,11 @@ class WorkSheetParser(object):
     def parse_legacy(self, element):
         obj = Related.from_tree(element)
         self.legacy_drawing = obj.id
+
+
+    def parse_breaks(self, element):
+        brk = PageBreak.from_tree(element)
+        self.page_breaks.append(brk)
 
 
 class WorksheetReader(object):
