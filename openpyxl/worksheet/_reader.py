@@ -115,7 +115,7 @@ class WorkSheetParser(object):
             CF_TAG: self.parse_formatting,
             LEGACY_TAG: self.parse_legacy,
             ROW_BREAK_TAG: self.parse_breaks,
-            COL_BREAK_TAG: self.page_breaks,
+            COL_BREAK_TAG: self.parse_breaks,
                       }
 
         properties = {
