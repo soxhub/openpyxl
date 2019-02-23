@@ -11,6 +11,7 @@ Bugfixes
 * `#1181 <https://bitbucket.org/openpyxl/openpyxl/issues/1181>`_ Cannot handle some numpy number types
 * `#1182 <https://bitbucket.org/openpyxl/openpyxl/issues/1182>`_ Exception when reading unknowable number formats
 * `#1191 <https://bitbucket.org/openpyxl/openpyxl/issues/1191>`_ Give MergedCell a `value` attribute
+* `#1197 <https://bitbucket.org/openpyxl/openpyxl/issues/1197>`_ Cannot process worksheets with both row and page breaks
 
 
 2.6.0 (2019-02-06)
