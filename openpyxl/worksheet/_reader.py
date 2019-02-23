@@ -35,7 +35,7 @@ from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
 from .merge import MergeCells
 from .page import PageMargins, PrintOptions, PrintPageSetup
-from .pagebreak import PageBreak
+from .pagebreak import RowBreak, ColBreak
 from .protection import SheetProtection
 from .scenario import ScenarioList
 from .views import SheetViewList
@@ -114,8 +114,8 @@ class WorkSheetParser(object):
             EXT_TAG: self.parse_extensions,
             CF_TAG: self.parse_formatting,
             LEGACY_TAG: self.parse_legacy,
-            ROW_BREAK_TAG: self.parse_breaks,
-            COL_BREAK_TAG: self.parse_breaks,
+            ROW_BREAK_TAG: self.parse_row_breaks,
+            COL_BREAK_TAG: self.parse_col_breaks,
                       }
 
         properties = {
@@ -301,8 +301,13 @@ class WorkSheetParser(object):
         self.legacy_drawing = obj.id
 
 
-    def parse_breaks(self, element):
-        brk = PageBreak.from_tree(element)
+    def parse_row_breaks(self, element):
+        brk = RowBreak.from_tree(element)
+        self.page_breaks.append(brk)
+
+
+    def parse_col_breaks(self, element):
+        brk = ColBreak.from_tree(element)
         self.page_breaks.append(brk)
 
 

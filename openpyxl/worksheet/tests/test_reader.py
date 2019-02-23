@@ -17,7 +17,7 @@ from openpyxl.styles import Border
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
 from ..worksheet import Worksheet
-from ..pagebreak import Break, PageBreak
+from ..pagebreak import Break, RowBreak, ColBreak
 from ..scenario import ScenarioList, Scenario, InputCells
 
 @pytest.mark.parametrize("value, expected",
@@ -646,21 +646,34 @@ class TestWorksheetParser:
         assert parser.auto_filter.sortState.ref == "A2:AM3269"
 
 
-    def test_page_break(self, WorkSheetParser):
+    def test_page_row_break(self, WorkSheetParser):
         src = b"""
-        <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-            <rowBreaks count="1" manualBreakCount="1">
-                <brk id="15" man="1" max="16383" min="0"/>
-            </rowBreaks>
-        </sheet>
+        <rowBreaks count="1" manualBreakCount="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+           <brk id="15" man="1" max="16383" min="0"/>
+        </rowBreaks>
         """
-        expected_pagebreak = PageBreak()
+        expected_pagebreak = RowBreak()
         expected_pagebreak.append(Break(id=15))
 
         parser = WorkSheetParser
-        parser.source = BytesIO(src)
-        for _ in parser.parse():
-            pass
+        el = fromstring(src)
+        parser.parse_row_breaks(el)
+
+        assert parser.page_breaks == [expected_pagebreak]
+
+
+    def test_col_break(self, WorkSheetParser):
+        src = b"""
+        <colBreaks count="1" manualBreakCount="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <brk id="15" man="1" max="16383" min="0"/>
+        </colBreaks>
+        """
+        expected_pagebreak = ColBreak()
+        expected_pagebreak.append(Break(id=15))
+
+        parser = WorkSheetParser
+        el = fromstring(src)
+        parser.parse_col_breaks(el)
 
         assert parser.page_breaks == [expected_pagebreak]
 
