@@ -162,6 +162,15 @@ class ReadOnlyWorksheet(object):
         self._max_column = max_col
 
 
+    def reset_dimensions(self):
+        """
+        Remove worksheet dimensions if these are incorrect in the worksheet source.
+        NB. This probably indicates a bug in the library or application that created
+        the workbook.
+        """
+        self._max_row = self._max_column = None
+
+
     @property
     def min_row(self):
         return self._min_row
