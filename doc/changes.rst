@@ -13,6 +13,7 @@ Bugfixes
 * `#1191 <https://bitbucket.org/openpyxl/openpyxl/issues/1191>`_ Give MergedCell a `value` attribute
 * `#1197 <https://bitbucket.org/openpyxl/openpyxl/issues/1197>`_ Cannot process worksheets with both row and page breaks
 * `#1198 <https://bitbucket.org/openpyxl/openpyxl/issues/1198>`_ Cannot process worksheets with comments
+* `#1204 <https://bitbucket.org/openpyxl/openpyxl/issues/1204>`_ Cannot reset dimensions in ReadOnlyWorksheets
 
 
 2.6.0 (2019-02-06)
