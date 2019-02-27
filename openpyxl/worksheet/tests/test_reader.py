@@ -745,7 +745,9 @@ class TestWorksheetReader:
 
         reader.bind_formatting()
 
-        assert ws.conditional_formatting['T1:T10'][-1].dxf == DifferentialStyle()
+        fmts = ws.conditional_formatting
+        assert fmts['T1:T10'][-1].dxf == DifferentialStyle()
+        assert len(fmts['A1']) == 2
 
 
     def test_merged(self, PrimedWorksheetReader):

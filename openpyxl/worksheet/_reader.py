@@ -339,7 +339,7 @@ class WorksheetReader(object):
             for rule in cf.rules:
                 if rule.dxfId is not None:
                     rule.dxf = self.ws.parent._differential_styles[rule.dxfId]
-            self.ws.conditional_formatting[cf] = rule
+                self.ws.conditional_formatting[cf] = rule
 
 
     def bind_tables(self):
