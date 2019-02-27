@@ -6,7 +6,7 @@ and the common routines in openpyxl won't be able to handle that load.
 Fortunately, there are two modes that enable you to read and write unlimited
 amounts of data with (near) constant memory consumption.
 
-Introducing :class:`openpyxl.worksheet.read_only.ReadOnlyWorksheet`::
+Introducing :class:`openpyxl.worksheet._read_only.ReadOnlyWorksheet`::
 
     from openpyxl import load_workbook
     wb = load_workbook(filename='large_file.xlsx', read_only=True)
@@ -18,10 +18,10 @@ Introducing :class:`openpyxl.worksheet.read_only.ReadOnlyWorksheet`::
 
 .. warning::
 
-    * :class:`openpyxl.worksheet.read_only.ReadOnlyWorksheet` is read-only
+    * :class:`openpyxl.worksheet._read_only.ReadOnlyWorksheet` is read-only
 
 Cells returned are not regular :class:`openpyxl.cell.cell.Cell` but
-:class:`openpyxl.cell.read_only.ReadOnlyCell`.
+:class:`openpyxl.cell._read_only.ReadOnlyCell`.
 
 
 Worksheet dimensions
@@ -35,14 +35,14 @@ You can check the apparent dimensions of a worksheet using
 incorrect, say `A1:A1` then simply resetting the max_row and max_column
 attributes should allow you to work with the file::
 
-    ws.max_row = ws.max_column = None
+    ws.reset_dimensions()
 
 
 Write-only mode
 ===============
 
 Here again, the regular :class:`openpyxl.worksheet.worksheet.Worksheet` has been replaced
-by a faster alternative, the :class:`openpyxl.writer.write_only.WriteOnlyWorksheet`.
+by a faster alternative, the :class:`openpyxl.worksheet._write_only.WriteOnlyWorksheet`.
 When you want to dump large amounts of data make sure you have `lxml` installed.
 
 .. :: doctest
