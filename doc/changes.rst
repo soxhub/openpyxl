@@ -10,9 +10,10 @@ Bugfixes
 * `#1180 <https://bitbucket.org/openpyxl/openpyxl/issues/1180>`_ Charts created with openpyxl cannot be styled
 * `#1181 <https://bitbucket.org/openpyxl/openpyxl/issues/1181>`_ Cannot handle some numpy number types
 * `#1182 <https://bitbucket.org/openpyxl/openpyxl/issues/1182>`_ Exception when reading unknowable number formats
+* `#1186 <https://bitbucket.org/openpyxl/openpyxl/issues/1186>`_ Only last formatting rule for a range loaded
 * `#1191 <https://bitbucket.org/openpyxl/openpyxl/issues/1191>`_ Give MergedCell a `value` attribute
+* `#1193 <https://bitbucket.org/openpyxl/openpyxl/issues/1193>`_ Cannot process worksheets with comments
 * `#1197 <https://bitbucket.org/openpyxl/openpyxl/issues/1197>`_ Cannot process worksheets with both row and page breaks
-* `#1198 <https://bitbucket.org/openpyxl/openpyxl/issues/1198>`_ Cannot process worksheets with comments
 * `#1204 <https://bitbucket.org/openpyxl/openpyxl/issues/1204>`_ Cannot reset dimensions in ReadOnlyWorksheets
 
 
