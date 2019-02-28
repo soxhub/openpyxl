@@ -64,10 +64,10 @@ def ParagraphProperties():
 class TestParagraphProperties:
 
     def test_ctor(self, ParagraphProperties):
-        text = ParagraphProperties()
+        text = ParagraphProperties(defTabSz=91400)
         xml = tostring(text.to_tree())
         expected = """
-        <pPr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" />
+        <pPr xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" defTabSz="91400" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -75,11 +75,11 @@ class TestParagraphProperties:
 
     def test_from_xml(self, ParagraphProperties):
         src = """
-        <pPr />
+        <pPr defTabSz="91400" />
         """
         node = fromstring(src)
         text = ParagraphProperties.from_tree(node)
-        assert text == ParagraphProperties()
+        assert text == ParagraphProperties(defTabSz=91400)
 
 
 from ..spreadsheet_drawing import SpreadsheetDrawing
@@ -209,12 +209,12 @@ class TestLineBreak:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-    
+
     def test_from_xml(self, LineBreak):
         src = """
         <br />
         """
         node = fromstring(src)
         fut = LineBreak.from_tree(node)
-        assert fut == LineBreak()  
+        assert fut == LineBreak()
 
