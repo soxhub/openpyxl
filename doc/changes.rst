@@ -16,6 +16,7 @@ Bugfixes
 * `#1197 <https://bitbucket.org/openpyxl/openpyxl/issues/1197>`_ Cannot process worksheets with both row and page breaks
 * `#1204 <https://bitbucket.org/openpyxl/openpyxl/issues/1204>`_ Cannot reset dimensions in ReadOnlyWorksheets
 * `#1211 <https://bitbucket.org/openpyxl/openpyxl/issues/1211>`_ Incorrect descriptor in ParagraphProperties
+* `#1213 <https://bitbucket.org/openpyxl/openpyxl/issues/1213>`_ Missing `hier` attribute in PageField raises an exception
 
 
 2.6.0 (2019-02-06)
