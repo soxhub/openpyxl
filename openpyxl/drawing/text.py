@@ -332,7 +332,7 @@ class ParagraphProperties(Serialisable):
     lvl = Integer(allow_none=True)
     indent = Integer(allow_none=True)
     algn = NoneSet(values=(['l', 'ctr', 'r', 'just', 'justLow', 'dist', 'thaiDist']))
-    defTabSz = Integer(expected_type=Coordinate, allow_none=True)
+    defTabSz = Integer(allow_none=True)
     rtl = Bool(allow_none=True)
     eaLnBrk = Bool(allow_none=True)
     fontAlgn = NoneSet(values=(['auto', 't', 'ctr', 'base', 'b']))

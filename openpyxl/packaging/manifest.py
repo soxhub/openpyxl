@@ -31,7 +31,10 @@ from openpyxl.xml.constants import (
     CHART_TYPE,
     CHARTSHAPE_TYPE,
     CHARTSHEET_TYPE,
-    CONTYPES_NS
+    CONTYPES_NS,
+    ACTIVEX,
+    CTRL,
+    VBA,
 )
 from openpyxl.xml.functions import tostring
 
@@ -202,7 +205,7 @@ class Manifest(Serialisable):
             mf = Manifest.from_tree(node)
             filenames = self.filenames
             for override in mf.Override:
-                if override.PartName == "/xl/sharedStrings.xml":
+                if override.PartName not in (ACTIVEX, CTRL, VBA):
                     continue
                 if override.PartName not in filenames:
                     self.Override.append(override)

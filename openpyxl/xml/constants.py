@@ -113,3 +113,8 @@ EXT_TYPES = {
     '{3A4CF648-6AED-40f4-86FF-DC5316D8AED3}': 'Slicer List',
     '{7E03D99C-DC04-49d9-9315-930204A7B6E9}': 'Timeline Ref',
 }
+
+# Objects related to macros that we preserve
+CTRL = "application/vnd.ms-excel.controlproperties+xml"
+ACTIVEX = "application/vnd.ms-office.activeX+xml"
+VBA = "application/vnd.ms-office.vbaProject"
