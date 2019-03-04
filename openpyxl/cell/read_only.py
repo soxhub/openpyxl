@@ -21,6 +21,7 @@ class ReadOnlyCell(object):
         self.value = value
         self._style_id = style_id
 
+
     def __eq__(self, other):
         for a in self.__slots__:
             if getattr(self, a) != getattr(other, a):
@@ -39,6 +40,17 @@ class ReadOnlyCell(object):
     def coordinate(self):
         column = get_column_letter(self.column)
         return "{1}{0}".format(self.row, column)
+
+
+    @property
+    def coordinate(self):
+        return Cell.coordinate.__get__(self)
+
+
+    @property
+    def column_letter(self):
+        return Cell.column_letter.__get__(self)
+
 
     @property
     def style_array(self):
@@ -77,9 +89,11 @@ class ReadOnlyCell(object):
         _id = self.style_array.protectionId
         return self.parent.parent._protections[_id]
 
+
     @property
     def is_date(self):
-        return self.data_type == 'n' and is_date_format(self.number_format)
+        return Cell.is_date.__get__(self)
+
 
     @property
     def internal_value(self):

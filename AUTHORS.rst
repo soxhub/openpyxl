@@ -19,6 +19,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Brice Gelineau
 * ccoacley
 * Chi Ho Kwok
+* Cory Kramer
 * Day Barr
 * Detlef Lannert
 * Dieter Vandenbussche

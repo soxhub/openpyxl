@@ -163,3 +163,11 @@ class TestReadOnlyWorksheet:
             (None, None, None),
             (7, 8, 9),
         ]
+
+
+    def test_reset_dimensions(self, ReadOnlyWorksheet):
+        ws = ReadOnlyWorksheet
+        ws._max_row = 5
+        ws._max_column = 10
+        ws.reset_dimensions()
+        assert ws.max_row is ws.max_column is None

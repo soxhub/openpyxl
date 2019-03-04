@@ -56,7 +56,7 @@ from .views import (
 from .cell_range import MultiCellRange, CellRange
 from .merge import MergedCellRange
 from .properties import WorksheetProperties
-from .pagebreak import PageBreak
+from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 
 
@@ -106,7 +106,9 @@ class Worksheet(_WorkbookChild):
                                               default_factory=self._add_row)
         self.column_dimensions = DimensionHolder(worksheet=self,
                                                  default_factory=self._add_column)
-        self.page_breaks = [PageBreak()]
+        self.row_breaks = RowBreak()
+        self.col_breaks = ColBreak()
+        self.page_breaks = [self.row_breaks, self.col_breaks]
         self._cells = {}
         self._charts = []
         self._images = []

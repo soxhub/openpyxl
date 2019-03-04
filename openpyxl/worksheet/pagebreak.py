@@ -80,3 +80,11 @@ class PageBreak(Serialisable):
             brk = Break(id=self.count+1)
         vals.append(brk)
         self.brk = vals
+
+
+RowBreak = PageBreak
+
+
+class ColBreak(PageBreak):
+
+    tagname = "colBreaks"

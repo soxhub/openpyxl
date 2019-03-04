@@ -19,7 +19,9 @@ from .shapes import GraphicalProperties
 from openpyxl.drawing.text import (
     Paragraph,
     RegularTextRun,
-    LineBreak
+    LineBreak,
+    ParagraphProperties,
+    CharacterProperties,
 )
 
 
@@ -58,7 +60,9 @@ class Title(Serialisable):
 
 def title_maker(text):
     title = Title()
-    paras = [Paragraph(r=[RegularTextRun(t=s)]) for s in text.split("\n")]
+    paraprops = ParagraphProperties()
+    paraprops.defRPr = CharacterProperties()
+    paras = [Paragraph(r=[RegularTextRun(t=s)], pPr=paraprops) for s in text.split("\n")]
 
     title.tx.rich.paragraphs = paras
     return title

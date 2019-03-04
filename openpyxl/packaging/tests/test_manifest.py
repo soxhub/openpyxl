@@ -232,10 +232,6 @@ class TestManifest:
         manifest._write_vba(wb)
         partnames = set([t.PartName for t in manifest.Override])
         expected = set([
-            '/xl/workbook.xml',
-            '/xl/worksheets/sheet1.xml',
-            '/xl/worksheets/sheet2.xml',
-            '/xl/worksheets/sheet3.xml',
             '/xl/theme/theme1.xml',
             '/xl/styles.xml',
             '/docProps/core.xml',

@@ -35,7 +35,7 @@ from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
 from .merge import MergeCells
 from .page import PageMargins, PrintOptions, PrintPageSetup
-from .pagebreak import PageBreak
+from .pagebreak import RowBreak, ColBreak
 from .protection import SheetProtection
 from .scenario import ScenarioList
 from .views import SheetViewList
@@ -69,6 +69,7 @@ PROPERTIES_TAG = '{%s}sheetPr' % SHEET_MAIN_NS
 VIEWS_TAG = '{%s}sheetViews' % SHEET_MAIN_NS
 FORMAT_TAG = '{%s}sheetFormatPr' % SHEET_MAIN_NS
 ROW_BREAK_TAG = '{%s}rowBreaks' % SHEET_MAIN_NS
+COL_BREAK_TAG = '{%s}colBreaks' % SHEET_MAIN_NS
 SCENARIOS_TAG = '{%s}scenarios' % SHEET_MAIN_NS
 DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
@@ -103,6 +104,7 @@ class WorkSheetParser(object):
         self.formatting = []
         self.legacy_drawing = None
         self.merged_cells = None
+        self.page_breaks = []
 
 
     def parse(self):
@@ -112,6 +114,8 @@ class WorkSheetParser(object):
             EXT_TAG: self.parse_extensions,
             CF_TAG: self.parse_formatting,
             LEGACY_TAG: self.parse_legacy,
+            ROW_BREAK_TAG: self.parse_row_breaks,
+            COL_BREAK_TAG: self.parse_col_breaks,
                       }
 
         properties = {
@@ -124,7 +128,6 @@ class WorkSheetParser(object):
             PROPERTIES_TAG: ('sheet_properties', WorksheetProperties),
             VIEWS_TAG: ('views', SheetViewList),
             FORMAT_TAG: ('sheet_format', SheetFormatProperties),
-            ROW_BREAK_TAG: ('page_breaks', PageBreak),
             SCENARIOS_TAG: ('scenarios', ScenarioList),
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
@@ -298,6 +301,16 @@ class WorkSheetParser(object):
         self.legacy_drawing = obj.id
 
 
+    def parse_row_breaks(self, element):
+        brk = RowBreak.from_tree(element)
+        self.page_breaks.append(brk)
+
+
+    def parse_col_breaks(self, element):
+        brk = ColBreak.from_tree(element)
+        self.page_breaks.append(brk)
+
+
 class WorksheetReader(object):
     """
     Create a parser and apply it to a workbook
@@ -326,7 +339,7 @@ class WorksheetReader(object):
             for rule in cf.rules:
                 if rule.dxfId is not None:
                     rule.dxf = self.ws.parent._differential_styles[rule.dxfId]
-            self.ws.conditional_formatting[cf] = rule
+                self.ws.conditional_formatting[cf] = rule
 
 
     def bind_tables(self):

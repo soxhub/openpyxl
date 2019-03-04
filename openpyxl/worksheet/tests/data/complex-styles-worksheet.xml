@@ -401,6 +401,14 @@
   <conditionalFormatting sqref="T1:T10">
     <cfRule type="top10" dxfId="2" priority="11" bottom="1" rank="4"/>
   </conditionalFormatting>
+  <conditionalFormatting sqref="A1">
+    <cfRule type="expression" dxfId="3" priority="2">
+      <formula>A1&lt;3</formula>
+    </cfRule>
+    <cfRule type="expression" dxfId="2" priority="1">
+      <formula>A1&gt;=3</formula>
+    </cfRule>
+  </conditionalFormatting>
   <hyperlinks>
     <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
     <hyperlink display="http://test.com" r:id="rId1" ref="A1"/>
