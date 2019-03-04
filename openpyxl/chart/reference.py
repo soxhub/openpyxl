@@ -109,14 +109,6 @@ class Reference(Strict):
             yield Reference(self.worksheet, col, self.min_row, col, self.max_row)
 
 
-    #@property
-    #def cells(self):
-        #"""
-        #Return a flattened list of all cells (by column)
-        #"""
-        #return chain.from_iterable(self.cols)
-
-
     def pop(self):
         """
         Return and remove the first cell
