@@ -139,7 +139,6 @@ class Worksheet(_WorkbookChild):
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
-        self._merged_cell_range = {}
         self.scenarios = ScenarioList()
 
 
@@ -589,7 +588,6 @@ class Worksheet(_WorkbookChild):
         min_col, min_row, max_col, max_row = cr.bounds
 
         mcr = MergedCellRange(self, cr.coord)
-        self._merged_cell_range.update({cr.bounds:mcr})
 
         rows = range(min_row, max_row+1)
         cols = range(min_col, max_col+1)
@@ -616,9 +614,6 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
         self.merged_cells.remove(cr)
-
-        # Deletes the MergedCellRange.
-        del self._merged_cell_range[cr.bounds]
 
 
     def append(self, iterable):
