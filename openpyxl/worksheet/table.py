@@ -152,7 +152,7 @@ class TableColumn(Serialisable):
                 ):
         self.id = id
         self.uniqueName = uniqueName
-        self.name = name
+        self.name = name.strip()
         self.totalsRowFunction = totalsRowFunction
         self.totalsRowLabel = totalsRowLabel
         self.queryTableFieldId = queryTableFieldId
