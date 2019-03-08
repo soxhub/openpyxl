@@ -569,9 +569,9 @@ class Worksheet(_WorkbookChild):
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
+        """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
         cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
-        """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
 
         self.merged_cells.add(cr.coord)
         self._clean_merge_range(cr)
@@ -586,7 +586,6 @@ class Worksheet(_WorkbookChild):
         """
 
         min_col, min_row, max_col, max_row = cr.bounds
-
         mcr = MergedCellRange(self, cr.coord)
 
         rows = range(min_row, max_row+1)
