@@ -364,8 +364,7 @@ class WorksheetReader(object):
             if ":" in link.ref:
                 # range of cells
                 for row in self.ws[link.ref]:
-                    for cell in row:
-                        cell.hyperlink = link
+                    row[0].hyperlink = link
             else:
                 self.ws[link.ref].hyperlink = link
 
