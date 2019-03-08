@@ -790,6 +790,20 @@ class TestWorksheetReader:
         assert ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
 
 
+    def test_merged_hyperlinks(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        r = Relationship(type="hyperlink", Id="rId1", Target="../")
+        rels = RelationshipList()
+        rels.append(r)
+        ws._rels = rels
+
+        reader.bind_merged_cells()
+        reader.bind_hyperlinks()
+
+
     def test_tables(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
