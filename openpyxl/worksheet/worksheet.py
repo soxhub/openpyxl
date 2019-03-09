@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 
 # Python stdlib imports
-from itertools import islice, product
+from itertools import islice, product, chain
 from operator import itemgetter
 from inspect import isgenerator
 
@@ -585,14 +585,12 @@ class Worksheet(_WorkbookChild):
         After deletion of cells a reformat is issued.
         """
 
-        min_col, min_row, max_col, max_row = cr.bounds
         mcr = MergedCellRange(self, cr.coord)
 
-        rows = range(min_row, max_row+1)
-        cols = range(min_col, max_col+1)
-        cells = product(rows, cols)
+        cells = chain.from_iterable(cr.rows)
+        next(cells) # skip first cell
 
-        for row, col in islice(cells, 1, None):
+        for row, col in cells:
             self._cells[row, col] = MergedCell(self, row, col)
         mcr.format()
 
@@ -613,12 +611,12 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Cell range {0} is not merged".format(cr.coord))
 
         self.merged_cells.remove(cr)
-        min_col, min_row, max_col, max_row = cr.bounds
-        for row in range(min_row, max_row+1):
-            for col in range(min_col, max_col+1):
-                if col == min_col and row == min_row:
-                    continue
-                del self._cells[(row, col)]
+
+        cells = chain.from_iterable(cr.rows)
+        next(cells) # skip first cell
+
+        for row, col in cells:
+            del self._cells[(row, col)]
 
 
     def append(self, iterable):
