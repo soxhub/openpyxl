@@ -254,6 +254,22 @@ class TestCellRange:
         assert cr.right == [(1,3), (2,3), (3,3)]
 
 
+    def test_rows(self, CellRange):
+        cr = CellRange("A1:B3")
+        assert list(cr.rows) == [
+            [(1, 1), (1, 2)],
+            [(2, 1), (2, 2)],
+            [(3, 1), (3, 2)],
+        ]
+
+
+    def test_cols(self, CellRange):
+        cr = CellRange("A1:B3")
+        assert list(cr.cols) == [
+            [(1, 1), (2, 1), (3, 1)],
+            [(1, 2), (2, 2), (3, 2)],
+        ]
+
 
 @pytest.fixture
 def MultiCellRange():

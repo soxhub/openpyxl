@@ -93,6 +93,23 @@ class CellRange(Serialisable):
             max_row=self.max_row
         )
 
+    @property
+    def rows(self):
+        """
+        Return cell coordinates as rows
+        """
+        for row in range(self.min_row, self.max_row+1):
+            yield [(row, col) for col in range(self.min_col, self.max_col+1)]
+
+
+    @property
+    def cols(self):
+        """
+        Return cell coordinates as columns
+        """
+        for col in range(self.min_col, self.max_col+1):
+            yield [(row, col) for row in range(self.min_row, self.max_row+1)]
+
 
     def _check_title(self, other):
         """
