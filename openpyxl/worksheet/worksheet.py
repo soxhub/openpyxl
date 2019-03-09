@@ -572,22 +572,18 @@ class Worksheet(_WorkbookChild):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
         cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
-
-        self.merged_cells.add(cr.coord)
+        self.merged_cells.add(cr)
         self._clean_merge_range(cr)
 
 
     def _clean_merge_range(self, cr):
         """
         Remove all but the top left-cell from a range of merged cells
-        and creates a MergedCellRange object to recreate the lost border
-        information.
-        After deletion of cells a reformat is issued.
+        and recreate the lost border information.
+        Borders are then applied
         """
-
         mcr = MergedCellRange(self, cr.coord)
-
-        cells = chain.from_iterable(cr.rows)
+        cells = chain.from_iterable(mcr.rows)
         next(cells) # skip first cell
 
         for row, col in cells:
