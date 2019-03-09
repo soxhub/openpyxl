@@ -803,6 +803,10 @@ class TestWorksheetReader:
         reader.bind_merged_cells()
         reader.bind_hyperlinks()
 
+        assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
+        assert ws['A18'].hyperlink.display == 'http://test.com'
+        assert ws['B18'].hyperlink is None
+
 
     def test_tables(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
