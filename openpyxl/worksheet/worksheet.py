@@ -757,16 +757,20 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Only CellRange objects can be moved")
         if not rows and not cols:
             return
-        min_col, min_row, max_col, max_row = cell_range.bounds
-        # rebase moved range
-        cell_range.shift(row_shift=rows, col_shift=cols)
 
         down = rows > 0
         right = cols > 0
-        r = sorted(range(min_row, max_row+1), reverse=down)
-        c = sorted(range(min_col, max_col+1), reverse=right)
-        for row, column in product(r, c):
-            self._move_cell(row, column, rows, cols, translate)
+
+        if rows:
+            cells = sorted(cell_range.rows, reverse=down)
+        else:
+            cells = sorted(cell_range.cols, reverse=right)
+
+        for row, col in chain.from_iterable(cells):
+            self._move_cell(row, col, rows, cols, translate)
+
+        # rebase moved range
+        cell_range.shift(row_shift=rows, col_shift=cols)
 
 
     def _move_cell(self, row, column, row_offset, col_offset, translate=False):
