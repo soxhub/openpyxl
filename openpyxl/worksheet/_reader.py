@@ -365,7 +365,10 @@ class WorksheetReader(object):
                 # range of cells
                 for row in self.ws[link.ref]:
                     for cell in row:
-                        cell.hyperlink = link
+                        try:
+                            cell.hyperlink = link
+                        except AttributeError:
+                            pass
             else:
                 self.ws[link.ref].hyperlink = link
 

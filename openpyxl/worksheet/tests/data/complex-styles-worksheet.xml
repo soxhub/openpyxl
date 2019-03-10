@@ -412,6 +412,7 @@
   <hyperlinks>
     <hyperlink ref="B4:B7" location="'STP nn000TL-10, PKG 2.52'!A1" display="STP 10000TL-10"/>
     <hyperlink display="http://test.com" r:id="rId1" ref="A1"/>
+    <hyperlink ref="A18:B18" display="http://test.com"/>
   </hyperlinks>
   <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
   <pageSetup orientation="portrait" horizontalDpi="4294967292" verticalDpi="4294967292"/>
