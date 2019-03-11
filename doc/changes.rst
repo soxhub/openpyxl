@@ -7,6 +7,7 @@ Bugfixes
 
 * `#1190 <https://bitbucket.org/openpyxl/openpyxl/issues/1190>`_ Cannot create charts for worksheets with quotes in the title
 * `#1228 <https://bitbucket.org/openpyxl/openpyxl/issues/1228>`_ MergedCells not removed when range is unmerged.
+* `#11173 <https://bitbucket.org/openpyxl/openpyxl/issues/1173>`_ Workbook has no _date_formats attribute.
 
 
 2.6.1 (2019-03-04)
