@@ -51,7 +51,7 @@ class ChartBase(Serialisable):
     layout = Typed(expected_type=Layout, allow_none=True)
     roundedCorners = Bool(allow_none=True)
     axId = ValueSequence(expected_type=int)
-    visible_cells_only = Bool()
+    visible_cells_only = Bool(allow_none=True)
     display_blanks = Set(values=['span', 'gap', 'zero'])
 
     _series_type = ""
@@ -83,6 +83,7 @@ class ChartBase(Serialisable):
         self.display_blanks = 'gap'
         self.pivotSource = None
         self.pivotFormats = ()
+        self.visible_cells_only = True
 
 
     def __hash__(self):

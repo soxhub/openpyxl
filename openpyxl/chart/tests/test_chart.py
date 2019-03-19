@@ -5,9 +5,11 @@ import pytest
 
 from openpyxl.xml.functions import tostring
 from openpyxl.tests.helper import compare_xml
-from ..chartspace import PlotArea
 
+from ..chartspace import PlotArea
+from ..pivot import PivotSource, PivotFormat
 from ..series import Series
+
 
 @pytest.fixture
 def ChartBase():
@@ -129,6 +131,62 @@ class TestChartBase:
              </chart>
            </chartSpace>
         """
+        xml = tostring(tree)
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_pivot_source(self, ChartBase):
+        chart = ChartBase()
+        chart.pivotSource = PivotSource(name="some pivot", fmtId=5)
+        expected = """
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
+            <pivotSource>
+             <name>some pivot</name>
+             <fmtId val="5" />
+            </pivotSource>
+             <chart>
+               <plotArea>
+                 <DummyChart visible_cells_only="1" display_blanks="gap" />
+               </plotArea>
+               <legend>
+                 <legendPos val="r"></legendPos>
+               </legend>
+               <plotVisOnly val="1"></plotVisOnly>
+               <dispBlanksAs val="gap"></dispBlanksAs>
+             </chart>
+        </chartSpace>
+        """
+        tree = chart._write()
+        xml = tostring(tree)
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_pivot_format(self, ChartBase):
+        chart = ChartBase()
+        fmt = PivotFormat()
+        chart.pivotFormats = [fmt]
+        expected = """
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart">
+             <chart>
+               <pivotFmts>
+                 <pivotFmt>
+                   <idx val="0" />
+                 </pivotFmt>
+               </pivotFmts>
+               <plotArea>
+                 <DummyChart visible_cells_only="1" display_blanks="gap" />
+               </plotArea>
+               <legend>
+                 <legendPos val="r"></legendPos>
+               </legend>
+               <plotVisOnly val="1"></plotVisOnly>
+               <dispBlanksAs val="gap"></dispBlanksAs>
+             </chart>
+        </chartSpace>
+        """
+        tree = chart._write()
         xml = tostring(tree)
         diff = compare_xml(xml, expected)
         assert diff is None, diff
