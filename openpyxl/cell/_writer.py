@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element, SubElement
+from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
 from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, days_to_time
 from datetime import timedelta
@@ -58,6 +58,8 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
         inline_string = SubElement(el, 'is')
         text = SubElement(inline_string, 't')
         text.text = value
+        whitespace(text)
+
 
     else:
         cell_content = SubElement(el, 'v')
@@ -84,8 +86,14 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
 
         if cell.data_type == 's':
             with xf.element("is"):
-                with xf.element("t"):
-                    xf.write(value)
+                attrs = {}
+                if value != value.strip():
+                    attrs["{%s}space" % XML_NS] = "preserve"
+                el = Element("t", attrs) # lxml can't handle xml-ns
+                el.text = value
+                xf.write(el)
+                #with xf.element("t", attrs):
+                    #xf.write(value)
         else:
             with xf.element("v"):
                 if value is not None:

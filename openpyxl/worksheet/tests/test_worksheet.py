@@ -397,6 +397,7 @@ class TestWorksheet:
         ws.merge_cells("A1:D4")
         ws.unmerge_cells(start_row=1, start_column=1, end_row=4, end_column=4)
         assert ws.merged_cells == ""
+        assert (4, 4) not in ws._cells
 
 
     @pytest.mark.parametrize("rows, cols, titles",

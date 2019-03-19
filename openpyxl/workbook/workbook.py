@@ -74,7 +74,6 @@ class Workbook(object):
         self.loaded_theme = None
         self.vba_archive = None
         self.is_template = False
-        self._differential_styles = DifferentialStyleList()
         self.code_name = None
         self.epoch = CALENDAR_WINDOWS_1900
         self.encoding = "utf-8"
@@ -104,6 +103,7 @@ class Workbook(object):
         self._fills.add(DEFAULT_GRAY_FILL)
 
         self._number_formats = IndexedList()
+        self._date_formats = {}
 
         self._protections = IndexedList([Protection()])
 
@@ -112,6 +112,7 @@ class Workbook(object):
         self._named_styles = NamedStyleList()
         self.add_named_style(NamedStyle(font=copy(DEFAULT_FONT), builtinId=0))
         self._table_styles = TableStyleList()
+        self._differential_styles = DifferentialStyleList()
 
 
     @property

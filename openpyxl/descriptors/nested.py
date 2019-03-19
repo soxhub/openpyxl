@@ -17,7 +17,7 @@ from .base import (
     )
 from .sequence import Sequence
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element, localname
+from openpyxl.xml.functions import Element, localname, whitespace
 
 
 class Nested(Descriptor):
@@ -72,6 +72,7 @@ class NestedText(NestedValue):
                 tagname = "{%s}%s" % (namespace, tagname)
             el = Element(tagname)
             el.text = safe_string(value)
+            whitespace(el)
             return el
 
 
