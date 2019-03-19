@@ -10,6 +10,7 @@ Bugfixes
 * `#1228 <https://bitbucket.org/openpyxl/openpyxl/issues/1228>`_ MergedCells not removed when range is unmerged
 * `#1232 <https://bitbucket.org/openpyxl/openpyxl/issues/1232>`_ Link to pivot table lost from charts
 * `#1233 <https://bitbucket.org/openpyxl/openpyxl/issues/1233>`_ Chart colours change after saving
+* `#1236 <https://bitbucket.org/openpyxl/openpyxl/issues/1236>`_ Cannot use ws.cell in read-only mode with Python 2.7
 
 
 
