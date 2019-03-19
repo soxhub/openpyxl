@@ -81,6 +81,8 @@ class ChartBase(Serialisable):
         self.plot_area = PlotArea()
         self.axId = axId
         self.display_blanks = 'gap'
+        self.pivotSource = None
+        self.pivotFormats = ()
 
 
     def __hash__(self):
@@ -126,9 +128,11 @@ class ChartBase(Serialisable):
             container.backWall = chart.backWall
         container.plotVisOnly = self.visible_cells_only
         container.dispBlanksAs = self.display_blanks
+        container.pivotFmts = self.pivotFormats
         cs = ChartSpace(chart=container)
         cs.style = self.style
         cs.roundedCorners = self.roundedCorners
+        cs.pivotSource = self.pivotSource
         return cs.to_tree()
 
 

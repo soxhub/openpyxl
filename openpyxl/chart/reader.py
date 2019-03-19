@@ -33,5 +33,7 @@ def read_chart(chartspace):
     chart.floor = cs.chart.floor
     chart.sideWall = cs.chart.sideWall
     chart.backWall = cs.chart.backWall
+    chart.pivotSource = cs.pivotSource
+    chart.pivotFormats = cs.chart.pivotFmts
 
     return chart
