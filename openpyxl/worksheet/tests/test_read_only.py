@@ -165,9 +165,28 @@ class TestReadOnlyWorksheet:
         ]
 
 
+    def test_calculate_dimension(self, ReadOnlyWorksheet):
+        ws = ReadOnlyWorksheet
+        assert ws.calculate_dimension(True) == "A1:C10"
+
+
     def test_reset_dimensions(self, ReadOnlyWorksheet):
         ws = ReadOnlyWorksheet
         ws._max_row = 5
         ws._max_column = 10
         ws.reset_dimensions()
         assert ws.max_row is ws.max_column is None
+
+
+    def test_cell(self, ReadOnlyWorksheet):
+        ws = ReadOnlyWorksheet
+        c = ws.cell(row=1, column=1)
+        assert c.value == "col1"
+
+
+    def test_iter(self, ReadOnlyWorksheet):
+        ws = ReadOnlyWorksheet
+        for row in ws:
+            pass
+        c = row[-1]
+        assert c.value == 9
