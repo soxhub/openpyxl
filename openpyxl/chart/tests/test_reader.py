@@ -34,3 +34,5 @@ def test_read(datadir):
 
     assert chart.pivotSource.name == "[files.xlsx]PIVOT!PivotTable1"
     assert len(chart.pivotFormats) == 1
+
+    assert chart.idx_base == 0

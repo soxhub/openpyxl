@@ -35,6 +35,6 @@ def read_chart(chartspace):
     chart.backWall = cs.chart.backWall
     chart.pivotSource = cs.pivotSource
     chart.pivotFormats = cs.chart.pivotFmts
-    chart.idx_base
+    chart.idx_base = min(s.idx for s in chart.series)
 
     return chart

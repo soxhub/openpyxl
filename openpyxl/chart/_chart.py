@@ -84,6 +84,7 @@ class ChartBase(Serialisable):
         self.pivotSource = None
         self.pivotFormats = ()
         self.visible_cells_only = True
+        self.idx_base = 0
 
 
     def __hash__(self):
@@ -114,7 +115,7 @@ class ChartBase(Serialisable):
         from .chartspace import ChartSpace, ChartContainer
         self.plot_area.layout = self.layout
 
-        idx_base = 0
+        idx_base = self.idx_base
         for chart in self._charts:
             if chart not in self.plot_area._charts:
                 chart.idx_base = idx_base
