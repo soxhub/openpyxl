@@ -34,6 +34,7 @@ from openpyxl.descriptors.nested import (
     NestedMinMax,
     NestedText,
 )
+from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import CHART_NS
 
 from openpyxl.drawing.colors import ColorMapping
@@ -45,52 +46,11 @@ from .label import DataLabel
 from ._3d import _3DBase, View3D
 from .plotarea import PlotArea
 from .title import Title
+from .pivot import (
+    PivotFormat,
+    PivotSource,
+)
 from .print_settings import PrintSettings
-
-
-class PivotFormat(Serialisable):
-
-    tagname = "pivotFmt"
-
-    idx = NestedInteger(nested=True)
-    spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    graphicalProperties = Alias("spPr")
-    txPr = Typed(expected_type=RichText, allow_none=True)
-    TextBody = Alias("txPr")
-    marker = Typed(expected_type=Marker, allow_none=True)
-    dLbl = Typed(expected_type=DataLabel, allow_none=True)
-    DataLabel = Alias("dLbl")
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('idx', 'spPr', 'txPr', 'marker', 'dLbl')
-
-    def __init__(self,
-                 idx=0,
-                 spPr=None,
-                 txPr=None,
-                 marker=None,
-                 dLbl=None,
-                 extLst=None,
-                ):
-        self.idx = idx
-        self.spPr = spPr
-        self.txPr = txPr
-        self.marker = marker
-        self.dLbl = dLbl
-
-
-class PivotFormatList(Serialisable):
-
-    tagname = "pivotFmts"
-
-    pivotFmt = Sequence(expected_type=PivotFormat, allow_none=True)
-
-    __elements__ = ('pivotFmt',)
-
-    def __init__(self,
-                 pivotFmt=(),
-                ):
-        self.pivotFmt = pivotFmt
 
 
 class ChartContainer(Serialisable):
@@ -99,7 +59,7 @@ class ChartContainer(Serialisable):
 
     title = Typed(expected_type=Title, allow_none=True)
     autoTitleDeleted = NestedBool(allow_none=True)
-    pivotFmts = Typed(expected_type=PivotFormatList, allow_none=True)
+    pivotFmts = NestedSequence(expected_type=PivotFormat)
     view3D = _3DBase.view3D
     floor = _3DBase.floor
     sideWall = _3DBase.sideWall
@@ -118,7 +78,7 @@ class ChartContainer(Serialisable):
     def __init__(self,
                  title=None,
                  autoTitleDeleted=None,
-                 pivotFmts=None,
+                 pivotFmts=(),
                  view3D=None,
                  floor=None,
                  sideWall=None,
@@ -170,25 +130,6 @@ class Protection(Serialisable):
         self.formatting = formatting
         self.selection = selection
         self.userInterface = userInterface
-
-
-class PivotSource(Serialisable):
-
-    tagname = "pivotSource"
-
-    name = NestedText(expected_type=unicode)
-    fmtId = NestedInteger(expected_type=int)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-
-    __elements__ = ('name', 'fmtId')
-
-    def __init__(self,
-                 name=None,
-                 fmtId=None,
-                 extLst=None,
-                ):
-        self.name = name
-        self.fmtId = fmtId
 
 
 class ExternalData(Serialisable):

@@ -17,10 +17,6 @@ class ReadOnlyWorksheet(object):
     _min_row = 1
     _max_column = _max_row = None
 
-    cell = Worksheet.cell
-    __iter__ = Worksheet.__iter__
-
-
     def __init__(self, parent_workbook, title, worksheet_path, shared_strings):
         self.parent = parent_workbook
         self.title = title
@@ -33,10 +29,17 @@ class ReadOnlyWorksheet(object):
         self.iter_rows = Worksheet.iter_rows.__get__(self)
         self.values = Worksheet.values.__get__(self)
         self.rows = Worksheet.rows.__get__(self)
+        self.cell = Worksheet.cell.__get__(self)
+
+
+    def __iter__(self):
+        # 2.7 compat
+        meth = Worksheet.__iter__.__get__(self)
+        return meth()
 
 
     def __getitem__(self, key):
-        # use protected method from Worksheet
+        # 2.7 compat
         meth = Worksheet.__getitem__.__get__(self)
         return meth(key)
 

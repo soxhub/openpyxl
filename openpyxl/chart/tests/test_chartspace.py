@@ -107,63 +107,6 @@ class TestView3D:
         assert view == View3D(rotX=15, rotY=20, rAngAx=False, perspective=30)
 
 
-@pytest.fixture
-def PivotFormat():
-    from ..chartspace import PivotFormat
-    return PivotFormat
-
-
-class TestPivotFormat:
-
-    def test_ctor(self, PivotFormat):
-        fmt = PivotFormat()
-        xml = tostring(fmt.to_tree())
-        expected = """
-        <pivotFmt>
-           <idx val="0" />
-        </pivotFmt>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PivotFormat):
-        src = """
-        <pivotFmt>
-           <idx val="0" />
-        </pivotFmt>
-        """
-        node = fromstring(src)
-        fmt = PivotFormat.from_tree(node)
-        assert fmt == PivotFormat()
-
-
-@pytest.fixture
-def PivotFormatList():
-    from ..chartspace import PivotFormatList
-    return PivotFormatList
-
-
-class TestPivotFormatList:
-
-    def test_ctor(self, PivotFormatList):
-        fmt = PivotFormatList()
-        xml = tostring(fmt.to_tree())
-        expected = """
-        <pivotFmts />
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PivotFormatList):
-        src = """
-        <pivotFmts />
-        """
-        node = fromstring(src)
-        fmt = PivotFormatList.from_tree(node)
-        assert fmt == PivotFormatList()
-
 
 @pytest.fixture
 def Protection():
@@ -192,39 +135,6 @@ class TestProtection:
         node = fromstring(src)
         prot = Protection.from_tree(node)
         assert prot == Protection(chartObject=True)
-
-
-@pytest.fixture
-def PivotSource():
-    from ..chartspace import PivotSource
-    return PivotSource
-
-
-class TestPivotSource:
-
-    def test_ctor(self, PivotSource):
-        src = PivotSource(name="pivot source", fmtId=1)
-        xml = tostring(src.to_tree())
-        expected = """
-        <pivotSource>
-          <name>pivot source</name>
-          <fmtId val="1" />
-        </pivotSource>
-        """
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-
-    def test_from_xml(self, PivotSource):
-        src = """
-        <pivotSource>
-          <name>pivot source</name>
-          <fmtId val="1" />
-        </pivotSource>
-        """
-        node = fromstring(src)
-        src = PivotSource.from_tree(node)
-        assert src == PivotSource(name="pivot source", fmtId=1)
 
 
 @pytest.fixture

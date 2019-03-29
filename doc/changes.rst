@@ -1,3 +1,19 @@
+2.6.2 (2019-03-29)
+==================
+
+
+Bugfixes
+--------
+
+* `#1173 <https://bitbucket.org/openpyxl/openpyxl/issues/1173>`_ Workbook has no _date_formats attribute
+* `#1190 <https://bitbucket.org/openpyxl/openpyxl/issues/1190>`_ Cannot create charts for worksheets with quotes in the title
+* `#1228 <https://bitbucket.org/openpyxl/openpyxl/issues/1228>`_ MergedCells not removed when range is unmerged
+* `#1232 <https://bitbucket.org/openpyxl/openpyxl/issues/1232>`_ Link to pivot table lost from charts
+* `#1233 <https://bitbucket.org/openpyxl/openpyxl/issues/1233>`_ Chart colours change after saving
+* `#1236 <https://bitbucket.org/openpyxl/openpyxl/issues/1236>`_ Cannot use ws.cell in read-only mode with Python 2.7
+
+
+
 2.6.1 (2019-03-04)
 ==================
 

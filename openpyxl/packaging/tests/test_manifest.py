@@ -103,6 +103,36 @@ class TestManifest:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
+    def test_mimetypes_init(self, Manifest):
+        import mimetypes
+        mimetypes.init()
+        manifest = Manifest()
+
+        # add some random xml file so manifest will update itself according
+        # to the mime database entry for the extension .xml, which has been
+        # changed to text/xml by the init call above
+        manifest._register_mimetypes(['dummy.xml'])
+
+        # reset to our correct type, so it won't interfere with unrelated tests
+        mimetypes.add_type('application/xml', '.xml')
+        
+        xml = tostring(manifest.to_tree())
+        expected = """
+        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels" />
+          <Default ContentType="application/xml" Extension="xml" />
+          <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
+            PartName="/xl/styles.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.theme+xml"
+            PartName="/xl/theme/theme1.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-package.core-properties+xml"
+            PartName="/docProps/core.xml"/>
+          <Override ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"
+            PartName="/docProps/app.xml"/>
+        </Types>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
     def test_from_xml(self, datadir, Manifest):
         datadir.chdir()

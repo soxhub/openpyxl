@@ -4,7 +4,7 @@ from __future__ import absolute_import
 """
 File manifest
 """
-import mimetypes
+from mimetypes import MimeTypes
 import os.path
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -40,8 +40,7 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring
 
 # initialise mime-types
-if not mimetypes.inited:
-    mimetypes.init()
+mimetypes = MimeTypes()
 mimetypes.add_type('application/xml', ".xml")
 mimetypes.add_type('application/vnd.openxmlformats-package.relationships+xml', ".rels")
 mimetypes.add_type("application/vnd.ms-office.vbaProject", ".bin")
@@ -120,7 +119,7 @@ class Manifest(Serialisable):
         Skip parts without extensions
         """
         exts = set([os.path.splitext(part.PartName)[-1] for part in self.Override])
-        return [(ext[1:], mimetypes.types_map[ext]) for ext in sorted(exts) if ext]
+        return [(ext[1:], mimetypes.types_map[True][ext]) for ext in sorted(exts) if ext]
 
 
     def to_tree(self):
@@ -192,7 +191,7 @@ class Manifest(Serialisable):
             ext = os.path.splitext(fn)[-1]
             if not ext:
                 continue
-            mime = mimetypes.types_map[ext]
+            mime = mimetypes.types_map[True][ext]
             fe = FileExtension(ext[1:], mime)
             self.Default.append(fe)
 

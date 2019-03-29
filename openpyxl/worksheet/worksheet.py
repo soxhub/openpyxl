@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 
 # Python stdlib imports
-from itertools import islice, product
+from itertools import islice, product, chain
 from operator import itemgetter
 from inspect import isgenerator
 
@@ -139,7 +139,6 @@ class Worksheet(_WorkbookChild):
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
         self.sheet_format = SheetFormatProperties()
-        self._merged_cell_range = {}
         self.scenarios = ScenarioList()
 
 
@@ -570,32 +569,24 @@ class Worksheet(_WorkbookChild):
 
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
+        """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
         cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
-        """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
-
-        self.merged_cells.add(cr.coord)
+        self.merged_cells.add(cr)
         self._clean_merge_range(cr)
 
 
     def _clean_merge_range(self, cr):
         """
         Remove all but the top left-cell from a range of merged cells
-        and creates a MergedCellRange object to recreate the lost border
-        information.
-        After deletion of cells a reformat is issued.
+        and recreate the lost border information.
+        Borders are then applied
         """
-
-        min_col, min_row, max_col, max_row = cr.bounds
-
         mcr = MergedCellRange(self, cr.coord)
-        self._merged_cell_range.update({cr.bounds:mcr})
+        cells = chain.from_iterable(mcr.rows)
+        next(cells) # skip first cell
 
-        rows = range(min_row, max_row+1)
-        cols = range(min_col, max_col+1)
-        cells = product(rows, cols)
-
-        for row, col in islice(cells, 1, None):
+        for row, col in cells:
             self._cells[row, col] = MergedCell(self, row, col)
         mcr.format()
 
@@ -617,8 +608,11 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        # Deletes the MergedCellRange.
-        del self._merged_cell_range[cr.bounds]
+        cells = chain.from_iterable(cr.rows)
+        next(cells) # skip first cell
+
+        for row, col in cells:
+            del self._cells[(row, col)]
 
 
     def append(self, iterable):
@@ -759,16 +753,20 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Only CellRange objects can be moved")
         if not rows and not cols:
             return
-        min_col, min_row, max_col, max_row = cell_range.bounds
-        # rebase moved range
-        cell_range.shift(row_shift=rows, col_shift=cols)
 
         down = rows > 0
         right = cols > 0
-        r = sorted(range(min_row, max_row+1), reverse=down)
-        c = sorted(range(min_col, max_col+1), reverse=right)
-        for row, column in product(r, c):
-            self._move_cell(row, column, rows, cols, translate)
+
+        if rows:
+            cells = sorted(cell_range.rows, reverse=down)
+        else:
+            cells = sorted(cell_range.cols, reverse=right)
+
+        for row, col in chain.from_iterable(cells):
+            self._move_cell(row, col, rows, cols, translate)
+
+        # rebase moved range
+        cell_range.shift(row_shift=rows, col_shift=cols)
 
 
     def _move_cell(self, row, column, row_offset, col_offset, translate=False):

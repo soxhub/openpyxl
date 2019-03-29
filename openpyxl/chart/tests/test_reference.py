@@ -48,30 +48,19 @@ class TestReference:
 
 
     def test_cols(self, Reference):
-        ref = Reference(range_string="'Sheet'!A1:B2")
+        ref = Reference(range_string="Sheet!A1:B2")
         assert list(ref.cols) == [
-            ('A1', 'A2'),
-            ('B1', 'B2')
+            Reference(range_string="Sheet!A1:A2"),
+            Reference(range_string="Sheet!B1:B2")
         ]
 
 
     def test_rows(self, Reference):
-        ref = Reference(range_string="'Sheet'!A1:B2")
+        ref = Reference(range_string="Sheet!A1:B2")
         assert list(ref.rows) == [
-            ('A1', 'B1'),
-            ('A2', 'B2')
+            Reference(range_string="Sheet!A1:B1"),
+            Reference(range_string="Sheet!A2:B2")
         ]
-
-
-    @pytest.mark.parametrize("range_string, cells",
-                             [
-                                 ("Sheet!A1:A5", ['A1', 'A2', 'A3', 'A4', 'A5']),
-                                 ("Sheet!A1:E1", ['A1', 'B1', 'C1', 'D1', 'E1']),
-                             ]
-                             )
-    def test_cells(self, Reference, range_string, cells):
-        ref = Reference(range_string=range_string)
-        assert list(ref.cells) == cells
 
 
     @pytest.mark.parametrize("range_string, cell, min_col, min_row",

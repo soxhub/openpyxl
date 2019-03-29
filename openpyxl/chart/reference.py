@@ -87,39 +87,33 @@ class Reference(Strict):
         return 1 + self.max_row - self.min_row
 
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+
     @property
     def rows(self):
         """
-        Return all cells in range by column
+        Return all rows in the range
         """
         for row in range(self.min_row, self.max_row+1):
-            yield tuple('%s%d' % (get_column_letter(col), row)
-                    for col in range(self.min_col, self.max_col+1))
+            yield Reference(self.worksheet, self.min_col, row, self.max_col, row)
 
 
     @property
     def cols(self):
         """
-        Return all cells in range by row
+        Return all columns in the range
         """
         for col in range(self.min_col, self.max_col+1):
-            yield tuple('%s%d' % (get_column_letter(col), row)
-                        for row in range(self.min_row, self.max_row+1))
-
-
-    @property
-    def cells(self):
-        """
-        Return a flattened list of all cells (by column)
-        """
-        return chain.from_iterable(self.cols)
+            yield Reference(self.worksheet, col, self.min_row, col, self.max_row)
 
 
     def pop(self):
         """
         Return and remove the first cell
         """
-        cell = next(self.cells)
+        cell = "{0}{1}".format(get_column_letter(self.min_col), self.min_row)
         if self.min_row == self.max_row:
             self.min_col += 1
         else:

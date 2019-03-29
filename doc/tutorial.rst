@@ -318,7 +318,7 @@ or set this attribute to `False` (default), to save as a document::
 
 
 Loading from a file
-===================
+-------------------
 
 The same way as writing, you can use the :func:`openpyxl.load_workbook` to
 open an existing workbook::

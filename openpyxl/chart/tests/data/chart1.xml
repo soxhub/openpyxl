@@ -1,17 +1,18 @@
 <?xml version="1.0" standalone="yes"?>
 <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <c:date1904 val="0"/>
-  <c:lang />
+  <c:lang/>
   <c:roundedCorners val="0"/>
-  <mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
-    <mc:Choice xmlns:c14="http://schemas.microsoft.com/office/drawing/2007/8/2/chart" Requires="c14">
-      <c14:style val="102"/>
-    </mc:Choice>
-    <mc:Fallback>
-      <c:style val="2"/>
-    </mc:Fallback>
-  </mc:AlternateContent>
+  <c:pivotSource>
+    <c:name>[files.xlsx]PIVOT!PivotTable1</c:name>
+    <c:fmtId val="0"/>
+  </c:pivotSource>
   <c:chart>
+    <c:pivotFmts>
+      <c:pivotFmt>
+        <c:idx val="0"/>
+      </c:pivotFmt>
+    </c:pivotFmts>
     <c:title>
       <c:tx>
         <c:rich>
@@ -19,7 +20,7 @@
           <a:lstStyle/>
           <a:p>
             <a:r>
-              <a:rPr />
+              <a:rPr/>
               <a:t>Website Performance</a:t>
             </a:r>
           </a:p>

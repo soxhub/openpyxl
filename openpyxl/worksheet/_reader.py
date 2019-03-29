@@ -351,9 +351,9 @@ class WorksheetReader(object):
     def bind_merged_cells(self):
         if not self.parser.merged_cells:
             return
-        self.ws.merged_cells.ranges = self.parser.merged_cells.mergeCell
+
         for cr in self.parser.merged_cells.mergeCell:
-            self.ws._clean_merge_range(cr)
+            self.ws.merge_cells(cr.ref)
 
 
     def bind_hyperlinks(self):
@@ -365,7 +365,10 @@ class WorksheetReader(object):
                 # range of cells
                 for row in self.ws[link.ref]:
                     for cell in row:
-                        cell.hyperlink = link
+                        try:
+                            cell.hyperlink = link
+                        except AttributeError:
+                            pass
             else:
                 self.ws[link.ref].hyperlink = link
 

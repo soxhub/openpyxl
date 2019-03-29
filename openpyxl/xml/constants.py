@@ -36,6 +36,8 @@ ARC_SHARED_STRINGS = PACKAGE_XL + '/sharedStrings.xml'
 ARC_CUSTOM_UI = 'customUI/customUI.xml'
 
 ## namespaces
+# XML
+XML_NS = "http://www.w3.org/XML/1998/namespace"
 # Dublin Core
 DCORE_NS = 'http://purl.org/dc/elements/1.1/'
 DCTERMS_NS = 'http://purl.org/dc/terms/'

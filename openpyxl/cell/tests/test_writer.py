@@ -154,3 +154,24 @@ def test_attributes(worksheet, value, result, attrs):
     cell.value = value
 
     assert(_set_attributes(cell)) == (result, attrs)
+
+
+def test_whitespace(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = "  whitespace   "
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c t="inlineStr" r="A1">
+      <is>
+        <t xml:space="preserve">  whitespace   </t>
+      </is>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
