@@ -1,5 +1,9 @@
+Optimised Modes
+===============
+
+
 Read-only mode
-==============
+--------------
 
 Sometimes, you will need to open or write extremely large XLSX files,
 and the common routines in openpyxl won't be able to handle that load.
@@ -25,7 +29,7 @@ Cells returned are not regular :class:`openpyxl.cell.cell.Cell` but
 
 
 Worksheet dimensions
---------------------
+++++++++++++++++++++
 
 Read-only mode relies on applications and libraries that created the file
 providing correct information about the worksheets, specifically the used
@@ -39,7 +43,7 @@ attributes should allow you to work with the file::
 
 
 Write-only mode
-===============
+---------------
 
 Here again, the regular :class:`openpyxl.worksheet.worksheet.Worksheet` has been replaced
 by a faster alternative, the :class:`openpyxl.worksheet._write_only.WriteOnlyWorksheet`.
