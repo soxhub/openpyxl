@@ -9,8 +9,9 @@ from .worksheet import Worksheet
 
 class WorksheetCopy(object):
     """
-    Copy the values, styles, dimensions and merged cells from one worksheet
-    to another within the same workbook.
+    Copy the values, styles, dimensions, merged cells, margins, and
+    print/page setup from one worksheet to another within the same
+    workbook.
     """
 
     def __init__(self, source_worksheet, target_worksheet):
@@ -39,6 +40,9 @@ class WorksheetCopy(object):
         self.target.sheet_format = copy(self.source.sheet_format)
         self.target.sheet_properties = copy(self.source.sheet_properties)
         self.target.merged_cells = copy(self.source.merged_cells)
+        self.target.page_margins = copy(self.source.page_margins)
+        self.target.page_setup = copy(self.source.page_setup)
+        self.target.print_options = copy(self.source.print_options)
 
 
     def _copy_cells(self):
