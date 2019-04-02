@@ -44,6 +44,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * JarekPS
 * Jean Pierre Huart
 * Jeff Holman
+* John Woltman IV
 * Jonathan Peirce
 * Joseph Tate
 * Josh Haywood
