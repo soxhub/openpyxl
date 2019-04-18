@@ -6,7 +6,7 @@ import datetime
 import pytest
 from openpyxl.tests.helper import compare_xml
 
-from openpyxl.xml.constants import DCTERMS_PREFIX, DCTERMS_NS
+from openpyxl.xml.constants import DCTERMS_PREFIX, DCTERMS_NS, XSI_NS
 from openpyxl.xml.functions import fromstring, tostring, register_namespace
 
 
@@ -85,23 +85,15 @@ def test_qualified_datetime():
     assert diff is None, diff
 
 
-@pytest.fixture()
-def dcterms_prefix_dct(request):
-    def finalizer():
-        register_namespace(DCTERMS_PREFIX, DCTERMS_NS)
-    request.addfinalizer(finalizer)
-    register_namespace("dct", DCTERMS_NS)
+@pytest.fixture(params=['abc', 'dct', 'dcterms', 'xyz'])
+def dcterms_prefix(request):
+    register_namespace(request.param, DCTERMS_NS)
+    yield request.param
+    register_namespace(DCTERMS_PREFIX, DCTERMS_NS)
 
 
-def test_qualified_datetime_ns(dcterms_prefix_dct):
+def test_qualified_datetime_ns(dcterms_prefix):
     from ..core import QualifiedDateTime
     dt = QualifiedDateTime()
     tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30))
-    xml = tostring(tree)
-    expected = """
-    <time xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dct:W3CDTF">
-      2015-07-20T12:30:00Z
-    </time>"""
-
-    diff = compare_xml(xml, expected)
-    assert diff is None, diff
+    assert tree.attrib["{%s}type" % XSI_NS].split(":")[0] == dcterms_prefix
