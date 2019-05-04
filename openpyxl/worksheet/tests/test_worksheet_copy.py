@@ -129,6 +129,30 @@ class TestWorksheetCopy:
         assert cd2.width == 25
 
 
+    def test_copy_page_margins(self, copier):
+        ws1 = copier.source
+        ws1.page_margins.top = 3
+        ws2 = copier.target
+        copier.copy_worksheet()
+        assert ws1.page_margins.top == ws2.page_margins.top
+
+
+    def test_copy_page_setup(self, copier):
+        ws1 = copier.source
+        ws1.page_setup.draft = True
+        ws2 = copier.target
+        copier.copy_worksheet()
+        assert ws1.page_setup.draft == ws1.page_setup.draft
+
+
+    def test_copy_print_options(self, copier):
+        ws1 = copier.source
+        ws1.print_options.horizontalCentered = True
+        ws2 = copier.target
+        copier.copy_worksheet()
+        assert ws1.print_options.horizontalCentered == ws2.print_options.horizontalCentered
+
+
 def test_copy_worksheet(datadir, WorksheetCopy):
     datadir.chdir()
     wb = load_workbook('copy_test.xlsx')
