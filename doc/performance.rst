@@ -56,3 +56,28 @@ reduces performance.
 
 
 .. literalinclude:: read_performance.txt
+
+
+Parallelisation
++++++++++++++++
+
+Reading worksheets is fairly CPU-intensive which limits any benefits to be
+gained by parallelisation. However, if you are mainly interested in dumping
+the contents of a workbook then you can use openpyxl's read-only mode and
+open multiple instances of a workbook and take advantage of multiple CPUs.
+
+`Sample code <https://bitbucket.org/snippets/openpyxl/AexG8E>`_ using the
+same source file as for read performance shows that performance scales
+reasonably with only a slight overhead due to creating additional Python
+processes.
+
+.. code-block::
+
+    Parallised Read
+        Workbook loaded 1.12s
+        >>DATA>> 2.27s
+        Output Model 2.30s
+        Store days 100% 37.18s
+        OptimizationData 44.09s
+        Store days 0% 45.60s
+        Total time 46.76s
