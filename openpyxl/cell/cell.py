@@ -90,6 +90,23 @@ TYPE_FORMULA_CACHE_STRING = 'str'
 VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
                TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
+
+_TYPES = {int:'n', float:'n', unicode:'s', basestring:'s', bool:'b'}
+
+
+def get_type(t, value):
+    if isinstance(value, NUMERIC_TYPES):
+        dt = 'n'
+    elif isinstance(value, STRING_TYPES):
+        dt = 's'
+    elif isinstance(value, TIME_TYPES):
+        dt = 'd'
+    else:
+        return
+    _TYPES[t] = dt
+    return dt
+
+
 class Cell(StyleableObject):
     """Describes cell associated properties.
 
@@ -192,27 +209,30 @@ class Cell(StyleableObject):
 
         self.data_type = "n"
         t = type(value)
+        try:
+            dt = _TYPES[t]
+        except KeyError:
+            dt = get_type(t, value)
 
-        if t in NUMERIC_TYPES:
+        if dt is not None:
+            self.data_type = dt
+
+        if dt == 'n' or dt == 'b':
             pass
 
-        elif t in TIME_TYPES:
+        elif dt == 'd':
             if not is_date_format(self.number_format):
                 self.number_format = TIME_FORMATS[t]
             self.data_type = "d"
 
-        elif t in STRING_TYPES:
+        elif dt == "s":
             value = self.check_string(value)
-            self.data_type = 's'
             if len(value) > 1 and value.startswith("="):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
             elif self.guess_types: # deprecated
                 value = self._infer_value(value)
-
-        elif t is bool:
-            self.data_type = 'b'
 
         elif value is not None:
             raise ValueError("Cannot convert {0!r} to Excel".format(value))
