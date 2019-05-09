@@ -169,12 +169,6 @@ def test_cell_formatted_as_date(dummy_cell, value, is_date):
     assert cell.value == value
 
 
-def test_set_bad_type(dummy_cell):
-    cell = dummy_cell
-    with pytest.raises(ValueError):
-        cell.set_explicit_value(1, 'q')
-
-
 def test_illegal_characters(dummy_cell):
     from openpyxl.utils.exceptions import IllegalCharacterError
     from itertools import chain

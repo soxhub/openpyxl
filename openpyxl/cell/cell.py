@@ -172,16 +172,6 @@ class Cell(StyleableObject):
         except UnicodeDecodeError:
             return u'#N/A'
 
-    @deprecated("Type coercion will no longer be supported")
-    def set_explicit_value(self, value=None, data_type=TYPE_STRING):
-        """Coerce values according to their explicit type"""
-        if data_type not in VALID_TYPES:
-            raise ValueError('Invalid data type: %s' % data_type)
-        if isinstance(value, STRING_TYPES):
-            value = self.check_string(value)
-        self._value = value
-        self.data_type = data_type
-
 
     def _bind_value(self, value):
         """Given a value, infer the correct data type"""
@@ -204,8 +194,6 @@ class Cell(StyleableObject):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
-            elif self.guess_types: # deprecated
-                value = self._infer_value(value)
 
         elif t is bool:
             self.data_type = 'b'
@@ -214,23 +202,6 @@ class Cell(StyleableObject):
             raise ValueError("Cannot convert {0!r} to Excel".format(value))
 
         self._value = value
-
-
-    def _infer_value(self, value):
-        """Given a string, infer type and formatting options."""
-        if not isinstance(value, str):
-            value = str(value)
-
-        # number detection
-        v = cast_numeric(value)
-        if v is None:
-            # percentage detection
-            v = cast_percentage(value)
-        if v is None:
-            # time detection
-            v = cast_percentage(value)
-
-        return value
 
 
     @property
