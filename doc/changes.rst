@@ -2,6 +2,12 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1290 <https://bitbucket.org/openpyxl/openpyxl/issues/1290>`_ Minimum for holeSize in Doughnut charts too high
+
+
 2.6.2 (2019-03-29)
 ==================
 
