@@ -736,8 +736,11 @@ class Worksheet(_WorkbookChild):
 
         self._move_cells(min_col=idx+amount, offset=-amount, row_or_col="column")
 
+        # calculating min and max row is an expensive operation, do it only once
+        min_row = self.min_row
+        max_row = self.max_row + 1
         for col in remainder:
-            for row in range(self.min_row, self.max_row+1):
+            for row in range(min_row, max_row):
                 if (row, col) in self._cells:
                     del self._cells[row, col]
 
