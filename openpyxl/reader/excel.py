@@ -35,7 +35,7 @@ from openpyxl.xml.constants import (
     XLSM,
     XLSX,
 )
-
+from openpyxl.cell import MergedCell
 from openpyxl.comments.comment_sheet import CommentSheet
 
 from .strings import read_string_table
@@ -201,6 +201,7 @@ class ExcelReader:
 
 
     def read_worksheets(self):
+        comment_warning = """Cell '{0}':{1} is part of a merged range but has a comment which will be removed because merged cells cannot contain any data."""
         for sheet, rel in self.parser.find_sheets():
             if rel.target not in self.valid_files:
                 continue
@@ -230,7 +231,13 @@ class ExcelReader:
                 src = self.archive.read(r.target)
                 comment_sheet = CommentSheet.from_tree(fromstring(src))
                 for ref, comment in comment_sheet.comments:
-                    ws[ref].comment = comment
+                    try:
+                        ws[ref].comment = comment
+                    except AttributeError:
+                        c = ws[ref]
+                        if isinstance(c, MergedCell):
+                            warnings.warn(comment_warning.format(ws.title, c.coordinate))
+                            continue
 
             # preserve link to VML file if VBA
             if self.wb.vba_archive and ws.legacy_drawing:

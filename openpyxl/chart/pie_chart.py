@@ -95,7 +95,7 @@ class DoughnutChart(_PieChartBase):
     dLbls = _PieChartBase.dLbls
 
     firstSliceAng = NestedMinMax(min=0, max=360)
-    holeSize = NestedMinMax(min=10, max=90, allow_none=True)
+    holeSize = NestedMinMax(min=1, max=90, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = _PieChartBase.__elements__ + ('firstSliceAng', 'holeSize')

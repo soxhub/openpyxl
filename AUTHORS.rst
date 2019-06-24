@@ -66,6 +66,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Paul Van Der Linden
 * Philip Roche
 * ramn_se
+* René Neumann
 * Rick Rankin
 * Samuel Loretan
 * Sergey Pikhovkin

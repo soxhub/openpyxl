@@ -7,6 +7,18 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1290 <https://bitbucket.org/openpyxl/openpyxl/issues/1290>`_ Minimum for holeSize in Doughnut charts too high
+
+
+Pull Requests
+-------------
+
+* `PR341 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/341/>`_ Calculate worksheet bounds only once when deleting rows or columns
+
+
 2.6.2 (2019-03-29)
 ==================
 
