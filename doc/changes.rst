@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#1290 <https://bitbucket.org/openpyxl/openpyxl/issues/1290>`_ Minimum for holeSize in Doughnut charts too high
+* `#1296 <https://bitbucket.org/openpyxl/openpyxl/issues/1296>`_ Pagebreaks duplicated
 
 
 Pull Requests
