@@ -160,6 +160,28 @@ def test_remove_sheet(Workbook):
     assert new_sheet not in wb.worksheets
 
 
+def test_move_sheet(Workbook):
+    wb = Workbook()
+    for i in range(9):
+        wb.create_sheet()
+    assert wb.sheetnames == ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet4',
+                            'Sheet5', 'Sheet6', 'Sheet7', 'Sheet8', 'Sheet9']
+    ws = wb['Sheet9']
+    wb.move_sheet(ws, -5)
+    assert wb.sheetnames == ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet9',
+                            'Sheet4', 'Sheet5', 'Sheet6', 'Sheet7', 'Sheet8']
+
+
+def test_move_sheet(Workbook):
+    wb = Workbook()
+    for i in range(9):
+        wb.create_sheet()
+    assert wb.sheetnames == ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet4',
+                            'Sheet5', 'Sheet6', 'Sheet7', 'Sheet8', 'Sheet9']
+    wb.move_sheet("Sheet9", -5)
+    assert wb.sheetnames == ['Sheet', 'Sheet1', 'Sheet2', 'Sheet3', 'Sheet9',
+                            'Sheet4', 'Sheet5', 'Sheet6', 'Sheet7', 'Sheet8']
+
 def test_getitem(Workbook):
     wb = Workbook()
     ws = wb['Sheet']
