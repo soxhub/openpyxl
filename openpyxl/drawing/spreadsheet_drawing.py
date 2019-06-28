@@ -221,7 +221,7 @@ def _check_anchor(obj):
     """
     anchor = obj.anchor
     if not isinstance(anchor, _AnchorBase):
-        row, col = coordinate_to_tuple(anchor)
+        row, col = coordinate_to_tuple(anchor.upper())
         anchor = OneCellAnchor()
         anchor._from.row = row -1
         anchor._from.col = col -1
