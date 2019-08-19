@@ -131,6 +131,17 @@ class TestPlotArea:
         assert chart.tagname == "surface3DChart"
 
 
+    def test_read_bar_chart_3d(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("3D_bar_chart.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        chart = plot._charts[0]
+        assert chart.axId == [203780744, 203656728, 15]
+        assert chart.tagname == "bar3DChart"
+        assert chart.z_axis.crossAx == 203780744
+
+
 @pytest.fixture
 def DataTable():
     from ..plotarea import DataTable
