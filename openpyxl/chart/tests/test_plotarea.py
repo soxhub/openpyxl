@@ -121,7 +121,7 @@ class TestPlotArea:
         assert chart.y_axis.axId == 211330000
 
 
-    def test_read_scatter_chart(self, PlotArea, datadir):
+    def test_read_surface_chart_3d(self, PlotArea, datadir):
         datadir.chdir()
         with open("3D_plotarea.xml", "rb") as src:
             tree = fromstring(src.read())
