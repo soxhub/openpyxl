@@ -56,7 +56,7 @@
     <shape val="box"/>
     <axId val="203780744"/>
     <axId val="203656728"/>
-    <axId val="15"/>
+    <axId val="0"/>
   </bar3DChart>
   <catAx>
     <axId val="203780744"/>
@@ -90,7 +90,7 @@
     <crossBetween val="between"/>
   </valAx>
   <serAx>
-    <axId val="15"/>
+    <axId val="0"/>
     <scaling>
       <orientation val="minMax"/>
     </scaling>
