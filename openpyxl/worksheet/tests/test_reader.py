@@ -681,6 +681,29 @@ class TestWorksheetParser:
         assert parser.legacy_drawing == "rId3"
 
 
+    def test_custom_views_breaks(self, WorkSheetParser):
+        src = b"""
+        <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <customSheetViews >
+            <customSheetView scale="70">
+            <selection activeCell="F14" sqref="F14"/>
+            <rowBreaks count="1" manualBreakCount="1">
+              <brk id="1" max="16383" man="1"/>
+            </rowBreaks>
+            <pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>
+            <pageSetup paperSize="9" scale="50" firstPageNumber="99" orientation="landscape" useFirstPageNumber="1"/>
+            <headerFooter alignWithMargins="0"/>
+            </customSheetView>
+        </customSheetViews>
+        </sheet>
+        """
+        parser = WorkSheetParser
+        parser.source = BytesIO(src)
+        for _ in parser.parse():
+            pass
+        assert parser.page_breaks == []
+
+
 @pytest.fixture
 def PrimedWorksheetReader(Workbook, datadir):
     from .._reader import WorksheetReader

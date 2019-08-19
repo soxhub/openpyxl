@@ -490,6 +490,18 @@ def test_check_anchor_chart():
     assert anc.ext.height == 2700000
 
 
+@pytest.mark.parametrize("anchor", ("E17", "e17"))
+def test_check_chart_with_anchor(anchor):
+    from ..spreadsheet_drawing import _check_anchor
+    c = BarChart()
+    c.anchor = anchor
+    anc = _check_anchor(c)
+    assert anc._from.row == 16
+    assert anc._from.col == 4
+    assert anc.ext.width == 5400000
+    assert anc.ext.height == 2700000
+
+
 @pytest.mark.pil_required
 def test_check_anchor_image(datadir):
     datadir.chdir()

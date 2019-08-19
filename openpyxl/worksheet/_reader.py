@@ -71,6 +71,7 @@ COL_BREAK_TAG = '{%s}colBreaks' % SHEET_MAIN_NS
 SCENARIOS_TAG = '{%s}scenarios' % SHEET_MAIN_NS
 DATA_TAG = '{%s}sheetData' % SHEET_MAIN_NS
 DIMENSION_TAG = '{%s}dimension' % SHEET_MAIN_NS
+CUSTOM_VIEWS_TAG = '{%s}customSheetViews' % SHEET_MAIN_NS
 
 
 def _cast_number(value):
@@ -114,6 +115,7 @@ class WorkSheetParser(object):
             LEGACY_TAG: self.parse_legacy,
             ROW_BREAK_TAG: self.parse_row_breaks,
             COL_BREAK_TAG: self.parse_col_breaks,
+            CUSTOM_VIEWS_TAG: self.parse_custom_views,
                       }
 
         properties = {
@@ -307,6 +309,11 @@ class WorkSheetParser(object):
     def parse_col_breaks(self, element):
         brk = ColBreak.from_tree(element)
         self.page_breaks.append(brk)
+
+
+    def parse_custom_views(self, element):
+        # clear page_breaks to avoid duplication
+        self.page_breaks = []
 
 
 class WorksheetReader(object):

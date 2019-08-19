@@ -216,6 +216,18 @@ class Workbook(object):
             self._sheets.insert(index, sheet)
 
 
+    def move_sheet(self, sheet, offset=0):
+        """
+        Move a sheet or sheetname
+        """
+        if not isinstance(sheet, Worksheet):
+            sheet = self[sheet]
+        idx = self._sheets.index(sheet)
+        del self._sheets[idx]
+        new_pos = idx + offset
+        self._sheets.insert(new_pos, sheet)
+
+
     def remove(self, worksheet):
         """Remove `worksheet` from this workbook."""
         idx = self._sheets.index(worksheet)

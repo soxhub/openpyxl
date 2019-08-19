@@ -1,8 +1,12 @@
 # Copyright (c) 2010-2019 openpyxl
 import pytest
 
+from zipfile import ZipFile
+from io import BytesIO
+
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl import Workbook
 
 from ..cell_style import StyleArray
 
@@ -242,9 +246,6 @@ class TestStylesheet:
 
 def test_no_styles():
     from ..stylesheet import apply_stylesheet
-    from zipfile import ZipFile
-    from io import BytesIO
-    from openpyxl.workbook import Workbook
     wb1 = wb2 = Workbook()
     archive = ZipFile(BytesIO(), "a")
     apply_stylesheet(archive, wb1)
@@ -254,7 +255,6 @@ def test_no_styles():
 
 
 def test_write_worksheet(Stylesheet):
-    from openpyxl import Workbook
     wb = Workbook()
     from ..stylesheet import write_stylesheet
     node = write_stylesheet(wb)
@@ -306,7 +306,6 @@ def test_write_worksheet(Stylesheet):
 
 def test_simple_styles(datadir):
     import datetime
-    from openpyxl import Workbook
     from ..protection import Protection
     from .. import numbers
     from ..stylesheet import write_stylesheet
@@ -333,3 +332,16 @@ def test_simple_styles(datadir):
     xml = tostring(stylesheet)
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_no_default_style(datadir):
+    from ..stylesheet import apply_stylesheet
+    datadir.chdir()
+    archive = ZipFile(BytesIO(), "a")
+    archive.write("no_default_styles.xml", "xl/styles.xml")
+
+    wb = Workbook()
+    wb._named_styles = []
+    apply_stylesheet(archive, wb)
+
+    assert wb._named_styles != []

@@ -8,40 +8,28 @@ Will probably need to call this indirectly
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Bool,
-    Float,
     Typed,
-    MinMax,
-    Integer,
-    NoneSet,
     String,
     Alias,
-    Sequence,
-    Typed,
 )
 from openpyxl.descriptors.excel import (
-    Percentage,
     ExtensionList,
     Relation
 )
 from openpyxl.descriptors.nested import (
     NestedBool,
     NestedNoneSet,
-    NestedInteger,
     NestedString,
     NestedMinMax,
-    NestedText,
 )
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import CHART_NS
 
 from openpyxl.drawing.colors import ColorMapping
-from .text import Text, RichText
+from .text import RichText
 from .shapes import GraphicalProperties
 from .legend import Legend
-from .marker import PictureOptions, Marker
-from .label import DataLabel
-from ._3d import _3DBase, View3D
+from ._3d import _3DBase
 from .plotarea import PlotArea
 from .title import Title
 from .pivot import (

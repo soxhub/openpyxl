@@ -25,6 +25,8 @@ You can create new worksheets using the :meth:`Workbook.create_sheet` method::
     >>> ws1 = wb.create_sheet("Mysheet") # insert at the end (default)
     # or
     >>> ws2 = wb.create_sheet("Mysheet", 0) # insert at first position
+    # or
+    >>> ws3 = wb.create_sheet("Mysheet", -1) # insert at the penultimate position
 
 Sheets are given a name automatically when they are created.
 They are numbered in sequence (Sheet, Sheet1, Sheet2, ...).

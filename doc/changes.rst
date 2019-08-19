@@ -10,7 +10,11 @@
 Bugfixes
 --------
 
+* `#1237 <https://bitbucket.org/openpyxl/openpyxl/issues/1237>`_ Fix 3D charts.
 * `#1290 <https://bitbucket.org/openpyxl/openpyxl/issues/1290>`_ Minimum for holeSize in Doughnut charts too high
+* `#1291 <https://bitbucket.org/openpyxl/openpyxl/issues/1291>`_ Warning for MergedCells with comments
+* `#1296 <https://bitbucket.org/openpyxl/openpyxl/issues/1296>`_ Pagebreaks duplicated
+* `#1309 <https://bitbucket.org/openpyxl/openpyxl/issues/1309>`_ Workbook has no default CellStyle
 
 
 Pull Requests

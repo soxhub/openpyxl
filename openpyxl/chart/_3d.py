@@ -77,6 +77,8 @@ class _3DBase(Serialisable):
     Base class for 3D charts
     """
 
+    tagname = "ChartBase"
+
     view3D = Typed(expected_type=View3D, allow_none=True)
     floor = Typed(expected_type=Surface, allow_none=True)
     sideWall = Typed(expected_type=Surface, allow_none=True)
@@ -86,7 +88,7 @@ class _3DBase(Serialisable):
                  view3D=None,
                  floor=None,
                  sideWall=None,
-                 backWall=None
+                 backWall=None,
                  ):
         if view3D is None:
             view3D = View3D()
@@ -100,3 +102,4 @@ class _3DBase(Serialisable):
         if backWall is None:
             backWall = Surface()
         self.backWall = backWall
+        super(_3DBase, self).__init__()

@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
 import pytest
+import platform
 
 ### Markers ###
 
@@ -40,3 +41,7 @@ def pytest_runtest_setup(item):
             from openpyxl import PANDAS
             if not PANDAS:
                 pytest.skip("Pandas must be installed")
+        elif item.get_closest_marker("no_pypy"):
+            if platform.python_implementation() == "PyPy":
+                pytest.skip("Skipping pypy")
+
