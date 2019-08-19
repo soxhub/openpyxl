@@ -85,6 +85,7 @@ class ChartBase(Serialisable):
         self.pivotFormats = ()
         self.visible_cells_only = True
         self.idx_base = 0
+        super(ChartBase, self).__init__()
 
 
     def __hash__(self):

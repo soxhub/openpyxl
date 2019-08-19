@@ -5,17 +5,6 @@ from __future__ import absolute_import
 Read a chart
 """
 
-from .chartspace import ChartSpace, PlotArea
-from openpyxl.xml.functions import fromstring
-
-_types = ('areaChart', 'area3DChart', 'lineChart', 'line3DChart',
-         'stockChart', 'radarChart', 'scatterChart', 'pieChart', 'pie3DChart',
-         'doughnutChart', 'barChart', 'bar3DChart', 'ofPieChart', 'surfaceChart',
-         'surface3DChart', 'bubbleChart',)
-
-_axes = ('valAx', 'catAx', 'dateAx', 'serAx',)
-
-
 def read_chart(chartspace):
     cs = chartspace
     plot = cs.chart.plotArea

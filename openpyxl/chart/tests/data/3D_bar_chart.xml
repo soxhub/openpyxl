@@ -1,0 +1,102 @@
+<plotArea>
+  <layout/>
+  <bar3DChart>
+    <barDir val="col"/>
+    <grouping val="clustered"/>
+    <ser>
+      <idx val="0"/>
+      <order val="0"/>
+      <tx>
+        <strRef>
+          <f>Sheet1!$B$1</f>
+        </strRef>
+      </tx>
+      <spPr>
+        <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:prstDash val="solid"/>
+        </a:ln>
+      </spPr>
+      <cat>
+        <strRef>
+          <f>Sheet1!$A$2:$A$4</f>
+        </strRef>
+      </cat>
+      <val>
+        <numRef>
+          <f>Sheet1!$B$2:$B$4</f>
+        </numRef>
+      </val>
+    </ser>
+    <ser>
+      <idx val="1"/>
+      <order val="1"/>
+      <tx>
+        <strRef>
+          <f>Sheet1!$C$1</f>
+        </strRef>
+      </tx>
+      <spPr>
+        <a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+          <a:prstDash val="solid"/>
+        </a:ln>
+      </spPr>
+      <cat>
+        <strRef>
+          <f>Sheet1!$A$2:$A$4</f>
+        </strRef>
+      </cat>
+      <val>
+        <numRef>
+          <f>Sheet1!$C$2:$C$4</f>
+        </numRef>
+      </val>
+    </ser>
+    <gapWidth val="150"/>
+    <gapDepth val="150"/>
+    <shape val="box"/>
+    <axId val="203780744"/>
+    <axId val="203656728"/>
+    <axId val="0"/>
+  </bar3DChart>
+  <catAx>
+    <axId val="203780744"/>
+    <scaling>
+      <orientation val="minMax"/>
+    </scaling>
+    <axPos val="b"/>
+    <numFmt formatCode="General" sourceLinked="1"/>
+    <majorTickMark val="none"/>
+    <minorTickMark val="none"/>
+    <tickLblPos val="nextTo"/>
+    <crossAx val="203656728"/>
+    <crosses val="autoZero"/>
+    <auto val="1"/>
+    <lblAlgn val="ctr"/>
+    <lblOffset val="100"/>
+  </catAx>
+  <valAx>
+    <axId val="203656728"/>
+    <scaling>
+      <orientation val="minMax"/>
+    </scaling>
+    <axPos val="l"/>
+    <majorGridlines/>
+    <numFmt formatCode="General" sourceLinked="1"/>
+    <majorTickMark val="none"/>
+    <minorTickMark val="none"/>
+    <tickLblPos val="nextTo"/>
+    <crossAx val="203780744"/>
+    <crosses val="autoZero"/>
+    <crossBetween val="between"/>
+  </valAx>
+  <serAx>
+    <axId val="0"/>
+    <scaling>
+      <orientation val="minMax"/>
+    </scaling>
+    <axPos val="l"/>
+    <majorTickMark val="none"/>
+    <minorTickMark val="none"/>
+    <crossAx val="203780744"/>
+  </serAx>
+</plotArea>

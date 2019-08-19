@@ -49,9 +49,9 @@ protection may be enabled with or without using a password. Sheet protection is 
 :attr:`openpxyl.worksheet.protection.SheetProtection.sheet` attribute or calling `enable()` or `disable()`::
 
     >>> ws = wb.active
-    >>> wb.protection.sheet = True
-    >>> wb.protection.enable()
-    >>> wb.protection.disable()
+    >>> ws.protection.sheet = True
+    >>> ws.protection.enable()
+    >>> ws.protection.disable()
 
 
 If no password is specified, users can disable configured sheet protection without specifying a password.

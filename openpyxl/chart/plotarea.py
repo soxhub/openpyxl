@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Sequence,
     Typed,
     Alias,
 )
@@ -16,13 +15,9 @@ from openpyxl.descriptors.sequence import (
 )
 from openpyxl.descriptors.nested import (
     NestedBool,
-    NestedNoneSet,
-    NestedInteger,
-    NestedString,
-    NestedMinMax,
-    NestedText,
 )
 
+from ._3d import _3DBase
 from .area_chart import AreaChart, AreaChart3D
 from .bar_chart import BarChart, BarChart3D
 from .bubble_chart import BubbleChart
@@ -153,9 +148,11 @@ class PlotArea(Serialisable):
                 continue
 
             for axId in chart.axId:
-                if not axId:
+                axis = axes.get(axId)
+                if axis is None and isinstance(chart, _3DBase):
+                    # Series Axis can be optional
+                    chart.z_axis = None
                     continue
-                axis = axes[axId]
                 if axis.tagname in ("catAx", "dateAx"):
                     chart.x_axis = axis
                 elif axis.tagname == "valAx":

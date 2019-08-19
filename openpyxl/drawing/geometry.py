@@ -475,7 +475,7 @@ class CustomGeometry2D(Serialisable):
     gdLst = Typed(expected_type=GeomGuideList, allow_none=True)
     ahLst = Typed(expected_type=AdjustHandleList, allow_none=True)
     cxnLst = Typed(expected_type=ConnectionSiteList, allow_none=True)
-    rect = Typed(expected_type=GeomRect, allow_none=True)
+    #rect = Typed(expected_type=GeomRect, allow_none=True)
     pathLst = Typed(expected_type=Path2DList, )
 
     def __init__(self,
@@ -490,7 +490,7 @@ class CustomGeometry2D(Serialisable):
         self.gdLst = gdLst
         self.ahLst = ahLst
         self.cxnLst = cxnLst
-        self.rect = rect
+        self.rect = None
         self.pathLst = pathLst
 
 

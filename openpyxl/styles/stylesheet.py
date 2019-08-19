@@ -1,5 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
+from warnings import warn
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
@@ -12,6 +14,7 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.xml.constants import ARC_STYLE, SHEET_MAIN_NS
 from openpyxl.xml.functions import fromstring
 
+from .builtins import styles
 from .colors import ColorList, COLOR_INDEX
 from .differential import DifferentialStyle
 from .table import TableStyleList
@@ -204,6 +207,11 @@ def apply_stylesheet(archive, wb):
 
     for ns in wb._named_styles:
         ns.bind(wb)
+
+    if not wb._named_styles:
+        normal = styles['Normal']
+        wb.add_named_style(normal)
+        warn("Workbook contains no default style, apply openpyxl's default")
 
     if stylesheet.colors is not None:
         wb._colors = stylesheet.colors.index

@@ -16,7 +16,7 @@ from openpyxl.descriptors import (
     )
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.xml.functions import (Element, tostring)
+from openpyxl.xml.functions import (Element, QName, tostring)
 from openpyxl.xml.constants import (
     COREPROPS_NS,
     DCORE_NS,
@@ -46,7 +46,7 @@ class QualifiedDateTime(NestedDateTime):
 
     def to_tree(self, tagname=None, value=None, namespace=None):
         el = super(QualifiedDateTime, self).to_tree(tagname, value, namespace)
-        el.set("{%s}type" % XSI_NS, "dcterms:W3CDTF")
+        el.set("{%s}type" % XSI_NS, QName(DCTERMS_NS, "W3CDTF"))
         return el
 
 
