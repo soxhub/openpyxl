@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Sequence,
     Typed,
     Alias,
 )
@@ -16,11 +15,6 @@ from openpyxl.descriptors.sequence import (
 )
 from openpyxl.descriptors.nested import (
     NestedBool,
-    NestedNoneSet,
-    NestedInteger,
-    NestedString,
-    NestedMinMax,
-    NestedText,
 )
 
 from ._3d import _3DBase
