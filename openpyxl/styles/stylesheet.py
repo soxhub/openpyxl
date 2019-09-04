@@ -4,9 +4,7 @@ from warnings import warn
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Alias,
     Typed,
-    Sequence
 )
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.descriptors.excel import ExtensionList
@@ -23,15 +21,12 @@ from .fills import Fill
 from .fonts import Font
 from .numbers import (
     NumberFormatList,
+    BUILTIN_FORMATS,
     BUILTIN_FORMATS_REVERSE,
     is_date_format,
     builtin_format_code
 )
-from .alignment import Alignment
-from .protection import Protection
 from .named_styles import (
-    NamedStyle,
-    _NamedCellStyle,
     _NamedCellStyleList
 )
 from .cell_style import CellStyle, CellStyleList
@@ -128,7 +123,9 @@ class Stylesheet(Serialisable):
         named_style.font = self.fonts[xf.fontId]
         named_style.fill = self.fills[xf.fillId]
         named_style.border = self.borders[xf.borderId]
-        if xf.numFmtId in self.custom_formats:
+        if xf.numFmtId in BUILTIN_FORMATS:
+            named_style.number_format = BUILTIN_FORMATS[xf.numFmtId]
+        elif xf.numFmtId in self.custom_formats:
             named_style.number_format = self.custom_formats[xf.numFmtId]
         if xf.alignment:
             named_style.alignment = xf.alignment
