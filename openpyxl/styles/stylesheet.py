@@ -22,6 +22,7 @@ from .fonts import Font
 from .numbers import (
     NumberFormatList,
     BUILTIN_FORMATS,
+    BUILTIN_FORMATS_MAX_SIZE,
     BUILTIN_FORMATS_REVERSE,
     is_date_format,
     builtin_format_code
@@ -123,10 +124,12 @@ class Stylesheet(Serialisable):
         named_style.font = self.fonts[xf.fontId]
         named_style.fill = self.fills[xf.fillId]
         named_style.border = self.borders[xf.borderId]
-        if xf.numFmtId in BUILTIN_FORMATS:
-            named_style.number_format = BUILTIN_FORMATS[xf.numFmtId]
-        elif xf.numFmtId in self.custom_formats:
-            named_style.number_format = self.custom_formats[xf.numFmtId]
+        if xf.numFmtId < BUILTIN_FORMATS_MAX_SIZE:
+            formats = BUILTIN_FORMATS
+        else:
+            formats = self.custom_formats
+        if xf.numFmtId in formats:
+            named_style.number_format = formats[xf.numFmtId]
         if xf.alignment:
             named_style.alignment = xf.alignment
         if xf.protection:
@@ -161,7 +164,7 @@ class Stylesheet(Serialisable):
                 if fmt in BUILTIN_FORMATS_REVERSE: # remove builtins
                     style.numFmtId = BUILTIN_FORMATS_REVERSE[fmt]
                 else:
-                    style.numFmtId = formats.add(fmt) + 164
+                    style.numFmtId = formats.add(fmt) + BUILTIN_FORMATS_MAX_SIZE
             else:
                 fmt = builtin_format_code(style.numFmtId)
             if is_date_format(fmt):
@@ -223,7 +226,7 @@ def write_stylesheet(wb):
 
     from .numbers import NumberFormat
     fmts = []
-    for idx, code in enumerate(wb._number_formats, 164):
+    for idx, code in enumerate(wb._number_formats, BUILTIN_FORMATS_MAX_SIZE):
         fmt = NumberFormat(idx, code)
         fmts.append(fmt)
 
