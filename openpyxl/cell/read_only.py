@@ -4,7 +4,7 @@ from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.datetime import from_excel
 from openpyxl.styles import is_date_format
-from openpyxl.styles.numbers import BUILTIN_FORMATS
+from openpyxl.styles.numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_MAX_SIZE
 
 
 class ReadOnlyCell(object):
@@ -58,10 +58,11 @@ class ReadOnlyCell(object):
     @property
     def number_format(self):
         _id = self.style_array.numFmtId
-        if _id < 164:
+        if _id < BUILTIN_FORMATS_MAX_SIZE:
             return BUILTIN_FORMATS.get(_id, "General")
         else:
-            return self.parent.parent._number_formats[_id - 164]
+            return self.parent.parent._number_formats[
+                _id - BUILTIN_FORMATS_MAX_SIZE]
 
     @property
     def font(self):

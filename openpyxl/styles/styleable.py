@@ -3,7 +3,11 @@
 from copy import copy
 from warnings import warn
 
-from .numbers import BUILTIN_FORMATS, BUILTIN_FORMATS_REVERSE
+from .numbers import (
+    BUILTIN_FORMATS,
+    BUILTIN_FORMATS_MAX_SIZE,
+    BUILTIN_FORMATS_REVERSE,
+)
 from .proxy import StyleProxy
 from .cell_style import StyleArray
 from .named_styles import NamedStyle
@@ -41,7 +45,8 @@ class NumberFormatDescriptor(object):
         if value in BUILTIN_FORMATS_REVERSE:
             idx = BUILTIN_FORMATS_REVERSE[value]
         else:
-            idx = coll.add(value) + 164
+            idx = coll.add(value) + BUILTIN_FORMATS_MAX_SIZE
+
         if not getattr(instance, "_style"):
             instance._style = StyleArray()
         setattr(instance._style, self.key, idx)
@@ -51,10 +56,10 @@ class NumberFormatDescriptor(object):
         if not getattr(instance, "_style"):
             instance._style = StyleArray()
         idx = getattr(instance._style, self.key)
-        if idx < 164:
+        if idx < BUILTIN_FORMATS_MAX_SIZE:
             return BUILTIN_FORMATS.get(idx, "General")
         coll = getattr(instance.parent.parent, self.collection)
-        return coll[idx - 164]
+        return coll[idx - BUILTIN_FORMATS_MAX_SIZE]
 
 
 class NamedStyleDescriptor(object):

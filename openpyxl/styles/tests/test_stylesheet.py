@@ -59,7 +59,10 @@ class TestStylesheet:
         node = fromstring(xml)
         stylesheet = Stylesheet.from_tree(node)
         named_styles = stylesheet._merge_named_styles()
-        assert len(named_styles) == 3
+        assert len(named_styles) == 12
+        assert 'mm-dd-yy' == next(
+            s for s in named_styles if s.name == 'Style With NumFmt'
+        ).number_format
 
 
     def test_unprotected_cell(self, Stylesheet, datadir):

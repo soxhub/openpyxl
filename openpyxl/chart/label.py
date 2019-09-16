@@ -2,14 +2,9 @@
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Typed,
-    String,
-    Integer,
-    Bool,
-    Set,
-    Float,
     Sequence,
-    Alias
+    Alias,
+    Typed
 )
 from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.nested import (

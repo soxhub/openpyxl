@@ -1,6 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from collections import OrderedDict
 from openpyxl.compat import safe_string
 
 from openpyxl.descriptors import (
@@ -20,7 +19,7 @@ from .alignment import Alignment
 from .protection import Protection
 from .numbers import (
     NumberFormatDescriptor,
-    BUILTIN_FORMATS,
+    BUILTIN_FORMATS_MAX_SIZE,
     BUILTIN_FORMATS_REVERSE,
 )
 from .cell_style import (
@@ -122,7 +121,8 @@ class NamedStyle(Serialisable):
         if fmt in BUILTIN_FORMATS_REVERSE:
             fmt = BUILTIN_FORMATS_REVERSE[fmt]
         else:
-            fmt = self._wb._number_formats.add(self.number_format) + 164
+            fmt = self._wb._number_formats.add(self.number_format) + (
+                  BUILTIN_FORMATS_MAX_SIZE)
         self._style.numFmtId = fmt
 
 
