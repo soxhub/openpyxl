@@ -9,8 +9,8 @@ from zipfile import ZipFile
 import pytest
 
 from openpyxl import load_workbook
-
 from openpyxl.chart import BarChart
+from openpyxl.comments import Comment
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
 from openpyxl import Workbook
 from openpyxl.worksheet.table import Table
@@ -114,7 +114,7 @@ def test_chartsheet(ExcelWriter, archive):
 
 
 def test_comment(ExcelWriter, archive):
-    from openpyxl.comments import Comment
+
     wb = Workbook()
     ws = wb.active
     ws['B5'].comment = Comment("A comment", "The Author")
@@ -125,6 +125,18 @@ def test_comment(ExcelWriter, archive):
     assert archive.namelist() == ['xl/comments/comment1.xml', 'xl/drawings/commentsDrawing1.vml']
     assert '/xl/comments/comment1.xml' in writer.manifest.filenames
     assert ws.legacy_drawing == 'xl/drawings/commentsDrawing1.vml'
+
+
+def test_duplicate_comment(ExcelWriter, archive):
+
+    wb = Workbook()
+    ws = wb.active
+    ws['B5'].comment = Comment("A comment", "The Author")
+
+    writer = ExcelWriter(wb, archive)
+    writer.write_worksheet(ws)
+    writer.write_worksheet(ws)
+    assert len(ws._comments) == 1
 
 
 def test_merge_vba(ExcelWriter, archive, datadir):

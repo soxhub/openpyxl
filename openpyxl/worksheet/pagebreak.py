@@ -32,7 +32,7 @@ class Break(Serialisable):
         self.pt = pt
 
 
-class PageBreak(Serialisable):
+class RowBreak(Serialisable):
 
     tagname = "rowBreaks"
 
@@ -81,9 +81,15 @@ class PageBreak(Serialisable):
         self.brk = vals
 
 
-RowBreak = PageBreak
+PageBreak = RowBreak
 
 
-class ColBreak(PageBreak):
+class ColBreak(RowBreak):
 
     tagname = "colBreaks"
+
+    count = RowBreak.count
+    manualBreakCount = RowBreak.manualBreakCount
+    brk = RowBreak.brk
+
+    __attrs__ = RowBreak.__attrs__

@@ -16,7 +16,6 @@ from ..protection import SheetProtection
 from ..filters import SortState
 from ..scenario import Scenario, InputCells
 from ..table import Table
-from ..pagebreak import PageBreak, Break
 
 
 @pytest.fixture
@@ -341,12 +340,8 @@ class TestWorksheetWriter:
 
     def test_breaks(self, writer):
 
-        col_page_break = PageBreak()
-        col_page_break.tagname = 'colBreaks'
-        col_page_break.append(Break(id=1))
-
-        writer.ws.page_breaks[0].append(Break(id=1))
-        writer.ws.page_breaks.append(col_page_break)
+        writer.ws.row_breaks.append()
+        writer.ws.col_breaks.append()
         writer.write_breaks()
         xml = writer.read()
         expected = """

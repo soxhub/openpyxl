@@ -46,6 +46,7 @@ class WorksheetWriter:
 
     def __init__(self, ws, out=None):
         self.ws = ws
+        self.ws._comments = []
         if out is None:
             out = create_temporary_file()
         self.out = out
