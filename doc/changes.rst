@@ -14,12 +14,13 @@ Bugfixes
 * `#1291 <https://bitbucket.org/openpyxl/openpyxl/issues/1291>`_ Warning for MergedCells with comments
 * `#1296 <https://bitbucket.org/openpyxl/openpyxl/issues/1296>`_ Pagebreaks duplicated
 * `#1309 <https://bitbucket.org/openpyxl/openpyxl/issues/1309>`_ Workbook has no default CellStyle
+* `#1330 <https://bitbucket.org/openpyxl/openpyxl/issues/1330>`_ Workbooks with comments cannot be saved multiple times
 
 
 Pull Requests
 -------------
 
-* `PR341 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/341/>`_ Calculate worksheet bounds only once when deleting rows or columns
+* `PR344 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/345/>`_ Make sure NamedStyles number formats are correctly handled
 
 
 2.6.2 (2019-03-29)
