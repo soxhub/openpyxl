@@ -16,7 +16,6 @@ from ..protection import SheetProtection
 from ..filters import SortState
 from ..scenario import Scenario, InputCells
 from ..table import Table
-from ..pagebreak import Break
 
 
 @pytest.fixture
