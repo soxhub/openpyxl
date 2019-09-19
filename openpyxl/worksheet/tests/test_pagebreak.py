@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import pytest
@@ -14,10 +13,15 @@ def Break():
 
 
 @pytest.fixture
-def PageBreak():
-    from ..pagebreak import PageBreak
-    return PageBreak
+def RowBreak():
+    from ..pagebreak import RowBreak
+    return RowBreak
 
+
+@pytest.fixture
+def ColBreak():
+    from ..pagebreak import ColBreak
+    return ColBreak
 
 
 class TestBreak:
@@ -33,21 +37,42 @@ class TestBreak:
         assert diff is None, diff
 
 
-class TestPageBreak:
+class TestRowBreak:
 
-    def test_no_brks(self, PageBreak):
-        pb = PageBreak()
+    def test_no_brks(self, RowBreak):
+        pb = RowBreak()
         assert dict(pb) == {'count': '0', 'manualBreakCount': '0'}
 
-    def test_brk(self, PageBreak):
-        pb = PageBreak()
+    def test_append(self, RowBreak):
+        pb = RowBreak()
         pb.append()
         assert dict(pb) == {'count': '1', 'manualBreakCount': '1'}
+
+
+    def test_to_tree(self, RowBreak):
+        pb = RowBreak()
+        pb.append()
         xml = tostring(pb.to_tree())
         expected = """
         <rowBreaks count="1" manualBreakCount="1">
            <brk id="1" man="1" max="16383" min="0"></brk>
         </rowBreaks>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+class TestColBreak:
+
+
+    def test_to_tree(self, ColBreak):
+        pb = ColBreak()
+        pb.append()
+        xml = tostring(pb.to_tree())
+        expected = """
+        <colBreaks count="1" manualBreakCount="1">
+           <brk id="1" man="1" max="16383" min="0"></brk>
+        </colBreaks>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
