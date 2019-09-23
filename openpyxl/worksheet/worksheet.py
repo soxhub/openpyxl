@@ -13,6 +13,11 @@ from openpyxl.compat import (
     deprecated,
 )
 
+try:
+    range = xrange
+except NameError:
+    pass
+
 # package imports
 from openpyxl.utils import (
     column_index_from_string,
