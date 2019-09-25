@@ -137,12 +137,7 @@ to the above format.
 Support of Python Versions
 --------------------------
 
-We have a small library of utility functions to support development for
-Python 2 and 3. With the functions code can by developed using Python 3 style
-and idioms. This is :code:`openpyxl.compat` for Python and
-:code:`openpyxl.xml` for XML functions.
-
-However, in version 3.0 we will drop support for Python 2.x versions.
+Python 3.6 and upwards are supported
 
 
 Coding style

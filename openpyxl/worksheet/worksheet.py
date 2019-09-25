@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
@@ -11,13 +10,8 @@ from inspect import isgenerator
 
 # compatibility imports
 from openpyxl.compat import (
-    basestring,
     deprecated,
 )
-try:
-    range = xrange
-except NameError:
-    pass
 
 # package imports
 from openpyxl.utils import (
@@ -108,7 +102,7 @@ class Worksheet(_WorkbookChild):
                                                  default_factory=self._add_column)
         self.row_breaks = RowBreak()
         self.col_breaks = ColBreak()
-        self.page_breaks = [self.row_breaks, self.col_breaks]
+        self.page_breaks = (self.row_breaks, self.col_breaks)
         self._cells = {}
         self._charts = []
         self._images = []
@@ -652,7 +646,7 @@ class Worksheet(_WorkbookChild):
 
         elif isinstance(iterable, dict):
             for col_idx, content in iterable.items():
-                if isinstance(col_idx, basestring):
+                if isinstance(col_idx, str):
                     col_idx = column_index_from_string(col_idx)
                 cell = Cell(self, row=row_idx, column=col_idx, value=content)
                 self._cells[(row_idx, col_idx)] = cell
@@ -753,7 +747,7 @@ class Worksheet(_WorkbookChild):
         Existing cells will be overwritten.
         Formulae and references will not be updated.
         """
-        if isinstance(cell_range, basestring):
+        if isinstance(cell_range, str):
             cell_range = CellRange(cell_range)
         if not isinstance(cell_range, CellRange):
             raise ValueError("Only CellRange objects can be moved")
@@ -870,7 +864,7 @@ class Worksheet(_WorkbookChild):
         """
         Range of cells in the form A1:D4 or list of ranges
         """
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = [value]
 
         self._print_area = [absolute_coordinate(v) for v in value]

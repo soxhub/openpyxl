@@ -1,9 +1,7 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from itertools import chain
 
-from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     MinMax,
@@ -63,7 +61,7 @@ class Reference(Strict):
 
 
     def __repr__(self):
-        return unicode(self)
+        return str(self)
 
 
     def __str__(self):
@@ -77,7 +75,7 @@ class Reference(Strict):
                           )
 
 
-    __unicode__ = __str__
+    __str__ = __str__
 
 
 

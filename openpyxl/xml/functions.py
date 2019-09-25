@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """
@@ -43,46 +42,22 @@ if LXML is True:
         fromstring = partial(fromstring, parser=safe_parser)
 
 else:
-    try:
-        from xml.etree.cElementTree import (
-        ElementTree,
-        Element,
-        SubElement,
-        QName,
-        register_namespace
+    from xml.etree.ElementTree import (
+    ElementTree,
+    Element,
+    SubElement,
+    fromstring,
+    tostring,
+    iterparse,
+    QName,
+    register_namespace
+    )
+    if DEFUSEDXML is True:
+        from defusedxml.cElementTree import (
+        fromstring,
+        tostring,
+        iterparse,
         )
-        if DEFUSEDXML is True:
-            from defusedxml.cElementTree import (
-            fromstring,
-            tostring,
-            iterparse,
-            )
-        else:
-            from xml.etree.cElementTree import (
-            fromstring,
-            tostring,
-            iterparse
-            )
-    except ImportError:
-        from xml.etree.ElementTree import (
-        ElementTree,
-        Element,
-        SubElement,
-        QName,
-        register_namespace
-        )
-        if DEFUSEDXML is True:
-            from defusedxml.ElementTree import (
-            fromstring,
-            tostring,
-            iterparse,
-            )
-        else:
-            from xml.etree.ElementTree import (
-            fromstring,
-            tostring,
-            iterparse,
-            )
     from et_xmlfile import xmlfile
 
 

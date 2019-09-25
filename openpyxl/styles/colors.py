@@ -1,8 +1,7 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import re
-from openpyxl.compat import safe_string, basestring
+from openpyxl.compat import safe_string
 from openpyxl.descriptors import (
     Descriptor,
     String,
@@ -54,7 +53,7 @@ class RGB(Typed):
     If not supplied alpha is 00
     """
 
-    expected_type = basestring
+    expected_type = str
 
     def __set__(self, instance, value):
         if not self.allow_none:
@@ -131,7 +130,7 @@ class ColorDescriptor(Typed):
     expected_type = Color
 
     def __set__(self, instance, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = Color(rgb=value)
         super(ColorDescriptor, self).__set__(instance, value)
 

@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from collections import defaultdict
@@ -16,7 +15,7 @@ from openpyxl.descriptors import (
     Convertible,
 )
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.compat import unicode
+
 from openpyxl.utils import (
     rows_from_range,
     coordinate_to_tuple,
@@ -92,8 +91,8 @@ class DataValidation(Serialisable):
     error = String(allow_none = True)
     promptTitle = String(allow_none = True)
     prompt = String(allow_none = True)
-    formula1 = NestedText(allow_none=True, expected_type=unicode)
-    formula2 = NestedText(allow_none=True, expected_type=unicode)
+    formula1 = NestedText(allow_none=True, expected_type=str)
+    formula2 = NestedText(allow_none=True, expected_type=str)
 
     type = NoneSet(values=("whole", "decimal", "list", "date", "time",
                            "textLength", "custom"))

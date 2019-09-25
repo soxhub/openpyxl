@@ -1,9 +1,7 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from collections import OrderedDict
 
-from openpyxl.compat import basestring
 from openpyxl.descriptors import (
     Bool,
     String,
@@ -71,7 +69,7 @@ class ConditionalFormattingList(object):
          The priority will be added automatically.
         """
         cf = range_string
-        if isinstance(range_string, basestring):
+        if isinstance(range_string, str):
             cf = ConditionalFormatting(range_string)
         if not isinstance(cfRule, Rule):
             raise ValueError("Only instances of openpyxl.formatting.rule.Rule may be added")
@@ -103,7 +101,7 @@ class ConditionalFormattingList(object):
         """
         Get the rules for a cell range
         """
-        if isinstance(key, basestring):
+        if isinstance(key, str):
             key = ConditionalFormatting(sqref=key)
         return self._cf_rules[key]
 

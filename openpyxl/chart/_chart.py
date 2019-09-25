@@ -1,9 +1,6 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from collections import OrderedDict
-
-from openpyxl.compat import basestring
 
 from openpyxl.descriptors import (
     Typed,

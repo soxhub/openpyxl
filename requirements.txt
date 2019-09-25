@@ -1,6 +1,6 @@
-pip>=9.0
-lxml>=4.0.0
-pytest<5
+pip>=18.0
+lxml>=4.2.0
+pytest
 pillow
 tox
 pandas

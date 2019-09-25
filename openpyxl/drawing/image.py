@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
@@ -8,7 +7,6 @@ try:
 except ImportError:
     PILImage = False
 
-from openpyxl.compat import basestring
 
 def _import_image(img):
     if not PILImage:
@@ -30,7 +28,7 @@ class Image(object):
     def __init__(self, img):
 
         self.ref = img
-        mark_to_close = isinstance(img, basestring)
+        mark_to_close = isinstance(img, str)
         image = _import_image(img)
         self.width, self.height = image.size
 

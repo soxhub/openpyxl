@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 # Simplified implementation of headers and footers: let worksheets have separate items
@@ -17,7 +16,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.serialisable import Serialisable
 
-from openpyxl.compat import unicode
+
 from openpyxl.xml.functions import Element
 from openpyxl.utils.escape import escape, unescape
 
@@ -181,7 +180,7 @@ class HeaderFooterItem(Strict):
         for key, part in zip(
             self.__keys, [self.left, self.center, self.right]):
             if part.text is not None:
-                txt.append(u"&{0}{1}".format(key, unicode(part)))
+                txt.append(u"&{0}{1}".format(key, str(part)))
         txt = "".join(txt)
         txt = SUBS_REGEX.sub(replace, txt)
         return escape(txt)
@@ -198,7 +197,7 @@ class HeaderFooterItem(Strict):
         Return as XML node
         """
         el = Element(tagname)
-        el.text = unicode(self)
+        el.text = str(self)
         return el
 
 

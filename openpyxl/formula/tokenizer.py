@@ -18,10 +18,10 @@ class Tokenizer(object):
     """
     A tokenizer for Excel worksheet formulae.
 
-    Converts a unicode string representing an Excel formula (in A1 notation)
+    Converts a str string representing an Excel formula (in A1 notation)
     into a sequence of `Token` objects.
 
-    `formula`: The unicode string to tokenize
+    `formula`: The str string to tokenize
 
     Tokenizer defines a method `._parse()` to parse the formula into tokens,
     which can then be accessed through the `.items` attribute.

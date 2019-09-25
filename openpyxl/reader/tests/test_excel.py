@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 from io import BytesIO
@@ -125,7 +124,7 @@ def test_close_write(wo):
     wb.close()
 
 
-def test_read_invalid_stream(load_workbook):
+def test_read_stringio(load_workbook):
     filelike = BytesIO(b"certainly not a valid XSLX content")
     # Test invalid file-like objects are detected and not handled as regular files
     with pytest.raises(BadZipfile):
@@ -223,13 +222,3 @@ class TestExcelReader:
 
         reader.read_chartsheet(sheet, rel)
         assert reader.wb['chart'].title == "chart"
-
-
-    def test_read_only_stream(self, load_workbook):
-        from openpyxl import Workbook
-        wb = Workbook()
-        out = BytesIO()
-        wb.save(out)
-        reader = ExcelReader(out, read_only=True)
-        reader.read()
-        assert reader.wb._archive.fp is not None

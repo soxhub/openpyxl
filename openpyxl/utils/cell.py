@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """
@@ -6,7 +5,6 @@ Collection of utilities used within the package and also available for client co
 """
 import re
 
-from openpyxl.compat import basestring
 from .exceptions import CellCoordinatesException
 
 # constants
@@ -33,9 +31,9 @@ def get_column_interval(start, end):
     The start and end columns can be either column letters or 1-based
     indexes.
     """
-    if isinstance(start, basestring):
+    if isinstance(start, str):
         start = column_index_from_string(start)
-    if isinstance(end, basestring):
+    if isinstance(end, str):
         end = column_index_from_string(end)
     return [get_column_letter(x) for x in range(start, end + 1)]
 

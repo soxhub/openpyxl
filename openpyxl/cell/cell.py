@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """Manage individual cells in a spreadsheet.
@@ -19,9 +18,6 @@ import re
 from itertools import islice, product
 
 from openpyxl.compat import (
-    unicode,
-    basestring,
-    bytes,
     NUMERIC_TYPES,
     deprecated,
 )
@@ -68,7 +64,7 @@ try:
 except ImportError:
     pass
 
-STRING_TYPES = (basestring, unicode, bytes)
+STRING_TYPES = (str, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
@@ -91,7 +87,7 @@ VALID_TYPES = (TYPE_STRING, TYPE_FORMULA, TYPE_NUMERIC, TYPE_BOOL,
                TYPE_NULL, TYPE_INLINE, TYPE_ERROR, TYPE_FORMULA_CACHE_STRING)
 
 
-_TYPES = {int:'n', float:'n', unicode:'s', basestring:'s', bool:'b'}
+_TYPES = {int:'n', float:'n', str:'s', bool:'b'}
 
 
 def get_type(t, value):
@@ -175,10 +171,10 @@ class Cell(StyleableObject):
         """Check string coding, length, and line break character"""
         if value is None:
             return
-        # convert to unicode string
-        if not isinstance(value, unicode):
-            value = unicode(value, self.encoding)
-        value = unicode(value)
+        # convert to str string
+        if not isinstance(value, str):
+            value = str(value, self.encoding)
+        value = str(value)
         # string must never be longer than 32,767 characters
         # truncate if necessary
         value = value[:32767]
@@ -189,19 +185,9 @@ class Cell(StyleableObject):
     def check_error(self, value):
         """Tries to convert Error" else N/A"""
         try:
-            return unicode(value)
+            return str(value)
         except UnicodeDecodeError:
             return u'#N/A'
-
-    @deprecated("Type coercion will no longer be supported")
-    def set_explicit_value(self, value=None, data_type=TYPE_STRING):
-        """Coerce values according to their explicit type"""
-        if data_type not in VALID_TYPES:
-            raise ValueError('Invalid data type: %s' % data_type)
-        if isinstance(value, STRING_TYPES):
-            value = self.check_string(value)
-        self._value = value
-        self.data_type = data_type
 
 
     def _bind_value(self, value):
@@ -231,30 +217,11 @@ class Cell(StyleableObject):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
-            elif self.guess_types: # deprecated
-                value = self._infer_value(value)
 
         elif value is not None:
             raise ValueError("Cannot convert {0!r} to Excel".format(value))
 
         self._value = value
-
-
-    def _infer_value(self, value):
-        """Given a string, infer type and formatting options."""
-        if not isinstance(value, unicode):
-            value = str(value)
-
-        # number detection
-        v = cast_numeric(value)
-        if v is None:
-            # percentage detection
-            v = cast_percentage(value)
-        if v is None:
-            # time detection
-            v = cast_percentage(value)
-
-        return value
 
 
     @property

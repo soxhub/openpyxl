@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import atexit
@@ -10,7 +9,7 @@ from warnings import warn
 
 from openpyxl.xml.functions import xmlfile
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.compat import unicode
+
 from openpyxl.comments.comment_sheet import CommentRecord
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.styles.differential import DifferentialStyle
@@ -47,6 +46,7 @@ class WorksheetWriter:
 
     def __init__(self, ws, out=None):
         self.ws = ws
+        self.ws._comments = []
         if out is None:
             out = create_temporary_file()
         self.out = out
@@ -271,7 +271,7 @@ class WorksheetWriter:
                     for cell, col in zip(row, table.tableColumns):
                         if cell.data_type != "s":
                             warn("File may not be readable: column headings must be strings.")
-                        col.name = unicode(cell.value)
+                        col.name = str(cell.value)
             rel = Relationship(Type=table._rel_type, Target="")
             self._rels.append(rel)
             table._rel_id = rel.Id

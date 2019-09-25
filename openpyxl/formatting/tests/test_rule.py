@@ -1,6 +1,5 @@
-# coding=utf8
-from __future__ import absolute_import
-# Copyright (c) 2010-2019 openpyxl
+# copyright 2010-2015 openpyxl
+
 
 import pytest
 

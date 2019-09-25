@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import re
@@ -52,6 +51,7 @@ BUILTIN_FORMATS = {
     48: '##0.0E+0',
     49: '@', }
 
+BUILTIN_FORMATS_MAX_SIZE = 164
 BUILTIN_FORMATS_REVERSE = dict(
         [(value, key) for key, value in BUILTIN_FORMATS.items()])
 

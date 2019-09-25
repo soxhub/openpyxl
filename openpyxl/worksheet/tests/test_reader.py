@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import pytest
@@ -257,20 +256,6 @@ class TestWorksheetParser:
                         'style_id':0, 'value': 1}
 
 
-    def test_empty_cell(self, WorkSheetParser):
-        parser = WorkSheetParser
-
-        src = """
-        <c r="A1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-            <v />
-        </c>
-        """
-        element = fromstring(src)
-
-        cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
-                        'style_id':0, 'value': None}
-
 
     def test_datetime(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -285,23 +270,6 @@ class TestWorksheetParser:
         cell = parser.parse_cell(element)
         assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
                         'style_id':0, 'value': datetime.datetime(2011, 12, 25, 14, 23, 55)}
-
-
-    def test_invalid_date(self, WorkSheetParser):
-        parser = WorkSheetParser
-        parser.epoch = CALENDAR_WINDOWS_1900
-
-        src = """
-        <c r="A1" t="n" s="29" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-            <v>2958466</v>
-        </c>
-        """
-        element = fromstring(src)
-
-        cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'e', 'row': 1,
-                        'style_id':29, 'value':"#VALUE!"}
-
 
 
     def test_mac_date(self, WorkSheetParser):
@@ -758,7 +726,6 @@ class TestWorksheetReader:
         assert ws['C1'].value == 'a'
         assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
         assert ws['E2'].value == "=C2:C11*D2:D11"
-        assert ws._current_row == 26
 
 
     def test_formatting(self, PrimedWorksheetReader):

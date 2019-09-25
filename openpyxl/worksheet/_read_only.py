@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """ Read worksheets on-demand
@@ -11,11 +10,26 @@ from openpyxl.utils import get_column_letter
 from ._reader import WorkSheetParser
 
 
+def read_dimension(source):
+    parser = WorkSheetParser(source, [])
+    return parser.parse_dimensions()
+
+
 class ReadOnlyWorksheet(object):
 
     _min_column = 1
     _min_row = 1
     _max_column = _max_row = None
+
+    # from Standard Worksheet
+    # Methods from Worksheet
+    cell = Worksheet.cell
+    iter_rows = Worksheet.iter_rows
+    values = Worksheet.values
+    rows = Worksheet.rows
+    __getitem__ = Worksheet.__getitem__
+    __iter__ = Worksheet.__iter__
+
 
     def __init__(self, parent_workbook, title, worksheet_path, shared_strings):
         self.parent = parent_workbook
@@ -24,24 +38,6 @@ class ReadOnlyWorksheet(object):
         self._worksheet_path = worksheet_path
         self._shared_strings = shared_strings
         self._get_size()
-
-        # Methods from Worksheet
-        self.iter_rows = Worksheet.iter_rows.__get__(self)
-        self.values = Worksheet.values.__get__(self)
-        self.rows = Worksheet.rows.__get__(self)
-        self.cell = Worksheet.cell.__get__(self)
-
-
-    def __iter__(self):
-        # 2.7 compat
-        meth = Worksheet.__iter__.__get__(self)
-        return meth()
-
-
-    def __getitem__(self, key):
-        # 2.7 compat
-        meth = Worksheet.__getitem__.__get__(self)
-        return meth(key)
 
 
     def _get_size(self):

@@ -2,7 +2,6 @@
 Collection of utility primitives for charts.
 """
 
-from openpyxl.compat import unicode
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Bool,
@@ -42,7 +41,7 @@ class NumberValueDescriptor(NestedText):
 
     def __set__(self, instance, value):
         if value == "#N/A":
-            self.expected_type = unicode
+            self.expected_type = str
         else:
             self.expected_type = float
         super(NumberValueDescriptor, self).__set__(instance, value)
@@ -51,7 +50,7 @@ class NumberValueDescriptor(NestedText):
 class NumVal(Serialisable):
 
     idx = Integer()
-    formatCode = NestedText(allow_none=True, expected_type=unicode)
+    formatCode = NestedText(allow_none=True, expected_type=str)
     v = NumberValueDescriptor()
 
     def __init__(self,
@@ -66,7 +65,7 @@ class NumVal(Serialisable):
 
 class NumData(Serialisable):
 
-    formatCode = NestedText(expected_type=unicode, allow_none=True)
+    formatCode = NestedText(expected_type=str, allow_none=True)
     ptCount = NestedInteger(allow_none=True)
     pt = Sequence(expected_type=NumVal)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -86,7 +85,7 @@ class NumData(Serialisable):
 
 class NumRef(Serialisable):
 
-    f = NestedText(expected_type=unicode)
+    f = NestedText(expected_type=str)
     ref = Alias('f')
     numCache = Typed(expected_type=NumData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
@@ -107,7 +106,7 @@ class StrVal(Serialisable):
     tagname = "strVal"
 
     idx = Integer()
-    v = NestedText(expected_type=unicode)
+    v = NestedText(expected_type=str)
 
     def __init__(self,
                  idx=0,
@@ -140,7 +139,7 @@ class StrRef(Serialisable):
 
     tagname = "strRef"
 
-    f = NestedText(expected_type=unicode, allow_none=True)
+    f = NestedText(expected_type=str, allow_none=True)
     strCache = Typed(expected_type=StrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
@@ -206,7 +205,7 @@ class MultiLevelStrRef(Serialisable):
 
     tagname = "multiLvlStrRef"
 
-    f = NestedText(expected_type=unicode)
+    f = NestedText(expected_type=str)
     multiLvlStrCache = Typed(expected_type=MultiLevelStrData, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 

@@ -1,7 +1,5 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -33,7 +31,7 @@ class ExternalCell(Serialisable):
     r = String()
     t = NoneSet(values=(['b', 'd', 'n', 'e', 's', 'str', 'inlineStr']))
     vm = Integer(allow_none=True)
-    v = NestedText(allow_none=True, expected_type=unicode)
+    v = NestedText(allow_none=True, expected_type=str)
 
     def __init__(self,
                  r=None,
@@ -94,7 +92,7 @@ class ExternalSheetDataSet(Serialisable):
 
 class ExternalSheetNames(Serialisable):
 
-    sheetName = ValueSequence(expected_type=unicode)
+    sheetName = ValueSequence(expected_type=str)
 
     __elements__ = ('sheetName',)
 

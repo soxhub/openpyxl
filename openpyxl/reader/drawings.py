@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
+
 from io import BytesIO
 from warnings import warn
 
@@ -49,7 +50,7 @@ def find_images(archive, path):
         if dep.Type == IMAGE_NS:
             try:
                 image = Image(BytesIO(archive.read(dep.target)))
-            except (OSError, IOError): # Python 2.7
+            except OSError:
                 msg = "The image {0} will be removed because it cannot be read".format(dep.target)
                 warn(msg)
                 continue

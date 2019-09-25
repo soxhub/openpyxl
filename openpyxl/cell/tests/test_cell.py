@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 
@@ -168,12 +167,6 @@ def test_cell_formatted_as_date(dummy_cell, value, is_date):
     cell.value = value
     assert cell.is_date == is_date
     assert cell.value == value
-
-
-def test_set_bad_type(dummy_cell):
-    cell = dummy_cell
-    with pytest.raises(ValueError):
-        cell.set_explicit_value(1, 'q')
 
 
 def test_illegal_characters(dummy_cell):

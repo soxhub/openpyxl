@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 # coding=utf8
 # Copyright (c) 2010-2019 openpyxl
 import pytest

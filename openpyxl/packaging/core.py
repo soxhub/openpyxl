@@ -1,9 +1,8 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 import datetime
 
-from openpyxl.compat import safe_string, unicode
+from openpyxl.compat import safe_string
 from openpyxl.utils.datetime import (
     CALENDAR_WINDOWS_1900,
     to_ISO8601,
@@ -58,22 +57,22 @@ class DocumentProperties(Serialisable):
     tagname = "coreProperties"
     namespace = COREPROPS_NS
 
-    category = NestedText(expected_type=unicode, allow_none=True)
-    contentStatus = NestedText(expected_type=unicode, allow_none=True)
-    keywords = NestedText(expected_type=unicode, allow_none=True)
-    lastModifiedBy = NestedText(expected_type=unicode, allow_none=True)
+    category = NestedText(expected_type=str, allow_none=True)
+    contentStatus = NestedText(expected_type=str, allow_none=True)
+    keywords = NestedText(expected_type=str, allow_none=True)
+    lastModifiedBy = NestedText(expected_type=str, allow_none=True)
     lastPrinted = NestedDateTime(allow_none=True)
-    revision = NestedText(expected_type=unicode, allow_none=True)
-    version = NestedText(expected_type=unicode, allow_none=True)
+    revision = NestedText(expected_type=str, allow_none=True)
+    version = NestedText(expected_type=str, allow_none=True)
     last_modified_by = Alias("lastModifiedBy")
 
     # Dublin Core Properties
-    subject = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    title = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    creator = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    description = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    identifier = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
-    language = NestedText(expected_type=unicode, allow_none=True, namespace=DCORE_NS)
+    subject = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
+    title = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
+    creator = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
+    description = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
+    identifier = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
+    language = NestedText(expected_type=str, allow_none=True, namespace=DCORE_NS)
     # Dublin Core Terms
     created = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
     modified = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)

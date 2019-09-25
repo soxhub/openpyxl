@@ -1,7 +1,6 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
-from openpyxl.compat import unicode
+
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -45,13 +44,13 @@ class ExtendedProperties(Serialisable):
 
     tagname = "Properties"
 
-    Template = NestedText(expected_type=unicode, allow_none=True)
-    Manager = NestedText(expected_type=unicode, allow_none=True)
-    Company = NestedText(expected_type=unicode, allow_none=True)
+    Template = NestedText(expected_type=str, allow_none=True)
+    Manager = NestedText(expected_type=str, allow_none=True)
+    Company = NestedText(expected_type=str, allow_none=True)
     Pages = NestedText(expected_type=int, allow_none=True)
     Words = NestedText(expected_type=int,allow_none=True)
     Characters = NestedText(expected_type=int, allow_none=True)
-    PresentationFormat = NestedText(expected_type=unicode, allow_none=True)
+    PresentationFormat = NestedText(expected_type=str, allow_none=True)
     Lines = NestedText(expected_type=int, allow_none=True)
     Paragraphs = NestedText(expected_type=int, allow_none=True)
     Slides = NestedText(expected_type=int, allow_none=True)
@@ -65,12 +64,12 @@ class ExtendedProperties(Serialisable):
     LinksUpToDate = NestedText(expected_type=bool, allow_none=True)
     CharactersWithSpaces = NestedText(expected_type=int, allow_none=True)
     SharedDoc = NestedText(expected_type=bool, allow_none=True)
-    HyperlinkBase = NestedText(expected_type=unicode, allow_none=True)
+    HyperlinkBase = NestedText(expected_type=str, allow_none=True)
     HLinks = Typed(expected_type=VectorVariant, allow_none=True)
     HyperlinksChanged = NestedText(expected_type=bool, allow_none=True)
     DigSig = Typed(expected_type=DigSigBlob, allow_none=True)
-    Application = NestedText(expected_type=unicode, allow_none=True)
-    AppVersion = NestedText(expected_type=unicode, allow_none=True)
+    Application = NestedText(expected_type=str, allow_none=True)
+    AppVersion = NestedText(expected_type=str, allow_none=True)
     DocSecurity = NestedText(expected_type=int, allow_none=True)
 
     __elements__ = ('Application', 'AppVersion', 'DocSecurity', 'ScaleCrop',

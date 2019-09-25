@@ -1,11 +1,9 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
 
 """Reader for a single worksheet."""
 from warnings import warn
 
 # compatibility imports
-from openpyxl.compat import long
 from openpyxl.xml.functions import iterparse
 
 # package imports
@@ -80,7 +78,7 @@ def _cast_number(value):
     "Convert numbers as string to an int or float"
     if "." in value or "E" in value or "e" in value:
         return float(value)
-    return long(value)
+    return int(value)
 
 
 class WorkSheetParser(object):

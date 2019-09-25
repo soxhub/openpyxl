@@ -1,5 +1,5 @@
-from __future__ import absolute_import
 # Copyright (c) 2010-2019 openpyxl
+
 
 """Read an xlsx file into Python"""
 
@@ -10,8 +10,6 @@ from io import BytesIO
 import os.path
 import warnings
 
-# compatibility imports
-from openpyxl.compat import unicode, file
 from openpyxl.pivot.table import TableDefinition
 
 # Allow blanket setting of KEEP_VBA for testing
@@ -107,7 +105,7 @@ def _find_workbook_part(package):
             return part
 
     # some applications reassign the default for application/xml
-    defaults = set((p.ContentType for p in package.Default))
+    defaults = {p.ContentType for p in package.Default}
     workbook_type = defaults & set(workbook_types)
     if workbook_type:
         return Override("/" + ARC_WORKBOOK, workbook_type.pop())
