@@ -2,8 +2,17 @@
 ====================
 
 
-2.6.4 (unreleased)
+2.6.4 (2019-09-25)
 ==================
+
+
+Final release for Python 2.7
+––––––––––––––––––––––––––––
+
+Bugfixes
+--------
+
+* ` #1330 <https://bitbucket.org/openpyxl/openpyxl/issues/1330>`_ Cannot save workbooks with comments more than once.
 
 
 2.6.3 (2019-08-19)
