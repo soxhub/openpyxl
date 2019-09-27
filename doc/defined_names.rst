@@ -26,8 +26,12 @@ Accessing a range called "my_range"::
         ws = wb[title]
         cells.append(ws[coord])
 
-Creating new named ranges::
+Creating new named ranges
+-------------------------
 
+.. testcode::
+
+    import openpyxl
     wb = openpyxl.Workbook()
     new_range = openpyxl.workbook.defined_name.DefinedName('newrange', attr_text='Sheet!$A$1:$A$5')
     wb.defined_names.append(new_range)
@@ -40,5 +44,10 @@ Creating new named ranges::
     assert('privaterange' not in wb.defined_names)
     
     # the scope has to be supplied to retrieve local ranges:
-    wb.defined_names.localnames(sheetid)
-    wb.defined_names.get('privaterange', sheetid)
+    print(wb.defined_names.localnames(sheetid))
+    print(wb.defined_names.get('privaterange', sheetid).attr_text)
+
+.. testoutput::
+
+   ['privaterange']
+   Sheet!$A$6
