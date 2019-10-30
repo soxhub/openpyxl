@@ -80,11 +80,14 @@ Converting a worksheet to a Dataframe
 To convert a worksheet to a Dataframe you can use the `values` property. This
 is very easy if the worksheet has no headers or indices::
 
+    from pandas import DataFrame
     df = DataFrame(ws.values)
 
 If the worksheet does have headers or indices, such as one created by Pandas,
 then a little more work is required::
 
+    from itertools import islice
+    from pandas import DataFrame
     data = ws.values
     cols = next(data)[1:]
     data = list(data)
