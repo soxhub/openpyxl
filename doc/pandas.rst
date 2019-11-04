@@ -85,6 +85,7 @@ is very easy if the worksheet has no headers or indices::
 If the worksheet does have headers or indices, such as one created by Pandas,
 then a little more work is required::
 
+    from itertools import islice
     data = ws.values
     cols = next(data)[1:]
     data = list(data)
