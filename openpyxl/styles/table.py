@@ -49,7 +49,7 @@ class TableStyle(Serialisable):
     pivot = Bool(allow_none=True)
     table = Bool(allow_none=True)
     count = Integer(allow_none=True)
-    tableStyleElement = Typed(expected_type=TableStyleElement, allow_none=True)
+    tableStyleElement = Sequence(expected_type=TableStyleElement, allow_none=True)
 
     __elements__ = ('tableStyleElement',)
 
