@@ -7,7 +7,7 @@ from openpyxl.xml.functions import fromstring
 from .. bar_chart import BarChart
 from .. line_chart import LineChart
 from .. axis import NumericAxis, DateAxis
-from .. chartspace import ChartSpace
+from .. chartspace import ChartSpace, ChartContainer
 
 
 def read_chart_from_file(file_path):
@@ -41,9 +41,13 @@ def test_read(datadir):
     assert chart.idx_base == 0
 
 
-def test_read_chart_with_no_series(datadir):
-    datadir.chdir()
-    chart = read_chart_from_file("chart_with_no_series.xml")
+def test_read_chart_with_no_series():
+    container = ChartContainer()
+    cs = ChartSpace(chart=container)
+    cs.chart.plotArea.barChart = BarChart()
+
+    from ..reader import read_chart
+    chart = read_chart(cs)
 
     assert isinstance(chart, BarChart)
     assert len(chart.series) == 0
