@@ -1,6 +1,16 @@
 3.0.1 (unreleased)
 ==================
 
+Bugfixes
+--------
+
+* `#1250 <https://bitbucket.org/openpyxl/openpyxl/issues/1250>`_ Cannot read empty charts.
+
+Pull Requests
+-------------
+
+* `PR344 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ Fix for #1250
+
 
 3.0.0 (2019-09-25)
 ==================
