@@ -266,7 +266,7 @@ class WorkSheetParser(object):
             if key.startswith('{'):
                 del attrs[key]
 
-        if keys != set(['r', 'spans']) and keys != set(['r']):
+        if keys != {'r', 'spans'} and keys != {'r'}:
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 
