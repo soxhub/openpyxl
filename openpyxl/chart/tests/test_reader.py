@@ -41,7 +41,7 @@ def test_read(datadir):
     assert chart.idx_base == 0
 
 
-def test_when_reading_chart_with_no_series_then_no_error_should_be_raised(datadir):
+def test_read_chart_with_no_series(datadir):
     datadir.chdir()
     chart = read_chart_from_file("chart_with_no_series.xml")
 
