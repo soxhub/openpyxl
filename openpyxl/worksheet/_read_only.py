@@ -138,10 +138,7 @@ class ReadOnlyWorksheet(object):
                 self._calculate_dimension()
             else:
                 raise ValueError("Worksheet is unsized, use calculate_dimension(force=True)")
-        return '%s%d:%s%d' % (
-           get_column_letter(self.min_column), self.min_row,
-           get_column_letter(self.max_column), self.max_row
-       )
+        return f"{get_column_letter(self.min_column)}{self.min_row}:{get_column_letter(self.max_column)}{self.max_row}"
 
 
     def _calculate_dimension(self):

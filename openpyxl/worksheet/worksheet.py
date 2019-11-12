@@ -384,10 +384,7 @@ class Worksheet(_WorkbookChild):
         else:
             return "A1:A1"
 
-        return '%s%d:%s%d' % (
-            get_column_letter(min_col), min_row,
-            get_column_letter(max_col), max_row
-        )
+        return f"{get_column_letter(min_col)}{min_row}:{get_column_letter(max_col)}{max_row}"
 
 
     @property
