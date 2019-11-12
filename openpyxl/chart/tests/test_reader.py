@@ -4,20 +4,24 @@ from zipfile import ZipFile
 
 from openpyxl.xml.functions import fromstring
 
+from .. bar_chart import BarChart
 from .. line_chart import LineChart
 from .. axis import NumericAxis, DateAxis
 from .. chartspace import ChartSpace
 
 
-def test_read(datadir):
-    datadir.chdir()
-    from .. reader import read_chart
-
-    with open("chart1.xml") as src:
+def read_chart_from_file(file_path):
+    from ..reader import read_chart
+    with open(file_path) as src:
         xml = src.read()
     tree = fromstring(xml)
     cs = ChartSpace.from_tree(tree)
-    chart = read_chart(cs)
+    return read_chart(cs)
+
+
+def test_read(datadir):
+    datadir.chdir()
+    chart = read_chart_from_file("chart1.xml")
 
     assert isinstance(chart, LineChart)
     assert chart.title.tx.rich.p[0].r[0].t == "Website Performance"
@@ -34,4 +38,13 @@ def test_read(datadir):
     assert chart.pivotSource.name == "[files.xlsx]PIVOT!PivotTable1"
     assert len(chart.pivotFormats) == 1
 
+    assert chart.idx_base == 0
+
+
+def test_when_reading_chart_with_no_series_then_no_error_should_be_raised(datadir):
+    datadir.chdir()
+    chart = read_chart_from_file("chart_with_no_series.xml")
+
+    assert isinstance(chart, BarChart)
+    assert len(chart.series) == 0
     assert chart.idx_base == 0
