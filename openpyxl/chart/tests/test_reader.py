@@ -12,7 +12,7 @@ from .. chartspace import ChartSpace, ChartContainer
 
 def test_read(datadir):
     datadir.chdir()
-    from ..reader import read_chart
+    from .. reader import read_chart
 
     with open("chart1.xml") as src:
         xml = src.read()
