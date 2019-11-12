@@ -177,7 +177,7 @@ class ColumnDimension(Dimension):
 
     def to_tree(self):
         attrs = dict(self)
-        if set(attrs) != set(['min', 'max']):
+        if attrs.keys() != {'min', 'max'}:
             return Element("col", **attrs)
 
 

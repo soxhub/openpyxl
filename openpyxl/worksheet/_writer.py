@@ -110,7 +110,7 @@ class WorksheetWriter:
             rows[row].append(cell)
 
         # add empty rows if styling has been applied
-        for row in set(self.ws.row_dimensions.keys()) - set(rows.keys()):
+        for row in self.ws.row_dimensions.keys() - rows.keys():
             rows[row] = []
 
         return sorted(rows.items())

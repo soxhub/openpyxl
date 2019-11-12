@@ -263,7 +263,7 @@ class Workbook(object):
         return self[name]
 
     def __contains__(self, key):
-        return key in set(self.sheetnames)
+        return key in self.sheetnames
 
 
     def index(self, worksheet):
