@@ -62,10 +62,10 @@ def expand_cell_ranges(range_string):
     Reverse of collapse_cell_addresses
     Eg. converts "A1:A2 B1:B2" to (A1, A2, B1, B2)
     """
-    cells = []
-    for rs in range_string.split():
-        cells.extend(rows_from_range(rs))
-    return set(chain.from_iterable(cells))
+    # expand ranges to rows and then flatten
+    rows = (rows_from_range(rs) for rs in range_string.split()) # list of rows
+    cells = (chain(*row) for row in rows) # flatten rows
+    return set(chain(*cells))
 
 
 from .cell_range import MultiCellRange
