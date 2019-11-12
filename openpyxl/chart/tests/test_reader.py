@@ -10,18 +10,15 @@ from .. axis import NumericAxis, DateAxis
 from .. chartspace import ChartSpace, ChartContainer
 
 
-def read_chart_from_file(file_path):
+def test_read(datadir):
+    datadir.chdir()
     from ..reader import read_chart
-    with open(file_path) as src:
+
+    with open("chart1.xml") as src:
         xml = src.read()
     tree = fromstring(xml)
     cs = ChartSpace.from_tree(tree)
-    return read_chart(cs)
-
-
-def test_read(datadir):
-    datadir.chdir()
-    chart = read_chart_from_file("chart1.xml")
+    chart = read_chart(cs)
 
     assert isinstance(chart, LineChart)
     assert chart.title.tx.rich.p[0].r[0].t == "Website Performance"
