@@ -1,84 +1,44 @@
-
 Versions:
-python: 3.6.7
-xlread: 1.1.0
-openpyxl: 3.0.0dev
-
-xlrd
-    Workbook loaded 59.81s
-    OptimizationData 0.24s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.08s
-    Store days 100% 0.07s
-    Total time 60.20s
-
-openpyxl
-    Workbook loaded 103.85s
-    OptimizationData 0.00s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.00s
-    Store days 100% 0.00s
-    Total time 103.85s
+python: 3.6.9
+xlread: 1.2.0
+openpyxl: 3.0.1
 
 openpyxl, read-only
-    Workbook loaded 1.20s
-    OptimizationData 28.57s
+    Workbook loaded 1.14s
+    OptimizationData 23.17s
     Output Model 0.00s
     >>DATA>> 0.00s
     Store days 0% 23.92s
-    Store days 100% 18.53s
-    Total time 72.22s
-
-openpyxl, read-only, values only
-    Workbook loaded 1.10s
-    OptimizationData 21.50s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 21.94s
-    Store days 100% 16.96s
-    Total time 61.51s
-
+    Store days 100% 17.35s
+    Total time 65.59s
+    0 cells in total
 
 Versions:
-python: 3.7.1
-xlread: 1.1.0
-openpyxl: 3.0.0dev
-
-xlrd
-    Workbook loaded 49.32s
-    OptimizationData 0.22s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.07s
-    Store days 100% 0.06s
-    Total time 49.68s
-
-openpyxl
-    Workbook loaded 88.26s
-    OptimizationData 0.00s
-    Output Model 0.00s
-    >>DATA>> 0.00s
-    Store days 0% 0.00s
-    Store days 100% 0.00s
-    Total time 88.26s
+python: 3.7.5
+xlread: 1.2.0
+openpyxl: 3.0.1
 
 openpyxl, read-only
-    Workbook loaded 0.93s
-    OptimizationData 24.37s
+    Workbook loaded 0.98s
+    OptimizationData 21.35s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 21.95s
-    Store days 100% 17.08s
-    Total time 64.33s
+    Store days 0% 20.70s
+    Store days 100% 16.16s
+    Total time 59.19s
+    0 cells in total
 
-openpyxl, read-only, values only
-    Workbook loaded 0.95s
-    OptimizationData 19.62s
+Versions:
+python: 3.8.0
+xlread: 1.2.0
+openpyxl: 3.0.1
+
+openpyxl, read-only
+    Workbook loaded 0.90s
+    OptimizationData 19.58s
     Output Model 0.00s
     >>DATA>> 0.00s
-    Store days 0% 19.80s
-    Store days 100% 15.39s
-    Total time 55.77s
-
+    Store days 0% 19.35s
+    Store days 100% 15.02s
+    Total time 54.85s
+    0 cells in total
