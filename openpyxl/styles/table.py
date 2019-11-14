@@ -58,7 +58,7 @@ class TableStyle(Serialisable):
                  pivot=None,
                  table=None,
                  count=None,
-                 tableStyleElement=None,
+                 tableStyleElement=(),
                 ):
         self.name = name
         self.pivot = pivot

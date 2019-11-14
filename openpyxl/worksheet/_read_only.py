@@ -101,25 +101,21 @@ class ReadOnlyWorksheet(object):
         """
         Make sure a row contains always the same number of cells or values
         """
-        if not row:
+        if not row and not max_col: # in case someone wants to force rows where there aren't any
             return ()
-        last_col = row[-1]['column']
-        max_col = max_col or last_col
+
+        max_col = max_col or  row[-1]['column']
         row_width = max_col + 1 - min_col
 
+        new_row = [EMPTY_CELL] * row_width
         if values_only:
             new_row = [None] * row_width
-        else:
-            new_row = [EMPTY_CELL] * row_width
 
         for cell in row:
             counter = cell['column']
             if min_col <= counter <= max_col:
-                idx = counter - min_col
-                if values_only:
-                    new_row[idx] = cell['value']
-                else:
-                    new_row[idx] = ReadOnlyCell(self, **cell)
+                idx = counter - min_col # position in list of cells returned
+                new_row[idx] = values_only and cell['value'] or ReadOnlyCell(self, **cell)
 
         return tuple(new_row)
 
@@ -138,10 +134,7 @@ class ReadOnlyWorksheet(object):
                 self._calculate_dimension()
             else:
                 raise ValueError("Worksheet is unsized, use calculate_dimension(force=True)")
-        return '%s%d:%s%d' % (
-           get_column_letter(self.min_column), self.min_row,
-           get_column_letter(self.max_column), self.max_row
-       )
+        return f"{get_column_letter(self.min_column)}{self.min_row}:{get_column_letter(self.max_column)}{self.max_row}"
 
 
     def _calculate_dimension(self):

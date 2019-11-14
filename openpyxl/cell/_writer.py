@@ -14,7 +14,7 @@ def _set_attributes(cell, styled=None):
     coordinate = cell.coordinate
     attrs = {'r': coordinate}
     if styled:
-        attrs['s'] = '%d' % cell.style_id
+        attrs['s'] = f"{cell.style_id}"
 
     if cell.data_type == "s":
         attrs['t'] = "inlineStr"

@@ -261,13 +261,9 @@ class WorkSheetParser(object):
             self.max_row = int(attrs['r'])
         else:
             self.max_row += 1
-        keys = set(attrs)
-        for key in keys:
-            if key.startswith('{'):
-                del attrs[key]
 
-        keys = set(attrs)
-        if keys != set(['r', 'spans']) and keys != set(['r']):
+        keys = {k for k in attrs if not k.startswith('{')}
+        if keys != {'r', 'spans'} and keys != {'r'}:
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[attrs['r']] = attrs
 

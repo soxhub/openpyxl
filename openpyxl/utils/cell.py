@@ -42,12 +42,12 @@ def coordinate_from_string(coord_string):
     """Convert a coordinate string like 'B12' to a tuple ('B', 12)"""
     match = COORD_RE.match(coord_string)
     if not match:
-        msg = 'Invalid cell coordinates (%s)' % coord_string
+        msg = f"Invalid cell coordinates ({coord_string})"
         raise CellCoordinatesException(msg)
     column, row = match.groups()
     row = int(row)
     if not row:
-        msg = "There is no row 0 (%s)" % coord_string
+        msg = f"There is no row 0 ({coord_string})"
         raise CellCoordinatesException(msg)
     return column, row
 
