@@ -22,7 +22,7 @@ Example
     wb = load_workbook("campaign.xlsx")
     ws = wb["Results"]
     pivot = ws._pivots[0] # any will do as they share the same cache
-    pivot.cache.refreshOnload = True
+    pivot.cache.refreshOnLoad = True
 
 
 For further information see :class:`openpyxl.pivot.cache.CacheDefinition`
