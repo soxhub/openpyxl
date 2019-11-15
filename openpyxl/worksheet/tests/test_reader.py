@@ -470,6 +470,31 @@ class TestWorksheetParser:
         assert parser.max_column == 5
 
 
+    def test_row_and_cell_without_coordinates(self, WorkSheetParser):
+        parser = WorkSheetParser
+
+        src = """
+        <row>
+          <c t="s">
+            <v>2</v>
+          </c>
+          <c t="s">
+            <v>4</v>
+          </c>
+          <c t="s">
+            <v>3</v>
+          </c>
+        </row>
+        """
+        element = fromstring(src)
+
+        parser.shared_strings = ["Whatever"] * 7
+        parser.parse_row(element)
+        parser.parse_row(element)
+        assert parser.max_row == 2
+        assert parser.max_column == 3
+
+
     def test_external_hyperlinks(self, WorkSheetParser):
         src = b"""
         <hyperlinks xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">

@@ -85,7 +85,7 @@ class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
                  epoch=WINDOWS_EPOCH, date_formats=set()):
-        self.min_row = self.min_col = self.max_row = self.max_column = None
+        self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
         self.shared_strings = shared_strings
@@ -261,11 +261,12 @@ class WorkSheetParser(object):
             self.max_row = int(attrs['r'])
         else:
             self.max_row += 1
+        self.max_column = 0
 
         keys = {k for k in attrs if not k.startswith('{')}
         if keys != {'r', 'spans'} and keys != {'r'}:
             # don't create dimension objects unless they have relevant information
-            self.row_dimensions[attrs['r']] = attrs
+            self.row_dimensions[str(self.max_row)] = attrs
 
         cells = [self.parse_cell(el) for el in row]
         return self.max_row, cells
