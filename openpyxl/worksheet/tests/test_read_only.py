@@ -69,6 +69,15 @@ class TestReadOnlyWorksheet:
         assert cell is EMPTY_CELL
 
 
+    def test_empty_cell(self, ReadOnlyWorksheet):
+        row = [
+            {'column':4, 'value':None, 'row':1},
+        ]
+        ws = ReadOnlyWorksheet
+        cells = ws._get_row(row, max_col=4, values_only=True)
+        assert cells == (None, None, None, None)
+
+
     def test_pad_row_left(self, ReadOnlyWorksheet):
         row = [
             {'column':4, 'value':4,},
