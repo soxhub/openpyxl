@@ -2,6 +2,12 @@
 ==================
 
 
+Bug fixes
+---------
+
+* `#1367 <https://bitbucket.org/openpyxl/openpyxl/issues/1367>`_ Empty cells in read-only, values-only mode are sometimes returned as ReadOnlyCells
+
+
 3.0.1 (2019-11-14)
 ==================
 
