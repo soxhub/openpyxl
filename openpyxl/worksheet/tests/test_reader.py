@@ -466,8 +466,8 @@ class TestWorksheetParser:
         parser.shared_strings = ["Whatever"] * 10
         parser.parse_row(element)
 
-        assert parser.max_row == 1
-        assert parser.max_column == 5
+        assert parser.row_counter == 1
+        assert parser.col_counter == 5
 
 
     def test_row_and_cell_without_coordinates(self, WorkSheetParser):
