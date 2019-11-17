@@ -85,14 +85,14 @@ class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
                  epoch=WINDOWS_EPOCH, date_formats=set()):
-        self.min_row = self.min_col = self.max_row = self.max_column = None
+        self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
         self.shared_strings = shared_strings
         self.data_only = data_only
         self.shared_formulae = {}
         self.array_formulae = {}
-        self.max_row = self.max_column = 0
+        self.row_counter = self.col_counter = 0
         self.tables = TablePartList()
         self.date_formats = date_formats
         self.row_dimensions = {}
@@ -172,7 +172,7 @@ class WorkSheetParser(object):
     def parse_cell(self, element):
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self.max_column += 1
+        self.col_counter += 1
         style_id = element.get('s', 0)
         if style_id:
             style_id = int(style_id)
@@ -185,7 +185,7 @@ class WorkSheetParser(object):
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
         else:
-            row, column = self.max_row, self.max_column
+            row, column = self.row_counter, self.col_counter
 
         if not self.data_only and element.find(FORMULA_TAG) is not None:
             data_type = 'f'
@@ -258,17 +258,18 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self.max_row = int(attrs['r'])
+            self.row_counter = int(attrs['r'])
         else:
-            self.max_row += 1
+            self.row_counter += 1
+        self.col_counter = 0
 
         keys = {k for k in attrs if not k.startswith('{')}
-        if keys != {'r', 'spans'} and keys != {'r'}:
+        if keys - {'r', 'spans'}:
             # don't create dimension objects unless they have relevant information
-            self.row_dimensions[attrs['r']] = attrs
+            self.row_dimensions[str(self.row_counter)] = attrs
 
         cells = [self.parse_cell(el) for el in row]
-        return self.max_row, cells
+        return self.row_counter, cells
 
 
     def parse_formatting(self, element):
@@ -332,7 +333,7 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
-        self.ws._current_row = self.parser.max_row
+        self.ws._current_row = self.parser.row_counter
 
 
     def bind_formatting(self):
