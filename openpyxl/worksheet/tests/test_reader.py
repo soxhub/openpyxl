@@ -472,27 +472,36 @@ class TestWorksheetParser:
 
     def test_row_and_cell_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
-
         src = """
-        <row>
-          <c t="s">
+        <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <c>
             <v>2</v>
           </c>
-          <c t="s">
+          <c>
             <v>4</v>
           </c>
-          <c t="s">
+          <c>
             <v>3</v>
           </c>
         </row>
         """
         element = fromstring(src)
-
-        parser.shared_strings = ["Whatever"] * 7
-        parser.parse_row(element)
-        parser.parse_row(element)
-        assert parser.max_row == 2
-        assert parser.max_column == 3
+        max_row, cells = parser.parse_row(element)
+        expected = [
+            {'column': 1, 'row': 1, 'data_type': 'n', 'value': 2, 'style_id': 0},
+            {'column': 2, 'row': 1, 'data_type': 'n', 'value': 4, 'style_id': 0},
+            {'column': 3, 'row': 1, 'data_type': 'n', 'value': 3, 'style_id': 0},
+        ]
+        for expected_cell, cell in zip(expected, cells):
+            assert expected_cell == cell
+        max_row, cells = parser.parse_row(element)
+        expected = [
+            {'column': 1, 'row': 2, 'data_type': 'n', 'value': 2, 'style_id': 0},
+            {'column': 2, 'row': 2, 'data_type': 'n', 'value': 4, 'style_id': 0},
+            {'column': 3, 'row': 2, 'data_type': 'n', 'value': 3, 'style_id': 0},
+        ]
+        for expected_cell, cell in zip(expected, cells):
+            assert expected_cell == cell
 
 
     def test_external_hyperlinks(self, WorkSheetParser):
