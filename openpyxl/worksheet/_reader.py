@@ -264,7 +264,7 @@ class WorkSheetParser(object):
         self.col_counter = 0
 
         keys = {k for k in attrs if not k.startswith('{')}
-        if keys != {'r', 'spans'} and keys != {'r'}:
+        if keys - {'r', 'spans'}:
             # don't create dimension objects unless they have relevant information
             self.row_dimensions[str(self.row_counter)] = attrs
 
