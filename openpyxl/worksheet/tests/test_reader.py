@@ -494,11 +494,22 @@ class TestWorksheetParser:
         ]
         for expected_cell, cell in zip(expected, cells):
             assert expected_cell == cell
+
+
+    def test_second_row_cell_index_without_coordinates(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """
+        <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <c>
+            <v>2</v>
+          </c>
+        </row>
+        """
+        element = fromstring(src)
+        parser.parse_row(element)
         max_row, cells = parser.parse_row(element)
         expected = [
             {'column': 1, 'row': 2, 'data_type': 'n', 'value': 2, 'style_id': 0},
-            {'column': 2, 'row': 2, 'data_type': 'n', 'value': 4, 'style_id': 0},
-            {'column': 3, 'row': 2, 'data_type': 'n', 'value': 3, 'style_id': 0},
         ]
         for expected_cell, cell in zip(expected, cells):
             assert expected_cell == cell
