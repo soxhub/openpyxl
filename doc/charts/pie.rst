@@ -23,7 +23,7 @@ Projected Pie Charts
 
 Projected pie charts extract some slices from a pie chart and project them
 into a second pie or bar chart. This is useful when there are several smaller
-items in the data series. The chart can be split according percent, val(ue)
+items in the data series. The chart can be split according to percent, val(ue)
 or pos(ition). If nothing is set then the application decides which to use.
 In addition custom splits can be defined.
 
