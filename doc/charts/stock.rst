@@ -19,7 +19,7 @@ shortcuts for particular formatting options:
   * high-low-close is essentially a line chart with no lines and the marker
     set to XYZ. It also sets hiLoLines to True
 
-  * open-high-low-close is the as a high-low-close chart with the marker for
+  * open-high-low-close is the same as a high-low-close chart with the marker for
     each data point set to XZZ and upDownLines.
 
 

@@ -15,7 +15,7 @@ Vertical, Horizontal and Stacked Bar Charts
 
    When using stacked charts the `overlap` needs to be set to 100.
 
-   If bars are horizontal, x and y axes are revesed.
+   If bars are horizontal, x and y axes are reversed.
 
 
 .. image:: bar.png

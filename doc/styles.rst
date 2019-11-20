@@ -70,7 +70,7 @@ Cell Styles
 
 Cell styles are shared between objects and once they have been assigned they
 cannot be changed. This stops unwanted side-effects such as changing the
-style for lots of cells when instead of only one.
+style for lots of cells when only one changes.
 
 .. :: doctest
 
@@ -160,7 +160,7 @@ yourself. This is a restriction of the file format::
 Styling Merged Cells
 --------------------
 
-The merged cell behaves similar to other cell ojects.
+The merged cell behaves similarly to other cell ojects.
 Its value and format is defined in its top-left cell.
 In order to change the border of the whole merged cell,
 change the border of its top-left cell.
@@ -235,7 +235,7 @@ But named styles will also be registered automatically the first time they are a
 
 >>> ws['A1'].style = highlight
 
-Once registered assign the style using just the name:
+Once registered, assign the style using just the name:
 
 >>> ws['D5'].style = 'highlight'
 

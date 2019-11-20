@@ -47,7 +47,7 @@ By default the top-left corner of a chart is anchored to cell E15 and the
 size is 15 x 7.5 cm (approximately 5 columns by 14 rows). This can be changed
 by setting the `anchor`, `width` and `height` properties of the chart. The
 actual size will depend on operating system and device. Other anchors are
-possible see :mod:`openpyxl.drawing.spreadsheet_drawing` for further information.
+possible; see :mod:`openpyxl.drawing.spreadsheet_drawing` for further information.
 
 
 Working with axes
