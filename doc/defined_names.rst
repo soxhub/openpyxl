@@ -10,7 +10,7 @@ The specification has the following to say about defined names:
 This means they are very loosely defined. They might contain a constant, a
 formula, a single cell reference, a range of cells or multiple ranges of
 cells across different worksheets. Or all of the above. They are defined
-globally for a workbook and accessed from there `defined_names` attribue.
+globally for a workbook and accessed from the `defined_names` attribute.
 
 
 Sample use for ranges

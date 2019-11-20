@@ -23,7 +23,7 @@ You can also create 3D area charts
 .. literalinclude:: area3d.py
 
 
-This produces a simple 3D area chart where third axis can be used to replace the legend:
+This produces a simple 3D area chart where the third axis can be used to replace the legend:
 
 .. image:: area3D.png
    :alt: "Sample 3D area chart with a series axis"

@@ -7,7 +7,7 @@ Charts can include multiple series.
 .. literalinclude:: bubble.py
 
 
-This will produce bubble chart with two series and should look something like this
+This will produce a bubble chart with two series and should look something like this::
 
 .. image:: bubble.png
    :alt: "Sample bubble chart"

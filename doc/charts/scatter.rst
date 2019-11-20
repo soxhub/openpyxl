@@ -18,5 +18,5 @@ values are unordered.
    The specification says that there are the following types of scatter charts:
    'line', 'lineMarker', 'marker', 'smooth', 'smoothMarker'. However, at least
    in Microsoft Excel, this is just a shortcut for other settings that otherwise
-   no effect. For consistency with line charts, the style for each series should
-   be set manually.
+   have no effect. For consistency with line charts, the style for each series 
+   should be set manually.
