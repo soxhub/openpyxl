@@ -103,7 +103,8 @@ class WorkSheetParser(object):
         self.formatting = []
         self.legacy_drawing = None
         self.merged_cells = None
-        self.page_breaks = []
+        self.row_breaks = RowBreak()
+        self.col_breaks = ColBreak()
 
 
     def parse(self):
@@ -132,6 +133,7 @@ class WorkSheetParser(object):
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
+
         }
 
         it = iterparse(self.source)
@@ -300,17 +302,19 @@ class WorkSheetParser(object):
 
     def parse_row_breaks(self, element):
         brk = RowBreak.from_tree(element)
-        self.page_breaks.append(brk)
+        self.row_breaks = brk
 
 
     def parse_col_breaks(self, element):
         brk = ColBreak.from_tree(element)
-        self.page_breaks.append(brk)
+        self.col_breaks = brk
 
 
     def parse_custom_views(self, element):
-        # clear page_breaks to avoid duplication
-        self.page_breaks = []
+        # clear page_breaks to avoid duplication which Excel doesn't like
+        # basically they're ignored in custom views
+        self.row_breaks = RowBreak()
+        self.col_breaks = ColBreak()
 
 
 class WorksheetReader(object):
@@ -395,7 +399,7 @@ class WorksheetReader(object):
         for k in ('print_options', 'page_margins', 'page_setup',
                   'HeaderFooter', 'auto_filter', 'data_validations',
                   'sheet_properties', 'views', 'sheet_format',
-                  'page_breaks', 'scenarios', 'legacy_drawing'):
+                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing'):
             v = getattr(self.parser, k, None)
             if v is not None:
                 setattr(self.ws, k, v)
