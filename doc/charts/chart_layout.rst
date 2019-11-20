@@ -3,7 +3,7 @@ Changing the layout of plot area and legend
 
 
 The layout of the chart within the canvas can be set by using the layout
-property an instance of a layout class.
+property of an instance of a layout class.
 
 
 Chart layout
@@ -17,16 +17,16 @@ position, ``w`` and ``h`` adjust the size . The units are proportions of the
 container. A chart cannot be positioned outside of its container and the
 width and height are the dominant constraints: if x + w > 1, then x = 1 - w.
 
-x is the horizontal position from the left
-y is the vertical position the top
-h is the height of the chart relative to its container
-w is the width of the box
+| x is the horizontal position from the left
+| y is the vertical position from the top
+| h is the height of the chart relative to its container
+| w is the width of the box
 
 
 Mode
 ++++
 
-In addition to the size and position the mode for the relevant attribute can
+In addition to the size and position, the mode for the relevant attribute can
 also be set to either `factor` or `edge`. Factor is the default:
 
 .. code::
