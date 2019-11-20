@@ -672,7 +672,7 @@ class TestWorksheetParser:
         el = fromstring(src)
         parser.parse_row_breaks(el)
 
-        assert parser.page_breaks == [expected_pagebreak]
+        assert parser.row_breaks == expected_pagebreak
 
 
     def test_col_break(self, WorkSheetParser):
@@ -688,7 +688,7 @@ class TestWorksheetParser:
         el = fromstring(src)
         parser.parse_col_breaks(el)
 
-        assert parser.page_breaks == [expected_pagebreak]
+        assert parser.col_breaks == expected_pagebreak
 
 
     def test_scenarios(self, WorkSheetParser):
@@ -746,7 +746,7 @@ class TestWorksheetParser:
         parser.source = BytesIO(src)
         for _ in parser.parse():
             pass
-        assert parser.page_breaks == []
+        assert parser.row_breaks == RowBreak()
 
 
 @pytest.fixture
