@@ -6,6 +6,13 @@ Bug fixes
 ---------
 
 * `#1367 <https://bitbucket.org/openpyxl/openpyxl/issues/1367>`_ Empty cells in read-only, values-only mode are sometimes returned as ReadOnlyCells
+* `#1368 <https://bitbucket.org/openpyxl/openpyxl/issues/1368>`_ Cannot add page breaks to existing worksheets if none exist already
+
+
+Pull Requests
+-------------
+
+* `PR359 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/359/>`_ Improvements to the documentation
 
 
 3.0.1 (2019-11-14)
