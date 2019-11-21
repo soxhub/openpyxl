@@ -5,6 +5,7 @@
 Bug fixes
 ---------
 
+* `#1365 <https://bitbucket.org/openpyxl/openpyxl/issues/1365>`_ Border bottom style is not optional when it should be
 * `#1367 <https://bitbucket.org/openpyxl/openpyxl/issues/1367>`_ Empty cells in read-only, values-only mode are sometimes returned as ReadOnlyCells
 * `#1368 <https://bitbucket.org/openpyxl/openpyxl/issues/1368>`_ Cannot add page breaks to existing worksheets if none exist already
 
