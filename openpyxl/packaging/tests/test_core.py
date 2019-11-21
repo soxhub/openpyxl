@@ -101,6 +101,8 @@ def test_qualified_datetime_ns(dcterms_prefix):
     from ..core import QualifiedDateTime
     dt = QualifiedDateTime()
     tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30))
+    xml = tostring(tree) # serialise to make remove QName
+    tree = fromstring(xml)
     xsi = tree.attrib["{%s}type" % XSI_NS]
     prefix = xsi.split(":")[0]
     assert prefix == dcterms_prefix

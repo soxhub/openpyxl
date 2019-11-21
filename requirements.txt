@@ -4,4 +4,3 @@ pytest
 pillow
 tox
 pandas
-defusedxml
