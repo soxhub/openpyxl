@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheetPr filterMode="false">
+    <pageSetUpPr fitToPage="false"/>
+  </sheetPr>
+  <dimension ref="A1:R1048576"/>
+  <sheetViews>
+    <sheetView showFormulas="false" showGridLines="true" showRowColHeaders="true" showZeros="true" rightToLeft="false" tabSelected="false" showOutlineSymbols="true" defaultGridColor="true" view="normal" topLeftCell="A1" colorId="64" zoomScale="85" zoomScaleNormal="85" zoomScalePageLayoutView="100" workbookViewId="0">
+      <selection pane="topLeft" activeCell="A4" activeCellId="0" sqref="A4"/>
+    </sheetView>
+  </sheetViews>
+  <sheetFormatPr defaultRowHeight="15" zeroHeight="false" outlineLevelRow="0" outlineLevelCol="0"/>
+  <cols>
+    <col collapsed="false" customWidth="true" hidden="false" outlineLevel="0" max="1025" min="1" style="0" width="14.43"/>
+  </cols>
+  <sheetData>
+    <row r="1" >
+      <c r="A1" s="6">
+        <v>85</v>
+      </c>
+      <c r="B1" s="6"/>
+    </row>
+    <row r="2" >
+      <c r="A2" s="7">
+        <v>3</v>
+      </c>
+    </row>
+    <row r="3" >
+      <c r="B3" s="7" t="n">
+        <v>2</v>
+      </c>
+      <c r="C3" s="7" t="n">
+        <v>3</v>
+      </c>
+      <c r="D3" s="7" t="n">
+        <v>4</v>
+      </c>
+      <c r="R3" s="7" t="n">
+        <v>18</v>
+      </c>
+    </row>
+    <row r="1048576" customFormat="false" ht="12.8" hidden="false" customHeight="true" outlineLevel="0" collapsed="false"/>
+  </sheetData>
+</worksheet>

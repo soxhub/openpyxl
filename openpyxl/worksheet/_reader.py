@@ -337,7 +337,8 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
-        self.ws._current_row = self.parser.row_counter
+        if self.ws._cells:
+            self.ws._current_row = self.ws.max_row # use cells not row dimensions
 
 
     def bind_formatting(self):

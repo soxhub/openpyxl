@@ -750,11 +750,16 @@ class TestWorksheetParser:
 
 
 @pytest.fixture
-def PrimedWorksheetReader(Workbook, datadir):
+def WorksheetReader():
     from .._reader import WorksheetReader
-    datadir.chdir()
+    return WorksheetReader
+
+
+@pytest.fixture
+def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
     wb = Workbook
     ws = wb.create_sheet("Sheet")
+    datadir.chdir()
     src = "complex-styles-worksheet.xml"
     reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False)
     return reader
@@ -890,3 +895,11 @@ class TestWorksheetReader:
         for k in ('page_margins', 'page_setup', 'views', 'sheet_format',
                   'legacy_drawing'):
             assert getattr(ws, k) == getattr(reader.parser, k)
+
+
+    def test_more_rows_than_cells(self, Workbook, WorksheetReader, datadir):
+        ws = Workbook.create_sheet("Sheet")
+        datadir.chdir()
+        reader = WorksheetReader(ws, "more_rows_than_cells.xml", None, None)
+        reader.bind_cells()
+        assert ws._current_row == 3
