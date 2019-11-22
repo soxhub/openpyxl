@@ -8,6 +8,7 @@ from openpyxl.utils import (
     column_index_from_string,
     range_boundaries,
 )
+from openpyxl.utils.units import DEFAULT_COLUMN_WIDTH
 from openpyxl.descriptors import (
     Integer,
     Float,
@@ -134,7 +135,7 @@ class ColumnDimension(Dimension):
     def __init__(self,
                  worksheet,
                  index='A',
-                 width=0,
+                 width=DEFAULT_COLUMN_WIDTH,
                  bestFit=False,
                  hidden=False,
                  outlineLevel=0,

@@ -86,7 +86,7 @@ class TestColDimension:
     @pytest.mark.parametrize("key, value, expected",
                              [
                                  ('width', 1, {'width':'1', 'customWidth':'1'}),
-                                 ('bestFit', True, {'bestFit':'1'}),
+                                 ('bestFit', True, {'bestFit':'1', 'width':'13', 'customWidth':'1'}),
                              ]
                              )
     def test_col_dimensions(self, ColumnDimension, key, value, expected):
@@ -104,9 +104,9 @@ class TestColDimension:
 
     def test_col_reindex(self, ColumnDimension):
         cd = ColumnDimension(DummyWorksheet(), index="D")
-        assert dict(cd) == {}
+        assert dict(cd) == {'customWidth': '1', 'width': '13'}
         cd.reindex()
-        assert dict(cd) == {'max': '4', 'min': '4'}
+        assert dict(cd) == {'max': '4', 'min': '4', 'width':'13', 'customWidth':'1'}
 
 
     def test_col_width(self, ColumnDimension):
@@ -130,7 +130,7 @@ class TestColDimension:
         cd.reindex()
         col = cd.to_tree()
         xml = tostring(col)
-        expected = """<col max="1" min="1" style="1" />"""
+        expected = """<col max="1" min="1" style="1" customWidth="1" width="13" />"""
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
@@ -141,7 +141,7 @@ class TestColDimension:
         cd.reindex()
         col = cd.to_tree()
         xml = tostring(col)
-        expected = """<col max="2" min="2" outlineLevel="1"/>"""
+        expected = """<col max="2" min="2" outlineLevel="1" customWidth="1" width="13"/>"""
         diff = compare_xml(expected, xml)
         assert diff is None, diff
 
@@ -162,6 +162,7 @@ class TestColDimension:
     def test_empty_col(self, ColumnDimension):
         ws = DummyWorksheet()
         cd = ColumnDimension(ws, index="C")
+        cd.width = 0
         cd.reindex()
         assert cd.to_tree() is None
 
