@@ -219,3 +219,12 @@ class TestGrouping:
         dh = DimensionHolder(None)
         node = dh.to_tree()
         assert node is None
+
+
+    def test_to_tree(self):
+        from ..worksheet import Worksheet
+        ws = Worksheet(DummyWorkbook())
+        dims = ws.column_dimensions
+        dims['A'].width = 5
+        dims['D']
+        assert dims.to_tree() is not None
