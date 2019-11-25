@@ -75,7 +75,7 @@ class Border(Serialisable):
     left = Typed(expected_type=Side, allow_none=True)
     right = Typed(expected_type=Side, allow_none=True)
     top = Typed(expected_type=Side, allow_none=True)
-    bottom = Typed(expected_type=Side)
+    bottom = Typed(expected_type=Side, allow_none=True)
     diagonal = Typed(expected_type=Side, allow_none=True)
     vertical = Typed(expected_type=Side, allow_none=True)
     horizontal = Typed(expected_type=Side, allow_none=True)

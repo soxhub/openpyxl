@@ -7,8 +7,9 @@ import math
 #constants
 
 DEFAULT_ROW_HEIGHT = 15.  # Default row height measured in point size.
-BASE_COL_WIDTH = 13 # in characters
-DEFAULT_COLUMN_WIDTH = 51.85 # in points, should be characters
+BASE_COL_WIDTH = 8 # in characters
+DEFAULT_COLUMN_WIDTH = BASE_COL_WIDTH + 5
+#  = baseColumnWidth + {margin padding (2 pixels on each side, totalling 4 pixels)} + {gridline (1pixel)}
 
 
 DEFAULT_LEFT_MARGIN = 0.7 # in inches, = right margin

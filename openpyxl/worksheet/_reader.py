@@ -85,14 +85,14 @@ class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
                  epoch=WINDOWS_EPOCH, date_formats=set()):
-        self.min_row = self.min_col = self.max_row = self.max_column = None
+        self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
         self.shared_strings = shared_strings
         self.data_only = data_only
         self.shared_formulae = {}
         self.array_formulae = {}
-        self.max_row = self.max_column = 0
+        self.row_counter = self.col_counter = 0
         self.tables = TablePartList()
         self.date_formats = date_formats
         self.row_dimensions = {}
@@ -103,7 +103,8 @@ class WorkSheetParser(object):
         self.formatting = []
         self.legacy_drawing = None
         self.merged_cells = None
-        self.page_breaks = []
+        self.row_breaks = RowBreak()
+        self.col_breaks = ColBreak()
 
 
     def parse(self):
@@ -132,6 +133,7 @@ class WorkSheetParser(object):
             TABLE_TAG: ('tables', TablePartList),
             HYPERLINK_TAG: ('hyperlinks', HyperlinkList),
             MERGE_TAG: ('merged_cells', MergeCells),
+
         }
 
         it = iterparse(self.source)
@@ -172,7 +174,7 @@ class WorkSheetParser(object):
     def parse_cell(self, element):
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self.max_column += 1
+        self.col_counter += 1
         style_id = element.get('s', 0)
         if style_id:
             style_id = int(style_id)
@@ -185,7 +187,7 @@ class WorkSheetParser(object):
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
         else:
-            row, column = self.max_row, self.max_column
+            row, column = self.row_counter, self.col_counter
 
         if not self.data_only and element.find(FORMULA_TAG) is not None:
             data_type = 'f'
@@ -258,17 +260,18 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self.max_row = int(attrs['r'])
+            self.row_counter = int(attrs['r'])
         else:
-            self.max_row += 1
+            self.row_counter += 1
+        self.col_counter = 0
 
         keys = {k for k in attrs if not k.startswith('{')}
-        if keys != {'r', 'spans'} and keys != {'r'}:
+        if keys - {'r', 'spans'}:
             # don't create dimension objects unless they have relevant information
-            self.row_dimensions[attrs['r']] = attrs
+            self.row_dimensions[str(self.row_counter)] = attrs
 
         cells = [self.parse_cell(el) for el in row]
-        return self.max_row, cells
+        return self.row_counter, cells
 
 
     def parse_formatting(self, element):
@@ -299,17 +302,19 @@ class WorkSheetParser(object):
 
     def parse_row_breaks(self, element):
         brk = RowBreak.from_tree(element)
-        self.page_breaks.append(brk)
+        self.row_breaks = brk
 
 
     def parse_col_breaks(self, element):
         brk = ColBreak.from_tree(element)
-        self.page_breaks.append(brk)
+        self.col_breaks = brk
 
 
     def parse_custom_views(self, element):
-        # clear page_breaks to avoid duplication
-        self.page_breaks = []
+        # clear page_breaks to avoid duplication which Excel doesn't like
+        # basically they're ignored in custom views
+        self.row_breaks = RowBreak()
+        self.col_breaks = ColBreak()
 
 
 class WorksheetReader(object):
@@ -332,7 +337,8 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
-        self.ws._current_row = self.parser.max_row
+        if self.ws._cells:
+            self.ws._current_row = self.ws.max_row # use cells not row dimensions
 
 
     def bind_formatting(self):
@@ -394,7 +400,7 @@ class WorksheetReader(object):
         for k in ('print_options', 'page_margins', 'page_setup',
                   'HeaderFooter', 'auto_filter', 'data_validations',
                   'sheet_properties', 'views', 'sheet_format',
-                  'page_breaks', 'scenarios', 'legacy_drawing'):
+                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing'):
             v = getattr(self.parser, k, None)
             if v is not None:
                 setattr(self.ws, k, v)

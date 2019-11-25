@@ -12,7 +12,7 @@ from functools import partial
 # package imports
 from openpyxl import DEFUSEDXML, LXML
 
-if LXML is True:
+if LXML is True and DEFUSEDXML is False:
     from lxml.etree import (
     Element,
     ElementTree,
@@ -22,24 +22,11 @@ if LXML is True:
     xmlfile,
     XMLParser,
     )
-    from lxml.etree import XMLSyntaxError
-
-    if DEFUSEDXML is True:
-        from defusedxml.common import DefusedXmlException
-        from defusedxml.cElementTree import iterparse
-        from defusedxml.lxml import fromstring as _fromstring, tostring
-
-        def fromstring(*args, **kwargs):
-            try:
-                return _fromstring(*args, **kwargs)
-            except XMLSyntaxError as e:
-                raise DefusedXmlException(str(e))
-    else:
-        from lxml.etree import fromstring, tostring
-        from xml.etree.cElementTree import iterparse
-        # do not resolve entities
-        safe_parser = XMLParser(resolve_entities=False)
-        fromstring = partial(fromstring, parser=safe_parser)
+    from lxml.etree import fromstring, tostring
+    from xml.etree.cElementTree import iterparse
+    # do not resolve entities
+    safe_parser = XMLParser(resolve_entities=False)
+    fromstring = partial(fromstring, parser=safe_parser)
 
 else:
     from xml.etree.ElementTree import (
@@ -59,6 +46,9 @@ else:
         iterparse,
         )
     from et_xmlfile import xmlfile
+
+if LXML is True:
+    from lxml.etree import xmlfile # not affected by parsing vulns
 
 
 from openpyxl.xml.constants import (

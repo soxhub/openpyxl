@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
 """
-Package medata
+Package metadata
 """
 
 __author__ = "See AUTHORS"

@@ -115,7 +115,9 @@ class ReadOnlyWorksheet(object):
             counter = cell['column']
             if min_col <= counter <= max_col:
                 idx = counter - min_col # position in list of cells returned
-                new_row[idx] = values_only and cell['value'] or ReadOnlyCell(self, **cell)
+                new_row[idx] = cell['value']
+                if not values_only:
+                    new_row[idx] = ReadOnlyCell(self, **cell)
 
         return tuple(new_row)
 

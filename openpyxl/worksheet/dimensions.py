@@ -8,6 +8,7 @@ from openpyxl.utils import (
     column_index_from_string,
     range_boundaries,
 )
+from openpyxl.utils.units import DEFAULT_COLUMN_WIDTH
 from openpyxl.descriptors import (
     Integer,
     Float,
@@ -134,7 +135,7 @@ class ColumnDimension(Dimension):
     def __init__(self,
                  worksheet,
                  index='A',
-                 width=0,
+                 width=DEFAULT_COLUMN_WIDTH,
                  bestFit=False,
                  hidden=False,
                  outlineLevel=0,
@@ -227,20 +228,19 @@ class DimensionHolder(BoundDictionary):
             return value.min
 
         el = Element('cols')
-        obj = None
         outlines = set()
 
         for col in sorted(self.values(), key=sorter):
             obj = col.to_tree()
-            outlines.add(col.outlineLevel)
             if obj is not None:
+                outlines.add(col.outlineLevel)
                 el.append(obj)
 
         if outlines:
             self.max_outline = max(outlines)
 
-        if obj is not None:
-            return el
+        if len(el):
+            return el # must have at least one child
 
 
 class SheetFormatProperties(Serialisable):
