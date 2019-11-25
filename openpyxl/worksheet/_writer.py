@@ -234,7 +234,7 @@ class WorksheetWriter:
 
 
     def write_breaks(self):
-        brks = self.ws.page_breaks
+        brks = (self.ws.row_breaks, self.ws.col_breaks)
         for brk in brks:
             if brk:
                 self.xf.send(brk.to_tree())

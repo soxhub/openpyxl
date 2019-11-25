@@ -15,35 +15,15 @@ from copy import copy
 import datetime
 import re
 
-from itertools import islice, product
 
 from openpyxl.compat import (
     NUMERIC_TYPES,
     deprecated,
 )
-from openpyxl.utils.units import (
-    DEFAULT_ROW_HEIGHT,
-    DEFAULT_COLUMN_WIDTH
-)
-from openpyxl.utils.datetime  import (
-    to_excel,
-    time_to_days,
-    timedelta_to_days,
-    from_excel
-    )
-from openpyxl.utils.exceptions import (
-    IllegalCharacterError
-)
-from openpyxl.utils.units import points_to_pixels
-from openpyxl.utils import (
-    get_column_letter,
-    column_index_from_string,
-)
-from openpyxl.utils.inference import (
-    cast_numeric,
-    cast_percentage,
-    cast_percentage,
-)
+
+from openpyxl.utils.exceptions import IllegalCharacterError
+
+from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink

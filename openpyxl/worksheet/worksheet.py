@@ -102,7 +102,6 @@ class Worksheet(_WorkbookChild):
                                                  default_factory=self._add_column)
         self.row_breaks = RowBreak()
         self.col_breaks = ColBreak()
-        self.page_breaks = (self.row_breaks, self.col_breaks)
         self._cells = {}
         self._charts = []
         self._images = []
@@ -149,6 +148,12 @@ class Worksheet(_WorkbookChild):
     @property
     def active_cell(self):
         return self.sheet_view.selection[0].activeCell
+
+
+    @property
+    def page_breaks(self):
+        return (self.row_breaks, self.col_breaks) # legacy, remove at some point
+
 
     @property
     def show_gridlines(self):
