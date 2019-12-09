@@ -91,7 +91,6 @@ class CellRange(Serialisable):
             max_row=self.max_row
         )
 
-
     @property
     def rows(self):
         """
