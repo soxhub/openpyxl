@@ -378,14 +378,18 @@ class WorksheetReader(object):
                             pass
             else:
                 cell = self.ws[link.ref]
-                cell = self._change_to_top_left_cell_if_merged(cell)
+                if isinstance(cell, MergedCell):
+                    cell = self.normalize_merged_cell_link(cell.coordinate)
                 cell.hyperlink = link
 
-    def _change_to_top_left_cell_if_merged(self, cell):
-        if not isinstance(cell, MergedCell):
-            return cell
-        r = self.ws.merged_cells.find_range_containing(cell.coordinate)
-        return self.ws[r.top_left_coord]
+    def normalize_merged_cell_link(self, coord):
+        """
+        Returns the appropriate cell to which a hyperlink, which references a merged cell at the specified coordinates,
+        should be bound.
+        """
+        for rng in self.ws.merged_cells:
+            if coord in rng:
+                return self.ws.cell(*rng.top[0])
 
     def bind_col_dimensions(self):
         for col, cd in self.parser.column_dimensions.items():

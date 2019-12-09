@@ -800,6 +800,21 @@ class TestWorksheetReader:
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
 
 
+    @pytest.mark.parametrize(argnames="input_coordinate,expected_coordinate",
+                             argvalues=[("H18", "G18"), ("G18", "G18"), ("I18", None), ("H23", "G23")])
+    def test_normalize_merged_cell_link(self, PrimedWorksheetReader, input_coordinate, expected_coordinate):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        reader.bind_merged_cells()
+
+        normalized = reader.normalize_merged_cell_link(input_coordinate)
+
+        if expected_coordinate is None:
+            assert normalized is None
+        else:
+            assert normalized.coordinate == expected_coordinate
+
+
     def test_external_hyperlinks(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
