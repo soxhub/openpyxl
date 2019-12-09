@@ -7,7 +7,7 @@ from warnings import warn
 from openpyxl.xml.functions import iterparse
 
 # package imports
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, MergedCell
 from openpyxl.cell.text import Text
 from openpyxl.worksheet.dimensions import (
     ColumnDimension,
@@ -377,7 +377,11 @@ class WorksheetReader(object):
                         except AttributeError:
                             pass
             else:
-                self.ws[link.ref].hyperlink = link
+                cell = self.ws[link.ref]
+                if isinstance(cell, MergedCell):
+                    cell = cell.get_first_cell_in_merged_range()
+                if cell is not None:
+                    cell.hyperlink = link
 
 
     def bind_col_dimensions(self):

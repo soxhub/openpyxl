@@ -847,6 +847,11 @@ class TestWorksheetReader:
         assert ws['A18'].hyperlink.display == 'http://test.com'
         assert ws['B18'].hyperlink is None
 
+        # Link referencing H24 should be placed on G23 because H24 is a merged cell
+        # and G23 is the top-left cell in the merged range
+        assert ws["G23"].hyperlink.tooltip == "openpyxl"
+        assert ws["H24"].hyperlink is None
+
 
     def test_tables(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
