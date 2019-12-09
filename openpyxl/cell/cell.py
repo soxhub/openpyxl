@@ -324,7 +324,6 @@ class MergedCell(StyleableObject):
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-
     coordinate = Cell.coordinate
     _comment = comment
     value = _value
