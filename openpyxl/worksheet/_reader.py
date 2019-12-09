@@ -378,11 +378,14 @@ class WorksheetReader(object):
                             pass
             else:
                 cell = self.ws[link.ref]
-                if isinstance(cell, MergedCell):
-                    cell = cell.get_first_cell_in_merged_range()
-                if cell is not None:
-                    cell.hyperlink = link
+                cell = self._change_to_top_left_cell_if_merged(cell)
+                cell.hyperlink = link
 
+    def _change_to_top_left_cell_if_merged(self, cell):
+        if not isinstance(cell, MergedCell):
+            return cell
+        r = self.ws.merged_cells.find_range_containing(cell.coordinate)
+        return self.ws[r.top_left_coord]
 
     def bind_col_dimensions(self):
         for col, cd in self.parser.column_dimensions.items():

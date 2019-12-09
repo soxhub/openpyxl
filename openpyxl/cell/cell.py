@@ -314,19 +314,16 @@ class MergedCell(StyleableObject):
     comment = None
     hyperlink = None
 
+
     def __init__(self, worksheet, row=None, column=None):
         super(MergedCell, self).__init__(worksheet)
         self.row = row
         self.column = column
 
+
     def __repr__(self):
         return "<MergedCell {0!r}.{1}>".format(self.parent.title, self.coordinate)
 
-    def get_first_cell_in_merged_range(self):
-        for cell_range in self.parent.merged_cells.ranges:
-            if self.coordinate in cell_range:
-                return self.parent.cell(cell_range.min_row, cell_range.min_col)
-        return None
 
     coordinate = Cell.coordinate
     _comment = comment

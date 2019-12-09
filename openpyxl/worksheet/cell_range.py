@@ -92,6 +92,13 @@ class CellRange(Serialisable):
         )
 
     @property
+    def top_left_coord(self):
+        """
+        Coordinate of the cell in the top left corner of the range
+        """
+        return get_column_letter(self.min_col) + str(self.min_row)
+
+    @property
     def rows(self):
         """
         Return cell coordinates as rows
@@ -498,3 +505,13 @@ class MultiCellRange(Strict):
         for r in self.ranges:
             n.ranges.append(copy(r))
         return n
+
+    def find_range_containing(self, coord):
+        """
+        Finds and returns the first range that contains the cell with the specified coordinates.
+        Returns None if no range is found.
+        """
+        for r in self.ranges:
+            if coord in r:
+                return r
+        return None
