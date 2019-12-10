@@ -439,6 +439,28 @@ class TestWorksheetParser:
         assert issubclass(w.category, UserWarning)
 
 
+    def test_bad_conditional_format_rule(self, WorkSheetParser, recwarn):
+        parser = WorkSheetParser
+
+        src = """
+                <conditionalFormatting sqref="G124:G144">
+                    <cfRule type="colorScale" priority="1">
+                        <colorScale>
+                            <cfvo type="num" val="&quot;&lt;&gt;100%&quot;"/>
+                            <cfvo type="max"/>
+                            <color rgb="FFFF7128"/>
+                            <color rgb="FFFFEF9C"/>
+                        </colorScale>
+                    </cfRule>
+                </conditionalFormatting>
+                """
+        element = fromstring(src)
+
+        parser.parse_formatting(element)
+        w = recwarn.pop()
+        assert issubclass(w.category, UserWarning)
+
+
     def test_cell_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
 
