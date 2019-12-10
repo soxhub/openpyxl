@@ -37,7 +37,7 @@ else:
     if DEFUSEDXML is True:
         from defusedxml.ElementTree import fromstring
 
-from xml.etree import iterparse
+from xml.etree.ElementTree import iterparse
 if DEFUSEDXML is True:
     from defusedxml.ElementTree import iterparse
 
