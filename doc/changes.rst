@@ -2,6 +2,12 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1260 <https://bitbucket.org/openpyxl/openpyxl/issues/1260>`_ Exception when handling merged cells with hyperlinks
+
+
 3.0.2 (2019-11-25)
 ==================
 
