@@ -7,9 +7,7 @@ XML compatability functions
 # Python stdlib imports
 import re
 from functools import partial
-# compatibility
 
-# package imports
 from openpyxl import DEFUSEDXML, LXML
 
 if LXML is True:
@@ -32,15 +30,14 @@ else:
     SubElement,
     fromstring,
     tostring,
-    iterparse,
     QName,
     register_namespace
     )
+    from et_xmlfile import xmlfile
     if DEFUSEDXML is True:
         from defusedxml.ElementTree import fromstring
 
-    from et_xmlfile import xmlfile
-
+from xml.etree import iterparse
 if DEFUSEDXML is True:
     from defusedxml.ElementTree import iterparse
 
