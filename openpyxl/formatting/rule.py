@@ -11,11 +11,9 @@ from openpyxl.descriptors import (
     Integer,
     Float,
 )
-from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.styles.colors import Color, ColorDescriptor
 from openpyxl.styles.differential import DifferentialStyle
-
-from openpyxl.utils.cell import COORD_RE
 
 
 class ValueDescriptor(Float):
@@ -26,14 +24,19 @@ class ValueDescriptor(Float):
     """
 
     def __set__(self, instance, value):
-        ref = None
-        if value is not None and isinstance(value, str):
-            ref = COORD_RE.match(value)
-        if instance.type == "formula" or ref:
+        if instance.type == "formula" or self._will_it_float(value) is False:
             self.expected_type = str
         else:
             self.expected_type = float
         super(ValueDescriptor, self).__set__(instance, value)
+
+    @staticmethod
+    def _will_it_float(value):
+        try:
+            float(value)
+            return True
+        except (ValueError, TypeError):
+            return False
 
 
 class FormatObject(Serialisable):

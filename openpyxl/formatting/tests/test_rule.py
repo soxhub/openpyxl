@@ -43,6 +43,7 @@ class TestFormatObject:
                                  ('formula', "=A2*4", "=A2*4"),
                                  ('percentile', 10, 10),
                                  ('formula', None, None),
+                                 ('num', '"unchecked-user-input"', '"unchecked-user-input"')
                              ]
                              )
     def test_value_types(self, FormatObject, typ, value, expected):
