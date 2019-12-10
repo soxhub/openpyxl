@@ -43,7 +43,7 @@ vulnerable_xml_strings = (
         <!DOCTYPE bomb [
         <!ENTITY a "{loads_of_bs}">
         ]>
-        <foo>&a;&a;&a</foo>""",
+        <foo>&a;&a;&a;</foo>""",
 )
 
 
@@ -62,3 +62,11 @@ def test_iterparse(xml_input):
     with pytest.raises(DefusedXmlException):
         f = BytesIO(xml_input)
         list(iterparse(f))
+
+
+@pytest.mark.lxml_required
+@pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
+def test_iterparse(xml_input):
+    f = BytesIO(xml_input)
+    with pytest.raises(ValueError):
+        fromstring(f)
