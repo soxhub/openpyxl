@@ -2,7 +2,6 @@
 
 """Reader for a single worksheet."""
 import traceback
-import warnings
 from warnings import warn
 
 # compatibility imports
@@ -282,7 +281,7 @@ class WorkSheetParser(object):
             self.formatting.append(cf)
         except TypeError:
             msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
-            warnings.warn(msg)
+            warn(msg)
 
 
     def parse_sheet_protection(self, element):
