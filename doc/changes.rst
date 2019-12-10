@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#1260 <https://bitbucket.org/openpyxl/openpyxl/issues/1260>`_ Exception when handling merged cells with hyperlinks
+* `#1373 <https://bitbucket.org/openpyxl/openpyxl/issues/1373>`_ Problems when both lxml and defusedxml are installed
 
 
 3.0.2 (2019-11-25)
