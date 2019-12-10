@@ -26,6 +26,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Dmitriy Chernyshov
 * Dominik Geldmacher
 * Don Freeman
+* Eirikur Fannar Torfason
 * Elias Rabel
 * Eric Chlebek
 * Eric Gazoni
