@@ -42,7 +42,7 @@ class TestFormatObject:
                                  ('min', '4.2', 4.2),
                                  ('formula', "=A2*4", "=A2*4"),
                                  ('percentile', 10, 10),
-                                 ('formula', None, None)
+                                 ('formula', None, None),
                              ]
                              )
     def test_value_types(self, FormatObject, typ, value, expected):
