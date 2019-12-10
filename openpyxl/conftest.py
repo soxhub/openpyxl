@@ -5,7 +5,9 @@ import platform
 
 ### Markers ###
 
+
 def pytest_runtest_setup(item):
+    from openpyxl import DEFUSEDXML, LXML
     if isinstance(item, pytest.Function):
         try:
             from PIL import Image
@@ -18,11 +20,9 @@ def pytest_runtest_setup(item):
         elif item.get_closest_marker("not_py33"):
             pytest.skip("Ordering is not a given in Python 3")
         elif item.get_closest_marker("defusedxml_required"):
-            from openpyxl import DEFUSEDXML
-            if not DEFUSEDXML:
+            if LXML or not DEFUSEDXML:
                 pytest.skip("defusedxml is required to guard against these vulnerabilities")
         elif item.get_closest_marker("lxml_required"):
-            from openpyxl import LXML
             if not LXML:
                 pytest.skip("LXML is required for some features such as schema validation")
         elif item.get_closest_marker("lxml_buffering"):
