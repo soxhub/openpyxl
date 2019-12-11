@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2019 openpyxl
 
 """Reader for a single worksheet."""
+import traceback
 from warnings import warn
 
 # compatibility imports
@@ -275,8 +276,12 @@ class WorkSheetParser(object):
 
 
     def parse_formatting(self, element):
-        cf = ConditionalFormatting.from_tree(element)
-        self.formatting.append(cf)
+        try:
+            cf = ConditionalFormatting.from_tree(element)
+            self.formatting.append(cf)
+        except TypeError:
+            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
+            warn(msg)
 
 
     def parse_sheet_protection(self, element):
