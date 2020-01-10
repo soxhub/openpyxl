@@ -1,13 +1,14 @@
 # Copyright (c) 2010-2019 openpyxl
 
 """Reader for a single worksheet."""
+import traceback
 from warnings import warn
 
 # compatibility imports
 from openpyxl.xml.functions import iterparse
 
 # package imports
-from openpyxl.cell import Cell
+from openpyxl.cell import Cell, MergedCell
 from openpyxl.cell.text import Text
 from openpyxl.worksheet.dimensions import (
     ColumnDimension,
@@ -275,8 +276,12 @@ class WorkSheetParser(object):
 
 
     def parse_formatting(self, element):
-        cf = ConditionalFormatting.from_tree(element)
-        self.formatting.append(cf)
+        try:
+            cf = ConditionalFormatting.from_tree(element)
+            self.formatting.append(cf)
+        except TypeError:
+            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
+            warn(msg)
 
 
     def parse_sheet_protection(self, element):
@@ -377,8 +382,19 @@ class WorksheetReader(object):
                         except AttributeError:
                             pass
             else:
-                self.ws[link.ref].hyperlink = link
+                cell = self.ws[link.ref]
+                if isinstance(cell, MergedCell):
+                    cell = self.normalize_merged_cell_link(cell.coordinate)
+                cell.hyperlink = link
 
+    def normalize_merged_cell_link(self, coord):
+        """
+        Returns the appropriate cell to which a hyperlink, which references a merged cell at the specified coordinates,
+        should be bound.
+        """
+        for rng in self.ws.merged_cells:
+            if coord in rng:
+                return self.ws.cell(*rng.top[0])
 
     def bind_col_dimensions(self):
         for col, cd in self.parser.column_dimensions.items():

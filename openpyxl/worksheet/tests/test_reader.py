@@ -439,6 +439,28 @@ class TestWorksheetParser:
         assert issubclass(w.category, UserWarning)
 
 
+    def test_bad_conditional_format_rule(self, WorkSheetParser, recwarn):
+        parser = WorkSheetParser
+
+        src = """
+                <conditionalFormatting sqref="G124:G144">
+                    <cfRule type="colorScale" priority="1">
+                        <colorScale>
+                            <cfvo type="num" val="&quot;&lt;&gt;100%&quot;"/>
+                            <cfvo type="max"/>
+                            <color rgb="FFFF7128"/>
+                            <color rgb="FFFFEF9C"/>
+                        </colorScale>
+                    </cfRule>
+                </conditionalFormatting>
+                """
+        element = fromstring(src)
+
+        parser.parse_formatting(element)
+        w = recwarn.pop()
+        assert issubclass(w.category, UserWarning)
+
+
     def test_cell_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
 
@@ -800,6 +822,21 @@ class TestWorksheetReader:
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
 
 
+    @pytest.mark.parametrize(argnames="input_coordinate,expected_coordinate",
+                             argvalues=[("H18", "G18"), ("G18", "G18"), ("I18", None), ("H23", "G23")])
+    def test_normalize_merged_cell_link(self, PrimedWorksheetReader, input_coordinate, expected_coordinate):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        reader.bind_merged_cells()
+
+        normalized = reader.normalize_merged_cell_link(input_coordinate)
+
+        if expected_coordinate is None:
+            assert normalized is None
+        else:
+            assert normalized.coordinate == expected_coordinate
+
+
     def test_external_hyperlinks(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
@@ -846,6 +883,11 @@ class TestWorksheetReader:
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
         assert ws['A18'].hyperlink.display == 'http://test.com'
         assert ws['B18'].hyperlink is None
+
+        # Link referencing H24 should be placed on G23 because H24 is a merged cell
+        # and G23 is the top-left cell in the merged range
+        assert ws["G23"].hyperlink.tooltip == "openpyxl"
+        assert ws["H24"].hyperlink is None
 
 
     def test_tables(self, PrimedWorksheetReader):
