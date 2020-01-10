@@ -140,9 +140,6 @@ class Cell(StyleableObject):
     def base_date(self):
         return self.parent.parent.epoch
 
-    @property
-    def guess_types(self):
-        return getattr(self.parent.parent, 'guess_types', False)
 
     def __repr__(self):
         return "<Cell {0!r}.{1}>".format(self.parent.title, self.coordinate)

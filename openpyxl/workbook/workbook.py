@@ -129,22 +129,6 @@ class Workbook(object):
 
 
     @property
-    def guess_types(self):
-        return getattr(self, '__guess_types', False)
-
-
-    @guess_types.setter
-    def guess_types(self, value):
-        self.__guess_types = value
-
-
-    @deprecated("Use the .active property")
-    def get_active_sheet(self):
-        """Returns the current active sheet."""
-        return self.active
-
-
-    @property
     def excel_base_date(self):
         return self.epoch
 
