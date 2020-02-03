@@ -49,16 +49,16 @@ Pull Requests
 3.0.0 (2019-09-25)
 ==================
 
-Python 3 only release
----------------------
+Python 3.6+ only release
+------------------------
 
 
 2.6.4 (2019-09-25)
 ==================
 
 
-Final release for Python 2.7
-––––––––––––––––––––––––––––
+Final release for Python 2.7 and 3.5
+------------------------------------
 
 Bugfixes
 --------
