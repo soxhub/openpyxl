@@ -196,6 +196,13 @@ class TestExcelReader:
         reader.read_workbook()
         assert reader.wb is not None
 
+    def test_read_workbook_theme(self, datadir):
+        datadir.chdir()
+        reader = ExcelReader("complex-styles.xlsx")
+        reader.read_manifest()
+        reader.read_workbook()
+        reader.read_theme()
+        assert reader.wb.loaded_theme is not None
 
     def test_read_workbook_hidden_readonly(self, datadir):
         datadir.chdir()
