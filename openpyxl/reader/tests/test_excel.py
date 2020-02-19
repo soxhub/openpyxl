@@ -197,13 +197,17 @@ class TestExcelReader:
         assert reader.wb is not None
 
 
-    def test_read_workbook(self, datadir):
+    def test_read_workbook_hidden_readonly(self, datadir):
         datadir.chdir()
-        reader = ExcelReader("complex-styles.xlsx")
+        reader = ExcelReader("hidden_sheets.xlsx", read_only=True)
         reader.read_manifest()
         reader.read_workbook()
-        reader.read_theme()
-        assert reader.wb.loaded_theme is not None
+        reader.read_worksheets()
+        assert reader.wb.sheetnames == ["Sheet", "Hidden", "VeryHidden"]
+        hidden = reader.wb.worksheets[1]
+        assert hidden.sheet_state == "hidden"
+        very_hidden = reader.wb.worksheets[2]
+        assert very_hidden.sheet_state == "veryHidden"
 
 
     def test_read_chartsheet(self, datadir):
