@@ -204,12 +204,11 @@ class TestExcelReader:
         reader.read_theme()
         assert reader.wb.loaded_theme is not None
 
-    def test_read_workbook_hidden_readonly(self, datadir):
+    @pytest.mark.parametrize("read_only", [False, True])
+    def test_read_workbook_hidden(self, datadir, read_only):
         datadir.chdir()
-        reader = ExcelReader("hidden_sheets.xlsx", read_only=True)
-        reader.read_manifest()
-        reader.read_workbook()
-        reader.read_worksheets()
+        reader = ExcelReader("hidden_sheets.xlsx", read_only=read_only)
+        reader.read()
         assert reader.wb.sheetnames == ["Sheet", "Hidden", "VeryHidden"]
         hidden = reader.wb.worksheets[1]
         assert hidden.sheet_state == "hidden"
