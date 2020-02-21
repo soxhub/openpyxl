@@ -217,6 +217,7 @@ class ExcelReader:
 
             if self.read_only:
                 ws = ReadOnlyWorksheet(self.wb, sheet.name, rel.target, self.shared_strings)
+                ws.sheet_state = sheet.state
                 self.wb._sheets.append(ws)
                 continue
             else:
