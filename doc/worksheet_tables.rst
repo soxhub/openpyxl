@@ -24,3 +24,10 @@ Important notes
 Table names must be unique within a workbook and table headers and filter
 ranges must always contain strings. If this is not the case then Excel may
 consider the file invalid and remove the table.
+
+Getting A Table Object or Tables
+--------------------------------
+Method workbook.get_table() allows you to get a table by name or dictonary of tables.
+
+.. literalinclude:: get_table.py
+

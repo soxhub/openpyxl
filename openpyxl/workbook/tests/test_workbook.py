@@ -324,3 +324,19 @@ class TestCopy:
         ws = wb.create_sheet()
         with pytest.raises(ValueError):
             wb.copy_worksheet(ws)
+
+def test_get_table(Workbook):
+    wb = Workbook(write_only=True)
+    ws = wb.create_sheet()
+    data = [['Apples', 10000, 50000, 8000, 60000],
+            ['Pears', 20000, 30000, 40000, 50000],
+            ['Bananas', 6000, 6000, 65000, 6000]]
+    ws.append(["Fruit", "2011", "2012", "2013", "2014"])
+    for row in data:
+        ws.append(row)
+    tab = Table(displayName="Table1", ref= "A1:E5")
+    style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=True)
+    tab.tableStyleInfo = style
+    ws.add_table(tab)
+    assert 'Table1' == wb.get_table("Table1").name
+    assert dict == type(wb.get_table(''))

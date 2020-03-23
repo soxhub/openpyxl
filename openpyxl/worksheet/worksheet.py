@@ -558,6 +558,7 @@ class Worksheet(_WorkbookChild):
 
     def add_table(self, table):
         self._tables.append(table)
+        self.parent._tables[table.name] = table
 
 
     def add_pivot(self, pivot):
