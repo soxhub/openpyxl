@@ -4,6 +4,7 @@
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from openpyxl.xml.constants import (
     XLSM,
