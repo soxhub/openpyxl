@@ -1,7 +1,5 @@
 # Copyright (c) 2010-2019 openpyxl
 
-from zipfile import ZipFile
-
 from openpyxl.xml.functions import fromstring
 
 from .. bar_chart import BarChart
