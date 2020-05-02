@@ -120,6 +120,17 @@ class TestPlotArea:
         assert chart.y_axis.axId == 211330000
 
 
+    def test_read_bubble_chart(self, PlotArea, datadir):
+        datadir.chdir()
+        with open("bubblechart_plot_area.xml", "rb") as src:
+            tree = fromstring(src.read())
+        plot = PlotArea.from_tree(tree)
+        chart = plot._charts[0]
+        assert chart.axId == [196911488, 196913408]
+        assert chart.x_axis.axId == 196911488
+        assert chart.y_axis.axId == 196913408
+
+
     def test_read_surface_chart_3d(self, PlotArea, datadir):
         datadir.chdir()
         with open("3D_plotarea.xml", "rb") as src:
