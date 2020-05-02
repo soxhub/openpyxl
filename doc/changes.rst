@@ -1,6 +1,7 @@
 3.0.4 (unreleased)
 ==================
 
+* `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 
 
 3.0.3 (2020-01-20)
