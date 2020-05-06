@@ -40,8 +40,8 @@ __version__ = constants.__version__
 
 setup(
     name='openpyxl',
-    packages=find_packages(
-        exclude=["*.tests", "*.test_.*", "test_.*", "tests", "develop"]
+    packages=find_packages(".",
+        exclude=["*.tests", "scratchpad*"]
         ),
     package_dir={},
     # metadata
