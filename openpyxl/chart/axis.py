@@ -136,7 +136,7 @@ class _BaseAxis(Serialisable):
         self.txPr = txPr
         self.crossAx = crossAx
         self.crosses = crosses
-        self.crossesAt = None
+        self.crossesAt = crossesAt
 
 
 class DisplayUnitsLabel(Serialisable):

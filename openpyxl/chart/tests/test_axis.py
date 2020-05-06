@@ -97,7 +97,7 @@ class TestTextAxis:
         assert diff is None, diff
 
 
-    def from_xml(self, TextAxis):
+    def test_from_xml(self, TextAxis):
         src = """
         <catAx>
             <axId val="2065276984"/>
@@ -111,6 +111,7 @@ class TestTextAxis:
             <tickLblPos val="nextTo"/>
             <crossAx val="2056619928"/>
             <crosses val="autoZero"/>
+            <crossesAt val="30"/>
             <auto val="1"/>
             <lblAlgn val="ctr"/>
             <lblOffset val="100"/>
@@ -118,11 +119,12 @@ class TestTextAxis:
         </catAx>
         """
         node = fromstring(src)
-        axis = CatAx.from_tree(node)
+        axis = TextAxis.from_tree(node)
         assert axis.scaling.orientation == "minMax"
         assert axis.auto is True
         assert axis.majorTickMark == "out"
         assert axis.minorTickMark is None
+        assert axis.crossesAt == 30
 
 
 @pytest.fixture
