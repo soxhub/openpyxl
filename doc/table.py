@@ -23,4 +23,5 @@ style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
                        showLastColumn=False, showRowStripes=True, showColumnStripes=True)
 tab.tableStyleInfo = style
 ws.add_table(tab)
+ws.tables.append(tab)
 wb.save("table.xlsx")

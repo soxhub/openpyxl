@@ -52,6 +52,7 @@ from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
+from .table import TableList
 
 
 class Worksheet(_WorkbookChild):
@@ -110,6 +111,7 @@ class Worksheet(_WorkbookChild):
         self._comments = []
         self.merged_cells = MultiCellRange()
         self._tables = []
+        self.tables = TableList()
         self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []

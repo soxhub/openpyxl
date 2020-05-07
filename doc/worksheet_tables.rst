@@ -24,3 +24,10 @@ Important notes
 Table names must be unique within a workbook and table headers and filter
 ranges must always contain strings. If this is not the case then Excel may
 consider the file invalid and remove the table.
+
+
+Getting table by name or range
+------------------------------
+Tables can be access by using 'worksheet.tables'.
+
+.. literalinclude:: table_list.py

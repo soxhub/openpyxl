@@ -3,7 +3,7 @@ import pytest
 
 from io import BytesIO
 from zipfile import ZipFile
-
+from openpyxl import load_workbook
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
@@ -216,3 +216,12 @@ class TestTablePartList:
         node = fromstring(src)
         tables = TablePartList.from_tree(node)
         assert len(tables.tablePart) == 2
+
+def test_table_list(datadir):
+    datadir.chdir()
+    wb = load_workbook("tables.xlsx")
+    ws1 = wb['Sheet1']
+    ws2 = wb['Sheet2']
+    assert ws1.tables['Table1'].name == "Table1"
+    assert ws2.tables['Table2'].name == "Table2"
+    assert ws2.tables.get(table_range='J11:O19').name == "Table2"

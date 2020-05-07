@@ -359,3 +359,48 @@ class TablePartList(Serialisable):
         return bool(self.tablePart)
 
     __nonzero__ = __bool__
+
+
+class TableList(Serialisable):
+    
+    tables = Sequence(expected_type=Table)
+
+    def __init__(self, tables=()):
+        self.tables = tables
+
+
+    def _duplicate(self, new_table):
+        for table in self.tables:
+            if table.name == new_table.name:
+                return True
+
+
+    def append(self, new_table):
+        if not isinstance(new_table, Table):
+            raise TypeError("""You can only tables""")
+        if self._duplicate(new_table):
+            raise ValueError("""Table with the same name already exists.""")
+        tbls = self.tables
+        tbls.append(new_table)
+        self.tables = tbls
+
+
+    def __getitem__(self, name):
+        """Get table by name"""
+        
+        table = self.get(name)
+        if not table:
+            raise KeyError("No table called {0}".format(name))
+        return table
+
+
+    def get(self, name=None, table_range=None):
+        """Get tabel by name or range"""
+        if name or table_range:
+            for table in self.tables:
+                if table.name == name or table.ref == table_range:
+                    return table
+
+
+    def __len__(self):
+        return len(self.tables)
