@@ -400,6 +400,11 @@ class TableList(Serialisable):
         for table in self.tables:
             if table.name == name or table.table_range == table_range:
                 return table
+    
+
+    def __iter__(self):
+        for table in self.tables:
+            yield table
 
 
     def __len__(self):

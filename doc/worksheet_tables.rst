@@ -50,6 +50,10 @@ or
 
 Tables in Workbook
 ------------------
+Iterate through all table in workbook
+>>>for table in wb.tables:
+>>>   print(table)
+
 Get name and range of all tables in the workbook (from all sheets)
 >>>wb.tables.items()
 >>>[("Table1", "Sheet1!$A$1:$E$5"), ... ]

@@ -581,7 +581,7 @@ class Worksheet(_WorkbookChild):
         Get tables from sheet.
         Returns a table if it exists in the sheet
         """
-        for table in self.parent.tables.tables:
+        for table in self.parent.tables:
             if (table.name==name or table.table_range==table_range) and self._is_table_in_sheet(table):
                 return table
         return None
@@ -606,7 +606,7 @@ class Worksheet(_WorkbookChild):
         Returns list of tuple 
         e.g. [("Table1", "Sheet1!A1:D10")]
         """
-        return [(table.name, table.table_range) for table in self.parent.tables.tables if self._is_table_in_sheet(table)]
+        return [(table.name, table.table_range) for table in self.parent.tables if self._is_table_in_sheet(table)]
 
 
     def add_pivot(self, pivot):
