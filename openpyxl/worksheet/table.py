@@ -229,6 +229,7 @@ class Table(Serialisable):
     tableColumns = NestedSequence(expected_type=TableColumn, count=True)
     tableStyleInfo = Typed(expected_type=TableStyleInfo, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+    table_range = String(allow_none=True)
 
     __elements__ = ('autoFilter', 'sortState', 'tableColumns',
                     'tableStyleInfo')
@@ -261,6 +262,7 @@ class Table(Serialisable):
                  tableColumns=(),
                  tableStyleInfo=None,
                  extLst=None,
+                 table_range=None
                 ):
         self.id = id
         self.displayName = displayName
@@ -290,6 +292,7 @@ class Table(Serialisable):
         self.sortState = sortState
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
+        self.table_range = table_range
 
 
     def to_tree(self):
@@ -371,18 +374,8 @@ class TableList(Serialisable):
 
     def _duplicate(self, new_table):
         for table in self.tables:
-            if table.name == new_table.name:
+            if table.name == new_table.name or table.table_range == new_table.table_range:
                 return True
-
-
-    def append(self, new_table):
-        if not isinstance(new_table, Table):
-            raise TypeError("""You can only tables""")
-        if self._duplicate(new_table):
-            raise ValueError("""Table with the same name already exists.""")
-        tbls = self.tables
-        tbls.append(new_table)
-        self.tables = tbls
 
 
     def __getitem__(self, name):
@@ -394,13 +387,46 @@ class TableList(Serialisable):
         return table
 
 
+    def _append(self, table):
+        if not isinstance(table, Table):
+            raise TypeError("""You can only append Table""")
+        if self._duplicate(table):
+            raise ValueError("""Table with the same name or range already exists""")
+        self.tables.append(table)
+
+
     def get(self, name=None, table_range=None):
-        """Get tabel by name or range"""
-        if name or table_range:
-            for table in self.tables:
-                if table.name == name or table.ref == table_range:
-                    return table
+        """Get table by name or range"""
+        for table in self.tables:
+            if table.name == name or table.table_range == table_range:
+                return table
 
 
     def __len__(self):
         return len(self.tables)
+
+
+    def __delitem__(self, name):
+        """
+        Delete a table
+        """
+        if not self.delete(name):
+            raise KeyError("No table with name {0} to delete.".format(name))
+
+
+    def delete(self, name=None, table_range=None):
+        """
+        Delete a table by name or range
+        """
+        for idx, table in enumerate(self.tables):
+            if table.name == name or table.table_range == table_range:
+                del self.tables[idx]
+                return True
+
+
+    def items(self):
+        """
+        Returns a list of tuples, where each tuple represents table name and it's range
+        e.g (table_name, table_range)
+        """
+        return [ (table.name, table.table_range) for table in self.tables ]

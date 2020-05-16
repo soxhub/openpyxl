@@ -9,7 +9,7 @@ from itertools import islice
 from openpyxl.workbook import Workbook
 from openpyxl.cell import Cell
 from ..cell_range import CellRange
-
+from openpyxl.worksheet.table import Table, TableList
 
 class DummyWorkbook:
 
@@ -441,6 +441,25 @@ class TestWorksheet:
     def test_gridlines(self, Worksheet):
         ws = Worksheet(Workbook())
         assert not ws.show_gridlines
+
+
+    def test_get_table(self, Worksheet):
+        tbl_ws = Worksheet(Workbook())
+        table1 = Table(displayName="Table1", ref="A1:D10", table_range="Sheet1!$A$1:$D$10")
+        table2 = Table(displayName="Table2", ref="F5:H10", table_range="Sheet1!$F$5:$H$10")
+        table3 = Table(displayName="Table3", ref="A1:D10", table_range="Sheet2!$A$1:$D$10")
+        tbl_ws.add_table(table1)
+        tbl_ws.add_table(table2)
+        tbl_ws.parent.tables._append(table3)
+        
+        assert tbl_ws.get_table("Table3") == None
+        
+        assert tbl_ws.get_table("Table1").name == "Table1"
+        assert tbl_ws.get_table(table_range="Sheet1!$F$5:$H$10").name == "Table2"
+        assert tbl_ws.tables == [("Table1","Sheet1!$A$1:$D$10"), ("Table2", "Sheet1!$F$5:$H$10")]
+        assert tbl_ws.delete_table("Table3") == False
+        assert tbl_ws.delete_table("Table2") == True
+        
 
 
 def test_freeze_panes_horiz(Worksheet):

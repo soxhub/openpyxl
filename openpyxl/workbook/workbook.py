@@ -8,6 +8,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
+from openpyxl.worksheet.table import TableList
 
 from openpyxl.utils import quote_sheetname
 from openpyxl.utils.indexed_list import IndexedList
@@ -68,7 +69,7 @@ class Workbook(object):
         self.security = DocumentSecurity()
         self.__write_only = write_only
         self.shared_strings = IndexedList()
-
+        self.tables = TableList()
         self._setup_styles()
 
         self.loaded_theme = None

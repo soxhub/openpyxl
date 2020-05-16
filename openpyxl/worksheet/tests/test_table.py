@@ -217,11 +217,49 @@ class TestTablePartList:
         tables = TablePartList.from_tree(node)
         assert len(tables.tablePart) == 2
 
+
+
+@pytest.fixture
+def TableList():
+    from ..table import TableList
+    return TableList
+
+
+class TestTableList:
+    def test_append(self, Table, TableList):
+        table1 = Table(displayName="Table1", ref="A1:C10", table_range="Sheet1!$A$1:$C$10")
+        table2 = Table(displayName="Table2", ref="B2:C10", table_range="Sheet2!$B$2:$C$10")
+        tablelist = TableList()
+        tablelist._append(table1)
+        tablelist._append(table2)
+        assert len(tablelist) == 2 
+        table_items = tablelist.items()
+        assert table_items == [("Table1","Sheet1!$A$1:$C$10"),("Table2","Sheet2!$B$2:$C$10")]
+            
+
+    def test_delete(self, Table, TableList):
+        table3 = Table(displayName="Table3", ref="A1:C10", table_range="Sheet3!$A$10")
+        tablelist = TableList()
+        tablelist._append(table3)
+        assert tablelist["Table3"].name == "Table3"
+        assert tablelist.get("Table3").name == "Table3"
+        assert tablelist.delete("Table3") == True
+
+    def test_errors(self, Table, TableList):
+        tablelist2 = TableList()
+        tablelist2._append(Table(displayName="Table6", ref="A1:C10", table_range="Sheet1!A1:C10"))
+        tablelist2._append(Table(displayName="Table3", ref="I10:L20", table_range="Sheet1!I10:L20"))
+
+        with pytest.raises(KeyError):
+            tablelist2['NoTable']
+
+
 def test_table_list(datadir):
     datadir.chdir()
     wb = load_workbook("tables.xlsx")
-    ws1 = wb['Sheet1']
-    ws2 = wb['Sheet2']
-    assert ws1.tables['Table1'].name == "Table1"
-    assert ws2.tables['Table2'].name == "Table2"
-    assert ws2.tables.get(table_range='J11:O19').name == "Table2"
+    ws1 = wb["Sheet1"]
+    ws2 = wb["Sheet2"]
+    assert ws1.get_table("Table1").name == "Table1"
+    assert ws2.get_table("Table2").name == "Table2"
+    assert wb.tables.get(name="Table2").name == "Table2"
+

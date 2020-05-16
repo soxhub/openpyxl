@@ -249,7 +249,6 @@ class ExcelReader:
                 xml = fromstring(src)
                 table = Table.from_tree(xml)
                 ws.add_table(table)
-                ws.tables.append(table)
 
             drawings = rels.find(SpreadsheetDrawing._rel_type)
             for rel in drawings:
