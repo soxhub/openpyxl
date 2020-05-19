@@ -1,6 +1,11 @@
 3.0.4 (unreleased)
 ==================
 
+
+Bugfixes
+--------
+
+* `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
 * `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 
 
