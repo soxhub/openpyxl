@@ -426,8 +426,10 @@ class MultiCellRange(Strict):
 
 
     def __contains__(self, coord):
+        if isinstance(coord, str):
+            coord = CellRange(coord)
         for r in self.ranges:
-            if coord in r:
+            if coord <= r:
                 return True
         return False
 
@@ -448,13 +450,10 @@ class MultiCellRange(Strict):
         """
         Add a cell coordinate or CellRange
         """
-        cr = None
-        if isinstance(coord, CellRange):
-            cr = coord
-            coord = cr.coord
-        if coord not in self:
-            if cr is None:
-                cr = CellRange(coord)
+        cr = coord
+        if isinstance(coord, str):
+            cr = CellRange(coord)
+        if cr not in self:
             ranges = self.ranges
             ranges.append(cr)
             self.ranges = ranges
