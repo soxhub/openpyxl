@@ -223,43 +223,71 @@ class TestTablePartList:
 def TableList():
     from ..table import TableList
     return TableList
-
+ 
 
 class TestTableList:
+    
+
     def test_append(self, Table, TableList):
-        table1 = Table(displayName="Table1", ref="A1:C10", table_range="Sheet1!$A$1:$C$10")
-        table2 = Table(displayName="Table2", ref="B2:C10", table_range="Sheet2!$B$2:$C$10")
         tablelist = TableList()
-        tablelist._append(table1)
-        tablelist._append(table2)
-        assert len(tablelist) == 2 
-        table_items = tablelist.items()
-        assert table_items == [("Table1","Sheet1!$A$1:$C$10"),("Table2","Sheet2!$B$2:$C$10")]
-            
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        tablelist.append(table1, "Sheet1")
+        assert len(tablelist) == 1
 
-    def test_delete(self, Table, TableList):
-        table3 = Table(displayName="Table3", ref="A1:C10", table_range="Sheet3!$A$10")
+
+    def test_get(self, Table, TableList):
         tablelist = TableList()
-        tablelist._append(table3)
-        assert tablelist["Table3"].name == "Table3"
-        assert tablelist.get("Table3").name == "Table3"
-        assert tablelist.delete("Table3") == True
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        tablelist.append(table1, "Sheet1")
+        assert True == isinstance(tablelist.get("Table1"), Table)
 
-    def test_errors(self, Table, TableList):
+
+    def test_get_by_range(self, Table, TableList):
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:D10")
+        tablelist.append(table1, "Sheet1")
+        assert True == isinstance(tablelist.get(table_range="Sheet1!A1:D10"),Table)
+        
+        
+    def test_get_absolute_range_error(self, Table, TableList):
+        tablelist = TableList()
+        tablelist.append(Table(displayName="Table1", ref="A1:D10"), "Sheet1")
+        with pytest.raises(ValueError):
+            tablelist.get(table_range="Sheet1!$A$1:$D$10")
+
+
+    def test_get_table_does_not_exists(self, Table, TableList):
         tablelist2 = TableList()
-        tablelist2._append(Table(displayName="Table6", ref="A1:C10", table_range="Sheet1!A1:C10"))
-        tablelist2._append(Table(displayName="Table3", ref="I10:L20", table_range="Sheet1!I10:L20"))
-
         with pytest.raises(KeyError):
             tablelist2['NoTable']
 
 
-def test_table_list(datadir):
-    datadir.chdir()
-    wb = load_workbook("tables.xlsx")
-    ws1 = wb["Sheet1"]
-    ws2 = wb["Sheet2"]
-    assert ws1.get_table("Table1").name == "Table1"
-    assert ws2.get_table("Table2").name == "Table2"
-    assert wb.tables.get(name="Table2").name == "Table2"
+    def test_duplicate_name(self, Table, TableList):
+        """
+        Test to check if table is duplicate by having the same name
+        """
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        table2 = Table(displayName="Table1", ref="D1:G20")
+        tablelist.append(table1, "Sheet1")
+        assert tablelist._duplicate(table2, "Sheet2")
 
+    
+    def test_duplicate_range(self, Table, TableList):
+        """
+        Test to check if table is duplicate by having the same range in the same sheet
+        """        
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        table2 = Table(displayName="Table3", ref="A1:C10")
+        tablelist.append(table1, "Sheet1")
+        assert True == tablelist._duplicate(table2, "Sheet1")
+
+
+    def test_items(self, Table, TableList):
+        table1 = Table(displayName="Table1", ref="A1:D10")
+        table2 = Table(displayName="Table2", ref="A1:D10")
+        tablelist = TableList()
+        tablelist.append(table1, "Sheet1")
+        tablelist.append(table2, "Sheet2")
+        assert tablelist.items() == [("Sheet1", table1), ("Sheet2", table2)]

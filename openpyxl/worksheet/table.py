@@ -229,8 +229,7 @@ class Table(Serialisable):
     tableColumns = NestedSequence(expected_type=TableColumn, count=True)
     tableStyleInfo = Typed(expected_type=TableStyleInfo, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
-    table_range = String(allow_none=True)
-
+    
     __elements__ = ('autoFilter', 'sortState', 'tableColumns',
                     'tableStyleInfo')
 
@@ -292,7 +291,6 @@ class Table(Serialisable):
         self.sortState = sortState
         self.tableColumns = tableColumns
         self.tableStyleInfo = tableStyleInfo
-        self.table_range = table_range
 
 
     def to_tree(self):
@@ -364,46 +362,57 @@ class TablePartList(Serialisable):
     __nonzero__ = __bool__
 
 
-class TableList(Serialisable):
-    
-    tables = Sequence(expected_type=Table)
+class TableList:
+    """
+    Contains a list of tuple with 
+    [ ( Sheet Name, reference to Table Object ), ]
+    """
 
-    def __init__(self, tables=()):
-        self.tables = tables
+    def __init__(self):        
+        self.tables = []
 
 
-    def _duplicate(self, new_table):
-        for table in self.tables:
-            if table.name == new_table.name or table.table_range == new_table.table_range:
+    def _duplicate(self, new_table, sheet_name):
+        '''
+        Check for duplicate name or range. Table is considered duplicate if it has same name or same range.
+        '''
+        for tbl_sheet_name, table in self.tables:
+            if table.name == new_table.name or (tbl_sheet_name == sheet_name and table.ref == new_table.ref):
                 return True
 
 
     def __getitem__(self, name):
         """Get table by name"""
-        
         table = self.get(name)
         if not table:
             raise KeyError("No table called {0}".format(name))
         return table
 
 
-    def _append(self, table):
+    def append(self, table, sheet_name):
         if not isinstance(table, Table):
             raise TypeError("""You can only append Table""")
-        if self._duplicate(table):
+        if self._duplicate(table, sheet_name):
             raise ValueError("""Table with the same name or range already exists""")
-        self.tables.append(table)
+        self.tables.append((sheet_name, table))
 
-
+        
     def get(self, name=None, table_range=None):
-        """Get table by name or range"""
-        for table in self.tables:
-            if table.name == name or table.table_range == table_range:
+        """
+        Get Table by either name or range.
+        'table_range' only relative range allowed 'Sheet1!A1:D10' 
+        """
+        for sheet_name, table in self.tables:
+            if table_range:
+                if '$' in table_range.split('!')[1]:
+                    raise ValueError("Only relative range is allowed. e.g. 'Sheet1!A1:D10'") 
+            
+            if table.name == name or sheet_name + '!' + table.ref == table_range:
                 return table
     
 
     def __iter__(self):
-        for table in self.tables:
+        for sheet_name, table in self.tables:
             yield table
 
 
@@ -422,11 +431,12 @@ class TableList(Serialisable):
     def delete(self, name=None, table_range=None):
         """
         Delete a table by name or range
+        'table_range' only relative range allowed 'Sheet1!A1:D10'
         """
-        for idx, table in enumerate(self.tables):
-            if table.name == name or table.table_range == table_range:
+        for idx, table_item in enumerate(self.tables):
+            sheet_name, table = table_item
+            if table.name == name or sheet_name + '!' + table.ref == table_range:
                 del self.tables[idx]
-                return True
 
 
     def items(self):
@@ -434,4 +444,4 @@ class TableList(Serialisable):
         Returns a list of tuples, where each tuple represents table name and it's range
         e.g (table_name, table_range)
         """
-        return [ (table.name, table.table_range) for table in self.tables ]
+        return [ (sheet_name, table) for sheet_name, table in self.tables ]

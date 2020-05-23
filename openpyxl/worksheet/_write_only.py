@@ -157,3 +157,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
         raise TypeError('Value must be a list, tuple, range or a generator Supplied value is {0}'.format(
             type(iterable))
                         )
+    @property
+    def tables(self):
+        return [table for sheet_name, table in self.parent.tables if sheet_name==self.title]
+

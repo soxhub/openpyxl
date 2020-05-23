@@ -557,56 +557,19 @@ class Worksheet(_WorkbookChild):
         self._images.append(img)
 
     
-    def _absolute_range(self, non_abs_range):
-        first, second = non_abs_range.split(':')
-        return absolute_coordinate(first) + ":" + absolute_coordinate(second)
-
-
-
     def add_table(self, table):
-        table.table_range = self.title + "!" + self._absolute_range(table.ref)
-        self.parent.tables._append(table)
-        self._tables.append(table)
-
-   
-    def _is_table_in_sheet(self, table):
-        table_sheet_name = table.table_range.split('!')[0]
-        if self.title == table_sheet_name:
-            return True
-        return False
-
-
-    def get_table(self, name=None, table_range=None):
         """
-        Get tables from sheet.
-        Returns a table if it exists in the sheet
+        Add a table to wb.tables with sheet name
         """
-        for table in self.parent.tables:
-            if (table.name==name or table.table_range==table_range) and self._is_table_in_sheet(table):
-                return table
-        return None
-
-
-    def delete_table(self, name=None, table_range=None):
-        """
-        Delete table from sheet.
-        Delets a table if it exists in the sheet
-        Returns True if table is deleted
-        """
-        table = self.get_table(name, table_range)
-        if table:
-            del self.parent.tables[table.name]
-            return True
-        return False
+        self.parent.tables.append(table, self.title)
+    
 
     @property
     def tables(self):
         """
-        Provides Table name and range for all tables in the sheet.
-        Returns list of tuple 
-        e.g. [("Table1", "Sheet1!A1:D10")]
+        Returns list of table in the calling sheet
         """
-        return [(table.name, table.table_range) for table in self.parent.tables if self._is_table_in_sheet(table)]
+        return [ table for sheet_name, table in self.parent.tables.items() if self.title == sheet_name]
 
 
     def add_pivot(self, pivot):

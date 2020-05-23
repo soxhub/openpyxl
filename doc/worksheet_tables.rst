@@ -26,47 +26,34 @@ ranges must always contain strings. If this is not the case then Excel may
 consider the file invalid and remove the table.
 
 
-Get Table by name or range
---------------------------
-Returns a Table if it exists on the sheet
-
->>>ws.get_table('Table1')
-or
->>>ws.get_table(table_range="Sheet1:$A$1:$E$5")
-
 Get tables in sheet
 -------------------
-Returns a list of tuple. e.g. (Table Name, Table Range)
+Returns a list of tables.
 
 >>>ws.tables
->>>[("Table1", "Sheet1:$A$1:$E$5")]
-
-Delete Table by name or range
------------------------------
->>>ws.delete_table("Table1")
-or
->>>ws.delete_table(table_range="Sheet1!$A$1:$E$5")
+>>>[Table1,]
 
 
 Tables in Workbook
 ------------------
+Get Table by name or range
+
+>>>wb.tables.get("Table1")
+or
+>>>wb.tables.get(table_range="Sheet1!A1:D10")
+
 Iterate through all table in workbook
 >>>for table in wb.tables:
 >>>   print(table)
 
-Get name and range of all tables in the workbook (from all sheets)
+Get sheet name and table of all tables in the workbook (from all sheets)
 >>>wb.tables.items()
->>>[("Table1", "Sheet1!$A$1:$E$5"), ... ]
-
-Get table by name or range
->>>wb.get("Table1") # Returns Table1
-or
->>>wb.get(table_range = "Sheet1!$A$1:$E$5") Returns Table1
+>>>[("Sheet1", Table1), ("Sheet1", Table2)]
 
 Delete table by name or range
->>>wb.delete("Table1") # Returns True if deleted
+>>>wb.delete("Table1")
 or
->>>wb.delete(table_range="Sheet1!$A$1:$E$5") 
+>>>wb.delete(table_range="Sheet1!A1:E5") 
 
 Number of tables in workbook
 >>>len(wb.tables)
