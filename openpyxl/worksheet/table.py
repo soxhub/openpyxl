@@ -364,21 +364,12 @@ class TablePartList(Serialisable):
 
 class TableList:
     """
-    Contains a list of tuple with 
-    [ ( Sheet Name, reference to Table Object ), ]
+    Contains a list of excel table in a worksheet.
     """
 
     def __init__(self):        
         self.tables = []
 
-
-    def _duplicate(self, new_table):
-        '''
-        Check for duplicate name or range. Table is considered duplicate if it has same name or same range.
-        '''
-        for table in self.tables:
-            if table.name == new_table.name or table.ref == table.ref:
-                return True
 
     def __getitem__(self, name):
         """Get table by name"""

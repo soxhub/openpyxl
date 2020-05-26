@@ -110,8 +110,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comments = []
         self.merged_cells = MultiCellRange()
-        self._tables = []
-        self.tables = TableList()
+        self._tables = TableList()
         self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
