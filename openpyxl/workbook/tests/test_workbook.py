@@ -51,6 +51,11 @@ class TestWorkbook:
         normal.font.color = "FF0000"
         assert wb2._named_styles['Normal'].font.color.index == 1
 
+    
+    def test_duplicate_defined_name(self, Workbook):
+        wb1 = Workbook()
+        wb1.defined_names.append(DefinedName("dfn1"))
+        assert True == wb1._duplicate_name("dfn1")
 
 def test_get_active_sheet(Workbook):
     wb = Workbook()

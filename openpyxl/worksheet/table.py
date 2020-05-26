@@ -366,9 +366,8 @@ class TableList:
     """
     Contains a list of excel table in a worksheet.
     """
-
-    def __init__(self):        
-        self.tables = []
+    def __init__(self):
+        self.tables = [] 
 
 
     def __getitem__(self, name):
@@ -388,18 +387,14 @@ class TableList:
     def get(self, name=None, table_range=None):
         """
         Get Table by either name or range.
-        'table_range' only relative range allowed 'Sheet1!A1:D10' 
+        'table_range' only relative range allowed 'A1:D10' 
         """
         for table in self.tables:
             if table_range:
                 if '$' in table_range:
                     raise ValueError("Only relative range is allowed. e.g. 'A1:D10'")
             if table.name == name or table.ref == table_range:
-                return table
-    
-    
-    def __repr__(self):
-        return 'TableList object ' + str([tbl.name for tbl in self.tables])
+                return table    
 
 
     def __iter__(self):
@@ -422,7 +417,7 @@ class TableList:
     def delete(self, name=None, table_range=None):
         """
         Delete a table by name or range
-        'table_range' only relative range allowed 'Sheet1!A1:D10'
+        'table_range' only relative range allowed 'A1:D10'
         """
         for idx, table in enumerate(self.tables):
             if table.name == name or table.ref == table_range:

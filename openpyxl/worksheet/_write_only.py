@@ -159,5 +159,5 @@ class WriteOnlyWorksheet(_WorkbookChild):
                         )
     @property
     def tables(self):
-        return [table for sheet_name, table in self.parent.tables if sheet_name==self.title]
+        return self.tables
 

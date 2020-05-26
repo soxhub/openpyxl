@@ -560,11 +560,17 @@ class Worksheet(_WorkbookChild):
     def add_table(self, table):
         """
         Check for duplicate name in definedNames and other worksheet tables
-        before adding table to the tables.
+        before adding table.
         """
-        if not self.parent._duplicate_names(table.name):
-            self.tables.append(table)
+        if self.parent._duplicate_name(table.name):
+            raise ValueError("Table with name {0} already exists".format(table.name))
+        self._tables.append(table)
 
+    
+    @property
+    def tables(self):
+        return self._tables
+    
 
     def add_pivot(self, pivot):
         self._pivots.append(pivot)

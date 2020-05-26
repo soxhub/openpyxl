@@ -34,27 +34,30 @@ Returns a list of tables.
 >>>[Table1,]
 
 
-Tables in Workbook
-------------------
 Get Table by name or range
+--------------------------
 
->>>wb.tables.get("Table1")
+>>>ws.tables.get("Table1")
 or
->>>wb.tables.get(table_range="Sheet1!A1:D10")
+>>>ws.tables.get(table_range="A1:D10")
 
 Iterate through all table in workbook
->>>for table in wb.tables:
+-------------------------------------
+>>>for table in ws.tables:
 >>>   print(table)
 
-Get sheet name and table of all tables in the workbook (from all sheets)
->>>wb.tables.items()
->>>[("Sheet1", Table1), ("Sheet1", Table2)]
+Get table name and range of all tables in the worksheet
+-------------------------------------------------------
+>>>ws.tables.items()
+>>>{"Table1":"A1:D10"}
 
 Delete table by name or range
->>>wb.delete("Table1")
+-----------------------------
+>>>ws.delete("Table1")
 or
->>>wb.delete(table_range="Sheet1!A1:E5") 
+>>>ws.delete(table_range="A1:E5") 
 
 Number of tables in workbook
->>>len(wb.tables)
+----------------------------
+>>>len(ws.tables)
 >>>1

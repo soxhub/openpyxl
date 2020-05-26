@@ -229,7 +229,7 @@ class ExcelWriter(object):
                                          Target="/" + ws.legacy_drawing)
                 ws._rels.append(shape_rel)
 
-            for t in ws.tables:
+            for t in ws._tables:
                 self._tables.append(t)
                 t.id = len(self._tables)
                 t._write(self._archive)

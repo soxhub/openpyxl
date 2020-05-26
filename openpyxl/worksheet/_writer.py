@@ -262,7 +262,7 @@ class WorksheetWriter:
     def write_tables(self):
         tables = TablePartList()
 
-        for table in self.ws.tables:
+        for table in self.ws._tables:
             if not table.tableColumns:
                 table._initialise_columns()
                 if table.headerRowCount:
@@ -355,8 +355,8 @@ class WorksheetWriter:
         self.write_rows()
         self.write_tail()
         self.close()
-
-
+        
+        
     def close(self):
         """
         Close the context manager
