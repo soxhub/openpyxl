@@ -261,7 +261,7 @@ class Table(Serialisable):
                  tableColumns=(),
                  tableStyleInfo=None,
                  extLst=None,
-                 table_range=None
+                 
                 ):
         self.id = id
         self.displayName = displayName
@@ -372,14 +372,13 @@ class TableList:
         self.tables = []
 
 
-    def _duplicate(self, new_table, sheet_name):
+    def _duplicate(self, new_table):
         '''
         Check for duplicate name or range. Table is considered duplicate if it has same name or same range.
         '''
-        for tbl_sheet_name, table in self.tables:
-            if table.name == new_table.name or (tbl_sheet_name == sheet_name and table.ref == new_table.ref):
+        for table in self.tables:
+            if table.name == new_table.name or table.ref == table.ref:
                 return True
-
 
     def __getitem__(self, name):
         """Get table by name"""
@@ -389,12 +388,10 @@ class TableList:
         return table
 
 
-    def append(self, table, sheet_name):
+    def append(self, table):
         if not isinstance(table, Table):
             raise TypeError("""You can only append Table""")
-        if self._duplicate(table, sheet_name):
-            raise ValueError("""Table with the same name or range already exists""")
-        self.tables.append((sheet_name, table))
+        self.tables.append(table)
 
         
     def get(self, name=None, table_range=None):
@@ -402,17 +399,20 @@ class TableList:
         Get Table by either name or range.
         'table_range' only relative range allowed 'Sheet1!A1:D10' 
         """
-        for sheet_name, table in self.tables:
+        for table in self.tables:
             if table_range:
-                if '$' in table_range.split('!')[1]:
-                    raise ValueError("Only relative range is allowed. e.g. 'Sheet1!A1:D10'") 
-            
-            if table.name == name or sheet_name + '!' + table.ref == table_range:
+                if '$' in table_range:
+                    raise ValueError("Only relative range is allowed. e.g. 'A1:D10'")
+            if table.name == name or table.ref == table_range:
                 return table
     
+    
+    def __repr__(self):
+        return 'TableList object ' + str([tbl.name for tbl in self.tables])
+
 
     def __iter__(self):
-        for sheet_name, table in self.tables:
+        for table in self.tables:
             yield table
 
 
@@ -433,15 +433,14 @@ class TableList:
         Delete a table by name or range
         'table_range' only relative range allowed 'Sheet1!A1:D10'
         """
-        for idx, table_item in enumerate(self.tables):
-            sheet_name, table = table_item
-            if table.name == name or sheet_name + '!' + table.ref == table_range:
+        for idx, table in enumerate(self.tables):
+            if table.name == name or table.ref == table_range:
                 del self.tables[idx]
 
 
     def items(self):
         """
-        Returns a list of tuples, where each tuple represents table name and it's range
-        e.g (table_name, table_range)
+        Returns a dictonary of table and it's range.
+        {Table Name:Table range}
         """
-        return [ (sheet_name, table) for sheet_name, table in self.tables ]
+        return {table.name:table.ref for table in self.tables}

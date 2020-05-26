@@ -111,6 +111,7 @@ class Worksheet(_WorkbookChild):
         self._comments = []
         self.merged_cells = MultiCellRange()
         self._tables = []
+        self.tables = TableList()
         self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
@@ -559,17 +560,11 @@ class Worksheet(_WorkbookChild):
     
     def add_table(self, table):
         """
-        Add a table to wb.tables with sheet name
+        Check for duplicate name in definedNames and other worksheet tables
+        before adding table to the tables.
         """
-        self.parent.tables.append(table, self.title)
-    
-
-    @property
-    def tables(self):
-        """
-        Returns list of table in the calling sheet
-        """
-        return [ table for sheet_name, table in self.parent.tables.items() if self.title == sheet_name]
+        if not self.parent._duplicate_names(table.name):
+            self.tables.append(table)
 
 
     def add_pivot(self, pivot):

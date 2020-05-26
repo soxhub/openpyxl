@@ -427,3 +427,10 @@ class Workbook(object):
         """
         if hasattr(self, '_archive'):
             self._archive.close()
+
+  
+    def _duplicate_name(self, name):
+        if name in [table.name for sheet in self._sheets for table in sheet.tables] or 
+        name in [dfn.name for dfn in self.defined_names.definedName:
+                return True
+        return False
