@@ -109,6 +109,12 @@ class CellRange(Serialisable):
             yield [(row, col) for row in range(self.min_row, self.max_row+1)]
 
 
+    @property
+    def cells(self):
+        from itertools import product
+        return product(range(self.min_row, self.max_row+1), range(self.min_col, self.max_col+1))
+
+
     def _check_title(self, other):
         """
         Check whether comparisons between ranges are possible.
@@ -453,10 +459,10 @@ class MultiCellRange(Strict):
         cr = coord
         if isinstance(coord, str):
             cr = CellRange(coord)
+        elif not isinstance(coord, CellRange):
+            raise ValueError("You can only add CellRanges")
         if cr not in self:
-            ranges = self.ranges
-            ranges.append(cr)
-            self.ranges = ranges
+            self.ranges.append(cr)
 
 
     def __iadd__(self, coord):

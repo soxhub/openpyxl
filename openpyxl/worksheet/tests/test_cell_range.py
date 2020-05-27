@@ -270,6 +270,16 @@ class TestCellRange:
         ]
 
 
+    def test_cells(self, CellRange):
+        cr = CellRange("A1:B3")
+        cells = list(cr.cells)
+        assert cells == [
+            (1, 1), (1, 2),
+            (2, 1), (2, 2),
+            (3, 1), (3, 2)
+        ]
+
+
 @pytest.fixture
 def MultiCellRange():
     from ..cell_range import MultiCellRange
