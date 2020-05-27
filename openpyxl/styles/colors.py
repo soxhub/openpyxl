@@ -9,8 +9,9 @@ from openpyxl.descriptors import (
     MinMax,
     Integer,
     Typed,
-    Sequence
+    Sequence,
 )
+from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
@@ -135,18 +136,6 @@ class ColorDescriptor(Typed):
         super(ColorDescriptor, self).__set__(instance, value)
 
 
-class MRUColorList(Serialisable):
-
-    color = Sequence(expected_type=Color, )
-
-    __elements__ = ('color',)
-
-    def __init__(self,
-                 color=None,
-                ):
-        self.color = color
-
-
 class RgbColor(Serialisable):
 
     rgb = HexBinary()
@@ -157,36 +146,21 @@ class RgbColor(Serialisable):
         self.rgb = rgb
 
 
-class IndexedColorList(Serialisable):
-
-    rgbColor = Sequence(expected_type=RgbColor, )
-
-    __elements__ = ('rgbColor',)
-
-    def __init__(self,
-                 rgbColor=(),
-                ):
-        self.rgbColor = rgbColor
-
-
 class ColorList(Serialisable):
 
-    indexedColors = Typed(expected_type=IndexedColorList, allow_none=True)
-    mruColors = Typed(expected_type=MRUColorList, allow_none=True)
+    indexedColors = NestedSequence(expected_type=RgbColor)
+    mruColors = NestedSequence(expected_type=Color)
 
     __elements__ = ('indexedColors', 'mruColors')
 
     def __init__(self,
-                 indexedColors=None,
-                 mruColors=None,
+                 indexedColors=(),
+                 mruColors=(),
                 ):
-        if indexedColors is None:
-            indexedColors = IndexedColorList()
         self.indexedColors = indexedColors
         self.mruColors = mruColors
 
 
     @property
     def index(self):
-        vals = self.indexedColors.rgbColor
-        return [val.rgb for val in vals]
+        return [val.rgb for val in self.indexedColors]
