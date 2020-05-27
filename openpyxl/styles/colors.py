@@ -138,6 +138,8 @@ class ColorDescriptor(Typed):
 
 class RgbColor(Serialisable):
 
+    tagname = "rgbColor"
+
     rgb = HexBinary()
 
     def __init__(self,
@@ -147,6 +149,8 @@ class RgbColor(Serialisable):
 
 
 class ColorList(Serialisable):
+
+    tagname = "colors"
 
     indexedColors = NestedSequence(expected_type=RgbColor)
     mruColors = NestedSequence(expected_type=Color)
