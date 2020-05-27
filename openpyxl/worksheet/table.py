@@ -370,6 +370,13 @@ class TableList:
         self.tables = [] 
 
 
+    def duplicate_name(self, name):
+        for table in self.tables:
+            if table.name.lower()==name.lower():
+                return True
+        return False
+
+
     def __getitem__(self, name):
         """Get table by name"""
         table = self.get(name)
@@ -386,15 +393,11 @@ class TableList:
         
     def get(self, name=None, table_range=None):
         """
-        Get Table by either name or range.
-        'table_range' only relative range allowed 'A1:D10' 
+        Get Table by either name or range. 
         """
         for table in self.tables:
-            if table_range:
-                if '$' in table_range:
-                    raise ValueError("Only relative range is allowed. e.g. 'A1:D10'")
             if table.name == name or table.ref == table_range:
-                return table    
+                return table
 
 
     def __iter__(self):
@@ -416,8 +419,7 @@ class TableList:
 
     def delete(self, name=None, table_range=None):
         """
-        Delete a table by name or range
-        'table_range' only relative range allowed 'A1:D10'
+        Delete a table by name or range.
         """
         for idx, table in enumerate(self.tables):
             if table.name == name or table.ref == table_range:

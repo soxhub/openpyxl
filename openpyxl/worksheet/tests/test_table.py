@@ -239,7 +239,7 @@ class TestTableList:
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:C10")
         tablelist.append(table1)
-        assert True == isinstance(tablelist.get("Table1"), Table)
+        assert table1 == tablelist["Table1"]
 
 
     def test_get_by_range(self, Table, TableList):
@@ -249,11 +249,10 @@ class TestTableList:
         assert True == isinstance(tablelist.get(table_range="A1:D10"),Table)
         
         
-    def test_get_absolute_range_error(self, Table, TableList):
+    def test_append_type_error(self, Table, TableList):
         tablelist = TableList()
-        tablelist.append(Table(displayName="Table1", ref="A1:D10"))
-        with pytest.raises(ValueError):
-            tablelist.get(table_range="$A$1:$D$10")
+        with pytest.raises(TypeError):
+            tablelist.append("Not a Table")
 
 
     def test_get_table_does_not_exists(self, Table, TableList):

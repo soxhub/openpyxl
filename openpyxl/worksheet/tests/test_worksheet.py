@@ -449,14 +449,6 @@ class TestWorksheet:
         tbl_ws.add_table(table1)
         assert len(tbl_ws._tables) == 1
         
-    
-    def test_add_table_duplicate_table_name(self, Worksheet):
-        wb = Workbook()
-        tbl_ws = wb.create_sheet("Sheet1")
-        tbl1 = Table(displayName="Table1", ref="A1:D10")
-        tbl_ws.add_table(tbl1)
-        assert True == tbl_ws.parent._duplicate_name("Table1")
-
 
 def test_freeze_panes_horiz(Worksheet):
     ws = Worksheet(Workbook())

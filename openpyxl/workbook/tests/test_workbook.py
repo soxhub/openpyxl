@@ -4,6 +4,8 @@
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.worksheet.table import TableList
+
 
 from openpyxl.xml.constants import (
     XLSM,
@@ -20,6 +22,13 @@ def Workbook():
     """Workbook Class"""
     from openpyxl import Workbook
     return Workbook
+
+
+@pytest.fixture
+def Table():
+    """Table Class"""
+    from openpyxl.worksheet.table import Table
+    return Table
 
 
 class TestWorkbook:
@@ -52,10 +61,18 @@ class TestWorkbook:
         assert wb2._named_styles['Normal'].font.color.index == 1
 
     
+    def test_duplicate_table_name(self, Workbook, Table):
+        wb = Workbook()
+        ws = wb.create_sheet()
+        ws.add_table(Table(displayName="Table1", ref="A1:D10"))
+        assert True == wb._duplicate_name("Table1")
+        assert True == wb._duplicate_name("TABLE1")
+
     def test_duplicate_defined_name(self, Workbook):
         wb1 = Workbook()
         wb1.defined_names.append(DefinedName("dfn1"))
         assert True == wb1._duplicate_name("dfn1")
+        assert True == wb1._duplicate_name("DFN1")
 
 def test_get_active_sheet(Workbook):
     wb = Workbook()

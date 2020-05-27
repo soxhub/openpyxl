@@ -432,10 +432,12 @@ class Workbook(object):
     def _duplicate_name(self, name):
         """
         Check for duplicate name in defined name list and table list of each worksheet.
+        Names are not case sensitive.
         """
-
-        if name in [table.name for sheet in self._sheets for table in sheet.tables]:
-            return True
-        if name in [dfn.name for dfn in self.defined_names.definedName]:
+        for sheet in self._sheets:
+            if sheet._tables.duplicate_name(name):
+                return True
+        
+        if name.lower() in [dfn.name.lower() for dfn in self.defined_names.definedName]:
                 return True
         return False
