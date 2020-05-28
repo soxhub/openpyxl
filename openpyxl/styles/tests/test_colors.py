@@ -1,6 +1,9 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.styles.colors import Color
+from openpyxl.xml.functions import fromstring, tostring
+from openpyxl.tests.helper import compare_xml
+
 import pytest
 
 
@@ -81,3 +84,61 @@ def test_color_descriptor():
     style = DummyStyle()
     style.value = "efefef"
     assert dict(style.value) == {'rgb': '00efefef'}
+
+
+@pytest.fixture
+def ColorList():
+    from ..colors import ColorList
+    return ColorList
+
+
+class TestColorList:
+
+
+    def test_ctor_indexed(self, ColorList):
+        colors = ColorList(indexedColors=["FF0000", "00FF00", "0000FF"])
+        assert colors.index == ["00FF0000", "0000FF00", "000000FF"]
+
+
+    def test_write(self, ColorList):
+        colors = ColorList(indexedColors=["FF0000", "00FF00", "0000FF"])
+        xml = tostring(colors.to_tree())
+        expected = """
+        <colors>
+          <indexedColors>
+            <rgbColor rgb="00FF0000"></rgbColor>
+            <rgbColor rgb="0000FF00"></rgbColor>
+            <rgbColor rgb="000000FF"></rgbColor>
+          </indexedColors>
+        </colors>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ColorList):
+        xml = """
+        <colors>
+          <indexedColors>
+            <rgbColor rgb="00FF0000"></rgbColor>
+            <rgbColor rgb="0000FF00"></rgbColor>
+            <rgbColor rgb="000000FF"></rgbColor>
+          </indexedColors>
+        </colors>
+        """
+        tree = fromstring(xml)
+        colors = ColorList.from_tree(tree)
+        assert colors == ColorList(indexedColors=["00FF0000", "0000FF00", "000000FF"])
+
+
+    def test_empty(self, ColorList):
+        colors = ColorList()
+        assert bool(colors) is False
+
+
+    def test_no_colors(self, ColorList):
+        colors = ColorList()
+        xml = tostring(colors.to_tree())
+        expected = """<colors/>"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff

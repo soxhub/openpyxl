@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 # Simplified implementation of headers and footers: let worksheets have separate items
 
@@ -113,7 +113,6 @@ class _HeaderFooterPart(Strict):
     def __bool__(self):
         return bool(self.text)
 
-    __nonzero__ = __bool__
 
 
     @classmethod
@@ -189,7 +188,6 @@ class HeaderFooterItem(Strict):
     def __bool__(self):
         return any([self.left, self.center, self.right])
 
-    __nonzero__ = __bool__
 
 
     def to_tree(self, tagname):
@@ -270,4 +268,3 @@ class HeaderFooter(Serialisable):
         parts = [getattr(self, attr) for attr in self.__attrs__ + self.__elements__]
         return any(parts)
 
-    __nonzero__ = __bool__

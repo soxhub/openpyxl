@@ -6,6 +6,14 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
+* `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
+* `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
+
+
 3.0.3 (2020-01-20)
 ==================
 
@@ -57,16 +65,16 @@ Pull Requests
 3.0.0 (2019-09-25)
 ==================
 
-Python 3 only release
----------------------
+Python 3.6+ only release
+------------------------
 
 
 2.6.4 (2019-09-25)
 ==================
 
 
-Final release for Python 2.7
-––––––––––––––––––––––––––––
+Final release for Python 2.7 and 3.5
+------------------------------------
 
 Bugfixes
 --------

@@ -1,4 +1,4 @@
-# copyright openpyxl 2010-2019
+# Copyright (c) openpyxl 2010-2020
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (

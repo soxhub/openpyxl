@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 
 """Read an xlsx file into Python"""
@@ -217,6 +217,7 @@ class ExcelReader:
 
             if self.read_only:
                 ws = ReadOnlyWorksheet(self.wb, sheet.name, rel.target, self.shared_strings)
+                ws.sheet_state = sheet.state
                 self.wb._sheets.append(ws)
                 continue
             else:

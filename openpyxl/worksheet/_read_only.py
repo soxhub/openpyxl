@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """ Read worksheets on-demand
 """
@@ -34,6 +34,7 @@ class ReadOnlyWorksheet(object):
     def __init__(self, parent_workbook, title, worksheet_path, shared_strings):
         self.parent = parent_workbook
         self.title = title
+        self.sheet_state = 'visible'
         self._current_row = None
         self._worksheet_path = worksheet_path
         self._shared_strings = shared_strings

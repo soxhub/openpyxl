@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from warnings import warn
 
@@ -223,6 +223,7 @@ def write_stylesheet(wb):
     stylesheet.fills = wb._fills
     stylesheet.borders = wb._borders
     stylesheet.dxfs = wb._differential_styles.styles
+    stylesheet.colors = ColorList(indexedColors=wb._colors)
 
     from .numbers import NumberFormat
     fmts = []
