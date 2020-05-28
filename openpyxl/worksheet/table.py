@@ -358,4 +358,3 @@ class TablePartList(Serialisable):
     def __bool__(self):
         return bool(self.tablePart)
 
-    __nonzero__ = __bool__

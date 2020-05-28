@@ -83,7 +83,6 @@ class PrintPageSetup(Serialisable):
         return bool(dict(self))
 
 
-    __nonzero__ = __bool__
 
 
     @property
@@ -148,7 +147,6 @@ class PrintOptions(Serialisable):
         return bool(dict(self))
 
 
-    __nonzero__ = __bool__
 
 
 class PageMargins(Serialisable):

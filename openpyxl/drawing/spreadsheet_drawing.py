@@ -270,7 +270,6 @@ class SpreadsheetDrawing(Serialisable):
     def __bool__(self):
         return bool(self.charts) or bool(self.images)
 
-    __nonzero__ = __bool__
 
 
     def _write(self):

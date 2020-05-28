@@ -103,4 +103,3 @@ class ScenarioList(Serialisable):
     def __bool__(self):
         return bool(self.scenario)
 
-    __nonzero__ = __bool__

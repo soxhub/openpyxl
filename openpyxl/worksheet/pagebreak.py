@@ -54,7 +54,6 @@ class RowBreak(Serialisable):
     def __bool__(self):
         return len(self.brk) > 0
 
-    __nonzero__ = __bool__
 
     def __len__(self):
         return len(self.brk)

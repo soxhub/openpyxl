@@ -88,7 +88,6 @@ class DifferentialStyleList(Serialisable):
     def __bool__(self):
         return bool(self.styles)
 
-    __nonzero__ = __bool__
 
 
     def __getitem__(self, idx):

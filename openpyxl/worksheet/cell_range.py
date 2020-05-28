@@ -483,7 +483,6 @@ class MultiCellRange(Strict):
     def __bool__(self):
         return bool(self.ranges)
 
-    __nonzero__ = __bool__
 
 
     def remove(self, coord):
