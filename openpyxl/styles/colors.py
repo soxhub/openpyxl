@@ -29,8 +29,9 @@ COLOR_INDEX = (
     '00FF99CC', '00CC99FF', '00FFCC99', '003366FF', '0033CCCC', #45-49
     '0099CC00', '00FFCC00', '00FF9900', '00FF6600', '00666699', #50-54
     '00969696', '00003366', '00339966', '00003300', '00333300', #55-59
-    '00993300', '00993366', '00333399', '00333333', 'System Foreground', 'System Background' #60-64
+    '00993300', '00993366', '00333399', '00333333',  #60-63
 )
+# indices 64 and 65 are reserved for the system foreground and background colours respectively
 
 # Will remove these definitions in a future release
 BLACK = COLOR_INDEX[0]
@@ -141,6 +142,7 @@ class RgbColor(Serialisable):
     tagname = "rgbColor"
 
     rgb = HexBinary()
+    rgb = String()
 
     def __init__(self,
                  rgb=None,
@@ -163,6 +165,10 @@ class ColorList(Serialisable):
                 ):
         self.indexedColors = indexedColors
         self.mruColors = mruColors
+
+
+    def __bool__(self):
+        return bool(self.indexedColors) or bool(self.mruColors)
 
 
     @property

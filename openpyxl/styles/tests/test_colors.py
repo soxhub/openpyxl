@@ -129,3 +129,16 @@ class TestColorList:
         tree = fromstring(xml)
         colors = ColorList.from_tree(tree)
         assert colors == ColorList(indexedColors=["FF0000", "00FF00", "0000FF"])
+
+
+    def test_empty(self, ColorList):
+        colors = ColorList()
+        assert bool(colors) is False
+
+
+    def test_no_colors(self, ColorList):
+        colors = ColorList()
+        xml = tostring(colors.to_tree())
+        expected = """<colors/>"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
