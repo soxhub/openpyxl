@@ -13,11 +13,10 @@ from . import (
     MinMax,
     Integer,
     String,
-    Typed,
     Sequence,
 )
 from .serialisable import Serialisable
-from openpyxl.utils.cell import RANGE_EXPR
+
 
 class HexBinary(MatchPattern):
 
