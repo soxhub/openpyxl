@@ -4,7 +4,7 @@
 
 
 # Python stdlib imports
-from itertools import islice, chain
+from itertools import chain
 from operator import itemgetter
 from inspect import isgenerator
 
@@ -579,10 +579,9 @@ class Worksheet(_WorkbookChild):
         Borders are then applied
         """
         mcr = MergedCellRange(self, cr.coord)
-        #cells = chain.from_iterable(mcr.rows)
+
         cells = mcr.cells
         next(cells) # skip first cell
-
         for row, col in cells:
             self._cells[row, col] = MergedCell(self, row, col)
         mcr.format()
@@ -605,9 +604,8 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        cells = chain.from_iterable(cr.rows)
+        cells = cr.cells
         next(cells) # skip first cell
-
         for row, col in cells:
             del self._cells[(row, col)]
 
