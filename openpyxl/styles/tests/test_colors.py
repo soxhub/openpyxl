@@ -97,7 +97,7 @@ class TestColorList:
 
     def test_ctor_indexed(self, ColorList):
         colors = ColorList(indexedColors=["FF0000", "00FF00", "0000FF"])
-        assert colors.index == ["FF0000", "00FF00", "0000FF"]
+        assert colors.index == ["00FF0000", "0000FF00", "000000FF"]
 
 
     def test_write(self, ColorList):
@@ -106,9 +106,9 @@ class TestColorList:
         expected = """
         <colors>
           <indexedColors>
-            <rgbColor rgb="FF0000"></rgbColor>
-            <rgbColor rgb="00FF00"></rgbColor>
-            <rgbColor rgb="0000FF"></rgbColor>
+            <rgbColor rgb="00FF0000"></rgbColor>
+            <rgbColor rgb="0000FF00"></rgbColor>
+            <rgbColor rgb="000000FF"></rgbColor>
           </indexedColors>
         </colors>
         """
@@ -120,15 +120,15 @@ class TestColorList:
         xml = """
         <colors>
           <indexedColors>
-            <rgbColor rgb="FF0000"></rgbColor>
-            <rgbColor rgb="00FF00"></rgbColor>
-            <rgbColor rgb="0000FF"></rgbColor>
+            <rgbColor rgb="00FF0000"></rgbColor>
+            <rgbColor rgb="0000FF00"></rgbColor>
+            <rgbColor rgb="000000FF"></rgbColor>
           </indexedColors>
         </colors>
         """
         tree = fromstring(xml)
         colors = ColorList.from_tree(tree)
-        assert colors == ColorList(indexedColors=["FF0000", "00FF00", "0000FF"])
+        assert colors == ColorList(indexedColors=["00FF0000", "0000FF00", "000000FF"])
 
 
     def test_empty(self, ColorList):

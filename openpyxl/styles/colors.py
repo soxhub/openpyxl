@@ -3,16 +3,13 @@
 import re
 from openpyxl.compat import safe_string
 from openpyxl.descriptors import (
-    Descriptor,
     String,
     Bool,
     MinMax,
     Integer,
     Typed,
-    Sequence,
 )
 from openpyxl.descriptors.sequence import NestedSequence
-from openpyxl.descriptors.excel import HexBinary, ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
 # Default Color Index as per 18.8.27 of ECMA Part 4
@@ -141,8 +138,7 @@ class RgbColor(Serialisable):
 
     tagname = "rgbColor"
 
-    rgb = HexBinary()
-    rgb = String()
+    rgb = RGB()
 
     def __init__(self,
                  rgb=None,
