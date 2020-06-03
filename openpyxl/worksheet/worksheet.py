@@ -572,13 +572,14 @@ class Worksheet(_WorkbookChild):
         self._clean_merge_range(cr)
 
 
-    def _clean_merge_range(self, cr):
+    def _clean_merge_range(self, mcr):
         """
         Remove all but the top left-cell from a range of merged cells
         and recreate the lost border information.
         Borders are then applied
         """
-        mcr = MergedCellRange(self, cr.coord)
+        if not isinstance(mcr, MergedCellRange):
+            mcr = MergedCellRange(self, mcr.coord)
 
         cells = mcr.cells
         next(cells) # skip first cell

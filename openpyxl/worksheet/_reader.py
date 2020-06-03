@@ -361,11 +361,17 @@ class WorksheetReader(object):
 
 
     def bind_merged_cells(self):
+        from openpyxl.worksheet.cell_range import MultiCellRange
+        from openpyxl.worksheet.merge import MergedCellRange
         if not self.parser.merged_cells:
             return
 
+        ranges = []
         for cr in self.parser.merged_cells.mergeCell:
-            self.ws.merge_cells(cr.ref)
+            mcr = MergedCellRange(self.ws, cr.ref)
+            self.ws._clean_merge_range(mcr)
+            ranges.append(mcr)
+        self.ws.merged_cells = MultiCellRange(ranges)
 
 
     def bind_hyperlinks(self):
