@@ -8,6 +8,8 @@ Bugfixes
 * `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
 * `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 * `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
+* `#1473 <https://bitbucket.org/openpyxl/openpyxl/issues/1473>`_ Reading many thousand of merged cells is really slow.
+
 
 
 3.0.3 (2020-01-20)
