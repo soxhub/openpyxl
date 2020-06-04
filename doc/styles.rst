@@ -114,11 +114,14 @@ Styles can also be copied
 14.0
 
 
-Basic Font Colors
------------------
-Colors are usually RGB or aRGB hexvalues.
+Colours
+-------
+Colours for fonts, backgrounds, borders, etc. can be set in three ways: indexed, aRGB or theme. Indexed colours are the legacy implementation and the colours themselves depend upon the index provided with the workbook or with the application default. Theme colours are useful for complementary shades of colours but also depend upon the theme being present in the workbook. It is, therefore, advisable to use aRGB colours.
 
 .. :: doctest
+
+aRGB colours
+++++++++++++
 
 >>> from openpyxl.styles import Font
 >>> font = Font(color="FF0000")
@@ -130,12 +133,21 @@ The alpha value refers to the transparency of the colour with the default being 
 >>> font.color.rgb
 '0000FF00'
 
-There is also support for legacy indexed colors as well as themes and tints
+There is also support for legacy indexed colours as well as themes and tints
 
 >>> from openpyxl.styles.colors import Color
 >>> c = Color(indexed=32)
 >>> c = Color(theme=6, tint=0.5)
 
+Indexed Colours
++++++++++++++++
+
+The specification defines the following indexed colours
+
+.. raw:: html
+   :file: colours.html
+
+The indices 64 and 66 cannot be set and are reserved for the system foreground and background colours respectively.
 
 Applying Styles
 ---------------
