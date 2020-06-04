@@ -41,8 +41,8 @@ Get Table by name or range
 or
 >>>ws.tables.get(table_range="A1:D10")
 
-Iterate through all table in workbook
--------------------------------------
+Iterate through all table in worksheet
+--------------------------------------
 >>>for table in ws.tables:
 >>>   print(table)
 
@@ -57,7 +57,7 @@ Delete table by name or range
 or
 >>>ws.delete(table_range="A1:E5") 
 
-Number of tables in workbook
-----------------------------
+Number of tables in worksheet
+-----------------------------
 >>>len(ws.tables)
 >>>1
