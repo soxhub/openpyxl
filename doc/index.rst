@@ -1,8 +1,6 @@
-:mod:`openpyxl` - A Python library to read/write Excel 2010 xlsx/xlsm files
+openpyxl - A Python library to read/write Excel 2010 xlsx/xlsm files
 ===========================================================================
 
-.. module:: openpyxl
-.. moduleauthor:: Eric Gazoni, Charlie Clark
 
 :Author: Eric Gazoni, Charlie Clark
 :Source code: http://bitbucket.org/openpyxl/openpyxl/src

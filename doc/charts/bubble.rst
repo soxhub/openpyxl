@@ -9,5 +9,4 @@ Charts can include multiple series.
 
 This will produce a bubble chart with two series and should look something like this::
 
-.. image:: bubble.png
-   :alt: "Sample bubble chart"
+.. image:: bubble.png  :alt: "Sample bubble chart"
