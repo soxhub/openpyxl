@@ -123,17 +123,19 @@ Colours for fonts, backgrounds, borders, etc. can be set in three ways: indexed,
 aRGB colours
 ++++++++++++
 
+RGB colours are set using hexadecimal values for red, green and blue.
+
 >>> from openpyxl.styles import Font
 >>> font = Font(color="FF0000")
 
-The alpha value refers to the transparency of the colour with the default being 00 – not transparent.
+The alpha value refers in theory to the transparency of the colour but this is not relevant for cell styles. The default of 00 will prepended to any simple RGB value:
 
 >>> from openpyxl.styles import Font
 >>> font = Font(color="00FF00")
 >>> font.color.rgb
 '0000FF00'
 
-There is also support for legacy indexed colours as well as themes and tints
+There is also support for legacy indexed colours as well as themes and tints.
 
 >>> from openpyxl.styles.colors import Color
 >>> c = Color(indexed=32)
@@ -141,8 +143,6 @@ There is also support for legacy indexed colours as well as themes and tints
 
 Indexed Colours
 +++++++++++++++
-
-The specification defines the following indexed colours
 
 .. raw:: html
    :file: colours.html
