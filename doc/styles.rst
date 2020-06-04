@@ -147,7 +147,7 @@ Indexed Colours
 .. raw:: html
    :file: colours.html
 
-The indices 64 and 66 cannot be set and are reserved for the system foreground and background colours respectively.
+The indices 64 and 65 cannot be set and are reserved for the system foreground and background colours respectively.
 
 Applying Styles
 ---------------
