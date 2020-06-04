@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -136,7 +136,7 @@ class _BaseAxis(Serialisable):
         self.txPr = txPr
         self.crossAx = crossAx
         self.crosses = crosses
-        self.crossesAt = None
+        self.crossesAt = crossesAt
 
 
 class DisplayUnitsLabel(Serialisable):

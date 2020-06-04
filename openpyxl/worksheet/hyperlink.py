@@ -48,7 +48,6 @@ class HyperlinkList(Serialisable):
     def __bool__(self):
         return bool(self.hyperlink)
 
-    __nonzero__ = __bool__
 
 
     def __len__(self):

@@ -1,17 +1,15 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 import re
 from openpyxl.compat import safe_string
 from openpyxl.descriptors import (
-    Descriptor,
     String,
     Bool,
     MinMax,
     Integer,
     Typed,
-    Sequence
 )
-from openpyxl.descriptors.excel import HexBinary, ExtensionList
+from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.descriptors.serialisable import Serialisable
 
 # Default Color Index as per 18.8.27 of ECMA Part 4
@@ -28,20 +26,21 @@ COLOR_INDEX = (
     '00FF99CC', '00CC99FF', '00FFCC99', '003366FF', '0033CCCC', #45-49
     '0099CC00', '00FFCC00', '00FF9900', '00FF6600', '00666699', #50-54
     '00969696', '00003366', '00339966', '00003300', '00333300', #55-59
-    '00993300', '00993366', '00333399', '00333333', 'System Foreground', 'System Background' #60-64
+    '00993300', '00993366', '00333399', '00333333',  #60-63
 )
+# indices 64 and 65 are reserved for the system foreground and background colours respectively
 
 # Will remove these definitions in a future release
 BLACK = COLOR_INDEX[0]
 WHITE = COLOR_INDEX[1]
-RED = COLOR_INDEX[2]
-DARKRED = COLOR_INDEX[8]
+#RED = COLOR_INDEX[2]
+#DARKRED = COLOR_INDEX[8]
 BLUE = COLOR_INDEX[4]
-DARKBLUE = COLOR_INDEX[12]
-GREEN = COLOR_INDEX[3]
-DARKGREEN = COLOR_INDEX[9]
-YELLOW = COLOR_INDEX[5]
-DARKYELLOW = COLOR_INDEX[19]
+#DARKBLUE = COLOR_INDEX[12]
+#GREEN = COLOR_INDEX[3]
+#DARKGREEN = COLOR_INDEX[9]
+#YELLOW = COLOR_INDEX[5]
+#DARKYELLOW = COLOR_INDEX[19]
 
 
 aRGB_REGEX = re.compile("^([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6})$")
@@ -135,21 +134,11 @@ class ColorDescriptor(Typed):
         super(ColorDescriptor, self).__set__(instance, value)
 
 
-class MRUColorList(Serialisable):
-
-    color = Sequence(expected_type=Color, )
-
-    __elements__ = ('color',)
-
-    def __init__(self,
-                 color=None,
-                ):
-        self.color = color
-
-
 class RgbColor(Serialisable):
 
-    rgb = HexBinary()
+    tagname = "rgbColor"
+
+    rgb = RGB()
 
     def __init__(self,
                  rgb=None,
@@ -157,36 +146,27 @@ class RgbColor(Serialisable):
         self.rgb = rgb
 
 
-class IndexedColorList(Serialisable):
-
-    rgbColor = Sequence(expected_type=RgbColor, )
-
-    __elements__ = ('rgbColor',)
-
-    def __init__(self,
-                 rgbColor=(),
-                ):
-        self.rgbColor = rgbColor
-
-
 class ColorList(Serialisable):
 
-    indexedColors = Typed(expected_type=IndexedColorList, allow_none=True)
-    mruColors = Typed(expected_type=MRUColorList, allow_none=True)
+    tagname = "colors"
+
+    indexedColors = NestedSequence(expected_type=RgbColor)
+    mruColors = NestedSequence(expected_type=Color)
 
     __elements__ = ('indexedColors', 'mruColors')
 
     def __init__(self,
-                 indexedColors=None,
-                 mruColors=None,
+                 indexedColors=(),
+                 mruColors=(),
                 ):
-        if indexedColors is None:
-            indexedColors = IndexedColorList()
         self.indexedColors = indexedColors
         self.mruColors = mruColors
 
 
+    def __bool__(self):
+        return bool(self.indexedColors) or bool(self.mruColors)
+
+
     @property
     def index(self):
-        vals = self.indexedColors.rgbColor
-        return [val.rgb for val in vals]
+        return [val.rgb for val in self.indexedColors]

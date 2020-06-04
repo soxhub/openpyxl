@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from copy import copy
 
@@ -107,6 +107,12 @@ class CellRange(Serialisable):
         """
         for col in range(self.min_col, self.max_col+1):
             yield [(row, col) for row in range(self.min_row, self.max_row+1)]
+
+
+    @property
+    def cells(self):
+        from itertools import product
+        return product(range(self.min_row, self.max_row+1), range(self.min_col, self.max_col+1))
 
 
     def _check_title(self, other):
@@ -249,7 +255,7 @@ class CellRange(Serialisable):
         """
         Check whether the range contains a particular cell coordinate
         """
-        cr = self.__class__(coord)
+        cr = CellRange(coord)
         if cr.title is None:
             cr.title = self.title
         return self.issuperset(cr)
@@ -426,8 +432,10 @@ class MultiCellRange(Strict):
 
 
     def __contains__(self, coord):
+        if isinstance(coord, str):
+            coord = CellRange(coord)
         for r in self.ranges:
-            if coord in r:
+            if coord <= r:
                 return True
         return False
 
@@ -448,16 +456,13 @@ class MultiCellRange(Strict):
         """
         Add a cell coordinate or CellRange
         """
-        cr = None
-        if isinstance(coord, CellRange):
-            cr = coord
-            coord = cr.coord
-        if coord not in self:
-            if cr is None:
-                cr = CellRange(coord)
-            ranges = self.ranges
-            ranges.append(cr)
-            self.ranges = ranges
+        cr = coord
+        if isinstance(coord, str):
+            cr = CellRange(coord)
+        elif not isinstance(coord, CellRange):
+            raise ValueError("You can only add CellRanges")
+        if cr not in self:
+            self.ranges.append(cr)
 
 
     def __iadd__(self, coord):
@@ -478,7 +483,6 @@ class MultiCellRange(Strict):
     def __bool__(self):
         return bool(self.ranges)
 
-    __nonzero__ = __bool__
 
 
     def remove(self, coord):

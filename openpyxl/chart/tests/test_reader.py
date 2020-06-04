@@ -1,6 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
-
-from zipfile import ZipFile
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.xml.functions import fromstring
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -54,7 +54,6 @@ class RowBreak(Serialisable):
     def __bool__(self):
         return len(self.brk) > 0
 
-    __nonzero__ = __bool__
 
     def __len__(self):
         return len(self.brk)

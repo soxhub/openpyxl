@@ -1,10 +1,10 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
 
 # Python stdlib imports
-from itertools import islice, product, chain
+from itertools import chain
 from operator import itemgetter
 from inspect import isgenerator
 
@@ -585,16 +585,17 @@ class Worksheet(_WorkbookChild):
         self._clean_merge_range(cr)
 
 
-    def _clean_merge_range(self, cr):
+    def _clean_merge_range(self, mcr):
         """
         Remove all but the top left-cell from a range of merged cells
         and recreate the lost border information.
         Borders are then applied
         """
-        mcr = MergedCellRange(self, cr.coord)
-        cells = chain.from_iterable(mcr.rows)
-        next(cells) # skip first cell
+        if not isinstance(mcr, MergedCellRange):
+            mcr = MergedCellRange(self, mcr.coord)
 
+        cells = mcr.cells
+        next(cells) # skip first cell
         for row, col in cells:
             self._cells[row, col] = MergedCell(self, row, col)
         mcr.format()
@@ -617,9 +618,8 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        cells = chain.from_iterable(cr.rows)
+        cells = cr.cells
         next(cells) # skip first cell
-
         for row, col in cells:
             del self._cells[(row, col)]
 

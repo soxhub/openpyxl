@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 import pytest
 from io import BytesIO
@@ -114,7 +114,7 @@ class TestManifest:
 
         # reset to our correct type, so it won't interfere with unrelated tests
         mimetypes.add_type('application/xml', '.xml')
-        
+
         xml = tostring(manifest.to_tree())
         expected = """
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">

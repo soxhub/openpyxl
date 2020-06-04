@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 import pytest
 
 from copy import copy
@@ -267,6 +267,16 @@ class TestCellRange:
         assert list(cr.cols) == [
             [(1, 1), (2, 1), (3, 1)],
             [(1, 2), (2, 2), (3, 2)],
+        ]
+
+
+    def test_cells(self, CellRange):
+        cr = CellRange("A1:B3")
+        cells = list(cr.cells)
+        assert cells == [
+            (1, 1), (1, 2),
+            (2, 1), (2, 2),
+            (3, 1), (3, 2)
         ]
 
 

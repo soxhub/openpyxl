@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 import pytest
 
 from zipfile import ZipFile
@@ -259,6 +259,7 @@ def test_no_styles():
 
 def test_write_worksheet(Stylesheet):
     wb = Workbook()
+    wb._colors = ('00000000', '00FFFFFF',)
     from ..stylesheet import write_stylesheet
     node = write_stylesheet(wb)
     xml = tostring(node)
@@ -301,6 +302,12 @@ def test_write_worksheet(Stylesheet):
         <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"></cellStyle>
       </cellStyles>
     <tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>
+    <colors>
+      <indexedColors>
+        <rgbColor rgb="00000000"></rgbColor>
+        <rgbColor rgb="00FFFFFF"></rgbColor>
+      </indexedColors>
+    </colors>
     </styleSheet>
     """
     diff = compare_xml(xml, expected)
@@ -313,6 +320,7 @@ def test_simple_styles(datadir):
     from .. import numbers
     from ..stylesheet import write_stylesheet
     wb = Workbook()
+    wb._colors = ()
     ws = wb.active
     now = datetime.date.today()
     for idx, v in enumerate(['12.34%', now, 'This is a test', '31.31415', None], 1):

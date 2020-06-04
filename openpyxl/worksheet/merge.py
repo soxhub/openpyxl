@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -106,6 +106,8 @@ class MergedCellRange(CellRange):
 
         for name in names:
             side = getattr(self.start_cell.border, name)
+            if side.style is None:
+                continue # don't need to do anything if there is no border style
             border = Border(**{name:side})
             for coord in getattr(self, name):
                 cell = self.ws._cells.get(coord)

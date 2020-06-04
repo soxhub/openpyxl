@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors import (
     Bool,
@@ -118,4 +118,3 @@ class SheetProtection(Serialisable, _Protected):
     def  __bool__(self):
         return self.sheet
 
-    __nonzero__ = __bool__
