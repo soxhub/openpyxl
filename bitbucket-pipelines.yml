@@ -13,7 +13,7 @@ pipelines:
       caches:
         - pip
       script:
-        - /tools/clean-launch.sh tox --skip-missing-interpreters -- -qrf
+        - /tools/clean-launch.sh tox --skip-missing-interpreters -p auto -- -qrf
         - export GIT_ID=$(hg tip --template '{node}\n')
         - export GIT_AUTHOR_NAME=$(hg tip --template '{author|person}\n')
         - export GIT_AUTHOR_EMAIL=$(hg tip --template '{author|email}\n')
