@@ -82,7 +82,7 @@ style for lots of cells when only one changes.
 >>>
 >>> a1 = ws['A1']
 >>> d4 = ws['D4']
->>> ft = Font(color=colors.RED)
+>>> ft = Font(color="FF0000")
 >>> a1.font = ft
 >>> d4.font = ft
 >>>
@@ -90,7 +90,7 @@ style for lots of cells when only one changes.
 >>>
 >>> # If you want to change the color of a Font, you need to reassign it::
 >>>
->>> a1.font = Font(color=colors.RED, italic=True) # the change only affects A1
+>>> a1.font = Font(color="FF0000", italic=True) # the change only affects A1
 
 
 Copying styles
@@ -116,14 +116,19 @@ Styles can also be copied
 
 Basic Font Colors
 -----------------
-Colors are usually RGB or aRGB hexvalues. The `colors` module contains some handy constants
+Colors are usually RGB or aRGB hexvalues.
 
 .. :: doctest
 
 >>> from openpyxl.styles import Font
->>> from openpyxl.styles.colors import RED
->>> font = Font(color=RED)
->>> font = Font(color="FFBB00")
+>>> font = Font(color="FF0000")
+
+The alpha value refers to the transparency of the colour with the default being 00 – not transparent.
+
+>>> from openpyxl.styles import Font
+>>> font = Font(color="00FF00")
+>>> font.color.rgb
+'0000FF00'
 
 There is also support for legacy indexed colors as well as themes and tints
 
