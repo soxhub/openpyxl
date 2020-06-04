@@ -56,7 +56,7 @@ Bugfixes
 Pull Requests
 -------------
 
-* `PR344 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ Fix for #1250
+* `PR354 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ Fix for #1250
 * `PR352 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ TableStyleElement is a sequence
 
 
