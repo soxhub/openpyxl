@@ -228,8 +228,7 @@ class Table(Serialisable):
     sortState = Typed(expected_type=SortState, allow_none=True)
     tableColumns = NestedSequence(expected_type=TableColumn, count=True)
     tableStyleInfo = Typed(expected_type=TableStyleInfo, allow_none=True)
-    extLst = Typed(expected_type=ExtensionList, allow_none=True)
-    
+    extLst = Typed(expected_type=ExtensionList, allow_none=True) 
     __elements__ = ('autoFilter', 'sortState', 'tableColumns',
                     'tableStyleInfo')
 
@@ -260,8 +259,7 @@ class Table(Serialisable):
                  sortState=None,
                  tableColumns=(),
                  tableStyleInfo=None,
-                 extLst=None,
-                 
+                 extLst=None,         
                 ):
         self.id = id
         self.displayName = displayName
@@ -358,7 +356,7 @@ class TablePartList(Serialisable):
 
     def __bool__(self):
         return bool(self.tablePart)
-
+    
     __nonzero__ = __bool__
 
 

@@ -71,7 +71,6 @@ class Workbook(object):
         self.shared_strings = IndexedList()
         self.tables = TableList()
         self._setup_styles()
-
         self.loaded_theme = None
         self.vba_archive = None
         self.is_template = False
