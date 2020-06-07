@@ -8,7 +8,6 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 from openpyxl.worksheet.copier import WorksheetCopy
-from openpyxl.worksheet.table import TableList
 
 from openpyxl.utils import quote_sheetname
 from openpyxl.utils.indexed_list import IndexedList
@@ -69,7 +68,6 @@ class Workbook(object):
         self.security = DocumentSecurity()
         self.__write_only = write_only
         self.shared_strings = IndexedList()
-        self.tables = TableList()
         self._setup_styles()
         self.loaded_theme = None
         self.vba_archive = None
@@ -86,7 +84,6 @@ class Workbook(object):
         self.calculation = CalcProperties()
         self.views = [BookView()]
 
-        self._tables = {}
 
 
     def _setup_styles(self):
@@ -420,20 +417,6 @@ class Workbook(object):
         cp = WorksheetCopy(source_worksheet=from_worksheet, target_worksheet=to_worksheet)
         cp.copy_worksheet()
         return to_worksheet
-
-    def get_table(self, name):
-        '''
-        Returns  table with given name. Tables names are unique within workbook.
-        :param name: name of the table or '' (for a dicationary of all tables)
-        :return: if name exists return Table object, if '' returns dictionary { tablename: TableObject }
-                 if name not found returns None
-        '''
-        if name == '':
-            return self._tables
-        try:
-            return self._tables[name]
-        except Exception as e:
-            return None
 
 
     def close(self):

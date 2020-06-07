@@ -565,7 +565,6 @@ class Worksheet(_WorkbookChild):
         if self.parent._duplicate_name(table.name):
             raise ValueError("Table with name {0} already exists".format(table.name))
         self._tables.append(table)
-        self.parent._tables[table.name] = table
 
     
     @property
