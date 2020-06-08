@@ -160,4 +160,3 @@ class WriteOnlyWorksheet(_WorkbookChild):
     @property
     def tables(self):
         return self.tables
-

@@ -6,7 +6,6 @@ from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.table import TableList
 
-
 from openpyxl.xml.constants import (
     XLSM,
     XLSX,
@@ -67,7 +66,8 @@ class TestWorkbook:
         ws.add_table(Table(displayName="Table1", ref="A1:D10"))
         assert True == wb._duplicate_name("Table1")
         assert True == wb._duplicate_name("TABLE1")
-
+    
+    
     def test_duplicate_defined_name(self, Workbook):
         wb1 = Workbook()
         wb1.defined_names.append(DefinedName("dfn1"))

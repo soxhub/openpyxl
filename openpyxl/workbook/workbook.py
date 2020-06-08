@@ -68,7 +68,9 @@ class Workbook(object):
         self.security = DocumentSecurity()
         self.__write_only = write_only
         self.shared_strings = IndexedList()
+
         self._setup_styles()
+
         self.loaded_theme = None
         self.vba_archive = None
         self.is_template = False
@@ -83,7 +85,6 @@ class Workbook(object):
         self.rels = RelationshipList()
         self.calculation = CalcProperties()
         self.views = [BookView()]
-
 
 
     def _setup_styles(self):

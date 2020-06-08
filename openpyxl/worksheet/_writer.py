@@ -355,8 +355,8 @@ class WorksheetWriter:
         self.write_rows()
         self.write_tail()
         self.close()
-        
-        
+
+
     def close(self):
         """
         Close the context manager
