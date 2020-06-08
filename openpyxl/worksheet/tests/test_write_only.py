@@ -8,6 +8,7 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
 from openpyxl.styles.styleable import StyleArray
 from openpyxl.tests.helper import compare_xml
+
 import pytest
 
 
@@ -22,8 +23,7 @@ class DummyWorkbook:
         self.encoding = "UTF-8"
         self.epoch = CALENDAR_WINDOWS_1900
         self.sheetnames = []
-        self.iso_dates = False
-        
+        self.iso_dates = False 
 
 
 @pytest.fixture

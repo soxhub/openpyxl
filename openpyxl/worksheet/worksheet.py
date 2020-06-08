@@ -556,7 +556,7 @@ class Worksheet(_WorkbookChild):
             img.anchor = anchor
         self._images.append(img)
 
-    
+
     def add_table(self, table):
         """
         Check for duplicate name in definedNames and other worksheet tables
@@ -566,7 +566,7 @@ class Worksheet(_WorkbookChild):
             raise ValueError("Table with name {0} already exists".format(table.name))
         self._tables.append(table)
 
-    
+
     @property
     def tables(self):
         return self._tables

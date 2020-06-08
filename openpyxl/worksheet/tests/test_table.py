@@ -3,6 +3,7 @@ import pytest
 
 from io import BytesIO
 from zipfile import ZipFile
+
 from openpyxl import load_workbook
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml

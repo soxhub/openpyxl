@@ -29,4 +29,3 @@ Using this method ensures table name is unque through out defined names and all 
 '''
 ws.add_table(tab)
 wb.save("table.xlsx")
-

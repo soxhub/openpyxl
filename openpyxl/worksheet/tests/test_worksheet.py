@@ -9,6 +9,7 @@ from itertools import islice
 from openpyxl.workbook import Workbook
 from openpyxl.cell import Cell
 from ..cell_range import CellRange
+
 from openpyxl.worksheet.table import Table, TableList
 
 class DummyWorkbook:

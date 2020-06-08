@@ -229,6 +229,7 @@ class Table(Serialisable):
     tableColumns = NestedSequence(expected_type=TableColumn, count=True)
     tableStyleInfo = Typed(expected_type=TableStyleInfo, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
+
     __elements__ = ('autoFilter', 'sortState', 'tableColumns',
                     'tableStyleInfo')
 
