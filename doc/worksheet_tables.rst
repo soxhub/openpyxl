@@ -28,6 +28,7 @@ consider the file invalid and remove the table.
 
 Get tables in sheet
 -------------------
+
 Returns a list of tables.
 
 >>>ws.tables
@@ -43,21 +44,27 @@ or
 
 Iterate through all table in worksheet
 --------------------------------------
+
 >>>for table in ws.tables:
 >>>   print(table)
 
 Get table name and range of all tables in the worksheet
 -------------------------------------------------------
+
+Returns a dictionary of table name and their range.
+
 >>>ws.tables.items()
 >>>{"Table1":"A1:D10"}
 
 Delete table by name or range
 -----------------------------
+
 >>>ws.delete("Table1")
 or
 >>>ws.delete(table_range="A1:E5") 
 
 Number of tables in worksheet
 -----------------------------
+
 >>>len(ws.tables)
 >>>1
