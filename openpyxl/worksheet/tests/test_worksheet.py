@@ -10,6 +10,7 @@ from openpyxl.workbook import Workbook
 from openpyxl.cell import Cell
 from ..cell_range import CellRange
 
+from openpyxl.worksheet.table import Table, TableList
 
 class DummyWorkbook:
 
@@ -442,6 +443,13 @@ class TestWorksheet:
         ws = Worksheet(Workbook())
         assert not ws.show_gridlines
 
+
+    def test_add_table(self, Worksheet):
+        tbl_ws = Worksheet(Workbook())
+        table1 = Table(displayName="Table1", ref="A1:D10")
+        tbl_ws.add_table(table1)
+        assert len(tbl_ws._tables) == 1
+        
 
 def test_freeze_panes_horiz(Worksheet):
     ws = Worksheet(Workbook())

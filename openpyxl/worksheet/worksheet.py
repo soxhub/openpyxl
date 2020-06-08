@@ -52,6 +52,7 @@ from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
+from .table import TableList
 
 
 class Worksheet(_WorkbookChild):
@@ -109,7 +110,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comments = []
         self.merged_cells = MultiCellRange()
-        self._tables = []
+        self._tables = TableList()
         self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
@@ -557,8 +558,19 @@ class Worksheet(_WorkbookChild):
 
 
     def add_table(self, table):
+        """
+        Check for duplicate name in definedNames and other worksheet tables
+        before adding table.
+        """
+        if self.parent._duplicate_name(table.name):
+            raise ValueError("Table with name {0} already exists".format(table.name))
         self._tables.append(table)
 
+
+    @property
+    def tables(self):
+        return self._tables
+    
 
     def add_pivot(self, pivot):
         self._pivots.append(pivot)

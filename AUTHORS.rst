@@ -71,6 +71,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Rick Rankin
 * Samuel Loretan
 * Sergey Pikhovkin
+* Shekhar Gyanwali
 * Shibukawa Yoshiki
 * Stefan Behnel
 * Stephane Bard

@@ -22,5 +22,10 @@ tab = Table(displayName="Table1", ref="A1:E5")
 style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
                        showLastColumn=False, showRowStripes=True, showColumnStripes=True)
 tab.tableStyleInfo = style
+
+'''
+Table must be added using ws.add_table() method to avoid duplicate names.
+Using this method ensures table name is unque through out defined names and all other table name. 
+'''
 ws.add_table(tab)
 wb.save("table.xlsx")

@@ -437,7 +437,7 @@ class TestWorksheetWriter:
     def test_tables(self, writer):
 
         writer.ws.append(list(u"ABCDEF\xfc"))
-        writer.ws._tables = [Table(displayName="Table1", ref="A1:G6")]
+        writer.ws.add_table(Table(displayName="Table1", ref="A1:G6"))
         writer.write_tables()
 
         assert len(writer._rels) == 1
