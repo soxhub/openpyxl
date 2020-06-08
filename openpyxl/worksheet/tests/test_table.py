@@ -219,7 +219,6 @@ class TestTablePartList:
         assert len(tables.tablePart) == 2
 
 
-
 @pytest.fixture
 def TableList():
     from ..table import TableList
@@ -227,7 +226,6 @@ def TableList():
  
 
 class TestTableList:
-    
 
     def test_append(self, Table, TableList):
         tablelist = TableList()

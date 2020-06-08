@@ -23,7 +23,7 @@ class DummyWorkbook:
         self.encoding = "UTF-8"
         self.epoch = CALENDAR_WINDOWS_1900
         self.sheetnames = []
-        self.iso_dates = False 
+        self.iso_dates = False
 
 
 @pytest.fixture
