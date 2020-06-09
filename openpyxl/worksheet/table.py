@@ -381,4 +381,4 @@ class TableList(dict):
 
 
     def items(self):
-        return {name:table.ref for name, table in super().items()}
+        return [(name, table.ref) for name, table in super().items()]

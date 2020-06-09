@@ -12,63 +12,82 @@ Creating a table
 .. literalinclude:: table.py
 
 
-By default tables are created with a header from the first row and filters for all the columns.
+Table names must be unique within a workbook. By default tables are created with a header from the first row and filters for all the columns and table headers and column headings must always contain strings.
+
+.. warning::
+
+  In write-only mode you must add column headings to tables manually and the values must always be the same as the values of the corresponding cells (ee below for an example of how to do this), otherwise Excel may consider the file invalid and remove the table.
 
 Styles are managed using the the `TableStyleInfo` object. This allows you to
 stripe rows or columns and apply the different colour schemes.
 
 
-Important notes
----------------
-
-Table names must be unique within a workbook and table headers and filter
-ranges must always contain strings. If this is not the case then Excel may
-consider the file invalid and remove the table.
-
-
-Get tables in sheet
+Working with Tables
 -------------------
 
-Returns a list of tables.
+``ws.tables`` is a dictionary-like object of all the tables in a particular worksheet::
 
->>>ws.tables
->>>[Table1,]
+  >>> ws.tables
+  {"Table1",  <openpyxl.worksheet.table.Table object>}
 
 
 Get Table by name or range
---------------------------
+++++++++++++++++++++++++++
 
->>>ws.tables.get("Table1")
-or
->>>ws.tables.get(table_range="A1:D10")
+.. code::
 
-
-Iterate through all table in worksheet
---------------------------------------
-
->>>for table in ws.tables:
->>>   print(table)
+  >>> ws.tables["Table1"]
+  or
+  >>> ws.tables["A1:D10"]
 
 
-Get table name and range of all tables in the worksheet
--------------------------------------------------------
+Iterate through all tables in a worksheet
++++++++++++++++++++++++++++++++++++++++++
 
-Returns a dictionary of table name and their range.
+.. code::
 
->>>ws.tables.items()
->>>{"Table1":"A1:D10"}
-
-
-Delete table by name or range
------------------------------
-
->>>ws.delete("Table1")
-or
->>>ws.delete(table_range="A1:E5") 
+  >>> for table in ws.tables.values():
+  >>>    print(table)
 
 
-Number of tables in worksheet
------------------------------
+Get table name and range of all tables in a worksheet
++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
->>>len(ws.tables)
->>>1
+Returns a list of table name and their ranges.
+
+.. code::
+
+  >>> ws.tables.items()
+  >>> [("Table1", "A1:D10")]
+
+
+Delete a table
+++++++++++++++
+
+.. code::
+
+  >>> del ws.tables["Table1"]
+
+
+The number of tables in a worksheet
++++++++++++++++++++++++++++++++++++
+
+.. code::
+
+  >>> len(ws.tables)
+  >>> 1
+
+
+Manually adding column headings
+-------------------------------
+
+In write-only mode you can either only add tables without headings::
+
+  >>> table.headerRowCount = False
+
+Or initialise the column headings manually::
+
+  >>> headings = ["Fruit", "2011", "2012", "2013", "2014"] # all values must be strings
+  >>> table._initialise_columns()
+  >>> for column, value in zip(table.tableColumns, headings):
+      column.name = value

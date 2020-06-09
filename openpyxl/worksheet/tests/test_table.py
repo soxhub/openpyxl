@@ -265,4 +265,4 @@ class TestTableList:
         tablelist = TableList()
         tablelist.add(table1)
         tablelist.add(table2)
-        assert tablelist.items() == {"Table1":"A1:D10", "Table2":"A1:D10"}
+        assert tablelist.items() == [("Table1", "A1:D10"), ("Table2", "A1:D10")]
