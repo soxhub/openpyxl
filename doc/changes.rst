@@ -10,6 +10,7 @@ Bugfixes
 * `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 * `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
 * `#1473 <https://bitbucket.org/openpyxl/openpyxl/issues/1473>`_ Reading many thousand of merged cells is really slow.
+* `#1474 <https://bitbucket.org/openpyxl/openpyxl/issues/1474>`_ Adding tables in write-only mode raises an exception.
 
 
 Pull Requests
