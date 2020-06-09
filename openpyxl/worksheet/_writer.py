@@ -266,11 +266,14 @@ class WorksheetWriter:
             if not table.tableColumns:
                 table._initialise_columns()
                 if table.headerRowCount:
-                    row = self.ws[table.ref][0]
-                    for cell, col in zip(row, table.tableColumns):
-                        if cell.data_type != "s":
-                            warn("File may not be readable: column headings must be strings.")
-                        col.name = str(cell.value)
+                    try:
+                        row = self.ws[table.ref][0]
+                        for cell, col in zip(row, table.tableColumns):
+                            if cell.data_type != "s":
+                                warn("File may not be readable: column headings must be strings.")
+                            col.name = str(cell.value)
+                    except TypeError:
+                        warn("Column headings are missing, file may not be readable")
             rel = Relationship(Type=table._rel_type, Target="")
             self._rels.append(rel)
             table._rel_id = rel.Id

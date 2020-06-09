@@ -7,6 +7,7 @@
 from itertools import chain
 from operator import itemgetter
 from inspect import isgenerator
+from warnings import warn
 
 # compatibility imports
 from openpyxl.compat import (
@@ -562,8 +563,11 @@ class Worksheet(_WorkbookChild):
         Check for duplicate name in definedNames and other worksheet tables
         before adding table.
         """
+
         if self.parent._duplicate_name(table.name):
             raise ValueError("Table with name {0} already exists".format(table.name))
+        if not hasattr(self, "_get_cell"):
+            warn("In write-only mode you must add table columns manually")
         self._tables.add(table)
 
 
