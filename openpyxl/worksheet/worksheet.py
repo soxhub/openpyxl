@@ -564,13 +564,13 @@ class Worksheet(_WorkbookChild):
         """
         if self.parent._duplicate_name(table.name):
             raise ValueError("Table with name {0} already exists".format(table.name))
-        self._tables.append(table)
+        self._tables.add(table)
 
 
     @property
     def tables(self):
         return self._tables
-    
+
 
     def add_pivot(self, pivot):
         self._pivots.append(pivot)

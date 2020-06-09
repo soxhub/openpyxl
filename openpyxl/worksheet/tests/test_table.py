@@ -222,35 +222,35 @@ class TestTablePartList:
 def TableList():
     from ..table import TableList
     return TableList
- 
+
 
 class TestTableList:
 
     def test_append(self, Table, TableList):
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:C10")
-        tablelist.append(table1)
+        tablelist.add(table1)
         assert len(tablelist) == 1
 
 
     def test_get(self, Table, TableList):
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:C10")
-        tablelist.append(table1)
+        tablelist.add(table1)
         assert table1 == tablelist["Table1"]
 
 
     def test_get_by_range(self, Table, TableList):
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:D10")
-        tablelist.append(table1)
+        tablelist.add(table1)
         assert True == isinstance(tablelist.get(table_range="A1:D10"),Table)
-        
-        
-    def test_append_type_error(self, Table, TableList):
+
+
+    def test_add_type_error(self, Table, TableList):
         tablelist = TableList()
         with pytest.raises(TypeError):
-            tablelist.append("Not a Table")
+            tablelist.add("Not a Table")
 
 
     def test_get_table_does_not_exists(self, Table, TableList):
@@ -263,6 +263,6 @@ class TestTableList:
         table1 = Table(displayName="Table1", ref="A1:D10")
         table2 = Table(displayName="Table2", ref="A1:D10")
         tablelist = TableList()
-        tablelist.append(table1)
-        tablelist.append(table2)
+        tablelist.add(table1)
+        tablelist.add(table2)
         assert tablelist.items() == {"Table1":"A1:D10", "Table2":"A1:D10"}

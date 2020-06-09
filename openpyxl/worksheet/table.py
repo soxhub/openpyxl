@@ -359,73 +359,26 @@ class TablePartList(Serialisable):
         return bool(self.tablePart)
 
 
-class TableList:
-    """
-    Contains a list of excel table in a worksheet.
-    """
-    def __init__(self):
-        self.tables = [] 
+class TableList(dict):
 
 
-    def duplicate_name(self, name):
-        for table in self.tables:
-            if table.name.lower()==name.lower():
-                return True
-        return False
-
-
-    def __getitem__(self, name):
-        """Get table by name"""
-        table = self.get(name)
-        if not table:
-            raise KeyError("No table called {0}".format(name))
-        return table
-
-
-    def append(self, table):
+    def __setitem__(self, name, table):
         if not isinstance(table, Table):
-            raise TypeError("""You can only append Table""")
-        self.tables.append(table)
+            raise TypeError("You can only add Tables")
+        super().__setitem__(name.name, table)
 
-        
+
+    def add(self, table):
+        self[table] = table
+
+
     def get(self, name=None, table_range=None):
-        """
-        Get Table by either name or range. 
-        """
-        for table in self.tables:
-            if table.name == name or table.ref == table_range:
+        if name is not None:
+            return super().get(name)
+        for table in self.values():
+            if table_range == table.ref:
                 return table
 
 
-    def __iter__(self):
-        for table in self.tables:
-            yield table
-
-
-    def __len__(self):
-        return len(self.tables)
-
-
-    def __delitem__(self, name):
-        """
-        Delete a table
-        """
-        if not self.delete(name):
-            raise KeyError("No table with name {0} to delete.".format(name))
-
-
-    def delete(self, name=None, table_range=None):
-        """
-        Delete a table by name or range.
-        """
-        for idx, table in enumerate(self.tables):
-            if table.name == name or table.ref == table_range:
-                del self.tables[idx]
-
-
     def items(self):
-        """
-        Returns a dictonary of table and it's range.
-        {Table Name:Table range}
-        """
-        return {table.name:table.ref for table in self.tables}
+        return {name:table.ref for name, table in super().items()}

@@ -427,16 +427,18 @@ class Workbook(object):
         if hasattr(self, '_archive'):
             self._archive.close()
 
-  
+
     def _duplicate_name(self, name):
         """
         Check for duplicate name in defined name list and table list of each worksheet.
         Names are not case sensitive.
         """
+        lwr = name.lower()
         for sheet in self._sheets:
-            if sheet._tables.duplicate_name(name):
+            tables = [key.lower() for key in sheet._tables.keys()]
+            if lwr in tables:
                 return True
-        
-        if name.lower() in [dfn.name.lower() for dfn in self.defined_names.definedName]:
+
+        if lwr in [dfn.name.lower() for dfn in self.defined_names.definedName]:
                 return True
         return False
