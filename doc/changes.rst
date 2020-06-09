@@ -5,10 +5,17 @@
 Bugfixes
 --------
 
+* `#844 <https://bitbucket.org/openpyxl/openpyxl/issues/844>`_ Find tables by name
 * `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
 * `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 * `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
 * `#1473 <https://bitbucket.org/openpyxl/openpyxl/issues/1473>`_ Reading many thousand of merged cells is really slow.
+
+
+Pull Requests
+-------------
+
+* `PR377 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/377/>`_ Add support for finding tables by name or range.
 
 
 
