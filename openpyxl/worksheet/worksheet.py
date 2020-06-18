@@ -249,6 +249,8 @@ class Worksheet(_WorkbookChild):
         Internal method for getting a cell from a worksheet.
         Will create a new cell if one doesn't already exist.
         """
+        if not 0 < row < 1048577:
+            raise ValueError("Row numbers must be between 1 and 1048576")
         coordinate = (row, column)
         if not coordinate in self._cells:
             cell = Cell(self, row=row, column=column)
@@ -290,12 +292,12 @@ class Worksheet(_WorkbookChild):
         if not any([min_col, min_row, max_col, max_row]):
             raise IndexError("{0} is not a valid coordinate or range".format(key))
 
-        if not min_row:
+        if min_row is None:
             cols = tuple(self.iter_cols(min_col, max_col))
             if min_col == max_col:
                 cols = cols[0]
             return cols
-        if not min_col:
+        if min_col is None:
             rows = tuple(self.iter_rows(min_col=min_col, min_row=min_row,
                                         max_col=self.max_column, max_row=max_row))
             if min_row == max_row:

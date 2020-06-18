@@ -278,6 +278,7 @@ class TestWorksheet:
         slice(None, None),
         slice(None, -1),
         ":",
+        "A0",
         ]
     )
     def test_getitem_invalid(self, Worksheet, key):
@@ -449,7 +450,7 @@ class TestWorksheet:
         table1 = Table(displayName="Table1", ref="A1:D10")
         tbl_ws.add_table(table1)
         assert len(tbl_ws._tables) == 1
-        
+
 
 def test_freeze_panes_horiz(Worksheet):
     ws = Worksheet(Workbook())
