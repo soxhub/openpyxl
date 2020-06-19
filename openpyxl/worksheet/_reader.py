@@ -422,7 +422,9 @@ class WorksheetReader(object):
         for k in ('print_options', 'page_margins', 'page_setup',
                   'HeaderFooter', 'auto_filter', 'data_validations',
                   'sheet_properties', 'views', 'sheet_format',
-                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing'):
+                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing',
+                  'protection',
+                  ):
             v = getattr(self.parser, k, None)
             if v is not None:
                 setattr(self.ws, k, v)
