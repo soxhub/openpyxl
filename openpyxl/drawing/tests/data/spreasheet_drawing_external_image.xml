@@ -1,0 +1,42 @@
+<?xml version="1.0" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <xdr:twoCellAnchor editAs="oneCell">
+    <xdr:from>
+      <xdr:col>5</xdr:col>
+      <xdr:colOff>546099</xdr:colOff>
+      <xdr:row>14</xdr:row>
+      <xdr:rowOff>1</xdr:rowOff>
+    </xdr:from>
+    <xdr:to>
+      <xdr:col>6</xdr:col>
+      <xdr:colOff>533399</xdr:colOff>
+      <xdr:row>14</xdr:row>
+      <xdr:rowOff>180880</xdr:rowOff>
+    </xdr:to>
+    <xdr:pic macro="FindComponent">
+      <xdr:nvPicPr>
+        <xdr:cNvPr id="4" name="btnfindtopDrive">
+        </xdr:cNvPr>
+        <xdr:cNvPicPr>
+          <a:picLocks noChangeAspect="1"/>
+        </xdr:cNvPicPr>
+      </xdr:nvPicPr>
+      <xdr:blipFill>
+        <a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:link="rId1"/>
+        <a:stretch>
+          <a:fillRect/>
+        </a:stretch>
+      </xdr:blipFill>
+      <xdr:spPr>
+        <a:xfrm>
+          <a:off x="3594099" y="2667001"/>
+          <a:ext cx="596900" cy="180879"/>
+        </a:xfrm>
+        <a:prstGeom prst="rect">
+          <a:avLst/>
+        </a:prstGeom>
+      </xdr:spPr>
+    </xdr:pic>
+    <xdr:clientData/>
+  </xdr:twoCellAnchor>
+</xdr:wsDr>

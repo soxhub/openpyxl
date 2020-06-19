@@ -326,6 +326,15 @@ class TestSpreadsheetDrawing:
         assert blip_rels[0].anchor is not None
 
 
+    def test_ignore_external_blip(self, SpreadsheetDrawing, datadir):
+        with open("spreasheet_drawing_external_image.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        drawing = SpreadsheetDrawing.from_tree(node)
+
+        assert drawing._blip_rels == []
+
+
     def test_write_rels(self, SpreadsheetDrawing):
         from openpyxl.packaging.relationship import Relationship
         rel = Relationship(type="drawing", Target="../file.xml")
