@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#844 <https://bitbucket.org/openpyxl/openpyxl/issues/844>`_ Find tables by name
+* `#1414 <https://bitbucket.org/openpyxl/openpyxl/issues/1414>`_ Worksheet protection missing in existing files
 * `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
 * `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
 * `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
