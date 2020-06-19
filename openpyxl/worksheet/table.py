@@ -362,12 +362,6 @@ class TablePartList(Serialisable):
 class TableList(dict):
 
 
-    def __setitem__(self, name, table):
-        if not isinstance(table, Table):
-            raise TypeError("You can only add tables")
-        super().__setitem__(name, table)
-
-
     def add(self, table):
         if not isinstance(table, Table):
             raise TypeError("You can only add tables")
