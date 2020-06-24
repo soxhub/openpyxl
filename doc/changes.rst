@@ -1,4 +1,4 @@
-3.0.4 (unreleased)
+3.0.4 (2020-06-24)
 ==================
 
 
@@ -19,7 +19,6 @@ Pull Requests
 -------------
 
 * `PR377 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/377/>`_ Add support for finding tables by name or range.
-
 
 
 3.0.3 (2020-01-20)
