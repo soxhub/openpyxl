@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.xml.constants import DRAWING_NS
 from openpyxl.descriptors.serialisable import Serialisable

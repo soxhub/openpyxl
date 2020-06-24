@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """Reader for a single worksheet."""
 import traceback
@@ -361,11 +361,17 @@ class WorksheetReader(object):
 
 
     def bind_merged_cells(self):
+        from openpyxl.worksheet.cell_range import MultiCellRange
+        from openpyxl.worksheet.merge import MergedCellRange
         if not self.parser.merged_cells:
             return
 
+        ranges = []
         for cr in self.parser.merged_cells.mergeCell:
-            self.ws.merge_cells(cr.ref)
+            mcr = MergedCellRange(self.ws, cr.ref)
+            self.ws._clean_merge_range(mcr)
+            ranges.append(mcr)
+        self.ws.merged_cells = MultiCellRange(ranges)
 
 
     def bind_hyperlinks(self):
@@ -416,7 +422,9 @@ class WorksheetReader(object):
         for k in ('print_options', 'page_margins', 'page_setup',
                   'HeaderFooter', 'auto_filter', 'data_validations',
                   'sheet_properties', 'views', 'sheet_format',
-                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing'):
+                  'row_breaks', 'col_breaks', 'scenarios', 'legacy_drawing',
+                  'protection',
+                  ):
             v = getattr(self.parser, k, None)
             if v is not None:
                 setattr(self.ws, k, v)

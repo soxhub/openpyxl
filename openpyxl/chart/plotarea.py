@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -140,7 +140,7 @@ class PlotArea(Serialisable):
         self = super(PlotArea, cls).from_tree(node)
         axes = dict((axis.axId, axis) for axis in self._axes)
         for chart in self._charts:
-            if isinstance(chart, ScatterChart):
+            if isinstance(chart, (ScatterChart, BubbleChart)):
                 x, y = (axes[axId] for axId in chart.axId)
                 chart.x_axis = x
                 chart.y_axis = y

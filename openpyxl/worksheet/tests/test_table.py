@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 import pytest
 
 from io import BytesIO
@@ -216,3 +216,53 @@ class TestTablePartList:
         node = fromstring(src)
         tables = TablePartList.from_tree(node)
         assert len(tables.tablePart) == 2
+
+
+@pytest.fixture
+def TableList():
+    from ..table import TableList
+    return TableList
+
+
+class TestTableList:
+
+    def test_append(self, Table, TableList):
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        tablelist.add(table1)
+        assert len(tablelist) == 1
+
+
+    def test_get(self, Table, TableList):
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:C10")
+        tablelist.add(table1)
+        assert table1 == tablelist["Table1"]
+
+
+    def test_get_by_range(self, Table, TableList):
+        tablelist = TableList()
+        table1 = Table(displayName="Table1", ref="A1:D10")
+        tablelist.add(table1)
+        assert True == isinstance(tablelist.get(table_range="A1:D10"),Table)
+
+
+    def test_add_type_error(self, Table, TableList):
+        tablelist = TableList()
+        with pytest.raises(TypeError):
+            tablelist.add("Not a Table")
+
+
+    def test_get_table_does_not_exists(self, Table, TableList):
+        tablelist2 = TableList()
+        with pytest.raises(KeyError):
+            tablelist2['NoTable']
+
+
+    def test_items(self, Table, TableList):
+        table1 = Table(displayName="Table1", ref="A1:D10")
+        table2 = Table(displayName="Table2", ref="A1:D10")
+        tablelist = TableList()
+        tablelist.add(table1)
+        tablelist.add(table2)
+        assert tablelist.items() == [("Table1", "A1:D10"), ("Table2", "A1:D10")]

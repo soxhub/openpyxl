@@ -1,3 +1,26 @@
+3.0.4 (2020-06-24)
+==================
+
+
+Bugfixes
+--------
+
+* `#844 <https://bitbucket.org/openpyxl/openpyxl/issues/844>`_ Find tables by name
+* `#1414 <https://bitbucket.org/openpyxl/openpyxl/issues/1414>`_ Worksheet protection missing in existing files
+* `#1439 <https://bitbucket.org/openpyxl/openpyxl/issues/1439>`_ Exception when reading files with external images
+* `#1452 <https://bitbucket.org/openpyxl/openpyxl/issues/1452>`_ Reading lots of merged cells is very slow.
+* `#1455 <https://bitbucket.org/openpyxl/openpyxl/issues/1455>`_ Read support for Bubble Charts.
+* `#1458 <https://bitbucket.org/openpyxl/openpyxl/issues/1458>`_ Preserve any indexed colours
+* `#1473 <https://bitbucket.org/openpyxl/openpyxl/issues/1473>`_ Reading many thousand of merged cells is really slow.
+* `#1474 <https://bitbucket.org/openpyxl/openpyxl/issues/1474>`_ Adding tables in write-only mode raises an exception.
+
+
+Pull Requests
+-------------
+
+* `PR377 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/377/>`_ Add support for finding tables by name or range.
+
+
 3.0.3 (2020-01-20)
 ==================
 
@@ -42,23 +65,23 @@ Bugfixes
 Pull Requests
 -------------
 
-* `PR344 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ Fix for #1250
+* `PR354 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ Fix for #1250
 * `PR352 <https://bitbucket.org/openpyxl/openpyxl/pull-requests/354/>`_ TableStyleElement is a sequence
 
 
 3.0.0 (2019-09-25)
 ==================
 
-Python 3 only release
----------------------
+Python 3.6+ only release
+------------------------
 
 
 2.6.4 (2019-09-25)
 ==================
 
 
-Final release for Python 2.7
-––––––––––––––––––––––––––––
+Final release for Python 2.7 and 3.5
+------------------------------------
 
 Bugfixes
 --------

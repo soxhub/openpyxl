@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """Workbook is the top-level container for all document information."""
 from copy import copy
@@ -426,3 +426,19 @@ class Workbook(object):
         """
         if hasattr(self, '_archive'):
             self._archive.close()
+
+
+    def _duplicate_name(self, name):
+        """
+        Check for duplicate name in defined name list and table list of each worksheet.
+        Names are not case sensitive.
+        """
+        lwr = name.lower()
+        for sheet in self._sheets:
+            tables = [key.lower() for key in sheet._tables.keys()]
+            if lwr in tables:
+                return True
+
+        if lwr in [dfn.name.lower() for dfn in self.defined_names.definedName]:
+                return True
+        return False

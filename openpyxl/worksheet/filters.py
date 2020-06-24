@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -83,7 +83,6 @@ class SortState(Serialisable):
     def __bool__(self):
         return self.ref is not None
 
-    __nonzero__ = __bool__
 
 
 class IconFilter(Serialisable):
@@ -333,7 +332,6 @@ class AutoFilter(Serialisable):
     def __bool__(self):
         return self.ref is not None
 
-    __nonzero__ = __bool__
 
 
     def add_filter_column(self, col_id, vals, blank=False):

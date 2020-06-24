@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 
 """Write worksheets to xml representations in an optimized way"""
@@ -157,3 +157,6 @@ class WriteOnlyWorksheet(_WorkbookChild):
         raise TypeError('Value must be a list, tuple, range or a generator Supplied value is {0}'.format(
             type(iterable))
                         )
+    @property
+    def tables(self):
+        return self.tables

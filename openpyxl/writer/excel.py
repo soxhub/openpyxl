@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """Write a .xlsx file."""
 
@@ -229,7 +229,7 @@ class ExcelWriter(object):
                                          Target="/" + ws.legacy_drawing)
                 ws._rels.append(shape_rel)
 
-            for t in ws._tables:
+            for t in ws._tables.values():
                 self._tables.append(t)
                 t.id = len(self._tables)
                 t._write(self._archive)

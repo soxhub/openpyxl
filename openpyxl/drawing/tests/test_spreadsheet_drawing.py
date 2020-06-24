@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 import pytest
 
@@ -324,6 +324,15 @@ class TestSpreadsheetDrawing:
         blip_rels = drawing._blip_rels
         assert len(blip_rels) == 1
         assert blip_rels[0].anchor is not None
+
+
+    def test_ignore_external_blip(self, SpreadsheetDrawing, datadir):
+        with open("spreasheet_drawing_external_image.xml") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        drawing = SpreadsheetDrawing.from_tree(node)
+
+        assert drawing._blip_rels == []
 
 
     def test_write_rels(self, SpreadsheetDrawing):

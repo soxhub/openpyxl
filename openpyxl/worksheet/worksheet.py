@@ -1,12 +1,13 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
 
 # Python stdlib imports
-from itertools import islice, product, chain
+from itertools import chain
 from operator import itemgetter
 from inspect import isgenerator
+from warnings import warn
 
 # compatibility imports
 from openpyxl.compat import (
@@ -52,6 +53,7 @@ from .merge import MergedCellRange
 from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
+from .table import TableList
 
 
 class Worksheet(_WorkbookChild):
@@ -109,7 +111,7 @@ class Worksheet(_WorkbookChild):
         self._drawing = None
         self._comments = []
         self.merged_cells = MultiCellRange()
-        self._tables = []
+        self._tables = TableList()
         self._pivots = []
         self.data_validations = DataValidationList()
         self._hyperlinks = []
@@ -247,6 +249,8 @@ class Worksheet(_WorkbookChild):
         Internal method for getting a cell from a worksheet.
         Will create a new cell if one doesn't already exist.
         """
+        if not 0 < row < 1048577:
+            raise ValueError("Row numbers must be between 1 and 1048576")
         coordinate = (row, column)
         if not coordinate in self._cells:
             cell = Cell(self, row=row, column=column)
@@ -288,12 +292,12 @@ class Worksheet(_WorkbookChild):
         if not any([min_col, min_row, max_col, max_row]):
             raise IndexError("{0} is not a valid coordinate or range".format(key))
 
-        if not min_row:
+        if min_row is None:
             cols = tuple(self.iter_cols(min_col, max_col))
             if min_col == max_col:
                 cols = cols[0]
             return cols
-        if not min_col:
+        if min_col is None:
             rows = tuple(self.iter_rows(min_col=min_col, min_row=min_row,
                                         max_col=self.max_column, max_row=max_row))
             if min_row == max_row:
@@ -557,7 +561,21 @@ class Worksheet(_WorkbookChild):
 
 
     def add_table(self, table):
-        self._tables.append(table)
+        """
+        Check for duplicate name in definedNames and other worksheet tables
+        before adding table.
+        """
+
+        if self.parent._duplicate_name(table.name):
+            raise ValueError("Table with name {0} already exists".format(table.name))
+        if not hasattr(self, "_get_cell"):
+            warn("In write-only mode you must add table columns manually")
+        self._tables.add(table)
+
+
+    @property
+    def tables(self):
+        return self._tables
 
 
     def add_pivot(self, pivot):
@@ -572,16 +590,17 @@ class Worksheet(_WorkbookChild):
         self._clean_merge_range(cr)
 
 
-    def _clean_merge_range(self, cr):
+    def _clean_merge_range(self, mcr):
         """
         Remove all but the top left-cell from a range of merged cells
         and recreate the lost border information.
         Borders are then applied
         """
-        mcr = MergedCellRange(self, cr.coord)
-        cells = chain.from_iterable(mcr.rows)
-        next(cells) # skip first cell
+        if not isinstance(mcr, MergedCellRange):
+            mcr = MergedCellRange(self, mcr.coord)
 
+        cells = mcr.cells
+        next(cells) # skip first cell
         for row, col in cells:
             self._cells[row, col] = MergedCell(self, row, col)
         mcr.format()
@@ -604,9 +623,8 @@ class Worksheet(_WorkbookChild):
 
         self.merged_cells.remove(cr)
 
-        cells = chain.from_iterable(cr.rows)
+        cells = cr.cells
         next(cells) # skip first cell
-
         for row, col in cells:
             del self._cells[(row, col)]
 

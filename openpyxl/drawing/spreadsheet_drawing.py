@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2019 openpyxl
+# Copyright (c) 2010-2020 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -270,7 +270,6 @@ class SpreadsheetDrawing(Serialisable):
     def __bool__(self):
         return bool(self.charts) or bool(self.images)
 
-    __nonzero__ = __bool__
 
 
     def _write(self):
@@ -365,6 +364,8 @@ class SpreadsheetDrawing(Serialisable):
     def _blip_rels(self):
         """
         Get relationship information for each blip and bind anchor to it
+
+        Images that are not part of the XLSX package will be ignored.
         """
         rels = []
         anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
@@ -373,7 +374,7 @@ class SpreadsheetDrawing(Serialisable):
             child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
             if child and child.blipFill:
                 rel = child.blipFill.blip
-                if rel is not None:
+                if rel is not None and rel.embed:
                     rel.anchor = anchor
                     rels.append(rel)
 
