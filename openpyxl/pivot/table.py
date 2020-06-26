@@ -25,6 +25,7 @@ from openpyxl.packaging.relationship import (
     Relationship,
     get_rels_path
 )
+from .fields import Index
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
@@ -584,7 +585,7 @@ class RowColItem(Serialisable):
                      'blank']))
     r = Integer()
     i = Integer()
-    x = NestedInteger(allow_none=True, attribute="v")
+    x = Sequence(expected_type=Index, attribute="v")
 
     __elements__ = ('x',)
 
