@@ -3,8 +3,8 @@ openpyxl - A Python library to read/write Excel 2010 xlsx/xlsm files
 
 
 :Author: Eric Gazoni, Charlie Clark
-:Source code: http://bitbucket.org/openpyxl/openpyxl/src
-:Issues: http://bitbucket.org/openpyxl/openpyxl/issues
+:Source code: https://foss.heptapod.net/openpyxl/openpyxl
+:Issues: https://foss.heptapod.net/openpyxl/openpyxl/-/issues
 :Generated: |today|
 :License: MIT/Expat
 :Version: |release|
@@ -30,10 +30,13 @@ development and maintenance are welcome.
 
 
 Bug reports and feature requests should be submitted using the `issue tracker
-<https://bitbucket.org/openpyxl/openpyxl/issues>`_. Please provide a full
+<https://foss.heptapod.net/openpyxl/openpyxl/-/issues>`_. Please provide a full
 traceback of any error you see and if possible a sample file. If for reasons
 of confidentiality you are unable to make a file publicly available then
 contact of one the developers.
+
+The repository is being provided by `Octobus <https://octobus.net/>`_ and
+`Clever Cloud <https://clever-cloud.com/>`_.
 
 
 How to Contribute
@@ -42,7 +45,8 @@ How to Contribute
 Any help will be greatly appreciated, just follow those steps:
 
     1.
-    Please start a new fork (https://bitbucket.org/openpyxl/openpyxl/fork)
+    Please join the group and create a branch (https://foss.heptapod.net/openpyxl/openpyxl/) and
+    follow the `Merge Request Start Guide <https://heptapod.net/pages/quick-start-guide.html>`_.
     for each independent feature, don't try to fix all problems at the same
     time, it's easier for those who will review and merge your changes ;-)
 
@@ -122,7 +126,7 @@ This may be the case if bugs have been fixed but a release has not yet been
 made.
 
 .. parsed-literal::
-    $ pip install -e hg+https://bitbucket.org/openpyxl/openpyxl@\ |version|\ #egg=openpyxl
+    $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
 
 
 Usage examples
