@@ -358,3 +358,23 @@ class TablePartList(Serialisable):
     def __bool__(self):
         return bool(self.tablePart)
 
+
+class TableList(dict):
+
+
+    def add(self, table):
+        if not isinstance(table, Table):
+            raise TypeError("You can only add tables")
+        self[table.name] = table
+
+
+    def get(self, name=None, table_range=None):
+        if name is not None:
+            return super().get(name)
+        for table in self.values():
+            if table_range == table.ref:
+                return table
+
+
+    def items(self):
+        return [(name, table.ref) for name, table in super().items()]

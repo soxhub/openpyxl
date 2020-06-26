@@ -82,7 +82,7 @@ style for lots of cells when only one changes.
 >>>
 >>> a1 = ws['A1']
 >>> d4 = ws['D4']
->>> ft = Font(color=colors.RED)
+>>> ft = Font(color="FF0000")
 >>> a1.font = ft
 >>> d4.font = ft
 >>>
@@ -90,7 +90,7 @@ style for lots of cells when only one changes.
 >>>
 >>> # If you want to change the color of a Font, you need to reassign it::
 >>>
->>> a1.font = Font(color=colors.RED, italic=True) # the change only affects A1
+>>> a1.font = Font(color="FF0000", italic=True) # the change only affects A1
 
 
 Copying styles
@@ -114,23 +114,40 @@ Styles can also be copied
 14.0
 
 
-Basic Font Colors
------------------
-Colors are usually RGB or aRGB hexvalues. The `colors` module contains some handy constants
+Colours
+-------
+Colours for fonts, backgrounds, borders, etc. can be set in three ways: indexed, aRGB or theme. Indexed colours are the legacy implementation and the colours themselves depend upon the index provided with the workbook or with the application default. Theme colours are useful for complementary shades of colours but also depend upon the theme being present in the workbook. It is, therefore, advisable to use aRGB colours.
 
 .. :: doctest
 
->>> from openpyxl.styles import Font
->>> from openpyxl.styles.colors import RED
->>> font = Font(color=RED)
->>> font = Font(color="FFBB00")
+aRGB colours
+++++++++++++
 
-There is also support for legacy indexed colors as well as themes and tints
+RGB colours are set using hexadecimal values for red, green and blue.
+
+>>> from openpyxl.styles import Font
+>>> font = Font(color="FF0000")
+
+The alpha value refers in theory to the transparency of the colour but this is not relevant for cell styles. The default of 00 will prepended to any simple RGB value:
+
+>>> from openpyxl.styles import Font
+>>> font = Font(color="00FF00")
+>>> font.color.rgb
+'0000FF00'
+
+There is also support for legacy indexed colours as well as themes and tints.
 
 >>> from openpyxl.styles.colors import Color
 >>> c = Color(indexed=32)
 >>> c = Color(theme=6, tint=0.5)
 
+Indexed Colours
++++++++++++++++
+
+.. raw:: html
+   :file: colours.html
+
+The indices 64 and 65 cannot be set and are reserved for the system foreground and background colours respectively.
 
 Applying Styles
 ---------------

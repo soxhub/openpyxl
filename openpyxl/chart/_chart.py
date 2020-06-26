@@ -10,10 +10,8 @@ from openpyxl.descriptors import (
     Bool,
     Set,
 )
-from openpyxl.descriptors.nested import Nested
-from openpyxl.descriptors.sequence import NestedSequence, ValueSequence
+from openpyxl.descriptors.sequence import ValueSequence
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.xml.constants import PACKAGE_CHARTS
 
 from ._3d import _3DBase
 from .data_source import AxDataSource, NumRef

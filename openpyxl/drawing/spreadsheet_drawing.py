@@ -364,6 +364,8 @@ class SpreadsheetDrawing(Serialisable):
     def _blip_rels(self):
         """
         Get relationship information for each blip and bind anchor to it
+
+        Images that are not part of the XLSX package will be ignored.
         """
         rels = []
         anchors = self.absoluteAnchor + self.oneCellAnchor + self.twoCellAnchor
@@ -372,7 +374,7 @@ class SpreadsheetDrawing(Serialisable):
             child = anchor.pic or anchor.groupShape and anchor.groupShape.pic
             if child and child.blipFill:
                 rel = child.blipFill.blip
-                if rel is not None:
+                if rel is not None and rel.embed:
                     rel.anchor = anchor
                     rels.append(rel)
 

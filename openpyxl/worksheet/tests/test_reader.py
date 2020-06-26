@@ -935,7 +935,7 @@ class TestWorksheetReader:
         reader.bind_properties()
 
         for k in ('page_margins', 'page_setup', 'views', 'sheet_format',
-                  'legacy_drawing'):
+                  'legacy_drawing', 'protection'):
             assert getattr(ws, k) == getattr(reader.parser, k)
 
 

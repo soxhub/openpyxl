@@ -255,7 +255,7 @@ class CellRange(Serialisable):
         """
         Check whether the range contains a particular cell coordinate
         """
-        cr = self.__class__(coord)
+        cr = CellRange(coord)
         if cr.title is None:
             cr.title = self.title
         return self.issuperset(cr)

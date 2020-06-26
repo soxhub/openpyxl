@@ -73,7 +73,7 @@ def RowColItem():
 class TestRowColItem:
 
     def test_ctor(self, RowColItem):
-        fut = RowColItem(x=4)
+        fut = RowColItem(x=[4])
         xml = tostring(fut.to_tree())
         expected = """
         <i i="0" r="0" t="data">
@@ -92,7 +92,7 @@ class TestRowColItem:
         """
         node = fromstring(src)
         fut = RowColItem.from_tree(node)
-        assert fut == RowColItem(r=1, x=2)
+        assert fut == RowColItem(r=1, x=[2])
 
 
 @pytest.fixture
