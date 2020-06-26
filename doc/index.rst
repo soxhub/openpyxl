@@ -89,7 +89,7 @@ There are several ways to contribute, even if you can't code (or can't code well
       documentation, it's pretty hard to do anything with it
 
     * proposing compatibility fixes for different versions of Python: we support
-      2.7, 3.4, 3.5, 3.6 and 3.7
+      3.6, 3.7, 3.8 and 3.9.
 
 
 Installation
