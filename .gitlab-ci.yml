@@ -6,6 +6,8 @@ stages:
 test:
   stage: test
   script:
+    - apt-get update -qy
+    - apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
     - pip install -e .
     - tox --skip-missing-interpreters -- -qrf
