@@ -5,6 +5,7 @@ stages:
 
 test:
   stage: test
-  pip install -r requirements.txt
-  pip install -e .
-  tox --skip-missing-interpreters -- -qrf
+  script:
+    - pip install -r requirements.txt
+    - pip install -e .
+    - tox --skip-missing-interpreters -- -qrf
