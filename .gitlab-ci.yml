@@ -1,4 +1,4 @@
-image: openpyxl/openpyxl-ci
+# image: openpyxl/openpyxl-ci
 
 stages:
   - test
