@@ -212,11 +212,7 @@ class CellRange(Serialisable):
         """
         self._check_title(other)
 
-        return (
-            (other.min_row <= self.min_row <= self.max_row <= other.max_row)
-            and
-            (other.min_col <= self.min_col <= self.max_col <= other.max_col)
-        )
+        return other.__superset(self)
 
     __le__ = issubset
 
@@ -232,6 +228,14 @@ class CellRange(Serialisable):
         return self.__le__(other) and self.__ne__(other)
 
 
+    def __superset(self, other):
+        return (
+            (self.min_row <= other.min_row <= other.max_row <= self.max_row)
+            and
+            (self.min_col <= other.min_col <= other.max_col <= self.max_col)
+        )
+
+
     def issuperset(self, other):
         """
         Test whether every cell in *other* is in this range.
@@ -242,11 +246,7 @@ class CellRange(Serialisable):
         """
         self._check_title(other)
 
-        return (
-            (self.min_row <= other.min_row <= other.max_row <= self.max_row)
-            and
-            (self.min_col <= other.min_col <= other.max_col <= self.max_col)
-        )
+        return self.__superset(other)
 
     __ge__ = issuperset
 
@@ -256,9 +256,7 @@ class CellRange(Serialisable):
         Check whether the range contains a particular cell coordinate
         """
         cr = self.__class__(coord)
-        if cr.title is None:
-            cr.title = self.title
-        return self.issuperset(cr)
+        return self.__superset(cr)
 
 
     def __gt__(self, other):
