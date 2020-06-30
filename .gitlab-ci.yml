@@ -1,10 +1,13 @@
-image: openpyxl/openpyxl-ci
+# image: openpyxl/openpyxl-ci
 
 stages:
   - test
 
 test:
   stage: test
-  pip install -r requirements.txt
-  pip install -e .
-  tox --skip-missing-interpreters -- -qrf
+  script:
+    - apt-get update -qy
+    - apt-get install -y python-dev python-pip
+    - pip install -r requirements.txt
+    - pip install -e .
+    - tox --skip-missing-interpreters -- -qrf
