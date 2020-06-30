@@ -255,7 +255,7 @@ class CellRange(Serialisable):
         """
         Check whether the range contains a particular cell coordinate
         """
-        cr = CellRange(coord)
+        cr = self.__class__(coord)
         if cr.title is None:
             cr.title = self.title
         return self.issuperset(cr)
@@ -482,7 +482,6 @@ class MultiCellRange(Strict):
 
     def __bool__(self):
         return bool(self.ranges)
-
 
 
     def remove(self, coord):
