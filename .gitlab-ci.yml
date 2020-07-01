@@ -18,19 +18,18 @@ test-python36:
   <<: *unit
   image: python:3.6
   variables:
-     TOXENV=py36
+     TOXENV: py36
 
 test-python37:
   <<: *unit
   image: python:3.7
   variables:
-     TOX_SKIP_ENV=
 
 test-python38:
   <<: *unit
   image: python:3.8
   variables:
-     TOXENV=38    
+     TOXENV: py38    
 
 test-python39:
   <<: *unit
@@ -40,4 +39,4 @@ test-pypy3:
   <<: *unit
   image: pypy:3
   variables:
-     pypy3
+     TOXENV: pypy3
