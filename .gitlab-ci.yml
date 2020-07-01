@@ -1,13 +1,37 @@
-# image: openpyxl/openpyxl-ci
-
 stages:
   - test
 
-test:
+.unit-test: &unit
   stage: test
+  variables:
+    TOX_SKIP_ENV: "py37*"
   script:
-    - apt-get update -qy
-    - apt-get install -y python-dev python-pip
+    - tox --skip-missing-interpreters -- -qrf
+  before_script:
+    - python -V
+    - pip install tox
     - pip install -r requirements.txt
     - pip install -e .
-    - tox --skip-missing-interpreters -- -qrf
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
+
+test-python36:
+  <<: *unit
+  image: python:3.6
+
+test-python37:
+  <<: *unit
+  image: python:3.7
+  variables:
+    TOX_SKIP_ENV: ""
+
+test-python38:
+  <<: *unit
+  image: python:3.8
+
+test-python39:
+  <<: *unit
+  image: python:3.9
+
+test-pypy3:
+  <<: *unit
+  image: pypy:3
