@@ -30,7 +30,7 @@ test-python38:
 
 test-python39:
   <<: *unit
-  image: python:3.9
+  image: python:3.9-rc
 
 test-pypy3:
   <<: *unit
