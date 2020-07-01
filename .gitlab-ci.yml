@@ -4,10 +4,10 @@ stages:
 .unit-test: &unit
   stage: test
   variables:
-    #TOX_SKIP_ENV: "py37.*"
+    TOX_SKIP_ENV: "py37.*|doc|docutil|defusedxml|numpy|pandas|xfail|nopillow"
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   script:
-    - tox --skip-missing-interpreters -a auto -- -qrf
+    - tox --skip-missing-interpreters -- -qrf
   before_script:
     - python -V
     - pip install -r requirements.txt
@@ -18,18 +18,18 @@ test-python36:
   <<: *unit
   image: python:3.6
   variables:
-     TOXENV: py36
+
 
 test-python37:
   <<: *unit
   image: python:3.7
   variables:
+    TOX_SKIP_ENV: "py36"
 
 test-python38:
   <<: *unit
   image: python:3.8
   variables:
-     TOXENV: py38    
 
 test-python39:
   <<: *unit
@@ -39,4 +39,3 @@ test-pypy3:
   <<: *unit
   image: pypy:3
   variables:
-     TOXENV: pypy3
