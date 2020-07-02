@@ -6,10 +6,10 @@ stages:
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   script:
-    - tox --skip-missing-interpreters -- -qrf
+    - tox --skip-missing-interpreters -- -qqrf
   before_script:
     - python -V
-    - pip install -tox
+    - pip install tox
     - pip install -e .
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
@@ -24,7 +24,7 @@ test-python37:
   image: python:3.7
   variables:
   script:
-    - tox --skip-missing-interpreters -p auto -- -qrf
+    - tox --skip-missing-interpreters -p auto -- -rf
 
 test-python38:
   <<: *unit
