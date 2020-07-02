@@ -430,7 +430,8 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
-            return ()
+            return iter(())
+
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -496,7 +497,7 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row]):
-            return ()
+            return iter(())
 
         min_col = min_col or 1
         min_row = min_row or 1
