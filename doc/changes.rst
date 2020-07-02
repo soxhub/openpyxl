@@ -2,6 +2,8 @@
 ==================
 
 
+* `#1492 <https://bitbucket.org/openpyxl/openpyxl/issues/1492>`_ Empty worksheets do not return generators when looping.
+
 
 3.0.4 (2020-06-24)
 ==================
