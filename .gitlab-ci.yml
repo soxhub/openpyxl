@@ -45,7 +45,7 @@ test-pypy3:
     TOXENV: pypy3
     
 test-coverage:
-  <<:*unit
+  <<: *unit
   image: python:3.7
   script:
     - export GIT_ID=$(hg tip --template '{node}\n')
