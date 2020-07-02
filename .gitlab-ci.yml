@@ -26,7 +26,7 @@ test-python37:
   variables:
     # TOX_SKIP_ENV: "py36|py38|py39|pypy3"
   script:
-    - tox --skip-missing-interpreters -p auto -qrf
+    - tox --skip-missing-interpreters -p auto -- -qrf
 
 test-python38:
   <<: *unit
