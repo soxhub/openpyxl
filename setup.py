@@ -58,8 +58,8 @@ setup(
         ],
     project_urls={
         'Documentation': 'https://openpyxl.readthedocs.io/en/stable/',
-        'Source': 'https://bitbucket.org/openpyxl/openpyxl',
-        'Tracker': 'https://bitbucket.org/openpyxl/openpyxl/issues',
+        'Source': 'https://foss.heptapod.net/openpyxl/openpyxl',
+        'Tracker': 'https://foss.heptapod.net/openpyxl/openpyxl/-/issues',
     },
     classifiers=[
                  'Development Status :: 5 - Production/Stable',
