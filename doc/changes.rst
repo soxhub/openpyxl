@@ -4,6 +4,7 @@
 
 * `#1490 <https://bitbucket.org/openpyxl/openpyxl/issues/1490>`_ Cannot copy worksheets with merged cells
 * `#1492 <https://bitbucket.org/openpyxl/openpyxl/issues/1492>`_ Empty worksheets do not return generators when looping.
+* `#1496 <https://bitbucket.org/openpyxl/openpyxl/issues/1496>`_ Hyperlinks duplicated on multiple saves
 
 
 3.0.4 (2020-06-24)
