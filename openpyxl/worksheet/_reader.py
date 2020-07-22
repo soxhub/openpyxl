@@ -279,8 +279,8 @@ class WorkSheetParser(object):
         try:
             cf = ConditionalFormatting.from_tree(element)
             self.formatting.append(cf)
-        except TypeError:
-            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
+        except TypeError as e:
+            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {e}"
             warn(msg)
 
 
