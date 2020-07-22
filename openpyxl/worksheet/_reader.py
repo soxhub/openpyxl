@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2020 openpyxl
 
 """Reader for a single worksheet."""
-import traceback
+from copy import copy
 from warnings import warn
 
 # compatibility imports
@@ -384,7 +384,7 @@ class WorksheetReader(object):
                 for row in self.ws[link.ref]:
                     for cell in row:
                         try:
-                            cell.hyperlink = link
+                            cell.hyperlink = copy(link)
                         except AttributeError:
                             pass
             else:
