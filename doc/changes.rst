@@ -9,7 +9,8 @@ Bugfixes
 * `#1490 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1490>`_ Cannot copy worksheets with merged cells
 * `#1492 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1492>`_ Empty worksheets do not return generators when looping.
 * `#1496 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1496>`_ Hyperlinks duplicated on multiple saves
-* `#1500 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1413>`_ Incorrectly literal format as datetime
+* `#1500 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1500>`_ Incorrectly literal format as datetime
+* `#1502 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1502>`_ Links set to range of cells not preserved
 
 
 3.0.4 (2020-06-24)
