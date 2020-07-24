@@ -11,6 +11,7 @@ Bugfixes
 * `#1496 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1496>`_ Hyperlinks duplicated on multiple saves
 * `#1500 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1500>`_ Incorrectly literal format as datetime
 * `#1502 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1502>`_ Links set to range of cells not preserved
+* `#1507 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1507>`_ Exception when opening workbook with chartsheets and tables
 
 
 3.0.4 (2020-06-24)
