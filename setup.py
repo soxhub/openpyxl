@@ -47,6 +47,7 @@ def cythonize_modules():
         "openpyxl/utils/cell.py",
         ],
         nthreads=3,
+        language_level=3,
     )
 
 
