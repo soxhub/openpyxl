@@ -56,13 +56,12 @@ def absolute_coordinate(coord_string):
     """Convert a coordinate to an absolute coordinate string (B12 -> $B$12)"""
     m = ABSOLUTE_RE.match(coord_string)
     if not m:
-        raise ValueError("{0} is not a valid coordinate range".format(
-            coord_string))
+        raise ValueError(f"{coord_string} is not a valid coordinate range")
 
     d = m.groupdict('')
     for k, v in d.items():
         if v:
-            d[k] = "${0}".format(v)
+            d[k] = f"${v}"
 
     if d['max_col'] or d['max_row']:
         fmt = "{min_col}{min_row}:{max_col}{max_row}"
