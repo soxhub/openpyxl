@@ -4,6 +4,7 @@
 Collection of utilities used within the package and also available for client code
 """
 import re
+from string import digits
 
 from .exceptions import CellCoordinatesException
 
@@ -193,8 +194,11 @@ def coordinate_to_tuple(coordinate):
     """
     Convert an Excel style coordinate to (row, colum) tuple
     """
-    match = COORD_RE.split(coordinate)
-    col, row = match[1:3]
+    for idx, c in enumerate(coordinate):
+        if c in digits:
+            break
+    col = coordinate[:idx].upper()
+    row = coordinate[idx:]
     return int(row), _COL_STRING_CACHE[col]
 
 
