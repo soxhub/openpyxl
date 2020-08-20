@@ -29,6 +29,12 @@ def writer():
 class TestWorksheetWriter:
 
 
+    def test_setup(self, writer):
+        ws = writer.ws
+        assert ws._hyperlinks == []
+        assert ws._comments == []
+
+
     def test_properties(self, writer):
 
         writer.write_properties()

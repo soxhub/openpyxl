@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2020 openpyxl
 
 """Reader for a single worksheet."""
-import traceback
+from copy import copy
 from warnings import warn
 
 # compatibility imports
@@ -279,8 +279,8 @@ class WorkSheetParser(object):
         try:
             cf = ConditionalFormatting.from_tree(element)
             self.formatting.append(cf)
-        except TypeError:
-            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
+        except TypeError as e:
+            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {e}"
             warn(msg)
 
 
@@ -384,7 +384,7 @@ class WorksheetReader(object):
                 for row in self.ws[link.ref]:
                     for cell in row:
                         try:
-                            cell.hyperlink = link
+                            cell.hyperlink = copy(link)
                         except AttributeError:
                             pass
             else:

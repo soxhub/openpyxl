@@ -430,7 +430,8 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
-            return ()
+            return iter(())
+
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -496,7 +497,7 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row]):
-            return ()
+            return iter(())
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -584,10 +585,13 @@ class Worksheet(_WorkbookChild):
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
-        cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
+        if range_string is None:
+            cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
-        self.merged_cells.add(cr)
-        self._clean_merge_range(cr)
+            range_string = cr.coord
+        mcr = MergedCellRange(self, range_string)
+        self.merged_cells.add(mcr)
+        self._clean_merge_range(mcr)
 
 
     def _clean_merge_range(self, mcr):
@@ -596,9 +600,6 @@ class Worksheet(_WorkbookChild):
         and recreate the lost border information.
         Borders are then applied
         """
-        if not isinstance(mcr, MergedCellRange):
-            mcr = MergedCellRange(self, mcr.coord)
-
         cells = mcr.cells
         next(cells) # skip first cell
         for row, col in cells:

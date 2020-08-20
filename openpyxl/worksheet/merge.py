@@ -63,7 +63,7 @@ class MergedCellRange(CellRange):
 
     def __init__(self, worksheet, coord):
         self.ws = worksheet
-        super(MergedCellRange, self).__init__(range_string=coord)
+        super().__init__(range_string=coord)
         self.start_cell = None
         self._get_borders()
 
@@ -116,3 +116,11 @@ class MergedCellRange(CellRange):
                     cell = MergedCell(self.ws, row=row, column=col)
                     self.ws._cells[(cell.row, cell.column)] = cell
                 cell.border += border
+
+
+    def __contains__(self, coord):
+        return coord in CellRange(self.coord)
+
+
+    def __copy__(self):
+        return self.__class__(self.ws, self.coord)

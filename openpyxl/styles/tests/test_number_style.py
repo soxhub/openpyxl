@@ -74,7 +74,9 @@ def test_strip_quotes(fmt, stripped):
                              (u'#,##0\\ [$\u20bd-46D]', False),
                              ('"$"#,##0_);[Red]("$"#,##0)', False),
                              (u'[$-404]e"\xfc"m"\xfc"d"\xfc"', True),
-                            (r"0_ ;[Red]\-0\ ", False)
+                             (r"0_ ;[Red]\-0\ ", False),
+                             (r"\Y000000", False),
+                             (r'#,##0.0####" YMD"', False),
                          ]
                          )
 def test_is_date_format(format, result):

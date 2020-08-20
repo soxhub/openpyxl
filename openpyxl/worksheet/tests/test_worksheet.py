@@ -208,7 +208,7 @@ class TestWorksheet:
 
     def test_no_rows(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.rows == ()
+        assert tuple(ws.rows) == ()
 
 
     def test_no_cols(self, Worksheet):

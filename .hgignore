@@ -28,3 +28,4 @@ Compliance
 Spec
 doc/api
 openpyxl-env
+*.c

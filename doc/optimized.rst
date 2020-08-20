@@ -20,9 +20,15 @@ Introducing :class:`openpyxl.worksheet._read_only.ReadOnlyWorksheet`::
         for cell in row:
             print(cell.value)
 
+    # Close the workbook after reading
+    wb.close()
+
 .. warning::
 
     * :class:`openpyxl.worksheet._read_only.ReadOnlyWorksheet` is read-only
+
+    * Unlike a normal workbook, a read-only workbook will use lazy loading.
+      The workbook must be explicitly closed with the :func:`close()` method.
 
 Cells returned are not regular :class:`openpyxl.cell.cell.Cell` but
 :class:`openpyxl.cell._read_only.ReadOnlyCell`.
