@@ -62,7 +62,7 @@ else:
 setup(
     name='openpyxl',
     packages=find_packages(".",
-        exclude=["*.tests", "scratchpad*"]
+        exclude=["*.tests", "scratchpad*", "*.c",]
         ),
     ext_modules=ext_modules,
     package_dir={},
