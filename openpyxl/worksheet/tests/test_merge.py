@@ -165,3 +165,23 @@ class TestMergedCellRange:
                 right=default_border(),
                 bottom=default_border())
         assert ws['B2'].border == b2_border
+
+
+    def test_copy(self, MergedCellRange):
+        ws = Workbook().active
+        mcr1 = MergedCellRange(ws, "A1:J6")
+        mcr2 = copy(mcr1)
+        assert mcr2 == mcr1
+
+
+    def test_contains(seld, MergedCellRange):
+        ws = Workbook().active
+        mcr = MergedCellRange(ws, "B2:M20")
+        assert "D4" in mcr
+
+
+    def test_not_contained(self, MergedCellRange):
+        ws = Workbook().active
+        mcr = MergedCellRange(ws, "B2:M20")
+        assert "A1" not in mcr
+

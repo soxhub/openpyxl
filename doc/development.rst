@@ -13,7 +13,7 @@ Python environment, running tests and building the documentation.
 Getting the source
 ------------------
 
-The source code of openpyxl is hosted on `BitBucket <https://bitbucket.org/openpyxl/openpyxl>`_
+The source code of openpyxl is hosted on `Heptapod <https://foss.heptapod.net/openpyxl/openpyxl>`_
 as a Mercurial project which you can download using e.g. the GUI client
 `SourceTree <http://www.sourcetreeapp.com>`_ by Atlassian. If you prefer working
 with the command line you can use the following:
@@ -35,7 +35,7 @@ to the :code:`./hg/hgrc` file the following::
 
     [paths]
     default = ...
-    openpyxl-master = https://bitbucket.org/openpyxl/openpyxl
+    openpyxl-master = https://foss.heptapod.net/openpyxl/openpyxl
 
 You can then grab any new changes using::
 

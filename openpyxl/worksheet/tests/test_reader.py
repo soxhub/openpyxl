@@ -865,6 +865,7 @@ class TestWorksheetReader:
         reader.bind_hyperlinks()
 
         assert ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
+        assert ws['B4'].hyperlink.ref == "B4"
 
 
     def test_merged_hyperlinks(self, PrimedWorksheetReader):

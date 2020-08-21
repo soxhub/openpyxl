@@ -15,6 +15,7 @@ Thee manifest.in file is used for data files.
 """
 
 import os
+import sys
 
 from setuptools import setup, find_packages
 
@@ -38,11 +39,32 @@ __url__ = constants.__url__
 __version__ = constants.__version__
 
 
+def cythonize_modules():
+    from Cython.Build import cythonize
+    return cythonize([
+        "openpyxl/worksheet/_reader.py",
+        "openpyxl/worksheet/_writer.py",
+        "openpyxl/utils/cell.py",
+        ],
+        nthreads=3,
+        language_level=3,
+    )
+
+
+try:
+    sys.argv.remove("--with-cython")
+except ValueError:
+    ext_modules = None
+else:
+    ext_modules = cythonize_modules()
+
+
 setup(
     name='openpyxl',
     packages=find_packages(".",
-        exclude=["*.tests", "scratchpad*"]
+        exclude=["*.tests", "scratchpad*", "*.c",]
         ),
+    ext_modules=ext_modules,
     package_dir={},
     # metadata
     version=__version__,
@@ -58,8 +80,8 @@ setup(
         ],
     project_urls={
         'Documentation': 'https://openpyxl.readthedocs.io/en/stable/',
-        'Source': 'https://bitbucket.org/openpyxl/openpyxl',
-        'Tracker': 'https://bitbucket.org/openpyxl/openpyxl/issues',
+        'Source': 'https://foss.heptapod.net/openpyxl/openpyxl',
+        'Tracker': 'https://foss.heptapod.net/openpyxl/openpyxl/-/issues',
     },
     classifiers=[
                  'Development Status :: 5 - Production/Stable',

@@ -433,12 +433,12 @@ class Workbook(object):
         Check for duplicate name in defined name list and table list of each worksheet.
         Names are not case sensitive.
         """
-        lwr = name.lower()
-        for sheet in self._sheets:
-            tables = [key.lower() for key in sheet._tables.keys()]
-            if lwr in tables:
-                return True
+        name = name.lower()
+        for sheet in self.worksheets:
+            for t in sheet.tables:
+                if name == t.lower():
+                    return True
 
-        if lwr in [dfn.name.lower() for dfn in self.defined_names.definedName]:
-                return True
-        return False
+        if name in self.defined_names:
+            return True
+
