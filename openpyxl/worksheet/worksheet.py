@@ -129,6 +129,7 @@ class Worksheet(_WorkbookChild):
         self.auto_filter = AutoFilter()
         self.paper_size = None
         self.formula_attributes = {}
+        self.table_formulae = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormattingList()
         self.legacy_drawing = None
