@@ -28,6 +28,7 @@ ARC_ROOT_RELS = PACKAGE_RELS + '/.rels'
 ARC_WORKBOOK_RELS = PACKAGE_XL + '/' + PACKAGE_RELS + '/workbook.xml.rels'
 ARC_CORE = PACKAGE_PROPS + '/core.xml'
 ARC_APP = PACKAGE_PROPS + '/app.xml'
+ARC_CUSTOM = PACKAGE_PROPS + '/custom.xml'
 ARC_WORKBOOK = PACKAGE_XL + '/workbook.xml'
 ARC_STYLE = PACKAGE_XL + '/styles.xml'
 ARC_THEME = PACKAGE_THEME + '/theme1.xml'
@@ -50,7 +51,11 @@ IMAGE_NS = REL_NS + "/image"
 VML_NS =  REL_NS + "/vmlDrawing"
 VTYPES_NS = DOC_NS + 'docPropsVTypes'
 XPROPS_NS = DOC_NS + 'extended-properties'
+CPROPS_NS = DOC_NS + 'custom-properties'
 EXTERNAL_LINK_NS = REL_NS + "/externalLink"
+
+# CustomDocumentProperty FMTID:
+CPROPS_FMTID = "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
 
 # Package
 PKG_NS = "http://schemas.openxmlformats.org/package/2006/"
@@ -96,6 +101,7 @@ DRAWING_TYPE = "application/vnd.openxmlformats-officedocument.drawing+xml"
 CHART_TYPE = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
 CHARTSHAPE_TYPE = "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml"
 THEME_TYPE = "application/vnd.openxmlformats-officedocument.theme+xml"
+CPROPS_TYPE = "application/vnd.openxmlformats-officedocument.custom-properties+xml"
 XLTM = WORKBOOK_MACRO % 'template'
 XLSM = WORKBOOK_MACRO % 'sheet'
 XLTX = WORKBOOK % 'template'

@@ -52,9 +52,15 @@ def _convert(expected_type, value):
     """
     if not isinstance(value, expected_type):
         try:
-            value = expected_type(value)
+            if expected_type is datetime.datetime:
+                value = from_ISO8601(value)
+            else:
+                value = expected_type(value)
         except:
-            raise TypeError('expected ' + str(expected_type))
+            if expected_type is datetime.datetime:
+                raise ValueError('Value must be ISO datetime formatted string or ' + str(expected_type) + ' object')
+            else:
+                raise TypeError('expected ' + str(expected_type))
     return value
 
 
