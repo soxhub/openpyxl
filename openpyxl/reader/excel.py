@@ -318,5 +318,4 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     reader = ExcelReader(filename, read_only, keep_vba,
                         data_only, keep_links)
     reader.read()
-    print('test, reader Alex')
     return reader.wb
