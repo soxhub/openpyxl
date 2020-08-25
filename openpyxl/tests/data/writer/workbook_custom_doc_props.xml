@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
+  <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+  </property>
+  <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+  </property>
+  <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+  </property>
+  <property name="PropName4" pid="5" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
+    <vt:lpwstr/>
+  </property>
+  <property name="PropName5" pid="6" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:r8>2.5</vt:r8>
+  </property>
+  <property name="PropName6" pid="7" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:i4>2</vt:i4>
+  </property>
+  <property name="PropName7" pid="8" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:r8>2.5</vt:r8>
+  </property>
+  <property name="PropName8" pid="9" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:lpwstr>Foo</vt:lpwstr>
+  </property>
+  <property name="PropName9" pid="10" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+    <vt:bool>true</vt:bool>
+  </property>
+</Properties>
