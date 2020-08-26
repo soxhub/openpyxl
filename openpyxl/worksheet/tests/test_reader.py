@@ -416,9 +416,9 @@ class TestWorksheetParser:
           <v>1</v>
        </c>"""
         element = fromstring(src)
-
+        from ..datatable import DataTable
         formula = parser.parse_formula(element)
-        assert formula == "1"
+        assert isinstance(formula, DataTable)
         assert parser.table_formulae['C9'].ref == 'C9:C24'
 
 

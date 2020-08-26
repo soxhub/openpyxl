@@ -54,6 +54,7 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
             attrib = worksheet.formula_attributes[coord]
         elif coord in worksheet.table_formulae:
             attrib = dict(worksheet.table_formulae[coord])
+            value = None
 
         formula = SubElement(el, 'f', attrib)
         if value is not None and not attrib.get('t') == "dataTable":
@@ -90,6 +91,7 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
                 attrib = worksheet.formula_attributes[coord]
             elif coord in worksheet.table_formulae:
                 attrib = dict(worksheet.table_formulae[coord])
+                value = None
             with xf.element('f', attrib):
                 if value is not None and not attrib.get('t') == "dataTable":
                     xf.write(value[1:])

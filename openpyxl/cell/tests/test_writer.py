@@ -193,7 +193,7 @@ def test_table_formula(worksheet, write_cell_implementation):
     expected = """
     <c r="A1">
       <f t="dataTable" ref="A1:B10" />
-      <v>1</v>
+      <v/>
     </c>"""
     xml = out.getvalue()
     diff = compare_xml(xml, expected)

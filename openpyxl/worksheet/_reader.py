@@ -252,7 +252,7 @@ class WorkSheetParser(object):
         elif formula_type == "dataTable":
             dt = DataTable(**formula.attrib)
             self.table_formulae[coordinate] = dt
-            value = element.findtext(VALUE_TAG, None) or None
+            value = dt
 
         return value
 

@@ -9,6 +9,7 @@ class DataTable:
 
     def __init__(self,
                  ref,
+                 ca=False,
                  dt2D=False,
                  dtr=False,
                  r1=None,
@@ -17,6 +18,7 @@ class DataTable:
                  del2=False,
                  **kw):
         self.ref = ref
+        self.ca = ca
         self.dt2D = dt2D
         self.dtr = dtr
         self.r1 = r1
@@ -26,7 +28,7 @@ class DataTable:
 
 
     def __iter__(self):
-        for k in ["t", "ref", "dt2D", "dtr", "r1", "r2", "del1", "del2"]:
+        for k in ["t", "ref", "dt2D", "dtr", "r1", "r2", "del1", "del2", "ca"]:
             v = getattr(self, k)
             if v:
                 yield k, safe_string(v)
