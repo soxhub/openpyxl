@@ -26,7 +26,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
-from openpyxl.worksheet.datatable import DataTable
+from openpyxl.worksheet.datatable import TableFormula
 
 # constants
 
@@ -195,7 +195,7 @@ class Cell(StyleableObject):
             elif value in ERROR_CODES:
                 self.data_type = 'e'
 
-        elif isinstance(value, DataTable):
+        elif isinstance(value, TableFormula):
             self.data_type = "f"
 
         elif value is not None:

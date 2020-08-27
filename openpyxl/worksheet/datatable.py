@@ -2,7 +2,7 @@
 
 from openpyxl.compat import safe_string
 
-class DataTable:
+class TableFormula:
 
 
     t = "dataTable"

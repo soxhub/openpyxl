@@ -416,9 +416,9 @@ class TestWorksheetParser:
           <v>1</v>
        </c>"""
         element = fromstring(src)
-        from ..datatable import DataTable
+        from ..datatable import TableFormula
         formula = parser.parse_formula(element)
-        assert isinstance(formula, DataTable)
+        assert isinstance(formula, TableFormula)
 
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):

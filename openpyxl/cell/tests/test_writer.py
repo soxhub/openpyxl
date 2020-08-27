@@ -176,13 +176,13 @@ def test_whitespace(worksheet, write_cell_implementation):
     assert diff is None, diff
 
 
-from openpyxl.worksheet.datatable import DataTable
+from openpyxl.worksheet.datatable import TableFormula
 
 def test_table_formula(worksheet, write_cell_implementation):
     write_cell = write_cell_implementation
     ws = worksheet
     cell = ws["A1"]
-    cell.value =  DataTable(ref="A1:B10")
+    cell.value =  TableFormula(ref="A1:B10")
     cell.data_type = "f"
 
     out = BytesIO()
