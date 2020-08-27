@@ -6,7 +6,7 @@ from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, days_to_time
 from datetime import timedelta
 
-from openpyxl.worksheet.datatable import TableFormula
+from openpyxl.worksheet.formula import TableFormula
 
 
 def _set_attributes(cell, styled=None):

@@ -416,7 +416,7 @@ class TestWorksheetParser:
           <v>1</v>
        </c>"""
         element = fromstring(src)
-        from ..datatable import TableFormula
+        from ..formula import TableFormula
         formula = parser.parse_formula(element)
         assert isinstance(formula, TableFormula)
 

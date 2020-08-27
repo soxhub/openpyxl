@@ -176,7 +176,7 @@ def test_whitespace(worksheet, write_cell_implementation):
     assert diff is None, diff
 
 
-from openpyxl.worksheet.datatable import TableFormula
+from openpyxl.worksheet.formula import TableFormula
 
 def test_table_formula(worksheet, write_cell_implementation):
     write_cell = write_cell_implementation

@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture
 def TableFormula():
-    from ..datatable import TableFormula
+    from ..formula import TableFormula
     return TableFormula
 
 
