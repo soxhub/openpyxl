@@ -18,7 +18,6 @@ import re
 
 from openpyxl.compat import (
     NUMERIC_TYPES,
-    deprecated,
 )
 
 from openpyxl.utils.exceptions import IllegalCharacterError
