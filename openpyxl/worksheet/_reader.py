@@ -94,7 +94,6 @@ class WorkSheetParser(object):
         self.data_only = data_only
         self.shared_formulae = {}
         self.array_formulae = {}
-        self.table_formulae = {}
         self.row_counter = self.col_counter = 0
         self.tables = TablePartList()
         self.date_formats = date_formats
@@ -250,9 +249,7 @@ class WorkSheetParser(object):
                 self.shared_formulae[idx] = Translator(value, coordinate)
 
         elif formula_type == "dataTable":
-            dt = DataTable(**formula.attrib)
-            self.table_formulae[coordinate] = dt
-            value = dt
+            value = DataTable(**formula.attrib)
 
         return value
 
@@ -349,7 +346,6 @@ class WorksheetReader(object):
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
         self.ws.formula_attributes = self.parser.array_formulae
-        self.ws.table_formulae = self.parser.table_formulae
         if self.ws._cells:
             self.ws._current_row = self.ws.max_row # use cells not row dimensions
 

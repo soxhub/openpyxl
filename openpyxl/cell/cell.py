@@ -27,6 +27,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.datatable import DataTable
 
 # constants
 
@@ -194,6 +195,9 @@ class Cell(StyleableObject):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
+
+        elif isinstance(value, DataTable):
+            self.data_type = "f"
 
         elif value is not None:
             raise ValueError("Cannot convert {0!r} to Excel".format(value))

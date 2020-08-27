@@ -181,9 +181,8 @@ from openpyxl.worksheet.datatable import DataTable
 def test_table_formula(worksheet, write_cell_implementation):
     write_cell = write_cell_implementation
     ws = worksheet
-    ws.table_formulae['A1'] = DataTable(ref="A1:B10")
     cell = ws["A1"]
-    cell.value = 1
+    cell.value =  DataTable(ref="A1:B10")
     cell.data_type = "f"
 
     out = BytesIO()

@@ -419,7 +419,6 @@ class TestWorksheetParser:
         from ..datatable import DataTable
         formula = parser.parse_formula(element)
         assert isinstance(formula, DataTable)
-        assert parser.table_formulae['C9'].ref == 'C9:C24'
 
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):
