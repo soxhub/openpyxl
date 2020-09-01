@@ -18,48 +18,51 @@ def CustomDocumentProperty():
 
 class TestCustomDocumentProperties:
 
+    def test_add(self, CustomDocumentProperties):
+        props = CustomDocumentProperties()
+        props.add("PropName1", True)
+
+        assert props["PropName1"].value == True
+
+    def test_delete(self, CustomDocumentProperties):
+        src = """
+        <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
+          <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+          </property>
+          <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:r8>2.5</vt:r8>
+          </property>
+          <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:bool>true</vt:bool>
+          </property>
+        </Properties>
+        """
+        node = fromstring(src)
+        props = CustomDocumentProperties.from_tree(node)
+
+        for prop in props:
+            del props[prop.name]
+
+        assert len(props) == 0
+
     def test_ctor(self, CustomDocumentProperties):
         props = CustomDocumentProperties()
-        props.add("PropName1", datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22))
-        props.add("PropName2", "2020-08-24T20:19:22Z", "date")
-        props.add("PropName3", "2020-08-24T20:19:22Z", "date")
-        props.add("PropName4", LinkTarget="ExampleName")
-        props.add("PropName5", 2.5)
-        props.add("PropName6", 2)
-        props.add("PropName7", "2.5", float)
-        props.add("PropName8", "Foo")
-        props.add("PropName9", True)
-        props.add("PropName10", False)
-        del props['PropName10']
+        props.add("PropName1", "2020-08-24T20:19:22Z", "date")
+        props.add("PropName2", LinkTarget="ExampleName")
+        props.add("PropName3", "2.5", float)
+
         xml = tostring(props.to_tree())
         expected = """
         <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
           <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
             <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
           </property>
-          <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
-          </property>
-          <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
-          </property>
-          <property name="PropName4" pid="5" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
+          <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
             <vt:lpwstr/>
           </property>
-          <property name="PropName5" pid="6" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+          <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
             <vt:r8>2.5</vt:r8>
-          </property>
-          <property name="PropName6" pid="7" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:i4>2</vt:i4>
-          </property>
-          <property name="PropName7" pid="8" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:r8>2.5</vt:r8>
-          </property>
-          <property name="PropName8" pid="9" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:lpwstr>Foo</vt:lpwstr>
-          </property>
-          <property name="PropName9" pid="10" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:bool>true</vt:bool>
           </property>
         </Properties>
         """
@@ -74,27 +77,9 @@ class TestCustomDocumentProperties:
             <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
           </property>
           <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+            <vt:r8>2.5</vt:r8>
           </property>
           <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
-          </property>
-          <property name="PropName4" pid="5" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
-            <vt:lpwstr/>
-          </property>
-          <property name="PropName5" pid="6" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:r8>2.5</vt:r8>
-          </property>
-          <property name="PropName6" pid="7" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:i4>2</vt:i4>
-          </property>
-          <property name="PropName7" pid="8" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:r8>2.5</vt:r8>
-          </property>
-          <property name="PropName8" pid="9" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:lpwstr>Foo</vt:lpwstr>
-          </property>
-          <property name="PropName9" pid="10" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
             <vt:bool>true</vt:bool>
           </property>
         </Properties>
@@ -104,14 +89,8 @@ class TestCustomDocumentProperties:
 
         props2 = CustomDocumentProperties()
         props2.add("PropName1", datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22))
-        props2.add("PropName2", "2020-08-24T20:19:22Z", "date")
-        props2.add("PropName3", "2020-08-24T20:19:22Z", "date")
-        props2.add("PropName4", LinkTarget="ExampleName")
-        props2.add("PropName5", 2.5)
-        props2.add("PropName6", 2)
-        props2.add("PropName7", "2.5", float)
-        props2.add("PropName8", "Foo")
-        props2.add("PropName9", True)
+        props2.add("PropName2", 2.5)
+        props2.add("PropName3", True)
 
         for prop in props:
             prop2 = props2[prop.name]

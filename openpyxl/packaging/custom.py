@@ -176,6 +176,7 @@ class CustomDocumentProperties(Serialisable):
 
     def __init__(self, customProps=()):
         self.customProps = customProps
+        self.n = -1
 
 
     def _duplicate(self, defn):
@@ -250,6 +251,8 @@ class CustomDocumentProperties(Serialisable):
         for idx, defn in enumerate(self.customProps):
             if defn.name == name:
                 del self.customProps[idx]
+                if idx < self.n:
+                    self.n -= 1 #we are in a __iter__ loop, keep it on track
                 return True
 
 
@@ -275,6 +278,7 @@ class CustomDocumentProperties(Serialisable):
             self.n += 1
             return result
         else:
+            self.n = -1
             raise StopIteration
 
     @classmethod

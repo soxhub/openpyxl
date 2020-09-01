@@ -1,5 +1,5 @@
 Workbook Custom Document Properties
-=============
+===================================
 
 
 It is possible to add one or more CustomDocumentProperty objects to a workbook.
@@ -19,7 +19,7 @@ These properties are globally for a workbook and accessed from the `custom_doc_p
 
 
 Sample use
----------------------
+----------
 
 Looping over all CustomDocumentProperties ("custom_doc_props")::
 
@@ -44,7 +44,7 @@ Adding a new CustomDocumentProperty::
 
 
 Deleting all existing CustomDocumentProperties and adding new ones
--------------------------
+------------------------------------------------------------------
 
 .. testcode::
 
