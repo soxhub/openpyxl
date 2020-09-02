@@ -2,6 +2,13 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1287 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Error when opening some pivot tables
+
+
+
 3.0.5 (2020-08-21)
 ==================
 
