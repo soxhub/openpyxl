@@ -593,7 +593,7 @@ class RowColItem(Serialisable):
                  t="data",
                  r=0,
                  i=0,
-                 x=None,
+                 x=(),
                 ):
         self.t = t
         self.r = r

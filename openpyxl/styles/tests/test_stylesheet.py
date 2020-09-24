@@ -348,8 +348,13 @@ def test_simple_styles(datadir):
 def test_no_default_style(datadir):
     from ..stylesheet import apply_stylesheet
     datadir.chdir()
-    archive = ZipFile(BytesIO(), "a")
+    out = BytesIO()
+    archive = ZipFile(out, "w")
     archive.write("no_default_styles.xml", "xl/styles.xml")
+    archive.close()
+
+    out.seek(0)
+    archive = ZipFile(out)
 
     wb = Workbook()
     wb._named_styles = []
