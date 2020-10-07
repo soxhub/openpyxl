@@ -329,6 +329,11 @@ class Table(Serialisable):
             self.autoFilter = AutoFilter(ref=self.ref)
 
 
+    @property
+    def column_names(self):
+        return [column.name for column in self.tableColumns]
+
+
 class TablePartList(Serialisable):
 
     tagname = "tableParts"
