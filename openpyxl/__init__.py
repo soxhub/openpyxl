@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2020 openpyxl
 
 
-from openpyxl.compat.numbers import NUMPY, PANDAS
+from openpyxl.compat.numbers import NUMPY
 from openpyxl.xml import DEFUSEDXML, LXML
 from openpyxl.workbook import Workbook
 from openpyxl.reader.excel import load_workbook as open
