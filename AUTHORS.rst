@@ -41,6 +41,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Greg Lehmann
 * Heikki Junes
 * Israel Barth Rubio
+* Jacob Middag
 * James Smagala
 * JarekPS
 * Jean Pierre Huart

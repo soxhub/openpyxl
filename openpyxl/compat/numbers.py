@@ -42,10 +42,3 @@ if NUMPY:
                                      numpy.bool_,
                                      numpy.floating,
                                      numpy.integer)
-
-
-try:
-    import pandas
-    PANDAS = True
-except ImportError:
-    PANDAS = False

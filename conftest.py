@@ -38,8 +38,9 @@ def pytest_runtest_setup(item):
             if not NUMPY:
                 pytest.skip("Numpy must be installed")
         elif item.get_closest_marker("pandas_required"):
-            from openpyxl import PANDAS
-            if not PANDAS:
+            try:
+                import pandas
+            except ImportError as e:
                 pytest.skip("Pandas must be installed")
         elif item.get_closest_marker("no_pypy"):
             if platform.python_implementation() == "PyPy":
