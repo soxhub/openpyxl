@@ -86,6 +86,7 @@ def get_time_format(t):
         if value:
             TIME_FORMATS[t] = value
             return value
+    raise ValueError("Could not get time format for {0!r}".format(value))
 
 
 class Cell(StyleableObject):
@@ -191,8 +192,6 @@ class Cell(StyleableObject):
         elif dt == 'd':
             if not is_date_format(self.number_format):
                 self.number_format = get_time_format(t)
-            if self.number_format is None:
-                raise ValueError("Could not get time format for {0!r}".format(value))
 
         elif dt == "s":
             value = self.check_string(value)

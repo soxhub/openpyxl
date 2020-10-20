@@ -160,9 +160,11 @@ def test_time_format_date_subclass():
     number_format = get_time_format(TestDate)
     assert number_format == "yyyy-mm-dd"
 
+
 def test_time_format_no_date_subclass():
-    number_format = get_time_format(object)
-    assert number_format == None
+    with pytest.raises(ValueError):
+        number_format = get_time_format(object)
+
 
 def test_not_overwrite_time_format(dummy_cell):
     cell = dummy_cell
