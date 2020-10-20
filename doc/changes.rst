@@ -8,6 +8,11 @@ Bugfixes
 * `#1287 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Error when opening some pivot tables
 
 
+Pull Requests
+-------------
+
+* `PR386 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/386/>`_ Support subclasses of datetime objects
+
 
 3.0.5 (2020-08-21)
 ==================
