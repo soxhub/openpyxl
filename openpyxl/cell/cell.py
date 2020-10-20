@@ -183,13 +183,13 @@ class Cell(StyleableObject):
         except KeyError:
             dt = get_type(t, value)
 
-        if dt is not None:
+        if dt is None and value is not None:
+            raise ValueError("Cannot convert {0!r} to Excel".format(value))
+
+        if dt:
             self.data_type = dt
 
-        if dt == 'n' or dt == 'b':
-            pass
-
-        elif dt == 'd':
+        if dt == 'd':
             if not is_date_format(self.number_format):
                 self.number_format = get_time_format(t)
 
@@ -199,9 +199,6 @@ class Cell(StyleableObject):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
-
-        elif value is not None:
-            raise ValueError("Cannot convert {0!r} to Excel".format(value))
 
         self._value = value
 
