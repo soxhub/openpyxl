@@ -261,7 +261,14 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self.row_counter = int(attrs['r'])
+            try:
+                self.row_counter = int(attrs['r'])
+            except ValueError:
+                val = float(attrs['r'])
+                if val.is_integer():
+                    self.row_counter = int(val)
+                else:
+                    raise ValueError(f"{attrs['r']} is not a valid row number")
         else:
             self.row_counter += 1
         self.col_counter = 0

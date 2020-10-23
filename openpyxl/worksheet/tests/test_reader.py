@@ -172,6 +172,22 @@ class TestWorksheetParser:
         assert rd == {'r': '23', 's': '28', 'spans': '1:8'}
 
 
+    def test_read_row_with_exponent(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """<row r="1.048573e6" spans="1:8" /> """
+        element = fromstring(src)
+        parser.parse_row(element)
+        assert parser.row_counter == 1048573
+
+
+    def test_invalid_row_number(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """<row r="1.5" spans="1:8" /> """
+        element = fromstring(src)
+        with pytest.raises(ValueError):
+            parser.parse_row(element)
+
+
     def test_sheet_protection(self, datadir, WorkSheetParser):
         parser = WorkSheetParser
 
