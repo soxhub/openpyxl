@@ -6,6 +6,7 @@ Bugfixes
 --------
 
 * `#1287 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Error when opening some pivot tables
+* `#1557 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Cannot read rows with exponents
 
 
 Pull Requests
