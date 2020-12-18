@@ -175,7 +175,6 @@ class WorkSheetParser(object):
     def parse_cell(self, element):
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self.col_counter += 1
         style_id = element.get('s', 0)
         if style_id:
             style_id = int(style_id)
@@ -188,7 +187,9 @@ class WorkSheetParser(object):
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
         else:
-            row, column = self.row_counter, self.col_counter
+            row, column = self.row_counter, self.col_counter + 1
+
+        self.col_counter = column
 
         if not self.data_only and element.find(FORMULA_TAG) is not None:
             data_type = 'f'
