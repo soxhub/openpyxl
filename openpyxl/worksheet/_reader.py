@@ -137,7 +137,7 @@ class WorkSheetParser(object):
 
         }
 
-        it = iterparse(self.source)
+        it = iterparse(self.source) # add a finaliser to close the source when this becomes possible
 
         for _, element in it:
             tag_name = element.tag
