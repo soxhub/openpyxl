@@ -84,8 +84,8 @@ class Border(Serialisable):
     diagonalUp = Bool()
     diagonalDown = Bool()
 
-    def __init__(self, left=Side(), right=Side(), top=Side(),
-                 bottom=Side(), diagonal=Side(), diagonal_direction=None,
+    def __init__(self, left=None, right=None, top=None,
+                 bottom=None, diagonal=None, diagonal_direction=None,
                  vertical=None, horizontal=None, diagonalUp=False, diagonalDown=False,
                  outline=True, start=None, end=None):
         self.left = left
@@ -110,4 +110,4 @@ class Border(Serialisable):
             elif attr == "outline" and not value:
                 yield attr, safe_string(value)
 
-DEFAULT_BORDER = Border()
+DEFAULT_BORDER = Border(left=Side(), right=Side(), top=Side(), bottom=Side(), diagonal=Side())

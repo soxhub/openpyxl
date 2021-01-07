@@ -12,7 +12,7 @@ from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
 from openpyxl.styles.styleable import StyleArray
-from openpyxl.styles import Border
+from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
 from ..worksheet import Worksheet
@@ -53,7 +53,7 @@ def Workbook():
             self._fonts = IndexedList()
             self._fills = IndexedList()
             self._number_formats = IndexedList()
-            self._borders = IndexedList([Border()] * 30)
+            self._borders = IndexedList([DEFAULT_BORDER] * 30)
             self._alignments = IndexedList()
             self._protections = IndexedList()
             self._cell_styles = IndexedList()
