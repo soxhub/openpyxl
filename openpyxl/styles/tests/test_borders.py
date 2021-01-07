@@ -35,17 +35,15 @@ class TestBorder:
         <top style="thin">
           <color rgb="FF006600"/>
         </top>
-        <bottom style="thin">
-          <color rgb="FF006600"/>
-        </bottom>
-        <diagonal/>
+        <bottom/>
         </border>
         """
         xml = fromstring(src)
         bd = Border.from_tree(xml)
         assert bd.left.style == "thin"
         assert bd.right.color.value == "FF006600"
-        assert bd.diagonal.style == None
+        assert bd.bottom.style == None
+        assert bd.diagonal == None
 
 
     def test_serialise(self, Border, Side):
@@ -72,7 +70,6 @@ class TestBorder:
           <bottom style="medium">
              <color rgb="000000FF"></color>
            </bottom>
-           <diagonal />
         </border>
         """
         diff = compare_xml(xml, expected)
