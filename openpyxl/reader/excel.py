@@ -243,6 +243,8 @@ class ExcelReader:
             # preserve link to VML file if VBA
             if self.wb.vba_archive and ws.legacy_drawing:
                 ws.legacy_drawing = rels[ws.legacy_drawing].target
+            else:
+                ws.legacy_drawing = None
 
             for t in ws_parser.tables:
                 src = self.archive.read(t)
