@@ -147,8 +147,6 @@ class PrintOptions(Serialisable):
         return bool(dict(self))
 
 
-
-
 class PageMargins(Serialisable):
     """
     Information about page margins for view/print layouts.
