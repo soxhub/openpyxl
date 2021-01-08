@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2020 openpyxl
 
+import math
 import operator
 from itertools import accumulate
 
@@ -76,3 +77,30 @@ def expand_levels(levels, labels):
                 row.append(label[idx])
                 current = idx
         yield row
+
+
+def expand_index(index, vertical=True):
+    """
+    Expand axis or column Multiindex
+    """
+
+    shape = index.levshape
+    depth = math.prod(shape)
+    row = [None] * index.nlevels
+    columns = [ [] for l in index.names] # avoid copied list gotchas
+
+    for idx, entry in enumerate(index):
+        row = [None] * index.nlevels
+        for lev, v in enumerate(entry):
+            length = depth / math.prod(shape[:lev + 1])
+            if idx % length:
+                v = None
+            row[lev] = v
+            columns[lev].append(v)
+
+        if vertical:
+            yield row
+
+    if not vertical:
+        for row in columns:
+            yield row

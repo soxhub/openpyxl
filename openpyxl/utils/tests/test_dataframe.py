@@ -42,7 +42,8 @@ def test_dataframe_index(sample_data):
 
 
 def test_expand_levels():
-    from ..dataframe import expand_levels
+    from ..dataframe import expand_levels, expand_index
+    from pandas import MultiIndex
     levels = [
         ['2018', '2017', '2016'],
         ['Major', 'Minor',],
@@ -55,6 +56,7 @@ def test_expand_levels():
     ]
 
     expanded = list(expand_levels(levels, labels))
+
     assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
@@ -78,3 +80,43 @@ def test_dataframe_multiindex():
     rows = list(dataframe_to_rows(df, header=False))
     assert rows[0] == ['first', 'second']
     assert rows[2][:2] == ["bar", "two"]
+
+
+@pytest.mark.pandas_required
+def test_expand_index_vertically():
+    from ..dataframe import expand_index
+
+    from pandas import MultiIndex
+    import numpy
+
+    arrays = [
+        [2019, 2019, 2019, 2019, 2020, 2020, 2020, 2021, 2021, 2021, 2021],
+        ["Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor",],
+        ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b", "a", "b",],
+    ]
+
+    tuples = list(zip(*arrays))
+    index = MultiIndex.from_tuples(tuples, names=['first', 'second', 'third'])
+
+    rows = list(expand_index(index, vertical=True))
+    assert rows[0] == [2019, "Major", "a"]
+    assert rows[1] == [None, None, "b"]
+
+
+def test_expand_levels_horizontally():
+    from ..dataframe import expand_levels, expand_index
+    from pandas import MultiIndex
+    levels = [
+        ['2016', '2017', '2018'],
+        ['Major', 'Minor',],
+        ['a', 'b'],
+    ]
+
+    from itertools import product
+
+    tuples = product(*levels)
+    index = MultiIndex.from_tuples(tuples, names=['first', 'second', 'third'])
+    expanded = list(expand_index(index, vertical=False))
+    assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
+    assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
+    assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
