@@ -42,8 +42,7 @@ def test_dataframe_index(sample_data):
 
 
 def test_expand_levels():
-    from ..dataframe import expand_levels, expand_index
-    from pandas import MultiIndex
+    from ..dataframe import expand_levels
     levels = [
         ['2018', '2017', '2016'],
         ['Major', 'Minor',],
@@ -103,8 +102,9 @@ def test_expand_index_vertically():
     assert rows[1] == [None, None, "b"]
 
 
+@pytest.mark.pandas_required
 def test_expand_levels_horizontally():
-    from ..dataframe import expand_levels, expand_index
+    from ..dataframe import expand_index
     from pandas import MultiIndex
     levels = [
         ['2016', '2017', '2018'],
