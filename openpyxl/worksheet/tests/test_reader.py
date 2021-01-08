@@ -534,6 +534,37 @@ class TestWorksheetParser:
             assert expected_cell == cell
 
 
+    def test_row_and_cell_skipping_coordinates(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """
+        <row xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <c>
+            <v>1</v>
+          </c>
+          <c r="D1">
+            <v>2</v>
+          </c>
+          <c>
+            <v>3</v>
+          </c>
+          <c r="G1">
+            <v>4</v>
+          </c>
+        </row>
+        """
+        element = fromstring(src)
+        _, cells = parser.parse_row(element)
+        expected = [
+            {'column': 1, 'row': 1, 'data_type': 'n', 'value': 1, 'style_id': 0},
+            {'column': 4, 'row': 1, 'data_type': 'n', 'value': 2, 'style_id': 0},
+            {'column': 5, 'row': 1, 'data_type': 'n', 'value': 3, 'style_id': 0},
+            {'column': 7, 'row': 1, 'data_type': 'n', 'value': 4, 'style_id': 0},
+        ]
+        assert len(cells) == len(expected)
+        for expected_cell, cell in zip(expected, cells):
+            assert expected_cell == cell
+
+
     def test_second_row_cell_index_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
         src = """
