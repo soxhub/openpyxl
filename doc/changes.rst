@@ -5,15 +5,19 @@
 Bugfixes
 --------
 
+* `#1154 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Borders in differential styles are incorrect
 * `#1287 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Error when opening some pivot tables
 * `#1557 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Cannot read rows with exponents
 * `#1450 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1450>`_ Read-only workbook not closed properly if generator interrupted
+* `#1571 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1571>`_ Cells without coordinate attributes not always correctly handled
 
 
 Pull Requests
 -------------
 
+* `PR385 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/385/>`_ Improved handling of borders for differential styles
 * `PR386 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/386/>`_ Support subclasses of datetime objects
+* `PR387 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/387/>`_ Improved handling of cells without coordinates
 
 
 3.0.5 (2020-08-21)
