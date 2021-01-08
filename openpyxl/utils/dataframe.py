@@ -31,7 +31,7 @@ def dataframe_to_rows(df, index=True, header=True):
 
     if header:
         if df.columns.nlevels > 1:
-            rows = expand_levels(df.columns.levels, df.columns.labels)
+            rows = expand_levels(df.columns.levels, df.columns.codes)
         else:
             rows = [list(df.columns.values)]
         for row in rows:
