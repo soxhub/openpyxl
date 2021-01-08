@@ -77,3 +77,4 @@ def test_dataframe_multiindex():
 
     rows = list(dataframe_to_rows(df, header=False))
     assert rows[0] == ['first', 'second']
+    assert rows[2][:2] == ["bar", "two"]

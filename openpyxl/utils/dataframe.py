@@ -50,9 +50,14 @@ def dataframe_to_rows(df, index=True, header=True):
         yield df.index.names
 
     for idx, v in enumerate(df.index):
+        multi = df.index.nlevels > 1
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            row = [v] + row
+            if multi:
+                row = list(v) + row
+            else:
+                row = [v] + row
+
         yield row
 
 
