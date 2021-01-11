@@ -1,8 +1,7 @@
 # Copyright (c) 2010-2020 openpyxl
 
 import math
-import operator
-from itertools import accumulate
+from openpyxl.compat.product import prod
 
 
 def dataframe_to_rows(df, index=True, header=True):
@@ -85,14 +84,14 @@ def expand_index(index, vertical=True):
     """
 
     shape = index.levshape
-    depth = math.prod(shape)
+    depth = prod(shape)
     row = [None] * index.nlevels
     columns = [ [] for l in index.names] # avoid copied list gotchas
 
     for idx, entry in enumerate(index):
         row = [None] * index.nlevels
         for lev, v in enumerate(entry):
-            length = depth / math.prod(shape[:lev + 1])
+            length = depth / prod(shape[:lev + 1])
             if idx % length:
                 v = None
             row[lev] = v

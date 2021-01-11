@@ -124,3 +124,9 @@ def test_no_deprecation_reason():
         @deprecated
         def fn():
             return
+
+
+def test_product():
+
+    from ..product import prod
+    assert prod((3,5,2)) == 30
