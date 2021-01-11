@@ -41,26 +41,6 @@ def test_dataframe_index(sample_data):
     assert rows[0] == ['openpyxl test']
 
 
-def test_expand_levels():
-    from ..dataframe import expand_levels
-    levels = [
-        ['2018', '2017', '2016'],
-        ['Major', 'Minor',],
-        ['a', 'b'],
-    ]
-    labels = [
-        [2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1],
-        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
-    ]
-
-    expanded = list(expand_levels(levels, labels))
-
-    assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
-    assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
-    assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
-
-
 @pytest.mark.pandas_required
 def test_dataframe_multiindex():
     from ..dataframe import dataframe_to_rows
@@ -78,7 +58,7 @@ def test_dataframe_multiindex():
 
     rows = list(dataframe_to_rows(df, header=False))
     assert rows[0] == ['first', 'second']
-    assert rows[2][:2] == ["bar", "two"]
+    assert rows[2][:2] == [None, "two"]
 
 
 @pytest.mark.pandas_required

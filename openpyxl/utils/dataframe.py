@@ -3,8 +3,6 @@
 from itertools import accumulate
 import operator
 
-from openpyxl.compat.product import prod
-
 
 def dataframe_to_rows(df, index=True, header=True):
     """
@@ -47,36 +45,17 @@ def dataframe_to_rows(df, index=True, header=True):
                 row = [None]*df.index.nlevels + row
             yield row
 
-
     if index:
         yield df.index.names
 
-    for idx, v in enumerate(df.index):
-        multi = df.index.nlevels > 1
+    expanded = ([v] for v in df.index)
+    if df.index.nlevels > 1:
+        expanded = expand_index(df.index)
+
+    for idx, v in enumerate(expanded):
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            if multi:
-                row = list(v) + row
-            else:
-                row = [v] + row
-
-        yield row
-
-
-def expand_levels(levels, labels):
-    """
-    Multiindexes need expanding so that subtitles repeat
-    """
-
-    for label, order in zip(levels, labels):
-        current = None
-        row = []
-        for idx in order:
-            if current == idx:
-                row.append(None)
-            else:
-                row.append(label[idx])
-                current = idx
+            row = v + row
         yield row
 
 
