@@ -33,7 +33,7 @@ def dataframe_to_rows(df, index=True, header=True):
 
     if header:
         if df.columns.nlevels > 1:
-            rows = expand_levels(df.columns.levels, df.columns.codes)
+            rows = expand_index(df.columns, header)
         else:
             rows = [list(df.columns.values)]
         for row in rows:
@@ -83,6 +83,8 @@ def expand_levels(levels, labels):
 def expand_index(index, header=False):
     """
     Expand axis or column Multiindex
+    For columns use header = True
+    For axes use header = False (default)
     """
 
     shape = index.levshape
