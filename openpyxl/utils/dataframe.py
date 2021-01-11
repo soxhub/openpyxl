@@ -1,6 +1,8 @@
 # Copyright (c) 2010-2020 openpyxl
 
-import math
+from itertools import accumulate
+import operator
+
 from openpyxl.compat.product import prod
 
 
@@ -78,7 +80,7 @@ def expand_levels(levels, labels):
         yield row
 
 
-def expand_index(index, vertical=True):
+def expand_index(index, header=False):
     """
     Expand axis or column Multiindex
     """
@@ -86,20 +88,22 @@ def expand_index(index, vertical=True):
     shape = index.levshape
     depth = prod(shape)
     row = [None] * index.nlevels
+    lengths = [depth / size for size in accumulate(shape, operator.mul)] # child index lengths
     columns = [ [] for l in index.names] # avoid copied list gotchas
 
     for idx, entry in enumerate(index):
         row = [None] * index.nlevels
-        for lev, v in enumerate(entry):
-            length = depth / prod(shape[:lev + 1])
+        for level, v in enumerate(entry):
+            length = lengths[level]
             if idx % length:
                 v = None
-            row[lev] = v
-            columns[lev].append(v)
+            row[level] = v
+            if header:
+                columns[level].append(v)
 
-        if vertical:
+        if not header:
             yield row
 
-    if not vertical:
+    if header:
         for row in columns:
             yield row

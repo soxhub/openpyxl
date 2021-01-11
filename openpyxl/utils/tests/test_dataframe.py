@@ -97,7 +97,7 @@ def test_expand_index_vertically():
     tuples = list(zip(*arrays))
     index = MultiIndex.from_tuples(tuples, names=['first', 'second', 'third'])
 
-    rows = list(expand_index(index, vertical=True))
+    rows = list(expand_index(index))
     assert rows[0] == [2019, "Major", "a"]
     assert rows[1] == [None, None, "b"]
 
@@ -116,7 +116,7 @@ def test_expand_levels_horizontally():
 
     tuples = product(*levels)
     index = MultiIndex.from_tuples(tuples, names=['first', 'second', 'third'])
-    expanded = list(expand_index(index, vertical=False))
+    expanded = list(expand_index(index, header=True))
     assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
