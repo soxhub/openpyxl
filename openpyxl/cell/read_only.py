@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
