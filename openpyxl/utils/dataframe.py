@@ -3,6 +3,8 @@
 from itertools import accumulate
 import operator
 
+from openpyxl.compat.product import prod
+
 
 def dataframe_to_rows(df, index=True, header=True):
     """
