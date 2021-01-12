@@ -5,12 +5,13 @@
 Bugfixes
 --------
 
-* `#1154 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Borders in differential styles are incorrect
+* `#1154 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1154>`_ Borders in differential styles are incorrect
 * `#1287 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1528>`_ Error when opening some pivot tables
+* `#1366 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1366>`_ Resave breaks the border format in conditional formatting rules
+* `#1450 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1450>`_ Read-only workbook not closed properly if generator interrupted
 * `#1547 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1547>`_ Pandas.Multiindex.labels deprecated
 * `#1552 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Pandas.Multiinex not expanded correctly
 * `#1557 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Cannot read rows with exponents
-* `#1450 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1450>`_ Read-only workbook not closed properly if generator interrupted
 * `#1571 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1571>`_ Cells without coordinate attributes not always correctly handled
 
 
