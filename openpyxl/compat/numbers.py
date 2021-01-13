@@ -38,7 +38,6 @@ if NUMPY:
                                      numpy.uintp,
                                      numpy.float32,
                                      numpy.float64,
-                                     numpy.float,
                                      numpy.bool_,
                                      numpy.floating,
                                      numpy.integer)
