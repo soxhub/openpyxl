@@ -12,6 +12,7 @@ Bugfixes
 * `#1547 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1547>`_ Pandas.Multiindex.labels deprecated
 * `#1552 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Pandas.Multiinex not expanded correctly
 * `#1557 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1557>`_ Cannot read rows with exponents
+* `#1568 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1568>`_ numpy.float is deprecated
 * `#1571 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1571>`_ Cells without coordinate attributes not always correctly handled
 
 
