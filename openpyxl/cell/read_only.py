@@ -55,6 +55,12 @@ class ReadOnlyCell(object):
     def style_array(self):
         return self.parent.parent._cell_styles[self._style_id]
 
+
+    @property
+    def has_style(self):
+        return self._style_id != 0
+
+
     @property
     def number_format(self):
         _id = self.style_array.numFmtId
