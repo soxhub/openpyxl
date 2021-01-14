@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -198,3 +198,19 @@ class TestReadOnlyWorksheet:
             pass
         c = row[-1]
         assert c.value == 9
+
+
+    def test_cleanup_on_break(self, ReadOnlyWorksheet):
+
+        xml = b"""<sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"></sheet>"""
+        src = BytesIO(xml)
+
+        def mock_source():
+            return src
+
+        ws = ReadOnlyWorksheet
+        ws._get_source = mock_source
+        for row in ws:
+            break
+
+        assert src.closed

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 import pytest
 
 from zipfile import ZipFile
@@ -201,7 +201,7 @@ class TestStylesheet:
 
     def test_named_styles(self, datadir, Stylesheet):
         from openpyxl.styles.fills import DEFAULT_EMPTY_FILL
-        from openpyxl.styles.borders import Border
+        from openpyxl.styles.borders import DEFAULT_BORDER
 
         datadir.chdir()
         with open("complex-styles.xml") as src:
@@ -214,19 +214,19 @@ class TestStylesheet:
         assert followed.name == "Followed Hyperlink"
         assert followed.font == stylesheet.fonts[2]
         assert followed.fill == DEFAULT_EMPTY_FILL
-        assert followed.border == Border()
+        assert followed.border == DEFAULT_BORDER
 
         link = stylesheet.named_styles['Hyperlink']
         assert link.name == "Hyperlink"
         assert link.font == stylesheet.fonts[1]
         assert link.fill == DEFAULT_EMPTY_FILL
-        assert link.border == Border()
+        assert link.border == DEFAULT_BORDER
 
         normal = stylesheet.named_styles['Normal']
         assert normal.name == "Normal"
         assert normal.font == stylesheet.fonts[0]
         assert normal.fill == DEFAULT_EMPTY_FILL
-        assert normal.border == Border()
+        assert normal.border == DEFAULT_BORDER
 
 
     def test_split_named_styles(self, Stylesheet):

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 # package imports
 from openpyxl.workbook.defined_name import DefinedName
@@ -59,15 +59,15 @@ class TestWorkbook:
         normal.font.color = "FF0000"
         assert wb2._named_styles['Normal'].font.color.index == 1
 
-    
+
     def test_duplicate_table_name(self, Workbook, Table):
         wb = Workbook()
         ws = wb.create_sheet()
         ws.add_table(Table(displayName="Table1", ref="A1:D10"))
         assert True == wb._duplicate_name("Table1")
         assert True == wb._duplicate_name("TABLE1")
-    
-    
+
+
     def test_duplicate_defined_name(self, Workbook):
         wb1 = Workbook()
         wb1.defined_names.append(DefinedName("dfn1"))

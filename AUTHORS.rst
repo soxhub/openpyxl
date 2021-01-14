@@ -80,6 +80,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Sven Burk
 * Ted Pollari
 * Thomas Nygards
+* Victor Korobkovsky
 * Waldemar Osuch
 * Wojciech Rola
 * Wolfgane Scherer

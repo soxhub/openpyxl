@@ -1,7 +1,9 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
-import operator
 from itertools import accumulate
+import operator
+
+from openpyxl.compat.product import prod
 
 
 def dataframe_to_rows(df, index=True, header=True):
@@ -31,7 +33,7 @@ def dataframe_to_rows(df, index=True, header=True):
 
     if header:
         if df.columns.nlevels > 1:
-            rows = expand_levels(df.columns.levels, df.columns.labels)
+            rows = expand_index(df.columns, header)
         else:
             rows = [list(df.columns.values)]
         for row in rows:
@@ -45,29 +47,46 @@ def dataframe_to_rows(df, index=True, header=True):
                 row = [None]*df.index.nlevels + row
             yield row
 
-
     if index:
         yield df.index.names
 
-    for idx, v in enumerate(df.index):
+    expanded = ([v] for v in df.index)
+    if df.index.nlevels > 1:
+        expanded = expand_index(df.index)
+
+    for idx, v in enumerate(expanded):
         row = [data[j][idx] for j in range(ncols)]
         if index:
-            row = [v] + row
+            row = v + row
         yield row
 
 
-def expand_levels(levels, labels):
+def expand_index(index, header=False):
     """
-    Multiindexes need expanding so that subtitles repeat
+    Expand axis or column Multiindex
+    For columns use header = True
+    For axes use header = False (default)
     """
 
-    for label, order in zip(levels, labels):
-        current = None
-        row = []
-        for idx in order:
-            if current == idx:
-                row.append(None)
-            else:
-                row.append(label[idx])
-                current = idx
-        yield row
+    shape = index.levshape
+    depth = prod(shape)
+    row = [None] * index.nlevels
+    lengths = [depth / size for size in accumulate(shape, operator.mul)] # child index lengths
+    columns = [ [] for l in index.names] # avoid copied list gotchas
+
+    for idx, entry in enumerate(index):
+        row = [None] * index.nlevels
+        for level, v in enumerate(entry):
+            length = lengths[level]
+            if idx % length:
+                v = None
+            row[level] = v
+            if header:
+                columns[level].append(v)
+
+        if not header:
+            yield row
+
+    if header:
+        for row in columns:
+            yield row

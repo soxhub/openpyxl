@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """Reader for a single worksheet."""
 from copy import copy
@@ -138,7 +138,7 @@ class WorkSheetParser(object):
 
         }
 
-        it = iterparse(self.source)
+        it = iterparse(self.source) # add a finaliser to close the source when this becomes possible
 
         for _, element in it:
             tag_name = element.tag
@@ -176,7 +176,6 @@ class WorkSheetParser(object):
     def parse_cell(self, element):
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self.col_counter += 1
         style_id = element.get('s', 0)
         if style_id:
             style_id = int(style_id)
@@ -188,7 +187,9 @@ class WorkSheetParser(object):
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
+            self.col_counter = column
         else:
+            self.col_counter += 1
             row, column = self.row_counter, self.col_counter
 
         if not self.data_only and element.find(FORMULA_TAG) is not None:
@@ -265,7 +266,14 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self.row_counter = int(attrs['r'])
+            try:
+                self.row_counter = int(attrs['r'])
+            except ValueError:
+                val = float(attrs['r'])
+                if val.is_integer():
+                    self.row_counter = int(val)
+                else:
+                    raise ValueError(f"{attrs['r']} is not a valid row number")
         else:
             self.row_counter += 1
         self.col_counter = 0

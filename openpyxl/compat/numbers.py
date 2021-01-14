@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from decimal import Decimal
 
@@ -38,7 +38,6 @@ if NUMPY:
                                      numpy.uintp,
                                      numpy.float32,
                                      numpy.float64,
-                                     numpy.float,
                                      numpy.bool_,
                                      numpy.floating,
                                      numpy.integer)
