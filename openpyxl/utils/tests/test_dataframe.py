@@ -1,15 +1,20 @@
 # Copyright (c) 2010-2021 openpyxl
 
 import pytest
-from math import isnan
 
 
 @pytest.fixture
 def sample_data():
     import numpy
-    from pandas.util import testing
+    from pandas import DataFrame, date_range
 
-    df = testing.makeMixedDataFrame()
+    data = {
+        "A": [0.0, 1.0, 2.0, 3.0, 4.0],
+        "B": [0.0, 1.0, 0.0, 1.0, 0.0],
+        "C": ["foo1", "foo2", "foo3", "foo4", "foo5"],
+        "D": date_range("2009-01-01", periods=5),
+    }
+    df = DataFrame(data)
     df.index.name = "openpyxl test"
     df.iloc[0] = numpy.nan
     return df
@@ -21,7 +26,7 @@ def test_dataframe(sample_data):
     from ..dataframe import dataframe_to_rows
 
     rows = tuple(dataframe_to_rows(sample_data, index=False, header=False))
-    assert rows[2] == [2.0, 0.0, 'foo3', Timestamp('2009-01-05 00:00:00')]
+    assert rows[2] == [2.0, 0.0, 'foo3', Timestamp('2009-01-03 00:00:00')]
 
 
 @pytest.mark.pandas_required
@@ -34,7 +39,6 @@ def test_dataframe_header(sample_data):
 
 @pytest.mark.pandas_required
 def test_dataframe_index(sample_data):
-    from pandas import Timestamp
     from ..dataframe import dataframe_to_rows
 
     rows = tuple(dataframe_to_rows(sample_data, header=False))
@@ -66,7 +70,6 @@ def test_expand_index_vertically():
     from ..dataframe import expand_index
 
     from pandas import MultiIndex
-    import numpy
 
     arrays = [
         [2019, 2019, 2019, 2019, 2020, 2020, 2020, 2021, 2021, 2021, 2021],
