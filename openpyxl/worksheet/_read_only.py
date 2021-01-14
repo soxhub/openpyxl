@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """ Read worksheets on-demand
 """
@@ -91,11 +91,11 @@ class ReadOnlyWorksheet(object):
                 counter += 1
                 yield row
 
+        src.close() # make sure source is always closed
+
         if max_row is not None and max_row < idx:
             for _ in range(counter, max_row+1):
                 yield empty_row
-
-        src.close()
 
 
     def _get_row(self, row, min_col=1, max_col=None, values_only=False):

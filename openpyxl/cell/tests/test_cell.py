@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 
 # Python stdlib imports
@@ -15,7 +15,7 @@ import pytest
 # package imports
 
 from openpyxl.comments import Comment
-from openpyxl.cell.cell import ERROR_CODES
+from openpyxl.cell.cell import ERROR_CODES, get_time_format
 
 
 @pytest.fixture
@@ -145,6 +145,25 @@ def test_timstamp(dummy_cell):
     cell = dummy_cell
     cell.value = Timestamp("2018-09-05")
     assert cell.number_format == "yyyy-mm-dd h:mm:ss"
+
+def test_time_format_datetime_subclass():
+    class TestDatetime(datetime):
+        pass
+
+    number_format = get_time_format(TestDatetime)
+    assert number_format == "yyyy-mm-dd h:mm:ss"
+
+def test_time_format_date_subclass():
+    class TestDate(date):
+        pass
+
+    number_format = get_time_format(TestDate)
+    assert number_format == "yyyy-mm-dd"
+
+
+def test_time_format_no_date_subclass():
+    with pytest.raises(ValueError):
+        number_format = get_time_format(object)
 
 
 def test_not_overwrite_time_format(dummy_cell):

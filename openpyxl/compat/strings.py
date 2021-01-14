@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from datetime import datetime
 from math import isnan, isinf

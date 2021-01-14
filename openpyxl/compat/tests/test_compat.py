@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 import pytest
 
 
@@ -51,7 +51,6 @@ def test_numeric_types():
                              numpy.uintp,
                              numpy.float32,
                              numpy.float64,
-                             numpy.float,
                              numpy.bool_,
                              numpy.floating,
                              numpy.integer)
@@ -124,3 +123,9 @@ def test_no_deprecation_reason():
         @deprecated
         def fn():
             return
+
+
+def test_product():
+
+    from ..product import prod
+    assert prod((3,5,2)) == 30

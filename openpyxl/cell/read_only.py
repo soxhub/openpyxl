@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
@@ -54,6 +54,12 @@ class ReadOnlyCell(object):
     @property
     def style_array(self):
         return self.parent.parent._cell_styles[self._style_id]
+
+
+    @property
+    def has_style(self):
+        return self._style_id != 0
+
 
     @property
     def number_format(self):

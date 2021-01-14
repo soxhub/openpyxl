@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import datetime
 import pytest
@@ -61,9 +61,15 @@ class TestStyle:
         cell = ReadOnlyCell(dummy_sheet, None, None, None)
         assert cell.style_array == StyleArray()
 
+
     def test_font(self, dummy_sheet):
         cell = ReadOnlyCell(dummy_sheet, None, None, None)
         assert cell.font == None
+
+
+    def test_has_style(self, DummyCell):
+        cell = DummyCell
+        assert DummyCell.has_style
 
 
 def test_read_only(dummy_sheet):

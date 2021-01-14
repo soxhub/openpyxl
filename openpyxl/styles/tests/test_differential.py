@@ -1,11 +1,11 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
-from openpyxl.styles import Font, Color, PatternFill
+from openpyxl.styles import Font, Color, PatternFill, Border, Side
 
 from openpyxl.tests.helper import compare_xml
 
@@ -28,12 +28,20 @@ def test_parse(DifferentialStyle, datadir):
     cond = formats[1]
     assert cond.font == Font(underline="double", b=False, color=Color(auto=1), strikethrough=True, italic=True)
     assert cond.fill == PatternFill(end_color='FFFFC7CE')
+    assert cond.border == Border(
+        left=Side(),
+        right=Side(),
+        top=Side(style="thin", color=Color(theme=4)),
+        bottom=Side(style="thin", color=Color(theme=4)),
+        diagonal=None,
+    )
 
 
 def test_serialise(DifferentialStyle):
     cond = DifferentialStyle()
     cond.font = Font(name="Calibri", family=2, sz=11)
     cond.fill = PatternFill()
+    cond.border = Border(left=Side(), top=Side(style="thin", color=Color(auto=1)))
     xml = tostring(cond.to_tree())
     expected = """
     <dxf>
@@ -45,6 +53,12 @@ def test_serialise(DifferentialStyle):
     <fill>
       <patternFill />
     </fill>
+    <border>
+      <left />
+      <top style="thin">
+        <color auto="1"/>
+      </top>
+    </border>
     </dxf>
     """
     diff = compare_xml(xml, expected)

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -593,7 +593,7 @@ class RowColItem(Serialisable):
                  t="data",
                  r=0,
                  i=0,
-                 x=None,
+                 x=(),
                 ):
         self.t = t
         self.r = r

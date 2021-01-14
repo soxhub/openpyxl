@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from copy import copy
 
@@ -103,14 +103,16 @@ class TestMergedCellRange:
             top=thick_border(),
                 left=default_border(),
                 right=default_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['B1'].border == b1_border
 
         c1_border = Border(
             top=thick_border(),
                 left=default_border(),
                 right=thin_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['C1'].border == c1_border
 
 
@@ -125,14 +127,16 @@ class TestMergedCellRange:
             top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
-                bottom=default_border())
+                bottom=default_border(),
+                diagonal=default_border())
         assert ws['A2'].border == a2_border
 
         a3_border = Border(
             top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['A3'].border == a3_border
 
 
@@ -163,7 +167,8 @@ class TestMergedCellRange:
             top=default_border(),
                 left=default_border(),
                 right=default_border(),
-                bottom=default_border())
+                bottom=default_border(),
+                diagonal=default_border())
         assert ws['B2'].border == b2_border
 
 
