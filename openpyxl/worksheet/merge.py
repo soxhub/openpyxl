@@ -106,7 +106,7 @@ class MergedCellRange(CellRange):
 
         for name in names:
             side = getattr(self.start_cell.border, name)
-            if side.style is None:
+            if side and side.style is None:
                 continue # don't need to do anything if there is no border style
             border = Border(**{name:side})
             for coord in getattr(self, name):
