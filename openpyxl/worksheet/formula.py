@@ -32,3 +32,19 @@ class TableFormula:
             v = getattr(self, k)
             if v:
                 yield k, safe_string(v)
+
+
+class ArrayFormula:
+
+    t = "array"
+
+
+    def __init__(self, ref):
+        self.ref = ref
+
+
+    def __iter__(self):
+        for k in ["t", "ref"]:
+            v = getattr(self, k)
+            if v:
+                yield k, safe_string(v)

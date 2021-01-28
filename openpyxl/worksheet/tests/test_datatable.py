@@ -26,3 +26,22 @@ class TestDataTable:
     def test_dict(self, TableFormula):
         dt = TableFormula(ref="A1:B6", r1="G5", dt2D=True)
         assert dict(dt) == {"ref":"A1:B6", "r1":"G5", "dt2D":"1", "t":"dataTable"}
+
+
+@pytest.fixture
+def ArrayFormula():
+    from ..formula import ArrayFormula
+    return ArrayFormula
+
+
+class TestDataTable:
+
+
+    def test_ctor(self, ArrayFormula):
+        af = ArrayFormula(ref="I9:S24")
+        assert af.ref == "I9:S24"
+
+
+    def test_dict(self, ArrayFormula):
+        af = ArrayFormula(ref="A1:B6")
+        assert dict(af) == {"ref":"A1:B6", "t":"array"}
