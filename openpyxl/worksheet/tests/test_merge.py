@@ -190,3 +190,12 @@ class TestMergedCellRange:
         mcr = MergedCellRange(ws, "B2:M20")
         assert "A1" not in mcr
 
+
+    def test_empty_side(seld, MergedCellRange):
+
+        ws = Workbook().active
+        ws["A1"].border = Border(bottom=Side(style="thin"))
+        mcr = MergedCellRange(ws, "A1:C3")
+
+        mcr.format()
+        assert ws["C3"].border.bottom == Side(style="thin")
