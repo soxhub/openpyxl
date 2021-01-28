@@ -6,14 +6,14 @@ import pytest
 @pytest.fixture
 def TableFormula():
     from ..formula import TableFormula
-    return TableFormula
+    return DataTableFormula
 
 
 class TestDataTable:
 
 
     def test_ctor(self, TableFormula):
-        dt = TableFormula(t="dataTable",
+        dt = DataTableFormula(t="dataTable",
                        ref="I9:S24",
                        dt2D="1",
                        dtr="1",
@@ -24,7 +24,7 @@ class TestDataTable:
 
 
     def test_dict(self, TableFormula):
-        dt = TableFormula(ref="A1:B6", r1="G5", dt2D=True)
+        dt = DataTableFormula(ref="A1:B6", r1="G5", dt2D=True)
         assert dict(dt) == {"ref":"A1:B6", "r1":"G5", "dt2D":"1", "t":"dataTable"}
 
 

@@ -29,7 +29,7 @@ from openpyxl.utils import (
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList
 
-from .formula import TableFormula
+from .formula import DataTableFormula
 from .filters import AutoFilter
 from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
@@ -250,7 +250,7 @@ class WorkSheetParser(object):
                 self.shared_formulae[idx] = Translator(value, coordinate)
 
         elif formula_type == "dataTable":
-            value = TableFormula(**formula.attrib)
+            value = DataTableFormula(**formula.attrib)
 
         return value
 
