@@ -89,8 +89,8 @@ def from_excel(value, offset=CALENDAR_WINDOWS_1900):
     if value is None:
         return
     _, fraction = divmod(value, 1)
-    diff = datetime.timedelta(days=fraction)
-    if 0 <= value < 1:
+    diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000.))
+    if 0 <= value < 1 and diff.days == 0:
         return days_to_time(diff)
     if 1 < value < 60 and offset == CALENDAR_WINDOWS_1900:
         value += 1
