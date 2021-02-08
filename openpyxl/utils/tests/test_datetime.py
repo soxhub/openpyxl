@@ -51,10 +51,15 @@ def test_from_iso(value, expected):
                              (date(1899, 12, 31), 0),
                              (date(1900, 1, 15), 15),
                              (date(1900, 2, 28), 59),
+                             (datetime(1900, 2, 28, 21, 0, 0), 59.875),
                              (date(1900, 3, 1), 61),
                              (datetime(2010, 1, 18, 14, 15, 20, 1600), 40196.5939815),
                              (date(2009, 12, 20), 40167),
                              (datetime(1506, 10, 15), -143618.0),
+                             (time(0), 0),
+                             (time(6, 0), 0.25),
+                             (timedelta(hours=6), 0.25),
+                             (timedelta(hours=-6), -0.25),
                          ])
 def test_to_excel(value, expected):
     from ..datetime import to_excel
@@ -68,7 +73,11 @@ def test_to_excel(value, expected):
                              (date(2011, 10, 31), 39385),
                              (datetime(2010, 1, 18, 14, 15, 20, 1600), 38734.5939815),
                              (date(2009, 12, 20), 38705),
-                             (datetime(1506, 10, 15), -145079.0)
+                             (datetime(1506, 10, 15), -145079.0),
+                             (time(0), 0),
+                             (time(6, 0), 0.25),
+                             (timedelta(hours=6), 0.25),
+                             (timedelta(hours=-6), -0.25),
                          ])
 def test_to_excel_mac(value, expected):
     from ..datetime import to_excel, CALENDAR_MAC_1904
@@ -82,11 +91,16 @@ def test_to_excel_mac(value, expected):
                              (21980, datetime(1960,  3,  5)),
                              (59, datetime(1900, 2, 28)),
                              (-25063, datetime(1831, 5, 18, 0, 0)),
+                             (59.875, datetime(1900, 2, 28, 21, 0, 0)),
+                             (60, datetime(1900, 2, 28, 0, 0)),
+                             (60.5, datetime(1900, 2, 28, 12, 0)),
+                             (61, datetime(1900, 3, 1, 0, 0)),
                              (40372.27616898148, datetime(2010, 7, 13, 6, 37, 41)),
                              (40196.5939815, datetime(2010, 1, 18, 14, 15, 20, 1600)),
                              (0.125, time(3, 0)),
                              (42126.958333333219, datetime(2015, 5, 2, 22, 59, 59, 999990)),
                              (42126.999999999884, datetime(2015, 5, 3, 0, 0, 0)),
+                             (-0.25, datetime(1899, 12, 29, 18, 0, 0)),
                              (None, None),
                          ])
 def test_from_excel(value, expected):
@@ -99,8 +113,10 @@ def test_from_excel(value, expected):
                          [
                              (39385, datetime(2011, 10, 31)),
                              (21980, datetime(1964,  3,  6)),
-                             (0, datetime(1904, 1, 1)),
-                             (-25063, datetime(1835, 5, 19))
+                             (0, time(0, 0)),
+                             (-25063, datetime(1835, 5, 19)),
+                             (0.75, time(18, 0)),
+                             (-0.25, datetime(1903, 12, 31, 18, 0, 0)),
                          ])
 def test_from_excel_mac(value, expected):
     from ..datetime import from_excel, CALENDAR_MAC_1904
