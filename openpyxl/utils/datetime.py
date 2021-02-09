@@ -51,20 +51,21 @@ def from_ISO8601(formatted_string):
     if not match:
         raise ValueError("Invalid datetime value {}".format(formatted_string))
 
-    parts = {k:int(v) for k, v in match.groupdict().items() if v is not None and v.isdigit()}
-    if 'year' not in parts:
+    parts = match.groupdict()
+    for key in ["year", "month", "day", "hour", "minute", "second"]:
+        if parts[key]:
+            parts[key] = int(parts[key])
+    if not parts["year"]:
         dt = datetime.time(parts['hour'], parts['minute'], parts['second'])
-    elif 'hour' not in parts:
+    elif not parts["hour"]:
         dt = datetime.date(parts['year'], parts['month'], parts['day'])
     else:
         dt = datetime.datetime(year=parts['year'], month=parts['month'],
                                day=parts['day'], hour=parts['hour'], minute=parts['minute'],
                                second=parts['second'])
-    if 'ms' in parts:
-        # add to seconds and then subtract to avoid padding issues
+    if parts["ms"]:
         ms = parts['ms']
-        s = parts['second']
-        ms = (float(s + ms) - int(s)) * 1000
+        ms = float("0." + ms) * 1_000_000
         dt += timedelta(microseconds=ms)
     return dt
 
