@@ -6,7 +6,7 @@ Bugfixes
 --------
 
 * `#1589 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1589>`_ Exception raised when merging cells which do not have borders all the way round.
-
+* `#1594 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1594>`_ Python 2 print statement in the tutorial
 
 
 3.0.6 (2021-01-14)
