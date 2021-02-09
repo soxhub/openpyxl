@@ -47,6 +47,7 @@ def from_ISO8601(formatted_string):
 
     There is no concept of timedeltas
     """
+
     match = ISO_REGEX.match(formatted_string)
     if not match:
         raise ValueError("Invalid datetime value {}".format(formatted_string))
@@ -55,9 +56,9 @@ def from_ISO8601(formatted_string):
     for key in ["year", "month", "day", "hour", "minute", "second"]:
         if parts[key]:
             parts[key] = int(parts[key])
-    if not parts["year"]:
+    if not parts["date"]:
         dt = datetime.time(parts['hour'], parts['minute'], parts['second'])
-    elif not parts["hour"]:
+    elif not parts["time"]:
         dt = datetime.date(parts['year'], parts['month'], parts['day'])
     else:
         dt = datetime.datetime(year=parts['year'], month=parts['month'],
