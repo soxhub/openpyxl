@@ -27,7 +27,7 @@ EPOCH = datetime.datetime.utcfromtimestamp(0)
 ISO_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 ISO_REGEX = re.compile(r'''
 (?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
-(?P<time>(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(.(?P<ms>\d{1,3}))?)?Z?''',
+(?P<time>(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(?P<ms>.\d{1,3})?)?Z?''',
                                        re.VERBOSE)
 
 
@@ -65,8 +65,7 @@ def from_ISO8601(formatted_string):
                                day=parts['day'], hour=parts['hour'], minute=parts['minute'],
                                second=parts['second'])
     if parts["ms"]:
-        ms = parts['ms']
-        ms = float("0." + ms) * 1_000_000
+        ms = float(parts['ms']) * 1_000_000
         dt += timedelta(microseconds=ms)
     return dt
 
