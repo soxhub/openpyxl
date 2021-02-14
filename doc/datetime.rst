@@ -53,26 +53,6 @@ python datetimes in January and February 1900. The only exception is 29
 February 1900, which cannot be represented as a python datetime object
 since it is not a valid date.
 
-
-Reading timedelta values
-------------------------
-
-If you need to retrieve time interval durations (rather than dates or
-times) from an XLSX file, there is no way to get them directly. You will
-need to translate the time and datetime values returned by `openpyxl` to
-timedelta values using a helper function.
-
-
-.. warning::
-
-   Unfortunately, due to the 1900 leap year compatibility issue
-   mentioned above, it is impossible to create a helper function that
-   always returns 100% correct timedelta values from workbooks using the
-   1900 date system. Therefore, if your files use the single number time
-   representation, and reliable timedelta values are important for your
-   use case, you MUST make sure your files use the 1904 date system!
-
-
 You can get the date system of a workbook like this:
 
     >>> import openpyxl
@@ -86,6 +66,61 @@ You can get the date system of a workbook like this:
 and set it like this:
 
     >>> wb.epoch = openpyxl.utils.datetime.CALENDAR_MAC_1904
+
+
+
+Reading timedelta values
+------------------------
+
+If you need to retrieve time interval durations (rather than dates or
+times) from an XLSX file, there is no way to get them directly. You will
+need to translate the time and datetime values returned by `openpyxl` to
+timedelta values using a helper function.
+
+Here is a helper for files using the 1904 date system:
+
+.. code::
+
+   def helper_1904(dt):
+       if isinstance(dt, datetime.time):
+           return datetime.timedelta(
+               hours=dt.hour,
+               minutes=dt.minute,
+               seconds=dt.second,
+               microseconds=dt.microsecond
+           )
+       # else we have a datetime
+       return dt - datetime.datetime(1904, 1, 1)
+
+
+If your files use the 1900 date system, you can use this:
+
+.. code::
+
+   def helper_1900(dt):
+       if isinstance(dt, datetime.time):
+           return datetime.timedelta(
+               hours=dt.hour,
+               minutes=dt.minute,
+               seconds=dt.second,
+               microseconds=dt.microsecond
+           )
+       # else we have a datetime
+       if dt > datetime.datetime(1899, 12, 31) and dt < datetime.datetime(1900, 3, 1):
+           return dt - datetime.datetime(1899, 12, 31)
+       return dt - datetime.datetime(1899, 12, 30)
+
+
+.. warning::
+
+   Unfortunately, due to the 1900 leap year compatibility issue
+   mentioned above, it is impossible to create a helper function that
+   always returns 100% correct timedelta values from workbooks using the
+   1900 date system. Returned values for data in the interval [60,61)
+   days will be returned 24 hours too small, with no way to detect this
+   in the helper. Therefore, if you need to read timedelta values that
+   can reach around 60 days (1440 hours), you MUST make sure your files
+   use the 1904 date system to get reliable results!
 
 
 Writing timedelta values
