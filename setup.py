@@ -76,7 +76,7 @@ setup(
     license=__license__,
     python_requires=">=3.6, ",
     install_requires=[
-        'jdcal', 'et_xmlfile',
+        'et_xmlfile',
         ],
     project_urls={
         'Documentation': 'https://openpyxl.readthedocs.io/en/stable/',

@@ -9,18 +9,12 @@ from datetime import timedelta, tzinfo
 from math import isnan
 import re
 
-from jdcal import (
-    gcal2jd,
-    jd2gcal,
-    MJD_0
-)
-
 
 # constants
-MAC_EPOCH = datetime.date(1904, 1, 1)
-WINDOWS_EPOCH = datetime.date(1899, 12, 30)
-CALENDAR_WINDOWS_1900 = sum(gcal2jd(WINDOWS_EPOCH.year, WINDOWS_EPOCH.month, WINDOWS_EPOCH.day))
-CALENDAR_MAC_1904 = sum(gcal2jd(MAC_EPOCH.year, MAC_EPOCH.month, MAC_EPOCH.day))
+MAC_EPOCH = datetime.datetime(1904, 1, 1)
+WINDOWS_EPOCH = datetime.datetime(1899, 12, 30)
+CALENDAR_WINDOWS_1900 = 2415018.5   # Julian date of WINDOWS_EPOCH
+CALENDAR_MAC_1904 = 2416480.5       # Julian date of MAC_EPOCH
 SECS_PER_DAY = 86400
 
 EPOCH = datetime.datetime.utcfromtimestamp(0)
@@ -77,7 +71,8 @@ def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
         return timedelta_to_days(dt)
     if isnan(dt.year): # Pandas supports Not a Date
         return
-    jul = sum(gcal2jd(dt.year, dt.month, dt.day)) - offset
+    epoch = offset == CALENDAR_WINDOWS_1900 and WINDOWS_EPOCH or MAC_EPOCH
+    jul = (datetime.datetime(dt.year, dt.month, dt.day) - epoch).days
     if jul <= 60 and offset == CALENDAR_WINDOWS_1900:
         jul -= 1
     if hasattr(dt, 'time'):
@@ -88,19 +83,14 @@ def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
 def from_excel(value, offset=CALENDAR_WINDOWS_1900):
     if value is None:
         return
-    _, fraction = divmod(value, 1)
+    day, fraction = divmod(value, 1)
     diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000.))
     if 0 <= value < 1 and diff.days == 0:
         return days_to_time(diff)
     if 1 < value < 60 and offset == CALENDAR_WINDOWS_1900:
-        value += 1
-    parts = list(jd2gcal(MJD_0, value + offset - MJD_0))
-    jumped = (parts[-1] == 0 and fraction > 0)
-
-    if not jumped:
-        return datetime.datetime(*parts[:3]) + diff
-    else:
-        return datetime.datetime(*parts[:3] + [0])
+        day += 1
+    epoch = offset == CALENDAR_WINDOWS_1900 and WINDOWS_EPOCH or MAC_EPOCH
+    return epoch + datetime.timedelta(days=day) + diff
 
 
 class GMT(tzinfo):
