@@ -89,7 +89,7 @@ def from_excel(value, epoch=WINDOWS_EPOCH):
     diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000))
     if 0 <= value < 1 and diff.days == 0:
         return days_to_time(diff)
-    if 1 < value < 60 and epoch == WINDOWS_EPOCH:
+    if 0 < value < 60 and epoch == WINDOWS_EPOCH:
         day += 1
     return epoch + datetime.timedelta(days=day) + diff
 
