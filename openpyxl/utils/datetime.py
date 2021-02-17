@@ -15,6 +15,8 @@ MAC_EPOCH = datetime.datetime(1904, 1, 1)
 WINDOWS_EPOCH = datetime.datetime(1899, 12, 30)
 CALENDAR_WINDOWS_1900 = 2415018.5   # Julian date of WINDOWS_EPOCH
 CALENDAR_MAC_1904 = 2416480.5       # Julian date of MAC_EPOCH
+CALENDAR_WINDOWS_1900 = WINDOWS_EPOCH
+CALENDAR_MAC_1904 = MAC_EPOCH
 SECS_PER_DAY = 86400
 
 EPOCH = datetime.datetime.utcfromtimestamp(0)
@@ -64,32 +66,31 @@ def from_ISO8601(formatted_string):
     return dt
 
 
-def to_excel(dt, offset=CALENDAR_WINDOWS_1900):
+def to_excel(dt, epoch=WINDOWS_EPOCH):
     if isinstance(dt, datetime.time):
         return time_to_days(dt)
     if isinstance(dt, datetime.timedelta):
         return timedelta_to_days(dt)
     if isnan(dt.year): # Pandas supports Not a Date
         return
-    epoch = offset == CALENDAR_WINDOWS_1900 and WINDOWS_EPOCH or MAC_EPOCH
+
     jul = (datetime.datetime(dt.year, dt.month, dt.day) - epoch).days
-    if jul <= 60 and offset == CALENDAR_WINDOWS_1900:
+    if jul <= 60 and epoch == WINDOWS_EPOCH:
         jul -= 1
     if hasattr(dt, 'time'):
         jul += time_to_days(dt)
     return jul
 
 
-def from_excel(value, offset=CALENDAR_WINDOWS_1900):
+def from_excel(value, epoch=WINDOWS_EPOCH):
     if value is None:
         return
     day, fraction = divmod(value, 1)
-    diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000.))
+    diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000))
     if 0 <= value < 1 and diff.days == 0:
         return days_to_time(diff)
-    if 1 < value < 60 and offset == CALENDAR_WINDOWS_1900:
+    if 1 < value < 60 and epoch == WINDOWS_EPOCH:
         day += 1
-    epoch = offset == CALENDAR_WINDOWS_1900 and WINDOWS_EPOCH or MAC_EPOCH
     return epoch + datetime.timedelta(days=day) + diff
 
 
