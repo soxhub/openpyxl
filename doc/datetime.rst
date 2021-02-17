@@ -106,7 +106,7 @@ If your files use the 1900 date system, you can use this:
                microseconds=dt.microsecond
            )
        # else we have a datetime
-       if dt > datetime.datetime(1899, 12, 31) and dt < datetime.datetime(1900, 3, 1):
+       if dt > datetime.datetime(1899, 12, 30) and dt < datetime.datetime(1900, 3, 1):
            return dt - datetime.datetime(1899, 12, 31)
        return dt - datetime.datetime(1899, 12, 30)
 
