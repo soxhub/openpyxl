@@ -23,7 +23,7 @@ EPOCH = datetime.datetime.utcfromtimestamp(0)
 ISO_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 ISO_REGEX = re.compile(r'''
 (?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
-(?P<time>(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(?P<ms>\.\d{1,3})?)?Z?''',
+(?P<time>(?P<hour>\d{2}):(?P<minute>\d{2})(:(?P<second>\d{2})(?P<fraction>\.\d{1,3})?)?)?Z?''',
                                        re.VERBOSE)
 
 
@@ -52,17 +52,19 @@ def from_ISO8601(formatted_string):
     for key in ["year", "month", "day", "hour", "minute", "second"]:
         if parts[key]:
             parts[key] = int(parts[key])
+    seconds = microseconds = 0
+    if parts["second"]:
+        seconds = parts["second"]
+    if parts["fraction"]:
+        microseconds = int(float(parts['fraction']) * 1_000_000)
     if not parts["date"]:
-        dt = datetime.time(parts['hour'], parts['minute'], parts['second'])
+        dt = datetime.time(parts['hour'], parts['minute'], seconds, microseconds)
     elif not parts["time"]:
         dt = datetime.date(parts['year'], parts['month'], parts['day'])
     else:
         dt = datetime.datetime(year=parts['year'], month=parts['month'],
                                day=parts['day'], hour=parts['hour'], minute=parts['minute'],
-                               second=parts['second'])
-    if parts["ms"]:
-        ms = float(parts['ms']) * 1_000_000
-        dt += timedelta(microseconds=ms)
+                               second=seconds, microsecond=microseconds)
     return dt
 
 
