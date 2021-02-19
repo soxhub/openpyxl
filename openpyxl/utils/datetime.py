@@ -68,6 +68,7 @@ def from_ISO8601(formatted_string):
 
 
 def to_excel(dt, epoch=WINDOWS_EPOCH):
+    """Convert Python datetime to Excel serial"""
     if isinstance(dt, datetime.time):
         return time_to_days(dt)
     if isinstance(dt, datetime.timedelta):
@@ -75,15 +76,20 @@ def to_excel(dt, epoch=WINDOWS_EPOCH):
     if isnan(dt.year): # Pandas supports Not a Date
         return
 
-    jul = (datetime.datetime(dt.year, dt.month, dt.day) - epoch).days
-    if jul <= 60 and epoch == WINDOWS_EPOCH:
-        jul -= 1
+    if not hasattr(dt, "date"):
+        dt = datetime.datetime.combine(dt, datetime.time())
+
+    # rebase on epoch and adjust for < 1900-03-01
+    days = (dt - epoch).days
+    if days <= 60 and epoch == WINDOWS_EPOCH:
+        days -= 1
     if hasattr(dt, 'time'):
-        jul += time_to_days(dt)
-    return jul
+        days += time_to_days(dt)
+    return days
 
 
 def from_excel(value, epoch=WINDOWS_EPOCH):
+    """Convert Excel serial to Python datetime"""
     if value is None:
         return
     day, fraction = divmod(value, 1)
