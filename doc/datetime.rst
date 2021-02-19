@@ -4,7 +4,9 @@ Dates and Times
 Dates and times can be stored in two distinct ways in XLSX files: as an
 ISO 8601 formatted string or as a single number. `openpyxl` supports
 both representations and translates between them and python's datetime
-module representations when reading from and writing to files.
+module representations when reading from and writing to files. In either
+representation, the maximum date and time precision in XLSX files is
+millisecond precision.
 
 
 Using the ISO 8601 format
@@ -72,10 +74,18 @@ and set it like this:
 Reading timedelta values
 ------------------------
 
-If you need to retrieve time interval durations (rather than dates or
-times) from an XLSX file, there is no way to get them directly. You will
-need to translate the time and datetime values returned by `openpyxl` to
-timedelta values using a helper function.
+Excel users can use custom number formats resembling ``[h]:mm:ss`` or
+``[mm]:ss`` to store and accurately display time interval durations.
+(The brackets in the format tell Excel to not wrap around at 24 hours or
+60 minutes.)
+
+If you need to retrieve such time interval durations from an XLSX file
+using `openpyxl`, there is no way to get them directly as
+`datetime.timedelta` objects. `openpyxl` will only see the single number
+representation of the values, and returns the corresponding
+`datetime.time` or `datetime.datetime` object for each cell. To
+translate these to timedelta objects with correct length, you can pass
+them through a helper function.
 
 Here is a helper for files using the 1904 date system:
 
@@ -106,9 +116,9 @@ If your files use the 1900 date system, you can use this:
                microseconds=dt.microsecond
            )
        # else we have a datetime
-       if dt > datetime.datetime(1899, 12, 30) and dt < datetime.datetime(1900, 3, 1):
-           return dt - datetime.datetime(1899, 12, 31)
-       return dt - datetime.datetime(1899, 12, 30)
+       if dt < datetime.datetime(1899, 12, 31) or dt >= datetime.datetime(1900, 3, 1):
+           return dt - datetime.datetime(1899, 12, 30)
+       return dt - datetime.datetime(1899, 12, 31)
 
 
 .. warning::
