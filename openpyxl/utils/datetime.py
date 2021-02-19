@@ -95,23 +95,8 @@ def from_excel(value, epoch=WINDOWS_EPOCH):
     return epoch + datetime.timedelta(days=day) + diff
 
 
-class GMT(tzinfo):
-
-    def utcoffset(self, dt):
-        return timedelta(0)
-
-    def dst(self, dt):
-        return timedelta(0)
-
-    def tzname(self,dt):
-        return "GMT"
-
-try:
-    from datetime import timezone
-    UTC = timezone(timedelta(0))
-except ImportError:
-    # Python 2
-    UTC = GMT()
+from datetime import timezone
+UTC = timezone(timedelta(0))
 
 
 def time_to_days(value):

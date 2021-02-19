@@ -179,9 +179,9 @@ class CET(tzinfo):
 
 def test_localised_time():
 
-    from ..datetime import time_to_days, GMT
+    from ..datetime import time_to_days, UTC
 
-    dt1 = datetime(2015, 7, 24, tzinfo=GMT())
+    dt1 = datetime(2015, 7, 24, tzinfo=UTC)
     dt2 = datetime(2015, 7, 24, 2, tzinfo=CET())
     assert dt2 - dt2 == timedelta(0)
 
