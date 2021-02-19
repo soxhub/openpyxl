@@ -65,6 +65,7 @@ def test_from_iso(value, expected):
                              (datetime(2010, 1, 18, 14, 15, 20, 1600), 40196.5939815),
                              (date(2009, 12, 20), 40167),
                              (datetime(1506, 10, 15), -143617.0),
+                             (date(1, 1, 1), -693593),
                              (time(0), 0),
                              (time(6, 0), 0.25),
                              (timedelta(hours=6), 0.25),
