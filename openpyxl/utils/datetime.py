@@ -81,7 +81,7 @@ def to_excel(dt, epoch=WINDOWS_EPOCH):
 
     # rebase on epoch and adjust for < 1900-03-01
     days = (dt - epoch).days
-    if days <= 60 and epoch == WINDOWS_EPOCH:
+    if 0 < days <= 60 and epoch == WINDOWS_EPOCH:
         days -= 1
     if hasattr(dt, 'time'):
         days += time_to_days(dt)
