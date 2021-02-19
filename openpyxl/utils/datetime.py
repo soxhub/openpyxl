@@ -61,9 +61,9 @@ def from_ISO8601(formatted_string):
     elif not parts["time"]:
         dt = datetime.date(parts['year'], parts['month'], parts['day'])
     else:
-        dt = datetime.datetime(year=parts['year'], month=parts['month'],
-                               day=parts['day'], hour=parts['hour'], minute=parts['minute'],
-                               second=parts['second'], microsecond=parts["microsecond"])
+        del parts["time"]
+        del parts["date"]
+        dt = datetime.datetime(**parts)
     return dt
 
 
