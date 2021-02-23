@@ -351,7 +351,7 @@ class TestCopy:
 
     def test_default_epoch(self, Workbook):
         wb = Workbook()
-        assert wb.epoch == "1899-12-30"
+        assert wb.epoch == datetime.datetime(1899, 12, 30)
 
 
     def test_assign_epoch(self, Workbook):

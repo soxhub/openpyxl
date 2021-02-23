@@ -117,7 +117,9 @@ class Workbook(object):
 
     @property
     def epoch(self):
-        return self._epoch == WINDOWS_EPOCH and "1899-12-30" or "1904-01-01"
+        if self._epoch == WINDOWS_EPOCH:
+            return WINDOWS_EPOCH
+        return MAC_EPOCH
 
 
     @epoch.setter
