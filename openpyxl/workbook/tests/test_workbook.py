@@ -1,5 +1,7 @@
 # Copyright (c) 2010-2021 openpyxl
 
+import datetime
+
 # package imports
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
@@ -13,7 +15,6 @@ from openpyxl.xml.constants import (
     XLTX
 )
 
-# test imports
 import pytest
 
 @pytest.fixture
@@ -346,3 +347,20 @@ class TestCopy:
         ws = wb.create_sheet()
         with pytest.raises(ValueError):
             wb.copy_worksheet(ws)
+
+
+    def test_default_epoch(self, Workbook):
+        wb = Workbook()
+        assert wb.epoch == "1899-12-30"
+
+
+    def test_assign_epoch(self, Workbook):
+        wb = Workbook()
+        wb.epoch = datetime.datetime(1904, 1, 1)
+
+
+    def test_invalid_epoch(self, Workbook):
+        wb = Workbook()
+        with pytest.raises(ValueError):
+            wb.epoch = datetime.datetime(1970, 1, 1)
+
