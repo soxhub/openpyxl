@@ -24,9 +24,7 @@ def _set_attributes(cell, styled=None):
     value = cell._value
 
     if cell.data_type == "d":
-        if cell.parent.parent.iso_dates:
-            if isinstance(value, timedelta):
-                value = days_to_time(value)
+        if cell.parent.parent.iso_dates and not isinstance(value, timedelta):
             value = value.isoformat()
         else:
             attrs['t'] = "n"
