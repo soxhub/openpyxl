@@ -8,6 +8,13 @@ module representations when reading from and writing to files. In either
 representation, the maximum date and time precision in XLSX files is
 millisecond precision.
 
+XLSX files are not suitable for storing historic dates (before 1900 or
+1904), due to bugs in Excel that cannot be fixed without causing
+backward compatibility problems. To discourage users from trying anyway,
+Excel deliberately refuses to recognize and display such dates. You
+should not try using `openpyxl` either, even if it does not throw errors
+when you do so.
+
 
 Using the ISO 8601 format
 -------------------------
@@ -71,70 +78,19 @@ and set it like this:
 
 
 
-Reading timedelta values
-------------------------
+Handling timedelta values
+-------------------------
 
-Excel users can use custom number formats resembling ``[h]:mm:ss`` or
-``[mm]:ss`` to store and accurately display time interval durations.
-(The brackets in the format tell Excel to not wrap around at 24 hours or
-60 minutes.)
+Excel users can use number formats resembling ``[h]:mm:ss`` or
+``[mm]:ss`` to display time interval durations.
+The brackets in the format tell Excel to not wrap around at 24 hours or
+60 minutes.
+`openpyxl` recognizes these number formats when reading XLSX files and
+returns datetime.timedelta values for the corresponding cells.
 
-If you need to retrieve such time interval durations from an XLSX file
-using `openpyxl`, there is no way to get them directly as
-`datetime.timedelta` objects. `openpyxl` will only see the single number
-representation of the values, and returns the corresponding
-`datetime.time` or `datetime.datetime` object for each cell. To
-translate these to timedelta objects with correct length, you can pass
-them through a helper function.
+When writing timedelta values from worksheet cells to file, `openpyxl`
+uses the ``[h]:mm:ss`` number format for these cells.
 
-Here is a helper for files using the 1904 date system:
-
-.. code::
-
-   def helper_1904(dt):
-       if isinstance(dt, datetime.time):
-           return datetime.timedelta(
-               hours=dt.hour,
-               minutes=dt.minute,
-               seconds=dt.second,
-               microseconds=dt.microsecond
-           )
-       # else we have a datetime
-       return dt - datetime.datetime(1904, 1, 1)
-
-
-If your files use the 1900 date system, you can use this:
-
-.. code::
-
-   def helper_1900(dt):
-       if isinstance(dt, datetime.time):
-           return datetime.timedelta(
-               hours=dt.hour,
-               minutes=dt.minute,
-               seconds=dt.second,
-               microseconds=dt.microsecond
-           )
-       # else we have a datetime
-       if dt < datetime.datetime(1899, 12, 31) or dt >= datetime.datetime(1900, 3, 1):
-           return dt - datetime.datetime(1899, 12, 30)
-       return dt - datetime.datetime(1899, 12, 31)
-
-
-.. warning::
-
-   Unfortunately, due to the 1900 leap year compatibility issue
-   mentioned above, it is impossible to create a helper function that
-   always returns 100% correct timedelta values from workbooks using the
-   1900 date system. Returned values for data in the interval [60,61)
-   days will be returned 24 hours too small, with no way to detect this
-   in the helper. Therefore, if you need to read timedelta values that
-   can reach around 60 days (1440 hours), you MUST make sure your files
-   use the 1904 date system to get reliable results!
-
-
-Writing timedelta values
-------------------------
 
 Due to the issues with storing and retrieving timedelta values described
 above, the best option is to not use datetime representations for
