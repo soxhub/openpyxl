@@ -85,7 +85,8 @@ def _cast_number(value):
 class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
-                 epoch=WINDOWS_EPOCH, date_formats=set()):
+                 epoch=WINDOWS_EPOCH, date_formats=set(),
+                 timedelta_formats=set()):
         self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
@@ -96,6 +97,7 @@ class WorkSheetParser(object):
         self.row_counter = self.col_counter = 0
         self.tables = TablePartList()
         self.date_formats = date_formats
+        self.timedelta_formats = timedelta_formats
         self.row_dimensions = {}
         self.column_dimensions = {}
         self.number_formats = []
@@ -198,7 +200,10 @@ class WorkSheetParser(object):
         elif value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
-                if style_id in self.date_formats:
+                if style_id in self.timedelta_formats:
+                    data_type = 'd'
+                    value = from_excel(value, self.epoch, timedelta=True)
+                elif style_id in self.date_formats:
                     data_type = 'd'
                     try:
                         value = from_excel(value, self.epoch)
@@ -337,7 +342,9 @@ class WorksheetReader(object):
 
     def __init__(self, ws, xml_source, shared_strings, data_only):
         self.ws = ws
-        self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._date_formats)
+        self.parser = WorkSheetParser(xml_source, shared_strings,
+                data_only, ws.parent.epoch, ws.parent._date_formats,
+                ws.parent._timedelta_formats)
         self.tables = []
 
 

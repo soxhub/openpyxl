@@ -84,6 +84,35 @@ def test_is_date_format(format, result):
     assert is_date_format(format) is result
 
 
+@pytest.mark.parametrize("format, result",
+                         [
+                             ('m:ss', False),
+                             ('[h]', True),
+                             ('[hh]', True),
+                             ('[h]:mm:ss', True),
+                             ('[hh]:mm:ss', True),
+                             ('[h]:mm:ss.000', True),
+                             ('[hh]:mm:ss.0', True),
+                             ('[h]:mm', True),
+                             ('[hh]:mm', True),
+                             ('[m]:ss', True),
+                             ('[mm]:ss', True),
+                             ('[m]:ss.000', True),
+                             ('[mm]:ss.0', True),
+                             ('[s]', True),
+                             ('[ss]', True),
+                             ('[s].000', True),
+                             ('[ss].0', True),
+                             ('[m]', False),
+                             ('[mm]', False),
+                             ('h:mm', False),
+                         ]
+                         )
+def test_is_timedelta_format(format, result):
+    from ..numbers import is_timedelta_format
+    assert is_timedelta_format(format) is result
+
+
 @pytest.mark.parametrize("fmt, typ",
                          [
                              (FORMAT_DATE_DATETIME, "datetime"),

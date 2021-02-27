@@ -95,6 +95,7 @@ COLORS = r"\[(BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW)\]"
 LITERAL_GROUP = r'".*?"' # anything in quotes
 LOCALE_GROUP = r'\[.+\]' # anything in square brackets, including colours
 STRIP_RE = re.compile(f"{LITERAL_GROUP}|{LOCALE_GROUP}")
+TIMEDELTA_RE = re.compile(r'\[hh?\](:mm(:ss(\.0*)?)?)?|\[mm?\]:ss(\.0*)?|\[ss?\](\.0*)?', re.I)
 
 
 # Spec 18.8.31 numFmts
@@ -106,6 +107,12 @@ def is_date_format(fmt):
     fmt = fmt.split(";")[0] # only look at the first format
     fmt = STRIP_RE.sub("", fmt) # ignore some formats
     return re.search(r"[^\\][dmhysDMHYS]", fmt) is not None
+
+
+def is_timedelta_format(fmt):
+    if fmt is None:
+        return False
+    return TIMEDELTA_RE.match(fmt) is not None
 
 
 def is_datetime(fmt):

@@ -125,6 +125,26 @@ def test_from_excel(value, expected):
 
 @pytest.mark.parametrize("value, expected",
                          [
+                             (0, timedelta(hours=0)),
+                             (0.5, timedelta(hours=12)),
+                             (-0.5, timedelta(hours=-12)),
+                             (1.25, timedelta(hours=30)),
+                             (-1.25, timedelta(hours=-30)),
+                             (59.5, timedelta(days=59, hours=12)),
+                             (60.5, timedelta(days=60, hours=12)),
+                             (61.5, timedelta(days=61, hours=12)),
+                             (0.9999999995, timedelta(days=1)),
+                             (1.0000000005, timedelta(days=1)),
+                             (None, None),
+                         ])
+def test_from_excel_timedelta(value, expected):
+    from ..datetime import from_excel
+    FUT = from_excel
+    assert FUT(value, timedelta=True) == expected
+
+
+@pytest.mark.parametrize("value, expected",
+                         [
                              (39385, datetime(2011, 10, 31)),
                              (21980, datetime(1964,  3,  6)),
                              (0, time(0, 0)),

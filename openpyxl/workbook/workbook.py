@@ -104,6 +104,7 @@ class Workbook(object):
 
         self._number_formats = IndexedList()
         self._date_formats = {}
+        self._timedelta_formats = {}
 
         self._protections = IndexedList([Protection()])
 

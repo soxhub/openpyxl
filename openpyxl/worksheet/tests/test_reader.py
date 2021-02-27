@@ -63,6 +63,7 @@ def Workbook():
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []
             self._date_formats = set()
+            self._timedelta_formats = set()
 
         def create_sheet(self, title):
             return Worksheet(self)
@@ -80,7 +81,8 @@ def WorkSheetParser():
         styles.add((StyleArray([i]*9)))
     styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
     date_formats = set([1, 29])
-    return WorkSheetParser(None, {0:'a'}, date_formats=date_formats)
+    timedelta_formats = set([30])
+    return WorkSheetParser(None, {0:'a'}, date_formats=date_formats, timedelta_formats=timedelta_formats)
 
 from warnings import simplefilter
 simplefilter("always")
@@ -286,6 +288,21 @@ class TestWorksheetParser:
         cell = parser.parse_cell(element)
         assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
                         'style_id':0, 'value': datetime.datetime(2011, 12, 25, 14, 23, 55)}
+
+
+    def test_timedelta(self, WorkSheetParser):
+        parser = WorkSheetParser
+
+        src = """
+        <c r="A1" t="n" s="30" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <v>1.25</v>
+        </c>
+        """
+        element = fromstring(src)
+
+        cell = parser.parse_cell(element)
+        assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
+                        'style_id':30, 'value':datetime.timedelta(days=1, hours=6)}
 
 
     def test_mac_date(self, WorkSheetParser):
