@@ -103,9 +103,12 @@ def test_is_date_format(format, result):
                              ('[ss]', True),
                              ('[s].000', True),
                              ('[ss].0', True),
-                             ('[m]', False),
-                             ('[mm]', False),
+                             ('[m]', True),
+                             ('[mm]', True),
                              ('h:mm', False),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[h]:mm', True),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             ('[h]:mm;[=0]\-', True),
                          ]
                          )
 def test_is_timedelta_format(format, result):
