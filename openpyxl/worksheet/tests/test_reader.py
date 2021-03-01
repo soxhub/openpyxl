@@ -80,7 +80,7 @@ def WorkSheetParser():
     for i in range(29):
         styles.add((StyleArray([i]*9)))
     styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
-    date_formats = set([1, 29])
+    date_formats = set([1, 29, 30])
     timedelta_formats = set([30])
     return WorkSheetParser(None, {0:'a'}, date_formats=date_formats, timedelta_formats=timedelta_formats)
 

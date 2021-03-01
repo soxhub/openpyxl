@@ -200,13 +200,12 @@ class WorkSheetParser(object):
         elif value is not None:
             if data_type == 'n':
                 value = _cast_number(value)
-                if style_id in self.timedelta_formats:
-                    data_type = 'd'
-                    value = from_excel(value, self.epoch, timedelta=True)
-                elif style_id in self.date_formats:
+                if style_id in self.date_formats:
                     data_type = 'd'
                     try:
-                        value = from_excel(value, self.epoch)
+                        value = from_excel(
+                            value, self.epoch, timedelta=style_id in self.timedelta_formats
+                        )
                     except ValueError:
                         msg = """Cell {0} is marked as a date but the serial value {1} is outside the limits for dates. The cell will be treated as an error.""".format(coordinate, value)
                         warn(msg)
