@@ -93,7 +93,7 @@ FORMAT_CURRENCY_EUR_SIMPLE = '[$EUR ]#,##0.00_-'
 
 COLORS = r"\[(BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW)\]"
 LITERAL_GROUP = r'".*?"' # anything in quotes
-LOCALE_GROUP = r'\[.+\]' # anything in square brackets, including colours
+LOCALE_GROUP = r'\[(?!hh?\]|mm?\]|ss?\])[^\]]*\]' # anything in square brackets, except hours or minutes or seconds
 STRIP_RE = re.compile(f"{LITERAL_GROUP}|{LOCALE_GROUP}")
 TIMEDELTA_RE = re.compile(r'\[hh?\](:mm(:ss(\.0*)?)?)?|\[mm?\](:ss(\.0*)?)?|\[ss?\](\.0*)?', re.I)
 

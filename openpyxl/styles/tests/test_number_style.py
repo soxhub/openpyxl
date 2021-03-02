@@ -77,6 +77,16 @@ def test_strip_quotes(fmt, stripped):
                              (r"0_ ;[Red]\-0\ ", False),
                              (r"\Y000000", False),
                              (r'#,##0.0####" YMD"', False),
+                             ('[h]', True),
+                             ('[ss]', True),
+                             ('[s].000', True),
+                             ('[m]', True),
+                             ('[mm]', True),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             ('[>=100][Magenta][s].00', True),
+                             ('[h]:mm;[=0]\-', True),
+                             ('[>=100][Magenta].00', False),
+                             ('[>=100][Magenta]General', False),
                          ]
                          )
 def test_is_date_format(format, result):
@@ -108,7 +118,10 @@ def test_is_date_format(format, result):
                              ('h:mm', False),
                              ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[h]:mm', True),
                              ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             ('[>=100][Magenta][s].00', True),
                              ('[h]:mm;[=0]\-', True),
+                             ('[>=100][Magenta].00', False),
+                             ('[>=100][Magenta]General', False),
                          ]
                          )
 def test_is_timedelta_format(format, result):
