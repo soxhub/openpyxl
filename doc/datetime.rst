@@ -3,17 +3,21 @@ Dates and Times
 
 Dates and times can be stored in two distinct ways in XLSX files: as an
 ISO 8601 formatted string or as a single number. `openpyxl` supports
-both representations and translates between them and python's datetime
+both representations and translates between them and Python's datetime
 module representations when reading from and writing to files. In either
 representation, the maximum date and time precision in XLSX files is
 millisecond precision.
 
-XLSX files are not suitable for storing historic dates (before 1900 or
-1904), due to bugs in Excel that cannot be fixed without causing
-backward compatibility problems. To discourage users from trying anyway,
-Excel deliberately refuses to recognize and display such dates. You
-should not try using `openpyxl` either, even if it does not throw errors
-when you do so.
+XLSX files are not suitable for storing historic dates (before 1900),
+due to bugs in Excel that cannot be fixed without causing backward
+compatibility problems. To discourage users from trying anyway, Excel
+deliberately refuses to recognize and display such dates. Consequently,
+it is not advised to use `openpyxl` for such purposes either, especially
+when exchanging files with others.
+
+The date and time representations in Excel do not support timezones.
+Timezone information attached to Python datetimes is therefore lost when
+datetimes are stored in XLSX files.
 
 
 Using the ISO 8601 format
@@ -28,11 +32,11 @@ writing your file, set the workbook's ``iso_dates`` flag to ``True``:
 
 The benefit of using this format is that the meaning of the stored
 information is not subject to interpretation, as it is with the single
-number format.
+number format [#f1]_.
 
 The ISO 8601 format has no concept of timedeltas (time interval
-durations). Do not expect to be able to store and retrieve timedelta
-values directly with this, more on that below.
+durations). `openpyxl` therefore always uses the single number format
+for timedelta values when writing them to file.
 
 
 The 1900 and 1904 date systems
@@ -58,8 +62,8 @@ More information on this issue is available from Microsoft:
 
 In workbooks using the 1900 date system, `openpyxl` behaves the same as
 Excel when translating between the worksheets' date/time numbers and
-python datetimes in January and February 1900. The only exception is 29
-February 1900, which cannot be represented as a python datetime object
+Python datetimes in January and February 1900. The only exception is 29
+February 1900, which cannot be represented as a Python datetime object
 since it is not a valid date.
 
 You can get the date system of a workbook like this:
@@ -82,27 +86,16 @@ Handling timedelta values
 -------------------------
 
 Excel users can use number formats resembling ``[h]:mm:ss`` or
-``[mm]:ss`` to display time interval durations.
-The brackets in the format tell Excel to not wrap around at 24 hours or
-60 minutes.
+``[mm]:ss`` to display time interval durations, which `openpyxl`
+considers to be equivalent to timedeltas in Python.
 `openpyxl` recognizes these number formats when reading XLSX files and
 returns datetime.timedelta values for the corresponding cells.
 
 When writing timedelta values from worksheet cells to file, `openpyxl`
 uses the ``[h]:mm:ss`` number format for these cells.
 
+.. rubric:: Footnotes
 
-Due to the issues with storing and retrieving timedelta values described
-above, the best option is to not use datetime representations for
-timedelta in XLSX at all, and store the days or hours as regular
-numbers:
-
-    >>> import openpyxl
-    >>> import datetime
-    >>> duration = datetime.timedelta(hours=42, minutes=3, seconds=14)
-    >>> wb = openpyxl.Workbook()
-    >>> ws = wb.active
-    >>> days = duration / datetime.timedelta(days=1)
-    >>> ws["A1"] = days
-    >>> print(days)
-    1.7522453703703704
+.. [#f1] For example, the serial 1 in an Excel worksheet can be
+         interpreted as 00:00, as 24:00, as 1900-01-01, as 1440
+         (minutes), etc., depending solely on the formatting applied.
