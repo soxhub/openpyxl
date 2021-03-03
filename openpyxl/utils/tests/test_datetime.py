@@ -135,6 +135,7 @@ def test_from_excel(value, expected):
                              (61.5, timedelta(days=61, hours=12)),
                              (0.9999999995, timedelta(days=1)),
                              (1.0000000005, timedelta(days=1)),
+                             (1.0000026378, timedelta(days=1, microseconds=228000)),
                              (None, None),
                          ])
 def test_from_excel_timedelta(value, expected):

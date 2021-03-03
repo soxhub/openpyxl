@@ -92,13 +92,15 @@ def from_excel(value, epoch=WINDOWS_EPOCH, timedelta=False):
     """Convert Excel serial to Python datetime"""
     if value is None:
         return
+
     if timedelta:
         td = datetime.timedelta(days=value)
         if td.microseconds:
             # round to millisecond precision
-            td += datetime.timedelta(microseconds=-td.microseconds +
-                    round(td.microseconds/1000)*1000)
+            td = datetime.timedelta(seconds=int(td.total_seconds()),
+                                    microseconds=round(td.microseconds, -3))
         return td
+
     day, fraction = divmod(value, 1)
     diff = datetime.timedelta(milliseconds=round(fraction * SECS_PER_DAY * 1000))
     if 0 <= value < 1 and diff.days == 0:
