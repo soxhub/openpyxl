@@ -47,6 +47,10 @@ def test_iso_regex(value, group, expected):
                              ("2020-12-03T12:19:01.003Z", datetime(2020, 12, 3, 12, 19, 1, 3000)),
                              ("2020-12-03T12:19:01.3Z", datetime(2020, 12, 3, 12, 19, 1, 300_000)),
                              ("2020-12-03T12:19:01.03", datetime(2020, 12, 3, 12, 19, 1, 30_000)),
+                             ("PT0M", timedelta(0)),
+                             ("PT2H0M1S", timedelta(hours=2, seconds=1)),
+                             ("PT25H20M1.1S", timedelta(days=1, hours=1, minutes=20, seconds=1.1)),
+                             ("PT25H70M1.123S", timedelta(days=1, hours=2, minutes=10, seconds=1.123)),
                          ]
                          )
 def test_from_iso(value, expected):
