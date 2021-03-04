@@ -97,7 +97,7 @@ def from_excel(value, epoch=WINDOWS_EPOCH, timedelta=False):
         td = datetime.timedelta(days=value)
         if td.microseconds:
             # round to millisecond precision
-            td = datetime.timedelta(seconds=int(td.total_seconds()),
+            td = datetime.timedelta(seconds=td.total_seconds() // 1,
                                     microseconds=round(td.microseconds, -3))
         return td
 
