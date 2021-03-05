@@ -12,9 +12,18 @@ from datetime import (
 import pytest
 
 
-def test_to_iso():
+@pytest.mark.parametrize("value, expected",
+                         [
+                             (datetime(2013, 7, 15, 6, 52, 33), "2013-07-15T06:52:33"),
+                             (datetime(2013, 7, 15, 6, 52, 33, 123456), "2013-07-15T06:52:33.123"),
+                             (date(2013, 7, 15), "2013-07-15"),
+                             (time(0, 1, 42), "00:01:42"),
+                             (time(0, 1, 42, 123456), "00:01:42.123"),
+                         ]
+                         )
+def test_to_iso(value, expected):
     from ..datetime import to_ISO8601
-    assert to_ISO8601(datetime(2013, 7, 15, 6, 52, 33)) == "2013-07-15T06:52:33Z"
+    assert to_ISO8601(value) == expected
 
 
 @pytest.mark.parametrize("value, group, expected",

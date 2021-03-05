@@ -30,7 +30,9 @@ ISO_DURATION = re.compile(r'PT((?P<hours>\d+)H)?((?P<minutes>\d+)M)?((?P<seconds
 
 def to_ISO8601(dt):
     """Convert from a datetime to a timestamp string."""
-    return datetime.datetime.strftime(dt, ISO_FORMAT)
+    if hasattr(dt, "microsecond") and dt.microsecond:
+        return dt.isoformat(timespec="milliseconds")
+    return dt.isoformat()
 
 
 def from_ISO8601(formatted_string):
