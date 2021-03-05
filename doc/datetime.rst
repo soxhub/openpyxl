@@ -34,9 +34,10 @@ The benefit of using this format is that the meaning of the stored
 information is not subject to interpretation, as it is with the single
 number format [#f1]_.
 
-The ISO 8601 format has no concept of timedeltas (time interval
-durations). `openpyxl` therefore always uses the single number format
-for timedelta values when writing them to file.
+The Office Open XML standard does not specify a supported subset of the
+ISO 8601 duration format for representing time interval durations.
+`openpyxl` therefore always uses the single number format for timedelta
+values when writing them to file.
 
 
 The 1900 and 1904 date systems

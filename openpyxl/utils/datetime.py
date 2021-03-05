@@ -25,6 +25,7 @@ ISO_REGEX = re.compile(r'''
 (?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
 (?P<time>(?P<hour>\d{2}):(?P<minute>\d{2})(:(?P<second>\d{2})(?P<microsecond>\.\d{1,3})?)?)?Z?''',
                                        re.VERBOSE)
+ISO_DURATION = re.compile(r'PT((?P<hours>\d+)H)?((?P<minutes>\d+)M)?((?P<seconds>\d+(\.\d{1,3})?)S)?')
 
 
 def to_ISO8601(dt):
@@ -41,30 +42,42 @@ def from_ISO8601(formatted_string):
     Times B.1.2 and B.2.2
     Datetimes B.1.3 and B.2.3
 
-    There is no concept of timedeltas
+    There is no concept of timedeltas in the specification, but Excel
+    writes them (in strict OOXML mode), so these are also understood.
     """
+    if not formatted_string:
+        return None
 
     match = ISO_REGEX.match(formatted_string)
-    if not match:
-        raise ValueError("Invalid datetime value {}".format(formatted_string))
+    if match and any(match.groups()):
+        parts = match.groupdict(0)
+        for key in ["year", "month", "day", "hour", "minute", "second"]:
+            if parts[key]:
+                parts[key] = int(parts[key])
 
-    parts = match.groupdict(0)
-    for key in ["year", "month", "day", "hour", "minute", "second"]:
-        if parts[key]:
-            parts[key] = int(parts[key])
+        if parts["microsecond"]:
+            parts["microsecond"] = int(float(parts['microsecond']) * 1_000_000)
 
-    if parts["microsecond"]:
-        parts["microsecond"] = int(float(parts['microsecond']) * 1_000_000)
+        if not parts["date"]:
+            dt = datetime.time(parts['hour'], parts['minute'], parts['second'], parts["microsecond"])
+        elif not parts["time"]:
+            dt = datetime.date(parts['year'], parts['month'], parts['day'])
+        else:
+            del parts["time"]
+            del parts["date"]
+            dt = datetime.datetime(**parts)
+        return dt
 
-    if not parts["date"]:
-        dt = datetime.time(parts['hour'], parts['minute'], parts['second'], parts["microsecond"])
-    elif not parts["time"]:
-        dt = datetime.date(parts['year'], parts['month'], parts['day'])
-    else:
-        del parts["time"]
-        del parts["date"]
-        dt = datetime.datetime(**parts)
-    return dt
+    match = ISO_DURATION.match(formatted_string)
+    if match and any(match.groups()):
+        parts = match.groupdict(0)
+        for key, val in parts.items():
+            if val:
+                parts[key]=float(val)
+        return datetime.timedelta(**parts)
+
+    raise ValueError("Invalid datetime value {}".format(formatted_string))
+
 
 
 def to_excel(dt, epoch=WINDOWS_EPOCH):
