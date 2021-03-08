@@ -5,7 +5,7 @@ from __future__ import division
 
 # Python stdlib imports
 import datetime
-from datetime import timedelta, tzinfo
+from datetime import timedelta, timezone
 from math import isnan
 import re
 
@@ -75,11 +75,10 @@ def from_ISO8601(formatted_string):
         parts = match.groupdict(0)
         for key, val in parts.items():
             if val:
-                parts[key]=float(val)
+                parts[key] = float(val)
         return datetime.timedelta(**parts)
 
     raise ValueError("Invalid datetime value {}".format(formatted_string))
-
 
 
 def to_excel(dt, epoch=WINDOWS_EPOCH):
@@ -88,7 +87,7 @@ def to_excel(dt, epoch=WINDOWS_EPOCH):
         return time_to_days(dt)
     if isinstance(dt, datetime.timedelta):
         return timedelta_to_days(dt)
-    if isnan(dt.year): # Pandas supports Not a Date
+    if isnan(dt.year):  # Pandas supports Not a Date
         return
 
     if not hasattr(dt, "date"):
@@ -98,9 +97,7 @@ def to_excel(dt, epoch=WINDOWS_EPOCH):
     days = (dt - epoch).days
     if 0 < days <= 60 and epoch == WINDOWS_EPOCH:
         days -= 1
-    if hasattr(dt, 'time'):
-        days += time_to_days(dt)
-    return days
+    return days + time_to_days(dt)
 
 
 def from_excel(value, epoch=WINDOWS_EPOCH, timedelta=False):
@@ -125,7 +122,6 @@ def from_excel(value, epoch=WINDOWS_EPOCH, timedelta=False):
     return epoch + datetime.timedelta(days=day) + diff
 
 
-from datetime import timezone
 UTC = timezone(timedelta(0))
 
 
@@ -143,12 +139,7 @@ def time_to_days(value):
 
 def timedelta_to_days(value):
     """Convert a timedelta value to fractions of a day"""
-    if not hasattr(value, 'total_seconds'):
-        secs = (value.microseconds +
-                (value.seconds + value.days * SECS_PER_DAY) * 10**6) / 10**6
-    else:
-        secs = value.total_seconds()
-    return secs / SECS_PER_DAY
+    return value.total_seconds() / SECS_PER_DAY
 
 
 def days_to_time(value):
