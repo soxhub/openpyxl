@@ -1,3 +1,26 @@
+3.0.7 (unreleased)
+==================
+
+
+Bugfixes
+--------
+
+* `#1588 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1588>`
+* `#1589 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1589>`_ Exception raised when merging cells which do not have borders all the way round.
+* `#1594 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1594>`_ Python 2 print statement in the tutorial
+
+
+Pull Requests
+-------------
+
+* `PR392 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/392/>`_ Add documentation on datetime handling
+* `PR393 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/393/>`_ Drop dependency on jdcal
+* `PR394 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/394/>`_ Datetime rounding
+* `PR395 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/395/>`_ Unify handling of 1900 epoch
+* `PR397 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/397/>`_ Add explicit support for reading datetime deltas
+* `PR399 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/399/>`_ Millisecond precision for datetimes
+
+
 3.0.6 (2021-01-14)
 ==================
 

@@ -45,9 +45,6 @@ ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 ERROR_CODES = ('#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!',
                '#N/A')
 
-
-ERROR_CODES = ERROR_CODES
-
 TYPE_STRING = 's'
 TYPE_FORMULA = 'f'
 TYPE_NUMERIC = 'n'

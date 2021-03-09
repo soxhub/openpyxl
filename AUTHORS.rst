@@ -64,6 +64,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Masato Yoshida
 * Max Bolingbroke
 * Nicholas Laver
+* Nis Martensen
 * Paul Joyce
 * Paul Van Der Linden
 * Philip Roche

@@ -11,7 +11,7 @@ from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils import quote_sheetname
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
+from openpyxl.utils.datetime  import WINDOWS_EPOCH, MAC_EPOCH
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 
 from openpyxl.writer.excel import save_workbook
@@ -75,7 +75,7 @@ class Workbook(object):
         self.vba_archive = None
         self.is_template = False
         self.code_name = None
-        self.epoch = CALENDAR_WINDOWS_1900
+        self.epoch = WINDOWS_EPOCH
         self.encoding = "utf-8"
         self.iso_dates = iso_dates
 
@@ -104,6 +104,7 @@ class Workbook(object):
 
         self._number_formats = IndexedList()
         self._date_formats = {}
+        self._timedelta_formats = {}
 
         self._protections = IndexedList([Protection()])
 
@@ -113,6 +114,20 @@ class Workbook(object):
         self.add_named_style(NamedStyle(font=copy(DEFAULT_FONT), border=copy(DEFAULT_BORDER), builtinId=0))
         self._table_styles = TableStyleList()
         self._differential_styles = DifferentialStyleList()
+
+
+    @property
+    def epoch(self):
+        if self._epoch == WINDOWS_EPOCH:
+            return WINDOWS_EPOCH
+        return MAC_EPOCH
+
+
+    @epoch.setter
+    def epoch(self, value):
+        if value not in (WINDOWS_EPOCH, MAC_EPOCH):
+            raise ValueError("The epoch must be either 1900 or 1904")
+        self._epoch = value
 
 
     @property

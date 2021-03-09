@@ -78,7 +78,7 @@ def test_write_cell(worksheet, write_cell_implementation, value, expected):
                              (datetime.time(14, 15, 25), False, """<c r="A1" t="n" s="1"><v>0.5940393518518519</v></c>"""),
                              (datetime.time(14, 15, 25), True, """<c r="A1" t="d" s="1"><v>14:15:25</v></c>"""),
                              (datetime.timedelta(1, 3, 15), False, """<c r="A1" t="n" s="1"><v>1.000034722395833</v></c>"""),
-                             (datetime.timedelta(1, 3, 15), True, """<c r="A1" t="d" s="1"><v>00:00:03.000015</v></c>"""),
+                             (datetime.timedelta(1, 3, 15), True, """<c r="A1" t="n" s="1"><v>1.000034722395833</v></c>"""),
                          ]
                          )
 def test_write_date(worksheet, write_cell_implementation, value, expected, iso_dates):

@@ -3,7 +3,7 @@
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
 from openpyxl import LXML
-from openpyxl.utils.datetime import to_excel, days_to_time
+from openpyxl.utils.datetime import to_excel, days_to_time, to_ISO8601
 from datetime import timedelta
 
 
@@ -24,10 +24,8 @@ def _set_attributes(cell, styled=None):
     value = cell._value
 
     if cell.data_type == "d":
-        if cell.parent.parent.iso_dates:
-            if isinstance(value, timedelta):
-                value = days_to_time(value)
-            value = value.isoformat()
+        if cell.parent.parent.iso_dates and not isinstance(value, timedelta):
+            value = to_ISO8601(value)
         else:
             attrs['t'] = "n"
             value = to_excel(value, cell.parent.parent.epoch)
