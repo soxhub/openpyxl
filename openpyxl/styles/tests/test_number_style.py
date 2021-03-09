@@ -77,11 +77,56 @@ def test_strip_quotes(fmt, stripped):
                              (r"0_ ;[Red]\-0\ ", False),
                              (r"\Y000000", False),
                              (r'#,##0.0####" YMD"', False),
+                             ('[h]', True),
+                             ('[ss]', True),
+                             ('[s].000', True),
+                             ('[m]', True),
+                             ('[mm]', True),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             ('[>=100][Magenta][s].00', True),
+                             ('[h]:mm;[=0]\-', True),
+                             ('[>=100][Magenta].00', False),
+                             ('[>=100][Magenta]General', False),
                          ]
                          )
 def test_is_date_format(format, result):
     from ..numbers import is_date_format
     assert is_date_format(format) is result
+
+
+@pytest.mark.parametrize("format, result",
+                         [
+                             ('m:ss', False),
+                             ('[h]', True),
+                             ('[hh]', True),
+                             ('[h]:mm:ss', True),
+                             ('[hh]:mm:ss', True),
+                             ('[h]:mm:ss.000', True),
+                             ('[hh]:mm:ss.0', True),
+                             ('[h]:mm', True),
+                             ('[hh]:mm', True),
+                             ('[m]:ss', True),
+                             ('[mm]:ss', True),
+                             ('[m]:ss.000', True),
+                             ('[mm]:ss.0', True),
+                             ('[s]', True),
+                             ('[ss]', True),
+                             ('[s].000', True),
+                             ('[ss].0', True),
+                             ('[m]', True),
+                             ('[mm]', True),
+                             ('h:mm', False),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[h]:mm', True),
+                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             ('[>=100][Magenta][s].00', True),
+                             ('[h]:mm;[=0]\-', True),
+                             ('[>=100][Magenta].00', False),
+                             ('[>=100][Magenta]General', False),
+                         ]
+                         )
+def test_is_timedelta_format(format, result):
+    from ..numbers import is_timedelta_format
+    assert is_timedelta_format(format) is result
 
 
 @pytest.mark.parametrize("fmt, typ",

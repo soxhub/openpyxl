@@ -25,6 +25,7 @@ from .numbers import (
     BUILTIN_FORMATS_MAX_SIZE,
     BUILTIN_FORMATS_REVERSE,
     is_date_format,
+    is_timedelta_format,
     builtin_format_code
 )
 from .named_styles import (
@@ -156,6 +157,7 @@ class Stylesheet(Serialisable):
         And index datetime formats
         """
         date_formats = set()
+        timedelta_formats = set()
         custom = self.custom_formats
         formats = self.number_formats
         for idx, style in enumerate(self.cell_styles):
@@ -170,7 +172,11 @@ class Stylesheet(Serialisable):
             if is_date_format(fmt):
                 # Create an index of which styles refer to datetimes
                 date_formats.add(idx)
+            if is_timedelta_format(fmt):
+                # Create an index of which styles refer to timedeltas
+                timedelta_formats.add(idx)
         self.date_formats = date_formats
+        self.timedelta_formats = timedelta_formats
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
@@ -204,6 +210,7 @@ def apply_stylesheet(archive, wb):
     wb._cell_styles = stylesheet.cell_styles
     wb._named_styles = stylesheet.named_styles
     wb._date_formats = stylesheet.date_formats
+    wb._timedelta_formats = stylesheet.timedelta_formats
 
     for ns in wb._named_styles:
         ns.bind(wb)
