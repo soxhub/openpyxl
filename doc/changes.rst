@@ -5,7 +5,7 @@
 Bugfixes
 --------
 
-* `#1588 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1588>`
+* `#1588 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1588>`_ Not possible to correctly convert excel dates to timedelta
 * `#1589 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1589>`_ Exception raised when merging cells which do not have borders all the way round.
 * `#1594 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1594>`_ Python 2 print statement in the tutorial
 
