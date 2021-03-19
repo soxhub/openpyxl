@@ -5,7 +5,6 @@ from __future__ import division
 
 # Python stdlib imports
 import datetime
-from datetime import timedelta, timezone
 from math import isnan
 import re
 
@@ -122,13 +121,8 @@ def from_excel(value, epoch=WINDOWS_EPOCH, timedelta=False):
     return epoch + datetime.timedelta(days=day) + diff
 
 
-UTC = timezone(timedelta(0))
-
-
 def time_to_days(value):
     """Convert a time value to fractions of day"""
-    if value.tzinfo is not None:
-        value = value.astimezone(UTC)
     return (
         (value.hour * 3600)
         + (value.minute * 60)
