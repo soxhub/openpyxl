@@ -1,4 +1,3 @@
-from __future__ import division
 # Copyright (c) 2010-2021 openpyxl
 
 """Manage Excel date weirdness."""
@@ -18,7 +17,6 @@ CALENDAR_WINDOWS_1900 = WINDOWS_EPOCH
 CALENDAR_MAC_1904 = MAC_EPOCH
 SECS_PER_DAY = 86400
 
-EPOCH = datetime.datetime.utcfromtimestamp(0)
 ISO_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 ISO_REGEX = re.compile(r'''
 (?P<date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))?T?
