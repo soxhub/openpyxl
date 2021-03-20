@@ -98,6 +98,28 @@ def test_write_date(worksheet, write_cell_implementation, value, expected, iso_d
     assert diff is None, diff
 
 
+@pytest.mark.parametrize("value, iso_dates",
+                         [
+                             (datetime.datetime(2021, 3, 19, 23, tzinfo=datetime.timezone.utc), True),
+                             (datetime.datetime(2021, 3, 19, 23, tzinfo=datetime.timezone.utc), False),
+                             (datetime.time(23, 58, tzinfo=datetime.timezone.utc), True),
+                             (datetime.time(23, 58, tzinfo=datetime.timezone.utc), False),
+                         ]
+                         )
+def test_write_invalid_date(worksheet, write_cell_implementation, value, iso_dates):
+    write_cell = write_cell_implementation
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = value
+    cell.parent.parent.iso_dates = iso_dates
+
+    out = BytesIO()
+    with pytest.raises(TypeError):
+        with xmlfile(out) as xf:
+            write_cell(xf, ws, cell, cell.has_style)
+
+
 @pytest.mark.parametrize("value, expected, epoch",
                          [
                              (datetime.date(2011, 12, 25), """<c r="A1" t="n" s="1"><v>40902</v></c>""",
