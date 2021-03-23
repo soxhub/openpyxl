@@ -21,11 +21,11 @@ Write Performance
 +++++++++++++++++
 
 The `benchmark code
-<https://bitbucket.org/snippets/charlie_x/5edaGE/write-performance-benchmark>`_
+<https://foss.heptapod.net/openpyxl/openpyxl/-/snippets/66>`_
 can be adjusted to use more sheets and adjust the proportion of data that is
 strings. Because the version of Python being used can also significantly
 affect performance, a `driver script
-<https://bitbucket.org/snippets/charlie_x/gebj7M/drive-a-script-through-different-python>`_
+<https://foss.heptapod.net/openpyxl/openpyxl/-/snippets/67>`_
 can also be used to test with different Python versions with a tox
 environment.
 
@@ -43,7 +43,7 @@ older xlrd library. xlrd is primarily for the older BIFF file format of .XLS
 files but it does have limited support for XLSX.
 
 The code for the `benchmark
-<https://bitbucket.org/snippets/openpyxl/Ee9zqo>`_ shows the importance of
+<https://foss.heptapod.net/openpyxl/openpyxl/-/snippets/68>`_ shows the importance of
 choosing the right options when working with a file. In this case disabling
 external links stops openpyxl opening cached copies of the linked worksheets.
 
@@ -66,7 +66,7 @@ gained by parallelisation. However, if you are mainly interested in dumping
 the contents of a workbook then you can use openpyxl's read-only mode and
 open multiple instances of a workbook and take advantage of multiple CPUs.
 
-`Sample code <https://bitbucket.org/snippets/openpyxl/AexG8E>`_ using the
+`Sample code <https://foss.heptapod.net/openpyxl/openpyxl/-/snippets/69>`_ using the
 same source file as for read performance shows that performance scales
 reasonably with only a slight overhead due to creating additional Python
 processes.

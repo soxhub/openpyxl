@@ -3,7 +3,7 @@
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
 from openpyxl import LXML
-from openpyxl.utils.datetime import to_excel, days_to_time, to_ISO8601
+from openpyxl.utils.datetime import to_excel, to_ISO8601
 from datetime import timedelta
 
 from openpyxl.worksheet.formula import DataTableFormula
@@ -26,6 +26,10 @@ def _set_attributes(cell, styled=None):
     value = cell._value
 
     if cell.data_type == "d":
+        if hasattr(value, "tzinfo") and value.tzinfo is not None:
+            raise TypeError("Excel does not support timezones in datetimes. "
+                    "The tzinfo in the datetime/time object must be set to None.")
+
         if cell.parent.parent.iso_dates and not isinstance(value, timedelta):
             value = to_ISO8601(value)
         else:

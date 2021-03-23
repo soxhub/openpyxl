@@ -15,9 +15,14 @@ deliberately refuses to recognize and display such dates. Consequently,
 it is not advised to use `openpyxl` for such purposes either, especially
 when exchanging files with others.
 
-The date and time representations in Excel do not support timezones.
-Timezone information attached to Python datetimes is therefore lost when
-datetimes are stored in XLSX files.
+
+Timezones
+---------
+
+The date and time representations in Excel do not support timezones,
+therefore `openpyxl` can only deal with naive datetime/time objects.
+Any timezone information attached to Python datetimes must be stripped
+off by the user before datetimes can be stored in XLSX files.
 
 
 Using the ISO 8601 format
