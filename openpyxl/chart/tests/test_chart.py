@@ -189,3 +189,33 @@ class TestChartBase:
         xml = tostring(tree)
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_graphical_properties(self, ChartBase):
+        from openpyxl.chart.shapes import GraphicalProperties
+        chart = ChartBase()
+        chart.graphical_properties = GraphicalProperties()
+        tree = chart._write()
+        expected = """
+        <chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+             <chart>
+               <plotArea>
+                 <DummyChart visible_cells_only="1" display_blanks="gap" />
+               </plotArea>
+               <legend>
+                 <legendPos val="r"></legendPos>
+               </legend>
+               <plotVisOnly val="1"></plotVisOnly>
+               <dispBlanksAs val="gap"></dispBlanksAs>
+             </chart>
+             <spPr>
+                <a:ln>
+                  <a:prstDash val="solid"/>
+                </a:ln>
+             </spPr>
+        </chartSpace>
+        """
+        xml = tostring(tree)
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
