@@ -25,4 +25,7 @@ def read_chart(chartspace):
     chart.pivotFormats = cs.chart.pivotFmts
     chart.idx_base = min((s.idx for s in chart.series), default=0)
 
+    # Border, fill, etc.
+    chart.graphical_properties = cs.graphical_properties
+
     return chart
