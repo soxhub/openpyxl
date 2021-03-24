@@ -20,7 +20,7 @@ with the command line you can use the following:
 
 .. parsed-literal::
 
-    $ hg clone \https://bitbucket.org/openpyxl/openpyxl
+    $ hg clone \https://foss.heptapod.net/openpyxl/openpyxl
     $ hg up |version|
 
 Please note that the default branch should never be used for development
