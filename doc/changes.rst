@@ -5,7 +5,7 @@
 Bugfixes
 --------
 
-* `#165 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1645>`_ Timezone-aware datetimes raise an Exception
+* `#1645 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1645>`_ Timezone-aware datetimes raise an Exception
 
 
 3.0.7 (2021-03-09)
