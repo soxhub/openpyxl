@@ -2,6 +2,13 @@
 ==================
 
 
+New Features
+------------
+
+* Added support for data table formulae
+* Mapped chartspace graphical properties to charts for advanced formatting
+
+
 3.0.8 (unreleased)
 ==================
 
