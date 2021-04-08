@@ -14,18 +14,20 @@ attribute names, eg. `GraphicalProperties for `spPr` or `line` for `line`.
 Make the chart background transparent
 -------------------------------------
 
-    >>> from openpyxl.chart.shapes import GraphicalProperties
-    >>> chart.graphical_properties = GraphicalProperties()
-    >>> chart.graphical_properties.noFill = True
+..code::
+    from openpyxl.chart.shapes import GraphicalProperties
+    chart.graphical_properties = GraphicalProperties()
+    chart.graphical_properties.noFill = True
 
 
 Remove the border from a chart
 ------------------------------
 
-    >>> from openpyxl.chart.shapes import GraphicalProperties
-    >>> chart.graphical_properties = GraphicalProperties()
-    >>> chart.graphical_properties.line.noFill = True
-    >>> chart.graphical_properties.line.prstDash = None
+..code::
+    from openpyxl.chart.shapes import GraphicalProperties
+    chart.graphical_properties = GraphicalProperties()
+    chart.graphical_properties.line.noFill = True
+    chart.graphical_properties.line.prstDash = None
 
 
 Reusing XML
@@ -37,7 +39,7 @@ for the desired effect. Fortunately, because openpyxl is very close to the
 specification, it is often possible to use XML from source. For example,
 adding a single, formatted data label to a series.
 
-.. code::
+..code::
 
     xml = """
     <txPr>
