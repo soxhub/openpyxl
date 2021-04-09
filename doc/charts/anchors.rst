@@ -16,9 +16,8 @@ have created a bar chart using the sample code:
 
 Let's take the first chart. Instead of anchoring it to A10, we want it to
 keep it with our table of data, say A9 to C20. We can do this by creating a
-TwoCellAnchor for those two cells.
+TwoCellAnchor for those two cells.::
 
-..code::
 
     from openpyxl.drawing.spreadsheet_drawing import TwoCellAnchor
 

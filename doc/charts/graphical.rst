@@ -14,7 +14,8 @@ attribute names, eg. `GraphicalProperties for `spPr` or `line` for `line`.
 Make the chart background transparent
 -------------------------------------
 
-..code::
+::
+
     from openpyxl.chart.shapes import GraphicalProperties
     chart.graphical_properties = GraphicalProperties()
     chart.graphical_properties.noFill = True
@@ -23,7 +24,8 @@ Make the chart background transparent
 Remove the border from a chart
 ------------------------------
 
-..code::
+::
+
     from openpyxl.chart.shapes import GraphicalProperties
     chart.graphical_properties = GraphicalProperties()
     chart.graphical_properties.line.noFill = True
@@ -39,7 +41,7 @@ for the desired effect. Fortunately, because openpyxl is very close to the
 specification, it is often possible to use XML from source. For example,
 adding a single, formatted data label to a series.
 
-..code::
+::
 
     xml = """
     <txPr>
