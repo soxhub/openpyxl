@@ -163,30 +163,17 @@ class Worksheet(_WorkbookChild):
                     result[c.coordinate] = c.value.ref
         return result
 
-    @property
-    def page_breaks(self):
-        return (self.row_breaks, self.col_breaks) # legacy, remove at some point
-
 
     @property
     def show_gridlines(self):
         return self.sheet_view.showGridLines
 
 
-    """ To keep compatibility with previous versions"""
-    @property
-    def show_summary_below(self):
-        return self.sheet_properties.outlinePr.summaryBelow
-
-    @property
-    def show_summary_right(self):
-        return self.sheet_properties.outlinePr.summaryRight
-
-
     @property
     def freeze_panes(self):
         if self.sheet_view.pane is not None:
             return self.sheet_view.pane.topLeftCell
+
 
     @freeze_panes.setter
     def freeze_panes(self, topLeftCell=None):
