@@ -161,7 +161,7 @@ class Cell(StyleableObject):
         # truncate if necessary
         value = value[:32767]
         if next(ILLEGAL_CHARACTERS_RE.finditer(value), None):
-            raise IllegalCharacterError
+            raise IllegalCharacterError(f"{value} cannot be used in worksheets.")
         return value
 
     def check_error(self, value):
