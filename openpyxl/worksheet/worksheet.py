@@ -54,6 +54,7 @@ from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 from .table import TableList
+from .formula import ArrayFormula
 
 
 class Worksheet(_WorkbookChild):
@@ -128,7 +129,6 @@ class Worksheet(_WorkbookChild):
         self._current_row = 0
         self.auto_filter = AutoFilter()
         self.paper_size = None
-        self.formula_attributes = {}
         self.table_formulae = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormattingList()
@@ -152,6 +152,16 @@ class Worksheet(_WorkbookChild):
     def active_cell(self):
         return self.sheet_view.selection[0].activeCell
 
+
+    @property
+    def array_formulae(self):
+        """Returns a dictionary of cells with array formulae and the cells in array"""
+        result = {}
+        for c in self._cells.values():
+            if c.data_type == "f":
+                if isinstance(c.value, ArrayFormula):
+                    result[c.coordinate] = c.value.ref
+        return result
 
     @property
     def page_breaks(self):

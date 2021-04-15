@@ -442,7 +442,6 @@ class TestWorksheetParser:
         assert isinstance(formula, ArrayFormula)
         assert formula.ref == "C10:C14"
         assert formula.text == "SUM(A10:A14*B10:B14)"
-        assert parser.array_formulae['C10']['ref'] == 'C10:C14'
 
 
     def test_table_formula(self, WorkSheetParser):
@@ -883,7 +882,7 @@ class TestWorksheetReader:
         reader.bind_cells()
         ws = reader.ws
 
-        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
+        assert ws.array_formulae == {'E2': "E2:E11"}
         assert ws['E2'].value.text == "C2:C11*D2:D11"
 
 
