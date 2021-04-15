@@ -39,8 +39,9 @@ class ArrayFormula:
     t = "array"
 
 
-    def __init__(self, ref):
+    def __init__(self, ref, text=None):
         self.ref = ref
+        self.text = text
 
 
     def __iter__(self):

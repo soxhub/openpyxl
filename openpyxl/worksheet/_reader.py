@@ -29,7 +29,7 @@ from openpyxl.utils import (
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList
 
-from .formula import DataTableFormula
+from .formula import DataTableFormula, ArrayFormula
 from .filters import AutoFilter
 from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
@@ -244,6 +244,7 @@ class WorkSheetParser(object):
 
         if formula_type == "array":
             self.array_formulae[coordinate] = dict(formula.attrib)
+            value = ArrayFormula(ref=formula.get('ref'), text=formula.text)
 
         elif formula_type == "shared":
             idx = formula.get('si')
