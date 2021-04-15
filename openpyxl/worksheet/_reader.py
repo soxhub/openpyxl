@@ -242,7 +242,7 @@ class WorkSheetParser(object):
             value += formula.text
 
         if formula_type == "array":
-            value = ArrayFormula(ref=formula.get('ref'), text=formula.text)
+            value = ArrayFormula(ref=formula.get('ref'), text=value)
 
         elif formula_type == "shared":
             idx = formula.get('si')

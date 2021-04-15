@@ -226,7 +226,7 @@ def test_array_formula(worksheet, write_cell_implementation):
     ws = worksheet
 
     cell = ws["E2"]
-    cell.value = ArrayFormula(ref="E2:E11", text="C2:C11*D2:D11")
+    cell.value = ArrayFormula(ref="E2:E11", text="=C2:C11*D2:D11")
 
     out = BytesIO()
     with xmlfile(out) as xf:

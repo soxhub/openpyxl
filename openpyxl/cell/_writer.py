@@ -56,7 +56,7 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
 
         if isinstance(value, ArrayFormula):
             attrib = dict(value)
-            value = "=" + value.text
+            value = value.text
 
         elif isinstance(value, DataTableFormula):
             attrib = dict(value)
@@ -95,7 +95,7 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
 
             if isinstance(value, ArrayFormula):
                 attrib = dict(value)
-                value = "=" + value.text
+                value = value.text
 
             elif isinstance(value, DataTableFormula):
                 attrib = dict(value)
