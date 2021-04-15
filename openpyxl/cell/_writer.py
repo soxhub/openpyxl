@@ -6,7 +6,7 @@ from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, to_ISO8601
 from datetime import timedelta
 
-from openpyxl.worksheet.formula import DataTableFormula
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 
 def _set_attributes(cell, styled=None):
@@ -53,9 +53,11 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
 
     if cell.data_type == 'f':
         attrib = {}
-        coord = cell.coordinate
-        if coord in worksheet.formula_attributes:
-            attrib = worksheet.formula_attributes[coord]
+
+        if isinstance(value, ArrayFormula):
+            attrib = dict(value)
+            value = "=" + value.text
+
         elif isinstance(value, DataTableFormula):
             attrib = dict(value)
             value = None
@@ -90,9 +92,11 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
     with xf.element('c', attributes):
         if cell.data_type == 'f':
             attrib = {}
-            coord = cell.coordinate
-            if coord in worksheet.formula_attributes:
-                attrib = worksheet.formula_attributes[coord]
+
+            if isinstance(value, ArrayFormula):
+                attrib = dict(value)
+                value = "=" + value.text
+
             elif isinstance(value, DataTableFormula):
                 attrib = dict(value)
                 value = None

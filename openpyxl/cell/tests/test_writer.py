@@ -198,7 +198,7 @@ def test_whitespace(worksheet, write_cell_implementation):
     assert diff is None, diff
 
 
-from openpyxl.worksheet.formula import DataTableFormula
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 def test_table_formula(worksheet, write_cell_implementation):
     write_cell = write_cell_implementation
@@ -224,9 +224,9 @@ def test_table_formula(worksheet, write_cell_implementation):
 def test_array_formula(worksheet, write_cell_implementation):
     write_cell = write_cell_implementation
     ws = worksheet
-    ws.formula_attributes = {'E2': {'ref':"E2:E11", 't':"array"}}
+
     cell = ws["E2"]
-    cell.value = "=C2:C11*D2:D11"
+    cell.value = ArrayFormula(ref="E2:E11", text="C2:C11*D2:D11")
 
     out = BytesIO()
     with xmlfile(out) as xf:

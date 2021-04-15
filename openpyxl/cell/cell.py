@@ -26,7 +26,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
-from openpyxl.worksheet.formula import DataTableFormula
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 # constants
 
@@ -68,7 +68,7 @@ def get_type(t, value):
         dt = 's'
     elif isinstance(value, TIME_TYPES):
         dt = 'd'
-    elif isinstance(value, DataTableFormula):
+    elif isinstance(value, (DataTableFormula, ArrayFormula)):
         dt = 'f'
     else:
         return
