@@ -320,6 +320,24 @@ class TestWorksheetParser:
         assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
                         'style_id':29, 'value':datetime.datetime(2016, 10, 3, 0, 0)}
 
+    @pytest.mark.parametrize("value", [
+        -693595,
+        2958466,
+                                       ]
+                             )
+    def test_out_of_range_datetime(self, WorkSheetParser, recwarn, value):
+        parser = WorkSheetParser
+        src = f"""
+        <c r="A1" t="n" s="29" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <v>{value}</v>
+        </c>
+        """
+        element = fromstring(src)
+
+        parser.parse_cell(element)
+        w = recwarn.pop()
+        assert issubclass(w.category, UserWarning)
+
 
     def test_string(self, WorkSheetParser):
         parser = WorkSheetParser

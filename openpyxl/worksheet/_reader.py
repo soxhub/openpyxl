@@ -206,8 +206,8 @@ class WorkSheetParser(object):
                         value = from_excel(
                             value, self.epoch, timedelta=style_id in self.timedelta_formats
                         )
-                    except ValueError:
-                        msg = """Cell {0} is marked as a date but the serial value {1} is outside the limits for dates. The cell will be treated as an error.""".format(coordinate, value)
+                    except (OverflowError, ValueError):
+                        msg = f"""Cell {coordinate} is marked as a date but the serial value {value} is outside the limits for dates. The cell will be treated as an error."""
                         warn(msg)
                         data_type = "e"
                         value = "#VALUE!"
