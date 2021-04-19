@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2021 openpyxl
 
 from collections import OrderedDict
+from operator import attrgetter
 
 from openpyxl.descriptors import (
     Typed,
@@ -107,6 +108,18 @@ class ChartBase(Serialisable):
             for s in self.ser:
                 s.__elements__ = attribute_mapping[self._series_type]
         return super(ChartBase, self).to_tree(tagname, idx)
+
+
+    def _reindex(self):
+        """
+        Normalise and rebase series: sort by order and then rebase order
+
+        """
+        # sort data series in order and rebase
+        ds = sorted(self.series, key=attrgetter("order"))
+        for idx, s in enumerate(ds):
+            s.order = idx
+        self.series = ds
 
 
     def _write(self):

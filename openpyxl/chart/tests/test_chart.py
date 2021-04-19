@@ -281,3 +281,24 @@ class TestChartBase:
         xml = tostring(tree)
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_reindex(self, ChartBase):
+        chart = ChartBase()
+        chart.ser = []
+        chart.add_data("Sheet!D1:D4")
+        chart.add_data("Sheet!B1:B4")
+        chart.add_data("Sheet!C1:C4")
+        chart.add_data("Sheet!A1:A4")
+
+        orders = [40, 20, 34, 11]
+        for o, s in zip(orders, chart.series):
+            s.order = o
+
+        ordered = [s.order for s in chart.series]
+        assert ordered == [40, 20, 34, 11]
+
+        chart._reindex()
+
+        reordered = [s.order for s in chart.series]
+        assert reordered == [0, 1, 2, 3]
