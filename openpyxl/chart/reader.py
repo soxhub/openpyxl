@@ -24,5 +24,6 @@ def read_chart(chartspace):
     chart.pivotSource = cs.pivotSource
     chart.pivotFormats = cs.chart.pivotFmts
     chart.idx_base = min((s.idx for s in chart.series), default=0)
+    chart._reindex()
 
     return chart

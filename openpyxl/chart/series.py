@@ -162,10 +162,12 @@ class Series(Serialisable):
         self.smooth = smooth
         self.explosion = explosion
 
+
     def to_tree(self, tagname=None, idx=None):
+        """The index can need rebasing"""
         if idx is not None:
             if self.order == self.idx:
-                self.order = idx
+                self.order = idx # rebase the order if the index has been rebased
             self.idx = idx
         return super(Series, self).to_tree(tagname)
 
