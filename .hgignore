@@ -29,3 +29,10 @@ Spec
 doc/api
 openpyxl-env
 *.c
+bin/
+Issues/
+lib/
+lib/
+scratchpad/
+pyvenv.cfg
+.gitignore
