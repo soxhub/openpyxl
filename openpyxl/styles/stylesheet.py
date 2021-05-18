@@ -197,23 +197,28 @@ def apply_stylesheet(archive, wb):
     node = fromstring(src)
     stylesheet = Stylesheet.from_tree(node)
 
-    wb._borders = IndexedList(stylesheet.borders)
-    wb._fonts = IndexedList(stylesheet.fonts)
-    wb._fills = IndexedList(stylesheet.fills)
-    wb._differential_styles.styles = stylesheet.dxfs
-    wb._number_formats = stylesheet.number_formats
-    wb._protections = stylesheet.protections
-    wb._alignments = stylesheet.alignments
-    wb._table_styles = stylesheet.tableStyles
+    if stylesheet.cell_styles:
 
-    # need to overwrite openpyxl defaults in case workbook has different ones
-    wb._cell_styles = stylesheet.cell_styles
-    wb._named_styles = stylesheet.named_styles
-    wb._date_formats = stylesheet.date_formats
-    wb._timedelta_formats = stylesheet.timedelta_formats
+        wb._borders = IndexedList(stylesheet.borders)
+        wb._fonts = IndexedList(stylesheet.fonts)
+        wb._fills = IndexedList(stylesheet.fills)
+        wb._differential_styles.styles = stylesheet.dxfs
+        wb._number_formats = stylesheet.number_formats
+        wb._protections = stylesheet.protections
+        wb._alignments = stylesheet.alignments
+        wb._table_styles = stylesheet.tableStyles
 
-    for ns in wb._named_styles:
-        ns.bind(wb)
+        # need to overwrite openpyxl defaults in case workbook has different ones
+        wb._cell_styles = stylesheet.cell_styles
+        wb._named_styles = stylesheet.named_styles
+        wb._date_formats = stylesheet.date_formats
+        wb._timedelta_formats = stylesheet.timedelta_formats
+
+        for ns in wb._named_styles:
+            ns.bind(wb)
+
+    else:
+        warn("Workbook contains no stylesheet, using openpyxl's defaults")
 
     if not wb._named_styles:
         normal = styles['Normal']
