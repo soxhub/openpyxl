@@ -43,6 +43,7 @@ class TestImage:
         obj = PILImage.open("plain.png")
         img = Image(obj)
         assert img.ref.fp is not None
+        img._data()
 
 
     @pytest.mark.pil_required
