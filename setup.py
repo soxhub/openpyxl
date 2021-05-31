@@ -37,7 +37,7 @@ __license__ = constants.__license__
 __maintainer_email__ = constants.__maintainer_email__
 __url__ = constants.__url__
 __version__ = constants.__version__
-
+__python__ = constants.__python__
 
 def cythonize_modules():
     from Cython.Build import cythonize
@@ -74,7 +74,7 @@ setup(
     author_email=__author_email__,
     url=__url__,
     license=__license__,
-    python_requires=">=3.6, ",
+    python_requires=f">={__python__}",
     install_requires=[
         'et_xmlfile',
         ],

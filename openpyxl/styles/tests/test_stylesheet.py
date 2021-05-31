@@ -247,7 +247,7 @@ class TestStylesheet:
         assert stylesheet.cellStyles.cellStyle[-1].xfId < stylesheet.cellStyleXfs.count
 
 
-def test_no_styles():
+def test_no_stylesheet():
     from ..stylesheet import apply_stylesheet
     wb1 = wb2 = Workbook()
     archive = ZipFile(BytesIO(), "a")
@@ -255,6 +255,16 @@ def test_no_styles():
     assert wb1._cell_styles == wb2._cell_styles
     assert wb2._named_styles == wb2._named_styles
 
+def test_no_styles(recwarn):
+    from ..stylesheet import apply_stylesheet
+    wb = Workbook()
+    archive = ZipFile(BytesIO(), "a")
+    xml = b"""<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />"""
+    archive.writestr("xl/styles.xml", xml)
+    apply_stylesheet(archive, wb)
+    w = recwarn.pop()
+
+    assert w.category == UserWarning
 
 
 def test_write_worksheet(Stylesheet):
