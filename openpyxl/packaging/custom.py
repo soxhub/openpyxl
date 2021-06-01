@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 
 import datetime
@@ -26,6 +26,7 @@ from openpyxl.xml.constants import (
     CPROPS_FMTID,
 )
 
+
 def _convert(expected_type, value):
     """
     Check value is of or can be converted to expected type.
@@ -37,16 +38,18 @@ def _convert(expected_type, value):
             else:
                 value = expected_type(value)
         except:
-            raise TypeError('expected ' + str(expected_type))
+            raise TypeError("expected " + str(expected_type))
     return value
+
 
 class EmptyTagAlias(EmptyTag):
 
     """
     Boolean if an Alias tag exists or not.
     """
+
     def __init__(self, name=None, **kw):
-        if not 'alias' in kw:
+        if not "alias" in kw:
             raise TypeError("missing alias")
         super(EmptyTagAlias, self).__init__(name, **kw)
 
@@ -61,6 +64,7 @@ class EmptyTagAlias(EmptyTag):
                 tagname = "{%s}%s" % (namespace, tagname)
             return Element(tagname)
 
+
 class CustomDocumentProperty(Serialisable):
 
     """
@@ -74,15 +78,16 @@ class CustomDocumentProperty(Serialisable):
     i4 = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
     r8 = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
     filetime = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    bool = NestedText(expected_type=str,allow_none=True, namespace=VTYPES_NS)
+    bool = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
     # __elements__ = ()
 
-    def __init__(self,
-                 PropName,
-                 PropVal=None,
-                 PropType=None,
-                 LinkTarget=None,
-                ):
+    def __init__(
+        self,
+        PropName,
+        PropVal=None,
+        PropType=None,
+        LinkTarget=None,
+    ):
         self.name = PropName
         self.value = None
         self.lpwstr = None
@@ -98,69 +103,100 @@ class CustomDocumentProperty(Serialisable):
             # if LinkTarget is given, don't set any of the data types, just set the empty tag alias to true
             self.linkTarget = _convert(str, LinkTarget)
             self.linked = True
-        elif PropType == "bool" or PropType == bool or (isinstance(PropVal, bool) and PropType is None):
+        elif (
+            PropType == "bool"
+            or PropType == bool
+            or (isinstance(PropVal, bool) and PropType is None)
+        ):
             # bool must be checked before int, as bool is a subclass of int
             val = _convert(bool, PropVal)
             self.value = val
-            self.bool = str(val).lower() #excel says the workbook is corrupt if you use proper case like 'True'
-        elif PropType == "int" or PropType == int or (isinstance(PropVal, int) and PropType is None):
+            self.bool = str(
+                val
+            ).lower()  # excel says the workbook is corrupt if you use proper case like 'True'
+        elif (
+            PropType == "int"
+            or PropType == int
+            or (isinstance(PropVal, int) and PropType is None)
+        ):
             val = _convert(int, PropVal)
             self.value = val
             self.i4 = val
-        elif PropType == "float" or PropType == float or (isinstance(PropVal, float) and PropType is None):
+        elif (
+            PropType == "float"
+            or PropType == float
+            or (isinstance(PropVal, float) and PropType is None)
+        ):
             val = _convert(float, PropVal)
             self.value = val
             self.r8 = val
-        elif PropType == "str" or PropType == str or (isinstance(PropVal, str) and PropType is None):
+        elif (
+            PropType == "str"
+            or PropType == str
+            or (isinstance(PropVal, str) and PropType is None)
+        ):
             val = _convert(str, PropVal)
             self.value = val
             self.lpwstr = val
-        elif PropType == "date" or PropType == datetime.datetime or (isinstance(PropVal, datetime.datetime) and PropType is None):
+        elif (
+            PropType == "date"
+            or PropType == datetime.datetime
+            or (isinstance(PropVal, datetime.datetime) and PropType is None)
+        ):
             val = _convert(datetime.datetime, PropVal)
             self.value = val
-            self.filetime = val.strftime('%Y-%m-%dT%H:%M:%SZ')
+            self.filetime = val.strftime("%Y-%m-%dT%H:%M:%SZ")
         elif PropVal:
-            raise ValueError('Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)')
+            raise ValueError(
+                "Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)"
+            )
         else:
-            raise ValueError('Expected PropVal or LinkTarget to be provided, but got neither')
+            raise ValueError(
+                "Expected PropVal or LinkTarget to be provided, but got neither"
+            )
 
     @classmethod
     def from_tree(cls, node):
         if isinstance(node, str):
             node = fromstring(node)
-        PropName = node.attrib.get('name')
+        PropName = node.attrib.get("name")
         if PropName is None:
-            raise ValueError('Expected the xml node to have a "name" property but got None')
-        if node.attrib.get('linkTarget'):
+            raise ValueError(
+                'Expected the xml node to have a "name" property but got None'
+            )
+        if node.attrib.get("linkTarget"):
             PropVal = None
             PropType = None
-            LinkTarget = node.attrib['linkTarget']
+            LinkTarget = node.attrib["linkTarget"]
         else:
             PropVal = node[0].text
             LinkTarget = None
-            if node[0].tag.endswith('i4'):
-                PropType = 'int'
-            elif node[0].tag.endswith('r8'):
-                PropType = 'float'
-            elif node[0].tag.endswith('filetime'):
-                PropType = 'date'
-            elif node[0].tag.endswith('lpwstr'):
-                PropType = 'str'
-            elif node[0].tag.endswith('bool'):
-                PropType = 'bool'
+            if node[0].tag.endswith("i4"):
+                PropType = "int"
+            elif node[0].tag.endswith("r8"):
+                PropType = "float"
+            elif node[0].tag.endswith("filetime"):
+                PropType = "date"
+            elif node[0].tag.endswith("lpwstr"):
+                PropType = "str"
+            elif node[0].tag.endswith("bool"):
+                PropType = "bool"
             else:
-                raise ValueError('Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)')
+                raise ValueError(
+                    "Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)"
+                )
         return cls(PropName, PropVal, PropType, LinkTarget)
 
     def to_tree(self):
         tree = super(CustomDocumentProperty, self).to_tree()
-        tree.set('name', self.name)
+        tree.set("name", self.name)
         tree.set("pid", str(self.pid) or "2")
         tree.set("fmtid", self.fmtid)
         if self.linkTarget:
             tree.set("linkTarget", self.linkTarget)
 
         return tree
+
 
 class CustomDocumentProperties(Serialisable):
 
@@ -170,14 +206,16 @@ class CustomDocumentProperties(Serialisable):
 
     tagname = "Properties"
     namespace = CPROPS_NS
-    NSMAP = {None : CPROPS_NS, 'vt': VTYPES_NS} # None is the default namespace (no prefix)
+    NSMAP = {
+        None: CPROPS_NS,
+        "vt": VTYPES_NS,
+    }  # None is the default namespace (no prefix)
 
     customProps = Sequence(expected_type=CustomDocumentProperty, namespace=CPROPS_NS)
 
     def __init__(self, customProps=()):
         self.customProps = customProps
         self.n = -1
-
 
     def _duplicate(self, defn):
         """
@@ -188,11 +226,9 @@ class CustomDocumentProperties(Serialisable):
             if d.name == defn.name:
                 return True
 
-
     def add(self, PropName, PropVal=None, PropType=None, LinkTarget=None):
         custom_prop = CustomDocumentProperty(PropName, PropVal, PropType, LinkTarget)
         self.append(custom_prop)
-
 
     def append(self, prop):
         if not isinstance(prop, CustomDocumentProperty):
@@ -203,10 +239,8 @@ class CustomDocumentProperties(Serialisable):
         names.append(prop)
         self.customProps = names
 
-
     def __len__(self):
         return len(self.customProps)
-
 
     def __contains__(self, name):
         """
@@ -215,7 +249,6 @@ class CustomDocumentProperties(Serialisable):
         for defn in self.customProps:
             if defn.name == name:
                 return True
-
 
     def __getitem__(self, name):
         """
@@ -226,7 +259,6 @@ class CustomDocumentProperties(Serialisable):
             raise KeyError("No definition called {0}".format(name))
         return defn
 
-
     def get(self, name):
         """
         Get the name assigned to a specicic custom document property
@@ -235,14 +267,12 @@ class CustomDocumentProperties(Serialisable):
             if defn.name == name:
                 return defn
 
-
     def __delitem__(self, name):
         """
         Delete a globally defined name
         """
         if not self.delete(name):
             raise KeyError("No globally defined name {0}".format(name))
-
 
     def delete(self, name):
         """
@@ -252,9 +282,8 @@ class CustomDocumentProperties(Serialisable):
             if defn.name == name:
                 del self.customProps[idx]
                 if idx < self.n:
-                    self.n -= 1 #we are in a __iter__ loop, keep it on track
+                    self.n -= 1  # we are in a __iter__ loop, keep it on track
                 return True
-
 
     def namelist(self):
         """

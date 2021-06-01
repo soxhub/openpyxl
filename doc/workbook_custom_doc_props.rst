@@ -24,7 +24,7 @@ Sample use
 Looping over all CustomDocumentProperties ("custom_doc_props")::
 
     for prop in wb.custom_doc_props:
-        print(str(prop.name) + ": " + str(prop.value))
+        print(f"{prop.name}: {prop.value}")
 
 Adding a new CustomDocumentProperty::
 
@@ -63,7 +63,7 @@ Deleting all existing CustomDocumentProperties and adding new ones
     wb.custom_doc_props.add("PropName6", "2.5", float)
     # check the converted value
     prop = wb.custom_doc_props["PropName6"]
-    print(str(prop.name) + ": " + str(prop.value) + " " + str(type(prop.value)))
+    print(f"{prop.name}: {prop.value} {type(prop.value)}")
 
     # add a CustomDocumentProperty with a link instead of a value
     wb.custom_doc_props.add("PropName7", LinkTarget="ExampleName")
