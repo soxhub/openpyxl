@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import re
 
@@ -92,9 +92,10 @@ FORMAT_CURRENCY_EUR_SIMPLE = '[$EUR ]#,##0.00_-'
 
 
 COLORS = r"\[(BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW)\]"
-LITERAL_GROUP = r'"[^"]+"'
-LOCALE_GROUP = r'\[\$[^\]]+\]'
-STRIP_RE = re.compile("{0}|{1}|{2}".format(COLORS, LITERAL_GROUP, LOCALE_GROUP), re.IGNORECASE + re.UNICODE)
+LITERAL_GROUP = r'".*?"' # anything in quotes
+LOCALE_GROUP = r'\[(?!hh?\]|mm?\]|ss?\])[^\]]*\]' # anything in square brackets, except hours or minutes or seconds
+STRIP_RE = re.compile(f"{LITERAL_GROUP}|{LOCALE_GROUP}")
+TIMEDELTA_RE = re.compile(r'\[hh?\](:mm(:ss(\.0*)?)?)?|\[mm?\](:ss(\.0*)?)?|\[ss?\](\.0*)?', re.I)
 
 
 # Spec 18.8.31 numFmts
@@ -104,8 +105,15 @@ def is_date_format(fmt):
     if fmt is None:
         return False
     fmt = fmt.split(";")[0] # only look at the first format
-    fmt = STRIP_RE.sub("", fmt)
-    return re.search("[dmhysDMHYS]", fmt) is not None
+    fmt = STRIP_RE.sub("", fmt) # ignore some formats
+    return re.search(r"[^\\][dmhysDMHYS]", fmt) is not None
+
+
+def is_timedelta_format(fmt):
+    if fmt is None:
+        return False
+    fmt = fmt.split(";")[0] # only look at the first format
+    return TIMEDELTA_RE.search(fmt) is not None
 
 
 def is_datetime(fmt):

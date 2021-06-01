@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import datetime
 import decimal
@@ -78,7 +78,7 @@ def test_write_cell(worksheet, write_cell_implementation, value, expected):
                              (datetime.time(14, 15, 25), False, """<c r="A1" t="n" s="1"><v>0.5940393518518519</v></c>"""),
                              (datetime.time(14, 15, 25), True, """<c r="A1" t="d" s="1"><v>14:15:25</v></c>"""),
                              (datetime.timedelta(1, 3, 15), False, """<c r="A1" t="n" s="1"><v>1.000034722395833</v></c>"""),
-                             (datetime.timedelta(1, 3, 15), True, """<c r="A1" t="d" s="1"><v>00:00:03.000015</v></c>"""),
+                             (datetime.timedelta(1, 3, 15), True, """<c r="A1" t="n" s="1"><v>1.000034722395833</v></c>"""),
                          ]
                          )
 def test_write_date(worksheet, write_cell_implementation, value, expected, iso_dates):
@@ -96,6 +96,28 @@ def test_write_date(worksheet, write_cell_implementation, value, expected, iso_d
     xml = out.getvalue()
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+@pytest.mark.parametrize("value, iso_dates",
+                         [
+                             (datetime.datetime(2021, 3, 19, 23, tzinfo=datetime.timezone.utc), True),
+                             (datetime.datetime(2021, 3, 19, 23, tzinfo=datetime.timezone.utc), False),
+                             (datetime.time(23, 58, tzinfo=datetime.timezone.utc), True),
+                             (datetime.time(23, 58, tzinfo=datetime.timezone.utc), False),
+                         ]
+                         )
+def test_write_invalid_date(worksheet, write_cell_implementation, value, iso_dates):
+    write_cell = write_cell_implementation
+
+    ws = worksheet
+    cell = ws['A1']
+    cell.value = value
+    cell.parent.parent.iso_dates = iso_dates
+
+    out = BytesIO()
+    with pytest.raises(TypeError):
+        with xmlfile(out) as xf:
+            write_cell(xf, ws, cell, cell.has_style)
 
 
 @pytest.mark.parametrize("value, expected, epoch",
@@ -170,6 +192,50 @@ def test_whitespace(worksheet, write_cell_implementation):
       <is>
         <t xml:space="preserve">  whitespace   </t>
       </is>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
+
+def test_table_formula(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+    cell = ws["A1"]
+    cell.value =  DataTableFormula(ref="A1:B10")
+    cell.data_type = "f"
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c r="A1">
+      <f t="dataTable" ref="A1:B10" />
+      <v/>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_array_formula(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+
+    cell = ws["E2"]
+    cell.value = ArrayFormula(ref="E2:E11", text="=C2:C11*D2:D11")
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c r="E2">
+      <f t="array" ref="E2:E11">C2:C11*D2:D11</f>
+      <v/>
     </c>"""
     xml = out.getvalue()
     diff = compare_xml(xml, expected)

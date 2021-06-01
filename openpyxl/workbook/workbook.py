@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """Workbook is the top-level container for all document information."""
 from copy import copy
@@ -11,7 +11,7 @@ from openpyxl.worksheet.copier import WorksheetCopy
 
 from openpyxl.utils import quote_sheetname
 from openpyxl.utils.indexed_list import IndexedList
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
+from openpyxl.utils.datetime  import WINDOWS_EPOCH, MAC_EPOCH
 from openpyxl.utils.exceptions import ReadOnlyWorkbookException
 
 from openpyxl.writer.excel import save_workbook
@@ -77,7 +77,7 @@ class Workbook(object):
         self.vba_archive = None
         self.is_template = False
         self.code_name = None
-        self.epoch = CALENDAR_WINDOWS_1900
+        self.epoch = WINDOWS_EPOCH
         self.encoding = "utf-8"
         self.iso_dates = iso_dates
 
@@ -106,15 +106,30 @@ class Workbook(object):
 
         self._number_formats = IndexedList()
         self._date_formats = {}
+        self._timedelta_formats = {}
 
         self._protections = IndexedList([Protection()])
 
         self._colors = COLOR_INDEX
         self._cell_styles = IndexedList([StyleArray()])
         self._named_styles = NamedStyleList()
-        self.add_named_style(NamedStyle(font=copy(DEFAULT_FONT), builtinId=0))
+        self.add_named_style(NamedStyle(font=copy(DEFAULT_FONT), border=copy(DEFAULT_BORDER), builtinId=0))
         self._table_styles = TableStyleList()
         self._differential_styles = DifferentialStyleList()
+
+
+    @property
+    def epoch(self):
+        if self._epoch == WINDOWS_EPOCH:
+            return WINDOWS_EPOCH
+        return MAC_EPOCH
+
+
+    @epoch.setter
+    def epoch(self, value):
+        if value not in (WINDOWS_EPOCH, MAC_EPOCH):
+            raise ValueError("The epoch must be either 1900 or 1904")
+        self._epoch = value
 
 
     @property
@@ -435,12 +450,12 @@ class Workbook(object):
         Check for duplicate name in defined name list and table list of each worksheet.
         Names are not case sensitive.
         """
-        lwr = name.lower()
-        for sheet in self._sheets:
-            tables = [key.lower() for key in sheet._tables.keys()]
-            if lwr in tables:
-                return True
+        name = name.lower()
+        for sheet in self.worksheets:
+            for t in sheet.tables:
+                if name == t.lower():
+                    return True
 
-        if lwr in [dfn.name.lower() for dfn in self.defined_names.definedName]:
-                return True
-        return False
+        if name in self.defined_names:
+            return True
+

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """Worksheet is the 2nd-level container in Excel."""
 
@@ -54,6 +54,7 @@ from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 from .table import TableList
+from .formula import ArrayFormula
 
 
 class Worksheet(_WorkbookChild):
@@ -128,7 +129,6 @@ class Worksheet(_WorkbookChild):
         self._current_row = 0
         self.auto_filter = AutoFilter()
         self.paper_size = None
-        self.formula_attributes = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormattingList()
         self.legacy_drawing = None
@@ -153,8 +153,14 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    def page_breaks(self):
-        return (self.row_breaks, self.col_breaks) # legacy, remove at some point
+    def array_formulae(self):
+        """Returns a dictionary of cells with array formulae and the cells in array"""
+        result = {}
+        for c in self._cells.values():
+            if c.data_type == "f":
+                if isinstance(c.value, ArrayFormula):
+                    result[c.coordinate] = c.value.ref
+        return result
 
 
     @property
@@ -162,20 +168,11 @@ class Worksheet(_WorkbookChild):
         return self.sheet_view.showGridLines
 
 
-    """ To keep compatibility with previous versions"""
-    @property
-    def show_summary_below(self):
-        return self.sheet_properties.outlinePr.summaryBelow
-
-    @property
-    def show_summary_right(self):
-        return self.sheet_properties.outlinePr.summaryRight
-
-
     @property
     def freeze_panes(self):
         if self.sheet_view.pane is not None:
             return self.sheet_view.pane.topLeftCell
+
 
     @freeze_panes.setter
     def freeze_panes(self, topLeftCell=None):
@@ -430,7 +427,8 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row ]):
-            return ()
+            return iter(())
+
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -496,7 +494,7 @@ class Worksheet(_WorkbookChild):
         """
 
         if self._current_row == 0 and not any([min_col, min_row, max_col, max_row]):
-            return ()
+            return iter(())
 
         min_col = min_col or 1
         min_row = min_row or 1
@@ -584,10 +582,13 @@ class Worksheet(_WorkbookChild):
 
     def merge_cells(self, range_string=None, start_row=None, start_column=None, end_row=None, end_column=None):
         """ Set merge on a cell range.  Range is a cell range (e.g. A1:E1) """
-        cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
+        if range_string is None:
+            cr = CellRange(range_string=range_string, min_col=start_column, min_row=start_row,
                       max_col=end_column, max_row=end_row)
-        self.merged_cells.add(cr)
-        self._clean_merge_range(cr)
+            range_string = cr.coord
+        mcr = MergedCellRange(self, range_string)
+        self.merged_cells.add(mcr)
+        self._clean_merge_range(mcr)
 
 
     def _clean_merge_range(self, mcr):
@@ -596,9 +597,6 @@ class Worksheet(_WorkbookChild):
         and recreate the lost border information.
         Borders are then applied
         """
-        if not isinstance(mcr, MergedCellRange):
-            mcr = MergedCellRange(self, mcr.coord)
-
         cells = mcr.cells
         next(cells) # skip first cell
         for row, col in cells:

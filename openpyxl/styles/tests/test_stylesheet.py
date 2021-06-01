@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 import pytest
 
 from zipfile import ZipFile
@@ -201,7 +201,7 @@ class TestStylesheet:
 
     def test_named_styles(self, datadir, Stylesheet):
         from openpyxl.styles.fills import DEFAULT_EMPTY_FILL
-        from openpyxl.styles.borders import Border
+        from openpyxl.styles.borders import DEFAULT_BORDER
 
         datadir.chdir()
         with open("complex-styles.xml") as src:
@@ -214,19 +214,19 @@ class TestStylesheet:
         assert followed.name == "Followed Hyperlink"
         assert followed.font == stylesheet.fonts[2]
         assert followed.fill == DEFAULT_EMPTY_FILL
-        assert followed.border == Border()
+        assert followed.border == DEFAULT_BORDER
 
         link = stylesheet.named_styles['Hyperlink']
         assert link.name == "Hyperlink"
         assert link.font == stylesheet.fonts[1]
         assert link.fill == DEFAULT_EMPTY_FILL
-        assert link.border == Border()
+        assert link.border == DEFAULT_BORDER
 
         normal = stylesheet.named_styles['Normal']
         assert normal.name == "Normal"
         assert normal.font == stylesheet.fonts[0]
         assert normal.fill == DEFAULT_EMPTY_FILL
-        assert normal.border == Border()
+        assert normal.border == DEFAULT_BORDER
 
 
     def test_split_named_styles(self, Stylesheet):
@@ -247,7 +247,7 @@ class TestStylesheet:
         assert stylesheet.cellStyles.cellStyle[-1].xfId < stylesheet.cellStyleXfs.count
 
 
-def test_no_styles():
+def test_no_stylesheet():
     from ..stylesheet import apply_stylesheet
     wb1 = wb2 = Workbook()
     archive = ZipFile(BytesIO(), "a")
@@ -255,6 +255,16 @@ def test_no_styles():
     assert wb1._cell_styles == wb2._cell_styles
     assert wb2._named_styles == wb2._named_styles
 
+def test_no_styles(recwarn):
+    from ..stylesheet import apply_stylesheet
+    wb = Workbook()
+    archive = ZipFile(BytesIO(), "a")
+    xml = b"""<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" />"""
+    archive.writestr("xl/styles.xml", xml)
+    apply_stylesheet(archive, wb)
+    w = recwarn.pop()
+
+    assert w.category == UserWarning
 
 
 def test_write_worksheet(Stylesheet):
@@ -348,8 +358,13 @@ def test_simple_styles(datadir):
 def test_no_default_style(datadir):
     from ..stylesheet import apply_stylesheet
     datadir.chdir()
-    archive = ZipFile(BytesIO(), "a")
+    out = BytesIO()
+    archive = ZipFile(out, "w")
     archive.write("no_default_styles.xml", "xl/styles.xml")
+    archive.close()
+
+    out.seek(0)
+    archive = ZipFile(out)
 
     wb = Workbook()
     wb._named_styles = []

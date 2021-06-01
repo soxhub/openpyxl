@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -327,6 +327,11 @@ class Table(Serialisable):
             self.tableColumns.append(col)
         if self.headerRowCount:
             self.autoFilter = AutoFilter(ref=self.ref)
+
+
+    @property
+    def column_names(self):
+        return [column.name for column in self.tableColumns]
 
 
 class TablePartList(Serialisable):

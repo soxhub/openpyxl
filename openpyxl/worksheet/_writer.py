@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import atexit
 from collections import defaultdict
@@ -46,6 +46,7 @@ class WorksheetWriter:
 
     def __init__(self, ws, out=None):
         self.ws = ws
+        self.ws._hyperlinks = []
         self.ws._comments = []
         if out is None:
             out = create_temporary_file()
@@ -262,7 +263,7 @@ class WorksheetWriter:
     def write_tables(self):
         tables = TablePartList()
 
-        for table in self.ws._tables.values():
+        for table in self.ws.tables.values():
             if not table.tableColumns:
                 table._initialise_columns()
                 if table.headerRowCount:

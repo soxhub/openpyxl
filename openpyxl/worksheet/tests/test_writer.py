@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import pytest
 import os
@@ -27,6 +27,12 @@ def writer():
 
 
 class TestWorksheetWriter:
+
+
+    def test_setup(self, writer):
+        ws = writer.ws
+        assert ws._hyperlinks == []
+        assert ws._comments == []
 
 
     def test_properties(self, writer):

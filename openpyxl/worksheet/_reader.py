@@ -1,7 +1,7 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """Reader for a single worksheet."""
-import traceback
+from copy import copy
 from warnings import warn
 
 # compatibility imports
@@ -29,6 +29,7 @@ from openpyxl.utils import (
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList
 
+from .formula import DataTableFormula, ArrayFormula
 from .filters import AutoFilter
 from .header_footer import HeaderFooter
 from .hyperlink import HyperlinkList
@@ -85,17 +86,18 @@ def _cast_number(value):
 class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
-                 epoch=WINDOWS_EPOCH, date_formats=set()):
+                 epoch=WINDOWS_EPOCH, date_formats=set(),
+                 timedelta_formats=set()):
         self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
         self.shared_strings = shared_strings
         self.data_only = data_only
         self.shared_formulae = {}
-        self.array_formulae = {}
         self.row_counter = self.col_counter = 0
         self.tables = TablePartList()
         self.date_formats = date_formats
+        self.timedelta_formats = timedelta_formats
         self.row_dimensions = {}
         self.column_dimensions = {}
         self.number_formats = []
@@ -137,7 +139,7 @@ class WorkSheetParser(object):
 
         }
 
-        it = iterparse(self.source)
+        it = iterparse(self.source) # add a finaliser to close the source when this becomes possible
 
         for _, element in it:
             tag_name = element.tag
@@ -175,7 +177,6 @@ class WorkSheetParser(object):
     def parse_cell(self, element):
         data_type = element.get('t', 'n')
         coordinate = element.get('r')
-        self.col_counter += 1
         style_id = element.get('s', 0)
         if style_id:
             style_id = int(style_id)
@@ -187,7 +188,9 @@ class WorkSheetParser(object):
 
         if coordinate:
             row, column = coordinate_to_tuple(coordinate)
+            self.col_counter = column
         else:
+            self.col_counter += 1
             row, column = self.row_counter, self.col_counter
 
         if not self.data_only and element.find(FORMULA_TAG) is not None:
@@ -200,9 +203,11 @@ class WorkSheetParser(object):
                 if style_id in self.date_formats:
                     data_type = 'd'
                     try:
-                        value = from_excel(value, self.epoch)
-                    except ValueError:
-                        msg = """Cell {0} is marked as a date but the serial value {1} is outside the limits for dates. The cell will be treated as an error.""".format(coordinate, value)
+                        value = from_excel(
+                            value, self.epoch, timedelta=style_id in self.timedelta_formats
+                        )
+                    except (OverflowError, ValueError):
+                        msg = f"""Cell {coordinate} is marked as a date but the serial value {value} is outside the limits for dates. The cell will be treated as an error."""
                         warn(msg)
                         data_type = "e"
                         value = "#VALUE!"
@@ -237,7 +242,7 @@ class WorkSheetParser(object):
             value += formula.text
 
         if formula_type == "array":
-            self.array_formulae[coordinate] = dict(formula.attrib)
+            value = ArrayFormula(ref=formula.get('ref'), text=value)
 
         elif formula_type == "shared":
             idx = formula.get('si')
@@ -246,6 +251,9 @@ class WorkSheetParser(object):
                 value = trans.translate_formula(coordinate)
             elif value != "=":
                 self.shared_formulae[idx] = Translator(value, coordinate)
+
+        elif formula_type == "dataTable":
+            value = DataTableFormula(**formula.attrib)
 
         return value
 
@@ -261,7 +269,14 @@ class WorkSheetParser(object):
         attrs = dict(row.attrib)
 
         if "r" in attrs:
-            self.row_counter = int(attrs['r'])
+            try:
+                self.row_counter = int(attrs['r'])
+            except ValueError:
+                val = float(attrs['r'])
+                if val.is_integer():
+                    self.row_counter = int(val)
+                else:
+                    raise ValueError(f"{attrs['r']} is not a valid row number")
         else:
             self.row_counter += 1
         self.col_counter = 0
@@ -279,8 +294,8 @@ class WorkSheetParser(object):
         try:
             cf = ConditionalFormatting.from_tree(element)
             self.formatting.append(cf)
-        except TypeError:
-            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {traceback.format_exc()}"
+        except TypeError as e:
+            msg = f"Failed to load a conditional formatting rule. It will be discarded. Cause: {e}"
             warn(msg)
 
 
@@ -329,7 +344,9 @@ class WorksheetReader(object):
 
     def __init__(self, ws, xml_source, shared_strings, data_only):
         self.ws = ws
-        self.parser = WorkSheetParser(xml_source, shared_strings, data_only, ws.parent.epoch, ws.parent._date_formats)
+        self.parser = WorkSheetParser(xml_source, shared_strings,
+                data_only, ws.parent.epoch, ws.parent._date_formats,
+                ws.parent._timedelta_formats)
         self.tables = []
 
 
@@ -341,7 +358,7 @@ class WorksheetReader(object):
                 c._value = cell['value']
                 c.data_type = cell['data_type']
                 self.ws._cells[(cell['row'], cell['column'])] = c
-        self.ws.formula_attributes = self.parser.array_formulae
+
         if self.ws._cells:
             self.ws._current_row = self.ws.max_row # use cells not row dimensions
 
@@ -384,7 +401,7 @@ class WorksheetReader(object):
                 for row in self.ws[link.ref]:
                     for cell in row:
                         try:
-                            cell.hyperlink = link
+                            cell.hyperlink = copy(link)
                         except AttributeError:
                             pass
             else:

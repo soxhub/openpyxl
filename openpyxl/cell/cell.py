@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """Manage individual cells in a spreadsheet.
 
@@ -18,7 +18,6 @@ import re
 
 from openpyxl.compat import (
     NUMERIC_TYPES,
-    deprecated,
 )
 
 from openpyxl.utils.exceptions import IllegalCharacterError
@@ -27,6 +26,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 # constants
 
@@ -37,12 +37,6 @@ TIME_FORMATS = {
     datetime.time:numbers.FORMAT_DATE_TIME6,
     datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
                 }
-try:
-    from pandas import Timestamp
-    TIME_TYPES = TIME_TYPES + (Timestamp,)
-    TIME_FORMATS[Timestamp] = numbers.FORMAT_DATE_DATETIME
-except ImportError:
-    pass
 
 STRING_TYPES = (str, bytes)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
@@ -50,9 +44,6 @@ KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 ERROR_CODES = ('#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!',
                '#N/A')
-
-
-ERROR_CODES = ERROR_CODES
 
 TYPE_STRING = 's'
 TYPE_FORMULA = 'f'
@@ -77,10 +68,24 @@ def get_type(t, value):
         dt = 's'
     elif isinstance(value, TIME_TYPES):
         dt = 'd'
+    elif isinstance(value, (DataTableFormula, ArrayFormula)):
+        dt = 'f'
     else:
         return
     _TYPES[t] = dt
     return dt
+
+
+def get_time_format(t):
+    value = TIME_FORMATS.get(t)
+    if value:
+        return value
+    for base in t.mro()[1:]:
+        value = TIME_FORMATS.get(base)
+        if value:
+            TIME_FORMATS[t] = value
+            return value
+    raise ValueError("Could not get time format for {0!r}".format(value))
 
 
 class Cell(StyleableObject):
@@ -156,7 +161,7 @@ class Cell(StyleableObject):
         # truncate if necessary
         value = value[:32767]
         if next(ILLEGAL_CHARACTERS_RE.finditer(value), None):
-            raise IllegalCharacterError
+            raise IllegalCharacterError(f"{value} cannot be used in worksheets.")
         return value
 
     def check_error(self, value):
@@ -177,16 +182,15 @@ class Cell(StyleableObject):
         except KeyError:
             dt = get_type(t, value)
 
-        if dt is not None:
+        if dt is None and value is not None:
+            raise ValueError("Cannot convert {0!r} to Excel".format(value))
+
+        if dt:
             self.data_type = dt
 
-        if dt == 'n' or dt == 'b':
-            pass
-
-        elif dt == 'd':
+        if dt == 'd':
             if not is_date_format(self.number_format):
-                self.number_format = TIME_FORMATS[t]
-            self.data_type = "d"
+                self.number_format = get_time_format(t)
 
         elif dt == "s":
             value = self.check_string(value)
@@ -194,9 +198,6 @@ class Cell(StyleableObject):
                 self.data_type = 'f'
             elif value in ERROR_CODES:
                 self.data_type = 'e'
-
-        elif value is not None:
-            raise ValueError("Cannot convert {0!r} to Excel".format(value))
 
         self._value = value
 

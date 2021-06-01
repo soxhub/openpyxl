@@ -240,6 +240,11 @@ Other topics
     .. toctree::
         :maxdepth: 1
 
+        datetime
+
+    .. toctree::
+        :maxdepth: 1
+
         protection
 
 

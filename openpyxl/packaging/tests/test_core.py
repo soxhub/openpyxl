@@ -78,7 +78,7 @@ def test_from_tree(datadir, SampleProperties):
 def test_qualified_datetime():
     from ..core import QualifiedDateTime
     dt = QualifiedDateTime()
-    tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30))
+    tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30, 00, 123456))
     xml = tostring(tree)
     expected = """
     <time xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dcterms:W3CDTF">
@@ -100,7 +100,7 @@ def dcterms_prefix(request):
 def test_qualified_datetime_ns(dcterms_prefix):
     from ..core import QualifiedDateTime
     dt = QualifiedDateTime()
-    tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30))
+    tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30, 00, 987654))
     xml = tostring(tree) # serialise to make remove QName
     tree = fromstring(xml)
     xsi = tree.attrib["{%s}type" % XSI_NS]

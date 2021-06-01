@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -153,7 +153,7 @@ class CustomFilter(Serialisable):
 
     operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
-    val = String()
+    val = Float()
 
     def __init__(self,
                  operator=None,
@@ -173,7 +173,7 @@ class CustomFilters(Serialisable):
     __elements__ = ('customFilter',)
 
     def __init__(self,
-                 _and=None,
+                 _and=False,
                  customFilter=(),
                 ):
         self._and = _and

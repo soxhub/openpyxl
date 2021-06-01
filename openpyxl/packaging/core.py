@@ -1,13 +1,8 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 import datetime
 
 from openpyxl.compat import safe_string
-from openpyxl.utils.datetime import (
-    CALENDAR_WINDOWS_1900,
-    to_ISO8601,
-    from_ISO8601,
-)
 from openpyxl.descriptors import (
     String,
     DateTime,
@@ -34,7 +29,7 @@ class NestedDateTime(DateTime, NestedText):
             tagname = "{%s}%s" % (namespace, tagname)
         el = Element(tagname)
         if value is not None:
-            el.text = to_ISO8601(value)
+            el.text = value.isoformat(timespec="seconds") + 'Z'
             return el
 
 
@@ -91,12 +86,12 @@ class DocumentProperties(Serialisable):
                  lastPrinted=None,
                  revision=None,
                  version=None,
-                 created=datetime.datetime.now(),
+                 created=datetime.datetime.utcnow(),
                  creator="openpyxl",
                  description=None,
                  identifier=None,
                  language=None,
-                 modified=datetime.datetime.now(),
+                 modified=datetime.datetime.utcnow(),
                  subject=None,
                  title=None,
                  ):

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from copy import copy
 
@@ -103,14 +103,16 @@ class TestMergedCellRange:
             top=thick_border(),
                 left=default_border(),
                 right=default_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['B1'].border == b1_border
 
         c1_border = Border(
             top=thick_border(),
                 left=default_border(),
                 right=thin_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['C1'].border == c1_border
 
 
@@ -125,14 +127,16 @@ class TestMergedCellRange:
             top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
-                bottom=default_border())
+                bottom=default_border(),
+                diagonal=default_border())
         assert ws['A2'].border == a2_border
 
         a3_border = Border(
             top=default_border(),
                 left=thick_border(),
                 right=thin_border(),
-                bottom=double_border())
+                bottom=double_border(),
+                diagonal=default_border())
         assert ws['A3'].border == a3_border
 
 
@@ -163,5 +167,35 @@ class TestMergedCellRange:
             top=default_border(),
                 left=default_border(),
                 right=default_border(),
-                bottom=default_border())
+                bottom=default_border(),
+                diagonal=default_border())
         assert ws['B2'].border == b2_border
+
+
+    def test_copy(self, MergedCellRange):
+        ws = Workbook().active
+        mcr1 = MergedCellRange(ws, "A1:J6")
+        mcr2 = copy(mcr1)
+        assert mcr2 == mcr1
+
+
+    def test_contains(seld, MergedCellRange):
+        ws = Workbook().active
+        mcr = MergedCellRange(ws, "B2:M20")
+        assert "D4" in mcr
+
+
+    def test_not_contained(self, MergedCellRange):
+        ws = Workbook().active
+        mcr = MergedCellRange(ws, "B2:M20")
+        assert "A1" not in mcr
+
+
+    def test_empty_side(seld, MergedCellRange):
+
+        ws = Workbook().active
+        ws["A1"].border = Border(bottom=Side(style="thin"))
+        mcr = MergedCellRange(ws, "A1:C3")
+
+        mcr.format()
+        assert ws["C3"].border.bottom == Side(style="thin")

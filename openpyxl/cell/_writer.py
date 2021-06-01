@@ -1,10 +1,12 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
 from openpyxl import LXML
-from openpyxl.utils.datetime import to_excel, days_to_time
+from openpyxl.utils.datetime import to_excel, to_ISO8601
 from datetime import timedelta
+
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 
 def _set_attributes(cell, styled=None):
@@ -24,10 +26,12 @@ def _set_attributes(cell, styled=None):
     value = cell._value
 
     if cell.data_type == "d":
-        if cell.parent.parent.iso_dates:
-            if isinstance(value, timedelta):
-                value = days_to_time(value)
-            value = value.isoformat()
+        if hasattr(value, "tzinfo") and value.tzinfo is not None:
+            raise TypeError("Excel does not support timezones in datetimes. "
+                    "The tzinfo in the datetime/time object must be set to None.")
+
+        if cell.parent.parent.iso_dates and not isinstance(value, timedelta):
+            value = to_ISO8601(value)
         else:
             attrs['t'] = "n"
             value = to_excel(value, cell.parent.parent.epoch)
@@ -48,9 +52,18 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
         return
 
     if cell.data_type == 'f':
-        shared_formula = worksheet.formula_attributes.get(cell.coordinate, {})
-        formula = SubElement(el, 'f', shared_formula)
-        if value is not None:
+        attrib = {}
+
+        if isinstance(value, ArrayFormula):
+            attrib = dict(value)
+            value = value.text
+
+        elif isinstance(value, DataTableFormula):
+            attrib = dict(value)
+            value = None
+
+        formula = SubElement(el, 'f', attrib)
+        if value is not None and not attrib.get('t') == "dataTable":
             formula.text = value[1:]
             value = None
 
@@ -78,9 +91,18 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
 
     with xf.element('c', attributes):
         if cell.data_type == 'f':
-            shared_formula = worksheet.formula_attributes.get(cell.coordinate, {})
-            with xf.element('f', shared_formula):
-                if value is not None:
+            attrib = {}
+
+            if isinstance(value, ArrayFormula):
+                attrib = dict(value)
+                value = value.text
+
+            elif isinstance(value, DataTableFormula):
+                attrib = dict(value)
+                value = None
+
+            with xf.element('f', attrib):
+                if value is not None and not attrib.get('t') == "dataTable":
                     xf.write(value[1:])
                     value = None
 

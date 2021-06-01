@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 
 """
 Read a chart
@@ -24,5 +24,9 @@ def read_chart(chartspace):
     chart.pivotSource = cs.pivotSource
     chart.pivotFormats = cs.chart.pivotFmts
     chart.idx_base = min((s.idx for s in chart.series), default=0)
+    chart._reindex()
+
+    # Border, fill, etc.
+    chart.graphical_properties = cs.graphical_properties
 
     return chart
