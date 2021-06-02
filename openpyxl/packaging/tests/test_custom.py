@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2020 openpyxl
+# Copyright (c) 2010-2021 openpyxl
 import pytest
 import datetime
 
@@ -6,9 +6,9 @@ from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
 @pytest.fixture
-def CustomDocumentProperties():
-    from ..custom import CustomDocumentProperties
-    return CustomDocumentProperties
+def CustomDocumentPropertyList():
+    from ..custom import CustomDocumentPropertyList
+    return CustomDocumentPropertyList
 
 @pytest.fixture
 def CustomDocumentProperty():
@@ -16,15 +16,15 @@ def CustomDocumentProperty():
     return CustomDocumentProperty
 
 
-class TestCustomDocumentProperties:
+class TestCustomDocumentProperyList:
 
-    def test_add(self, CustomDocumentProperties):
-        props = CustomDocumentProperties()
+    def test_add(self, CustomDocumentPropertyList):
+        props = CustomDocumentPropertyList()
         props.add("PropName1", True)
 
         assert props["PropName1"].value == True
 
-    def test_delete(self, CustomDocumentProperties):
+    def test_delete(self, CustomDocumentPropertyList):
         src = """
         <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
           <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
@@ -39,15 +39,15 @@ class TestCustomDocumentProperties:
         </Properties>
         """
         node = fromstring(src)
-        props = CustomDocumentProperties.from_tree(node)
+        props = CustomDocumentPropertyList.from_tree(node)
 
         for prop in props:
             del props[prop.name]
 
         assert len(props) == 0
 
-    def test_ctor(self, CustomDocumentProperties):
-        props = CustomDocumentProperties()
+    def test_ctor(self, CustomDocumentPropertyList):
+        props = CustomDocumentPropertyList()
         props.add("PropName1", "2020-08-24T20:19:22Z", "date")
         props.add("PropName2", LinkTarget="ExampleName")
         props.add("PropName3", "2.5", float)
@@ -70,7 +70,7 @@ class TestCustomDocumentProperties:
         assert diff is None, diff
 
 
-    def test_from_xml(self, CustomDocumentProperties):
+    def test_from_xml(self, CustomDocumentPropertyList):
         src = """
         <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
           <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
@@ -85,9 +85,9 @@ class TestCustomDocumentProperties:
         </Properties>
         """
         node = fromstring(src)
-        props = CustomDocumentProperties.from_tree(node)
+        props = CustomDocumentPropertyList.from_tree(node)
 
-        props2 = CustomDocumentProperties()
+        props2 = CustomDocumentPropertyList()
         props2.add("PropName1", datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22))
         props2.add("PropName2", 2.5)
         props2.add("PropName3", True)

@@ -198,7 +198,7 @@ class CustomDocumentProperty(Serialisable):
         return tree
 
 
-class CustomDocumentProperties(Serialisable):
+class CustomDocumentPropertyList(Serialisable):
 
     """
     to capture the Workbook.CustomDocumentProperties saved in 'docProps/custom.xml'
