@@ -1,17 +1,21 @@
 # Copyright (c) 2010-2021 openpyxl
 
+"""Implementation of custom properties see § 22.3 in the specification"""
+
 
 import datetime
 import lxml.etree as et
 from openpyxl.utils.datetime import from_ISO8601
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import Sequence
-from openpyxl.xml.functions import Element, localname, whitespace
-from openpyxl.xml.functions import fromstring, tostring
-from openpyxl.compat import safe_string
+
+from openpyxl.xml.functions import fromstring, tostring, Element
+
 from openpyxl.descriptors import (
     Typed,
     Alias,
+    String,
+    Integer,
     # _convert, # use custom implementation below to handle dates passed as strings
 )
 from openpyxl.descriptors.nested import (
@@ -25,6 +29,8 @@ from openpyxl.xml.constants import (
     VTYPES_NS,
     CPROPS_FMTID,
 )
+
+from .core import NestedDateTime
 
 
 def _convert(expected_type, value):
@@ -65,6 +71,23 @@ class EmptyTagAlias(EmptyTag):
             return Element(tagname)
 
 
+# from Python
+KNOWN_TYPES = {
+    str: "str",
+    int: "i4",
+    float: "r8",
+    datetime.datetime: "filetime",
+    bool: "bool",
+}
+# from XML
+XML_TYPES = {
+    "lwpstr": str,
+    "i4": int,
+    "r8": float,
+    "filetime": datetime.datetime,
+    "bool": bool,
+}
+
 class CustomDocumentProperty(Serialisable):
 
     """
@@ -73,129 +96,67 @@ class CustomDocumentProperty(Serialisable):
 
     tagname = "property"
 
+    name = String(allow_none=True)
     lpwstr = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    linked = EmptyTagAlias(alias="lpwstr", namespace=VTYPES_NS)
-    i4 = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    r8 = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    filetime = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    bool = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
-    # __elements__ = ()
+    i4 = NestedText(expected_type=int, allow_none=True, namespace=VTYPES_NS)
+    r8 = NestedText(expected_type=float, allow_none=True, namespace=VTYPES_NS)
+    filetime = NestedDateTime(allow_none=True, namespace=VTYPES_NS)
+    bool = NestedText(expected_type=bool, allow_none=True, namespace=VTYPES_NS)
+    linkTarget = String(expected_type=str, allow_none=True)
+    fmtid = String()
+    pid = Integer()
 
-    def __init__(
-        self,
-        PropName,
-        PropVal=None,
-        PropType=None,
-        LinkTarget=None,
-    ):
-        self.name = PropName
-        self.value = None
-        self.lpwstr = None
-        self.linked = None
-        self.linkTarget = None
-        self.i4 = None
-        self.r8 = None
-        self.filetime = None
-        self.bool = None
-        self.pid = None
-        self.fmtid = CPROPS_FMTID
-        if LinkTarget:
-            # if LinkTarget is given, don't set any of the data types, just set the empty tag alias to true
-            self.linkTarget = _convert(str, LinkTarget)
-            self.linked = True
-        elif (
-            PropType == "bool"
-            or PropType == bool
-            or (isinstance(PropVal, bool) and PropType is None)
-        ):
-            # bool must be checked before int, as bool is a subclass of int
-            val = _convert(bool, PropVal)
-            self.value = val
-            self.bool = str(
-                val
-            ).lower()  # excel says the workbook is corrupt if you use proper case like 'True'
-        elif (
-            PropType == "int"
-            or PropType == int
-            or (isinstance(PropVal, int) and PropType is None)
-        ):
-            val = _convert(int, PropVal)
-            self.value = val
-            self.i4 = val
-        elif (
-            PropType == "float"
-            or PropType == float
-            or (isinstance(PropVal, float) and PropType is None)
-        ):
-            val = _convert(float, PropVal)
-            self.value = val
-            self.r8 = val
-        elif (
-            PropType == "str"
-            or PropType == str
-            or (isinstance(PropVal, str) and PropType is None)
-        ):
-            val = _convert(str, PropVal)
-            self.value = val
-            self.lpwstr = val
-        elif (
-            PropType == "date"
-            or PropType == datetime.datetime
-            or (isinstance(PropVal, datetime.datetime) and PropType is None)
-        ):
-            val = _convert(datetime.datetime, PropVal)
-            self.value = val
-            self.filetime = val.strftime("%Y-%m-%dT%H:%M:%SZ")
-        elif PropVal:
-            raise ValueError(
-                "Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)"
-            )
-        else:
-            raise ValueError(
-                "Expected PropVal or LinkTarget to be provided, but got neither"
-            )
+    def __init__(self,
+                 name=None,
+                 value=None,
+                 typ=None,
+                 lpwstr=None,
+                 i4=None,
+                 r8=None,
+                 filetime=None,
+                 bool=None,
+                 linkTarget=None,
+                 pid=0,
+                 fmtid=CPROPS_FMTID):
+        self.fmtid = fmtid
+        self.pid = pid
+        self.name = name
 
-    @classmethod
-    def from_tree(cls, node):
-        if isinstance(node, str):
-            node = fromstring(node)
-        PropName = node.attrib.get("name")
-        if PropName is None:
-            raise ValueError(
-                'Expected the xml node to have a "name" property but got None'
-            )
-        if node.attrib.get("linkTarget"):
-            PropVal = None
-            PropType = None
-            LinkTarget = node.attrib["linkTarget"]
-        else:
-            PropVal = node[0].text
-            LinkTarget = None
-            if node[0].tag.endswith("i4"):
-                PropType = "int"
-            elif node[0].tag.endswith("r8"):
-                PropType = "float"
-            elif node[0].tag.endswith("filetime"):
-                PropType = "date"
-            elif node[0].tag.endswith("lpwstr"):
-                PropType = "str"
-            elif node[0].tag.endswith("bool"):
-                PropType = "bool"
+        self.lpwstr = lpwstr
+        self.i4 = i4
+        self.r8 = r8
+        self.filetime = filetime
+        self.bool = bool
+        self.linkTarget = linkTarget
+
+        if linkTarget is not None:
+            self.lpwstr = ""
+
+        if value is not None:
+            t = type(value)
+            prop = KNOWN_TYPES.get(t)
+            if prop is not None:
+                setattr(self, prop, value)
+            elif typ is not None and typ in XML_TYPES:
+                setattr(self, typ, value)
             else:
-                raise ValueError(
-                    "Expected PropVal to be one of, or convertible to, the following types, (str, int, float, datetime.datetime, bool)"
-                )
-        return cls(PropName, PropVal, PropType, LinkTarget)
+                raise ValueError(f"Unknown type {t}")
 
-    def to_tree(self):
-        tree = super(CustomDocumentProperty, self).to_tree()
-        tree.set("name", self.name)
-        tree.set("pid", str(self.pid) or "2")
-        tree.set("fmtid", self.fmtid)
-        if self.linkTarget:
-            tree.set("linkTarget", self.linkTarget)
 
-        return tree
+    @property
+    def value(self):
+        """Return the value from the active property"""
+        for a in self.__elements__:
+            v = getattr(self, a)
+            if v is not None:
+                return v
+
+    @property
+    def type(self):
+        for a in self.__elements__:
+            if getattr(self, a) is not None:
+                return a
+
 
 
 class CustomDocumentPropertyList(Serialisable):
@@ -227,7 +188,12 @@ class CustomDocumentPropertyList(Serialisable):
                 return True
 
     def add(self, PropName, PropVal=None, PropType=None, LinkTarget=None):
-        custom_prop = CustomDocumentProperty(PropName, PropVal, PropType, LinkTarget)
+        custom_prop = CustomDocumentProperty(
+            name=PropName,
+            value=PropVal,
+            typ=PropType,
+            linkTarget=LinkTarget
+        )
         self.append(custom_prop)
 
     def append(self, prop):
