@@ -48,7 +48,7 @@ Adding a new CustomDocumentProperty::
 Deleting all existing CustomDocumentProperties and adding new ones
 ------------------------------------------------------------------
 
-.. testcode::
+.. code::
 
     # delete any existing CustomDocumentProperties
     for prop_name in wb.custom_doc_props.namelist():
@@ -74,6 +74,6 @@ Deleting all existing CustomDocumentProperties and adding new ones
     wb.save('outfile.xlsx')
 
 
-.. testoutput::
+.. code::
 
     PropName6: 2.5 <class 'float'>
