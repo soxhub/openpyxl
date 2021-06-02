@@ -5,15 +5,51 @@ import datetime
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
 
-@pytest.fixture
-def CustomDocumentPropertyList():
-    from ..custom import CustomDocumentPropertyList
-    return CustomDocumentPropertyList
 
 @pytest.fixture
 def CustomDocumentProperty():
     from ..custom import CustomDocumentProperty
     return CustomDocumentProperty
+
+
+class TestCustomDocumentProperty:
+
+    def test_ctor(self, CustomDocumentProperty):
+        prop = CustomDocumentProperty("PropName9", True)
+        expected = """
+        <property name="PropName9" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+          <vt:bool xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">true</vt:bool>
+        </property>
+        """
+        xml = tostring(prop.to_tree())
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, CustomDocumentProperty):
+        src = """
+        <property name="PropName1" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+          <vt:filetime xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">2020-08-24T20:19:22Z</vt:filetime>
+        </property>
+        """
+        node = fromstring(src)
+        prop = CustomDocumentProperty.from_tree(node)
+        assert prop.value == datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22) and prop.name == "PropName1"
+
+        src = """
+        <property name="PropName4" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
+          <vt:lpwstr xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
+        </property>
+        """
+        node = fromstring(src)
+        prop = CustomDocumentProperty.from_tree(node)
+        assert prop.linkTarget == "ExampleName" and prop.name == "PropName4"
+
+
+@pytest.fixture
+def CustomDocumentPropertyList():
+    from ..custom import CustomDocumentPropertyList
+    return CustomDocumentPropertyList
+
 
 
 class TestCustomDocumentProperyList:
@@ -99,39 +135,6 @@ class TestCustomDocumentProperyList:
         xml = tostring(props.to_tree())
         diff = compare_xml(xml, src)
         assert diff is None, diff
-
-
-class TestCustomDocumentProperty:
-
-    def test_ctor(self, CustomDocumentProperty):
-        prop = CustomDocumentProperty("PropName9", True)
-        expected = """
-        <property name="PropName9" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-          <vt:bool xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">true</vt:bool>
-        </property>
-        """
-        xml = tostring(prop.to_tree())
-        diff = compare_xml(xml, expected)
-        assert diff is None, diff
-
-    def test_from_xml(self, CustomDocumentProperty):
-        src = """
-        <property name="PropName1" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-          <vt:filetime xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">2020-08-24T20:19:22Z</vt:filetime>
-        </property>
-        """
-        node = fromstring(src)
-        prop = CustomDocumentProperty.from_tree(node)
-        assert prop.value == datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22) and prop.name == "PropName1"
-
-        src = """
-        <property name="PropName4" pid="None" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
-          <vt:lpwstr xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
-        </property>
-        """
-        node = fromstring(src)
-        prop = CustomDocumentProperty.from_tree(node)
-        assert prop.linkTarget == "ExampleName" and prop.name == "PropName4"
 
 
 # # don't use datetime.now() in tests, it will fail
