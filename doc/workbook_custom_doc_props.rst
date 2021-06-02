@@ -5,11 +5,13 @@ Workbook Custom Document Properties
 It is possible to add one or more CustomDocumentProperty objects to a workbook.
 These require a name (string) and can be one of 5 value types or a link.
 The 5 value types are as follows:
- - bool (Boolean)
- - int (Integer)
- - float (Float/Decimal)
- - str (String)
- - datetime.datetime (Date)
+
+ * bool (Boolean)
+ * int (Integer)
+ * float (Float/Decimal)
+ * str (String)
+ * datetime.datetime (Date)
+
 Your value should be of this type or be convertible to it (such as date from iso string)
 
 The other alternative is to link your CustomDocumentProperty to a defined named range.
