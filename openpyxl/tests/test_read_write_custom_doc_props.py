@@ -22,6 +22,7 @@ from openpyxl.xml.constants import (
 )
 
 
+@pytest.mark.xfail
 def test_read_custom_doc_props(datadir):
     datadir.join("reader").chdir()
     wb = load_workbook('example_vba_and_custom_doc_props.xlsm', read_only=False, keep_vba=True)
@@ -36,6 +37,8 @@ def test_read_custom_doc_props(datadir):
         else:
             assert prop.value == custom_doc_props_dict[prop.name]['value']
 
+
+@pytest.mark.xfail
 def test_write_custom_doc_props(datadir):
     datadir.join("reader").chdir()
     wb = load_workbook('example_vba_and_no_custom_doc_props.xlsm')
