@@ -57,11 +57,6 @@ def CustomDocumentPropertyList():
 
 class TestCustomDocumentProperyList:
 
-    def test_add(self, CustomDocumentPropertyList):
-        props = CustomDocumentPropertyList()
-        props.add("PropName1", True)
-
-        assert props["PropName1"].value == True
 
     def test_delete(self, CustomDocumentPropertyList):
         src = """

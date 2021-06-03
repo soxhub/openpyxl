@@ -187,14 +187,6 @@ class CustomDocumentPropertyList(Serialisable):
             if d.name == defn.name:
                 return True
 
-    def add(self, PropName, PropVal=None, PropType=None, LinkTarget=None):
-        custom_prop = CustomDocumentProperty(
-            name=PropName,
-            value=PropVal,
-            typ=PropType,
-            linkTarget=LinkTarget
-        )
-        self.append(custom_prop)
 
     def append(self, prop):
         if not isinstance(prop, CustomDocumentProperty):
