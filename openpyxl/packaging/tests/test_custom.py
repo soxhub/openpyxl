@@ -86,11 +86,14 @@ class TestCustomDocumentProperyList:
         assert len(props) == 0
 
 
-    def test_ctor(self, CustomDocumentPropertyList):
-        props = CustomDocumentPropertyList()
-        props.add("PropName1", datetime.datetime(2020, 8, 24, 20, 19, 22))
-        props.add("PropName2", LinkTarget="ExampleName")
-        props.add("PropName3", 2.5)
+    @pytest.mark.lxml_required
+    def test_ctor(self, CustomDocumentPropertyList, CustomDocumentProperty):
+
+        prop1 = CustomDocumentProperty(name="PropName1", value=datetime.datetime(2020, 8, 24, 20, 19, 22))
+        prop2 = CustomDocumentProperty(name="PropName2", linkTarget="ExampleName")
+        prop3 = CustomDocumentProperty(name="PropName3", value=2.5)
+
+        props = CustomDocumentPropertyList(customProps=[prop1, prop2, prop3])
 
         xml = tostring(props.to_tree())
         expected = """
