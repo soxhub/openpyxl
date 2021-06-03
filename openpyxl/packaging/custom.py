@@ -214,7 +214,7 @@ class CustomDocumentPropertyList(Serialisable):
         """
         defn = self.get(name)
         if not defn:
-            raise KeyError("No definition called {0}".format(name))
+            raise KeyError(f"No definition called {name}")
         return defn
 
     def get(self, name):
