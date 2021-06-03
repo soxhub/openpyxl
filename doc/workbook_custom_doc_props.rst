@@ -31,7 +31,7 @@ Looping over all CustomDocumentProperties ("custom_doc_props")::
 Adding a new CustomDocumentProperty::
 
     # if you only specify the first two arguments, we take the type of the value as is
-    wb.custom_doc_props.add('TestDocProp2', "foo"))
+    wb.custom_doc_props.add('TestDocProp2', "foo")
 
     # if you specify the third argument, you can convert a type, if it is convertible
     # we also allow a string to represent the types as follows
