@@ -2,26 +2,16 @@
 
 """Implementation of custom properties see § 22.3 in the specification"""
 
-
 import datetime
-import lxml.etree as et
-from openpyxl.utils.datetime import from_ISO8601
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import Sequence
-
-from openpyxl.xml.functions import fromstring, tostring, Element
-
 from openpyxl.descriptors import (
-    Typed,
     Alias,
     String,
     Integer,
-    # _convert, # use custom implementation below to handle dates passed as strings
 )
 from openpyxl.descriptors.nested import (
     NestedText,
-    NestedValue,
-    EmptyTag,
 )
 
 from openpyxl.xml.constants import (
@@ -32,45 +22,6 @@ from openpyxl.xml.constants import (
 
 from .core import NestedDateTime
 
-
-def _convert(expected_type, value):
-    """
-    Check value is of or can be converted to expected type.
-    """
-    if not isinstance(value, expected_type):
-        try:
-            if expected_type is datetime.datetime and isinstance(value, str):
-                value = from_ISO8601(value)
-            else:
-                value = expected_type(value)
-        except:
-            raise TypeError("expected " + str(expected_type))
-    return value
-
-
-class EmptyTagAlias(EmptyTag):
-
-    """
-    Boolean if an Alias tag exists or not.
-    """
-
-    def __init__(self, name=None, **kw):
-        if not "alias" in kw:
-            raise TypeError("missing alias")
-        super(EmptyTagAlias, self).__init__(name, **kw)
-
-    def from_tree(self, node):
-        return True
-
-    def to_tree(self, tagname=None, value=None, namespace=None):
-        if value:
-            tagname = self.alias
-            namespace = getattr(self, "namespace", namespace)
-            if namespace is not None:
-                tagname = "{%s}%s" % (namespace, tagname)
-            return Element(tagname)
-
-
 # from Python
 KNOWN_TYPES = {
     str: "str",
@@ -79,6 +30,7 @@ KNOWN_TYPES = {
     datetime.datetime: "filetime",
     bool: "bool",
 }
+
 # from XML
 XML_TYPES = {
     "lwpstr": str,
