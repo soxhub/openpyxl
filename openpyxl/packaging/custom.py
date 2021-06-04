@@ -25,7 +25,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from openpyxl.xml.constants import (
-    CPROPS_NS,
+    CUSTPROPS_NS,
     VTYPES_NS,
     CPROPS_FMTID,
 )
@@ -166,82 +166,85 @@ class CustomDocumentPropertyList(Serialisable):
     """
 
     tagname = "Properties"
-    namespace = CPROPS_NS
-    NSMAP = {
-        None: CPROPS_NS,
-        "vt": VTYPES_NS,
-    }  # None is the default namespace (no prefix)
 
-    customProps = Sequence(expected_type=CustomDocumentProperty, namespace=CPROPS_NS)
+    property = Sequence(expected_type=CustomDocumentProperty, namespace=CUSTPROPS_NS)
+    customProps = Alias("property")
 
-    def __init__(self, customProps=()):
-        self.customProps = customProps
-        self.n = -1
 
-    def _duplicate(self, defn):
+    def __init__(self, property=(), customProps=()):
+        self.property = property
+        if customProps:
+            self.customProps = customProps
+
+
+    def _duplicate(self, prop):
         """
-        Check for whether customProps with the same name and scope already
-        exists
+        Check for whether customProps with the same name already exists
         """
-        for d in self.customProps:
-            if d.name == defn.name:
+        for p in self.customProps:
+            if d.name == prop.name:
                 return True
 
 
     def append(self, prop):
         if not isinstance(prop, CustomDocumentProperty):
-            raise TypeError("""You can only append customDocProps""")
+            raise TypeError("""You can only append CustomDocumentProperty objects""")
         if self._duplicate(prop):
-            raise ValueError("""customDocProp with the same name already exists""")
+            raise ValueError("""Document property with the same name already exists""")
         names = self.customProps[:]
         names.append(prop)
         self.customProps = names
 
+
     def __len__(self):
         return len(self.customProps)
 
+
     def __contains__(self, name):
         """
-        See if a globaly defined name exists
+        Check for property by name
         """
-        for defn in self.customProps:
-            if defn.name == name:
+        for prop in self.customProps:
+            if prop.name == name:
                 return True
+
 
     def __getitem__(self, name):
         """
-        Get globally defined name
+        Access document properties by name
         """
         defn = self.get(name)
         if not defn:
-            raise KeyError(f"No definition called {name}")
+            raise KeyError(f"No docuemnt property called {name}")
         return defn
+
 
     def get(self, name):
         """
-        Get the name assigned to a specicic custom document property
+        Find a property by name
         """
         for defn in self.customProps:
             if defn.name == name:
                 return defn
 
+
     def __delitem__(self, name):
         """
-        Delete a globally defined name
+        Delete a property
         """
         if not self.delete(name):
-            raise KeyError("No globally defined name {0}".format(name))
+            raise KeyError(f"No defined name {name}")
+
 
     def delete(self, name):
         """
-        Delete a name
+        Delete a property
         """
-        for idx, defn in enumerate(self.customProps):
-            if defn.name == name:
+        for idx, prop in enumerate(self.customProps):
+            if prop.name == name:
                 del self.customProps[idx]
-                if idx < self.n:
-                    self.n -= 1  # we are in a __iter__ loop, keep it on track
                 return True
+
 
     def namelist(self):
         """
@@ -249,46 +252,11 @@ class CustomDocumentPropertyList(Serialisable):
         """
         return [prop.name for prop in self.customProps]
 
-    def items(self):
-        """
-        Provide a list of all custom document property objects
-        """
-        return [prop for prop in self.customProps]
 
-    def __iter__(self):
-        self.n = 0
-        return self
-
-    def __next__(self):
-        if self.n < len(self.customProps):
-            result = self.customProps[self.n]
-            self.n += 1
-            return result
-        else:
-            self.n = -1
-            raise StopIteration
-
-    @classmethod
-    def from_tree(cls, node):
-        if isinstance(node, str):
-            node = fromstring(node)
-        custom_doc_props = cls()
-        for prop in node:
-            prop_el = CustomDocumentProperty.from_tree(prop)
-            custom_doc_props.append(prop_el)
-        return custom_doc_props
-
-    def to_tree(self, tagname=None, value=None, namespace=None):
-        namespace = getattr(self, "namespace", namespace)
-        tagname = getattr(self, "tagname", tagname)
-        if namespace is not None:
-            tagname = "{%s}%s" % (namespace, tagname)
-        tree = Element(tagname, nsmap=self.NSMAP)
-        pid = 2
-        for p in self.customProps:
-            p.pid = pid
-            pid += 1
-            el = p.to_tree()
-            tree.append(el)
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        for idx, p in enumerate(self.property, 2):
+            p.pid = idx
+        tree = super().to_tree(tagname, idx, namespace)
+        tree.set("xmlns", CUSTPROPS_NS)
 
         return tree

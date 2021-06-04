@@ -58,30 +58,6 @@ def CustomDocumentPropertyList():
 class TestCustomDocumentProperyList:
 
 
-    def test_delete(self, CustomDocumentPropertyList):
-        src = """
-        <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
-          <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
-          </property>
-          <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:r8>2.5</vt:r8>
-          </property>
-          <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:bool>true</vt:bool>
-          </property>
-        </Properties>
-        """
-        node = fromstring(src)
-        props = CustomDocumentPropertyList.from_tree(node)
-
-        for prop in props:
-            del props[prop.name]
-
-        assert len(props) == 0
-
-
-    @pytest.mark.lxml_required
     def test_ctor(self, CustomDocumentPropertyList, CustomDocumentProperty):
 
         prop1 = CustomDocumentProperty(name="PropName1", value=datetime.datetime(2020, 8, 24, 20, 19, 22))
@@ -130,3 +106,25 @@ class TestCustomDocumentProperyList:
             CustomDocumentProperty(name="PropName2", value=2.5, pid=3),
             CustomDocumentProperty(name="PropName3", value=True, pid=4),
         ]
+
+
+    def test_delete(self, CustomDocumentPropertyList):
+        src = """
+        <Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
+          <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:filetime>2020-08-24T20:19:22Z</vt:filetime>
+          </property>
+          <property name="PropName2" pid="3" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:r8>2.5</vt:r8>
+          </property>
+          <property name="PropName3" pid="4" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:bool>true</vt:bool>
+          </property>
+        </Properties>
+        """
+        node = fromstring(src)
+        props = CustomDocumentPropertyList.from_tree(node)
+
+        props.delete("PropName2")
+
+        assert len(props.customProps) == 2
