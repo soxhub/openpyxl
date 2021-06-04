@@ -51,7 +51,7 @@ IMAGE_NS = REL_NS + "/image"
 VML_NS =  REL_NS + "/vmlDrawing"
 VTYPES_NS = DOC_NS + 'docPropsVTypes'
 XPROPS_NS = DOC_NS + 'extended-properties'
-CPROPS_NS = DOC_NS + 'custom-properties'
+CUSTPROPS_NS = DOC_NS + 'custom-properties'
 EXTERNAL_LINK_NS = REL_NS + "/externalLink"
 
 # CustomDocumentProperty FMTID:
@@ -84,7 +84,8 @@ NAMESPACES = {
     'xsi': XSI_NS,
     'vt': VTYPES_NS,
     'xml': XML_NS,
-    'main': SHEET_MAIN_NS
+    'main': SHEET_MAIN_NS,
+    'cust': CUSTPROPS_NS,
 }
 
 ## Mime types

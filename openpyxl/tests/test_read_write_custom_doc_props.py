@@ -14,7 +14,7 @@ from openpyxl.packaging.manifest import Manifest
 from openpyxl.tests.helper import compare_xml
 from openpyxl.workbook._writer import WorkbookWriter
 from openpyxl.xml.constants import (
-    CPROPS_NS,
+    CUSTPROPS_NS,
     VTYPES_NS,
     CPROPS_FMTID,
     ARC_CUSTOM,
