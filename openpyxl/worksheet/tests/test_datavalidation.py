@@ -17,10 +17,10 @@ class TestDataValidation:
 
 
     def test_ctor(self, DataValidation):
-        dv = DataValidation()
+        dv = DataValidation(allowBlank=True)
         xml = tostring(dv.to_tree())
         expected = """
-        <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="" />
+        <dataValidation allowBlank="1" showErrorMessage="1" showInputMessage="1" sqref="" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
