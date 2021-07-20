@@ -63,3 +63,49 @@ def test_serialise(DifferentialStyle):
     """
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+
+@pytest.fixture
+def DifferentialStyleList():
+    from ..differential import DifferentialStyleList
+    return DifferentialStyleList
+
+
+class TestDifferentialStyleList:
+
+    def test_ctor(self, DifferentialStyleList, DifferentialStyle):
+        cond = DifferentialStyle()
+        cond.font = Font(name="Calibri", family=2, sz=11)
+        differential = DifferentialStyleList(dxf=[cond])
+        xml = tostring(differential.to_tree())
+        expected = """
+        <dxfs count="1">
+            <dxf>
+              <font>
+                <name val="Calibri"></name>
+                <family val="2"></family>
+                <sz val="11"></sz>
+              </font>
+            </dxf>
+        </dxfs>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, DifferentialStyleList):
+        src = """
+        <dxfs count="1">
+            <dxf>
+              <font>
+                <name val="Calibri"></name>
+                <family val="2"></family>
+                <sz val="11"></sz>
+              </font>
+            </dxf>
+        </dxfs>
+        """
+        node = fromstring(src)
+        differential = DifferentialStyleList.from_tree(node)
+        assert differential.dxf[0].font == Font(name="Calibri", family=2, sz=11)
