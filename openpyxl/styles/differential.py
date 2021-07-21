@@ -1,8 +1,6 @@
 # Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.descriptors import (
-    Integer,
-    String,
     Typed,
     Sequence,
     Alias,
@@ -11,8 +9,6 @@ from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.styles import (
     Font,
     Fill,
-    GradientFill,
-    PatternFill,
     Border,
     Alignment,
     Protection,
@@ -53,16 +49,17 @@ class DifferentialStyle(Serialisable):
 
 class DifferentialStyleList(Serialisable):
     """
-    Deduping container for differential styles.
+    Dedupable container for differential styles.
     """
 
     tagname = "dxfs"
 
     dxf = Sequence(expected_type=DifferentialStyle)
     styles = Alias("dxf")
+    __attrs__ = ("count",)
 
 
-    def __init__(self, dxf=()):
+    def __init__(self, dxf=(), count=None):
         self.dxf = dxf
 
 
@@ -89,6 +86,10 @@ class DifferentialStyleList(Serialisable):
         return bool(self.styles)
 
 
-
     def __getitem__(self, idx):
         return self.styles[idx]
+
+
+    @property
+    def count(self):
+        return len(self.dxf)

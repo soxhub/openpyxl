@@ -15,11 +15,12 @@ def DataValidation():
 
 class TestDataValidation:
 
+
     def test_ctor(self, DataValidation):
-        dv = DataValidation()
+        dv = DataValidation(allowBlank=True)
         xml = tostring(dv.to_tree())
         expected = """
-        <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="" />
+        <dataValidation allowBlank="1" showErrorMessage="1" showInputMessage="1" sqref="" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -33,14 +34,15 @@ class TestDataValidation:
         dv = DataValidation.from_tree(node)
         assert dv == DataValidation()
 
-        def test_list_validation(DataValidation):
-            dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"')
-            assert dv.formula1, '"Dog,Cat == Fish"'
-            dv_dict = dict(dv)
-            assert dv_dict['type'] == 'list'
-            assert dv_dict['allowBlank'] == '0'
-            assert dv_dict['showErrorMessage'] == '1'
-            assert dv_dict['showInputMessage'] == '1'
+
+    def test_list_validation(self, DataValidation):
+        dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"')
+        assert dv.formula1, '"Dog,Cat == Fish"'
+        dv_dict = dict(dv)
+        assert dv_dict['type'] == 'list'
+        assert dv_dict['allowBlank'] == '0'
+        assert dv_dict['showErrorMessage'] == '1'
+        assert dv_dict['showInputMessage'] == '1'
 
 
     def test_hide_drop_down(self, DataValidation):
