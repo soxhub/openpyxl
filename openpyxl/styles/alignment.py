@@ -37,8 +37,8 @@ class Alignment(Serialisable):
     wrap_text = Alias('wrapText')
     shrinkToFit = Bool(allow_none=True)
     shrink_to_fit = Alias('shrinkToFit')
-    indent = Min(min=0)
-    relativeIndent = Min(min=0)
+    indent = MinMax(min=0, max=255)
+    relativeIndent = MinMax(min=-255, max=255)
     justifyLastLine = Bool(allow_none=True)
     readingOrder = Min(min=0)
 
