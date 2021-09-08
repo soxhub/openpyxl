@@ -16,6 +16,8 @@ from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
+
+from ..formula import DataTableFormula, ArrayFormula
 from ..worksheet import Worksheet
 from ..pagebreak import Break, RowBreak, ColBreak
 from ..scenario import ScenarioList, Scenario, InputCells
@@ -466,8 +468,21 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         formula = parser.parse_formula(element)
-        assert formula == "=SUM(A10:A14*B10:B14)"
-        assert parser.array_formulae['C10']['ref'] == 'C10:C14'
+        assert isinstance(formula, ArrayFormula)
+        assert formula.ref == "C10:C14"
+        assert formula.text == "=SUM(A10:A14*B10:B14)"
+
+
+    def test_table_formula(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """
+        <c r="C9" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <f t="dataTable" ref="C9:C24" dt2D="0" dtr="0" r1="C4"/>
+          <v>1</v>
+       </c>"""
+        element = fromstring(src)
+        formula = parser.parse_formula(element)
+        assert isinstance(formula, DataTableFormula)
 
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):
@@ -883,14 +898,20 @@ def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
 class TestWorksheetReader:
 
 
-    def test_cells(self, PrimedWorksheetReader):
+    def test_cell(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
         ws = reader.ws
 
         assert ws['C1'].value == 'a'
-        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
-        assert ws['E2'].value == "=C2:C11*D2:D11"
+
+
+    def test_array_formula(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        assert ws['E2'].value.text == "=C2:C11*D2:D11"
 
 
     def test_formatting(self, PrimedWorksheetReader):

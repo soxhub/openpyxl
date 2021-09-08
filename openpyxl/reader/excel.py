@@ -24,6 +24,7 @@ from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
     ARC_SHARED_STRINGS,
     ARC_CORE,
+    ARC_CUSTOM,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_THEME,
@@ -43,6 +44,7 @@ from .workbook import WorkbookParser
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
+from openpyxl.packaging.custom import CustomDocumentPropertyList
 from openpyxl.packaging.manifest import Manifest, Override
 
 from openpyxl.packaging.relationship import (
@@ -172,6 +174,9 @@ class ExcelReader:
             src = fromstring(self.archive.read(ARC_CORE))
             self.wb.properties = DocumentProperties.from_tree(src)
 
+        if ARC_CUSTOM in self.valid_files:
+            src = fromstring(self.archive.read(ARC_CUSTOM))
+            self.wb.custom_doc_props = CustomDocumentPropertyList.from_tree(src)
 
     def read_theme(self):
         if ARC_THEME in self.valid_files:

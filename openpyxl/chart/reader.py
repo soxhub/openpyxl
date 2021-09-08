@@ -26,4 +26,7 @@ def read_chart(chartspace):
     chart.idx_base = min((s.idx for s in chart.series), default=0)
     chart._reindex()
 
+    # Border, fill, etc.
+    chart.graphical_properties = cs.graphical_properties
+
     return chart

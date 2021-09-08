@@ -11,6 +11,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Adam Morris
 * Alessandro Cucci
 * Alex Gronholm
+* Alexander Ley
 * Alexandre Fayolle
 * Amin Mirzaee
 * Anders Chrigstrom
