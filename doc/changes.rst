@@ -28,6 +28,7 @@ Bugfixes
 * `#1666 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1666>`_ Improved normalisation of chart series
 * `#1670 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1670>`_ Catch OverflowError for out of range datetimes
 * `#1708 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1708>`_ Alignment.relativeIndent can be negative
+* `#1736 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1769>`_ Incorrect default value `groupBy` attribute
 
 
 3.0.7 (2021-03-09)
