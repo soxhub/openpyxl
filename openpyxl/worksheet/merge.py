@@ -118,16 +118,19 @@ class MergedCellRange(CellRange):
                     cell = MergedCell(self.ws, row=row, column=col)
                     self.ws._cells[(cell.row, cell.column)] = cell
                 cell.border += border
-            
-        protection = copy.copy(self.start_cell.protection)
+
+        protected = self.start_cell.protection is not None
+        if protected:
+            protection = copy.copy(self.start_cell.protection)
         for coord in self.cells:
             cell = self.ws._cells.get(coord)
             if cell is None:
                 row, col = coord
                 cell = MergedCell(self.ws, row=row, column=col)
                 self.ws._cells[(cell.row, cell.column)] = cell
-            
-            cell.protection = protection
+
+            if protected:
+                cell.protection = protection
 
 
     def __contains__(self, coord):

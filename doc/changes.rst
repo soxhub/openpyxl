@@ -23,6 +23,7 @@ Bugfixes
 --------
 
 * `#1284 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1284>`_ Ignore blank ignored in existing Data Validations
+* `#1539 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1539>`_ Add support for cell protection for merged cell ranges
 * `#1645 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1645>`_ Timezone-aware datetimes raise an Exception
 * `#1666 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1666>`_ Improved normalisation of chart series
 * `#1670 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1670>`_ Catch OverflowError for out of range datetimes
