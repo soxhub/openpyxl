@@ -1,21 +1,4 @@
-3.1.0 (unreleased)
-==================
-
-
-New Features
-------------
-
-* Added support for data table formulae
-* Mapped chartspace graphical properties to charts for advanced formatting
-
-
-Deprecations
-------------
-
-The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right. Client code should use the relevant objects.
-
-
-3.0.8 (unreleased)
+3.0.8 (2021-09-10)
 ==================
 
 
