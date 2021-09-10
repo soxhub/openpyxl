@@ -259,7 +259,7 @@ def CustomFilter():
 class TestCustomFilter:
 
     def test_ctor(self, CustomFilter):
-        fut = CustomFilter(operator="greaterThanOrEqual", val="0.2")
+        fut = CustomFilter(operator="greaterThanOrEqual", val=0.2)
         xml = tostring(fut.to_tree())
         expected = """
         <customFilter operator="greaterThanOrEqual" val="0.2" />
@@ -274,7 +274,7 @@ class TestCustomFilter:
         """
         node = fromstring(src)
         fut = CustomFilter.from_tree(node)
-        assert fut == CustomFilter(operator="greaterThanOrEqual", val="0.2")
+        assert fut == CustomFilter(operator="greaterThanOrEqual", val=0.2)
 
 
 @pytest.fixture

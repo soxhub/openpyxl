@@ -6,7 +6,6 @@ from datetime import (
     date,
     timedelta,
     time,
-    tzinfo
 )
 
 import pytest
@@ -176,13 +175,17 @@ def test_from_excel_mac(value, expected):
     assert FUT(value, CALENDAR_MAC_1904) == expected
 
 
-def test_time_to_days():
+@pytest.mark.parametrize("value, expected",
+                         [
+                             (time(13, 55, 12, 36), 0.5800000004166667),
+                             (time(3, 0, 0), 0.125),
+                             (datetime(2021, 3, 19, 13, 55, 12, 36), 0.5800000004166667),
+                             (datetime(1536, 12, 24, 3, 0, 0), 0.125),
+                         ])
+def test_time_to_days(value, expected):
     from ..datetime  import time_to_days
     FUT = time_to_days
-    t1 = time(13, 55, 12, 36)
-    assert FUT(t1) == 0.5800000004166667
-    t2 = time(3, 0, 0)
-    assert FUT(t2) == 0.125
+    assert FUT(value) == expected
 
 
 def test_timedelta_to_days():
@@ -197,38 +200,3 @@ def test_days_to_time():
     td = timedelta(0, 51320, 1600)
     FUT = days_to_time
     assert FUT(td) == time(14, 15, 20, 1600)
-
-
-class CET(tzinfo):
-
-    def utcoffset(self, dt):
-        return timedelta(hours=1) + self.dst(dt)
-
-    def dst(self, dt):
-        # DST starts last Sunday in March
-        d = datetime(dt.year, 4, 1)   # ends last Sunday in October
-        self.dston = d - timedelta(days=d.weekday() + 1)
-        d = datetime(dt.year, 11, 1)
-        self.dstoff = d - timedelta(days=d.weekday() + 1)
-        if self.dston <=  dt.replace(tzinfo=None) < self.dstoff:
-            return timedelta(hours=1)
-        else:
-            return timedelta(0)
-
-    def tzname(self,dt):
-        return "CET +1"
-
-
-def test_localised_time():
-
-    from ..datetime import time_to_days, UTC
-
-    dt1 = datetime(2015, 7, 24, tzinfo=UTC)
-    dt2 = datetime(2015, 7, 24, 2, tzinfo=CET())
-    assert dt2 - dt2 == timedelta(0)
-
-    e1 = time_to_days(dt1)
-    e2 = time_to_days(dt2)
-
-    assert e1 == 0
-    assert e2 == 0

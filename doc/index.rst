@@ -247,6 +247,11 @@ Other topics
 
         protection
 
+    .. toctree::
+        :maxdepth: 1
+
+        workbook_custom_doc_props
+
 
 Information for Developers
 --------------------------

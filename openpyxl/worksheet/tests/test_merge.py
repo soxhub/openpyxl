@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2021 openpyxl
 
 from copy import copy
+from openpyxl.styles.protection import Protection
 
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
@@ -171,6 +172,19 @@ class TestMergedCellRange:
                 diagonal=default_border())
         assert ws['B2'].border == b2_border
 
+    def test_format_protection(self, MergedCellRange):
+        ws = Workbook().active
+        mcr = MergedCellRange(ws, 'A1:C1')
+        mcr.start_cell.protection = Protection(locked=False,hidden=False)
+        mcr.format()
+        assert ws['B1'].protection == Protection(locked=False,hidden=False)
+        assert ws['C1'].protection == Protection(locked=False,hidden=False)
+
+        mcr = MergedCellRange(ws, 'D1:F1')
+        mcr.start_cell.protection = Protection(locked=True,hidden=True)
+        mcr.format()
+        assert ws['E1'].protection == Protection(locked=True,hidden=True)
+        assert ws['F1'].protection == Protection(locked=True,hidden=True)
 
     def test_copy(self, MergedCellRange):
         ws = Workbook().active

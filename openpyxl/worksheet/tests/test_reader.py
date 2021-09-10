@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2021 openpyxl
 
+from openpyxl.styles.named_styles import NamedStyleList
 import pytest
 
 import datetime
@@ -15,6 +16,8 @@ from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
+
+from ..formula import DataTableFormula, ArrayFormula
 from ..worksheet import Worksheet
 from ..pagebreak import Break, RowBreak, ColBreak
 from ..scenario import ScenarioList, Scenario, InputCells
@@ -55,10 +58,20 @@ def Workbook():
             self._number_formats = IndexedList()
             self._borders = IndexedList([DEFAULT_BORDER] * 30)
             self._alignments = IndexedList()
+            from openpyxl.styles import Protection
+            prot_1 = Protection(locked=False)
+            prot_2 = Protection(locked=True)
             self._protections = IndexedList()
+            self._protections.add(prot_1)
+            self._protections.add(prot_2)
             self._cell_styles = IndexedList()
+            self._named_styles = NamedStyleList()
             self.vba_archive = None
-            for i in range(29):
+            for i in range(23):
+                self._cell_styles.add((StyleArray([i]*9)))
+            self._cell_styles.add(StyleArray([0,4,6,0,1,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1 ,protectionId=1))
+            self._cell_styles.add(StyleArray([0,4,6,0,0,0,0,0,0])) #fillId=4, borderId=6, alignmentId=0 ,protectionId=0))
+            for i in range(25,29):
                 self._cell_styles.add((StyleArray([i]*9)))
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []
@@ -320,6 +333,24 @@ class TestWorksheetParser:
         assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
                         'style_id':29, 'value':datetime.datetime(2016, 10, 3, 0, 0)}
 
+    @pytest.mark.parametrize("value", [
+        -693595,
+        2958466,
+                                       ]
+                             )
+    def test_out_of_range_datetime(self, WorkSheetParser, recwarn, value):
+        parser = WorkSheetParser
+        src = f"""
+        <c r="A1" t="n" s="29" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            <v>{value}</v>
+        </c>
+        """
+        element = fromstring(src)
+
+        parser.parse_cell(element)
+        w = recwarn.pop()
+        assert issubclass(w.category, UserWarning)
+
 
     def test_string(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -437,8 +468,21 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         formula = parser.parse_formula(element)
-        assert formula == "=SUM(A10:A14*B10:B14)"
-        assert parser.array_formulae['C10']['ref'] == 'C10:C14'
+        assert isinstance(formula, ArrayFormula)
+        assert formula.ref == "C10:C14"
+        assert formula.text == "=SUM(A10:A14*B10:B14)"
+
+
+    def test_table_formula(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """
+        <c r="C9" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <f t="dataTable" ref="C9:C24" dt2D="0" dtr="0" r1="C4"/>
+          <v>1</v>
+       </c>"""
+        element = fromstring(src)
+        formula = parser.parse_formula(element)
+        assert isinstance(formula, DataTableFormula)
 
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):
@@ -854,14 +898,20 @@ def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
 class TestWorksheetReader:
 
 
-    def test_cells(self, PrimedWorksheetReader):
+    def test_cell(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
         ws = reader.ws
 
         assert ws['C1'].value == 'a'
-        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
-        assert ws['E2'].value == "=C2:C11*D2:D11"
+
+
+    def test_array_formula(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        assert ws['E2'].value.text == "=C2:C11*D2:D11"
 
 
     def test_formatting(self, PrimedWorksheetReader):

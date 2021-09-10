@@ -18,7 +18,6 @@ import re
 
 from openpyxl.compat import (
     NUMERIC_TYPES,
-    deprecated,
 )
 
 from openpyxl.utils.exceptions import IllegalCharacterError
@@ -27,6 +26,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 
 # constants
 
@@ -68,6 +68,8 @@ def get_type(t, value):
         dt = 's'
     elif isinstance(value, TIME_TYPES):
         dt = 'd'
+    elif isinstance(value, (DataTableFormula, ArrayFormula)):
+        dt = 'f'
     else:
         return
     _TYPES[t] = dt
@@ -159,7 +161,7 @@ class Cell(StyleableObject):
         # truncate if necessary
         value = value[:32767]
         if next(ILLEGAL_CHARACTERS_RE.finditer(value), None):
-            raise IllegalCharacterError
+            raise IllegalCharacterError(f"{value} cannot be used in worksheets.")
         return value
 
     def check_error(self, value):

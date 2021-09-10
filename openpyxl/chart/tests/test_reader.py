@@ -47,3 +47,21 @@ def test_read_chart_with_no_series():
     assert isinstance(chart, BarChart)
     assert len(chart.series) == 0
     assert chart.idx_base == 0
+
+
+def test_read_chart_with_shapes(datadir):
+    datadir.chdir()
+
+    from ..reader import read_chart
+
+    with open("chart_no_border.xml") as src:
+        xml = src.read()
+
+    tree = fromstring(xml)
+    cs = ChartSpace.from_tree(tree)
+    chart = read_chart(cs)
+
+    assert chart.graphical_properties is not None
+    assert chart.graphical_properties.noFill
+    assert chart.graphical_properties.line.noFill
+
