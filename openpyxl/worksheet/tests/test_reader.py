@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2021 openpyxl
 
+from openpyxl.styles.named_styles import NamedStyleList
 import pytest
 
 import datetime
@@ -57,10 +58,20 @@ def Workbook():
             self._number_formats = IndexedList()
             self._borders = IndexedList([DEFAULT_BORDER] * 30)
             self._alignments = IndexedList()
+            from openpyxl.styles import Protection
+            prot_1 = Protection(locked=False)
+            prot_2 = Protection(locked=True)
             self._protections = IndexedList()
+            self._protections.add(prot_1)
+            self._protections.add(prot_2)
             self._cell_styles = IndexedList()
+            self._named_styles = NamedStyleList()
             self.vba_archive = None
-            for i in range(29):
+            for i in range(23):
+                self._cell_styles.add((StyleArray([i]*9)))
+            self._cell_styles.add(StyleArray([0,4,6,0,1,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1 ,protectionId=1))
+            self._cell_styles.add(StyleArray([0,4,6,0,0,0,0,0,0])) #fillId=4, borderId=6, alignmentId=0 ,protectionId=0))
+            for i in range(25,29):
                 self._cell_styles.add((StyleArray([i]*9)))
             self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []

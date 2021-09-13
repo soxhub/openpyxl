@@ -87,6 +87,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Wojciech Rola
 * Wolfgane Scherer
 * Yaroslav Halchenko
+* Yash Jhunjhunwala
 * Yingjie Lan
 * Leetao
 

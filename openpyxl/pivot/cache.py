@@ -671,7 +671,7 @@ class RangePr(Serialisable):
     def __init__(self,
                  autoStart=True,
                  autoEnd=True,
-                 groupBy=range,
+                 groupBy="range",
                  startNum=None,
                  endNum=None,
                  startDate=None,

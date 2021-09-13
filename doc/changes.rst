@@ -1,21 +1,9 @@
-3.1.0 (unreleased)
+3.0.9 (unreleased)
 ==================
 
 
-New Features
-------------
 
-* Added support for data table formulae
-* Mapped chartspace graphical properties to charts for advanced formatting
-
-
-Deprecations
-------------
-
-The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right. Client code should use the relevant objects.
-
-
-3.0.8 (unreleased)
+3.0.8 (2021-09-10)
 ==================
 
 
@@ -23,10 +11,12 @@ Bugfixes
 --------
 
 * `#1284 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1284>`_ Ignore blank ignored in existing Data Validations
+* `#1539 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1539>`_ Add support for cell protection for merged cell ranges
 * `#1645 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1645>`_ Timezone-aware datetimes raise an Exception
 * `#1666 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1666>`_ Improved normalisation of chart series
 * `#1670 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1670>`_ Catch OverflowError for out of range datetimes
 * `#1708 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1708>`_ Alignment.relativeIndent can be negative
+* `#1736 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1769>`_ Incorrect default value `groupBy` attribute
 
 
 3.0.7 (2021-03-09)
