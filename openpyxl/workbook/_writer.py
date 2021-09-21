@@ -8,7 +8,6 @@ from openpyxl.utils import absolute_coordinate, quote_sheetname
 from openpyxl.xml.constants import (
     ARC_APP,
     ARC_CORE,
-    ARC_CUSTOM,
     ARC_WORKBOOK,
     PKG_REL_NS,
     CUSTOMUI_NS,
@@ -181,10 +180,6 @@ class WorkbookWriter:
 
         rel = Relationship(type="extended-properties", Target=ARC_APP)
         rels.append(rel)
-
-        if len(self.wb.custom_doc_props) >= 1:
-            rel = Relationship(type="custom-properties", Target=ARC_CUSTOM)
-            rels.append(rel)
 
         if self.wb.vba_archive is not None:
             # See if there was a customUI relation and reuse it

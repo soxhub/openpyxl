@@ -54,7 +54,6 @@ from .properties import WorksheetProperties
 from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 from .table import TableList
-from .formula import ArrayFormula
 
 
 class Worksheet(_WorkbookChild):
@@ -129,6 +128,7 @@ class Worksheet(_WorkbookChild):
         self._current_row = 0
         self.auto_filter = AutoFilter()
         self.paper_size = None
+        self.formula_attributes = {}
         self.orientation = None
         self.conditional_formatting = ConditionalFormattingList()
         self.legacy_drawing = None
@@ -153,14 +153,8 @@ class Worksheet(_WorkbookChild):
 
 
     @property
-    def array_formulae(self):
-        """Returns a dictionary of cells with array formulae and the cells in array"""
-        result = {}
-        for c in self._cells.values():
-            if c.data_type == "f":
-                if isinstance(c.value, ArrayFormula):
-                    result[c.coordinate] = c.value.ref
-        return result
+    def page_breaks(self):
+        return (self.row_breaks, self.col_breaks) # legacy, remove at some point
 
 
     @property
@@ -168,11 +162,20 @@ class Worksheet(_WorkbookChild):
         return self.sheet_view.showGridLines
 
 
+    """ To keep compatibility with previous versions"""
+    @property
+    def show_summary_below(self):
+        return self.sheet_properties.outlinePr.summaryBelow
+
+    @property
+    def show_summary_right(self):
+        return self.sheet_properties.outlinePr.summaryRight
+
+
     @property
     def freeze_panes(self):
         if self.sheet_view.pane is not None:
             return self.sheet_view.pane.topLeftCell
-
 
     @freeze_panes.setter
     def freeze_panes(self, topLeftCell=None):
