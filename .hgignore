@@ -32,6 +32,7 @@ openpyxl-env
 bin/
 Issues/
 lib/
+lib/
 scratchpad/
 pyvenv.cfg
 .gitignore

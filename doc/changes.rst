@@ -1,4 +1,4 @@
-3.0.8 (2021-09-10)
+3.0.9 (2021-09-22)
 ==================
 
 
@@ -12,6 +12,12 @@ Bugfixes
 * `#1670 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1670>`_ Catch OverflowError for out of range datetimes
 * `#1708 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1708>`_ Alignment.relativeIndent can be negative
 * `#1736 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1769>`_ Incorrect default value `groupBy` attribute
+
+
+3.0.8 (brown bag)
+==================
+
+Deleted because it contained breaking changes from 3.1
 
 
 3.0.7 (2021-03-09)

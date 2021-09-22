@@ -35,7 +35,7 @@ class TestColor:
 
     def test_auto(self):
         c = Color(auto=1)
-        assert c.type == "auto"
+        assert c.type is "auto"
         assert c.value is True
         assert dict(c) == {'auto': "1"}
 

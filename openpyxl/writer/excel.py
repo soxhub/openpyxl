@@ -16,7 +16,6 @@ from openpyxl.xml.constants import (
     ARC_ROOT_RELS,
     ARC_WORKBOOK_RELS,
     ARC_APP, ARC_CORE,
-    ARC_CUSTOM, CPROPS_TYPE,
     ARC_THEME,
     ARC_STYLE,
     ARC_WORKBOOK,
@@ -72,16 +71,6 @@ class ExcelWriter(object):
             archive.writestr(ARC_THEME, self.workbook.loaded_theme)
         else:
             archive.writestr(ARC_THEME, theme_xml)
-
-        if len(self.workbook.custom_doc_props) >= 1:
-            archive.writestr(ARC_CUSTOM, tostring(self.workbook.custom_doc_props.to_tree()))
-            class CustomOverride():
-                path = "/" + ARC_CUSTOM #PartName
-                mime_type = CPROPS_TYPE #ContentType
-
-            custom_override = CustomOverride()
-            # custom_override = Override(PartName="/docProps/custom.xml", ContentType="application/vnd.openxmlformats-officedocument.custom-properties+xml")
-            self.manifest.append(custom_override)
 
         self._write_worksheets()
         self._write_chartsheets()

@@ -153,7 +153,7 @@ class CustomFilter(Serialisable):
 
     operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
-    val = Float()
+    val = String()
 
     def __init__(self,
                  operator=None,
@@ -173,7 +173,7 @@ class CustomFilters(Serialisable):
     __elements__ = ('customFilter',)
 
     def __init__(self,
-                 _and=False,
+                 _and=None,
                  customFilter=(),
                 ):
         self._and = _and
