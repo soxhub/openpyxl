@@ -33,13 +33,13 @@ class Typed(Descriptor):
 
     def __init__(self, *args, **kw):
         super(Typed, self).__init__(*args, **kw)
-        self.__doc__ = "Values must be of type {0}".format(self.expected_type)
+        self.__doc__ = f"Values must be of type {self.expected_type}"
 
     def __set__(self, instance, value):
         if not isinstance(value, self.expected_type):
             if (not self.allow_none
                 or (self.allow_none and value is not None)):
-                raise TypeError('expected ' + str(self.expected_type))
+                raise TypeError(f"expected f{self.expected_type} but value is {value} with type {type(value)}")
         super(Typed, self).__set__(instance, value)
 
     def __repr__(self):
