@@ -34,16 +34,22 @@ test-python38:
 
 test-python39:
   <<: *unit
-  image: python:3.9-rc
+  image: python:3.9
   variables:
     TOXENV: py39
-  
+
+test-python310:
+  <<: *unit
+  image: python:3.10
+  variables:
+    TOXENV: py310
+
 test-pypy3:
   <<: *unit
   image: pypy:3
   variables:
     TOXENV: pypy3
-    
+
 test-coverage:
   <<: *unit
   image: python:3.7
