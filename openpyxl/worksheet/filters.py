@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2021 openpyxl
 
+import re
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -14,6 +15,7 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     MinMax,
+    Convertible,
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange
 from openpyxl.descriptors.sequence import ValueSequence
@@ -147,13 +149,31 @@ class DynamicFilter(Serialisable):
         self.maxValIso = maxValIso
 
 
+class CustomFilterValueDescriptor(Convertible):
+    """
+    Excel uses wildcards for string matching
+    """
+
+    pattern = re.compile(r"\d+|^\*.+|^.+\*$")
+    expected_type = float
+
+    def __set__(self, instance, value):
+        if isinstance(value, str):
+            m = self.pattern.match(value)
+            if not m:
+                raise ValueError("Value must be either numerical or a string containing a wildcard")
+            if "*" in value:
+                self.expected_type = str
+        super().__set__(instance, value)
+
+
 class CustomFilter(Serialisable):
 
     tagname = "customFilter"
 
     operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
-    val = Float()
+    val = CustomFilterValueDescriptor()
 
     def __init__(self,
                  operator=None,

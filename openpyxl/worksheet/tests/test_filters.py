@@ -277,6 +277,15 @@ class TestCustomFilter:
         assert fut == CustomFilter(operator="greaterThanOrEqual", val=0.2)
 
 
+    def test_string_filter(self, CustomFilter):
+        src = """
+        <customFilter val="K*" operator="equal" />
+        """
+        node = fromstring(src)
+        fut = CustomFilter.from_tree(node)
+        assert fut == CustomFilter(val="K*", operator="equal")
+
+
 @pytest.fixture
 def CustomFilters():
     from ..filters import CustomFilters

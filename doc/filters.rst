@@ -46,6 +46,11 @@ To combine the filters::
   cfs.and_ = True
 
 
+In addition, Excel has non-standardised functionality for pattern matching with strings. The options in Excel: begins with, ends with, contains and their negatives are all implemented using the ``equal`` (or for negatives ``notEqual``) operator and wildcard in the value.
+
+For example: for "begins with a", use ``a*``; for "ends with a", use ``*a``; and for "contains a"", use ``*a*``.
+
+
 DateGroupItem
 +++++++++++++
 
