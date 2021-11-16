@@ -28,6 +28,7 @@ from openpyxl.utils import (
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.cell.rich_text import CellRichText
 
 from .formula import DataTableFormula, ArrayFormula
 from .filters import AutoFilter
@@ -224,8 +225,7 @@ class WorkSheetParser(object):
                 child = element.find(INLINE_STRING)
                 if child is not None:
                     data_type = 's'
-                    richtext = Text.from_tree(child)
-                    value = richtext.content
+                    value = CellRichText.from_tree(child)
 
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 
