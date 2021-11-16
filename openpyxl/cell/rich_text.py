@@ -50,19 +50,19 @@ class CellRichText(list):
     def from_tree(cls, node):
         # node.tag is 'si' or 'is'
         if CellRichText.tagmatch(node[0], 't'):
-            return node[0].text # a string indicates no rich text
+            return (node[0].text or "").replace('x005F_', '') # a string indicates no rich text
         s = CellRichText()
         for e in list(node):
             if not CellRichText.tagmatch(e, 'r'):
                 break
             e0 = e[0]
             if CellRichText.tagmatch(e0, 't'):
-                s.append(e0.text)
+                s.append(e0.text.replace('x005F_', ''))
                 continue
             e1 = e[1]
             if not CellRichText.tagmatch(e0, 'rPr') or not CellRichText.tagmatch(e1, 't'):
                 break
-            s.append(TextBlock(font=InlineFont.from_tree(e0), text=e1.text))
+            s.append(TextBlock(font=InlineFont.from_tree(e0), text=e1.text.replace('x005F_', '')))
         else:
             return s
         raise TypeError("unknown tag {} in OOXML file rich text string".format(e.tag))

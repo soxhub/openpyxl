@@ -4,6 +4,7 @@ from openpyxl.cell.text import Text
 
 from openpyxl.xml.functions import iterparse
 from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.cell.rich_text import CellRichText
 
 
 def read_string_table(xml_source):
@@ -14,8 +15,7 @@ def read_string_table(xml_source):
 
     for _, node in iterparse(xml_source):
         if node.tag == STRING_TAG:
-            text = Text.from_tree(node).content
-            text = text.replace('x005F_', '')
+            text = CellRichText.from_tree(node)
             node.clear()
 
             strings.append(text)
