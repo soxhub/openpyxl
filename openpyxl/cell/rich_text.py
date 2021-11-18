@@ -112,5 +112,5 @@ class CellRichText(list):
     def __repr__(self):
         return "<CellRichText: {}>".format(super(CellRichText, self).__repr__())
 
-    def content(self):
+    def __str__(self):
         return ''.join([s if isinstance(s, str) else s.text for s in self])
