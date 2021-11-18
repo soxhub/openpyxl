@@ -23,7 +23,7 @@ class TextBlock(Strict):
         self.text = text
 
     def __repr__(self):
-        return ''.join(("InlineFont={}\nText={}".format(repr(self.font), self.text)))
+        return "<TextBlock(InlineFont={}\nText={}>".format(repr(self.font), self.text)
 
 
 #
