@@ -225,7 +225,11 @@ class WorkSheetParser(object):
                 child = element.find(INLINE_STRING)
                 if child is not None:
                     data_type = 's'
-                    value = CellRichText.from_tree(child)
+                    value = CellRichText(child)
+                    if len(value) == 0:
+                        value = ''
+                    elif len(value) == 1 and isinstance(value[0], str):
+                        value = value[0]
 
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 

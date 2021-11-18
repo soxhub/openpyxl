@@ -419,8 +419,8 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        # cgeck value member first, because we need to do it with repr()
-        assert repr(cell['value']) == repr(CellRichText(TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")))
+        # check value member first, because we need to do it with repr()
+        assert repr(cell['value']) == repr(CellRichText([TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")]))
         cell['value'] = None # so it won't fail the rest of the cell
         assert cell == {'column': 18, 'data_type': 's', 'row': 2,
                         'style_id':4, 'value':None}

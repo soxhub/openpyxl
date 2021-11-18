@@ -29,8 +29,8 @@ def test_formatted_string_table(datadir):
     with open(src, "rb") as content:
         assert repr(read_string_table(content)) == repr([
             u'Welcome',
-            CellRichText(u'to the best ',
+            CellRichText([u'to the best ',
             TextBlock(font=InlineFont(rFont='Calibri', sz="11", family="2", scheme="minor", color=Color(theme=1), b=True), text=u'shop in '),
-            TextBlock(font=InlineFont(rFont='Calibri', sz="11", family="2", scheme="minor", color=Color(theme=1), b=True, u='single'), text=u'town')),
+            TextBlock(font=InlineFont(rFont='Calibri', sz="11", family="2", scheme="minor", color=Color(theme=1), b=True, u='single'), text=u'town')]),
             u"     let's play "
         ])

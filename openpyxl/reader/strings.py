@@ -15,7 +15,11 @@ def read_string_table(xml_source):
 
     for _, node in iterparse(xml_source):
         if node.tag == STRING_TAG:
-            text = CellRichText.from_tree(node)
+            text = CellRichText(node)
+            if len(text) == 0:
+                text = ''
+            elif len(text) == 1 and isinstance(text[0], str):
+                text = text[0]
             node.clear()
 
             strings.append(text)
