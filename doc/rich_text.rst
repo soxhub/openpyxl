@@ -11,7 +11,7 @@ The result is a :class:`CellRichText` object.
 .. :: doctest
 
 >>> from openpyxl.cell.text import InlineFont
->>> from openpyxl.cell.rich_text import TextBlock, CellRichText
+>>> from openpyxl.cell.rich_text import TextBlock, CellRichText, CellRichTextStr
 >>> rich_string1 = CellRichText(('This is a test ', TextBlock(InlineFont(b=True), 'xxx'), 'yyy'))
 
 You can create :class:`InlineFont` objects on their own, and use them later. In this example, I created a shortcut for the :class:`TextBlock` class, to make it less tedious to use:
@@ -82,6 +82,34 @@ You can also cast it to a `str` to get only the text, without formatting.
 
 >>> str(t)
 'xxred'
+
+Character-level access using :class:`CellRichTextStr`
+-----------------------------------------------------
+As as saw above, :class:`CellRichText` supports indexing at the RichText element level.
+Sometimes, it is desirable to access or modify rich text at the character indexing level.
+An auxiliary class, :class:`CellRichTextStr` , which is derived from :class:`CellRichText`,
+can be used to perform character-level indexing, like a string.
+
+:class:`CellRichTextStr` can be created directly, or by casting :class:`CellRichText` objects.
+
+Indexing can even be done on the LHS, in which case two modes are supported.
+
+- If the RHS is a :class:`CellRichText` (or it's derived :class:`CellRichTextStr`), there are no restrictions.
+- If the RHS is a simple string, only data is modified, but the formatting is kept as-is.
+  In that case, the LHS is restricted, and must reside in the same :class:`CellRichText` element.
+
+.. :: doctest
+
+>>> t = CellRichText(('ab', TextBlock(InlineFont(b=True), 'cd'), 'ef'))
+>>> tstr=CellRichTextStr(t)
+>>> tstr[2:5]
+CellRichText([TextBlock(InlineFont(b=True), "cd"), 'e'])
+>>> tstr[3:3] = CellRichText([TextBlock(InlineFont(sz="22"), "123")])
+>>> tstr
+CellRichText(['ab', TextBlock(InlineFont(b=True), "c"), TextBlock(InlineFont(sz=22.0), "123"), TextBlock(InlineFont(b=True), "d"), 'ef'])
+
+Generally speaking, :class:`CellRichText` and :class:`CellRichTextstr` objects can be frely mixed, and are differentiated only in the
+alternative ways they handle indexing operations.
 
 Rich Text assignment to cells
 -----------------------------
