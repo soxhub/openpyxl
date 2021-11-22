@@ -3,6 +3,7 @@
 """
 RichText definition
 """
+from copy import copy
 from openpyxl.cell.text import InlineFont, Text
 from openpyxl.descriptors import (
     Strict,
@@ -13,6 +14,7 @@ class TextBlock(Strict):
 
     font = Typed(expected_type=InlineFont)
     text = String()
+    default_font = InlineFont()
 
     def __init__(self, font, text):
         #if not isinstance(font, InlineFont):
@@ -23,7 +25,7 @@ class TextBlock(Strict):
         self.text = text
 
     def __repr__(self):
-        return "<TextBlock(InlineFont={}\nText={}>".format(repr(self.font), self.text)
+        return 'TextBlock(InlineFont({}), "{}")'.format(', '.join('{}={}'.format(e, getattr(self.font, e)) for e in InlineFont.__elements__ if getattr(self.font, e) != getattr(TextBlock.default_font, e)), str(self.text))
 
 
 #
@@ -74,32 +76,40 @@ class CellRichText(list):
         return s
 
     # Merge TextBlocks with identical formatting
-    def rich_text_opt(self):
+    def _opt(self):
         last_t = None
-        l= []
+        l = CellRichText(tuple())
         for t in self:
-            if not isinstance(t, TextBlock):
-                last_t = None
+            if type(last_t) == type(t):
+                if isinstance(t, str):
+                    last_t = last_t + t
+                    continue
+                elif repr(last_t.font) == repr(t.font):
+                    last_t.text = last_t.text + t.text
+                    continue
+            if last_t:
                 l.append(last_t)
-                l.append(t)
-                continue
-            if isinstance(last_t, TextBlock):
-                if repr(last_t.font) == repr(t.font):
-                    last_t = TextBlock(t.font, last_t.text + t.text)
-                else:
-                    l.append(last_t)
-                    t = last_t
-                continue
-            else:
-                l.append(last_t)
-                last_t = None
+            last_t = t
         if last_t:
             # Add remaining TextBlock at end of rich text
             l.append(last_t)
+        self = l
+        return self
+
+    def __iadd__(self, arg):
+        # copy used here to create new TextBlock() so we don't modify the right hand side in _opt()
+        super().__iadd__([copy(e) for e in list(arg)])
+        return self._opt()
+
+    def __add__(self, arg):
+        return CellRichText([copy(e) for e in list(self) + list(arg)])._opt()
 
     # Inset text or TextBlock at precise character index inside RichText
-    # gracefully handle cases where a TextBlock or text string needs to be broken up into 2 parts
-    def rich_text_insert(self, index, value):
+    # should gracefully handle cases where a TextBlock or text string needs to be broken up into 2 parts
+    # start - position where to insert text (negative or positive)
+    # font - InlineFont object to use, None if plaintext is wanted
+    # text - text string to insert
+    def rich_text_insert(self, start, font=None, text=None):
         print("TBD")
 
     # delete a range of characters in a rich text object
@@ -110,7 +120,7 @@ class CellRichText(list):
         print("TBD")
 
     def __repr__(self):
-        return "<CellRichText: {}>".format(super(CellRichText, self).__repr__())
+        return "CellRichText([{}])".format(', '.join((repr(s) for s in self)))
 
     def __str__(self):
         return ''.join([s if isinstance(s, str) else s.text for s in self])
