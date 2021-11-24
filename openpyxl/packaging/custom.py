@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 """Implementation of custom properties see § 22.3 in the specification"""
 

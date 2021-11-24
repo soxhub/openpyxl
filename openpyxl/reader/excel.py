@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 
 """Read an xlsx file into Python"""
@@ -278,16 +278,29 @@ class ExcelReader:
 
 
     def read(self):
-        self.read_manifest()
-        self.read_strings()
-        self.read_workbook()
-        self.read_properties()
-        self.read_theme()
-        apply_stylesheet(self.archive, self.wb)
-        self.read_worksheets()
-        self.parser.assign_names()
-        if not self.read_only:
+        action = "read manifest"
+        try:
+            self.read_manifest()
+            action = "read strings"
+            self.read_strings()
+            action = "read workbook"
+            self.read_workbook()
+            action = "read properties"
+            self.read_properties()
+            action = "read theme"
+            self.read_theme()
+            action = "read stylesheet"
+            apply_stylesheet(self.archive, self.wb)
+            action = "read worksheets"
+            self.read_worksheets()
+            action = "assign names"
+            self.parser.assign_names()
+            if not self.read_only:
+                action = "close archive"
+                self.archive.close()
+        except ValueError as e:
             self.archive.close()
+            raise ValueError("Failed to load Excel file: could not {0} from {1}".format(action, self.archive.filename)) from e
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 from .numbers import NUMERIC_TYPES
 from .strings import safe_string
