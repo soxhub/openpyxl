@@ -1,5 +1,5 @@
 from __future__ import division
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 from openpyxl.descriptors import (
     Float,
