@@ -15,6 +15,16 @@ Deprecations
 The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right. Client code should use the relevant objects.
 
 
+3.0.10 (unreleased)
+===================
+
+
+Bugfixes
+--------
+
+* `#1778 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1778>`_ Problem with missing scope attribute in Pivot Table formats
+
+
 3.0.9 (2021-09-22)
 ==================
 

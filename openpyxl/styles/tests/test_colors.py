@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 from openpyxl.styles.colors import Color
 from openpyxl.xml.functions import fromstring, tostring
