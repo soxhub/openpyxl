@@ -1,3 +1,13 @@
+3.0.10 (unreleased)
+===================
+
+
+Bugfixes
+--------
+
+* `#1778 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1778>`_ Problem with missing scope attribute in Pivot Table formats
+
+
 3.0.9 (2021-09-22)
 ==================
 
