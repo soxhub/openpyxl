@@ -453,3 +453,30 @@ class TestFormat:
         fmt = Format.from_tree(node)
         area = PivotArea(outline=False, fieldPosition=False, labelOnly=True, dataOnly=False)
         assert fmt == Format(action="blank", pivotArea=area)
+
+
+@pytest.fixture
+def ConditionalFormat():
+    from ..table import ConditionalFormat
+    return ConditionalFormat
+
+
+class TestConditionalFormat:
+
+    def test_ctor(self, ConditionalFormat):
+        fmt = ConditionalFormat(priority=4)
+        xml = tostring(fmt.to_tree())
+        expected = """
+        <conditionalFormat priority="4" scope="selection"></conditionalFormat>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ConditionalFormat):
+        src = """
+        <conditionalFormat priority="4" scope="selection"></conditionalFormat>
+        """
+        node = fromstring(src)
+        fmt = ConditionalFormat.from_tree(node)
+        assert fmt == ConditionalFormat(priority=4)

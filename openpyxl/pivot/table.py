@@ -472,7 +472,7 @@ class ConditionalFormat(Serialisable):
     __elements__ = ('pivotAreas',)
 
     def __init__(self,
-                 scope=None,
+                 scope="selection",
                  type=None,
                  priority=None,
                  pivotAreas=(),
