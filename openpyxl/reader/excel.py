@@ -296,11 +296,13 @@ class ExcelReader:
             action = "assign names"
             self.parser.assign_names()
             if not self.read_only:
-                action = "close archive"
                 self.archive.close()
         except ValueError as e:
-            self.archive.close()
-            raise ValueError("Failed to load Excel file: could not {0} from {1}".format(action, self.archive.filename)) from e
+            raise ValueError(
+                f"Unable to read workbook: could not {action} from {self.archive.filename}.\n"
+                "This is most probably because the workbook source files contain some invalid XML.\n"
+                "Please see the exception for more details."
+                ) from e
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
