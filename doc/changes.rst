@@ -9,6 +9,12 @@ New Features
 * Mapped chartspace graphical properties to charts for advanced formatting
 
 
+Pull Requests
+-------------
+
+* `PR411 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/411/>`_ Provide more information when workbook cannot be loaded
+
+
 Deprecations
 ------------
 
