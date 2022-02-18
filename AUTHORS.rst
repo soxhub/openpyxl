@@ -15,6 +15,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Alexandre Fayolle
 * Amin Mirzaee
 * Anders Chrigstrom
+* Anthony Hayward
 * Bernt R. Brenna
 * Brent Hoover
 * Brice Gelineau
