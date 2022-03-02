@@ -50,23 +50,23 @@ class NamedStyle(Serialisable):
 
     def __init__(self,
                  name="Normal",
-                 font=Font(),
-                 fill=PatternFill(),
-                 border=Border(),
-                 alignment=Alignment(),
+                 font=None,
+                 fill=None,
+                 border=None,
+                 alignment=None,
                  number_format=None,
-                 protection=Protection(),
+                 protection=None,
                  builtinId=None,
                  hidden=False,
                  xfId=None,
                  ):
         self.name = name
-        self.font = font
-        self.fill = fill
-        self.border = border
-        self.alignment = alignment
+        self.font = font or Font()
+        self.fill = fill or PatternFill()
+        self.border = border or Border()
+        self.alignment = alignment or Alignment()
         self.number_format = number_format
-        self.protection = protection
+        self.protection = protection or Protection()
         self.builtinId = builtinId
         self.hidden = hidden
         self._wb = None
