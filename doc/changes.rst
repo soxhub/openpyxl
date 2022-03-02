@@ -9,6 +9,12 @@ New Features
 * Mapped chartspace graphical properties to charts for advanced formatting
 
 
+Bugfixes
+--------
+
+* `#1786 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1786>`_ NamedStyles share attributes - mutables gotcha
+
+
 Pull Requests
 -------------
 
