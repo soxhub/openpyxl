@@ -3,6 +3,7 @@
 
 # package imports
 from openpyxl.reader.strings import read_string_table
+from openpyxl.reader.strings import read_rich_text
 from openpyxl.cell.rich_text import TextBlock, CellRichText
 from openpyxl.cell.text import InlineFont
 from openpyxl.styles.colors import Color
@@ -27,7 +28,7 @@ def test_formatted_string_table(datadir):
     datadir.chdir()
     src = 'shared-strings-rich.xml'
     with open(src, "rb") as content:
-        assert repr(read_string_table(content)) == repr([
+        assert repr(read_rich_text(content)) == repr([
             u'Welcome',
             CellRichText([u'to the best ',
             TextBlock(font=InlineFont(rFont='Calibri', sz="11", family="2", scheme="minor", color=Color(theme=1), b=True), text=u'shop in '),
