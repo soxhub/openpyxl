@@ -45,6 +45,12 @@ test-python310:
   variables:
     TOXENV: py310
 
+test-python310:
+  <<: *unit
+  image: python:3.11-rc
+  variables:
+    TOXENV: py311
+
 test-pypy3:
   <<: *unit
   image: pypy:3
@@ -53,7 +59,7 @@ test-pypy3:
 
 test-coverage:
   <<: *unit
-  image: python:3.7
+  image: python:3
   script:
     - export GIT_ID=$(hg tip --template '{node}\n')
     - export GIT_AUTHOR_NAME=$(hg tip --template '{author|person}\n')
