@@ -74,6 +74,7 @@ test-coverage:
 test-local-coverage:
   <<: *unit
   script:
+    - pip install pytest-cov
     - pytest -qq --cov=openpyxl --cov-report=xml
 
   artifacts:
