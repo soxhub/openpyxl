@@ -52,21 +52,17 @@ class CellRichText(list):
     """
 
     def __init__(self, arg):
-        if getattr(arg, "tag", False):
-            # initializing with xml node
-            list.__init__(self, CellRichText.from_tree(arg))
-        elif isinstance(arg, list) or isinstance(arg, tuple):
-            # initializing with list or tuple
+        if hasattr(arg, "tag"):
+            arg = CellRichText.from_tree(arg) # xml
+        elif isinstance(arg, (list, tuple)):
             CellRichText._check_rich_text(arg)
-            list.__init__(self, arg)
         else:
-            # initializing with single item
             CellRichText._check_element(arg)
-            list.__init__(self, arg)
+        super().__init__(arg)
 
     @classmethod
     def _check_element(cls, value):
-        if isinstance(value, str) or isinstance(value, TextBlock):
+        if isinstance(value, (str, TextBlock)):
             return
         raise TypeError("Illegal CellRichText element {}".format(value))
 
@@ -267,4 +263,4 @@ class CellRichTextStr(CellRichText):
             new_self.extend(list(val))
             new_self.extend(self[stop:])
             super().__setitem__(slice(None), new_self)
-                
+
