@@ -153,8 +153,7 @@ class CellRichTextStr(CellRichText):
 
     Other than that, there are no user methods for this class
     """
-    def __init__(self, arg):
-        super().__init__(arg)
+
 
     # convert a slice or single index to a (start,stop) tuple.
     # handles detecting slice() vs int, negative indices, and illegal step value (non 1)
