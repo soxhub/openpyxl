@@ -1,9 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
-
-# 3rd party imports
-import pytest
-
-# package imports
+# Copyright (c) 2010-2022 openpyxl
 
 from openpyxl.cell.rich_text import TextBlock, CellRichText, CellRichTextStr
 from openpyxl.cell.text import InlineFont

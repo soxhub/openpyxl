@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 """
 RichText definition
@@ -20,11 +20,7 @@ class TextBlock(Strict):
     default_font = InlineFont()
 
     def __init__(self, font, text):
-        #if not isinstance(font, InlineFont):
-        #    raise TypeError("Value must be an InlineFont class")
         self.font = font
-        #if not isinstance(text, str):
-        #    raise TypeError("Value must be a string")
         self.text = text
 
     def __repr__(self):
@@ -262,4 +258,3 @@ class CellRichTextStr(CellRichText):
             new_self.extend(list(val))
             new_self.extend(self[stop:])
             super().__setitem__(slice(None), new_self)
-
