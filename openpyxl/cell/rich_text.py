@@ -92,16 +92,16 @@ class CellRichText(list):
         l = CellRichText(tuple())
         for t in self:
             if isinstance(t, str):
-                if len(t) == 0:
+                if not t:
                     continue
-            elif len(t.text) == 0:
+            elif not t.text:
                 continue
             if type(last_t) == type(t):
                 if isinstance(t, str):
-                    last_t = last_t + t
+                    last_t += t
                     continue
-                elif repr(last_t.font) == repr(t.font):
-                    last_t.text = last_t.text + t.text
+                elif last_t.font == t.font:
+                    last_t.text += t.text
                     continue
             if last_t:
                 l.append(last_t)
