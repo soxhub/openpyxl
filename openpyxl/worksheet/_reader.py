@@ -84,14 +84,6 @@ def _cast_number(value):
     return int(value)
 
 
-def parse_inline_string(element):
-    """
-    Parse inline string and remove all formatting
-    """
-    richtext = Text.from_tree(element)
-    return richtext.content
-
-
 def parse_richtext_string(element):
     """
     Parse inline string and preserve rich text formatting
@@ -129,13 +121,7 @@ class WorkSheetParser(object):
         self.merged_cells = None
         self.row_breaks = RowBreak()
         self.col_breaks = ColBreak()
-        self.switch_string_parser(rich_text)
-
-
-    def switch_string_parser(self, rich_text=False):
-        self.string_parser = parse_inline_string
-        if rich_text:
-            self.string_parser = parse_richtext_string
+        self.rich_text = rich_text
 
 
     def parse(self):
@@ -252,12 +238,10 @@ class WorkSheetParser(object):
                 child = element.find(INLINE_STRING)
                 if child is not None:
                     data_type = 's'
-                    value = self.string_parser(child)
-                    #value = CellRichText(child)
-                    #if len(value) == 0:
-                        #value = ''
-                    #elif len(value) == 1 and isinstance(value[0], str):
-                        #value = value[0]
+                    if self.rich_text:
+                        value = parse_richtext_string(child)
+                    else:
+                        value = Text.from_tree(child).content
 
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 

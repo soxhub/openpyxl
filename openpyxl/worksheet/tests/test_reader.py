@@ -404,7 +404,7 @@ class TestWorksheetParser:
 
     def test_inline_richtext(self, WorkSheetParser):
         parser = WorkSheetParser
-        parser.switch_string_parser(rich_text=True)
+        parser.rich_text = True
         src = """
         <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="R2" s="4" t="inlineStr">
         <is>
