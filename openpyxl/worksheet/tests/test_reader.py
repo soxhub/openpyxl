@@ -420,12 +420,29 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        # check value member first, because we need to do it with repr()
-        assert repr(cell['value']) == repr(CellRichText([TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")]))
-        cell['value'] = None # so it won't fail the rest of the cell
-        assert cell == {'column': 18, 'data_type': 's', 'row': 2,
-                        'style_id':4, 'value':None}
+        expected = CellRichText([TextBlock(font=InlineFont(sz="8.0"),
+                                           text="11 de September de 2014")])
+        assert cell == {'column': 18, 'data_type': 's', 'row':
+                        2,'style_id':4, 'value':expected}
 
+
+    def test_parse_richtext(self):
+        from .._reader import parse_richtext_string
+        src = """
+        <is>
+          <r>
+            <rPr>
+              <sz val="8.0" />
+            </rPr>
+            <t xml:space="preserve">11 de September de 2014</t>
+          </r>
+          </is>
+        """
+        element = fromstring(src)
+        value = parse_richtext_string(element)
+        assert value == CellRichText([
+            TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")
+        ])
 
     def test_sheet_views(self, WorkSheetParser):
         parser = WorkSheetParser
