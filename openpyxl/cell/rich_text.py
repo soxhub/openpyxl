@@ -134,7 +134,7 @@ class CellRichText(list):
         return "CellRichText([{}])".format(', '.join((repr(s) for s in self)))
 
     def __str__(self):
-        return ''.join([s if isinstance(s, str) else s.text for s in self])
+        return ''.join([str(s) for s in self])
 
 #
 # CellRichTextStr is equivalent to CellRichText, but we can index at character level.
