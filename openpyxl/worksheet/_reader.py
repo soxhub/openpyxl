@@ -88,10 +88,8 @@ def parse_richtext_string(element):
     """
     Parse inline string and preserve rich text formatting
     """
-    value = CellRichText(element)
-    if len(value) == 0:
-        value = ''
-    elif len(value) == 1 and isinstance(value[0], str):
+    value = CellRichText(element) or ""
+    if len(value) == 1 and isinstance(value[0], str):
         value = value[0]
     return value
 
