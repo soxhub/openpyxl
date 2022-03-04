@@ -19,13 +19,18 @@ class TextBlock(Strict):
     text = String()
     default_font = InlineFont()
 
+
     def __init__(self, font, text):
         self.font = font
         self.text = text
 
+
+    def __eq__(self, other):
+        return self.text == other.text and self.font == other.font
+
+
     def __repr__(self):
         return 'TextBlock(InlineFont({}), "{}")'.format(', '.join('{}={}'.format(e, getattr(self.font, e)) for e in InlineFont.__elements__ if getattr(self.font, e) != getattr(TextBlock.default_font, e)), str(self.text))
-
 
 #
 # Rich Text class.

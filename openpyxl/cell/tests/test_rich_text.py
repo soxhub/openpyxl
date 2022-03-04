@@ -6,6 +6,30 @@ from openpyxl.styles.colors import Color
 
 import xml.etree.ElementTree as ET
 
+
+class TestTextBlock:
+
+    def test_ctor(self):
+        ft = InlineFont(color="FF0000")
+        b = TextBlock(ft, "Mary had a little lamb")
+        assert b.font == ft
+        assert b.text == "Mary had a little lamb"
+
+
+    def test_eq(self):
+        ft = InlineFont(color="FF0000")
+        b1 = TextBlock(ft, "Mary had a little lamb")
+        b2 = TextBlock(ft, "Mary had a little lamb")
+        assert b1 == b2
+
+
+    def test_ne(self):
+        ft = InlineFont(color="FF0000")
+        b1 = TextBlock(ft, "Mary had a little lamb")
+        b2 = TextBlock(ft, "Mary had a little dog")
+        assert b1 != b2
+
+
 class TestCellRichText:
 
     def test_rich_text_create_single(self):
