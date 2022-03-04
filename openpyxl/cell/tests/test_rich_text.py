@@ -30,6 +30,18 @@ class TestTextBlock:
         assert b1 != b2
 
 
+    def test_str(self):
+        ft = InlineFont(color="FF0000")
+        b = TextBlock(ft, "Mary had a little lamb")
+        assert f"{b}" == "Mary had a little lamb"
+
+
+    def test_repr(self):
+        ft = InlineFont()
+        b = TextBlock(ft, "Mary had a little lamb")
+        assert repr(b) == """TextBlock text=Mary had a little lamb, font=default"""
+
+
 class TestCellRichText:
 
     def test_rich_text_create_single(self):

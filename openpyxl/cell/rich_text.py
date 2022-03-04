@@ -17,8 +17,6 @@ class TextBlock(Strict):
     """
     font = Typed(expected_type=InlineFont)
     text = String()
-    default_font = InlineFont()
-
 
     def __init__(self, font, text):
         self.font = font
@@ -29,8 +27,15 @@ class TextBlock(Strict):
         return self.text == other.text and self.font == other.font
 
 
+    def __str__(self):
+        """Just retun the text"""
+        return self.text
+
+
     def __repr__(self):
-        return 'TextBlock(InlineFont({}), "{}")'.format(', '.join('{}={}'.format(e, getattr(self.font, e)) for e in InlineFont.__elements__ if getattr(self.font, e) != getattr(TextBlock.default_font, e)), str(self.text))
+        font = self.font != InlineFont() and self.font or "default"
+        return f"{self.__class__.__name__} text={self.text}, font={font}"
+
 
 #
 # Rich Text class.
