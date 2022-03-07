@@ -18,7 +18,7 @@ test-local-coverage:
   <<: *unit
   script:
     - pip install pytest-cov
-    - pytest -qq --cov=openpyxl --cov-report=xml
+    - pytest -qq --cov=openpyxl --cov-report=xml --cov-report=term
   coverage: '/^TOTAL.+?(\d+\%)$/'
 
   artifacts:
