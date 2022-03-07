@@ -14,13 +14,11 @@ The result is a :class:`CellRichText` object.
 >>> from openpyxl.cell.text import InlineFont
 >>> from openpyxl.cell.rich_text import TextBlock, CellRichText, CellRichTextStr
 >>> rich_string1 = CellRichText(
-... (
 ...    'This is a test ',
 ...    TextBlock(InlineFont(b=True), 'xxx'),
-...   'yyy')
+...   'yyy'
 ... )
->>> rich_string1
-CellRichText(['This is a test ', TextBlock(InlineFont(b=True), "xxx"), 'yyy'])
+
 
 :class:`InlineFont` objects are virtually identical to the :class:`Font` objects, but use a different attribute name, `rFont`, for the name of the font. Unfortunately, this is required by OOXML and cannot be avoided.
 
@@ -69,16 +67,12 @@ You can create :class:`InlineFont` objects on their own, and use them later. Thi
 >>> bold = InlineFont(b=True)
 >>> b = TextBlock
 >>> rich_string2 = CellRichText(
-...    [
 ...       b(big, 'M'),
 ...       b(medium, 'i'),
 ...       b(small, 'x'),
 ...       b(medium, 'e'),
 ...       b(big, 'd')
-...    ]
 ... )
->>> rich_string2
-CellRichText([TextBlock(InlineFont(sz=30.0), "M"), TextBlock(InlineFont(sz=20.0), "i"), TextBlock(InlineFont(sz=10.0), "x"), TextBlock(InlineFont(sz=20.0), "e"), TextBlock(InlineFont(sz=30.0), "d")])
 
 For example:
 
@@ -91,7 +85,7 @@ The :class:`CellRichText` object is derived from `list`, and can be used as such
 
 .. :: doctest
 
->>> t = CellRichText([])
+>>> t = CellRichText()
 >>> t.append('xx')
 >>> t.append(TextBlock(red, "red"))
 
@@ -120,13 +114,11 @@ Indexing can even be done on the RHS, in which case two modes are supported.
 .. :: doctest
 
 >>> t = CellRichText(
-... (
 ...   'Mary ',
 ...   b(bold, 'had '),
 ...   'a ',
 ...   b(red, 'little '),
 ...   "lamb.",
-... )
 ... )
 >>> tstr=CellRichTextStr(t)
 >>> str(tstr)

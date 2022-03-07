@@ -57,14 +57,19 @@ class CellRichText(list):
     and remove empty strings and empty text blocks
     """
 
-    def __init__(self, arg):
-        if hasattr(arg, "tag"):
-            arg = CellRichText.from_tree(arg) # xml
-        elif isinstance(arg, (list, tuple)):
-            CellRichText._check_rich_text(arg)
+    def __init__(self, *args):
+        if len(args) == 1:
+            args = args[0]
+            if hasattr(args, "tag"):
+                args = CellRichText.from_tree(args) # xml
+            elif isinstance(args, (list, tuple)):
+                CellRichText._check_rich_text(args)
+            else:
+                CellRichText._check_element(args)
+                args = [args]
         else:
-            CellRichText._check_element(arg)
-        super().__init__(arg)
+            CellRichText._check_rich_text(args)
+        super().__init__(args)
 
     @classmethod
     def _check_element(cls, value):

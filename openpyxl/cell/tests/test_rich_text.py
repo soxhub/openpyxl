@@ -45,24 +45,24 @@ class TestTextBlock:
 class TestCellRichText:
 
     def test_rich_text_create_single(self):
-        text = CellRichText(("ABC",))
+        text = CellRichText("ABC")
         assert text[0] == "ABC"
 
     def test_rich_text_create_multi(self):
-        text = CellRichText(("ABC", "DEF", "GHI"))
+        text = CellRichText("ABC", "DEF", 5)
         assert len(text) == 3
 
     def test_rich_text_create_text_block(self):
-        text = CellRichText((TextBlock(font=InlineFont(), text="ABC"),))
+        text = CellRichText(TextBlock(font=InlineFont(), text="ABC"))
         assert text[0].text == "ABC"
 
     def test_rich_text_append(self):
-        text = CellRichText([])
+        text = CellRichText()
         text.append(TextBlock(font=InlineFont(), text="ABC"))
         assert text[0].text == "ABC"
 
     def test_rich_text_extend(self):
-        text = CellRichText([])
+        text = CellRichText()
         text.extend(("ABC", "DEF"))
         assert len(text) == 2
 
@@ -80,30 +80,27 @@ class TestCellRichText:
         node = ET.fromstring('<si><r><rPr><b/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>c</t></r></si>')
         text = CellRichText(node)
         assert text == CellRichText(
-            [TextBlock(font=InlineFont(sz=11, rFont="Calibri", family="2", scheme="minor", b=True, color=Color(theme=1)),
+            TextBlock(font=InlineFont(sz=11, rFont="Calibri", family="2", scheme="minor", b=True, color=Color(theme=1)),
                        text="c")
-             ]
         )
 
     def test_rich_text_from_element_rich_text_mixed(self):
         node = ET.fromstring('<si><r><t>a</t></r><r><rPr><b/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>c</t></r><r><t>e</t></r></si>')
         text = CellRichText(node)
         assert text == CellRichText(
-            ["a",
+            "a",
              TextBlock(font=InlineFont(sz=11, rFont="Calibri", family="2", scheme="minor", b=True, color=Color(theme=1)),
                             text="c"),
-             "e"]
+             "e"
         )
 
 
     def test_str(self):
         text = CellRichText(
-            [
                 TextBlock(font=InlineFont(b=True), text="Mary "),
                 "had ",
                 "a little ",
                 TextBlock(InlineFont(i=True), text="lamb"),
-            ]
         )
         assert str(text) == "Mary had a little lamb"
 
