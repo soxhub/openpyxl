@@ -73,7 +73,7 @@ class CellRichText(list):
 
     @classmethod
     def _check_element(cls, value):
-        if isinstance(value, (str, TextBlock)):
+        if hasattr(value, "__str__"):
             return
         raise TypeError("Illegal CellRichText element {}".format(value))
 
@@ -123,20 +123,37 @@ class CellRichText(list):
         super().__setitem__(slice(None), l)
         return self
 
+
     def __iadd__(self, arg):
         # copy used here to create new TextBlock() so we don't modify the right hand side in _opt()
+        CellRichText._check_rich_text(arg)
         super().__iadd__([copy(e) for e in list(arg)])
         return self._opt()
+
 
     def __add__(self, arg):
         return CellRichText([copy(e) for e in list(self) + list(arg)])._opt()
 
+
     def __setitem__(self, indx, val):
+        CellRichText._check_element(val)
         super().__setitem__(indx, val)
         self._opt()
 
+
+    def append(self, arg):
+        CellRichText._check_element(arg)
+        super().append(arg)
+
+
+    def extend(self, arg):
+        CellRichText._check_rich_text(arg)
+        super().extend(arg)
+
+
     def __repr__(self):
         return "CellRichText([{}])".format(', '.join((repr(s) for s in self)))
+
 
     def __str__(self):
         return ''.join([str(s) for s in self])
