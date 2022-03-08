@@ -34,6 +34,7 @@ The following properties have been removed from worksheets: formula_attributes, 
 Bugfixes
 --------
 
+* `#1684 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1684>`_ Image files not closed when workbooks are saved
 * `#1778 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1778>`_ Problem with missing scope attribute in Pivot Table formats
 
 
