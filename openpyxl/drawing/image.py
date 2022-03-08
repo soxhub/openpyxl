@@ -55,7 +55,9 @@ class Image(object):
             img.save(fp, format="png")
             fp.seek(0)
 
-        return fp.read()
+        data = fp.read()
+        fp.close()
+        return data
 
 
     @property
