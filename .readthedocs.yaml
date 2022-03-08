@@ -29,5 +29,4 @@ python:
    - requirements: requirements.txt
    - method: pip
      path: .
-     extra_requirements:
-       - mercurial
+
