@@ -28,6 +28,7 @@ from openpyxl.utils import (
     )
 from openpyxl.utils.datetime import from_excel, from_ISO8601, WINDOWS_EPOCH
 from openpyxl.descriptors.excel import ExtensionList
+from openpyxl.cell.rich_text import CellRichText
 
 from .formula import DataTableFormula, ArrayFormula
 from .filters import AutoFilter
@@ -83,11 +84,21 @@ def _cast_number(value):
     return int(value)
 
 
+def parse_richtext_string(element):
+    """
+    Parse inline string and preserve rich text formatting
+    """
+    value = CellRichText(element) or ""
+    if len(value) == 1 and isinstance(value[0], str):
+        value = value[0]
+    return value
+
+
 class WorkSheetParser(object):
 
     def __init__(self, src, shared_strings, data_only=False,
                  epoch=WINDOWS_EPOCH, date_formats=set(),
-                 timedelta_formats=set()):
+                 timedelta_formats=set(), rich_text=False):
         self.min_row = self.min_col = None
         self.epoch = epoch
         self.source = src
@@ -108,6 +119,7 @@ class WorkSheetParser(object):
         self.merged_cells = None
         self.row_breaks = RowBreak()
         self.col_breaks = ColBreak()
+        self.rich_text = rich_text
 
 
     def parse(self):
@@ -224,8 +236,10 @@ class WorkSheetParser(object):
                 child = element.find(INLINE_STRING)
                 if child is not None:
                     data_type = 's'
-                    richtext = Text.from_tree(child)
-                    value = richtext.content
+                    if self.rich_text:
+                        value = parse_richtext_string(child)
+                    else:
+                        value = Text.from_tree(child).content
 
         return {'row':row, 'column':column, 'value':value, 'data_type':data_type, 'style_id':style_id}
 

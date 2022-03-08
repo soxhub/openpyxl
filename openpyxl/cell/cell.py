@@ -27,6 +27,7 @@ from openpyxl.styles import numbers, is_date_format
 from openpyxl.styles.styleable import StyleableObject
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
+from openpyxl.cell.rich_text import CellRichText
 
 # constants
 
@@ -38,7 +39,7 @@ TIME_FORMATS = {
     datetime.timedelta:numbers.FORMAT_DATE_TIMEDELTA,
                 }
 
-STRING_TYPES = (str, bytes)
+STRING_TYPES = (str, bytes, CellRichText)
 KNOWN_TYPES = NUMERIC_TYPES + TIME_TYPES + STRING_TYPES + (bool, type(None))
 
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
@@ -192,7 +193,7 @@ class Cell(StyleableObject):
             if not is_date_format(self.number_format):
                 self.number_format = get_time_format(t)
 
-        elif dt == "s":
+        elif dt == "s" and not isinstance(value, CellRichText):
             value = self.check_string(value)
             if len(value) > 1 and value.startswith("="):
                 self.data_type = 'f'

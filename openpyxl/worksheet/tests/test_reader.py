@@ -16,6 +16,9 @@ from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
+from openpyxl.cell.rich_text import TextBlock, CellRichText
+from openpyxl.cell.text import InlineFont
+from openpyxl.styles.colors import Color
 
 from ..formula import DataTableFormula, ArrayFormula
 from ..worksheet import Worksheet
@@ -401,6 +404,7 @@ class TestWorksheetParser:
 
     def test_inline_richtext(self, WorkSheetParser):
         parser = WorkSheetParser
+        parser.rich_text = True
         src = """
         <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="R2" s="4" t="inlineStr">
         <is>
@@ -416,9 +420,29 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        assert cell == {'column': 18, 'data_type': 's', 'row': 2,
-                        'style_id':4, 'value':"11 de September de 2014"}
+        expected = CellRichText([TextBlock(font=InlineFont(sz="8.0"),
+                                           text="11 de September de 2014")])
+        assert cell == {'column': 18, 'data_type': 's', 'row':
+                        2,'style_id':4, 'value':expected}
 
+
+    def test_parse_richtext(self):
+        from .._reader import parse_richtext_string
+        src = """
+        <is>
+          <r>
+            <rPr>
+              <sz val="8.0" />
+            </rPr>
+            <t xml:space="preserve">11 de September de 2014</t>
+          </r>
+          </is>
+        """
+        element = fromstring(src)
+        value = parse_richtext_string(element)
+        assert value == CellRichText([
+            TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")
+        ])
 
     def test_sheet_views(self, WorkSheetParser):
         parser = WorkSheetParser

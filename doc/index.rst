@@ -194,6 +194,11 @@ Other topics
     .. toctree::
         :maxdepth: 1
 
+        rich_text
+
+    .. toctree::
+        :maxdepth: 1
+
         worksheet_properties
 
     .. toctree::

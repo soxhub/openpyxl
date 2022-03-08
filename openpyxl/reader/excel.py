@@ -39,7 +39,7 @@ from openpyxl.xml.constants import (
 from openpyxl.cell import MergedCell
 from openpyxl.comments.comment_sheet import CommentSheet
 
-from .strings import read_string_table
+from .strings import read_string_table, read_rich_text
 from .workbook import WorkbookParser
 from openpyxl.styles.stylesheet import apply_stylesheet
 
@@ -122,13 +122,14 @@ class ExcelReader:
     """
 
     def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True):
+                  data_only=False, keep_links=True, rich_text=False):
         self.archive = _validate_archive(fn)
         self.valid_files = self.archive.namelist()
         self.read_only = read_only
         self.keep_vba = keep_vba
         self.data_only = data_only
         self.keep_links = keep_links
+        self.rich_text = rich_text
         self.shared_strings = []
 
 
@@ -306,7 +307,7 @@ class ExcelReader:
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True):
+                  data_only=False, keep_links=True, rich_text=True):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
@@ -324,6 +325,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     :param keep_links: whether links to external workbooks should be preserved. The default is True
     :type keep_links: bool
 
+    :param rich_text: if set to True openpyxl will preserve any rich text formatting in cells. The default is False
+    :type rich_text: bool
+
     :rtype: :class:`openpyxl.workbook.Workbook`
 
     .. note::
@@ -333,6 +337,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     """
     reader = ExcelReader(filename, read_only, keep_vba,
-                        data_only, keep_links)
+                        data_only, keep_links, rich_text)
     reader.read()
     return reader.wb
