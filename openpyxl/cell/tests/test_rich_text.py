@@ -1,6 +1,6 @@
 # Copyright (c) 2010-2022 openpyxl
 
-from openpyxl.cell.rich_text import TextBlock, CellRichText, CellRichTextStr
+from openpyxl.cell.rich_text import TextBlock, CellRichText
 from openpyxl.cell.text import InlineFont
 from openpyxl.styles.colors import Color
 
@@ -113,30 +113,3 @@ class TestCellRichText:
                 TextBlock(InlineFont(i=True), text="lamb"),
         )
         assert text.as_list() == ["Mary ", "had ", "a little ", "lamb"]
-
-
-class TestCellRichTextStr:
-
-    def test_rich_text_string_rhs_index(self):
-        tstr = CellRichTextStr(("ab", TextBlock(InlineFont(sz="22"), "cd"), "ef"))
-        assert tstr[1:5] == CellRichTextStr(
-            ("b",
-             TextBlock(InlineFont(sz="22"), "cd"),
-             "e")
-        )
-
-    def test_rich_text_string_lhs_index_1(self):
-        tstr = CellRichTextStr(("ab", TextBlock(InlineFont(sz="22"), "cd"), "ef"))
-        tstr[1:5] = CellRichTextStr([''])
-        assert tstr == CellRichTextStr(("af",))
-
-    def test_rich_text_string_lhs_index_2(self):
-        tstr = CellRichTextStr(("ab", TextBlock(InlineFont(sz="22"), "cd"), "ef"))
-        tstr[3:3] = CellRichTextStr([TextBlock(InlineFont(b=True), "12")])
-        assert tstr == CellRichTextStr(
-            ("ab",
-             TextBlock(InlineFont(sz="22"), "c"),
-             TextBlock(InlineFont(b=True), "12"),
-             TextBlock(InlineFont(sz="22"), "d"),
-             "ef")
-        )
