@@ -105,6 +105,16 @@ class TestCellRichText:
         assert str(text) == "Mary had a little lamb"
 
 
+    def test_as_list(self):
+        text = CellRichText(
+                TextBlock(font=InlineFont(b=True), text="Mary "),
+                "had ",
+                "a little ",
+                TextBlock(InlineFont(i=True), text="lamb"),
+        )
+        assert text.as_list() == ["Mary ", "had ", "a little ", "lamb"]
+
+
 class TestCellRichTextStr:
 
     def test_rich_text_string_rhs_index(self):

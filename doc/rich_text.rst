@@ -43,7 +43,7 @@ The result is a :class:`CellRichText` object.
 
 Fortunately, if you already have a :class:`Font` object, you can simply initialize an :class:`InlineFont` object with an existing :class:`Font` object:
 
-..
+.. ::
 
 >>> from openpyxl.cell.text import Font
 >>> font = Font(name='Calibri',
@@ -59,7 +59,7 @@ Fortunately, if you already have a :class:`Font` object, you can simply initiali
 
 You can create :class:`InlineFont` objects on their own, and use them later. This makes working with Rich Text cleaner and easier:
 
-..
+.. ::
 
 >>> big = InlineFont(sz="30.0")
 >>> medium = InlineFont(sz="20.0")
@@ -83,6 +83,11 @@ For example:
 
 The :class:`CellRichText` object is derived from `list`, and can be used as such.
 
+Whitespace
+++++++++++
+
+CellRichText objects do not add whitespace between elements when rendering them as strings or saving files.
+
 .. :: doctest
 
 >>> t = CellRichText()
@@ -96,40 +101,23 @@ You can also cast it to a `str` to get only the text, without formatting.
 >>> str(t)
 'xxred'
 
-Character-level access using :class:`CellRichTextStr`
------------------------------------------------------
 
-As we saw above, :class:`CellRichText` supports indexing at the RichText element level.
-If you want to edit the text you can use the help class, :class:`CellRichTextStr` which acts as if
-everything is a single string.
+Editing Rich Text
+-----------------
 
-:class:`CellRichTextStr` can be created directly, or by casting :class:`CellRichText` objects.
-
-Indexing can even be done on the RHS, in which case two modes are supported.
-
-- If the RHS is a :class:`CellRichText` (or it's derived :class:`CellRichTextStr`), text and formatting can be changed.
-- If the RHS is a simple string, only the text can be modified.
-  In that case, the RHS is restricted, and must reside in the same :class:`CellRichText` element.
+As editing large blocks of text with formatting can be tricky, the `as_list()` method returns a list of strings to make indexing easy.
 
 .. :: doctest
 
->>> t = CellRichText(
-...   'Mary ',
-...   b(bold, 'had '),
-...   'a ',
-...   b(red, 'little '),
-...   "lamb.",
-... )
->>> tstr=CellRichTextStr(t)
->>> str(tstr)
-'Mary had a little lamb.'
->>> str(tstr[11:17])
-'little'
->>> tstr[11:14] = CellRichText((b(red, "big"),))
->>> str(tstr)
-'Mary had a bigtle lamb.'
+>>> l = rich_string1.as_list()
+>>> l
+['When the color ', 'red', ' is used, you can expect ', 'danger']
+>>> l.index("danger")
+3
+>>> rich_string1[3].text = "fun"
+>>> str(rich_string1)
+'When the color red is used, you can expect fun'
 
-Generally speaking, :class:`CellRichText` and :class:`CellRichTextstr` objects can be frely mixed, and are differentiated only in the alternative ways they handle slicing operations.
 
 Rich Text assignment to cells
 -----------------------------

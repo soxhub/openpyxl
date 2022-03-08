@@ -158,6 +158,14 @@ class CellRichText(list):
     def __str__(self):
         return ''.join([str(s) for s in self])
 
+
+    def as_list(self):
+        """
+        Returns a list of the strings contained.
+        The main reason for this is to make editing easier.
+        """
+        return [str(s) for s in self]
+
 #
 # CellRichTextStr is equivalent to CellRichText, but we can index at character level.
 # Limitations:
