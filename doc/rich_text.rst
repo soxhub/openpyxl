@@ -12,7 +12,7 @@ The result is a :class:`CellRichText` object.
 .. :: doctest
 
 >>> from openpyxl.cell.text import InlineFont
->>> from openpyxl.cell.rich_text import TextBlock, CellRichText, CellRichTextStr
+>>> from openpyxl.cell.rich_text import TextBlock, CellRichText
 >>> rich_string1 = CellRichText(
 ...    'This is a test ',
 ...    TextBlock(InlineFont(b=True), 'xxx'),
