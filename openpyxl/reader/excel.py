@@ -141,10 +141,13 @@ class ExcelReader:
 
     def read_strings(self):
         ct = self.package.find(SHARED_STRINGS)
+        reader = read_string_table
+        if self.rich_text:
+            reader = read_rich_text
         if ct is not None:
             strings_path = ct.PartName[1:]
             with self.archive.open(strings_path,) as src:
-                self.shared_strings = read_string_table(src)
+                self.shared_strings = reader(src)
 
 
     def read_workbook(self):
@@ -230,7 +233,7 @@ class ExcelReader:
                 fh = self.archive.open(rel.target)
                 ws = self.wb.create_sheet(sheet.name)
                 ws._rels = rels
-                ws_parser = WorksheetReader(ws, fh, self.shared_strings, self.data_only)
+                ws_parser = WorksheetReader(ws, fh, self.shared_strings, self.data_only, self.rich_text)
                 ws_parser.bind_all()
 
             # assign any comments to cells

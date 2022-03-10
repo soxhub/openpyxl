@@ -915,7 +915,7 @@ def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
     ws = wb.create_sheet("Sheet")
     datadir.chdir()
     src = "complex-styles-worksheet.xml"
-    reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False)
+    reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False, rich_text=False)
     return reader
 
 
@@ -1081,6 +1081,6 @@ class TestWorksheetReader:
     def test_more_rows_than_cells(self, Workbook, WorksheetReader, datadir):
         ws = Workbook.create_sheet("Sheet")
         datadir.chdir()
-        reader = WorksheetReader(ws, "more_rows_than_cells.xml", None, None)
+        reader = WorksheetReader(ws, "more_rows_than_cells.xml", None, None, False)
         reader.bind_cells()
         assert ws._current_row == 3

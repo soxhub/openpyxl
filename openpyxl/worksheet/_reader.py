@@ -356,11 +356,11 @@ class WorksheetReader(object):
     Create a parser and apply it to a workbook
     """
 
-    def __init__(self, ws, xml_source, shared_strings, data_only):
+    def __init__(self, ws, xml_source, shared_strings, data_only, rich_text):
         self.ws = ws
         self.parser = WorkSheetParser(xml_source, shared_strings,
                 data_only, ws.parent.epoch, ws.parent._date_formats,
-                ws.parent._timedelta_formats)
+                ws.parent._timedelta_formats, rich_text)
         self.tables = []
 
 
