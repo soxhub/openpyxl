@@ -60,9 +60,7 @@ class CellRichText(list):
     def __init__(self, *args):
         if len(args) == 1:
             args = args[0]
-            if hasattr(args, "tag"):
-                args = CellRichText.from_tree(args) # xml
-            elif isinstance(args, (list, tuple)):
+            if isinstance(args, (list, tuple)):
                 CellRichText._check_rich_text(args)
             else:
                 CellRichText._check_element(args)
@@ -89,12 +87,14 @@ class CellRichText(list):
             return (text.t.replace('x005F_', ''),)
         s = []
         for r in text.r:
-            t = r.t.replace('x005F_', '')
+            t = ""
+            if r.t:
+                t = r.t.replace('x005F_', '')
             if r.rPr:
                 s.append(TextBlock(r.rPr, t))
             else:
                 s.append(t)
-        return s
+        return cls(s)
 
     # Merge TextBlocks with identical formatting
     # remove empty elements

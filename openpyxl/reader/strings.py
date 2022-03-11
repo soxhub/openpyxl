@@ -32,7 +32,7 @@ def read_rich_text(xml_source):
 
     for _, node in iterparse(xml_source):
         if node.tag == STRING_TAG:
-            text = CellRichText(node)
+            text = CellRichText.from_tree(node)
             if len(text) == 0:
                 text = ''
             elif len(text) == 1 and isinstance(text[0], str):

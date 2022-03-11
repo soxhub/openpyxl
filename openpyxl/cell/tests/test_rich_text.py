@@ -68,17 +68,17 @@ class TestCellRichText:
 
     def test_rich_text_from_element_simple_text(self):
         node = ET.fromstring("<si><t>a</t></si>")
-        text = CellRichText(node)
+        text = CellRichText.from_tree(node)
         assert text[0] == "a"
 
     def test_rich_text_from_element_rich_text_only_text(self):
         node = ET.fromstring("<si><r><t>a</t></r></si>")
-        text = CellRichText(node)
+        text = CellRichText.from_tree(node)
         assert text[0] == "a"
 
     def test_rich_text_from_element_rich_text_only_text_block(self):
         node = ET.fromstring('<si><r><rPr><b/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>c</t></r></si>')
-        text = CellRichText(node)
+        text = CellRichText.from_tree(node)
         assert text == CellRichText(
             TextBlock(font=InlineFont(sz=11, rFont="Calibri", family="2", scheme="minor", b=True, color=Color(theme=1)),
                        text="c")
@@ -86,7 +86,7 @@ class TestCellRichText:
 
     def test_rich_text_from_element_rich_text_mixed(self):
         node = ET.fromstring('<si><r><t>a</t></r><r><rPr><b/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>c</t></r><r><t>e</t></r></si>')
-        text = CellRichText(node)
+        text = CellRichText.from_tree(node)
         assert text == CellRichText(
             "a",
              TextBlock(font=InlineFont(sz=11, rFont="Calibri", family="2", scheme="minor", b=True, color=Color(theme=1)),
