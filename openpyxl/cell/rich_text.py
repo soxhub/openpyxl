@@ -73,7 +73,7 @@ class CellRichText(list):
     def _check_element(cls, value):
         if hasattr(value, "__str__"):
             return
-        raise TypeError("Illegal CellRichText element {}".format(value))
+        raise TypeError(f"Illegal CellRichText element {value}")
 
     @classmethod
     def _check_rich_text(cls, rich_text):
