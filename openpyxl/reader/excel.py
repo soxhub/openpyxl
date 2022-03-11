@@ -310,7 +310,7 @@ class ExcelReader:
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True, rich_text=True):
+                  data_only=False, keep_links=True, rich_text=False):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
