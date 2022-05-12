@@ -373,11 +373,11 @@ class AutoFilter(Serialisable):
         Add sort condition for cpecified range of cells.
 
         :param ref: range of the cells (e.g. 'A2:A150')
-        :type  ref: string
+        :type  ref: string, is the same as that of the filter
         :param descending: Descending sort order (default=``False``)
         :type  descending: bool
         """
         cond = SortCondition(ref, descending)
         if self.sortState is None:
-            self.sortState = SortState(ref=ref)
+            self.sortState = SortState(ref=self.ref)
         self.sortState.sortCondition.append(cond)
