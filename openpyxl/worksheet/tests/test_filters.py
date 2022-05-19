@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 import pytest
 
@@ -115,12 +115,12 @@ class TestAutoFilter:
 
 
     def test_add_sort_condition(self, AutoFilter):
-        af = AutoFilter('A2:A3')
-        af.add_sort_condition('A2:A3', descending=True)
+        af = AutoFilter('A2:B3')
+        af.add_sort_condition('B2:B3', descending=True)
         expected = """
-        <autoFilter ref="A2:A3">
-            <sortState ref="A2:A3">
-              <sortCondition descending="1" ref="A2:A3" />
+        <autoFilter ref="A2:B3">
+            <sortState ref="A2:B3">
+              <sortCondition descending="1" ref="B2:B3" />
             </sortState>
         </autoFilter>
         """

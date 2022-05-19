@@ -50,7 +50,7 @@ Gradient Pie Charts
 
 Pie charts can also be created with gradient series.
 
-..literalinclude:: pie-gradient.py
+.. literalinclude:: pie-gradient.py
 
 .. image:: pie-gradient.png
    :alt: "Sampe gradient pie chart"

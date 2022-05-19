@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 """
 Spreadsheet Drawing has some copies of Drawing ML elements

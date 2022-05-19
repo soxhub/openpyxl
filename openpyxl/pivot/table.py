@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -472,7 +472,7 @@ class ConditionalFormat(Serialisable):
     __elements__ = ('pivotAreas',)
 
     def __init__(self,
-                 scope=None,
+                 scope="selection",
                  type=None,
                  priority=None,
                  pivotAreas=(),

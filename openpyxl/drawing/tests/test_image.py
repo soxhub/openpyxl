@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2021 openpyxl
+# Copyright (c) 2010-2022 openpyxl
 
 import pytest
 
@@ -43,6 +43,7 @@ class TestImage:
         obj = PILImage.open("plain.png")
         img = Image(obj)
         assert img.ref.fp is not None
+        img._data()
 
 
     @pytest.mark.pil_required
