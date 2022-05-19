@@ -113,3 +113,19 @@ class TestCellRichText:
                 TextBlock(InlineFont(i=True), text="lamb"),
         )
         assert text.as_list() == ["Mary ", "had ", "a little ", "lamb"]
+
+
+    def test_inline(self):
+        src = """
+        <is>
+          <r>
+            <rPr>
+              <sz val="8.0" />
+            </rPr>
+            <t xml:space="preserve">11 de September de 2014</t>
+          </r>
+          </is>
+        """
+        tree = ET.fromstring(src)
+        rt = CellRichText.from_tree(tree)
+        assert rt == CellRichText(TextBlock(InlineFont(sz=8), "11 de September de 2014"))

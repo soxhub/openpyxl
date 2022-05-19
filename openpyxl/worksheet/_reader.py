@@ -88,7 +88,7 @@ def parse_richtext_string(element):
     """
     Parse inline string and preserve rich text formatting
     """
-    value = CellRichText(element) or ""
+    value = CellRichText.from_tree(element) or ""
     if len(value) == 1 and isinstance(value[0], str):
         value = value[0]
     return value

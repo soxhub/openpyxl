@@ -420,8 +420,8 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        expected = CellRichText([TextBlock(font=InlineFont(sz="8.0"),
-                                           text="11 de September de 2014")])
+        expected = CellRichText(TextBlock(font=InlineFont(sz="8.0"),
+                                           text="11 de September de 2014"))
         assert cell == {'column': 18, 'data_type': 's', 'row':
                         2,'style_id':4, 'value':expected}
 
@@ -440,9 +440,9 @@ class TestWorksheetParser:
         """
         element = fromstring(src)
         value = parse_richtext_string(element)
-        assert value == CellRichText([
+        assert value == CellRichText(
             TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")
-        ])
+        )
 
     def test_sheet_views(self, WorkSheetParser):
         parser = WorkSheetParser
