@@ -3,12 +3,16 @@
 """Implementation of custom properties see § 22.3 in the specification"""
 
 import datetime
+from openpyxl.descriptors import Strict
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import Sequence
 from openpyxl.descriptors import (
     Alias,
     String,
     Integer,
+    Float,
+    DateTime,
+    Bool,
 )
 from openpyxl.descriptors.nested import (
     NestedText,
@@ -123,86 +127,8 @@ class CustomDocumentPropertyList(Serialisable):
     customProps = Alias("property")
 
 
-    def __init__(self, property=(), customProps=()):
+    def __init__(self, property=()):
         self.property = property
-        if customProps:
-            self.customProps = customProps
-
-
-    def _duplicate(self, prop):
-        """
-        Check for whether customProps with the same name already exists
-        """
-        for p in self.customProps:
-            if d.name == prop.name:
-                return True
-
-
-    def append(self, prop):
-        if not isinstance(prop, CustomDocumentProperty):
-            raise TypeError("""You can only append CustomDocumentProperty objects""")
-        if self._duplicate(prop):
-            raise ValueError("""Document property with the same name already exists""")
-        names = self.customProps[:]
-        names.append(prop)
-        self.customProps = names
-
-
-    def __len__(self):
-        return len(self.customProps)
-
-
-    def __contains__(self, name):
-        """
-        Check for property by name
-        """
-        for prop in self.customProps:
-            if prop.name == name:
-                return True
-
-
-    def __getitem__(self, name):
-        """
-        Access document properties by name
-        """
-        defn = self.get(name)
-        if not defn:
-            raise KeyError(f"No docuemnt property called {name}")
-        return defn
-
-
-    def get(self, name):
-        """
-        Find a property by name
-        """
-        for defn in self.customProps:
-            if defn.name == name:
-                return defn
-
-
-    def __delitem__(self, name):
-        """
-        Delete a property
-        """
-        if not self.delete(name):
-            raise KeyError(f"No defined name {name}")
-
-
-    def delete(self, name):
-        """
-        Delete a property
-        """
-        for idx, prop in enumerate(self.customProps):
-            if prop.name == name:
-                del self.customProps[idx]
-                return True
-
-
-    def namelist(self):
-        """
-        Provide a list of all custom document property names
-        """
-        return [prop.name for prop in self.customProps]
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
@@ -212,3 +138,110 @@ class CustomDocumentPropertyList(Serialisable):
         tree.set("xmlns", CUSTPROPS_NS)
 
         return tree
+
+
+class _TypedProperty(Strict):
+
+    name = String()
+
+    def __init__(self,
+                 name,
+                 value):
+        self.name = name
+        self.value = value
+
+
+class IntProperty(_TypedProperty):
+
+    value = Integer()
+
+
+class FloatProperty(_TypedProperty):
+
+    value = Float()
+
+
+class StringProperty(_TypedProperty):
+
+    value = String()
+
+
+class DateTimeProperty(_TypedProperty):
+
+    value = DateTime()
+
+
+class BoolProperty(_TypedProperty):
+
+    value = Bool()
+
+
+class LinkProperty(_TypedProperty):
+
+    value = String()
+
+
+# from Python
+CLASS_MAPPING = {
+    "StringProperty": "lpwstr",
+    "IntProperty": "i4",
+    "FloatProperty": "r8",
+    "DateTimeProperty": "filetime",
+    "BoolProperty": "bool",
+    "LinkProperty": "linkTarget"
+}
+
+
+class TypedPropertyList(Strict):
+
+
+    props = Sequence(expected_type=_TypedProperty)
+
+    def __init__(self):
+        self.props = []
+
+
+    def append(self, prop):
+        if prop.name in self.names:
+            raise ValueError(f"Property with name {prop.name} already exists")
+        props = self.props
+        props.append(prop)
+        self.props = props
+
+
+    def to_tree(self):
+        props = []
+
+        for p in self.props:
+            attr = CLASS_MAPPING.get(p.__class__.__name__, None)
+            if not attr:
+                raise TypeError("Unknown adapter for {p}")
+            np = CustomDocumentProperty(name=p.name)
+            setattr(np, attr, p.value)
+            if isinstance(p, LinkProperty):
+                np.lpwstr = ""
+            props.append(np)
+
+        prop_list = CustomDocumentPropertyList(property=props)
+        return prop_list.to_tree()
+
+
+    def __len__(self):
+        return len(self.props)
+
+
+    @property
+    def names(self):
+        """List of property names"""
+        return [p.name for p in self.props]
+
+
+    def __getitem__(self, name):
+        """
+        Get property by name
+        """
+        if name not in self.names:
+            raise ValueError(f"Property with name {name} not found")
+        for p in self.props:
+            if p.name == name:
+                return p
