@@ -27,6 +27,11 @@ from openpyxl.xml.constants import (
 from .core import NestedDateTime
 
 
+class NestedBoolText(Bool, NestedText):
+
+    pass
+
+
 class CustomDocumentProperty(Serialisable):
 
     """
@@ -40,7 +45,7 @@ class CustomDocumentProperty(Serialisable):
     i4 = NestedText(expected_type=int, allow_none=True, namespace=VTYPES_NS)
     r8 = NestedText(expected_type=float, allow_none=True, namespace=VTYPES_NS)
     filetime = NestedDateTime(allow_none=True, namespace=VTYPES_NS)
-    bool = NestedText(expected_type=bool, allow_none=True, namespace=VTYPES_NS)
+    bool = NestedBoolText(expected_type=bool, allow_none=True, namespace=VTYPES_NS)
     linkTarget = String(expected_type=str, allow_none=True)
     fmtid = String()
     pid = Integer()
