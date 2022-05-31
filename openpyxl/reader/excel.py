@@ -4,8 +4,7 @@
 """Read an xlsx file into Python"""
 
 # Python stdlib imports
-from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
-from sys import exc_info
+from zipfile import ZipFile, ZIP_DEFLATED
 from io import BytesIO
 import os.path
 import warnings
@@ -22,7 +21,6 @@ except ImportError:
 # package imports
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
-    ARC_SHARED_STRINGS,
     ARC_CORE,
     ARC_CUSTOM,
     ARC_CONTENT_TYPES,
@@ -30,7 +28,6 @@ from openpyxl.xml.constants import (
     ARC_THEME,
     COMMENTS_NS,
     SHARED_STRINGS,
-    EXTERNAL_LINK,
     XLTM,
     XLTX,
     XLSM,
@@ -44,7 +41,7 @@ from .workbook import WorkbookParser
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
-from openpyxl.packaging.custom import CustomDocumentPropertyList
+from openpyxl.packaging.custom import CustomDocumentPropertyList, TypedPropertyList
 from openpyxl.packaging.manifest import Manifest, Override
 
 from openpyxl.packaging.relationship import (
@@ -180,7 +177,9 @@ class ExcelReader:
 
         if ARC_CUSTOM in self.valid_files:
             src = fromstring(self.archive.read(ARC_CUSTOM))
+            props = CustomDocumentPropertyList.from_tree(src)
             self.wb.custom_doc_props = CustomDocumentPropertyList.from_tree(src)
+
 
     def read_theme(self):
         if ARC_THEME in self.valid_files:
