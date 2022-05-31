@@ -126,6 +126,10 @@ class _TypedProperty(Strict):
         return self.name == other.name and self.value == other.value
 
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}, name={self.name}, value={self.value}"
+
+
 class IntProperty(_TypedProperty):
 
     value = Integer()
@@ -245,3 +249,7 @@ class TypedPropertyList(Strict):
         for p in self.props:
             if p.name == name:
                 return p
+
+
+    def __repr__(self):
+        return f"{self.__class__.__name__} containing {self.props}"

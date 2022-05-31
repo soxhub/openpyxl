@@ -140,6 +140,13 @@ class TestTypedPropertyList:
         assert len(prop_list) ==  0
 
 
+    def test_repr(self, TypedPropertyList):
+        prop_list = TypedPropertyList()
+        prop_list.append(StringProperty(name="PropName1", value="Something"))
+
+        assert repr(prop_list) == "TypedPropertyList containing [StringProperty, name=PropName1, value=Something]"
+
+
     def test_string(self, TypedPropertyList):
         prop = StringProperty(name="PropName1", value="Something")
         prop_list = TypedPropertyList()
