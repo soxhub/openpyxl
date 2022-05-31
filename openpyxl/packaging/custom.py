@@ -26,23 +26,6 @@ from openpyxl.xml.constants import (
 
 from .core import NestedDateTime
 
-# from Python
-KNOWN_TYPES = {
-    str: "str",
-    int: "i4",
-    float: "r8",
-    datetime.datetime: "filetime",
-    bool: "bool",
-}
-
-# from XML
-XML_TYPES = {
-    "lwpstr": str,
-    "i4": int,
-    "r8": float,
-    "filetime": datetime.datetime,
-    "bool": bool,
-}
 
 class CustomDocumentProperty(Serialisable):
 
@@ -90,6 +73,8 @@ class CustomDocumentProperty(Serialisable):
         for a in self.__elements__:
             if getattr(self, a) is not None:
                 return a
+        if self.linkTarget is not None:
+            return "linkTarget"
 
 
 class CustomDocumentPropertyList(Serialisable):
@@ -128,6 +113,10 @@ class _TypedProperty(Strict):
         self.value = value
 
 
+    def __eq__(self, other):
+        return self.name == other.name and self.value == other.value
+
+
 class IntProperty(_TypedProperty):
 
     value = Integer()
@@ -160,14 +149,15 @@ class LinkProperty(_TypedProperty):
 
 # from Python
 CLASS_MAPPING = {
-    "StringProperty": "lpwstr",
-    "IntProperty": "i4",
-    "FloatProperty": "r8",
-    "DateTimeProperty": "filetime",
-    "BoolProperty": "bool",
-    "LinkProperty": "linkTarget"
+    StringProperty: "lpwstr",
+    IntProperty: "i4",
+    FloatProperty: "r8",
+    DateTimeProperty: "filetime",
+    BoolProperty: "bool",
+    LinkProperty: "linkTarget"
 }
 
+XML_MAPPING = {v:k for k,v in CLASS_MAPPING.items()}
 
 class TypedPropertyList(Strict):
 
@@ -176,6 +166,29 @@ class TypedPropertyList(Strict):
 
     def __init__(self):
         self.props = []
+
+
+    @classmethod
+    def from_tree(cls, tree):
+        """
+        Create list from OOXML element
+        """
+        prop_list = cls()
+        for prop in tree.property:
+            attr = prop.type
+
+            typ = XML_MAPPING.get(attr, None)
+            value = getattr(prop, attr)
+            link = prop.linkTarget
+            if link is not None:
+                typ = LinkProperty
+                value = prop.linkTarget
+            if not typ:
+                raise TypeError(f"Unknonw type {prop.type}")
+
+            new_prop = typ(name=prop.name, value=value)
+            prop_list.append(new_prop)
+        return prop_list
 
 
     def append(self, prop):
@@ -190,7 +203,7 @@ class TypedPropertyList(Strict):
         props = []
 
         for p in self.props:
-            attr = CLASS_MAPPING.get(p.__class__.__name__, None)
+            attr = CLASS_MAPPING.get(p.__class__, None)
             if not attr:
                 raise TypeError("Unknown adapter for {p}")
             np = CustomDocumentProperty(name=p.name)
