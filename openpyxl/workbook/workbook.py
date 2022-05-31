@@ -31,7 +31,7 @@ from openpyxl.styles.table import TableStyleList
 from openpyxl.chartsheet import Chartsheet
 from .defined_name import DefinedName, DefinedNameList
 from openpyxl.packaging.core import DocumentProperties
-from openpyxl.packaging.custom import TypedPropertyList
+from openpyxl.packaging.custom import CustomPropertyList
 from openpyxl.packaging.relationship import RelationshipList
 from .child import _WorkbookChild
 from .protection import DocumentSecurity
@@ -66,7 +66,7 @@ class Workbook(object):
         self.defined_names = DefinedNameList()
         self._external_links = []
         self.properties = DocumentProperties()
-        self.custom_doc_props = TypedPropertyList()
+        self.custom_doc_props = CustomPropertyList()
         self.security = DocumentSecurity()
         self.__write_only = write_only
         self.shared_strings = IndexedList()

@@ -28,14 +28,18 @@ from .core import NestedDateTime
 
 
 class NestedBoolText(Bool, NestedText):
+    """
+    Descriptor for handling nested elements with the value stored in the text part
+    """
 
     pass
 
 
-class CustomDocumentProperty(Serialisable):
+class _CustomDocumentProperty(Serialisable):
 
     """
-    to read/write a single Workbook.CustomDocumentProperty saved in 'docProps/custom.xml'
+    Low-level representation of a Custom Document Property.
+    Not used directly
     """
 
     tagname = "property"
@@ -82,15 +86,15 @@ class CustomDocumentProperty(Serialisable):
             return "linkTarget"
 
 
-class CustomDocumentPropertyList(Serialisable):
+class _CustomDocumentPropertyList(Serialisable):
 
     """
-    to capture the Workbook.CustomDocumentProperties saved in 'docProps/custom.xml'
+    Parses and seriliases property lists but is not used directly
     """
 
     tagname = "Properties"
 
-    property = Sequence(expected_type=CustomDocumentProperty, namespace=CUSTPROPS_NS)
+    property = Sequence(expected_type=_CustomDocumentProperty, namespace=CUSTPROPS_NS)
     customProps = Alias("property")
 
 
@@ -172,7 +176,7 @@ CLASS_MAPPING = {
 
 XML_MAPPING = {v:k for k,v in CLASS_MAPPING.items()}
 
-class TypedPropertyList(Strict):
+class CustomPropertyList(Strict):
 
 
     props = Sequence(expected_type=_TypedProperty)
@@ -186,7 +190,7 @@ class TypedPropertyList(Strict):
         """
         Create list from OOXML element
         """
-        prop_list = CustomDocumentPropertyList.from_tree(tree)
+        prop_list = _CustomDocumentPropertyList.from_tree(tree)
         new_props = cls()
         for prop in prop_list.property:
             attr = prop.type
@@ -220,13 +224,13 @@ class TypedPropertyList(Strict):
             attr = CLASS_MAPPING.get(p.__class__, None)
             if not attr:
                 raise TypeError("Unknown adapter for {p}")
-            np = CustomDocumentProperty(name=p.name)
+            np = _CustomDocumentProperty(name=p.name)
             setattr(np, attr, p.value)
             if isinstance(p, LinkProperty):
                 np.lpwstr = ""
             props.append(np)
 
-        prop_list = CustomDocumentPropertyList(property=props)
+        prop_list = _CustomDocumentPropertyList(property=props)
         return prop_list.to_tree()
 
 
