@@ -154,14 +154,14 @@ class TestTypedPropertyList:
 
 
     def test_int(self, TypedPropertyList):
-        prop = FloatProperty(name="PropName1", value=15)
+        prop = IntProperty(name="PropName1", value=15)
         prop_list = TypedPropertyList()
         prop_list.append(prop)
 
         tree = prop_list.to_tree()
         expected = """<Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
           <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
-            <vt:r8>15</vt:r8>
+            <vt:i4>15</vt:i4>
           </property>
         </Properties>"""
 
