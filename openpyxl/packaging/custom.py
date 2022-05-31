@@ -98,6 +98,10 @@ class CustomDocumentPropertyList(Serialisable):
         self.property = property
 
 
+    def __len__(self):
+        return len(self.property)
+
+
     def to_tree(self, tagname=None, idx=None, namespace=None):
         for idx, p in enumerate(self.property, 2):
             p.pid = idx

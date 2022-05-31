@@ -107,6 +107,11 @@ class TestCustomDocumentProperyList:
         ]
 
 
+    def test_len(self, CustomDocumentPropertyList):
+        props = CustomDocumentPropertyList()
+        assert len(props) == 0
+
+
 @pytest.fixture
 def TypedPropertyList():
     from ..custom import TypedPropertyList
