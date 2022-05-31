@@ -182,8 +182,9 @@ class TypedPropertyList(Strict):
         """
         Create list from OOXML element
         """
-        prop_list = cls()
-        for prop in tree.property:
+        prop_list = CustomDocumentPropertyList.from_tree(tree)
+        new_props = cls()
+        for prop in prop_list.property:
             attr = prop.type
 
             typ = XML_MAPPING.get(attr, None)
@@ -196,8 +197,8 @@ class TypedPropertyList(Strict):
                 raise TypeError(f"Unknonw type {prop.type}")
 
             new_prop = typ(name=prop.name, value=value)
-            prop_list.append(new_prop)
-        return prop_list
+            new_props.append(new_prop)
+        return new_props
 
 
     def append(self, prop):
