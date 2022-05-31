@@ -64,7 +64,6 @@ class CustomDocumentProperty(Serialisable):
 
     def __init__(self,
                  name=None,
-                 value=None,
                  typ=None,
                  lpwstr=None,
                  i4=None,
@@ -85,34 +84,12 @@ class CustomDocumentProperty(Serialisable):
         self.bool = bool
         self.linkTarget = linkTarget
 
-        if linkTarget is not None:
-            self.lpwstr = ""
-
-        if value is not None:
-            t = type(value)
-            prop = KNOWN_TYPES.get(t)
-            if prop is not None:
-                setattr(self, prop, value)
-            elif typ is not None and typ in XML_TYPES:
-                setattr(self, typ, value)
-            else:
-                raise ValueError(f"Unknown type {t}")
-
-
-    @property
-    def value(self):
-        """Return the value from the active property"""
-        for a in self.__elements__:
-            v = getattr(self, a)
-            if v is not None:
-                return v
 
     @property
     def type(self):
         for a in self.__elements__:
             if getattr(self, a) is not None:
                 return a
-
 
 
 class CustomDocumentPropertyList(Serialisable):

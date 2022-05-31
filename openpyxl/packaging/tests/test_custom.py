@@ -15,7 +15,7 @@ def CustomDocumentProperty():
 class TestCustomDocumentProperty:
 
     def test_ctor(self, CustomDocumentProperty):
-        prop = CustomDocumentProperty(name="PropName9", value=True)
+        prop = CustomDocumentProperty(name="PropName9", bool=True)
         assert prop.type == "bool"
         assert prop.bool is True
         expected = """
@@ -36,7 +36,7 @@ class TestCustomDocumentProperty:
         """
         node = fromstring(src)
         prop = CustomDocumentProperty.from_tree(node)
-        assert prop.value == datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22) and prop.name == "PropName1"
+        assert prop.filetime == datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22) and prop.name == "PropName1"
 
         src = """
         <property name="PropName4" pid="0" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" linkTarget="ExampleName">
@@ -54,15 +54,14 @@ def CustomDocumentPropertyList():
     return CustomDocumentPropertyList
 
 
-
 class TestCustomDocumentProperyList:
 
 
     def test_ctor(self, CustomDocumentPropertyList, CustomDocumentProperty):
 
-        prop1 = CustomDocumentProperty(name="PropName1", value=datetime.datetime(2020, 8, 24, 20, 19, 22))
-        prop2 = CustomDocumentProperty(name="PropName2", linkTarget="ExampleName")
-        prop3 = CustomDocumentProperty(name="PropName3", value=2.5)
+        prop1 = CustomDocumentProperty(name="PropName1", filetime=datetime.datetime(2020, 8, 24, 20, 19, 22))
+        prop2 = CustomDocumentProperty(name="PropName2", linkTarget="ExampleName", lpwstr="")
+        prop3 = CustomDocumentProperty(name="PropName3", r8=2.5)
 
         props = CustomDocumentPropertyList(property=[prop1, prop2, prop3])
 
@@ -102,9 +101,9 @@ class TestCustomDocumentProperyList:
         props = CustomDocumentPropertyList.from_tree(node)
 
         assert props.customProps == [
-            CustomDocumentProperty(name="PropName1", value=datetime.datetime(2020, 8, 24, 20, 19, 22), pid=2),
-            CustomDocumentProperty(name="PropName2", value=2.5, pid=3),
-            CustomDocumentProperty(name="PropName3", value=True, pid=4),
+            CustomDocumentProperty(name="PropName1", filetime=datetime.datetime(2020, 8, 24, 20, 19, 22), pid=2),
+            CustomDocumentProperty(name="PropName2", r8=2.5, pid=3),
+            CustomDocumentProperty(name="PropName3", bool=True, pid=4),
         ]
 
 
