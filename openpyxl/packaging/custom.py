@@ -2,7 +2,9 @@
 
 """Implementation of custom properties see § 22.3 in the specification"""
 
-import datetime
+
+from warnings import warn
+
 from openpyxl.descriptors import Strict
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.sequence import Sequence
@@ -176,6 +178,7 @@ CLASS_MAPPING = {
 
 XML_MAPPING = {v:k for k,v in CLASS_MAPPING.items()}
 
+
 class CustomPropertyList(Strict):
 
 
@@ -196,13 +199,14 @@ class CustomPropertyList(Strict):
             attr = prop.type
 
             typ = XML_MAPPING.get(attr, None)
+            if not typ:
+                warn(f"Unknonw type for {prop.name}")
+                continue
             value = getattr(prop, attr)
             link = prop.linkTarget
             if link is not None:
                 typ = LinkProperty
                 value = prop.linkTarget
-            if not typ:
-                raise TypeError(f"Unknonw type {prop.type}")
 
             new_prop = typ(name=prop.name, value=value)
             new_props.append(new_prop)
@@ -248,11 +252,21 @@ class CustomPropertyList(Strict):
         """
         Get property by name
         """
-        if name not in self.names:
-            raise ValueError(f"Property with name {name} not found")
         for p in self.props:
             if p.name == name:
                 return p
+        raise KeyError(f"Property with name {name} not found")
+
+
+    def __delitem__(self, name):
+        """
+        Delete a propery by name
+        """
+        for idx, p in enumerate(self.props):
+            if p.name == name:
+                self.props.pop(idx)
+                return
+        raise KeyError(f"Property with name {name} not found")
 
 
     def __repr__(self):

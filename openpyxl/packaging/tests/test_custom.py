@@ -147,6 +147,36 @@ class TestTypedPropertyList:
         assert repr(prop_list) == "CustomPropertyList containing [StringProperty, name=PropName1, value=Something]"
 
 
+    def test_get_item(self, CustomPropertyList):
+        prop_list = CustomPropertyList()
+        prop = StringProperty(name="PropName1", value="Something")
+        prop_list.append(prop)
+
+        assert prop_list["PropName1"] == prop
+
+
+    def test_get_item_missing(self, CustomPropertyList):
+        prop_list =  CustomPropertyList()
+
+        with pytest.raises(KeyError):
+            prop_list["PropName1"]
+
+
+    def test_delete(self, CustomPropertyList):
+        prop_list = CustomPropertyList()
+        prop_list.append(StringProperty(name="a prop", value="Something"))
+
+        del prop_list["a prop"]
+        assert prop_list.props == []
+
+
+    def test_delete_missing(self, CustomPropertyList):
+        prop_list =  CustomPropertyList()
+
+        with pytest.raises(KeyError):
+            del prop_list["PropName1"]
+
+
     def test_string(self, CustomPropertyList):
         prop = StringProperty(name="PropName1", value="Something")
         prop_list = CustomPropertyList()
@@ -343,3 +373,29 @@ class TestTypedPropertyList:
         new_props = CustomPropertyList.from_tree(tree)
 
         assert new_props.props[0] == BoolProperty(name="PropName1", value=False)
+
+
+    def test_unknown_type(self, CustomPropertyList, recwarn):
+        src = """<Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
+          <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:cy>4.1256</vt:cy>
+          </property>
+        </Properties>"""
+        tree = fromstring(src)
+
+        new_props = CustomPropertyList.from_tree(tree)
+        assert recwarn.pop().category == UserWarning
+
+
+    def test_cant_adapt(self, CustomPropertyList):
+        from ..custom import _TypedProperty
+
+        class DummyProperty(_TypedProperty):
+
+            pass
+
+        prop_list = CustomPropertyList()
+        prop_list.append(DummyProperty(name="PropName1", value="Something"))
+
+        with pytest.raises(TypeError):
+            tree = prop_list.to_tree()
