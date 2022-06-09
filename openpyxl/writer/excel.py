@@ -303,19 +303,3 @@ def save_workbook(workbook, filename):
     writer = ExcelWriter(workbook, archive)
     writer.save()
     return True
-
-
-@deprecated("Use a NamedTemporaryFile")
-def save_virtual_workbook(workbook):
-    """Return an in-memory workbook, suitable for a Django response."""
-    tmp = TemporaryFile()
-    archive = ZipFile(tmp, 'w', ZIP_DEFLATED, allowZip64=True)
-
-    writer = ExcelWriter(workbook, archive)
-    writer.save()
-
-    tmp.seek(0)
-    virtual_workbook = tmp.read()
-    tmp.close()
-
-    return virtual_workbook
