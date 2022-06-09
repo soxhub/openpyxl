@@ -56,8 +56,15 @@ Read an existing workbook
 .. warning ::
 
     openpyxl does currently not read all possible items in an Excel file so
-    images and charts will be lost from existing files if they are opened and
-    saved with the same name.
+    shapes will be lost from existing files if they are opened and saved with
+    the same name.
+
+
+Openpyxl won't open a workbook
+++++++++++++++++++++++++++++++
+
+Sometimes openpyxl will fail to open a workbook. This is usually because there is something wrong with the file.
+If this is the case then openpyxl will try and provide some more information. Openpyxl follows the OOXML specification closely and will reject files that do not because they are invalid. When this happens you can use the exception from openpyxl to inform the developers of whichever application or library produced the file. As the OOXML specification is publically available it is important that developers follow it.
 
 
 Using number formats
