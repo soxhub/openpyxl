@@ -3,39 +3,30 @@
 import pytest
 
 # compatibility imports
-import os
 import datetime
 
 # package imports
-from openpyxl.styles import numbers
 from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.tests.helper import compare_xml
 from openpyxl.workbook._writer import WorkbookWriter
 from openpyxl.xml.constants import (
-    CUSTPROPS_NS,
-    VTYPES_NS,
-    CPROPS_FMTID,
     ARC_CUSTOM,
     CPROPS_TYPE,
 )
 
 
-@pytest.mark.xfail
 def test_read_custom_doc_props(datadir):
     datadir.join("reader").chdir()
     wb = load_workbook('example_vba_and_custom_doc_props.xlsm', read_only=False, keep_vba=True)
     custom_doc_props_dict = {
         "PropName1": {'value': datetime.datetime(2020, 8, 24, hour=20, minute=19, second=22)},
-        "PropName2": {'value': None, 'linkTarget': "ExampleName"},
+        "PropName2": {'value': "ExampleName"},
         "PropName3": {'value': "Foo"},
     }
     for prop in wb.custom_doc_props:
-        if custom_doc_props_dict[prop.name]['value'] is None:
-            assert prop.value is None and prop.linkTarget == custom_doc_props_dict[prop.name]['linkTarget']
-        else:
-            assert prop.value == custom_doc_props_dict[prop.name]['value']
+        assert prop.value == custom_doc_props_dict[prop.name]['value']
 
 
 @pytest.mark.xfail

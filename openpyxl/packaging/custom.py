@@ -271,3 +271,7 @@ class CustomPropertyList(Strict):
 
     def __repr__(self):
         return f"{self.__class__.__name__} containing {self.props}"
+
+
+    def __iter__(self):
+        return iter(self.props)
