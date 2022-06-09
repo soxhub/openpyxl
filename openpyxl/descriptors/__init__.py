@@ -13,6 +13,11 @@ class MetaStrict(type):
         return type.__new__(cls, clsname, bases, methods)
 
 
+class Strict(metaclass=MetaStrict):
+
+    pass
+
+
 class MetaSerialisable(type):
 
     def __new__(cls, clsname, bases, methods):
@@ -47,11 +52,3 @@ class MetaSerialisable(type):
         if methods.get('__elements__') is None:
             methods['__elements__'] = tuple(sorted(elements))
         return MetaStrict.__new__(cls, clsname, bases, methods)
-
-
-Strict = MetaStrict('Strict', (object,), {})
-
-_Serialiasable = MetaSerialisable('_Serialisable', (object,), {})
-
-#del MetaStrict
-#del MetaSerialisable
