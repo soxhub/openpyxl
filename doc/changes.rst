@@ -29,7 +29,7 @@ Deprecations
 The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right. Client code should use the relevant objects.
 
 
-3.0.10 (2021-05-13)
+3.0.10 (2022-05-19)
 ===================
 
 
