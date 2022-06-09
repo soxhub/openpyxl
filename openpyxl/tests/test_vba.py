@@ -2,12 +2,12 @@
 
 
 # Python stdlib imports
+from tempfile import NamedTemporaryFile
 from io import BytesIO
 import zipfile
 
 # package imports
 from openpyxl.reader.excel import load_workbook
-from openpyxl.writer.excel import save_virtual_workbook
 from openpyxl.xml.functions import fromstring
 from openpyxl.xml.constants import CONTYPES_NS
 
@@ -16,8 +16,9 @@ def test_content_types(datadir):
     datadir.join('reader').chdir()
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
-    buf = save_virtual_workbook(wb)
-    ct = fromstring(zipfile.ZipFile(BytesIO(buf), 'r').open('[Content_Types].xml').read())
+    tmp = NamedTemporaryFile()
+    wb.save(tmp.name)
+    ct = fromstring(zipfile.ZipFile(tmp.name, 'r').open('[Content_Types].xml').read())
     s = set()
     for el in ct.findall("{%s}Override" % CONTYPES_NS):
         pn = el.get('PartName')
@@ -29,8 +30,9 @@ def test_save_with_vba(datadir):
     datadir.join('reader').chdir()
     fname = 'vba-test.xlsm'
     wb = load_workbook(fname, keep_vba=True)
-    buf = save_virtual_workbook(wb)
-    files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
+    tmp = NamedTemporaryFile()
+    wb.save(tmp.name)
+    files = set(zipfile.ZipFile(tmp.name, 'r').namelist())
     expected = set(['xl/drawings/_rels/vmlDrawing1.vml.rels',
                     'xl/worksheets/_rels/sheet1.xml.rels',
                     '[Content_Types].xml',
@@ -62,8 +64,9 @@ def test_save_with_saved_comments(datadir):
     datadir.join('reader').chdir()
     fname = 'vba-comments-saved.xlsm'
     wb = load_workbook(fname, keep_vba=True)
-    buf = save_virtual_workbook(wb)
-    files = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
+    tmp = NamedTemporaryFile()
+    wb.save(tmp.name)
+    files = set(zipfile.ZipFile(tmp.name, 'r').namelist())
     expected = set([
         'xl/styles.xml',
         'docProps/core.xml',
@@ -102,10 +105,11 @@ def test_save_without_vba(datadir):
                    ])
 
     wb = load_workbook(fname, keep_vba=False)
-    buf = save_virtual_workbook(wb)
+    tmp = NamedTemporaryFile()
+    wb.save(tmp.name)
     files1 = set(zipfile.ZipFile(fname, 'r').namelist())
     files1.discard('xl/sharedStrings.xml')
-    files2 = set(zipfile.ZipFile(BytesIO(buf), 'r').namelist())
+    files2 = set(zipfile.ZipFile(tmp.name, 'r').namelist())
     difference = files1.difference(files2)
     assert difference.issubset(vbFiles), "Missing files: %s" % ', '.join(difference - vbFiles)
 
