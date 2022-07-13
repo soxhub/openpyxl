@@ -19,7 +19,7 @@ from openpyxl.xml.constants import (
     ARC_WORKBOOK,
     ARC_WORKBOOK_RELS,
 )
-
+from openpyxl.workbook.defined_name import DefinedName
 
 @pytest.fixture
 def WorkbookParser():
@@ -108,6 +108,19 @@ class TestWorkbookParser:
         assert ws.print_title_rows == "$1:$1"
         assert ws.print_titles == "$1:$1"
         assert ws.print_area == ['$A$1:$D$5', '$B$9:$F$14']
+
+
+    def test_name_invalid_index(self, datadir, WorkbookParser, recwarn):
+        datadir.chdir()
+        archive = ZipFile("print_settings.xlsx")
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+        parser.parse()
+
+        wb = parser.wb
+        wb.defined_names.definedName = [DefinedName(name="_xlnm.Print_Area", localSheetId="19", attr_text="'New Monthly Metals'!$B$1:$O$15")]
+        parser.assign_names()
+
+        assert recwarn.pop().category == UserWarning
 
 
     def test_no_links(self, datadir, WorkbookParser):

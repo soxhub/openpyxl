@@ -84,7 +84,7 @@ class WorkbookParser:
 
         for sheet in self.sheets:
             if not sheet.id:
-                msg = "File contains an invalid specification for {0}. This will be removed".format(sheet.name)
+                msg = f"File contains an invalid specification for {0}. This will be removed".format(sheet.name)
                 warn(msg)
                 continue
             yield sheet, self.rels[sheet.id]
@@ -99,7 +99,11 @@ class WorkbookParser:
         for defn in self.wb.defined_names.definedName:
             reserved = defn.is_reserved
             if reserved in ("Print_Titles", "Print_Area"):
-                sheet = self.wb._sheets[defn.localSheetId]
+                try:
+                    sheet = self.wb._sheets[defn.localSheetId]
+                except IndexError:
+                    warn(f"Worksheet for printer setting {defn.attr_text} cannot be located and will be removed")
+                    continue
                 if reserved == "Print_Titles":
                     rows, cols = _unpack_print_titles(defn)
                     sheet.print_title_rows = rows
