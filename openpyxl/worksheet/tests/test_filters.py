@@ -18,7 +18,7 @@ class TestFilterColumn:
         filters = Filters(blank=True, filter=["0"])
         col = FilterColumn(colId=5, filters=filters)
         expected = """
-        <filterColumn colId="5">
+        <filterColumn colId="5" hiddenButton="0" showButton="1">
           <filters blank="1">
             <filter val="0"></filter>
           </filters>
@@ -102,7 +102,7 @@ class TestAutoFilter:
         af.add_filter_column(5, ["0"], blank=True)
         expected = """
         <autoFilter ref="A1:F1">
-            <filterColumn colId="5">
+            <filterColumn colId="5" hiddenButton="0" showButton="1">
               <filters blank="1">
                 <filter val="0"></filter>
               </filters>

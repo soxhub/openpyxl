@@ -300,8 +300,8 @@ class FilterColumn(Serialisable):
 
     def __init__(self,
                  colId=None,
-                 hiddenButton=None,
-                 showButton=None,
+                 hiddenButton=False,
+                 showButton=True,
                  filters=None,
                  top10=None,
                  customFilters=None,

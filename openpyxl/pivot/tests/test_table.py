@@ -390,7 +390,7 @@ class TestPivotFilter:
         expected = """
         <filter fld="0" type="dateBetween" evalOrder="-1" id="6">
             <autoFilter ref="A1">
-                <filterColumn colId="0">
+                <filterColumn colId="0" hiddenButton="0" showButton="1">
                     <customFilters and="1">
                         <customFilter operator="greaterThanOrEqual" val="1"/>
                         <customFilter operator="lessThanOrEqual" val="2"/>
