@@ -325,7 +325,7 @@ class Table(Serialisable):
         for idx in range(min_col, max_col+1):
             col = TableColumn(id=idx, name="Column{0}".format(idx))
             self.tableColumns.append(col)
-        if self.headerRowCount:
+        if self.headerRowCount and not self.autoFilter:
             self.autoFilter = AutoFilter(ref=self.ref)
 
 
