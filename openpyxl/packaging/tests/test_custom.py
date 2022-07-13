@@ -48,6 +48,17 @@ class TestCustomDocumentProperty:
         assert prop.linkTarget == "ExampleName" and prop.name == "PropName4"
 
 
+    def test_empty(self, CustomDocumentProperty):
+        src = """
+        <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="7" name="TemplateUrl">
+          <vt:lpwstr xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
+        </property>
+        """
+        node = fromstring(src)
+        prop = CustomDocumentProperty.from_tree(node)
+        assert prop.type == "lpwstr"
+
+
 @pytest.fixture
 def CustomDocumentPropertyList():
     from ..custom import _CustomDocumentPropertyList
@@ -337,6 +348,18 @@ class TestTypedPropertyList:
         new_props = CustomPropertyList.from_tree(tree)
 
         assert new_props.props[0] == StringProperty(name="PropName1", value="Something")
+
+
+    def test_from_empty_string(self, CustomPropertyList):
+        src = """<Properties xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties">
+          <property name="PropName1" pid="2" fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}">
+            <vt:lpwstr />
+          </property>
+        </Properties>"""
+        tree = fromstring(src)
+        new_props = CustomPropertyList.from_tree(tree)
+
+        assert new_props.props[0] == StringProperty(name="PropName1", value=None)
 
 
     def test_from_float(self, CustomPropertyList):

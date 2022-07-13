@@ -45,6 +45,7 @@ class _CustomDocumentProperty(Serialisable):
     """
 
     tagname = "property"
+    _typ = None
 
     name = String(allow_none=True)
     lpwstr = NestedText(expected_type=str, allow_none=True, namespace=VTYPES_NS)
@@ -58,29 +59,28 @@ class _CustomDocumentProperty(Serialisable):
 
     def __init__(self,
                  name=None,
-                 typ=None,
-                 lpwstr=None,
-                 i4=None,
-                 r8=None,
-                 filetime=None,
-                 bool=None,
-                 linkTarget=None,
                  pid=0,
-                 fmtid=CPROPS_FMTID):
+                 fmtid=CPROPS_FMTID,
+                 linkTarget=None,
+                 **kw):
         self.fmtid = fmtid
         self.pid = pid
         self.name = name
-
-        self.lpwstr = lpwstr
-        self.i4 = i4
-        self.r8 = r8
-        self.filetime = filetime
-        self.bool = bool
+        self._typ = None
         self.linkTarget = linkTarget
+
+        for k, v in kw.items():
+            setattr(self, k, v)
+            setattr(self, "_typ", k) # ugh!
+        for e in self.__elements__:
+            if e not in kw:
+                setattr(self, e, None)
 
 
     @property
     def type(self):
+        if self._typ is not None:
+            return self._typ
         for a in self.__elements__:
             if getattr(self, a) is not None:
                 return a
@@ -148,7 +148,7 @@ class FloatProperty(_TypedProperty):
 
 class StringProperty(_TypedProperty):
 
-    value = String()
+    value = String(allow_none=True)
 
 
 class DateTimeProperty(_TypedProperty):
@@ -200,7 +200,7 @@ class CustomPropertyList(Strict):
 
             typ = XML_MAPPING.get(attr, None)
             if not typ:
-                warn(f"Unknonw type for {prop.name}")
+                warn(f"Unknown type for {prop.name}")
                 continue
             value = getattr(prop, attr)
             link = prop.linkTarget
