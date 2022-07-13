@@ -91,3 +91,10 @@ Or initialise the column headings manually::
   >>> table._initialise_columns()
   >>> for column, value in zip(table.tableColumns, headings):
       column.name = value
+
+
+Filters
++++++++
+
+Filters will be added automatically to tables that contain header rows. It is **not**
+possible to create tables with header rows without filters.
