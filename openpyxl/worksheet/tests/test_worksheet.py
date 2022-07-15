@@ -420,7 +420,9 @@ class TestWorksheet:
     @pytest.mark.parametrize("cell_range, result",
                              [
                                  ("A1:F5",  ["$A$1:$F$5"]),
-                                 (["$A$1:$F$5"],  ["$A$1:$F$5"]),
+                                 (["$A$1:$F$5"],  ["$A$1:$F$5"],),
+                                 (None, None),
+                                 ([], []),
                              ]
                              )
     def test_print_area(self, cell_range, result):

@@ -880,12 +880,16 @@ class Worksheet(_WorkbookChild):
     @print_area.setter
     def print_area(self, value):
         """
-        Range of cells in the form A1:D4 or list of ranges
+        Range of cells in the form A1:D4 or list of ranges. Print area can be cleared
+        by passing `None` or an empty list
         """
         if isinstance(value, str):
             value = [value]
 
-        self._print_area = [absolute_coordinate(v) for v in value]
+        if value is None:
+            self._print_area = None
+        else:
+            self._print_area = [absolute_coordinate(v) for v in value]
 
 
 def _gutter(idx, offset, max_val):
