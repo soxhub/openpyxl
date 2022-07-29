@@ -278,7 +278,7 @@ def Reference():
 class TestReference:
 
     def test_ctor(self, Reference):
-        ref = Reference(field=4294967294, x=0, selected=False)
+        ref = Reference(field=4294967294, x=[0], selected=False)
         xml = tostring(ref.to_tree())
         expected = """
         <reference field="4294967294" selected="0">
@@ -297,7 +297,7 @@ class TestReference:
         """
         node = fromstring(src)
         ref = Reference.from_tree(node)
-        assert ref == Reference(field=4294967294, x=0, selected=False)
+        assert ref == Reference(field=4294967294, x=[0], selected=False)
 
 
 @pytest.fixture

@@ -332,7 +332,7 @@ class Reference(Serialisable):
     stdDevPSubtotal = Bool(allow_none=True)
     varSubtotal = Bool(allow_none=True)
     varPSubtotal = Bool(allow_none=True)
-    x = NestedInteger(allow_none=True, attribute="v")
+    x = Sequence(expected_type=Index)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('x',)
