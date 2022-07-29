@@ -14,6 +14,7 @@ Bugfixes
 
 * `#1156 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1156>`_ Table filters are always overriden
 * `#1786 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1786>`_ NamedStyles share attributes - mutables gotcha
+* `#1851 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1851>`_ Allow print area to be set to None
 * `#1852 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1852>`_ Worksheet for print title and print areas can't be found
 * `#1853 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1853>`_ Custom document properties that are strings can be empty
 * `#1858 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1858>`_ ConditionalFormatting lost when pivot table updated
