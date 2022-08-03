@@ -3,7 +3,6 @@
 
 # Python stdlib imports
 from tempfile import NamedTemporaryFile
-from io import BytesIO
 import zipfile
 
 # package imports
@@ -59,6 +58,7 @@ def test_save_with_vba(datadir):
                     'xl/activeX/activeX2.xml',
                     ])
     assert files == expected
+
 
 def test_save_with_saved_comments(datadir):
     datadir.join('reader').chdir()
