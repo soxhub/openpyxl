@@ -112,12 +112,3 @@ def test_save_without_vba(datadir):
     files2 = set(zipfile.ZipFile(tmp, 'r').namelist())
     difference = files1.difference(files2)
     assert difference.issubset(vbFiles), "Missing files: %s" % ', '.join(difference - vbFiles)
-
-def test_save_same_file(tmpdir, datadir):
-    fname = 'vba-test.xlsm'
-    p1 = datadir.join('reader').join(fname)
-    p2 = tmpdir.join(fname)
-    p1.copy(p2)
-    tmpdir.chdir()
-    wb = load_workbook(fname, keep_vba=True)
-    wb.save(fname)
