@@ -57,8 +57,8 @@ def test_save_xl_as_no_template(datadir, tmpl, keep_vba, wb_type):
     wb = load_workbook(tmpl, keep_vba=keep_vba)
     wb.template = False
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
-    check_content_type(wb_type, tmp.name)
+    wb.save(tmp)
+    check_content_type(wb_type, tmp)
 
 
 @pytest.mark.parametrize('tmpl, keep_vba, wb_type', [
@@ -73,5 +73,5 @@ def test_save_xl_as_template(datadir, tmpl, keep_vba, wb_type):
     wb = load_workbook(tmpl, keep_vba=keep_vba)
     wb.template = True
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
-    check_content_type(wb_type, tmp.name)
+    wb.save(tmp)
+    check_content_type(wb_type, tmp)

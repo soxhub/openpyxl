@@ -17,8 +17,8 @@ def test_content_types(datadir):
     fname = 'vba+comments.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
-    ct = fromstring(zipfile.ZipFile(tmp.name, 'r').open('[Content_Types].xml').read())
+    wb.save(tmp)
+    ct = fromstring(zipfile.ZipFile(tmp, 'r').open('[Content_Types].xml').read())
     s = set()
     for el in ct.findall("{%s}Override" % CONTYPES_NS):
         pn = el.get('PartName')
@@ -31,8 +31,8 @@ def test_save_with_vba(datadir):
     fname = 'vba-test.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
-    files = set(zipfile.ZipFile(tmp.name, 'r').namelist())
+    wb.save(tmp)
+    files = set(zipfile.ZipFile(tmp, 'r').namelist())
     expected = set(['xl/drawings/_rels/vmlDrawing1.vml.rels',
                     'xl/worksheets/_rels/sheet1.xml.rels',
                     '[Content_Types].xml',
@@ -65,8 +65,8 @@ def test_save_with_saved_comments(datadir):
     fname = 'vba-comments-saved.xlsm'
     wb = load_workbook(fname, keep_vba=True)
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
-    files = set(zipfile.ZipFile(tmp.name, 'r').namelist())
+    wb.save(tmp)
+    files = set(zipfile.ZipFile(tmp, 'r').namelist())
     expected = set([
         'xl/styles.xml',
         'docProps/core.xml',
@@ -106,10 +106,10 @@ def test_save_without_vba(datadir):
 
     wb = load_workbook(fname, keep_vba=False)
     tmp = NamedTemporaryFile()
-    wb.save(tmp.name)
+    wb.save(tmp)
     files1 = set(zipfile.ZipFile(fname, 'r').namelist())
     files1.discard('xl/sharedStrings.xml')
-    files2 = set(zipfile.ZipFile(tmp.name, 'r').namelist())
+    files2 = set(zipfile.ZipFile(tmp, 'r').namelist())
     difference = files1.difference(files2)
     assert difference.issubset(vbFiles), "Missing files: %s" % ', '.join(difference - vbFiles)
 
