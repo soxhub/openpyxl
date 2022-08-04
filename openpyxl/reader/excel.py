@@ -17,7 +17,6 @@ try:
 except ImportError:
     KEEP_VBA = False
 
-
 # package imports
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
@@ -62,6 +61,7 @@ from .drawings import find_images
 
 
 SUPPORTED_FORMATS = ('.xlsx', '.xlsm', '.xltx', '.xltm')
+
 
 def _validate_archive(filename):
     """
@@ -118,8 +118,8 @@ class ExcelReader:
     Read an Excel package and dispatch the contents to the relevant modules
     """
 
-    def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True, rich_text=False):
+    def __init__(self, fn, read_only=False, keep_vba=KEEP_VBA,
+                 data_only=False, keep_links=True, rich_text=False):
         self.archive = _validate_archive(fn)
         self.valid_files = self.archive.namelist()
         self.read_only = read_only
@@ -342,6 +342,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     """
     reader = ExcelReader(filename, read_only, keep_vba,
-                        data_only, keep_links, rich_text)
+                         data_only, keep_links, rich_text)
     reader.read()
     return reader.wb
