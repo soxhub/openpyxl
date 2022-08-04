@@ -1,4 +1,4 @@
-from __future__ import division
+
 # Copyright (c) 2010-2022 openpyxl
 
 import math
