@@ -63,11 +63,6 @@ class TestDrawing(object):
         assert d.width == 50
         assert d.height == 417
 
-    def test_get_emu(self):
-        d = self.drawing
-        dims = d.get_emu_dimensions()
-        assert dims == (0, 0, 200025, 1828800)
-
 
     @pytest.mark.pil_required
     def test_absolute_anchor(self):

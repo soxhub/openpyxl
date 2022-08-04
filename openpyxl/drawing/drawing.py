@@ -3,14 +3,7 @@ from __future__ import division
 
 import math
 
-from openpyxl.compat import deprecated
-
-from openpyxl.styles.colors import Color, BLACK, WHITE
-from openpyxl.utils.units import (
-    pixels_to_EMU,
-    EMU_to_pixels,
-    short_color,
-)
+from openpyxl.utils.units import pixels_to_EMU
 
 
 class Drawing(object):
@@ -41,6 +34,7 @@ class Drawing(object):
     def width(self):
         return self._width
 
+
     @width.setter
     def width(self, w):
         if self.resize_proportional and w:
@@ -48,9 +42,11 @@ class Drawing(object):
             self._height = round(ratio * w)
         self._width = w
 
+
     @property
     def height(self):
         return self._height
+
 
     @height.setter
     def height(self, h):
@@ -58,6 +54,7 @@ class Drawing(object):
             ratio = self._width / self._height
             self._width = round(ratio * h)
         self._height = h
+
 
     def set_dimension(self, w=0, h=0):
 
@@ -71,13 +68,6 @@ class Drawing(object):
             else:
                 self._width = math.ceil(yratio * self._width)
                 self._height = h
-
-    @deprecated("Private method used when serialising")
-    def get_emu_dimensions(self):
-        """ return (x, y, w, h) in EMU """
-
-        return (pixels_to_EMU(self.left), pixels_to_EMU(self.top),
-            pixels_to_EMU(self._width), pixels_to_EMU(self._height))
 
 
     @property

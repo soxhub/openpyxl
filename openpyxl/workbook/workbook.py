@@ -355,30 +355,6 @@ class Workbook(object):
         return self._named_styles.names
 
 
-    @deprecated("Use workbook.defined_names.definedName")
-    def get_named_ranges(self):
-        """Return all named ranges"""
-        return self.defined_names.definedName
-
-
-    @deprecated("Use workbook.defined_names.append")
-    def add_named_range(self, named_range):
-        """Add an existing named_range to the list of named_ranges."""
-        self.defined_names.append(named_range)
-
-
-    @deprecated("Use workbook.defined_names[name]")
-    def get_named_range(self, name):
-        """Return the range specified by name."""
-        return self.defined_names[name]
-
-
-    @deprecated("Use del workbook.defined_names[name]")
-    def remove_named_range(self, named_range):
-        """Remove a named_range from this workbook."""
-        del self.defined_names[named_range]
-
-
     @property
     def mime_type(self):
         """

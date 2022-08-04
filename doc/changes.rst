@@ -34,6 +34,12 @@ Deprecations
 The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right. Client code should use the relevant objects.
 
 
+Removals
+--------
+
+The following deprecated methods have been removed from workbooks: get_named_range, add_named_range, remove_named_range. And the get_emu_dimesions from images.
+
+
 3.0.10 (2022-05-19)
 ===================
 
