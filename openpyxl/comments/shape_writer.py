@@ -71,7 +71,7 @@ class ShapeWriter(object):
 
         # check whether comments shape type already exists
         shape_types = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
-        if not shape_types:
+        if shape_types is None:
             self.add_comment_shapetype(root)
 
         for idx, (coord, comment) in enumerate(self.comments, 1026):
