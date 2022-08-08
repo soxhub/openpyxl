@@ -244,7 +244,7 @@ class TestWorksheetWriter:
     def test_validations(self, writer):
 
         ws = writer.ws
-        dv = DataValidation(sqref="A1")
+        dv = DataValidation(sqref="A1", showErrorMessage=True, showInputMessage=True, allow_blank=False)
         ws.data_validations.append(dv)
         writer.write_validations()
 
@@ -253,7 +253,7 @@ class TestWorksheetWriter:
         expected = """
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
          <dataValidations count="1">
-           <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" />
+           <dataValidation allowBlank="0" showDropDown="0" showErrorMessage="1" showInputMessage="1" sqref="A1" />
          </dataValidations>
         </worksheet>"""
         diff = compare_xml(xml, expected)

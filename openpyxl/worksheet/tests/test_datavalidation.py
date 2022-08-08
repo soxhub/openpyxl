@@ -20,7 +20,7 @@ class TestDataValidation:
         dv = DataValidation(allowBlank=True)
         xml = tostring(dv.to_tree())
         expected = """
-        <dataValidation allowBlank="1" showErrorMessage="1" showInputMessage="1" sqref="" />
+        <dataValidation allowBlank="0" showDropDown="0" showErrorMessage="0" showInputMessage="0" sqref="" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
@@ -36,13 +36,14 @@ class TestDataValidation:
 
 
     def test_list_validation(self, DataValidation):
-        dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"')
+        dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"', allowBlank=False, showErrorMessage=True, showInputMessage=True)
         assert dv.formula1, '"Dog,Cat == Fish"'
         dv_dict = dict(dv)
         assert dv_dict['type'] == 'list'
         assert dv_dict['allowBlank'] == '0'
         assert dv_dict['showErrorMessage'] == '1'
         assert dv_dict['showInputMessage'] == '1'
+        assert dv_dict['showDropDown'] == '0'
 
 
     def test_hide_drop_down(self, DataValidation):
@@ -58,12 +59,12 @@ class TestDataValidation:
 
             coordinate = "A1"
 
-        dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"')
+        dv = DataValidation(type="list", formula1='"Dog,Cat,Fish"', allowBlank=False, showErrorMessage=True, showInputMessage=True)
         dv.add(DummyCell())
 
         xml = tostring(dv.to_tree())
         expected = """
-        <dataValidation allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" type="list">
+        <dataValidation allowBlank="0" showDropDown="0" showErrorMessage="1" showInputMessage="1" sqref="A1" type="list">
           <formula1>&quot;Dog,Cat,Fish&quot;</formula1>
         </dataValidation>
         """
@@ -89,7 +90,7 @@ class TestDataValidation:
 
     def test_read_formula(self, DataValidation):
         xml = """
-        <dataValidation xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" allowBlank="0" showErrorMessage="1" showInputMessage="1" sqref="A1" type="list">
+        <dataValidation xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" allowBlank="0" showDropDown="0" showErrorMessage="0" showInputMessage="1" sqref="A1" type="list">
           <formula1>&quot;Dog,Cat,Fish&quot;</formula1>
         </dataValidation>
         """
