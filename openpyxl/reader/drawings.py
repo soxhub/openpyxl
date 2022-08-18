@@ -36,7 +36,11 @@ def find_images(archive, path):
 
     charts = []
     for rel in drawing._chart_rels:
-        cs = get_rel(archive, deps, rel.id, ChartSpace)
+        try:
+            cs = get_rel(archive, deps, rel.id, ChartSpace)
+        except TypeError as e:
+            warn(f"Unable to read chart {rel.id} from {path}")
+            continue
         chart = read_chart(cs)
         chart.anchor = rel.anchor
         charts.append(chart)
