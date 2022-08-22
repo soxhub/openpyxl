@@ -2,22 +2,23 @@
 
 import datetime
 
-from openpyxl.compat import safe_string
 from openpyxl.descriptors import (
-    String,
     DateTime,
     Alias,
-    )
+)
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.xml.functions import (Element, QName, tostring)
+from openpyxl.xml.functions import (
+    Element,
+    QName,
+)
 from openpyxl.xml.constants import (
     COREPROPS_NS,
     DCORE_NS,
     XSI_NS,
     DCTERMS_NS,
-    DCTERMS_PREFIX
 )
+
 
 class NestedDateTime(DateTime, NestedText):
 
@@ -73,9 +74,9 @@ class DocumentProperties(Serialisable):
     modified = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
 
     __elements__ = ("creator", "title", "description", "subject","identifier",
-                  "language", "created", "modified", "lastModifiedBy", "category",
-                  "contentStatus", "version", "revision", "keywords", "lastPrinted",
-                  )
+                    "language", "created", "modified", "lastModifiedBy", "category",
+                    "contentStatus", "version", "revision", "keywords", "lastPrinted",
+                    )
 
 
     def __init__(self,

@@ -1,12 +1,10 @@
 # Copyright (c) 2010-2022 openpyxl
 
-
 import posixpath
+from warnings import warn
 
 from openpyxl.descriptors import (
     String,
-    Set,
-    NoneSet,
     Alias,
     Sequence,
 )
@@ -16,7 +14,6 @@ from openpyxl.xml.constants import REL_NS, PKG_REL_NS
 from openpyxl.xml.functions import (
     Element,
     fromstring,
-    tostring
 )
 
 
@@ -118,8 +115,6 @@ def get_rels_path(path):
     filename = posixpath.join(folder, '_rels', '{0}.rels'.format(obj))
     return filename
 
-
-from warnings import warn
 
 def get_dependents(archive, filename):
     """

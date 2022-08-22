@@ -7,10 +7,8 @@ from openpyxl.descriptors import (
     Set,
     Bool,
     Integer,
-    NoneSet,
     Float,
 )
-
 
 from .colors import ColorChoice
 

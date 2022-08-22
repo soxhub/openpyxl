@@ -4,7 +4,6 @@
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    Float,
     Integer,
     Set,
     String,
@@ -15,10 +14,8 @@ from openpyxl.descriptors.sequence import NestedSequence
 
 from openpyxl.utils.indexed_list import IndexedList
 from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import tostring
 
 from openpyxl.cell.text import Text
-#from openpyxl.worksheet.ole import ObjectAnchor
 from .author import AuthorList
 from .comments import Comment
 from .shape_writer import ShapeWriter
@@ -41,7 +38,7 @@ class Properties(Serialisable):
     autoScale = Bool(allow_none=True)
     rowHidden = Bool(allow_none=True)
     colHidden = Bool(allow_none=True)
-    #anchor = Typed(expected_type=ObjectAnchor, )
+    # anchor = Typed(expected_type=ObjectAnchor, )
 
     __elements__ = ('anchor',)
 

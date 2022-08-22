@@ -1,6 +1,5 @@
 # Copyright (c) 2010-2022 openpyxl
 
-import posixpath
 from warnings import warn
 
 from openpyxl.xml.functions import fromstring
@@ -10,7 +9,6 @@ from openpyxl.packaging.relationship import (
     get_rels_path,
     get_rel,
 )
-from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.workbook import WorkbookPackage
 from openpyxl.workbook import Workbook
 from openpyxl.workbook.defined_name import (
@@ -57,7 +55,7 @@ class WorkbookParser:
         self.wb.calculation = package.calcPr
         self.caches = package.pivotCaches
 
-        #external links contain cached worksheets and can be very big
+        # external links contain cached worksheets and can be very big
         if not self.keep_links:
             package.externalReferences = []
 
@@ -126,5 +124,5 @@ class WorkbookParser:
             if cache.deps:
                 records = get_rel(self.archive, cache.deps, cache.id, RecordList)
                 cache.records = records
-            d[c.cacheId]  = cache
+            d[c.cacheId] = cache
         return d
