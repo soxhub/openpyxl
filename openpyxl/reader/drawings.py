@@ -39,7 +39,7 @@ def find_images(archive, path):
         try:
             cs = get_rel(archive, deps, rel.id, ChartSpace)
         except TypeError as e:
-            warn(f"Unable to read chart {rel.id} from {path}")
+            warn(f"Unable to read chart {rel.id} from {path} {e}")
             continue
         chart = read_chart(cs)
         chart.anchor = rel.anchor

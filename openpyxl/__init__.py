@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2022 openpyxl
 
+DEBUG = False
 
 from openpyxl.compat.numbers import NUMPY
 from openpyxl.xml import DEFUSEDXML, LXML

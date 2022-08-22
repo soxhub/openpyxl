@@ -9,6 +9,7 @@ http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussiuncion_13
 import datetime
 import re
 
+from openpyxl import DEBUG
 from openpyxl.utils.datetime import from_ISO8601
 
 from .namespace import namespaced
@@ -39,7 +40,10 @@ class Typed(Descriptor):
         if not isinstance(value, self.expected_type):
             if (not self.allow_none
                 or (self.allow_none and value is not None)):
-                raise TypeError(f"expected f{self.expected_type} but value is {value} with type {type(value)}")
+                msg = f"{instance.__class__}.{self.name} should be {self.expected_type} but value is {type(value)}"
+                if DEBUG:
+                    msg = f"{instance.__class__}.{self.name} should be {self.expected_type} but {value} is {type(value)}"
+                raise TypeError(msg)
         super(Typed, self).__set__(instance, value)
 
     def __repr__(self):
