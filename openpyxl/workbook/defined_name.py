@@ -5,13 +5,9 @@ import re
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
-    Typed,
     String,
-    Float,
     Integer,
     Bool,
-    NoneSet,
-    Set,
     Sequence,
     Descriptor,
 )
@@ -164,6 +160,19 @@ class DefinedName(Serialisable):
                 yield key, safe_string(v)
 
 
+class DefinedNameDict(dict):
+
+    """
+    Utility class for storing defined names.
+    Allows access by name and separation of global and scoped names
+    """
+
+    def __setitem__(self, key, value):
+        if not isinstance(value, DefinedName):
+            raise TypeError("Value must be a an instance of DefinedName")
+        super().__setitem__(key, value)
+
+
 class DefinedNameList(Serialisable):
 
     tagname = "definedNames"
@@ -187,6 +196,23 @@ class DefinedNameList(Serialisable):
                 continue
             valid_names.append(n)
         self.definedName = valid_names
+
+
+    def by_sheet(self):
+        """
+        Break names down into sheet locals and globals
+        """
+        from collections import defaultdict
+        names = defaultdict(DefinedNameDict)
+        for defn in self.definedName:
+            if defn.localSheetId is None:
+                if defn.name in ("_xlnm.Print_Titles", "_xlnm.Print_Area", "_xlnm._FilterDatabase"):
+                    continue
+                names["global"][defn.name] = defn
+            else:
+                sheet = int(defn.localSheetId)
+                names[sheet][defn.name] = defn
+        return names
 
 
     def _duplicate(self, defn):

@@ -29,7 +29,7 @@ from openpyxl.styles.named_styles import NamedStyleList
 from openpyxl.styles.table import TableStyleList
 
 from openpyxl.chartsheet import Chartsheet
-from .defined_name import DefinedName, DefinedNameList
+from .defined_name import DefinedName, DefinedNameDict
 from openpyxl.packaging.core import DocumentProperties
 from openpyxl.packaging.custom import CustomPropertyList
 from openpyxl.packaging.relationship import RelationshipList
@@ -63,7 +63,7 @@ class Workbook(object):
         self._sheets = []
         self._pivots = []
         self._active_sheet_index = 0
-        self.defined_names = DefinedNameList()
+        self.defined_names = DefinedNameDict()
         self._external_links = []
         self.properties = DocumentProperties()
         self.custom_doc_props = CustomPropertyList()

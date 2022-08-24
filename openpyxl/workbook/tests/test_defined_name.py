@@ -261,6 +261,16 @@ class TestDefinitionList:
         assert len(dl) == 6
 
 
+    def test_by_sheet(self, DefinedNameList, datadir):
+        datadir.chdir()
+        with open("defined_names.xml", "rb") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        names = dl.by_sheet()
+        assert names.keys() == {"global", 0, 1}
+
+
     def test_append(self, DefinedNameList, DefinedName):
         dl = DefinedNameList()
         defn = DefinedName("test")
@@ -331,3 +341,18 @@ class TestDefinitionList:
         dl = DefinedNameList.from_tree(node)
         check = dl.get(name, scope) is not None
         assert check is result
+
+
+@pytest.fixture
+def DefinedNameDict():
+    from ..defined_name import DefinedNameDict
+    return DefinedNameDict
+
+
+class TestDefinedNameDict:
+
+
+    def test_check(self, DefinedNameDict):
+        names = DefinedNameDict()
+        with pytest.raises(TypeError):
+            names["A name"] = "A Value"
