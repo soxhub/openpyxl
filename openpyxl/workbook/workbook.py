@@ -232,9 +232,6 @@ class Workbook(object):
     def remove(self, worksheet):
         """Remove `worksheet` from this workbook."""
         idx = self._sheets.index(worksheet)
-        localnames = self.defined_names.localnames(scope=idx)
-        for name in localnames:
-            self.defined_names.delete(name, scope=idx)
         self._sheets.remove(worksheet)
 
 
@@ -328,15 +325,17 @@ class Workbook(object):
         """
         return [s.title for s in self._sheets]
 
+
+    @deprecated("Assign scoped named ranges directly to worksheets or global ones to the workbook.\nDeprecated in 3.1")
     def create_named_range(self, name, worksheet=None, value=None, scope=None):
         """Create a new named_range on a worksheet"""
-        defn = DefinedName(name=name, localSheetId=scope)
+        defn = DefinedName(name=name)
         if worksheet is not None:
             defn.value = "{0}!{1}".format(quote_sheetname(worksheet.title), value)
         else:
             defn.value = value
 
-        self.defined_names.append(defn)
+        self.defined_names[name] = defn
 
 
     def add_named_style(self, style):

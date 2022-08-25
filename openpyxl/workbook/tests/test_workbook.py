@@ -71,7 +71,7 @@ class TestWorkbook:
 
     def test_duplicate_defined_name(self, Workbook):
         wb1 = Workbook()
-        wb1.defined_names.append(DefinedName("dfn1"))
+        wb1.defined_names["dfn1"] = DefinedName("dfn1")
         assert True == wb1._duplicate_name("dfn1")
         assert True == wb1._duplicate_name("DFN1")
 
@@ -254,14 +254,6 @@ def test_get_sheet_names(Workbook):
     for count in range(5):
         wb.create_sheet(0)
     assert wb.sheetnames == names
-
-
-def test_remove_sheet_with_names(Workbook):
-    wb = Workbook()
-    new_sheet = wb.create_sheet()
-    wb.create_named_range('test_nr', new_sheet, 'A1', 1)
-    del wb['Sheet1']
-    assert wb.defined_names.definedName == []
 
 
 def test_add_invalid_worksheet_class_instance(Workbook):

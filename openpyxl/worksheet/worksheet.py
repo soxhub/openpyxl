@@ -26,7 +26,12 @@ from openpyxl.cell import Cell, MergedCell
 from openpyxl.formatting.formatting import ConditionalFormattingList
 from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
-from openpyxl.workbook.defined_name import COL_RANGE_RE, ROW_RANGE_RE
+from openpyxl.workbook.defined_name import (
+    DefinedNameDict,
+    COL_RANGE_RE,
+    ROW_RANGE_RE,
+)
+
 from openpyxl.formula.translate import Translator
 
 from .datavalidation import DataValidationList
@@ -125,6 +130,7 @@ class Worksheet(_WorkbookChild):
         self.page_margins = PageMargins()
         self.views = SheetViewList()
         self.protection = SheetProtection()
+        self.defined_names = DefinedNameDict()
 
         self._current_row = 0
         self.auto_filter = AutoFilter()

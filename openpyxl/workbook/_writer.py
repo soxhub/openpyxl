@@ -17,7 +17,10 @@ from openpyxl.xml.constants import (
 from openpyxl.xml.functions import tostring, fromstring
 
 from openpyxl.packaging.relationship import Relationship, RelationshipList
-from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.workbook.defined_name import (
+    DefinedName,
+    DefinedNameList,
+)
 from openpyxl.workbook.external_reference import ExternalReference
 from openpyxl.packaging.workbook import ChildSheet, WorkbookPackage, PivotCache
 from openpyxl.workbook.properties import WorkbookProperties
@@ -89,10 +92,14 @@ class WorkbookWriter:
 
 
     def write_names(self):
-        defined_names = copy(self.wb.defined_names)
+        defined_names = list(self.wb.defined_names.values())
 
         # Defined names -> autoFilter
         for idx, sheet in enumerate(self.wb.worksheets):
+
+            if sheet.defined_names:
+                defined_names.extend(sheet.defined_names.values())
+
             auto_filter = sheet.auto_filter.ref
 
             if auto_filter:
@@ -116,7 +123,7 @@ class WorkbookWriter:
                                       for r in sheet.print_area])
                 defined_names.append(name)
 
-        self.package.definedNames = defined_names
+        self.package.definedNames = DefinedNameList(definedName=defined_names)
 
 
     def write_pivots(self):
