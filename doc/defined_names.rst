@@ -9,8 +9,11 @@ The specification has the following to say about defined names:
 
 This means they are very loosely defined. They might contain a constant, a
 formula, a single cell reference, a range of cells or multiple ranges of
-cells across different worksheets. Or all of the above. They are defined
-globally for a workbook and accessed from the `defined_names` attribute.
+cells across different worksheets. Or all of the above. Cell references or
+ranges should always include the name of the worksheet they're in.
+
+Defined names can either be restricted to individual worksheets or available
+globally for the whole workbook.
 
 
 Sample use for ranges
@@ -33,23 +36,22 @@ Creating new named ranges
 
 .. testcode::
 
-    import openpyxl
-    wb = openpyxl.Workbook()
-    new_range = openpyxl.workbook.defined_name.DefinedName('newrange', attr_text='Sheet!$A$1:$A$5')
-    wb.defined_names.append(new_range)
+    from openpyxl import Workbook
+    from openpyxl.workbook.defined_name import DefinedName
+    from openpyxl.utils import quote_sheetname, absolute_coordinate
+    wb = Workbook()
+    new_range = DefinedName("newrange", attr_text="Sheet!$A$1:$A$5")
+    wb.defined_names["newrange"] = new_range
 
     # create a local named range (only valid for a specific sheet)
-    sheetid = wb.sheetnames.index('Sheet')
-    private_range = openpyxl.workbook.defined_name.DefinedName('privaterange', attr_text='Sheet!$A$6', localSheetId=sheetid)
-    wb.defined_names.append(private_range)
-    # this local range can't be retrieved from the global defined names
-    assert('privaterange' not in wb.defined_names)
-
-    # the scope has to be supplied to retrieve local ranges:
-    print(wb.defined_names.localnames(sheetid))
-    print(wb.defined_names.get('privaterange', sheetid).attr_text)
+    ws = wb["Sheet"]
+    ws.title = "My Sheet"
+    # make sure sheetnames are quoted correctly
+    ref = f"{quote_sheetname(ws.title)}!{absolute_coordinate('A6')}"
+    private_range = DefinedName("private_range", attr_text=ref)
+    ws.defined_names.add(private_range)
+    print(ws.defined_names["private_range"].attr_text)
 
 .. testoutput::
 
-    ['privaterange']
-    Sheet!$A$6
+    'My Sheet'!$A$6
