@@ -326,7 +326,7 @@ class Workbook(object):
         return [s.title for s in self._sheets]
 
 
-    @deprecated("Assign scoped named ranges directly to worksheets or global ones to the workbook.\nDeprecated in 3.1")
+    @deprecated("Assign scoped named ranges directly to worksheets or global ones to the workbook. Deprecated in 3.1")
     def create_named_range(self, name, worksheet=None, value=None, scope=None):
         """Create a new named_range on a worksheet
 

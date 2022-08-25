@@ -170,7 +170,16 @@ class DefinedNameDict(dict):
     def __setitem__(self, key, value):
         if not isinstance(value, DefinedName):
             raise TypeError("Value must be a an instance of DefinedName")
+        elif value.name != key:
+            raise ValueError("Key must be the same as the name")
         super().__setitem__(key, value)
+
+
+    def add(self, value):
+        """
+        Add names without worrying about key and name matching.
+        """
+        self[value.name] = value
 
 
 class DefinedNameList(Serialisable):

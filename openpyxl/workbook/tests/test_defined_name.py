@@ -284,3 +284,17 @@ class TestDefinedNameDict:
         names = DefinedNameDict()
         with pytest.raises(TypeError):
             names["A name"] = "A Value"
+
+
+    def test_name_mismatch(self, DefinedNameDict, DefinedName):
+        defn = DefinedName(name="my name")
+        names = DefinedNameDict()
+        with pytest.raises(ValueError):
+            names["my_name"] = defn
+
+
+    def test_add(self, DefinedNameDict, DefinedName):
+        defn = DefinedName(name="my name")
+        names = DefinedNameDict()
+        names.add(defn)
+        assert "my name" in names

@@ -13,7 +13,8 @@ cells across different worksheets. Or all of the above. Cell references or
 ranges should always include the name of the worksheet they're in.
 
 Defined names can either be restricted to individual worksheets or available
-globally for the whole workbook.
+globally for the whole workbook. Names must be unique within a collection; new
+items will replace existing ones with the name.
 
 
 Sample use for ranges
@@ -42,6 +43,9 @@ Creating new named ranges
     wb = Workbook()
     new_range = DefinedName("newrange", attr_text="Sheet!$A$1:$A$5")
     wb.defined_names["newrange"] = new_range
+
+    # key and name must be the same, the `.add()` method makes this easy
+    wb.defined_names.add(new_range)
 
     # create a local named range (only valid for a specific sheet)
     ws = wb["Sheet"]
