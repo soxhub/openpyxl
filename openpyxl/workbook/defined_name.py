@@ -184,20 +184,6 @@ class DefinedNameList(Serialisable):
         self.definedName = definedName
 
 
-    def _cleanup(self):
-        """
-        Strip invalid definitions and remove special hidden ones
-        """
-        valid_names = []
-        for n in self.definedName:
-            if n.name in ("_xlnm.Print_Titles", "_xlnm.Print_Area") and n.localSheetId is None:
-                continue
-            elif n.name == "_xlnm._FilterDatabase":
-                continue
-            valid_names.append(n)
-        self.definedName = valid_names
-
-
     def by_sheet(self):
         """
         Break names down into sheet locals and globals
@@ -225,68 +211,5 @@ class DefinedNameList(Serialisable):
                 return True
 
 
-    def append(self, defn):
-        if not isinstance(defn, DefinedName):
-            raise TypeError("""You can only append DefinedNames""")
-        if self._duplicate(defn):
-            raise ValueError("""DefinedName with the same name and scope already exists""")
-        names = self.definedName[:]
-        names.append(defn)
-        self.definedName = names
-
-
     def __len__(self):
         return len(self.definedName)
-
-
-    def __contains__(self, name):
-        """
-        See if a globaly defined name exists
-        """
-        for defn in self.definedName:
-            if defn.name == name and defn.localSheetId is None:
-                return True
-
-
-    def __getitem__(self, name):
-        """
-        Get globally defined name
-        """
-        defn = self.get(name)
-        if not defn:
-            raise KeyError("No definition called {0}".format(name))
-        return defn
-
-
-    def get(self, name, scope=None):
-        """
-        Get the name assigned to a specicic sheet or global
-        """
-        for defn in self.definedName:
-            if defn.name == name and defn.localSheetId == scope:
-                return defn
-
-
-    def __delitem__(self, name):
-        """
-        Delete a globally defined name
-        """
-        if not self.delete(name):
-            raise KeyError("No globally defined name {0}".format(name))
-
-
-    def delete(self, name, scope=None):
-        """
-        Delete a name assigned to a specific or global
-        """
-        for idx, defn in enumerate(self.definedName):
-            if defn.name == name and defn.localSheetId == scope:
-                del self.definedName[idx]
-                return True
-
-
-    def localnames(self, scope):
-        """
-        Provide a list of all names for a particular worksheet
-        """
-        return [defn.name for defn in self.definedName if defn.localSheetId == scope]
