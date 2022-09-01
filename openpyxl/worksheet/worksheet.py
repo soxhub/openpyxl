@@ -134,8 +134,6 @@ class Worksheet(_WorkbookChild):
 
         self._current_row = 0
         self.auto_filter = AutoFilter()
-        self.paper_size = None
-        self.orientation = None
         self.conditional_formatting = ConditionalFormattingList()
         self.legacy_drawing = None
         self.sheet_properties = WorksheetProperties()
