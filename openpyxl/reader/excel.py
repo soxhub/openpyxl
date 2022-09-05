@@ -321,7 +321,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     :param read_only: optimised for reading, content cannot be edited
     :type read_only: bool
 
-    :param keep_vba: preseve vba content (this does NOT mean you can use it)
+    :param keep_vba: preserve vba content (this does NOT mean you can use it)
     :type keep_vba: bool
 
     :param data_only: controls whether cells with formulae have either the formula (default) or the value stored the last time Excel read the sheet

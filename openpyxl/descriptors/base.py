@@ -220,7 +220,7 @@ class Default(Typed):
 class Alias(Descriptor):
     """
     Aliases can be used when either the desired attribute name is not allowed
-    or confusing in Python (eg. "type") or a more descriptve name is desired
+    or confusing in Python (eg. "type") or a more descriptive name is desired
     (eg. "underline" for "u")
     """
 

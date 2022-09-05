@@ -326,7 +326,7 @@ class Worksheet(_WorkbookChild):
 
     @property
     def min_row(self):
-        """The minimium row index containing data (1-based)
+        """The minimum row index containing data (1-based)
 
         :type: int
         """

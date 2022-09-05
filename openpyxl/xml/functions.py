@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2022 openpyxl
 
 """
-XML compatability functions
+XML compatibility functions
 """
 
 # Python stdlib imports

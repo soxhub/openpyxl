@@ -376,7 +376,7 @@ class Workbook(object):
 
         .. warning::
             When creating your workbook using `write_only` set to True,
-            you will only be able to call this function once. Subsequents attempts to
+            you will only be able to call this function once. Subsequent attempts to
             modify or save the file will raise an :class:`openpyxl.shared.exc.WorkbookAlreadySaved` exception.
         """
         if self.read_only:

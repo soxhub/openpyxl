@@ -24,7 +24,7 @@ NUMBER_REGEX = re.compile(r'^-?([\d]|[\d]+\.[\d]*|\.[\d]+|[1-9][\d]+\.?[\d]*)((E
 
 
 def cast_numeric(value):
-    """Explicity convert a string to a numeric value"""
+    """Explicitly convert a string to a numeric value"""
     if NUMBER_REGEX.match(value):
         try:
             return int(value)

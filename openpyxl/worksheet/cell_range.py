@@ -377,7 +377,7 @@ class CellRange(Serialisable):
         :type left: int
         :param left: shrink range from the left by this number of cells
         :type up: int
-        :param up: shrink range from the bottown by this number of cells
+        :param up: shrink range from the bottom by this number of cells
         """
         self.min_col += left
         self.min_row += top
