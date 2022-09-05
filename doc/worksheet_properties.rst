@@ -32,7 +32,7 @@ Available fields for outlines
 * "summaryRight"
 * "showOutlineSymbols"
 
-see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.sheetproperties%28v=office.14%29.aspx_ for details.
+Search `ECMA-376 pageSetup` for more details.
 
 .. note::
         By default, outline properties are intitialized so you can directly modify each of their 4 attributes, while page setup properties don't.
@@ -55,3 +55,19 @@ see http://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.s
 >>> wsprops.outlinePr.summaryBelow = False
 >>> wsprops.outlinePr.applyStyles = True
 >>> wsprops.pageSetUpPr.autoPageBreaks = True
+
+Worksheet Views
+---------------
+
+There are also several convenient properties defined as worksheet views. You can use :class:`ws.sheet_view<openpyxl.worksheet.views.SheetView>` to set sheet attributes such as zoom, show formulas or if the tab is selected.
+
+.. :: doctest
+
+>>> from openpyxl.workbook import Workbook
+>>>
+>>> wb = Workbook()
+>>> ws = wb.active
+>>>
+>>> ws.sheet_view.zoom = 85 # Sets 85% zoom
+>>> ws.sheet_view.showFormulas = True
+>>> ws.sheet_view.tabSelected = True
