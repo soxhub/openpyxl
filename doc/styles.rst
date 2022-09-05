@@ -177,7 +177,7 @@ yourself. This is a restriction of the file format::
 Styling Merged Cells
 --------------------
 
-The merged cell behaves similarly to other cell ojects.
+The merged cell behaves similarly to other cell objects.
 Its value and format is defined in its top-left cell.
 In order to change the border of the whole merged cell,
 change the border of its top-left cell.

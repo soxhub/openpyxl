@@ -144,8 +144,8 @@ Coding style
 ------------
 
 We orient ourselves at PEP-8 for the coding style, except when implementing
-attributes for roundtripping. Despite that you are encouraged to use Python
-data conventions (boolean, None, etc.). Note exceptions from this convestion
+attributes for round tripping. Despite that you are encouraged to use Python
+data conventions (boolean, None, etc.). Note exceptions from this convention
 in docstrings.
 
 

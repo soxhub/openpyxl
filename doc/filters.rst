@@ -21,7 +21,7 @@ This will add the relevant instructions to the file but will **neither actually 
 Advanced filters
 ----------------
 
-The following predefined filters can be used: ``CustomFilter, DateGroupItem, DynamicFilter, ColorFilter, IconFilter and Top10`` ``ColorFilter, IconFilter and Top10`` all interreact with conditional formats.
+The following predefined filters can be used: ``CustomFilter, DateGroupItem, DynamicFilter, ColorFilter, IconFilter and Top10`` ``ColorFilter, IconFilter and Top10`` all interact with conditional formats.
 
 The signature and structure of the different kinds of filter varies significantly. As such it makes sense to familiarise yourself with either the openpyxl source code or the OOXML specification.
 

@@ -52,7 +52,7 @@ True
 
 .. note ::
 
-    Excel and LibreOffice interperate the parameter `showDropDown=True` as the dropdown arrow should be hidden.
+    Excel and LibreOffice interpret the parameter `showDropDown=True` as the dropdown arrow should be hidden.
 
 Other validation examples
 -------------------------

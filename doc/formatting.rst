@@ -200,7 +200,7 @@ Sometimes you want to apply a conditional format to more than one cell, say a ro
 >>> ws.append(['OpenOffice', 'Apache', '4.1.4'])
 >>> ws.append(['Word', 'Microsoft', '2010'])
 
-We want to higlight the rows where the developer is Microsoft. We do this by creating an expression rule and using a formula to identify which rows contain software developed by Microsoft.
+We want to highlight the rows where the developer is Microsoft. We do this by creating an expression rule and using a formula to identify which rows contain software developed by Microsoft.
 
 >>> red_fill = PatternFill(bgColor="FFC7CE")
 >>> dxf = DifferentialStyle(fill=red_fill)
@@ -210,4 +210,4 @@ We want to higlight the rows where the developer is Microsoft. We do this by cre
 
 .. note::
 
-    The formula uses an **absolute** reference to the column referred to, ``B`` in this case; but a **relative** row number, in this case ``1`` to the range over which the format is applied. It can be tricky to get this right but the rule can be adjusted even after it has been added to the worksheet's condidtional format collection.
+    The formula uses an **absolute** reference to the column referred to, ``B`` in this case; but a **relative** row number, in this case ``1`` to the range over which the format is applied. It can be tricky to get this right but the rule can be adjusted even after it has been added to the worksheet's conditional format collection.

@@ -3,7 +3,7 @@ Parsing Formulas
 
 `openpyxl` supports limited parsing of formulas embedded in cells. The
 `openpyxl.formula` package contains a `Tokenizer` class to break
-formulas into their consitutuent tokens. Usage is as follows:
+formulas into their constituent tokens. Usage is as follows:
 
 .. doctest
 
