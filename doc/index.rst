@@ -129,142 +129,65 @@ made.
     $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
 
 
-Usage examples
---------------
-
-
-Tutorial
-++++++++
+Contents
+--------
 
 .. toctree::
+    :maxdepth: 1
+    :caption: Introduction
 
     tutorial
-
-
-Cookbook
-++++++++
-
-.. toctree::
-
     usage
-
-
-Performance
------------
+    optimized
+    pandas
+    formula
 
 .. toctree::
+    :maxdepth: 1
+    :caption: Workbooks
 
+    defined_names
+    workbook_custom_doc_props
+    protection
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Worksheets
+
+    editing_worksheets
+    worksheet_properties
+    validation
+    charts/introduction
+    worksheet_tables
+    filters
+    print_settings
+    pivot
+    comments
+
+.. toctree::
+    :caption: Styling
+    :maxdepth: 1
+
+    styles
+    rich_text
+    formatting
+    datetime
+
+
+.. toctree::
+    :caption: Developers
+    :maxdepth: 1
+
+    development
     performance
+    api/openpyxl
+       
+.. toctree::
+    :maxdepth: 1
+    :caption: Release Notes
+    :hidden:
 
-
-Other topics
-------------
-
-    .. toctree::
-        :maxdepth: 2
-
-        optimized
-
-
-    .. toctree::
-        :maxdepth: 1
-
-        editing_worksheets
-
-    .. toctree::
-        :maxdepth: 1
-
-        pandas
-
-    .. toctree::
-        :maxdepth: 1
-
-        charts/introduction
-
-    .. toctree::
-        :maxdepth: 1
-
-        comments
-
-    .. toctree::
-        :maxdepth: 1
-
-        styles
-
-    .. toctree::
-        :maxdepth: 1
-
-        rich_text
-
-    .. toctree::
-        :maxdepth: 1
-
-        worksheet_properties
-
-    .. toctree::
-        :maxdepth: 1
-
-        formatting
-
-    .. toctree::
-        :maxdepth: 1
-
-        pivot
-
-    .. toctree::
-        :maxdepth: 1
-
-        print_settings
-
-    .. toctree::
-        :maxdepth: 1
-
-        filters
-
-    .. toctree::
-        :maxdepth: 1
-
-        validation
-
-
-    .. toctree::
-        :maxdepth: 1
-
-        defined_names
-
-    .. toctree::
-        :maxdepth: 1
-
-        worksheet_tables
-
-    .. toctree::
-        :maxdepth: 1
-
-        formula
-
-    .. toctree::
-        :maxdepth: 1
-
-        datetime
-
-    .. toctree::
-        :maxdepth: 1
-
-        protection
-
-    .. toctree::
-        :maxdepth: 1
-
-        workbook_custom_doc_props
-
-
-Information for Developers
---------------------------
-
-    .. toctree::
-        :maxdepth: 1
-
-        development
+    changes
 
 
 API Documentation
@@ -278,27 +201,9 @@ Key Classes
 * :class:`openpyxl.cell.cell.Cell`
 
 
-Full API
-++++++++
-
-.. toctree::
-    :maxdepth: 2
-
-    api/openpyxl
-
-
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-Release Notes
-=============
-
-.. toctree::
-    :maxdepth: 1
-
-    changes
