@@ -138,9 +138,28 @@ Contents
 
     tutorial
     usage
-    optimized
-    pandas
-    formula
+
+
+.. toctree::
+    :caption: Styling
+    :maxdepth: 1
+
+    styles
+    rich_text
+    formatting
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Worksheets
+
+    editing_worksheets
+    worksheet_properties
+    validation
+    worksheet_tables
+    filters
+    print_settings
+    pivot
+    comments
 
 .. toctree::
     :maxdepth: 1
@@ -152,34 +171,25 @@ Contents
 
 .. toctree::
     :maxdepth: 1
-    :caption: Worksheets
+    :caption: Charts
 
-    editing_worksheets
-    worksheet_properties
-    validation
     charts/introduction
-    worksheet_tables
-    filters
-    print_settings
-    pivot
-    comments
 
 .. toctree::
-    :caption: Styling
+    :caption: Advanced Settings
     :maxdepth: 1
 
-    styles
-    rich_text
-    formatting
+    optimized
+    performance
+    pandas
+    formula
     datetime
-
 
 .. toctree::
     :caption: Developers
     :maxdepth: 1
 
     development
-    performance
     api/openpyxl
        
 .. toctree::
