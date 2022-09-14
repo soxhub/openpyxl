@@ -1,63 +1,92 @@
 Simple usage
 ============
 
-Write a workbook
-----------------
-.. :: doctest
+Example: Creating a simple spreadsheet and bar chart
+----------------------------------------------------
+
+In this example we're going to create a sheet from scratch and add some data and then plot it.
+We'll also explore some limited cell style and formatting.
+
+The data we'll be entering on the sheet is below:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Species
+     - Leaf Color
+     - Height (cm)
+   * - Maple
+     - Red
+     - 549
+   * - Oak
+     - Green
+     - 783
+   * - Pine
+     - Green
+     - 1204
+
+To start, let's load in openpyxl and create a new workbook. and get the active sheet.
+We'll also enter our tree data.
+
+.. :: doctest exercise-1
 
 >>> from openpyxl import Workbook
->>> from openpyxl.utils import get_column_letter
->>>
+
 >>> wb = Workbook()
->>>
->>> dest_filename = 'empty_book.xlsx'
->>>
->>> ws1 = wb.active
->>> ws1.title = "range names"
->>>
->>> for row in range(1, 40):
-...     ws1.append(range(600))
->>>
->>> ws2 = wb.create_sheet(title="Pi")
->>>
->>> ws2['F5'] = 3.14
->>>
->>> ws3 = wb.create_sheet(title="Data")
->>> for row in range(10, 20):
-...     for col in range(27, 54):
-...         _ = ws3.cell(column=col, row=row, value="{0}".format(get_column_letter(col)))
->>> print(ws3['AA10'].value)
-AA
->>> wb.save(filename = dest_filename)
+>>> ws = wb.active
+>>> treeData = [["Type", "Leaf Color", "Height"], ["Maple", "Red", 549], ["Oak", "Green", 783], ["Pine", "Green", 1204]]
 
+Next we'll enter this data onto the worksheet. As this is a list of lists, we can simply use the :func:`Worksheet.append` function.
 
-Read an existing workbook
--------------------------
-.. :: doctest
+.. :: doctest exercise-1
 
->>> from openpyxl import load_workbook
->>> wb = load_workbook(filename = 'empty_book.xlsx')
->>> sheet_ranges = wb['range names']
->>> print(sheet_ranges['D18'].value)
-3
+>>> for row in treeData:
+...     ws.append(row)
 
+Now we should make our heading Bold to make it stand out a bit more, to do that we'll need to create a :class:`styles.Font` and apply it to all the cells in our header row.
 
-.. note ::
+.. :: doctest exercise-1
 
-    There are several flags that can be used in load_workbook.
+>>> from openpyxl.styles import Font
 
-    - `data_only` controls whether cells with formulae have either the
-      formula (default) or the value stored the last time Excel read the sheet.
+>>> ft = Font(bold=True)
+>>> for row in ws["A1:C1"]:
+...     for cell in row:
+...         cell.font = ft
 
-    - `keep_vba` controls whether any Visual Basic elements are preserved or
-      not (default). If they are preserved they are still not editable.
+It's time to make some charts. First, we'll start by importing the appropriate packages from :class:`openpyxl.chart` then define some basic attributes
 
+.. :: doctest exercise-1
 
-.. warning ::
+>>> from openpyxl.chart import BarChart, Series, Reference
 
-    openpyxl does currently not read all possible items in an Excel file so
-    shapes will be lost from existing files if they are opened and saved with
-    the same name.
+>>> chart = BarChart()
+>>> chart.type = "col"
+>>> chart.title = "Tree Height"
+>>> chart.y_axis.title = 'Height (cm)'
+>>> chart.x_axis.title = 'Tree Type'
+>>> chart.legend = None
+
+That's created the skeleton of what will be our bar chart. Now we need to add references to where the data is and pass that to the chart object
+
+.. :: doctest exercise-1
+
+>>> data = Reference(ws, min_col=3, min_row=2, max_row=4, max_col=3)
+>>> categories = Reference(ws, min_col=1, min_row=2, max_row=4, max_col=1)
+
+>>> chart.add_data(data)
+>>> chart.set_categories(categories)
+
+Finally we can add it to the sheet.
+
+.. :: doctest exercise-1
+
+>>> ws.add_chart(chart, "E1")
+>>> wb.save("TreeData.xlsx")
+
+And there you have it. If you open that doc now it should look something like this
+
+.. image:: exercise-1-result.png
 
 
 Openpyxl won't open a workbook
