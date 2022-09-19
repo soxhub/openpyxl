@@ -138,6 +138,7 @@ Contents
 
     tutorial
     usage
+    faq
 
 
 .. toctree::
