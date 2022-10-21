@@ -480,3 +480,109 @@ class TestConditionalFormat:
         node = fromstring(src)
         fmt = ConditionalFormat.from_tree(node)
         assert fmt == ConditionalFormat(priority=4)
+
+
+
+@pytest.fixture
+def ConditionalFormatList():
+    from ..table import ConditionalFormatList
+    return ConditionalFormatList
+
+
+class TestConditionalFormatList:
+
+    def test_ctor(self, ConditionalFormatList, ConditionalFormat):
+        fmt = ConditionalFormat(priority=4)
+        fmts = ConditionalFormatList(conditionalFormat=(fmt,))
+        xml = tostring(fmts.to_tree())
+        expected = """
+        <conditionalFormats count="1">
+        <conditionalFormat priority="4" scope="selection" />
+        </conditionalFormats>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, ConditionalFormatList, ConditionalFormat):
+        src = """
+        <conditionalFormats>
+        <conditionalFormat priority="4" scope="selection" />
+        </conditionalFormats>
+        """
+        node = fromstring(src)
+        fmts = ConditionalFormatList.from_tree(node)
+        assert fmts.conditionalFormat == [ConditionalFormat(priority=4)]
+
+
+    def test_dedupe(self, ConditionalFormatList):
+        src = """
+        <conditionalFormats count="3">
+        <conditionalFormat scope="data" priority="3">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="0"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        <conditionalFormat scope="data" priority="2">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="1"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        <conditionalFormat scope="data" priority="1">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="1"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        </conditionalFormats>
+        """
+        node = fromstring(src)
+        fmts = ConditionalFormatList.from_tree(node)
+        fmts._dedupe()
+        assert len(fmts.conditionalFormat) == 2
+        xml = tostring(fmts.to_tree())
+        expected = """
+        <conditionalFormats count="2">
+        <conditionalFormat scope="data" priority="3">
+        <pivotAreas>
+          <pivotArea dataOnly="1" outline="0" fieldPosition="0" type="normal">
+            <references count="1">
+              <reference field="4294967294" selected="0">
+                <x v="0"/>
+              </reference>
+            </references>
+          </pivotArea>
+        </pivotAreas>
+        </conditionalFormat>
+        <conditionalFormat scope="data" priority="1">
+        <pivotAreas>
+          <pivotArea dataOnly="1" outline="0" fieldPosition="0" type="normal">
+            <references count="1">
+              <reference field="4294967294" selected="0">
+                <x v="1"/>
+              </reference>
+            </references>
+          </pivotArea>
+        </pivotAreas>
+        </conditionalFormat>
+        </conditionalFormats>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
