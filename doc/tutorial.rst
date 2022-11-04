@@ -1,6 +1,43 @@
 Tutorial
 ========
 
+Installation
+------------
+
+Install openpyxl using pip. It is advisable to do this in a Python virtualenv
+without system packages::
+
+    $ pip install openpyxl
+
+.. note::
+
+    There is support for the popular `lxml`_ library which will be used if it
+    is installed. This is particular useful when creating large files.
+
+.. _lxml: http://lxml.de
+
+.. warning::
+
+    To be able to include images (jpeg, png, bmp,...) into an openpyxl file,
+    you will also need the "pillow" library that can be installed with::
+
+    $ pip install pillow
+
+    or browse https://pypi.python.org/pypi/Pillow/, pick the latest version
+    and head to the bottom of the page for Windows binaries.
+
+
+Working with a checkout
++++++++++++++++++++++++
+
+Sometimes you might want to work with the checkout of a particular version.
+This may be the case if bugs have been fixed but a release has not yet been
+made.
+
+.. parsed-literal::
+    $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
+
+
 Create a workbook
 -----------------
 

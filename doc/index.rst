@@ -92,49 +92,10 @@ There are several ways to contribute, even if you can't code (or can't code well
       3.6, 3.7, 3.8 and 3.9.
 
 
-Installation
-------------
-
-Install openpyxl using pip. It is advisable to do this in a Python virtualenv
-without system packages::
-
-    $ pip install openpyxl
-
-.. note::
-
-    There is support for the popular `lxml`_ library which will be used if it
-    is installed. This is particular useful when creating large files.
-
-.. _lxml: http://lxml.de
-
-.. warning::
-
-    To be able to include images (jpeg, png, bmp,...) into an openpyxl file,
-    you will also need the "pillow" library that can be installed with::
-
-    $ pip install pillow
-
-    or browse https://pypi.python.org/pypi/Pillow/, pick the latest version
-    and head to the bottom of the page for Windows binaries.
-
-
-Working with a checkout
-+++++++++++++++++++++++
-
-Sometimes you might want to work with the checkout of a particular version.
-This may be the case if bugs have been fixed but a release has not yet been
-made.
-
-.. parsed-literal::
-    $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
-
-
-Contents
---------
-
 .. toctree::
     :maxdepth: 1
     :caption: Introduction
+    :hidden:
 
     tutorial
     usage
@@ -144,6 +105,7 @@ Contents
 .. toctree::
     :caption: Styling
     :maxdepth: 1
+    :hidden:
 
     styles
     rich_text
@@ -152,6 +114,7 @@ Contents
 .. toctree::
     :maxdepth: 1
     :caption: Worksheets
+    :hidden:
 
     editing_worksheets
     worksheet_properties
@@ -165,6 +128,7 @@ Contents
 .. toctree::
     :maxdepth: 1
     :caption: Workbooks
+    :hidden:
 
     defined_names
     workbook_custom_doc_props
@@ -173,12 +137,14 @@ Contents
 .. toctree::
     :maxdepth: 1
     :caption: Charts
+    :hidden:
 
     charts/introduction
 
 .. toctree::
     :caption: Advanced Settings
     :maxdepth: 1
+    :hidden:
 
     optimized
     performance
@@ -189,6 +155,7 @@ Contents
 .. toctree::
     :caption: Developers
     :maxdepth: 1
+    :hidden:
 
     development
     api/openpyxl
