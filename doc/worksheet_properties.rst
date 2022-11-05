@@ -71,3 +71,14 @@ There are also several convenient properties defined as worksheet views. You can
 >>> ws.sheet_view.zoom = 85 # Sets 85% zoom
 >>> ws.sheet_view.showFormulas = True
 >>> ws.sheet_view.tabSelected = True
+
+Fold (outline)
+----------------------
+.. :: doctest
+
+>>> import openpyxl
+>>> wb = openpyxl.Workbook()
+>>> ws = wb.create_sheet()
+>>> ws.column_dimensions.group('A','D', hidden=True)
+>>> ws.row_dimensions.group(1,10, hidden=True)
+>>> wb.save('group.xlsx')

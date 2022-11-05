@@ -372,4 +372,12 @@ You can use the :func:`openpyxl.load_workbook` to open an existing workbook::
     shapes will be lost from existing files if they are opened and saved with
     the same name.
 
+Errors loading workbooks
+------------------------
+
+Sometimes openpyxl will fail to open a workbook. This is usually because there is something wrong with the file.
+If this is the case then openpyxl will try and provide some more information. Openpyxl follows the OOXML specification closely and will reject files that do not because they are invalid. When this happens you can use the exception from openpyxl to inform the developers of whichever application or library produced the file. As the OOXML specification is publicly available it is important that developers follow it.
+
+You can find the spec by searching for ECMA-376, most of the implementation specifics are in Part 4.
+
 This ends the tutorial for now, you can proceed to the :doc:`usage` section

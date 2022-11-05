@@ -99,7 +99,6 @@ There are several ways to contribute, even if you can't code (or can't code well
 
     tutorial
     usage
-    faq
 
 
 .. toctree::
@@ -124,6 +123,8 @@ There are several ways to contribute, even if you can't code (or can't code well
     print_settings
     pivot
     comments
+    datetime
+    simple_formulae
 
 .. toctree::
     :maxdepth: 1
@@ -142,16 +143,28 @@ There are several ways to contribute, even if you can't code (or can't code well
     charts/introduction
 
 .. toctree::
-    :caption: Advanced Settings
+    :maxdepth: 1
+    :caption: Images
+    :hidden:
+
+    images
+
+.. toctree::
+    :caption: Pandas
+    :maxdepth: 1
+    :hidden:
+
+    pandas
+
+.. toctree::
+    :caption: Performance
     :maxdepth: 1
     :hidden:
 
     optimized
     performance
-    pandas
-    formula
-    datetime
-
+    
+    
 .. toctree::
     :caption: Developers
     :maxdepth: 1
@@ -159,6 +172,7 @@ There are several ways to contribute, even if you can't code (or can't code well
 
     development
     api/openpyxl
+    formula
        
 .. toctree::
     :maxdepth: 1
