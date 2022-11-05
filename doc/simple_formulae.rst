@@ -1,24 +1,6 @@
-FAQ
-===
-Using number formats
---------------------
+Simple Formualae
+================
 
-You can specify the number format for cells, or for some instances (ie datetime) it will automatically format.
-
-.. :: doctest
-
->>> import datetime
->>> from openpyxl import Workbook
->>> wb = Workbook()
->>> ws = wb.active
->>> # set date using a Python datetime
->>> ws['A1'] = datetime.datetime(2010, 7, 21)
->>>
->>> ws['A1'].number_format
-'yyyy-mm-dd h:mm:ss'
->>> 
->>> ws["A2"] = 0.123456
->>> ws["A2"].number_format = "0.00" # Display to 2dp
 
 Using formulae
 --------------
@@ -87,64 +69,3 @@ Data Table Formulae
 As with array formulae, data table formulae are applied to a range of cells. The table object themselves contain no formulae but only the definition of table: the cells covered and whether it is one dimensional or not, etc. For further information refer to the OOXML specification.
 
 To find out whether a worksheet has any data tables, use the `ws.table_formulae` property.
-
-Errors loading workbooks
-++++++++++++++++++++++++++++++
-
-Sometimes openpyxl will fail to open a workbook. This is usually because there is something wrong with the file.
-If this is the case then openpyxl will try and provide some more information. Openpyxl follows the OOXML specification closely and will reject files that do not because they are invalid. When this happens you can use the exception from openpyxl to inform the developers of whichever application or library produced the file. As the OOXML specification is publicly available it is important that developers follow it.
-
-You can find the spec by searching for ECMA-376, most of the implementation specifics are in Part 4.
-
-Merge / Unmerge cells
----------------------
-
-When you merge cells all cells but the top-left one are **removed** from the
-worksheet. To carry the border-information of the merged cell, the boundary cells of the
-merged cell are created as MergeCells which always have the value None.
-See :ref:`styling-merged-cells` for information on formatting merged cells.
-
-.. :: doctest
-
->>> from openpyxl.workbook import Workbook
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>>
->>> ws.merge_cells('A2:D2')
->>> ws.unmerge_cells('A2:D2')
->>>
->>> # or equivalently
->>> ws.merge_cells(start_row=2, start_column=1, end_row=4, end_column=4)
->>> ws.unmerge_cells(start_row=2, start_column=1, end_row=4, end_column=4)
-
-
-Inserting an image
--------------------
-.. :: doctest
-
->>> from openpyxl import Workbook
->>> from openpyxl.drawing.image import Image
->>>
->>> wb = Workbook()
->>> ws = wb.active
->>> ws['A1'] = 'You should see three logos below'
->>>
->>> # create an image
->>> img = Image('logo.png')
->>>
->>> # add to worksheet and anchor next to cells
->>> ws.add_image(img, 'A1')
->>> wb.save('logo.xlsx')
-
-
-Fold (outline)
-----------------------
-.. :: doctest
-
->>> import openpyxl
->>> wb = openpyxl.Workbook()
->>> ws = wb.create_sheet()
->>> ws.column_dimensions.group('A','D', hidden=True)
->>> ws.row_dimensions.group(1,10, hidden=True)
->>> wb.save('group.xlsx')
