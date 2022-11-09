@@ -355,7 +355,7 @@ class Reference(Serialisable):
                  stdDevPSubtotal=None,
                  varSubtotal=None,
                  varPSubtotal=None,
-                 x=None,
+                 x=(),
                  extLst=None,
                 ):
         self.field = field
@@ -483,6 +483,48 @@ class ConditionalFormat(Serialisable):
         self.priority = priority
         self.pivotAreas = pivotAreas
         self.extLst = extLst
+
+
+from collections import defaultdict
+from operator import attrgetter
+
+class ConditionalFormatList(Serialisable):
+
+    tagname = "conditionalFormats"
+
+    conditionalFormat = Sequence(expected_type=ConditionalFormat)
+
+    __attrs__ = ("count",)
+
+    def __init__(self, conditionalFormat=(), count=None):
+        self.conditionalFormat = conditionalFormat
+
+
+    def _dedupe(self):
+        """Group formats by pivot area reference and field id to match what happens in worksheets
+        """
+        fmts = {}
+        areas = defaultdict(list)
+        for fmt in self.conditionalFormat:
+            for area in fmt.pivotAreas:
+                ref = area.references[0]
+                key = (ref.field, tuple(ref.x))
+                areas[key].append(area)
+                fmts[key] = fmt
+        for (_, fmt), (_, area) in zip(fmts.items(), areas.items()):
+            fmt.pivotArea = area
+        if fmts:
+            self.conditionalFormat = list(fmts.values())
+
+
+    @property
+    def count(self):
+        return len(self.conditionalFormat)
+
+
+    def to_tree(self, tagname=None):
+        self._dedupe()
+        return super().to_tree(tagname)
 
 
 class Format(Serialisable):
@@ -946,7 +988,7 @@ class TableDefinition(Serialisable):
     pageFields = NestedSequence(expected_type=PageField, count=True)
     dataFields = NestedSequence(expected_type=DataField, count=True)
     formats = NestedSequence(expected_type=Format, count=True)
-    conditionalFormats = NestedSequence(expected_type=ConditionalFormat, count=True)
+    conditionalFormats = Typed(expected_type=ConditionalFormatList, allow_none=True)
     chartFormats = NestedSequence(expected_type=ChartFormat, count=True)
     pivotHierarchies = NestedSequence(expected_type=PivotHierarchy, count=True)
     pivotTableStyleInfo = Typed(expected_type=PivotTableStyle, allow_none=True)
@@ -1040,7 +1082,7 @@ class TableDefinition(Serialisable):
                  pageFields=(),
                  dataFields=(),
                  formats=(),
-                 conditionalFormats=(),
+                 conditionalFormats=None,
                  chartFormats=(),
                  pivotHierarchies=(),
                  pivotTableStyleInfo=None,
@@ -1128,6 +1170,7 @@ class TableDefinition(Serialisable):
         self.dataFields = dataFields
         self.formats = formats
         self.conditionalFormats = conditionalFormats
+        self.conditionalFormats = None
         self.chartFormats = chartFormats
         self.pivotHierarchies = pivotHierarchies
         self.pivotTableStyleInfo = pivotTableStyleInfo
