@@ -94,32 +94,30 @@ class WorkbookWriter:
     def write_names(self):
         defined_names = list(self.wb.defined_names.values())
 
-        # Defined names -> autoFilter
         for idx, sheet in enumerate(self.wb.worksheets):
+            quoted = quote_sheetname(sheet.title)
 
+            # local names
             if sheet.defined_names:
-                defined_names.extend(sheet.defined_names.values())
+                names = sheet.defined_names.values()
+                for n in names:
+                    n.localSheetId = idx
+                defined_names.extend(names)
 
-            auto_filter = sheet.auto_filter.ref
-
-            if auto_filter:
+            if sheet.auto_filter:
                 name = DefinedName(name='_FilterDatabase', localSheetId=idx, hidden=True)
-                name.value = u"{0}!{1}".format(quote_sheetname(sheet.title),
-                                              absolute_coordinate(auto_filter)
-                                              )
+                name.value = f"{quoted}!{sheet.auto_filter}"
                 defined_names.append(name)
 
-            # print titles
             if sheet.print_titles:
                 name = DefinedName(name="Print_Titles", localSheetId=idx)
-                name.value = ",".join([u"{0}!{1}".format(quote_sheetname(sheet.title), r)
+                name.value = ",".join([u"{0}!{1}".format(quoted, r)
                                       for r in sheet.print_titles.split(",")])
                 defined_names.append(name)
 
-            # print areas
             if sheet.print_area:
                 name = DefinedName(name="Print_Area", localSheetId=idx)
-                name.value = ",".join([u"{0}!{1}".format(quote_sheetname(sheet.title), r)
+                name.value = ",".join([u"{0}!{1}".format(quoted, r)
                                       for r in sheet.print_area])
                 defined_names.append(name)
 
