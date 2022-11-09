@@ -19,6 +19,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange
 from openpyxl.descriptors.sequence import ValueSequence
+from openpyxl.utils import absolute_coordinate
 
 
 class SortCondition(Serialisable):
@@ -352,6 +353,9 @@ class AutoFilter(Serialisable):
     def __bool__(self):
         return self.ref is not None
 
+
+    def __str__(self):
+        return absolute_coordinate(self.ref)
 
 
     def add_filter_column(self, col_id, vals, blank=False):
