@@ -111,8 +111,8 @@ class WorkbookWriter:
 
             if sheet.print_titles:
                 name = DefinedName(name="Print_Titles", localSheetId=idx)
-                name.value = ",".join([u"{0}!{1}".format(quoted, r)
-                                      for r in sheet.print_titles.split(",")])
+                ranges = [attr for attr in [sheet.print_title_cols, sheet.print_title_rows] if attr]
+                name.value = ",".join([u"{0}!{1}".format(quoted, r) for r in ranges])
                 defined_names.append(name)
 
             if sheet.print_area:
