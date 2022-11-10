@@ -2,9 +2,7 @@
 
 """Write the workbook global settings to the archive."""
 
-from copy import copy
-
-from openpyxl.utils import absolute_coordinate, quote_sheetname
+from openpyxl.utils import quote_sheetname
 from openpyxl.xml.constants import (
     ARC_APP,
     ARC_CORE,
