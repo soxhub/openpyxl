@@ -1,13 +1,12 @@
 # Copyright (c) 2010-2022 openpyxl
 
-# test
 import pytest
+
 from openpyxl.tests.helper import compare_xml
+from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.utils import quote_sheetname
 
-# package
-from openpyxl import Workbook
-from openpyxl.xml.functions import tostring
-
+from ..workbook import Workbook
 
 @pytest.fixture
 def Unicode_Workbook():
@@ -169,6 +168,64 @@ class TestWorkbookWriter:
         </sheets>
         <definedNames>
         <definedName localSheetId="0" hidden="1" name="_xlnm._FilterDatabase">'D&#xFC;sseldorf Sheet'!$A$1:$A$10</definedName>
+        </definedNames>
+        <calcPr calcId="124519" fullCalcOnLoad="1"/>
+        </workbook>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_defined_name_global(self, Unicode_Workbook, WorkbookWriter):
+        wb = Unicode_Workbook
+        name = DefinedName(name="MyConstant", attr_text="3.14")
+        wb.defined_names.add(name)
+
+        writer = WorkbookWriter(wb)
+        xml = writer.write()
+        expected = """
+        <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <workbookPr/>
+        <workbookProtection/>
+        <bookViews>
+          <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
+        </bookViews>
+        <sheets>
+          <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
+        </sheets>
+        <definedNames>
+        <definedName name="MyConstant">3.14</definedName>
+        </definedNames>
+        <calcPr calcId="124519" fullCalcOnLoad="1"/>
+        </workbook>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_defined_name_locall(self, Unicode_Workbook, WorkbookWriter):
+        wb = Unicode_Workbook
+        ws = wb.active
+        ref = f"{quote_sheetname(ws.title)}!$A$1:$A$10"
+        name = DefinedName(name="MyReference", attr_text=ref)
+        ws.defined_names.add(name)
+
+        writer = WorkbookWriter(wb)
+        xml = writer.write()
+        expected = """
+        <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <workbookPr/>
+        <workbookProtection/>
+        <bookViews>
+          <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
+        </bookViews>
+        <sheets>
+          <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
+        </sheets>
+        <definedNames>
+        <definedName localSheetId="0" name="MyReference">'D&#xFC;sseldorf Sheet'!$A$1:$A$10</definedName>
         </definedNames>
         <calcPr calcId="124519" fullCalcOnLoad="1"/>
         </workbook>
