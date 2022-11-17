@@ -26,20 +26,6 @@ def WorkbookWriter():
 class TestWorkbookWriter:
 
 
-    def test_write_auto_filter(self, datadir, WorkbookWriter):
-        datadir.chdir()
-        wb = Workbook()
-        ws = wb.active
-        ws['F42'].value = 'hello'
-        ws.auto_filter.ref = 'A1:F1'
-
-        writer = WorkbookWriter(wb)
-        xml = writer.write()
-        with open('workbook_auto_filter.xml') as expected:
-            diff = compare_xml(xml, expected.read())
-            assert diff is None, diff
-
-
     def test_write_hidden_worksheet(self, WorkbookWriter):
         wb = Workbook()
         ws = wb.active
@@ -161,7 +147,7 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_print_autofilter(self, Unicode_Workbook, WorkbookWriter):
+    def test_autofilter(self, Unicode_Workbook, WorkbookWriter):
         wb = Unicode_Workbook
         ws = wb.active
         ws.auto_filter.ref = "A1:A10"
