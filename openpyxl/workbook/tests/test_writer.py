@@ -26,7 +26,7 @@ def WorkbookWriter():
 class TestWorkbookWriter:
 
 
-    def test_write_hidden_worksheet(self, WorkbookWriter):
+    def test_hidden_worksheet(self, WorkbookWriter):
         wb = Workbook()
         ws = wb.active
         ws.sheet_state = ws.SHEETSTATE_HIDDEN
@@ -53,7 +53,7 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_write_workbook(self, datadir, WorkbookWriter):
+    def test_workbook(self, datadir, WorkbookWriter):
         datadir.chdir()
         wb = Workbook()
 
@@ -65,7 +65,7 @@ class TestWorkbookWriter:
             assert diff is None, diff
 
 
-    def test_write_workbook_code_name(self, WorkbookWriter):
+    def test_workbook_code_name(self, WorkbookWriter):
         wb = Workbook()
         wb.code_name = u'MyWB'
 
@@ -177,7 +177,7 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_write_workbook_protection(self, datadir, WorkbookWriter):
+    def test_workbook_protection(self, datadir, WorkbookWriter):
         from ...workbook.protection import WorkbookProtection
 
         datadir.chdir()
