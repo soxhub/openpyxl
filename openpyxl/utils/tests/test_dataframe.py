@@ -52,8 +52,8 @@ def test_dataframe_multiindex():
     import numpy
 
     arrays = [
-        ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
-        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']
+        ['bar', 'bar', 'bar', 'baz', 'foo', 'foo', 'qux', 'qux'],
+        ['one', 'two', 'three', 'one', 'one', 'two', 'one', 'two']
     ]
     tuples = list(zip(*arrays))
     index = MultiIndex.from_tuples(tuples, names=['first', 'second'])

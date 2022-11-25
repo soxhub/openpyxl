@@ -48,7 +48,8 @@ def dataframe_to_rows(df, index=True, header=True):
             yield row
 
     if index:
-        yield df.index.names
+        indexNames = list(df.index.names)
+        yield indexNames
 
     expanded = ([v] for v in df.index)
     if df.index.nlevels > 1:
@@ -67,26 +68,34 @@ def expand_index(index, header=False):
     For columns use header = True
     For axes use header = False (default)
     """
+    import numpy
 
-    shape = index.levshape
-    depth = prod(shape)
-    row = [None] * index.nlevels
-    lengths = [depth / size for size in accumulate(shape, operator.mul)] # child index lengths
-    columns = [ [] for l in index.names] # avoid copied list gotchas
+    # Idea is to have a list with the previous values, then iterate over the values (should always be a list of tuples)
+    # The inner loop iterates over the elements of the tuple and the previous slice, if there's a match append None to the
+    # result, otherwise append the new element and update the previous list
+    values = list(index.values)
+    previousVal = [None] * len(values[0])
+    columns = []
 
-    for idx, entry in enumerate(index):
-        row = [None] * index.nlevels
-        for level, v in enumerate(entry):
-            length = lengths[level]
-            if idx % length:
-                v = None
-            row[level] = v
-            if header:
-                columns[level].append(v)
+    for value in values:
+        row = []
+        value = list(value)
 
+        for i in range(len(previousVal)):
+            if value[i] == previousVal[i] and value[:i] == previousVal[:i]:
+                row.append(None)
+            else:
+                row.append(value[i])
+        previousVal = value
+
+        # If this is for a row index, we're already returning a row so just yield
         if not header:
             yield row
+        else:
+            columns.append(row)
 
+    # If it's for a header, we need to transpose to get it in row order
     if header:
+        columns = numpy.array(columns).transpose().tolist()
         for row in columns:
             yield row
