@@ -28,8 +28,6 @@ from openpyxl.packaging.relationship import RelationshipList
 from openpyxl.workbook.child import _WorkbookChild
 from openpyxl.workbook.defined_name import (
     DefinedNameDict,
-    COL_RANGE_RE,
-    ROW_RANGE_RE,
 )
 
 from openpyxl.formula.translate import Translator
@@ -60,6 +58,7 @@ from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 from .table import TableList
 from .formula import ArrayFormula
+from .print_settings import PrintTitles, ColRange, RowRange
 
 
 class Worksheet(_WorkbookChild):
@@ -830,7 +829,7 @@ class Worksheet(_WorkbookChild):
     def print_title_rows(self):
         """Rows to be printed at the top of every page (ex: '1:3')"""
         if self._print_rows:
-            return self._print_rows
+            return str(self._print_rows)
 
 
     @print_title_rows.setter
@@ -840,16 +839,14 @@ class Worksheet(_WorkbookChild):
         format `1:3`
         """
         if rows is not None:
-            if not ROW_RANGE_RE.match(rows):
-                raise ValueError("Print title rows must be the form 1:3")
-        self._print_rows = rows
+            self._print_rows = RowRange(rows)
 
 
     @property
     def print_title_cols(self):
         """Columns to be printed at the left side of every page (ex: 'A:C')"""
         if self._print_cols:
-            return self._print_cols
+            return str(self._print_cols)
 
 
     @print_title_cols.setter
@@ -859,17 +856,13 @@ class Worksheet(_WorkbookChild):
         format ``A:C`
         """
         if cols is not None:
-            if not COL_RANGE_RE.match(cols):
-                raise ValueError("Print title cols must be the form C:D")
-        self._print_cols = cols
+            self._print_cols = ColRange(cols)
 
 
     @property
     def print_titles(self):
-        if self.print_title_cols and self.print_title_rows:
-            return ",".join([self.print_title_rows, self.print_title_cols])
-        else:
-            return self.print_title_rows or self.print_title_cols
+        titles = PrintTitles(cols=self._print_cols, rows=self._print_rows, title=self.title)
+        return str(titles)
 
 
     @property

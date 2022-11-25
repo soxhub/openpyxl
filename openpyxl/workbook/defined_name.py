@@ -1,5 +1,6 @@
 # Copyright (c) 2010-2022 openpyxl
 
+from collections import defaultdict
 import re
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -197,7 +198,6 @@ class DefinedNameList(Serialisable):
         """
         Break names down into sheet locals and globals
         """
-        from collections import defaultdict
         names = defaultdict(DefinedNameDict)
         for defn in self.definedName:
             if defn.localSheetId is None:

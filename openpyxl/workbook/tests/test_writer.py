@@ -137,7 +137,7 @@ class TestWorkbookWriter:
           <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
         </sheets>
         <definedNames>
-          <definedName localSheetId="0" name="_xlnm.Print_Titles">'D&#xFC;sseldorf Sheet'!1:5</definedName>
+          <definedName localSheetId="0" name="_xlnm.Print_Titles">'D&#xFC;sseldorf Sheet'!$1:$5</definedName>
         </definedNames>
         <calcPr calcId="124519" fullCalcOnLoad="1"/>
         </workbook>

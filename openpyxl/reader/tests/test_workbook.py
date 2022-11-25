@@ -106,7 +106,7 @@ class TestWorkbookParser:
         assert len(wb.defined_names) == 2
         ws = wb['Sheet']
         assert ws.print_title_rows == "$1:$1"
-        assert ws.print_titles == "$1:$1"
+        assert ws.print_titles == "'Sheet'!$1:$1"
         assert ws.print_area == ['$A$1:$D$5', '$B$9:$F$14']
 
 

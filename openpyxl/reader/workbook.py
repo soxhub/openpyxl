@@ -14,11 +14,12 @@ from openpyxl.workbook import Workbook
 from openpyxl.workbook.defined_name import (
     DefinedNameList,
     _unpack_print_area,
-    _unpack_print_titles,
+    #_unpack_print_titles,
 )
 from openpyxl.workbook.external_link.external import read_external_link
 from openpyxl.pivot.cache import CacheDefinition
 from openpyxl.pivot.record import RecordList
+from openpyxl.worksheet.print_settings import PrintTitles
 
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
@@ -112,9 +113,9 @@ class WorkbookParser:
                 if reserved is not None:
                     settings.append(name)
                 if reserved == "Print_Titles":
-                    rows, cols = _unpack_print_titles(defn)
-                    sheet.print_title_rows = rows
-                    sheet.print_title_cols = cols
+                    titles = PrintTitles.from_string(defn.value)
+                    sheet._print_rows = titles.rows
+                    sheet._print_cols = titles.cols
                 elif reserved == "Print_Area":
                     sheet.print_area = _unpack_print_area(defn)
 

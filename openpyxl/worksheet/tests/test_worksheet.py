@@ -404,9 +404,9 @@ class TestWorksheet:
 
     @pytest.mark.parametrize("rows, cols, titles",
                              [
-                                ("1:4", None, "1:4"),
-                                (None, "A:F", "A:F"),
-                                ("1:2", "C:D", "1:2,C:D"),
+                                ("1:4", None, "'Sheet'!$1:$4"),
+                                (None, "A:F", "'Sheet'!$A:$F"),
+                                ("1:2", "C:D", "'Sheet'!$1:$2,$C:$D"),
                              ]
                              )
     def test_print_titles_new(self, rows, cols, titles):
@@ -414,7 +414,7 @@ class TestWorksheet:
         ws = wb.active
         ws.print_title_rows = rows
         ws.print_title_cols = cols
-        assert ws.print_titles == titles
+        assert str(ws.print_titles) == titles
 
 
     @pytest.mark.parametrize("cell_range, result",

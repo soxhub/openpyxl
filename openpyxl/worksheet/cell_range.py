@@ -13,6 +13,7 @@ from openpyxl.utils import (
     quote_sheetname,
 )
 
+from openpyxl.workbook.defined_name import TITLES_REGEX
 
 class CellRange(Serialisable):
     """
