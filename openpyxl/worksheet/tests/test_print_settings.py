@@ -88,3 +88,43 @@ class TestPrintTitles:
 
     def test_eq(self, PrintTitles):
         assert PrintTitles.from_string("'Sheet 1'!$A:$A") == "'Sheet 1'!$A:$A"
+
+
+@pytest.fixture
+def PrintArea():
+    from ..print_settings import PrintArea
+    return PrintArea
+
+
+class TestPrintArea:
+
+
+    @pytest.mark.parametrize("value, expected",
+                         [
+                             ("Sheet1!$A$1:$E$15", ["A1:E15"]),
+                             ("$A$1:$E$15", ["A1:E15"]),
+                             ("'Blatt1'!$A$1:$F$14,'Blatt1'!$H$10:$I$17,Blatt1!$I$16:$K$25",
+                              ["A1:F14","H10:I17","I16:K25"]),
+                             ("MySheet!#REF!", []),
+                             ("'C,D'!$A$1:$B$3", ["A1:B3"]),
+                             ("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14", ["A1:D5", "B9:F14"]),
+                         ]
+                         )
+    def test_from_string(self, PrintArea, value, expected):
+        area = PrintArea.from_string(value)
+        assert [str(r) for r in area.ranges] == expected
+
+
+    def test_empty(self, PrintArea):
+        area = PrintArea()
+        assert area == ""
+
+
+    def test_from_str(self, PrintArea):
+        area = PrintArea.from_string("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14")
+        assert str(area) == "''!$A$1:$D$5,''!$B$9:$F$14"
+
+
+    def test_eq(self, PrintArea):
+        area = PrintArea.from_string("Sheet1!$A$1:$E$15")
+        assert area == "''!$A$1:$E$15"

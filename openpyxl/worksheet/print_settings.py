@@ -7,9 +7,10 @@ from openpyxl.descriptors import (
     String,
     Typed,
 )
-from openpyxl.utils import get_column_letter, quote_sheetname
-from openpyxl.utils.cell import SHEET_TITLE
+from openpyxl.utils import quote_sheetname, absolute_coordinate
+from openpyxl.utils.cell import SHEET_TITLE, SHEETRANGE_RE, RANGE_EXPR
 
+from .cell_range import MultiCellRange
 
 COL_RANGE = r"""(?P<cols>[$]?(?P<min_col>[a-zA-Z]{1,3}):[$]?(?P<max_col>[a-zA-Z]{1,3}))"""
 COL_RANGE_RE = re.compile(COL_RANGE)
@@ -17,6 +18,7 @@ ROW_RANGE = r"""(?P<rows>[$]?(?P<min_row>\d+):[$]?(?P<max_row>\d+))"""
 ROW_RANGE_RE = re.compile(ROW_RANGE)
 TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
                           re.VERBOSE)
+PRINT_AREA_RE = re.compile(f"({SHEET_TITLE})?(?P<cells>{RANGE_EXPR})", re.VERBOSE)
 
 class ColRange(Strict):
     """
@@ -144,3 +146,34 @@ class PrintTitles(Strict):
         if titles:
             return f"{quote_sheetname(self.title)}!{titles}"
         return ""
+
+
+class PrintArea(MultiCellRange):
+
+
+    @classmethod
+    def from_string(cls, value):
+        new = []
+        for m in PRINT_AREA_RE.finditer(value): # can be multiple
+            coord = m.group("cells")
+            if coord:
+                new.append(coord)
+        return cls(new)
+
+
+    def __init__(self, ranges=(), title=""):
+        self.title = ""
+        super().__init__(ranges)
+
+
+    def __str__(self):
+        if self.ranges:
+            return ",".join([f"{quote_sheetname(self.title)}!{absolute_coordinate(str(range))}"
+                             for range in self.ranges])
+        return ""
+
+
+    def __eq__(self, other):
+        super().__eq__(other)
+        if isinstance(other, str):
+            return str(self) == other

@@ -107,7 +107,7 @@ class TestWorkbookParser:
         ws = wb['Sheet']
         assert ws.print_title_rows == "$1:$1"
         assert ws.print_titles == "'Sheet'!$1:$1"
-        assert ws.print_area == ['$A$1:$D$5', '$B$9:$F$14']
+        assert ws.print_area == "'Sheet'!$A$1:$D$5,'Sheet'!$B$9:$F$14"
 
 
     def test_name_invalid_index(self, datadir, WorkbookParser, recwarn):

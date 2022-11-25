@@ -11,15 +11,11 @@ from openpyxl.packaging.relationship import (
 )
 from openpyxl.packaging.workbook import WorkbookPackage
 from openpyxl.workbook import Workbook
-from openpyxl.workbook.defined_name import (
-    DefinedNameList,
-    _unpack_print_area,
-    #_unpack_print_titles,
-)
+from openpyxl.workbook.defined_name import DefinedNameList
 from openpyxl.workbook.external_link.external import read_external_link
 from openpyxl.pivot.cache import CacheDefinition
 from openpyxl.pivot.record import RecordList
-from openpyxl.worksheet.print_settings import PrintTitles
+from openpyxl.worksheet.print_settings import PrintTitles, PrintArea
 
 from openpyxl.utils.datetime import CALENDAR_MAC_1904
 
@@ -107,23 +103,18 @@ class WorkbookParser:
                 warn(f"Defined names for sheet index {idx} cannot be located")
                 continue
 
-            settings = []
+            new_names = {}
             for name, defn in names.items():
                 reserved = defn.is_reserved
-                if reserved is not None:
-                    settings.append(name)
-                if reserved == "Print_Titles":
+                if reserved is None:
+                    new_names[name] = defn
+
+                elif reserved == "Print_Titles":
                     titles = PrintTitles.from_string(defn.value)
                     sheet._print_rows = titles.rows
                     sheet._print_cols = titles.cols
                 elif reserved == "Print_Area":
-                    sheet.print_area = _unpack_print_area(defn)
-
-            for name in settings:
-                del names[name]
-            sheet.defined_names = names
-
-        return
+                    sheet._print_area = PrintArea.from_string(defn.value)
 
     @property
     def pivot_caches(self):

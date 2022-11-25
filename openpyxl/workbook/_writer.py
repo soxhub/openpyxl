@@ -114,8 +114,7 @@ class WorkbookWriter:
 
             if sheet.print_area:
                 name = DefinedName(name="Print_Area", localSheetId=idx)
-                name.value = ",".join([u"{0}!{1}".format(quoted, r)
-                                      for r in sheet.print_area])
+                name.value = sheet.print_area
                 defined_names.append(name)
 
         self.package.definedNames = DefinedNameList(definedName=defined_names)

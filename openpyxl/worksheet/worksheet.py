@@ -58,7 +58,12 @@ from .pagebreak import RowBreak, ColBreak
 from .scenario import ScenarioList
 from .table import TableList
 from .formula import ArrayFormula
-from .print_settings import PrintTitles, ColRange, RowRange
+from .print_settings import (
+    PrintTitles,
+    ColRange,
+    RowRange,
+    PrintArea,
+)
 
 
 class Worksheet(_WorkbookChild):
@@ -125,7 +130,7 @@ class Worksheet(_WorkbookChild):
         self.print_options = PrintOptions()
         self._print_rows = None
         self._print_cols = None
-        self._print_area = None
+        self._print_area = PrintArea()
         self.page_margins = PageMargins()
         self.views = SheetViewList()
         self.protection = SheetProtection()
@@ -871,7 +876,8 @@ class Worksheet(_WorkbookChild):
         The print area for the worksheet, or None if not set. To set, supply a range
         like 'A1:D4' or a list of ranges.
         """
-        return self._print_area
+        self._print_area.title = self.title
+        return str(self._print_area)
 
 
     @print_area.setter
@@ -880,13 +886,12 @@ class Worksheet(_WorkbookChild):
         Range of cells in the form A1:D4 or list of ranges. Print area can be cleared
         by passing `None` or an empty list
         """
-        if isinstance(value, str):
-            value = [value]
-
-        if value is None:
-            self._print_area = None
-        else:
-            self._print_area = [absolute_coordinate(v) for v in value]
+        if not value:
+            self._print_area = PrintArea()
+        elif isinstance(value, str):
+            self._print_area = PrintArea.from_string(value)
+        elif hasattr(value, "__iter__"):
+            self._print_area = PrintArea.from_string(",".join(value))
 
 
 def _gutter(idx, offset, max_val):

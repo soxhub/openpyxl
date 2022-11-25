@@ -13,8 +13,6 @@ from openpyxl.utils import (
     quote_sheetname,
 )
 
-from openpyxl.workbook.defined_name import TITLES_REGEX
-
 class CellRange(Serialisable):
     """
     Represents a range in a sheet: title and coordinates.
@@ -447,8 +445,6 @@ class MultiCellRange(Strict):
     def __str__(self):
         ranges = u" ".join([str(r) for r in self.ranges])
         return ranges
-
-    __str__ = __str__
 
 
     def add(self, coord):
