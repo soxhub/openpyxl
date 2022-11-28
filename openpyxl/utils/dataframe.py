@@ -70,32 +70,31 @@ def expand_index(index, header=False):
     """
     import numpy
 
-    # Idea is to have a list with the previous values, then iterate over the values (should always be a list of tuples)
-    # The inner loop iterates over the elements of the tuple and the previous slice, if there's a match append None to the
-    # result, otherwise append the new element and update the previous list
+    # For each element of the index, iterate over the members 
+    # If the 0 to nth member match the previous indices members then
+    # Insert `None` into the resulting array, otherwise insert the new member.
     values = list(index.values)
-    previousVal = [None] * len(values[0])
-    columns = []
+    previous_value = [None] * len(values[0])
+    result = []
 
     for value in values:
         row = []
-        value = list(value)
 
-        for i in range(len(previousVal)):
-            if value[i] == previousVal[i] and value[:i] == previousVal[:i]:
+        for idx, member in enumerate(value):
+            if member == previous_value[idx] and value[:idx] == previous_value[:idx]:
                 row.append(None)
             else:
-                row.append(value[i])
-        previousVal = value
+                row.append(member)
+        previous_value = value
 
         # If this is for a row index, we're already returning a row so just yield
         if not header:
             yield row
         else:
-            columns.append(row)
+            result.append(row)
 
     # If it's for a header, we need to transpose to get it in row order
     if header:
-        columns = numpy.array(columns).transpose().tolist()
-        for row in columns:
+        result = numpy.array(result).transpose().tolist()
+        for row in result:
             yield row
