@@ -74,16 +74,17 @@ def PrintTitles():
 class TestPrintTitles:
 
 
-    @pytest.mark.parametrize("value",
+    @pytest.mark.parametrize("value, expected",
                              [
-                                 "'Sheet1'!$1:$2,$A:$A",
-                                 "'Sheet 1'!$A:$A",
-                                 "'Sheet 1'!$5:$17",
+                                 ["'Sheet1'!$1:$2,$A:$A", "'Sheet1'!$1:$2,'Sheet1'!$A:$A"],
+                                 ["'Sheet 1'!$A:$A", "'Sheet 1'!$A:$A"],
+                                 ["Sheet1!$5:$17","'Sheet1'!$5:$17"],
+                                 ["Tabelle1!$J:$J,Tabelle1!$10:$10", "'Tabelle1'!$10:$10,'Tabelle1'!$J:$J"],
                              ]
                              )
-    def test_from_string(self, PrintTitles, value):
+    def test_from_string(self, PrintTitles, value, expected):
         titles = PrintTitles.from_string(value)
-        assert str(titles) == value
+        assert str(titles) == expected
 
 
     def test_eq(self, PrintTitles):

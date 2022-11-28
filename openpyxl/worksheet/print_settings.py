@@ -16,7 +16,7 @@ COL_RANGE = r"""(?P<cols>[$]?(?P<min_col>[a-zA-Z]{1,3}):[$]?(?P<max_col>[a-zA-Z]
 COL_RANGE_RE = re.compile(COL_RANGE)
 ROW_RANGE = r"""(?P<rows>[$]?(?P<min_row>\d+):[$]?(?P<max_row>\d+))"""
 ROW_RANGE_RE = re.compile(ROW_RANGE)
-TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
+TITLES_REGEX = re.compile("""{0}{1}?,?{2}?,?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
                           re.VERBOSE)
 PRINT_AREA_RE = re.compile(f"({SHEET_TITLE})?(?P<cells>{RANGE_EXPR})", re.VERBOSE)
 
@@ -114,14 +114,21 @@ class PrintTitles(Strict):
 
     @classmethod
     def from_string(cls, value):
-        match = TITLES_REGEX.match(value)
-        if not match:
+        kw = dict((k, v) for match in TITLES_REGEX.finditer(value)
+                  for k, v in match.groupdict().items() if v)
+
+        if not kw:
             raise ValueError(f"{value} is not a valid print titles definition")
 
-        kw = match.groupdict()
-        cols = kw["cols"] and ColRange(kw["cols"]) or None
-        rows = kw["rows"] and RowRange(kw["rows"]) or None
-        title = kw["quoted"] or kw["notquoted"]
+        cols = rows = None
+
+        if "cols" in kw:
+            cols = ColRange(kw["cols"])
+        if "rows" in kw:
+            rows = RowRange(kw["rows"])
+
+        title = kw.get("quoted") or kw.get("notquoted")
+        print(title)
 
         return cls(cols=cols, rows=rows, title=title)
 
@@ -142,10 +149,9 @@ class PrintTitles(Strict):
 
 
     def __str__(self):
-        titles = ",".join([str(value) for value in (self.rows, self.cols) if value])
-        if titles:
-            return f"{quote_sheetname(self.title)}!{titles}"
-        return ""
+        title = quote_sheetname(self.title)
+        titles = ",".join([f"{title}!{value}" for value in (self.rows, self.cols) if value])
+        return titles or ""
 
 
 class PrintArea(MultiCellRange):

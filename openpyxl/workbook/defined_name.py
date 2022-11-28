@@ -14,10 +14,7 @@ from openpyxl.descriptors import (
 )
 from openpyxl.compat import safe_string
 from openpyxl.formula import Tokenizer
-from openpyxl.utils.cell import (
-    SHEETRANGE_RE,
-    SHEET_TITLE,
-)
+from openpyxl.utils.cell import SHEETRANGE_RE
 
 RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
@@ -25,38 +22,6 @@ RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
 
 _names = "|".join(RESERVED)
 RESERVED_REGEX = re.compile(r"^_xlnm\.(?P<name>{0})".format(_names))
-COL_RANGE = r"""(?P<cols>[$]?[a-zA-Z]{1,3}:[$]?[a-zA-Z]{1,3})"""
-COL_RANGE_RE = re.compile(COL_RANGE)
-ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
-ROW_RANGE_RE = re.compile(ROW_RANGE)
-TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
-                          re.VERBOSE)
-
-
-### utilities
-
-def _unpack_print_titles(defn):
-    """
-    Extract rows and or columns from print titles so that they can be
-    assigned to a worksheet
-    """
-    scanner = TITLES_REGEX.finditer(defn.value)
-    kw = dict((k, v) for match in scanner
-              for k, v in match.groupdict().items() if v)
-
-    return kw.get('rows'), kw.get('cols')
-
-
-def _unpack_print_area(defn):
-    """
-    Extract print area
-    """
-    new = []
-    for m in SHEETRANGE_RE.finditer(defn.value): # can be multiple
-        coord = m.group("cells")
-        if coord:
-            new.append(coord)
-    return new
 
 
 class DefinedName(Serialisable):

@@ -406,10 +406,10 @@ class TestWorksheet:
                              [
                                 ("1:4", None, "'Sheet'!$1:$4"),
                                 (None, "A:F", "'Sheet'!$A:$F"),
-                                ("1:2", "C:D", "'Sheet'!$1:$2,$C:$D"),
+                                ("1:2", "C:D", "'Sheet'!$1:$2,'Sheet'!$C:$D"),
                              ]
                              )
-    def test_print_titles_new(self, rows, cols, titles):
+    def test_print_titles(self, rows, cols, titles):
         wb = Workbook()
         ws = wb.active
         ws.print_title_rows = rows
