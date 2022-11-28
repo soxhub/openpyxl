@@ -62,7 +62,12 @@ def test_dataframe_multiindex():
 
     rows = list(dataframe_to_rows(df, header=False))
     assert rows[0] == ['first', 'second']
+    assert rows[1][:2] == ["bar", "one"]
     assert rows[2][:2] == [None, "two"]
+    assert rows[3][:2] == [None, "three"]
+    assert rows[4][:2] == ["baz", "one"]
+    assert rows[5][:2] == ["foo", "one"]
+    assert rows[6][:2] == [None, "two"]
 
 
 @pytest.mark.pandas_required
