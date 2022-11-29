@@ -2,7 +2,7 @@
 
 from itertools import accumulate
 import operator
-
+import numpy
 from openpyxl.compat.product import prod
 
 
@@ -13,7 +13,6 @@ def dataframe_to_rows(df, index=True, header=True):
     If header is True then column headers will be included starting one column to the right.
     Formatting should be done by client code.
     """
-    import numpy
     from pandas import Timestamp
     blocks = df._data.blocks
     ncols = sum(b.shape[0] for b in blocks)
@@ -48,8 +47,7 @@ def dataframe_to_rows(df, index=True, header=True):
             yield row
 
     if index:
-        indexNames = list(df.index.names)
-        yield indexNames
+        yield df.index.names
 
     expanded = ([v] for v in df.index)
     if df.index.nlevels > 1:
@@ -68,7 +66,6 @@ def expand_index(index, header=False):
     For columns use header = True
     For axes use header = False (default)
     """
-    import numpy
 
     # For each element of the index, zip the members with the previous row
     # If the 2 elements of the zipped list do not match, we can insert the new value into the row
@@ -81,10 +78,13 @@ def expand_index(index, header=False):
         row = [None] * len(value)
         comparison = zip(value, previous_value)
 
+        # Once there's a difference in member of an index with the prior index, we need to store all subsequent members in the row
         prior_change = False
         for idx, member in enumerate(comparison):
-            if member[0] != member[1] or prior_change:
-                row[idx] = member[0]
+            current_index_member, previous_index_member = member
+
+            if current_index_member != previous_index_member or prior_change:
+                row[idx] = current_index_member
                 prior_change = True
 
         previous_value = value
@@ -96,6 +96,7 @@ def expand_index(index, header=False):
             result.append(row)
 
     # If it's for a header, we need to transpose to get it in row order
+    # Example: result = [['A', 'A'], [None, 'B']] -> [['A', None], ['A', 'B']]
     if header:
         result = numpy.array(result).transpose().tolist()
         for row in result:

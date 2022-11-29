@@ -57,17 +57,21 @@ def test_dataframe_multiindex():
     ]
     tuples = list(zip(*arrays))
     index = MultiIndex.from_tuples(tuples, names=['first', 'second'])
-    df = Series(numpy.random.randn(8), index=index)
+    df = Series(0, index=index)
     df = DataFrame(df)
 
     rows = list(dataframe_to_rows(df, header=False))
-    assert rows[0] == ['first', 'second']
-    assert rows[1][:2] == ["bar", "one"]
-    assert rows[2][:2] == [None, "two"]
-    assert rows[3][:2] == [None, "three"]
-    assert rows[4][:2] == ["baz", "one"]
-    assert rows[5][:2] == ["foo", "one"]
-    assert rows[6][:2] == [None, "two"]
+    assert rows == [
+        ['first', 'second'],
+        ["bar", "one", 0],
+        [None, "two", 0],
+        [None, "three", 0],
+        ["baz", "one", 0],
+        ["foo", "one", 0],
+        [None, "two", 0],
+        ["qux", "one", 0],
+        [None, "two", 0]
+    ]
 
 
 @pytest.mark.pandas_required
