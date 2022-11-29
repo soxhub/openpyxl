@@ -70,21 +70,23 @@ def expand_index(index, header=False):
     """
     import numpy
 
-    # For each element of the index, iterate over the members 
-    # If the 0 to nth member match the previous indices members then
-    # Insert `None` into the resulting array, otherwise insert the new member.
+    # For each element of the index, zip the members with the previous row
+    # If the 2 elements of the zipped list do not match, we can insert the new value into the row
+    # or if an earlier member was different, all later members should be added to the row
     values = list(index.values)
     previous_value = [None] * len(values[0])
     result = []
 
     for value in values:
-        row = []
+        row = [None] * len(value)
+        comparison = zip(value, previous_value)
 
-        for idx, member in enumerate(value):
-            if member == previous_value[idx] and value[:idx] == previous_value[:idx]:
-                row.append(None)
-            else:
-                row.append(member)
+        prior_change = False
+        for idx, member in enumerate(comparison):
+            if member[0] != member[1] or prior_change:
+                row[idx] = member[0]
+                prior_change = True
+
         previous_value = value
 
         # If this is for a row index, we're already returning a row so just yield
