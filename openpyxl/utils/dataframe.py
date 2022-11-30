@@ -14,7 +14,6 @@ def dataframe_to_rows(df, index=True, header=True):
     Formatting should be done by client code.
     """
     from pandas import Timestamp
-    data = df.values
 
     if header:
         if df.columns.nlevels > 1:
@@ -39,10 +38,11 @@ def dataframe_to_rows(df, index=True, header=True):
     if df.index.nlevels > 1:
         expanded = expand_index(df.index)
 
-    for idx, v in enumerate(expanded):
-        row = data[idx].tolist()
+    # Using the expanded index is preferable to df.itertuples(index=True) so that we have 'None' inserted where applicable
+    for (df_index, row) in zip(expanded, df.itertuples(index=False)):
+        row = list(row)
         if index:
-            row = v + row
+            row = df_index + row
         yield row
 
 
