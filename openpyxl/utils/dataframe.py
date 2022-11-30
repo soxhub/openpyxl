@@ -62,12 +62,10 @@ def expand_index(index, header=False):
 
     for value in values:
         row = [None] * len(value)
-        comparison = zip(value, previous_value)
 
         # Once there's a difference in member of an index with the prior index, we need to store all subsequent members in the row
         prior_change = False
-        for idx, member in enumerate(comparison):
-            current_index_member, previous_index_member = member
+        for idx, (current_index_member, previous_index_member) in enumerate(zip(value, previous_value)):
 
             if current_index_member != previous_index_member or prior_change:
                 row[idx] = current_index_member
