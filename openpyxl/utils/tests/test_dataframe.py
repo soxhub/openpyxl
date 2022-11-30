@@ -112,3 +112,21 @@ def test_expand_levels_horizontally():
     assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
+
+
+@pytest.mark.pandas_required
+def test_dataframe_categorical():
+    from pandas import DataFrame
+    from ..dataframe import dataframe_to_rows
+
+    arrays = [
+        [2019, 2019, 2019, 2019, 2020, 2020, 2020, 2021, 2021, 2021, 2021, 2022],
+        ["Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor",],
+        ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b", "a", "b",],
+    ]
+
+    df = DataFrame(arrays)
+    df = df.apply(lambda col: col.astype('category'))
+
+    rows = list(dataframe_to_rows(df, header=False, index=False))
+    assert(rows == arrays)
