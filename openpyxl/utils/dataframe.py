@@ -14,21 +14,7 @@ def dataframe_to_rows(df, index=True, header=True):
     Formatting should be done by client code.
     """
     from pandas import Timestamp
-    blocks = df._data.blocks
-    ncols = sum(b.shape[0] for b in blocks)
-    data = [None] * ncols
-
-    for b in blocks:
-        values = b.values
-
-        if b.dtype.type == numpy.datetime64:
-            values = numpy.array([Timestamp(v) for v in values.ravel()])
-            values = values.reshape(b.shape)
-
-        result = values.tolist()
-
-        for col_loc, col in zip(b.mgr_locs, result):
-            data[col_loc] = col
+    data = df.values
 
     if header:
         if df.columns.nlevels > 1:
@@ -54,7 +40,7 @@ def dataframe_to_rows(df, index=True, header=True):
         expanded = expand_index(df.index)
 
     for idx, v in enumerate(expanded):
-        row = [data[j][idx] for j in range(ncols)]
+        row = data[idx].tolist()
         if index:
             row = v + row
         yield row
