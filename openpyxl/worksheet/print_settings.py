@@ -175,7 +175,7 @@ class PrintArea(MultiCellRange):
     def __str__(self):
         if self.ranges:
             return ",".join([f"{quote_sheetname(self.title)}!{absolute_coordinate(str(range))}"
-                             for range in self.ranges])
+                             for range in self.sorted()])
         return ""
 
 

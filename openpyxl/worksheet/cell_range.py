@@ -1,9 +1,11 @@
 # Copyright (c) 2010-2022 openpyxl
 
 from copy import copy
+from operator import attrgetter
 
 from openpyxl.descriptors import Strict
-from openpyxl.descriptors import MinMax, Sequence
+from openpyxl.descriptors import MinMax
+from openpyxl.descriptors.sequence import UniqueSequence
 from openpyxl.descriptors.serialisable import Serialisable
 
 from openpyxl.utils import (
@@ -132,6 +134,10 @@ class CellRange(Serialisable):
         if self.title:
             fmt = u"<{cls} {title!r}!{coord}>"
         return fmt.format(cls=self.__class__.__name__, title=self.title, coord=self.coord)
+
+
+    def __hash__(self):
+        return hash((self.min_row, self.min_col, self.max_row, self.max_col))
 
 
     def __str__(self):
@@ -419,13 +425,13 @@ class CellRange(Serialisable):
 class MultiCellRange(Strict):
 
 
-    ranges = Sequence(expected_type=CellRange)
+    ranges = UniqueSequence(expected_type=CellRange)
 
 
-    def __init__(self, ranges=()):
+    def __init__(self, ranges=set()):
         if isinstance(ranges, str):
             ranges = [CellRange(r) for r in ranges.split()]
-        self.ranges = ranges
+        self.ranges = set(ranges)
 
 
     def __contains__(self, coord):
@@ -438,13 +444,24 @@ class MultiCellRange(Strict):
 
 
     def __repr__(self):
-        ranges = " ".join([str(r) for r in self.ranges])
-        return "<{0} [{1}]>".format(self.__class__.__name__, ranges)
+        ranges = " ".join([str(r) for r in self.sorted()])
+        return f"<{self.__class__.__name__} [{ranges}]>"
 
 
     def __str__(self):
-        ranges = u" ".join([str(r) for r in self.ranges])
+        ranges = u" ".join([str(r) for r in self.sorted()])
         return ranges
+
+
+    def __hash__(self):
+        return hash(self.ranges)
+
+
+    def sorted(self):
+        """
+        Return a sorted list of items
+        """
+        return sorted(self.ranges, key=attrgetter('min_col', 'min_row', 'max_col', 'max_row'))
 
 
     def add(self, coord):
@@ -457,7 +474,7 @@ class MultiCellRange(Strict):
         elif not isinstance(coord, CellRange):
             raise ValueError("You can only add CellRanges")
         if cr not in self:
-            self.ranges.append(cr)
+            self.ranges.add(cr)
 
 
     def __iadd__(self, coord):
@@ -491,8 +508,5 @@ class MultiCellRange(Strict):
 
 
     def __copy__(self):
-        n = MultiCellRange()
-
-        for r in self.ranges:
-            n.ranges.append(copy(r))
-        return n
+        ranges = {copy(r) for r in self.ranges}
+        return MultiCellRange(ranges)

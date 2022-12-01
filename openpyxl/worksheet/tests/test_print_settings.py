@@ -2,6 +2,7 @@
 
 import pytest
 
+from openpyxl.worksheet.cell_range import CellRange
 
 @pytest.fixture
 def ColRange():
@@ -102,26 +103,26 @@ class TestPrintArea:
 
     @pytest.mark.parametrize("value, expected",
                          [
-                             ("Sheet1!$A$1:$E$15", ["A1:E15"]),
-                             ("$A$1:$E$15", ["A1:E15"]),
+                             ("Sheet1!$A$1:$E$15", {CellRange("A1:E15")}),
+                             ("$A$1:$E$15", {CellRange("A1:E15")}),
                              ("'Blatt1'!$A$1:$F$14,'Blatt1'!$H$10:$I$17,Blatt1!$I$16:$K$25",
-                              ["A1:F14","H10:I17","I16:K25"]),
-                             ("MySheet!#REF!", []),
-                             ("'C,D'!$A$1:$B$3", ["A1:B3"]),
-                             ("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14", ["A1:D5", "B9:F14"]),
+                              {CellRange("A1:F14"), CellRange("H10:I17"), CellRange("I16:K25")}),
+                             ("MySheet!#REF!", set()),
+                             ("'C,D'!$A$1:$B$3", {CellRange("A1:B3")}),
+                             ("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14", {CellRange("A1:D5"), CellRange("B9:F14")}),
                          ]
                          )
     def test_from_string(self, PrintArea, value, expected):
         area = PrintArea.from_string(value)
-        assert [str(r) for r in area.ranges] == expected
+        assert area.ranges == expected
 
 
     def test_empty(self, PrintArea):
         area = PrintArea()
-        assert area == ""
+        assert area.ranges == set()
 
 
-    def test_from_str(self, PrintArea):
+    def test_str(self, PrintArea):
         area = PrintArea.from_string("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14")
         assert str(area) == "''!$A$1:$D$5,''!$B$9:$F$14"
 

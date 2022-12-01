@@ -292,19 +292,19 @@ class TestMultiCellRange:
     def test_ctor(self, MultiCellRange, CellRange):
         cr = CellRange("A1")
         cells = MultiCellRange(ranges=[cr])
-        assert cells.ranges == [cr]
+        assert cells.ranges == {cr}
 
 
     def test_from_string(self, MultiCellRange, CellRange):
         cells = MultiCellRange("A1 B2:B5")
-        assert cells.ranges == [CellRange("A1"), CellRange("B2:B5")]
+        assert cells.ranges == {CellRange("A1"), CellRange("B2:B5")}
 
 
     def test_add_coord(self, MultiCellRange, CellRange):
         cr = CellRange("A1")
         cells = MultiCellRange(ranges=[cr])
         cells.add("B2")
-        assert cells.ranges == [cr, CellRange("B2")]
+        assert cells.ranges == {cr, CellRange("B2")}
 
 
     def test_add_cell_range(self, MultiCellRange, CellRange):
@@ -312,7 +312,7 @@ class TestMultiCellRange:
         cr2 = CellRange("B2")
         cells = MultiCellRange(ranges=[cr1])
         cells.add(cr2)
-        assert cells.ranges == [cr1, cr2]
+        assert cells.ranges == {cr1, cr2}
 
 
     def test_iadd(self, MultiCellRange):
@@ -372,7 +372,7 @@ class TestMultiCellRange:
 
     def test_remove_invalid(self, MultiCellRange):
         cells = MultiCellRange("A1:D4")
-        with pytest.raises(ValueError):
+        with pytest.raises(KeyError):
             cells.remove("A1")
 
 
