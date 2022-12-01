@@ -1,4 +1,4 @@
-# copyright openpyxl 2010-2015
+# Copyright (c) 2010-2022 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
