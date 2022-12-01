@@ -4,12 +4,10 @@ from collections import OrderedDict
 
 from openpyxl.descriptors import (
     Bool,
-    String,
     Sequence,
     Alias,
     Convertible,
 )
-from openpyxl.descriptors.excel import ExtensionList
 from openpyxl.descriptors.serialisable import Serialisable
 
 from .rule import Rule
@@ -40,7 +38,7 @@ class ConditionalFormatting(Serialisable):
 
 
     def __hash__(self):
-        return hash(str(self.sqref))
+        return hash(self.sqref)
 
 
     def __repr__(self):
@@ -83,8 +81,6 @@ class ConditionalFormattingList(object):
 
     def __bool__(self):
         return bool(self._cf_rules)
-
-    __nonzero = __bool__
 
 
     def __len__(self):

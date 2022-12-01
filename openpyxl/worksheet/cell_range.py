@@ -454,7 +454,7 @@ class MultiCellRange(Strict):
 
 
     def __hash__(self):
-        return hash(self.ranges)
+        return hash(str(self))
 
 
     def sorted(self):
