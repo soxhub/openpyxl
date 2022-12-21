@@ -486,7 +486,6 @@ class ConditionalFormat(Serialisable):
 
 
 from collections import defaultdict
-from operator import attrgetter
 
 class ConditionalFormatList(Serialisable):
 
@@ -501,18 +500,19 @@ class ConditionalFormatList(Serialisable):
 
 
     def _dedupe(self):
-        """Group formats by pivot area reference and field id to match what happens in worksheets
+        """
+        Group formats by field index and priority.
+        Sorted to match sorting and grouping for corresponding worksheet formats
         """
         fmts = {}
-        areas = defaultdict(list)
         for fmt in self.conditionalFormat:
             for area in fmt.pivotAreas:
-                ref = area.references[0]
-                key = (ref.field, tuple(ref.x))
-                areas[key].append(area)
-                fmts[key] = fmt
-        for (_, fmt), (_, area) in zip(fmts.items(), areas.items()):
-            fmt.pivotArea = area
+                for ref in area.references:
+                    for field in ref.x:
+                        key = (field.v, fmt.priority)
+                        fmts[key] = fmt
+        # sort by priority in order, keeping the highest priorty
+        fmts = {field:fmt for (field, priority), fmt in sorted(fmts.items(), reverse=False)}
         if fmts:
             self.conditionalFormat = list(fmts.values())
 
@@ -1170,7 +1170,7 @@ class TableDefinition(Serialisable):
         self.dataFields = dataFields
         self.formats = formats
         self.conditionalFormats = conditionalFormats
-        self.conditionalFormats = None
+        #self.conditionalFormats = None
         self.chartFormats = chartFormats
         self.pivotHierarchies = pivotHierarchies
         self.pivotTableStyleInfo = pivotTableStyleInfo
@@ -1219,3 +1219,41 @@ class TableDefinition(Serialisable):
         path = get_rels_path(self.path)
         xml = tostring(rels.to_tree())
         archive.writestr(path[1:], xml)
+
+
+    def formatted_fields(self):
+        """
+        Determine which field a particular conditional format (fmt) applies to
+
+        The implemtenters notes contain significant deviance from the OOXML
+        specification, in particular how conditional formats in tables relate to
+        those defined in corresponding worksheets and how to determine which
+        format applies to which fields.
+
+        There are some magical interdependencies:
+
+        * Every pivot table fmt must have a worksheet cxf with the same priority.
+
+        * In the reference part the field 4294967294 refers to a data field, the
+        spec says -2
+
+        * Data fields are referenced by the 0-index reference.x.v value
+
+        Things are made more complicated by the fact that field items behave
+        diffently if the parent is a reference or shared item: "In Office if the
+        parent is the reference element, then restrictions of this value are
+        defined by reference@field. If the parent is the tables element, then
+        this value specifies the index into the table tag position in @url."
+        Yeah, right!
+        """
+        fmts = defaultdict(list)
+        for fmt in self.conditionalFormats.conditionalFormat:
+            for area in fmt.pivotAreas:
+                for ref in area.references:
+                    break
+            if ref.field == 4294967294: #data field
+                for idx in ref.x:
+                    break
+                field = self.dataFields[idx.v].name
+                fmts[field].append(fmt.priority)
+        return fmts

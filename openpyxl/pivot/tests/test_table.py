@@ -242,6 +242,15 @@ class TestPivotTableDefinition:
         assert manifest.find(defn.mime_type)
 
 
+    def test_formatted_fields(self, TableDefinition, datadir):
+        datadir.chdir()
+        with open("table_with_conditional.xml", "rb") as src:
+            xml = src.read()
+        tree = fromstring(xml)
+        table = TableDefinition.from_tree(tree)
+        assert table.formatted_fields()== {'Count': [2, 1], 'Duration (minutes)': [3]}
+
+
 @pytest.fixture
 def PageField():
     from ..table import PageField
@@ -515,6 +524,7 @@ class TestConditionalFormatList:
         assert fmts.conditionalFormat == [ConditionalFormat(priority=4)]
 
 
+    #@pytest.mark.xfail
     def test_dedupe(self, ConditionalFormatList):
         src = """
         <conditionalFormats count="3">
