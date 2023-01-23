@@ -1,5 +1,7 @@
 # Copyright (c) 2010-2022 openpyxl
 
+
+from collections import defaultdict
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -485,8 +487,6 @@ class ConditionalFormat(Serialisable):
         self.extLst = extLst
 
 
-from collections import defaultdict
-
 class ConditionalFormatList(Serialisable):
 
     tagname = "conditionalFormats"
@@ -499,11 +499,13 @@ class ConditionalFormatList(Serialisable):
         self.conditionalFormat = conditionalFormat
 
 
-    def _dedupe(self):
+    def by_priority(self):
         """
-        Group formats by field index and priority.
-        Sorted to match sorting and grouping for corresponding worksheet formats
+        Return a dictionary of format objects keyed by (field id and format property).
+        This can be used to map the formats to field but also to dedupe to match
+        worksheet definitions which are grouped by cell range
         """
+
         fmts = {}
         for fmt in self.conditionalFormat:
             for area in fmt.pivotAreas:
@@ -511,8 +513,41 @@ class ConditionalFormatList(Serialisable):
                     for field in ref.x:
                         key = (field.v, fmt.priority)
                         fmts[key] = fmt
-        # sort by priority in order, keeping the highest priorty
-        fmts = {field:fmt for (field, priority), fmt in sorted(fmts.items(), reverse=False)}
+
+        return fmts
+
+
+    def _dedupe(self):
+        """
+        Group formats by field index and priority.
+        Sorted to match sorting and grouping for corresponding worksheet formats
+
+        The implemtenters notes contain significant deviance from the OOXML
+        specification, in particular how conditional formats in tables relate to
+        those defined in corresponding worksheets and how to determine which
+        format applies to which fields.
+
+        There are some magical interdependencies:
+
+        * Every pivot table fmt must have a worksheet cxf with the same priority.
+
+        * In the reference part the field 4294967294 refers to a data field, the
+        spec says -2
+
+        * Data fields are referenced by the 0-index reference.x.v value
+
+        Things are made more complicated by the fact that field items behave
+        diffently if the parent is a reference or shared item: "In Office if the
+        parent is the reference element, then restrictions of this value are
+        defined by reference@field. If the parent is the tables element, then
+        this value specifies the index into the table tag position in @url."
+        Yeah, right!
+        """
+        fmts = self.by_priority()
+        # sort by priority in order, keeping the highest numerical priority, least when
+        # actually applied
+        # this is not documented but it's what Excel is happy with
+        fmts = {field:fmt for (field, priority), fmt in sorted(fmts.items(), reverse=True)}
         if fmts:
             self.conditionalFormat = list(fmts.values())
 
@@ -1222,38 +1257,9 @@ class TableDefinition(Serialisable):
 
 
     def formatted_fields(self):
-        """
-        Determine which field a particular conditional format (fmt) applies to
-
-        The implemtenters notes contain significant deviance from the OOXML
-        specification, in particular how conditional formats in tables relate to
-        those defined in corresponding worksheets and how to determine which
-        format applies to which fields.
-
-        There are some magical interdependencies:
-
-        * Every pivot table fmt must have a worksheet cxf with the same priority.
-
-        * In the reference part the field 4294967294 refers to a data field, the
-        spec says -2
-
-        * Data fields are referenced by the 0-index reference.x.v value
-
-        Things are made more complicated by the fact that field items behave
-        diffently if the parent is a reference or shared item: "In Office if the
-        parent is the reference element, then restrictions of this value are
-        defined by reference@field. If the parent is the tables element, then
-        this value specifies the index into the table tag position in @url."
-        Yeah, right!
-        """
-        fmts = defaultdict(list)
-        for fmt in self.conditionalFormats.conditionalFormat:
-            for area in fmt.pivotAreas:
-                for ref in area.references:
-                    break
-            if ref.field == 4294967294: #data field
-                for idx in ref.x:
-                    break
-                field = self.dataFields[idx.v].name
-                fmts[field].append(fmt.priority)
-        return fmts
+        """Map fields to associated conditional formats by priority"""
+        fields = defaultdict(list)
+        for idx, prio in self.conditionalFormats.by_priority():
+            name = self.dataFields[idx].name
+            fields[name].append(prio)
+        return fields
