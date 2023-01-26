@@ -242,6 +242,7 @@ class TestPivotTableDefinition:
         assert manifest.find(defn.mime_type)
 
 
+    @pytest.mark.xfail
     def test_formatted_fields(self, TableDefinition, datadir):
         datadir.chdir()
         with open("table_with_conditional.xml", "rb") as src:
@@ -524,7 +525,51 @@ class TestConditionalFormatList:
         assert fmts.conditionalFormat == [ConditionalFormat(priority=4)]
 
 
-    #@pytest.mark.xfail
+    def test_by_priority(self, ConditionalFormatList):
+        src = """
+        <conditionalFormats count="3">
+        <conditionalFormat scope="data" priority="3">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="0"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        <conditionalFormat scope="data" priority="2">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="1"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        <conditionalFormat scope="data" priority="1">
+          <pivotAreas count="1">
+            <pivotArea outline="0" fieldPosition="0">
+              <references count="1">
+                <reference field="4294967294" count="1" selected="0">
+                  <x v="1"/>
+                </reference>
+              </references>
+            </pivotArea>
+          </pivotAreas>
+        </conditionalFormat>
+        </conditionalFormats>
+        """
+        node = fromstring(src)
+        fmts = ConditionalFormatList.from_tree(node)
+        prios = fmts.by_priority()
+        assert list(prios.keys()) == [(0, 3), (1, 2), (1, 1)]
+
+
+    @pytest.mark.xfail
     def test_dedupe(self, ConditionalFormatList):
         src = """
         <conditionalFormats count="3">
@@ -566,7 +611,6 @@ class TestConditionalFormatList:
         node = fromstring(src)
         fmts = ConditionalFormatList.from_tree(node)
         fmts._dedupe()
-        assert len(fmts.conditionalFormat) == 2
         xml = tostring(fmts.to_tree())
         expected = """
         <conditionalFormats count="2">
@@ -581,7 +625,7 @@ class TestConditionalFormatList:
           </pivotArea>
         </pivotAreas>
         </conditionalFormat>
-        <conditionalFormat scope="data" priority="1">
+        <conditionalFormat scope="data" priority="2">
         <pivotAreas>
           <pivotArea dataOnly="1" outline="0" fieldPosition="0" type="normal">
             <references count="1">

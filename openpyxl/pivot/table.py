@@ -548,6 +548,7 @@ class ConditionalFormatList(Serialisable):
         # actually applied
         # this is not documented but it's what Excel is happy with
         fmts = {field:fmt for (field, priority), fmt in sorted(fmts.items(), reverse=True)}
+        #fmts = {field:fmt for (field, priority), fmt in fmts.items()}
         if fmts:
             self.conditionalFormat = list(fmts.values())
 
@@ -1205,7 +1206,7 @@ class TableDefinition(Serialisable):
         self.dataFields = dataFields
         self.formats = formats
         self.conditionalFormats = conditionalFormats
-        #self.conditionalFormats = None
+        self.conditionalFormats = None
         self.chartFormats = chartFormats
         self.pivotHierarchies = pivotHierarchies
         self.pivotTableStyleInfo = pivotTableStyleInfo
@@ -1258,6 +1259,8 @@ class TableDefinition(Serialisable):
 
     def formatted_fields(self):
         """Map fields to associated conditional formats by priority"""
+        if not self.conditionalFormats:
+            return {}
         fields = defaultdict(list)
         for idx, prio in self.conditionalFormats.by_priority():
             name = self.dataFields[idx].name
