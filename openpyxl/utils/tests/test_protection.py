@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from .. protection import hash_password
 

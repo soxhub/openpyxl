@@ -1,5 +1,3 @@
-# copyright openpyxl 2014
-
 import datetime
 
 import pytest

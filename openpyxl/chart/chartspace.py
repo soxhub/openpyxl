@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 """
 Enclosing chart object. The various chart types are actually child objects.
