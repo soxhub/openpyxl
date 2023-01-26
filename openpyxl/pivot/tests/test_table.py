@@ -378,7 +378,7 @@ def PivotFilter():
 
 @pytest.fixture
 def Autofilter():
-    from ..table import (
+    from openpyxl.worksheet.filters import (
         AutoFilter,
         FilterColumn,
         CustomFilter,

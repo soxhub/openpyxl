@@ -8,17 +8,13 @@ from openpyxl.descriptors import (
     Integer,
     NoneSet,
     Set,
-    Float,
     Bool,
-    DateTime,
     String,
-    Alias,
     Bool,
     Sequence,
 )
 
 from openpyxl.descriptors.excel import ExtensionList, Relation
-from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
@@ -31,18 +27,6 @@ from .fields import Index
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
-    CellRange,
-    ColorFilter,
-    CustomFilter,
-    CustomFilters,
-    DateGroupItem,
-    DynamicFilter,
-    FilterColumn,
-    Filters,
-    IconFilter,
-    SortCondition,
-    SortState,
-    Top10,
 )
 
 
