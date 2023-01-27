@@ -21,7 +21,7 @@ test-optional:
 test-docs:
   <<: *unit
   script:
-    tox -e doc, doctest
+    tox -e doc,doctest
 
 test-python36:
   <<: *unit
@@ -58,6 +58,13 @@ test-python311:
   image: python:3.11-rc
   variables:
     TOXENV: py311
+
+test-python312:
+  <<: *unit
+  image: python:3.12-rc
+  variables:
+    TOXENV: py312
+
 
 test-pypy3:
   <<: *unit
