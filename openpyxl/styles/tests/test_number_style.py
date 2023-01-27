@@ -87,6 +87,7 @@ def test_strip_quotes(fmt, stripped):
                              (r'[h]:mm;[=0]\-', True),
                              ('[>=100][Magenta].00', False),
                              ('[>=100][Magenta]General', False),
+                             (r'ha/p\\m', True),
                          ]
                          )
 def test_is_date_format(format, result):
