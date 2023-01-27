@@ -82,5 +82,6 @@ def localname(node):
 
 
 def whitespace(node):
-    if node.text != node.text.strip():
+    stripped = node.text.strip()
+    if stripped and node.text != stripped:
         node.set("{%s}space" % XML_NS, "preserve")

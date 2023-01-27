@@ -70,3 +70,20 @@ def test_iterparse(xml_input):
     f = BytesIO(xml_input)
     with pytest.raises(ValueError):
         fromstring(f)
+
+
+from ..functions import Element, whitespace, XML_NS
+
+
+@pytest.mark.parametrize("value, preserve", [
+    ("some text", False),
+    ("Some more Text ", True),
+    (" ", False)
+]
+                         )
+def test_whitespace(value, preserve):
+    el = Element("tag")
+    el.text = value
+    whitespace(el)
+    check = "{%s}space" % XML_NS in el.attrib
+    assert check is preserve
