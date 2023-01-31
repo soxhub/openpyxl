@@ -255,7 +255,7 @@ class Worksheet(_WorkbookChild):
         Will create a new cell if one doesn't already exist.
         """
         if not 0 < row < 1048577:
-            raise ValueError("Row numbers must be between 1 and 1048576")
+            raise ValueError(f"Row numbers must be between 1 and 1048576. Row number supplied was {row}")
         coordinate = (row, column)
         if not coordinate in self._cells:
             cell = Cell(self, row=row, column=column)
