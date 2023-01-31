@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import pytest
 
@@ -62,11 +62,6 @@ class TestDrawing(object):
         d.set_dimension(50, 500)
         assert d.width == 50
         assert d.height == 417
-
-    def test_get_emu(self):
-        d = self.drawing
-        dims = d.get_emu_dimensions()
-        assert dims == (0, 0, 200025, 1828800)
 
 
     @pytest.mark.pil_required

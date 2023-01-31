@@ -53,3 +53,26 @@ from other cells or defined names will not be updated; you can use the
     >>> ws.move_range("G4:H10", rows=1, cols=1, translate=True)
 
 This will move the relative references in formulae in the range by one row and one column.
+
+
+Merge / Unmerge cells
+---------------------
+
+When you merge cells all cells but the top-left one are **removed** from the
+worksheet. To carry the border-information of the merged cell, the boundary cells of the
+merged cell are created as MergeCells which always have the value None.
+See :ref:`styling-merged-cells` for information on formatting merged cells.
+
+.. :: doctest
+
+>>> from openpyxl.workbook import Workbook
+>>>
+>>> wb = Workbook()
+>>> ws = wb.active
+>>>
+>>> ws.merge_cells('A2:D2')
+>>> ws.unmerge_cells('A2:D2')
+>>>
+>>> # or equivalently
+>>> ws.merge_cells(start_row=2, start_column=1, end_row=4, end_column=4)
+>>> ws.unmerge_cells(start_row=2, start_column=1, end_row=4, end_column=4)

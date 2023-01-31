@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -325,7 +325,7 @@ class Table(Serialisable):
         for idx in range(min_col, max_col+1):
             col = TableColumn(id=idx, name="Column{0}".format(idx))
             self.tableColumns.append(col)
-        if self.headerRowCount:
+        if self.headerRowCount and not self.autoFilter:
             self.autoFilter = AutoFilter(ref=self.ref)
 
 

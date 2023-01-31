@@ -50,6 +50,10 @@ True
 
     Validations without any cell ranges will be ignored when saving a workbook.
 
+.. note ::
+
+    Excel and LibreOffice interpret the parameter `showDropDown=True` as the dropdown arrow should be hidden.
+
 Other validation examples
 -------------------------
 

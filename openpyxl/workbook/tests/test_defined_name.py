@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -27,90 +27,6 @@ def test_reserved(value, reserved):
     from ..defined_name import RESERVED_REGEX
     match = RESERVED_REGEX.match(value) is not None
     assert match == reserved
-
-
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ("CD:DE", "CD:DE"),
-                             ("$CD:$DE", "$CD:$DE"),
-                         ]
-                         )
-def test_print_rows(value, expected):
-    from ..defined_name import COL_RANGE_RE
-    match = COL_RANGE_RE.match(value)
-    assert match.group("cols") == expected
-
-
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ("1:1", "1:1"),
-                             ("$2:$5", "$2:$5"),
-                         ]
-                         )
-def test_print_cols(value, expected):
-    from ..defined_name import ROW_RANGE_RE
-    match = ROW_RANGE_RE.match(value)
-    assert match.group("rows") == expected
-
-
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ("Sheet!$1:$1",
-                              { 'notquoted': 'Sheet', 'rows': '$1:$1'}
-                              ),
-                             ("Sheet!$1:$1,C:D",
-                              {'cols': 'C:D', 'notquoted': 'Sheet', 'rows': '$1:$1'}
-                              ),
-                            ("'Blatt5'!$C:$D",
-                             {'cols': '$C:$D', 'quoted': 'Blatt5',}
-                             ),
-                            ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
-                             {'quoted': "Sheet 1", 'cols': '$A:$A', 'rows': "$1:$1"}
-                             ),
-                         ]
-                         )
-def test_print_titles(value, expected):
-    from ..defined_name import TITLES_REGEX
-
-    scanner = TITLES_REGEX.finditer(value)
-    kw = dict((k, v) for match in scanner
-              for k, v in match.groupdict().items() if v)
-
-    assert kw == expected
-
-
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ("Sheet1!$1:$2,$A:$A",
-                              ("$1:$2", "$A:$A")
-                              ),
-                             ("'Sheet 1'!$A:$A,'Sheet 1'!$1:$1",
-                              ("$1:$1", "$A:$A"),
-                              ),
-                         ]
-                         )
-def test_unpack_print_titles(DefinedName, value, expected):
-    from ..defined_name import _unpack_print_titles
-    defn = DefinedName(name="Print_Titles")
-    defn.value = value
-    assert _unpack_print_titles(defn) == expected
-
-
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ("Sheet1!$A$1:$E$15", ["$A$1:$E$15"]),
-                             ("'Blatt1'!$A$1:$F$14,'Blatt1'!$H$10:$I$17,Blatt1!$I$16:$K$25",
-                              ["$A$1:$F$14","$H$10:$I$17","$I$16:$K$25"]),
-                             ("MySheet!#REF!", []),
-                             ("'C,D'!$A$1:$B$3", ["$A$1:$B$3"]),
-                             ("Sheet!$A$1:$D$5,Sheet!$B$9:$F$14", ["$A$1:$D$5", "$B$9:$F$14"]),
-                         ]
-                         )
-def test_unpack_print_area(DefinedName, value, expected):
-    from ..defined_name import _unpack_print_area
-    defn = DefinedName(name="Print_Area")
-    defn.value = value
-    assert _unpack_print_area(defn) == expected
 
 
 class TestDefinition:
@@ -261,73 +177,40 @@ class TestDefinitionList:
         assert len(dl) == 6
 
 
-    def test_append(self, DefinedNameList, DefinedName):
-        dl = DefinedNameList()
-        defn = DefinedName("test")
-        dl.append(defn)
-        assert len(dl) == 1
+    def test_by_sheet(self, DefinedNameList, datadir):
+        datadir.chdir()
+        with open("defined_names.xml", "rb") as src:
+            xml = src.read()
+        node = fromstring(xml)
+        dl = DefinedNameList.from_tree(node)
+        names = dl.by_sheet()
+        assert names.keys() == {"global", 0, 1}
 
 
-    def test_append_only(self, DefinedNameList):
-        dl = DefinedNameList(definedName=("test",))
+@pytest.fixture
+def DefinedNameDict():
+    from ..defined_name import DefinedNameDict
+    return DefinedNameDict
+
+
+class TestDefinedNameDict:
+
+
+    def test_check(self, DefinedNameDict):
+        names = DefinedNameDict()
         with pytest.raises(TypeError):
-            dl.append("test")
+            names["A name"] = "A Value"
 
 
-    def test_contains(self, DefinedNameList, DefinedName):
-        dl = DefinedNameList()
-        defn = DefinedName("test")
-        dl.append(defn)
-        assert "test" in dl
+    def test_name_mismatch(self, DefinedNameDict, DefinedName):
+        defn = DefinedName(name="my name")
+        names = DefinedNameDict()
+        with pytest.raises(ValueError):
+            names["my_name"] = defn
 
 
-    @pytest.mark.parametrize("scope,",
-                             [
-                                 None,
-                                 0,
-                             ]
-                             )
-    def test_duplicate(self, DefinedNameList, DefinedName, scope):
-        dl = DefinedNameList()
-        defn = DefinedName("test", localSheetId=scope)
-        assert not dl._duplicate(defn)
-        dl.append(defn)
-        assert dl._duplicate(defn)
-
-
-    def test_cleanup(self, DefinedNameList, datadir):
-        datadir.chdir()
-        with open("broken_print_titles.xml") as src:
-            xml = src.read()
-        node = fromstring(xml)
-        dl = DefinedNameList.from_tree(node)
-        assert len(dl) == 5
-        dl._cleanup()
-        assert len(dl) == 2
-        assert dl.get("_xlnm._FilterDatabase", 0) is None
-
-
-    def test_localnames(self, DefinedNameList, datadir):
-        datadir.chdir()
-        with open("defined_names.xml", "rb") as src:
-            xml = src.read()
-        node = fromstring(xml)
-        dl = DefinedNameList.from_tree(node)
-        assert dl.localnames(0) == ['MySheetRef', 'MySheetValue']
-
-
-    @pytest.mark.parametrize("name, scope, result",
-                             [
-                                 ("MySheetValue", None, False),
-                                 ("MySheetValue", 0, True),
-                                 ("MySheetValue", 1, True),
-                             ]
-                             )
-    def test_get(self, DefinedNameList, datadir, name, scope, result):
-        datadir.chdir()
-        with open("defined_names.xml", "rb") as src:
-            xml = src.read()
-        node = fromstring(xml)
-        dl = DefinedNameList.from_tree(node)
-        check = dl.get(name, scope) is not None
-        assert check is result
+    def test_add(self, DefinedNameDict, DefinedName):
+        defn = DefinedName(name="my name")
+        names = DefinedNameDict()
+        names.add(defn)
+        assert "my name" in names

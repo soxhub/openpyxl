@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import datetime
 import decimal
@@ -192,6 +192,50 @@ def test_whitespace(worksheet, write_cell_implementation):
       <is>
         <t xml:space="preserve">  whitespace   </t>
       </is>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
+
+def test_table_formula(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+    cell = ws["A1"]
+    cell.value =  DataTableFormula(ref="A1:B10")
+    cell.data_type = "f"
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c r="A1">
+      <f t="dataTable" ref="A1:B10" />
+      <v/>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_array_formula(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+
+    cell = ws["E2"]
+    cell.value = ArrayFormula(ref="E2:E11", text="=C2:C11*D2:D11")
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c r="E2">
+      <f t="array" ref="E2:E11">C2:C11*D2:D11</f>
+      <v/>
     </c>"""
     xml = out.getvalue()
     diff = compare_xml(xml, expected)

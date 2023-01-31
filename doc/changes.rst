@@ -1,4 +1,50 @@
-3.0.10 (2021-05-13)
+3.1.0 (2023-01-31)
+==================
+
+
+New Features
+------------
+
+* Added support for data table formulae
+* Mapped chartspace graphical properties to charts for advanced formatting
+
+
+Bugfixes
+--------
+
+* `#1156 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1156>`_ Table filters are always overriden
+* `#1360 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1360>`_ Can't read some ScatterCharts if the x-axis is not numerical
+* `#1786 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1786>`_ NamedStyles share attributes - mutables gotcha
+* `#1851 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1851>`_ Allow print area to be set to None
+* `#1852 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1852>`_ Worksheet for print title and print areas can't be found
+* `#1853 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1853>`_ Custom document properties that are strings can be empty
+* `#1858 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1858>`_ ConditionalFormatting lost when pivot table updated
+* `#1864 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1864>`_ Better handling of defined names
+* `#1912 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1912>`_ Excel doesn't like xmlns:space on nodes with only whitespace, which it treats as empty.
+* `#1942 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1942>`_ Exception when print areas use table references.
+
+
+Pull Requests
+-------------
+
+* `PR409 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/409/>`_ Support for Rich Text in cells
+* `PR411 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/411/>`_ Provide more information when workbook cannot be loaded
+* `PR407 <https://foss.heptapod.net/openpyxl/openpyxl/-/merge_requests/407/>`_ Support for Custom Document Properties
+
+
+Deprecations
+------------
+
+The following properties have been removed from worksheets: formula_attributes, page_breaks, show_summary_below, show_summary_right, page_size orientation. Client code should use the relevant objects.
+
+
+Removals
+--------
+
+The following deprecated methods have been removed from workbooks: get_named_range, add_named_range, remove_named_range. And the get_emu_dimesions from images.
+
+
+3.0.10 (2022-05-19)
 ===================
 
 

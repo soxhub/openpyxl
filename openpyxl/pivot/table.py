@@ -1,22 +1,20 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
+
+from collections import defaultdict
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
     Integer,
     NoneSet,
     Set,
-    Float,
     Bool,
-    DateTime,
     String,
-    Alias,
     Bool,
     Sequence,
 )
 
 from openpyxl.descriptors.excel import ExtensionList, Relation
-from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
 from openpyxl.xml.constants import SHEET_MAIN_NS
 from openpyxl.xml.functions import tostring
@@ -29,18 +27,6 @@ from .fields import Index
 
 from openpyxl.worksheet.filters import (
     AutoFilter,
-    CellRange,
-    ColorFilter,
-    CustomFilter,
-    CustomFilters,
-    DateGroupItem,
-    DynamicFilter,
-    FilterColumn,
-    Filters,
-    IconFilter,
-    SortCondition,
-    SortState,
-    Top10,
 )
 
 
@@ -332,7 +318,7 @@ class Reference(Serialisable):
     stdDevPSubtotal = Bool(allow_none=True)
     varSubtotal = Bool(allow_none=True)
     varPSubtotal = Bool(allow_none=True)
-    x = NestedInteger(allow_none=True, attribute="v")
+    x = Sequence(expected_type=Index)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
     __elements__ = ('x',)
@@ -355,7 +341,7 @@ class Reference(Serialisable):
                  stdDevPSubtotal=None,
                  varSubtotal=None,
                  varPSubtotal=None,
-                 x=None,
+                 x=(),
                  extLst=None,
                 ):
         self.field = field
@@ -483,6 +469,82 @@ class ConditionalFormat(Serialisable):
         self.priority = priority
         self.pivotAreas = pivotAreas
         self.extLst = extLst
+
+
+class ConditionalFormatList(Serialisable):
+
+    tagname = "conditionalFormats"
+
+    conditionalFormat = Sequence(expected_type=ConditionalFormat)
+
+    __attrs__ = ("count",)
+
+    def __init__(self, conditionalFormat=(), count=None):
+        self.conditionalFormat = conditionalFormat
+
+
+    def by_priority(self):
+        """
+        Return a dictionary of format objects keyed by (field id and format property).
+        This can be used to map the formats to field but also to dedupe to match
+        worksheet definitions which are grouped by cell range
+        """
+
+        fmts = {}
+        for fmt in self.conditionalFormat:
+            for area in fmt.pivotAreas:
+                for ref in area.references:
+                    for field in ref.x:
+                        key = (field.v, fmt.priority)
+                        fmts[key] = fmt
+
+        return fmts
+
+
+    def _dedupe(self):
+        """
+        Group formats by field index and priority.
+        Sorted to match sorting and grouping for corresponding worksheet formats
+
+        The implemtenters notes contain significant deviance from the OOXML
+        specification, in particular how conditional formats in tables relate to
+        those defined in corresponding worksheets and how to determine which
+        format applies to which fields.
+
+        There are some magical interdependencies:
+
+        * Every pivot table fmt must have a worksheet cxf with the same priority.
+
+        * In the reference part the field 4294967294 refers to a data field, the
+        spec says -2
+
+        * Data fields are referenced by the 0-index reference.x.v value
+
+        Things are made more complicated by the fact that field items behave
+        diffently if the parent is a reference or shared item: "In Office if the
+        parent is the reference element, then restrictions of this value are
+        defined by reference@field. If the parent is the tables element, then
+        this value specifies the index into the table tag position in @url."
+        Yeah, right!
+        """
+        fmts = self.by_priority()
+        # sort by priority in order, keeping the highest numerical priority, least when
+        # actually applied
+        # this is not documented but it's what Excel is happy with
+        fmts = {field:fmt for (field, priority), fmt in sorted(fmts.items(), reverse=True)}
+        #fmts = {field:fmt for (field, priority), fmt in fmts.items()}
+        if fmts:
+            self.conditionalFormat = list(fmts.values())
+
+
+    @property
+    def count(self):
+        return len(self.conditionalFormat)
+
+
+    def to_tree(self, tagname=None):
+        self._dedupe()
+        return super().to_tree(tagname)
 
 
 class Format(Serialisable):
@@ -946,7 +1008,7 @@ class TableDefinition(Serialisable):
     pageFields = NestedSequence(expected_type=PageField, count=True)
     dataFields = NestedSequence(expected_type=DataField, count=True)
     formats = NestedSequence(expected_type=Format, count=True)
-    conditionalFormats = NestedSequence(expected_type=ConditionalFormat, count=True)
+    conditionalFormats = Typed(expected_type=ConditionalFormatList, allow_none=True)
     chartFormats = NestedSequence(expected_type=ChartFormat, count=True)
     pivotHierarchies = NestedSequence(expected_type=PivotHierarchy, count=True)
     pivotTableStyleInfo = Typed(expected_type=PivotTableStyle, allow_none=True)
@@ -1040,7 +1102,7 @@ class TableDefinition(Serialisable):
                  pageFields=(),
                  dataFields=(),
                  formats=(),
-                 conditionalFormats=(),
+                 conditionalFormats=None,
                  chartFormats=(),
                  pivotHierarchies=(),
                  pivotTableStyleInfo=None,
@@ -1128,6 +1190,7 @@ class TableDefinition(Serialisable):
         self.dataFields = dataFields
         self.formats = formats
         self.conditionalFormats = conditionalFormats
+        self.conditionalFormats = None
         self.chartFormats = chartFormats
         self.pivotHierarchies = pivotHierarchies
         self.pivotTableStyleInfo = pivotTableStyleInfo
@@ -1176,3 +1239,14 @@ class TableDefinition(Serialisable):
         path = get_rels_path(self.path)
         xml = tostring(rels.to_tree())
         archive.writestr(path[1:], xml)
+
+
+    def formatted_fields(self):
+        """Map fields to associated conditional formats by priority"""
+        if not self.conditionalFormats:
+            return {}
+        fields = defaultdict(list)
+        for idx, prio in self.conditionalFormats.by_priority():
+            name = self.dataFields[idx].name
+            fields[name].append(prio)
+        return fields

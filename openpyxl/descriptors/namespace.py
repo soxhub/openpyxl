@@ -1,4 +1,4 @@
-# copyright openpyxl 2010-2015
+# Copyright (c) 2010-2023 openpyxl
 
 
 def namespaced(obj, tagname, namespace=None):

@@ -92,169 +92,94 @@ There are several ways to contribute, even if you can't code (or can't code well
       3.6, 3.7, 3.8 and 3.9.
 
 
-Installation
-------------
-
-Install openpyxl using pip. It is advisable to do this in a Python virtualenv
-without system packages::
-
-    $ pip install openpyxl
-
-.. note::
-
-    There is support for the popular `lxml`_ library which will be used if it
-    is installed. This is particular useful when creating large files.
-
-.. _lxml: http://lxml.de
-
-.. warning::
-
-    To be able to include images (jpeg, png, bmp,...) into an openpyxl file,
-    you will also need the "pillow" library that can be installed with::
-
-    $ pip install pillow
-
-    or browse https://pypi.python.org/pypi/Pillow/, pick the latest version
-    and head to the bottom of the page for Windows binaries.
-
-
-Working with a checkout
-+++++++++++++++++++++++
-
-Sometimes you might want to work with the checkout of a particular version.
-This may be the case if bugs have been fixed but a release has not yet been
-made.
-
-.. parsed-literal::
-    $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
-
-
-Usage examples
---------------
-
-
-Tutorial
-++++++++
-
 .. toctree::
+    :maxdepth: 1
+    :caption: Introduction
+    :hidden:
 
     tutorial
-
-
-Cookbook
-++++++++
-
-.. toctree::
-
     usage
 
 
-Performance
------------
+.. toctree::
+    :caption: Styling
+    :maxdepth: 1
+    :hidden:
+
+    styles
+    rich_text
+    formatting
 
 .. toctree::
+    :maxdepth: 1
+    :caption: Worksheets
+    :hidden:
 
+    editing_worksheets
+    worksheet_properties
+    validation
+    worksheet_tables
+    filters
+    print_settings
+    pivot
+    comments
+    datetime
+    simple_formulae
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Workbooks
+    :hidden:
+
+    defined_names
+    workbook_custom_doc_props
+    protection
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Charts
+    :hidden:
+
+    charts/introduction
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Images
+    :hidden:
+
+    images
+
+.. toctree::
+    :caption: Pandas
+    :maxdepth: 1
+    :hidden:
+
+    pandas
+
+.. toctree::
+    :caption: Performance
+    :maxdepth: 1
+    :hidden:
+
+    optimized
     performance
+    
+    
+.. toctree::
+    :caption: Developers
+    :maxdepth: 1
+    :hidden:
 
+    development
+    api/openpyxl
+    formula
+       
+.. toctree::
+    :maxdepth: 1
+    :caption: Release Notes
+    :hidden:
 
-Other topics
-------------
-
-    .. toctree::
-        :maxdepth: 2
-
-        optimized
-
-
-    .. toctree::
-        :maxdepth: 1
-
-        editing_worksheets
-
-    .. toctree::
-        :maxdepth: 1
-
-        pandas
-
-    .. toctree::
-        :maxdepth: 1
-
-        charts/introduction
-
-    .. toctree::
-        :maxdepth: 1
-
-        comments
-
-    .. toctree::
-        :maxdepth: 1
-
-        styles
-
-    .. toctree::
-        :maxdepth: 1
-
-        worksheet_properties
-
-    .. toctree::
-        :maxdepth: 1
-
-        formatting
-
-    .. toctree::
-        :maxdepth: 1
-
-        pivot
-
-    .. toctree::
-        :maxdepth: 1
-
-        print_settings
-
-    .. toctree::
-        :maxdepth: 1
-
-        filters
-
-    .. toctree::
-        :maxdepth: 1
-
-        validation
-
-
-    .. toctree::
-        :maxdepth: 1
-
-        defined_names
-
-    .. toctree::
-        :maxdepth: 1
-
-        worksheet_tables
-
-    .. toctree::
-        :maxdepth: 1
-
-        formula
-
-    .. toctree::
-        :maxdepth: 1
-
-        datetime
-
-    .. toctree::
-        :maxdepth: 1
-
-        protection
-
-
-Information for Developers
---------------------------
-
-    .. toctree::
-        :maxdepth: 1
-
-        development
+    changes
 
 
 API Documentation
@@ -268,27 +193,9 @@ Key Classes
 * :class:`openpyxl.cell.cell.Cell`
 
 
-Full API
-++++++++
-
-.. toctree::
-    :maxdepth: 2
-
-    api/openpyxl
-
-
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-Release Notes
-=============
-
-.. toctree::
-    :maxdepth: 1
-
-    changes

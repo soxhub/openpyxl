@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 # test imports
 import pytest
@@ -355,7 +355,7 @@ class TestWorksheet:
 
     def test_merged_cell_ranges(self, Worksheet):
         ws = Worksheet(Workbook())
-        assert ws.merged_cells.ranges == []
+        assert ws.merged_cells.ranges == set()
 
 
     def test_merge_range_string(self, Worksheet):
@@ -404,23 +404,25 @@ class TestWorksheet:
 
     @pytest.mark.parametrize("rows, cols, titles",
                              [
-                                ("1:4", None, "1:4"),
-                                (None, "A:F", "A:F"),
-                                ("1:2", "C:D", "1:2,C:D"),
+                                ("1:4", None, "'Sheet'!$1:$4"),
+                                (None, "A:F", "'Sheet'!$A:$F"),
+                                ("1:2", "C:D", "'Sheet'!$1:$2,'Sheet'!$C:$D"),
                              ]
                              )
-    def test_print_titles_new(self, rows, cols, titles):
+    def test_print_titles(self, rows, cols, titles):
         wb = Workbook()
         ws = wb.active
         ws.print_title_rows = rows
         ws.print_title_cols = cols
-        assert ws.print_titles == titles
+        assert str(ws.print_titles) == titles
 
 
     @pytest.mark.parametrize("cell_range, result",
                              [
-                                 ("A1:F5",  ["$A$1:$F$5"]),
-                                 (["$A$1:$F$5"],  ["$A$1:$F$5"]),
+                                 ("A1:F5", "'Sheet'!$A$1:$F$5"),
+                                 (["$A$1:$F$5"], "'Sheet'!$A$1:$F$5"),
+                                 (None, ""),
+                                 ([], ""),
                              ]
                              )
     def test_print_area(self, cell_range, result):

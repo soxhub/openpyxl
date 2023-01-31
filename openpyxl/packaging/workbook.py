@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -8,8 +8,6 @@ from openpyxl.descriptors import (
     Integer,
     Bool,
     NoneSet,
-    Set,
-    Sequence,
 )
 from openpyxl.descriptors.excel import ExtensionList, Relation
 from openpyxl.descriptors.sequence import NestedSequence
@@ -17,7 +15,7 @@ from openpyxl.descriptors.nested import NestedString
 
 from openpyxl.xml.constants import SHEET_MAIN_NS
 
-from openpyxl.workbook.defined_name import DefinedName, DefinedNameList
+from openpyxl.workbook.defined_name import DefinedNameList
 from openpyxl.workbook.external_reference import ExternalReference
 from openpyxl.workbook.function_group import FunctionGroupList
 from openpyxl.workbook.properties import WorkbookProperties, CalcProperties, FileVersion
@@ -185,20 +183,3 @@ class WorkbookPackage(Serialisable):
             if view.activeTab is not None:
                 return view.activeTab
         return 0
-
-
-    @property
-    def pivot_caches(self):
-        """
-        Get PivotCache objects
-        """
-        d = {}
-        for c in self.caches:
-            cache = get_rel(self.archive, self.rels, id=c.id, cls=CacheDefinition)
-            if cache.deps:
-                records = get_rel(self.archive, cache.deps, cache.id, RecordList)
-            else:
-                records = None
-            cache.records = records
-            d[c.cacheId]  = cache
-        return d

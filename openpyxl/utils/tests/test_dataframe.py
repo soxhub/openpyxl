@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import pytest
 
@@ -52,17 +52,26 @@ def test_dataframe_multiindex():
     import numpy
 
     arrays = [
-        ['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
-        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two']
+        ['bar', 'bar', 'bar', 'baz', 'foo', 'foo', 'qux', 'qux'],
+        ['one', 'two', 'three', 'one', 'one', 'two', 'one', 'two']
     ]
     tuples = list(zip(*arrays))
     index = MultiIndex.from_tuples(tuples, names=['first', 'second'])
-    df = Series(numpy.random.randn(8), index=index)
+    df = Series(0, index=index)
     df = DataFrame(df)
 
     rows = list(dataframe_to_rows(df, header=False))
-    assert rows[0] == ['first', 'second']
-    assert rows[2][:2] == [None, "two"]
+    assert rows == [
+        ['first', 'second'],
+        ["bar", "one", 0],
+        [None, "two", 0],
+        [None, "three", 0],
+        ["baz", "one", 0],
+        ["foo", "one", 0],
+        [None, "two", 0],
+        ["qux", "one", 0],
+        [None, "two", 0]
+    ]
 
 
 @pytest.mark.pandas_required
@@ -103,3 +112,21 @@ def test_expand_levels_horizontally():
     assert expanded[0] == ['2016', None, None, None, '2017', None, None, None, '2018', None, None, None]
     assert expanded[1] == ['Major', None, 'Minor', None, 'Major', None, 'Minor', None, 'Major', None, 'Minor', None]
     assert expanded[2] == ['a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b']
+
+
+@pytest.mark.pandas_required
+def test_dataframe_categorical():
+    from pandas import DataFrame
+    from ..dataframe import dataframe_to_rows
+
+    arrays = [
+        [2019, 2019, 2019, 2019, 2020, 2020, 2020, 2021, 2021, 2021, 2021, 2022],
+        ["Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor", "Major", "Major", "Minor", "Minor",],
+        ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b", "a", "b",],
+    ]
+
+    df = DataFrame(arrays)
+    df = df.apply(lambda col: col.astype('category'))
+
+    rows = list(dataframe_to_rows(df, header=False, index=False))
+    assert(rows == arrays)

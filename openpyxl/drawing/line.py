@@ -1,29 +1,21 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
-    Float,
     Integer,
-    Bool,
     MinMax,
-    Set,
     NoneSet,
-    String,
     Alias,
     Sequence
 )
-from openpyxl.descriptors.excel import Coordinate, Percentage
 
 from openpyxl.descriptors.nested import (
     NestedInteger,
-    NestedSet,
     NestedNoneSet,
     EmptyTag,
 )
-from openpyxl.compat import safe_string
 from openpyxl.xml.constants import DRAWING_NS
-from openpyxl.xml.functions import Element
 
 from .colors import ColorChoiceDescriptor
 from .fill import GradientFillProperties, PatternFillProperties
@@ -32,6 +24,7 @@ from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
 """
 Line elements from drawing main schema
 """
+
 
 class LineEndProperties(Serialisable):
 

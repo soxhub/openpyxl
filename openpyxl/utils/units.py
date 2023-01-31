@@ -1,5 +1,5 @@
-from __future__ import division
-# Copyright (c) 2010-2022 openpyxl
+
+# Copyright (c) 2010-2023 openpyxl
 
 import math
 
@@ -37,7 +37,7 @@ drawings and embedded pictures. One inch equates to 914400 EMUs and a
 centimeter is 360000. For bitmaps the default resolution is 96 dpi (known as
 PixelsPerInch in Excel). Spec p. 1122
 
-For radial geometry Excel uses integert units of 1/60000th of a degree.
+For radial geometry Excel uses integer units of 1/60000th of a degree.
 """
 
 

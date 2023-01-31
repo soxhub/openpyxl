@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 import pytest
 
 
@@ -6,9 +6,9 @@ import pytest
 def datadir():
     """DATADIR as a LocalPath"""
     import os
+    from py.path import local as LocalPath
     here = os.path.split(__file__)[0]
     DATADIR = os.path.join(here, "data")
-    from py._path.local import LocalPath
     return LocalPath(DATADIR)
 
 

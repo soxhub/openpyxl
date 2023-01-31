@@ -1,13 +1,12 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
-# test
 import pytest
+
 from openpyxl.tests.helper import compare_xml
+from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.utils import quote_sheetname
 
-# package
-from openpyxl import Workbook
-from openpyxl.xml.functions import tostring
-
+from ..workbook import Workbook
 
 @pytest.fixture
 def Unicode_Workbook():
@@ -26,21 +25,7 @@ def WorkbookWriter():
 class TestWorkbookWriter:
 
 
-    def test_write_auto_filter(self, datadir, WorkbookWriter):
-        datadir.chdir()
-        wb = Workbook()
-        ws = wb.active
-        ws['F42'].value = 'hello'
-        ws.auto_filter.ref = 'A1:F1'
-
-        writer = WorkbookWriter(wb)
-        xml = writer.write()
-        with open('workbook_auto_filter.xml') as expected:
-            diff = compare_xml(xml, expected.read())
-            assert diff is None, diff
-
-
-    def test_write_hidden_worksheet(self, WorkbookWriter):
+    def test_hidden_worksheet(self, WorkbookWriter):
         wb = Workbook()
         ws = wb.active
         ws.sheet_state = ws.SHEETSTATE_HIDDEN
@@ -67,7 +52,7 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_write_workbook(self, datadir, WorkbookWriter):
+    def test_workbook(self, datadir, WorkbookWriter):
         datadir.chdir()
         wb = Workbook()
 
@@ -79,7 +64,7 @@ class TestWorkbookWriter:
             assert diff is None, diff
 
 
-    def test_write_workbook_code_name(self, WorkbookWriter):
+    def test_workbook_code_name(self, WorkbookWriter):
         wb = Workbook()
         wb.code_name = u'MyWB'
 
@@ -152,7 +137,7 @@ class TestWorkbookWriter:
           <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
         </sheets>
         <definedNames>
-          <definedName localSheetId="0" name="_xlnm.Print_Titles">'D&#xFC;sseldorf Sheet'!1:5</definedName>
+          <definedName localSheetId="0" name="_xlnm.Print_Titles">'D&#xFC;sseldorf Sheet'!$1:$5</definedName>
         </definedNames>
         <calcPr calcId="124519" fullCalcOnLoad="1"/>
         </workbook>
@@ -161,7 +146,7 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_print_autofilter(self, Unicode_Workbook, WorkbookWriter):
+    def test_autofilter(self, Unicode_Workbook, WorkbookWriter):
         wb = Unicode_Workbook
         ws = wb.active
         ws.auto_filter.ref = "A1:A10"
@@ -191,7 +176,65 @@ class TestWorkbookWriter:
         assert diff is None, diff
 
 
-    def test_write_workbook_protection(self, datadir, WorkbookWriter):
+    def test_defined_name_global(self, Unicode_Workbook, WorkbookWriter):
+        wb = Unicode_Workbook
+        name = DefinedName(name="MyConstant", attr_text="3.14")
+        wb.defined_names.add(name)
+
+        writer = WorkbookWriter(wb)
+        xml = writer.write()
+        expected = """
+        <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <workbookPr/>
+        <workbookProtection/>
+        <bookViews>
+          <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
+        </bookViews>
+        <sheets>
+          <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
+        </sheets>
+        <definedNames>
+        <definedName name="MyConstant">3.14</definedName>
+        </definedNames>
+        <calcPr calcId="124519" fullCalcOnLoad="1"/>
+        </workbook>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_defined_name_locall(self, Unicode_Workbook, WorkbookWriter):
+        wb = Unicode_Workbook
+        ws = wb.active
+        ref = f"{quote_sheetname(ws.title)}!$A$1:$A$10"
+        name = DefinedName(name="MyReference", attr_text=ref)
+        ws.defined_names.add(name)
+
+        writer = WorkbookWriter(wb)
+        xml = writer.write()
+        expected = """
+        <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+        <workbookPr/>
+        <workbookProtection/>
+        <bookViews>
+          <workbookView activeTab="0" autoFilterDateGrouping="1" firstSheet="0" minimized="0" showHorizontalScroll="1" showSheetTabs="1" showVerticalScroll="1" tabRatio="600" visibility="visible"/>
+        </bookViews>
+        <sheets>
+          <sheet name="D&#xFC;sseldorf Sheet" sheetId="1" state="visible" r:id="rId1"/>
+        </sheets>
+        <definedNames>
+        <definedName localSheetId="0" name="MyReference">'D&#xFC;sseldorf Sheet'!$A$1:$A$10</definedName>
+        </definedNames>
+        <calcPr calcId="124519" fullCalcOnLoad="1"/>
+        </workbook>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_workbook_protection(self, datadir, WorkbookWriter):
         from ...workbook.protection import WorkbookProtection
 
         datadir.chdir()

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import pytest
 
@@ -82,11 +82,12 @@ def test_strip_quotes(fmt, stripped):
                              ('[s].000', True),
                              ('[m]', True),
                              ('[mm]', True),
-                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             (r'[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
                              ('[>=100][Magenta][s].00', True),
-                             ('[h]:mm;[=0]\-', True),
+                             (r'[h]:mm;[=0]\-', True),
                              ('[>=100][Magenta].00', False),
                              ('[>=100][Magenta]General', False),
+                             (r'ha/p\\m', True),
                          ]
                          )
 def test_is_date_format(format, result):
@@ -116,10 +117,10 @@ def test_is_date_format(format, result):
                              ('[m]', True),
                              ('[mm]', True),
                              ('h:mm', False),
-                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[h]:mm', True),
-                             ('[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
+                             (r'[Blue]\+[h]:mm;[Red]\-[h]:mm;[h]:mm', True),
+                             (r'[Blue]\+[h]:mm;[Red]\-[h]:mm;[Green][h]:mm', True),
                              ('[>=100][Magenta][s].00', True),
-                             ('[h]:mm;[=0]\-', True),
+                             (r'[h]:mm;[=0]\-', True),
                              ('[>=100][Magenta].00', False),
                              ('[>=100][Magenta]General', False),
                          ]

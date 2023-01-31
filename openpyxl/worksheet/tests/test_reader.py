@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.styles.named_styles import NamedStyleList
 import pytest
@@ -16,6 +16,11 @@ from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formula.translate import Translator
+from openpyxl.cell.rich_text import TextBlock, CellRichText
+from openpyxl.cell.text import InlineFont
+from openpyxl.styles.colors import Color
+
+from ..formula import DataTableFormula, ArrayFormula
 from ..worksheet import Worksheet
 from ..pagebreak import Break, RowBreak, ColBreak
 from ..scenario import ScenarioList, Scenario, InputCells
@@ -399,6 +404,7 @@ class TestWorksheetParser:
 
     def test_inline_richtext(self, WorkSheetParser):
         parser = WorkSheetParser
+        parser.rich_text = True
         src = """
         <c xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" r="R2" s="4" t="inlineStr">
         <is>
@@ -414,9 +420,29 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        assert cell == {'column': 18, 'data_type': 's', 'row': 2,
-                        'style_id':4, 'value':"11 de September de 2014"}
+        expected = CellRichText(TextBlock(font=InlineFont(sz="8.0"),
+                                           text="11 de September de 2014"))
+        assert cell == {'column': 18, 'data_type': 's', 'row':
+                        2,'style_id':4, 'value':expected}
 
+
+    def test_parse_richtext(self):
+        from .._reader import parse_richtext_string
+        src = """
+        <is>
+          <r>
+            <rPr>
+              <sz val="8.0" />
+            </rPr>
+            <t xml:space="preserve">11 de September de 2014</t>
+          </r>
+          </is>
+        """
+        element = fromstring(src)
+        value = parse_richtext_string(element)
+        assert value == CellRichText(
+            TextBlock(font=InlineFont(sz="8.0"), text="11 de September de 2014")
+        )
 
     def test_sheet_views(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -466,8 +492,21 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         formula = parser.parse_formula(element)
-        assert formula == "=SUM(A10:A14*B10:B14)"
-        assert parser.array_formulae['C10']['ref'] == 'C10:C14'
+        assert isinstance(formula, ArrayFormula)
+        assert formula.ref == "C10:C14"
+        assert formula.text == "=SUM(A10:A14*B10:B14)"
+
+
+    def test_table_formula(self, WorkSheetParser):
+        parser = WorkSheetParser
+        src = """
+        <c r="C9" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <f t="dataTable" ref="C9:C24" dt2D="0" dtr="0" r1="C4"/>
+          <v>1</v>
+       </c>"""
+        element = fromstring(src)
+        formula = parser.parse_formula(element)
+        assert isinstance(formula, DataTableFormula)
 
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):
@@ -876,21 +915,27 @@ def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
     ws = wb.create_sheet("Sheet")
     datadir.chdir()
     src = "complex-styles-worksheet.xml"
-    reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False)
+    reader = WorksheetReader(ws, src, wb.shared_strings, data_only=False, rich_text=False)
     return reader
 
 
 class TestWorksheetReader:
 
 
-    def test_cells(self, PrimedWorksheetReader):
+    def test_cell(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
         ws = reader.ws
 
         assert ws['C1'].value == 'a'
-        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
-        assert ws['E2'].value == "=C2:C11*D2:D11"
+
+
+    def test_array_formula(self, PrimedWorksheetReader):
+        reader = PrimedWorksheetReader
+        reader.bind_cells()
+        ws = reader.ws
+
+        assert ws['E2'].value.text == "=C2:C11*D2:D11"
 
 
     def test_formatting(self, PrimedWorksheetReader):
@@ -1036,6 +1081,6 @@ class TestWorksheetReader:
     def test_more_rows_than_cells(self, Workbook, WorksheetReader, datadir):
         ws = Workbook.create_sheet("Sheet")
         datadir.chdir()
-        reader = WorksheetReader(ws, "more_rows_than_cells.xml", None, None)
+        reader = WorksheetReader(ws, "more_rows_than_cells.xml", None, None, False)
         reader.bind_cells()
         assert ws._current_row == 3

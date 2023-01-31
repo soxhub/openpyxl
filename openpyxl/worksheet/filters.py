@@ -1,5 +1,6 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
+import re
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -14,9 +15,11 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     MinMax,
+    Convertible,
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange
 from openpyxl.descriptors.sequence import ValueSequence
+from openpyxl.utils import absolute_coordinate
 
 
 class SortCondition(Serialisable):
@@ -147,13 +150,31 @@ class DynamicFilter(Serialisable):
         self.maxValIso = maxValIso
 
 
+class CustomFilterValueDescriptor(Convertible):
+    """
+    Excel uses wildcards for string matching
+    """
+
+    pattern = re.compile(r"\d+|^\*.+|^.+\*$")
+    expected_type = float
+
+    def __set__(self, instance, value):
+        if isinstance(value, str):
+            m = self.pattern.match(value)
+            if not m:
+                raise ValueError("Value must be either numerical or a string containing a wildcard")
+            if "*" in value:
+                self.expected_type = str
+        super().__set__(instance, value)
+
+
 class CustomFilter(Serialisable):
 
     tagname = "customFilter"
 
     operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
                             'notEqual', 'greaterThanOrEqual', 'greaterThan']))
-    val = String()
+    val = CustomFilterValueDescriptor()
 
     def __init__(self,
                  operator=None,
@@ -173,7 +194,7 @@ class CustomFilters(Serialisable):
     __elements__ = ('customFilter',)
 
     def __init__(self,
-                 _and=None,
+                 _and=False,
                  customFilter=(),
                 ):
         self._and = _and
@@ -280,8 +301,8 @@ class FilterColumn(Serialisable):
 
     def __init__(self,
                  colId=None,
-                 hiddenButton=None,
-                 showButton=None,
+                 hiddenButton=False,
+                 showButton=True,
                  filters=None,
                  top10=None,
                  customFilters=None,
@@ -332,6 +353,9 @@ class AutoFilter(Serialisable):
     def __bool__(self):
         return self.ref is not None
 
+
+    def __str__(self):
+        return absolute_coordinate(self.ref)
 
 
     def add_filter_column(self, col_id, vals, blank=False):

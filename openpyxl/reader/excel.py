@@ -1,11 +1,10 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 
 """Read an xlsx file into Python"""
 
 # Python stdlib imports
-from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
-from sys import exc_info
+from zipfile import ZipFile, ZIP_DEFLATED
 from io import BytesIO
 import os.path
 import warnings
@@ -18,18 +17,16 @@ try:
 except ImportError:
     KEEP_VBA = False
 
-
 # package imports
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
-    ARC_SHARED_STRINGS,
     ARC_CORE,
+    ARC_CUSTOM,
     ARC_CONTENT_TYPES,
     ARC_WORKBOOK,
     ARC_THEME,
     COMMENTS_NS,
     SHARED_STRINGS,
-    EXTERNAL_LINK,
     XLTM,
     XLTX,
     XLSM,
@@ -38,11 +35,12 @@ from openpyxl.xml.constants import (
 from openpyxl.cell import MergedCell
 from openpyxl.comments.comment_sheet import CommentSheet
 
-from .strings import read_string_table
+from .strings import read_string_table, read_rich_text
 from .workbook import WorkbookParser
 from openpyxl.styles.stylesheet import apply_stylesheet
 
 from openpyxl.packaging.core import DocumentProperties
+from openpyxl.packaging.custom import CustomPropertyList
 from openpyxl.packaging.manifest import Manifest, Override
 
 from openpyxl.packaging.relationship import (
@@ -63,6 +61,7 @@ from .drawings import find_images
 
 
 SUPPORTED_FORMATS = ('.xlsx', '.xlsm', '.xltx', '.xltm')
+
 
 def _validate_archive(filename):
     """
@@ -119,14 +118,15 @@ class ExcelReader:
     Read an Excel package and dispatch the contents to the relevant modules
     """
 
-    def __init__(self,  fn, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True):
+    def __init__(self, fn, read_only=False, keep_vba=KEEP_VBA,
+                 data_only=False, keep_links=True, rich_text=False):
         self.archive = _validate_archive(fn)
         self.valid_files = self.archive.namelist()
         self.read_only = read_only
         self.keep_vba = keep_vba
         self.data_only = data_only
         self.keep_links = keep_links
+        self.rich_text = rich_text
         self.shared_strings = []
 
 
@@ -138,10 +138,13 @@ class ExcelReader:
 
     def read_strings(self):
         ct = self.package.find(SHARED_STRINGS)
+        reader = read_string_table
+        if self.rich_text:
+            reader = read_rich_text
         if ct is not None:
             strings_path = ct.PartName[1:]
             with self.archive.open(strings_path,) as src:
-                self.shared_strings = read_string_table(src)
+                self.shared_strings = reader(src)
 
 
     def read_workbook(self):
@@ -171,6 +174,12 @@ class ExcelReader:
         if ARC_CORE in self.valid_files:
             src = fromstring(self.archive.read(ARC_CORE))
             self.wb.properties = DocumentProperties.from_tree(src)
+
+
+    def read_custom(self):
+        if ARC_CUSTOM in self.valid_files:
+            src = fromstring(self.archive.read(ARC_CUSTOM))
+            self.wb.custom_doc_props = CustomPropertyList.from_tree(src)
 
 
     def read_theme(self):
@@ -224,7 +233,7 @@ class ExcelReader:
                 fh = self.archive.open(rel.target)
                 ws = self.wb.create_sheet(sheet.name)
                 ws._rels = rels
-                ws_parser = WorksheetReader(ws, fh, self.shared_strings, self.data_only)
+                ws_parser = WorksheetReader(ws, fh, self.shared_strings, self.data_only, self.rich_text)
                 ws_parser.bind_all()
 
             # assign any comments to cells
@@ -273,20 +282,37 @@ class ExcelReader:
 
 
     def read(self):
-        self.read_manifest()
-        self.read_strings()
-        self.read_workbook()
-        self.read_properties()
-        self.read_theme()
-        apply_stylesheet(self.archive, self.wb)
-        self.read_worksheets()
-        self.parser.assign_names()
-        if not self.read_only:
-            self.archive.close()
+        action = "read manifest"
+        try:
+            self.read_manifest()
+            action = "read strings"
+            self.read_strings()
+            action = "read workbook"
+            self.read_workbook()
+            action = "read properties"
+            self.read_properties()
+            action = "read custom properties"
+            self.read_custom()
+            action = "read theme"
+            self.read_theme()
+            action = "read stylesheet"
+            apply_stylesheet(self.archive, self.wb)
+            action = "read worksheets"
+            self.read_worksheets()
+            action = "assign names"
+            self.parser.assign_names()
+            if not self.read_only:
+                self.archive.close()
+        except ValueError as e:
+            raise ValueError(
+                f"Unable to read workbook: could not {action} from {self.archive.filename}.\n"
+                "This is most probably because the workbook source files contain some invalid XML.\n"
+                "Please see the exception for more details."
+                ) from e
 
 
 def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
-                  data_only=False, keep_links=True):
+                  data_only=False, keep_links=True, rich_text=False):
     """Open the given filename and return the workbook
 
     :param filename: the path to open or a file-like object
@@ -295,7 +321,7 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
     :param read_only: optimised for reading, content cannot be edited
     :type read_only: bool
 
-    :param keep_vba: preseve vba content (this does NOT mean you can use it)
+    :param keep_vba: preserve vba content (this does NOT mean you can use it)
     :type keep_vba: bool
 
     :param data_only: controls whether cells with formulae have either the formula (default) or the value stored the last time Excel read the sheet
@@ -303,6 +329,9 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     :param keep_links: whether links to external workbooks should be preserved. The default is True
     :type keep_links: bool
+
+    :param rich_text: if set to True openpyxl will preserve any rich text formatting in cells. The default is False
+    :type rich_text: bool
 
     :rtype: :class:`openpyxl.workbook.Workbook`
 
@@ -313,6 +342,6 @@ def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA,
 
     """
     reader = ExcelReader(filename, read_only, keep_vba,
-                        data_only, keep_links)
+                         data_only, keep_links, rich_text)
     reader.read()
     return reader.wb

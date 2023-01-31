@@ -1,11 +1,11 @@
-# copyright openpyxl 2010-2015
+# Copyright (c) 2010-2023 openpyxl
 
 from copy import copy
 from keyword import kwlist
 KEYWORDS = frozenset(kwlist)
 
 from . import Descriptor
-from . import _Serialiasable
+from . import MetaSerialisable
 from .sequence import (
     Sequence,
     NestedSequence,
@@ -21,7 +21,7 @@ from openpyxl.xml.functions import (
 
 seq_types = (list, tuple)
 
-class Serialisable(_Serialiasable):
+class Serialisable(metaclass=MetaSerialisable):
     """
     Objects can serialise to XML their attributes and child objects.
     The following class attributes are created by the metaclass at runtime:

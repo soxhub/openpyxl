@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import re
 
@@ -106,7 +106,7 @@ def is_date_format(fmt):
         return False
     fmt = fmt.split(";")[0] # only look at the first format
     fmt = STRIP_RE.sub("", fmt) # ignore some formats
-    return re.search(r"[^\\][dmhysDMHYS]", fmt) is not None
+    return re.search(r"(?<!\\)[dmhysDMHYS]", fmt) is not None
 
 
 def is_timedelta_format(fmt):

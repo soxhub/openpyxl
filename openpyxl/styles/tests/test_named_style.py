@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 import pytest
 
@@ -100,6 +100,13 @@ class TestNamedStyle:
         obj = getattr(wb, collection)[0]
         setattr(style, attr, obj)
         assert getattr(style._style, key) == expected
+
+
+    def test_no_mutable_defaults(self, NamedStyle):
+        ns1 = NamedStyle()
+        ns2 = NamedStyle()
+        for attr in ("font", "fill", "border", "alignment", "protection"):
+            assert getattr(ns1, attr) is not getattr(ns2, attr)
 
 
 @pytest.fixture

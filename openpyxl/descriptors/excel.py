@@ -1,4 +1,4 @@
-#copyright openpyxl 2010-2018
+# Copyright (c) 2010-2023 openpyxl
 
 """
 Excel specific descriptors

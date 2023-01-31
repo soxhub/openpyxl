@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from abc import abstractproperty
 from openpyxl.compat.abc import ABC

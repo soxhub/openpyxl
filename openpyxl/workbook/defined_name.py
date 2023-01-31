@@ -1,26 +1,20 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
+from collections import defaultdict
 import re
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Alias,
-    Typed,
     String,
-    Float,
     Integer,
     Bool,
-    NoneSet,
-    Set,
     Sequence,
     Descriptor,
 )
 from openpyxl.compat import safe_string
 from openpyxl.formula import Tokenizer
-from openpyxl.utils.cell import (
-    SHEETRANGE_RE,
-    SHEET_TITLE,
-)
+from openpyxl.utils.cell import SHEETRANGE_RE
 
 RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
                       "_FilterDatabase", "Extract", "Consolidate_Area",
@@ -28,38 +22,6 @@ RESERVED = frozenset(["Print_Area", "Print_Titles", "Criteria",
 
 _names = "|".join(RESERVED)
 RESERVED_REGEX = re.compile(r"^_xlnm\.(?P<name>{0})".format(_names))
-COL_RANGE = r"""(?P<cols>[$]?[a-zA-Z]{1,3}:[$]?[a-zA-Z]{1,3})"""
-COL_RANGE_RE = re.compile(COL_RANGE)
-ROW_RANGE = r"""(?P<rows>[$]?\d+:[$]?\d+)"""
-ROW_RANGE_RE = re.compile(ROW_RANGE)
-TITLES_REGEX = re.compile("""{0}{1}?,?{2}?""".format(SHEET_TITLE, ROW_RANGE, COL_RANGE),
-                          re.VERBOSE)
-
-
-### utilities
-
-def _unpack_print_titles(defn):
-    """
-    Extract rows and or columns from print titles so that they can be
-    assigned to a worksheet
-    """
-    scanner = TITLES_REGEX.finditer(defn.value)
-    kw = dict((k, v) for match in scanner
-              for k, v in match.groupdict().items() if v)
-
-    return kw.get('rows'), kw.get('cols')
-
-
-def _unpack_print_area(defn):
-    """
-    Extract print area
-    """
-    new = []
-    for m in SHEETRANGE_RE.finditer(defn.value): # can be multiple
-        coord = m.group("cells")
-        if coord:
-            new.append(coord)
-    return new
 
 
 class DefinedName(Serialisable):
@@ -164,6 +126,28 @@ class DefinedName(Serialisable):
                 yield key, safe_string(v)
 
 
+class DefinedNameDict(dict):
+
+    """
+    Utility class for storing defined names.
+    Allows access by name and separation of global and scoped names
+    """
+
+    def __setitem__(self, key, value):
+        if not isinstance(value, DefinedName):
+            raise TypeError("Value must be a an instance of DefinedName")
+        elif value.name != key:
+            raise ValueError("Key must be the same as the name")
+        super().__setitem__(key, value)
+
+
+    def add(self, value):
+        """
+        Add names without worrying about key and name matching.
+        """
+        self[value.name] = value
+
+
 class DefinedNameList(Serialisable):
 
     tagname = "definedNames"
@@ -175,18 +159,20 @@ class DefinedNameList(Serialisable):
         self.definedName = definedName
 
 
-    def _cleanup(self):
+    def by_sheet(self):
         """
-        Strip invalid definitions and remove special hidden ones
+        Break names down into sheet locals and globals
         """
-        valid_names = []
-        for n in self.definedName:
-            if n.name in ("_xlnm.Print_Titles", "_xlnm.Print_Area") and n.localSheetId is None:
-                continue
-            elif n.name == "_xlnm._FilterDatabase":
-                continue
-            valid_names.append(n)
-        self.definedName = valid_names
+        names = defaultdict(DefinedNameDict)
+        for defn in self.definedName:
+            if defn.localSheetId is None:
+                if defn.name in ("_xlnm.Print_Titles", "_xlnm.Print_Area", "_xlnm._FilterDatabase"):
+                    continue
+                names["global"][defn.name] = defn
+            else:
+                sheet = int(defn.localSheetId)
+                names[sheet][defn.name] = defn
+        return names
 
 
     def _duplicate(self, defn):
@@ -199,68 +185,5 @@ class DefinedNameList(Serialisable):
                 return True
 
 
-    def append(self, defn):
-        if not isinstance(defn, DefinedName):
-            raise TypeError("""You can only append DefinedNames""")
-        if self._duplicate(defn):
-            raise ValueError("""DefinedName with the same name and scope already exists""")
-        names = self.definedName[:]
-        names.append(defn)
-        self.definedName = names
-
-
     def __len__(self):
         return len(self.definedName)
-
-
-    def __contains__(self, name):
-        """
-        See if a globaly defined name exists
-        """
-        for defn in self.definedName:
-            if defn.name == name and defn.localSheetId is None:
-                return True
-
-
-    def __getitem__(self, name):
-        """
-        Get globally defined name
-        """
-        defn = self.get(name)
-        if not defn:
-            raise KeyError("No definition called {0}".format(name))
-        return defn
-
-
-    def get(self, name, scope=None):
-        """
-        Get the name assigned to a specicic sheet or global
-        """
-        for defn in self.definedName:
-            if defn.name == name and defn.localSheetId == scope:
-                return defn
-
-
-    def __delitem__(self, name):
-        """
-        Delete a globally defined name
-        """
-        if not self.delete(name):
-            raise KeyError("No globally defined name {0}".format(name))
-
-
-    def delete(self, name, scope=None):
-        """
-        Delete a name assigned to a specific or global
-        """
-        for idx, defn in enumerate(self.definedName):
-            if defn.name == name and defn.localSheetId == scope:
-                del self.definedName[idx]
-                return True
-
-
-    def localnames(self, scope):
-        """
-        Provide a list of all names for a particular worksheet
-        """
-        return [defn.name for defn in self.definedName if defn.localSheetId == scope]

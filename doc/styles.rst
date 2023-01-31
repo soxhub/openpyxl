@@ -177,7 +177,7 @@ yourself. This is a restriction of the file format::
 Styling Merged Cells
 --------------------
 
-The merged cell behaves similarly to other cell ojects.
+The merged cell behaves similarly to other cell objects.
 Its value and format is defined in its top-left cell.
 In order to change the border of the whole merged cell,
 change the border of its top-left cell.
@@ -205,6 +205,26 @@ The formatting is generated for the purpose of writing.
 >>> top_left_cell.alignment = Alignment(horizontal="center", vertical="center")
 >>>
 >>> wb.save("styled.xlsx")
+
+Using number formats
+--------------------
+
+You can specify the number format for cells, or for some instances (ie datetime) it will automatically format.
+
+.. :: doctest
+
+>>> import datetime
+>>> from openpyxl import Workbook
+>>> wb = Workbook()
+>>> ws = wb.active
+>>> # set date using a Python datetime
+>>> ws['A1'] = datetime.datetime(2010, 7, 21)
+>>>
+>>> ws['A1'].number_format
+'yyyy-mm-dd h:mm:ss'
+>>> 
+>>> ws["A2"] = 0.123456
+>>> ws["A2"].number_format = "0.00" # Display to 2dp
 
 
 Edit Page Setup
@@ -338,3 +358,4 @@ Highlights
 * 'Pandas'
 
 For more information about the builtin styles please refer to the :mod:`openpyxl.styles.builtins`
+

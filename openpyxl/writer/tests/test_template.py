@@ -1,18 +1,19 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from io import BytesIO
+from tempfile import NamedTemporaryFile
 from zipfile import ZipFile
 
 import pytest
 
 from openpyxl.packaging.manifest import Manifest
-from openpyxl.writer.excel import save_virtual_workbook
 from openpyxl.reader.excel import load_workbook
 from openpyxl.xml.constants import ARC_CONTENT_TYPES, XLTM, XLTX, XLSM, XLSX
 from openpyxl.xml.functions import fromstring
 
 
-def check_content_type(workbook_type, archive):
+def check_content_type(workbook_type, fname):
+    archive = ZipFile(fname)
     src = archive.read(ARC_CONTENT_TYPES)
     node = fromstring(src)
     package = Manifest.from_tree(node)
@@ -41,7 +42,7 @@ def test_workbook_is_template(datadir, tmpl, is_template):
 def test_xl_content_type(datadir, tmpl, wb_type):
     datadir.chdir()
 
-    check_content_type(wb_type, ZipFile(tmpl))
+    check_content_type(wb_type, tmpl)
 
 
 @pytest.mark.parametrize('tmpl, keep_vba, wb_type', [
@@ -55,8 +56,9 @@ def test_save_xl_as_no_template(datadir, tmpl, keep_vba, wb_type):
 
     wb = load_workbook(tmpl, keep_vba=keep_vba)
     wb.template = False
-    archive = save_virtual_workbook(wb)
-    check_content_type(wb_type, ZipFile(BytesIO(archive)))
+    tmp = NamedTemporaryFile()
+    wb.save(tmp)
+    check_content_type(wb_type, tmp)
 
 
 @pytest.mark.parametrize('tmpl, keep_vba, wb_type', [
@@ -70,5 +72,6 @@ def test_save_xl_as_template(datadir, tmpl, keep_vba, wb_type):
 
     wb = load_workbook(tmpl, keep_vba=keep_vba)
     wb.template = True
-    archive = save_virtual_workbook(wb)
-    check_content_type(wb_type, ZipFile(BytesIO(archive)))
+    tmp = NamedTemporaryFile()
+    wb.save(tmp)
+    check_content_type(wb_type, tmp)

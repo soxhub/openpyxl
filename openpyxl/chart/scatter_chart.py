@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -13,7 +13,7 @@ from openpyxl.descriptors.nested import (
 )
 
 from ._chart import ChartBase
-from .axis import NumericAxis
+from .axis import NumericAxis, TextAxis
 from .series import XYSeries
 from .label import DataLabelList
 
@@ -29,7 +29,7 @@ class ScatterChart(ChartBase):
     dataLabels = Alias("dLbls")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    x_axis = Typed(expected_type=NumericAxis)
+    x_axis = Typed(expected_type=(NumericAxis, TextAxis))
     y_axis = Typed(expected_type=NumericAxis)
 
     _series_type = "scatter"

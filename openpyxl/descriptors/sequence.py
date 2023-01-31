@@ -1,4 +1,4 @@
-# copyright openpyxl 2010-2015
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element
@@ -18,16 +18,17 @@ class Sequence(Descriptor):
     seq_types = (list, tuple)
     idx_base = 0
     unique = False
+    container = list
 
 
     def __set__(self, instance, seq):
         if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
-        seq = [_convert(self.expected_type, value) for value in seq]
+        seq = self.container(_convert(self.expected_type, value) for value in seq)
         if self.unique:
             seq = IndexedList(seq)
 
-        super(Sequence, self).__set__(instance, seq)
+        super().__set__(instance, seq)
 
 
     def to_tree(self, tagname, obj, namespace=None):
@@ -42,6 +43,14 @@ class Sequence(Descriptor):
                 el = Element(tagname)
                 el.text = safe_string(v)
             yield el
+
+
+class UniqueSequence(Sequence):
+    """
+    Use a set to keep values unique
+    """
+    seq_types = (list, tuple, set)
+    container = set
 
 
 class ValueSequence(Sequence):

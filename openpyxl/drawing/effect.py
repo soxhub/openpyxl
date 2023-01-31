@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -7,10 +7,8 @@ from openpyxl.descriptors import (
     Set,
     Bool,
     Integer,
-    NoneSet,
     Float,
 )
-
 
 from .colors import ColorChoice
 

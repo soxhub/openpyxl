@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 
 """
@@ -9,6 +9,7 @@ http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussiuncion_13
 import datetime
 import re
 
+from openpyxl import DEBUG
 from openpyxl.utils.datetime import from_ISO8601
 
 from .namespace import namespaced
@@ -33,13 +34,16 @@ class Typed(Descriptor):
 
     def __init__(self, *args, **kw):
         super(Typed, self).__init__(*args, **kw)
-        self.__doc__ = "Values must be of type {0}".format(self.expected_type)
+        self.__doc__ = f"Values must be of type {self.expected_type}"
 
     def __set__(self, instance, value):
         if not isinstance(value, self.expected_type):
             if (not self.allow_none
                 or (self.allow_none and value is not None)):
-                raise TypeError('expected ' + str(self.expected_type))
+                msg = f"{instance.__class__}.{self.name} should be {self.expected_type} but value is {type(value)}"
+                if DEBUG:
+                    msg = f"{instance.__class__}.{self.name} should be {self.expected_type} but {value} is {type(value)}"
+                raise TypeError(msg)
         super(Typed, self).__set__(instance, value)
 
     def __repr__(self):
@@ -216,7 +220,7 @@ class Default(Typed):
 class Alias(Descriptor):
     """
     Aliases can be used when either the desired attribute name is not allowed
-    or confusing in Python (eg. "type") or a more descriptve name is desired
+    or confusing in Python (eg. "type") or a more descriptive name is desired
     (eg. "underline" for "u")
     """
 

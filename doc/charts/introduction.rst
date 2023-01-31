@@ -93,3 +93,23 @@ Charts can be added to special worksheets called chartsheets:
 .. toctree::
 
     chartsheet
+
+
+Positioning charts
+------------------
+
+Position charts using anchors:
+
+.. toctree::
+
+    anchors
+
+
+Advanced chart formatting
+-------------------------
+
+Use graphical properties for advanced chart formatting:
+
+.. toctree::
+
+    graphical

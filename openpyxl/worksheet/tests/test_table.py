@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 import pytest
 
 from io import BytesIO
@@ -6,6 +6,12 @@ from zipfile import ZipFile
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+
+from openpyxl.worksheet.filters import (
+    AutoFilter,
+    Filters,
+    FilterColumn,
+)
 
 
 @pytest.fixture
@@ -73,6 +79,15 @@ class TestTable:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
+
+
+    def test_preserve_existing_filter(self, Table):
+        table = Table(displayName="A_Sample_Table", ref="A1:D5")
+        filters = Filters(blank=False, filter=["16"])
+        col = FilterColumn(colId=0, filters=filters)
+        table.autoFilter = AutoFilter(ref="A1:D5", filterColumn=[col])
+        table._initialise_columns()
+        assert table.autoFilter.filterColumn == [col]
 
 
     def test_column_names(self, Table):

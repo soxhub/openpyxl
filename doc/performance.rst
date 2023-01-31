@@ -49,7 +49,7 @@ external links stops openpyxl opening cached copies of the linked worksheets.
 
 One major difference between the libraries is that openpyxl's read-only mode
 opens a workbook almost immediately making it suitable for multiple
-processes, this also readuces memory use significantly. xlrd does also not
+processes, this also reduces memory use significantly. xlrd does also not
 automatically convert dates and times into Python datetimes, though it does
 annotate cells accordingly but to do this in client code significantly
 reduces performance.

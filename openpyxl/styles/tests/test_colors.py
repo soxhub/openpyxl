@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.styles.colors import Color
 from openpyxl.xml.functions import fromstring, tostring
@@ -35,7 +35,7 @@ class TestColor:
 
     def test_auto(self):
         c = Color(auto=1)
-        assert c.type is "auto"
+        assert c.type == "auto"
         assert c.value is True
         assert dict(c) == {'auto': "1"}
 

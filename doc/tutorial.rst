@@ -1,6 +1,43 @@
 Tutorial
 ========
 
+Installation
+------------
+
+Install openpyxl using pip. It is advisable to do this in a Python virtualenv
+without system packages::
+
+    $ pip install openpyxl
+
+.. note::
+
+    There is support for the popular `lxml`_ library which will be used if it
+    is installed. This is particular useful when creating large files.
+
+.. _lxml: http://lxml.de
+
+.. warning::
+
+    To be able to include images (jpeg, png, bmp,...) into an openpyxl file,
+    you will also need the "pillow" library that can be installed with::
+
+    $ pip install pillow
+
+    or browse https://pypi.python.org/pypi/Pillow/, pick the latest version
+    and head to the bottom of the page for Windows binaries.
+
+
+Working with a checkout
++++++++++++++++++++++++
+
+Sometimes you might want to work with the checkout of a particular version.
+This may be the case if bugs have been fixed but a release has not yet been
+made.
+
+.. parsed-literal::
+    $ pip install -e hg+https://foss.heptapod.net/openpyxl/openpyxl/@\ |version|\ #egg=openpyxl
+
+
 Create a workbook
 -----------------
 
@@ -34,12 +71,6 @@ You can change this name at any time with the :obj:`Worksheet.title` property::
 
     ws.title = "New Title"
 
-The background color of the tab holding this title is white by default.
-You can change this providing an :code:`RRGGBB` color code to the
-:obj:`Worksheet.sheet_properties.tabColor` attribute::
-
-    ws.sheet_properties.tabColor = "1072BA"
-
 Once you gave a worksheet a name, you can get it as a key of the workbook::
 
     >>> ws3 = wb["New Title"]
@@ -65,7 +96,7 @@ You can create copies of worksheets **within a single workbook**:
 .. note::
 
     Only cells (including values, styles, hyperlinks and comments) and
-    certain worksheet attribues (including dimensions, format and
+    certain worksheet attributes (including dimensions, format and
     properties) are copied. All other workbook / worksheet attributes
     are not copied - e.g. Images, Charts.
 
@@ -259,6 +290,13 @@ The simplest and safest way to save a workbook is by using the
     favourite ZIP archive manager.
 
 
+If required, you can specify the attribute `wb.template=True`, to save a workbook
+as a template::
+
+    >>> wb = load_workbook('document.xlsx')
+    >>> wb.template = True
+    >>> wb.save('document_template.xltx')
+
 Saving as a stream
 ++++++++++++++++++
 
@@ -274,20 +312,6 @@ such as Pyramid, Flask or Django then you can simply provide a
             wb.save(tmp.name)
             tmp.seek(0)
             stream = tmp.read()
-
-
-You can specify the attribute `template=True`, to save a workbook
-as a template::
-
-    >>> wb = load_workbook('document.xlsx')
-    >>> wb.template = True
-    >>> wb.save('document_template.xltx')
-
-or set this attribute to `False` (default), to save as a document::
-
-    >>> wb = load_workbook('document_template.xltx')
-    >>> wb.template = False
-    >>> wb.save('document.xlsx', as_template=False)
 
 .. warning::
 
@@ -322,12 +346,38 @@ or set this attribute to `False` (default), to save as a document::
 Loading from a file
 -------------------
 
-The same way as writing, you can use the :func:`openpyxl.load_workbook` to
-open an existing workbook::
+You can use the :func:`openpyxl.load_workbook` to open an existing workbook::
 
     >>> from openpyxl import load_workbook
-    >>> wb2 = load_workbook('test.xlsx')
-    >>> print(wb2.sheetnames)
-    ['Sheet2', 'New Title', 'Sheet1']
+    >>> wb = load_workbook(filename = 'empty_book.xlsx')
+    >>> sheet_ranges = wb['range names']
+    >>> print(sheet_ranges['D18'].value)
+    3
+
+
+.. note ::
+
+    There are several flags that can be used in load_workbook.
+
+    - `data_only` controls whether cells with formulae have either the
+      formula (default) or the value stored the last time Excel read the sheet.
+
+    - `keep_vba` controls whether any Visual Basic elements are preserved or
+      not (default). If they are preserved they are still not editable.
+
+
+.. warning ::
+
+    openpyxl does currently not read all possible items in an Excel file so
+    shapes will be lost from existing files if they are opened and saved with
+    the same name.
+
+Errors loading workbooks
+------------------------
+
+Sometimes openpyxl will fail to open a workbook. This is usually because there is something wrong with the file.
+If this is the case then openpyxl will try and provide some more information. Openpyxl follows the OOXML specification closely and will reject files that do not because they are invalid. When this happens you can use the exception from openpyxl to inform the developers of whichever application or library produced the file. As the OOXML specification is publicly available it is important that developers follow it.
+
+You can find the spec by searching for ECMA-376, most of the implementation specifics are in Part 4.
 
 This ends the tutorial for now, you can proceed to the :doc:`usage` section

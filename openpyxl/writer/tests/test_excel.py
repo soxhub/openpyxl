@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from io import BytesIO
 import os
@@ -181,11 +181,3 @@ def test_write_empty_workbook(tmpdir):
     dest_filename = 'empty_book.xlsx'
     save_workbook(wb, dest_filename)
     assert os.path.isfile(dest_filename)
-
-
-def test_write_virtual_workbook():
-    old_wb = Workbook()
-    from ..excel import save_virtual_workbook
-    saved_wb = save_virtual_workbook(old_wb)
-    new_wb = load_workbook(BytesIO(saved_wb))
-    assert new_wb

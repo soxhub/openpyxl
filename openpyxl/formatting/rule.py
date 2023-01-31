@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -20,7 +20,7 @@ from openpyxl.utils.cell import COORD_RE
 
 class ValueDescriptor(Float):
     """
-    Expected type depends upon type attribue of parent :-(
+    Expected type depends upon type attribute of parent :-(
 
     Most values should be numeric BUT they can also be cell references
     """

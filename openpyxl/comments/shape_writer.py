@@ -1,16 +1,12 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.xml.functions import (
     Element,
     SubElement,
     tostring,
-    fromstring,
 )
 
-from openpyxl.utils import (
-    column_index_from_string,
-    coordinate_to_tuple,
-)
+from openpyxl.utils import coordinate_to_tuple
 
 vmlns = "urn:schemas-microsoft-com:vml"
 officens = "urn:schemas-microsoft-com:office:office"
@@ -71,7 +67,7 @@ class ShapeWriter(object):
 
         # check whether comments shape type already exists
         shape_types = root.find("{%s}shapetype[@id='_x0000_t202']" % vmlns)
-        if not shape_types:
+        if shape_types is None:
             self.add_comment_shapetype(root)
 
         for idx, (coord, comment) in enumerate(self.comments, 1026):

@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 
 from io import BytesIO
@@ -18,7 +18,7 @@ def find_images(archive, path):
     """
     Given the path to a drawing file extract charts and images
 
-    Ingore errors due to unsupported parts of DrawingML
+    Ignore errors due to unsupported parts of DrawingML
     """
 
     src = archive.read(path)
@@ -36,7 +36,11 @@ def find_images(archive, path):
 
     charts = []
     for rel in drawing._chart_rels:
-        cs = get_rel(archive, deps, rel.id, ChartSpace)
+        try:
+            cs = get_rel(archive, deps, rel.id, ChartSpace)
+        except TypeError as e:
+            warn(f"Unable to read chart {rel.id} from {path} {e}")
+            continue
         chart = read_chart(cs)
         chart.anchor = rel.anchor
         charts.append(chart)

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -13,18 +13,7 @@ from openpyxl.descriptors import (
     Alias,
 )
 from openpyxl.descriptors.excel import Coordinate, Percentage
-
-from openpyxl.descriptors.nested import (
-    EmptyTag
-    )
-
 from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
-from .colors import ColorChoiceDescriptor
-from .fill import (
-    GradientFillProperties,
-    BlipFillProperties,
-    PatternFillProperties,
-    )
 from .line import LineProperties
 
 from openpyxl.styles.colors import Color

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
@@ -6,6 +6,8 @@ from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, to_ISO8601
 from datetime import timedelta
 
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
+from openpyxl.cell.rich_text import TextBlock
 
 def _set_attributes(cell, styled=None):
     """
@@ -50,17 +52,40 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
         return
 
     if cell.data_type == 'f':
-        shared_formula = worksheet.formula_attributes.get(cell.coordinate, {})
-        formula = SubElement(el, 'f', shared_formula)
-        if value is not None:
+        attrib = {}
+
+        if isinstance(value, ArrayFormula):
+            attrib = dict(value)
+            value = value.text
+
+        elif isinstance(value, DataTableFormula):
+            attrib = dict(value)
+            value = None
+
+        formula = SubElement(el, 'f', attrib)
+        if value is not None and not attrib.get('t') == "dataTable":
             formula.text = value[1:]
             value = None
 
     if cell.data_type == 's':
         inline_string = SubElement(el, 'is')
-        text = SubElement(inline_string, 't')
-        text.text = value
-        whitespace(text)
+        if isinstance(value, str):
+            text = SubElement(inline_string, 't')
+            text.text = value
+            whitespace(text)
+        else:
+            for r in value:
+                se = SubElement(inline_string, 'r')
+                if isinstance(r, TextBlock):
+                    se2 = SubElement(se, 'rPr')
+                    se2.append(r.font.to_tree())
+                    text = r.name
+                else:
+                    text = r
+                text = SubElement(se, 't')
+                text.text = text
+                whitespace(text)
+
 
 
     else:
@@ -80,22 +105,47 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
 
     with xf.element('c', attributes):
         if cell.data_type == 'f':
-            shared_formula = worksheet.formula_attributes.get(cell.coordinate, {})
-            with xf.element('f', shared_formula):
-                if value is not None:
+            attrib = {}
+
+            if isinstance(value, ArrayFormula):
+                attrib = dict(value)
+                value = value.text
+
+            elif isinstance(value, DataTableFormula):
+                attrib = dict(value)
+                value = None
+
+            with xf.element('f', attrib):
+                if value is not None and not attrib.get('t') == "dataTable":
                     xf.write(value[1:])
                     value = None
 
         if cell.data_type == 's':
             with xf.element("is"):
-                attrs = {}
-                if value != value.strip():
-                    attrs["{%s}space" % XML_NS] = "preserve"
-                el = Element("t", attrs) # lxml can't handle xml-ns
-                el.text = value
-                xf.write(el)
-                #with xf.element("t", attrs):
-                    #xf.write(value)
+                if isinstance(value, str):
+                    attrs = {}
+                    if value != value.strip():
+                        attrs["{%s}space" % XML_NS] = "preserve"
+                    el = Element("t", attrs) # lxml can't handle xml-ns
+                    el.text = value
+                    xf.write(el)
+                    #with xf.element("t", attrs):
+                        #xf.write(value)
+                else:
+                    for r in value:
+                        with xf.element("r"):
+                            if isinstance(r, TextBlock):
+                                xf.write(r.font.to_tree(tagname='rPr'))
+                                value = r.text
+                            else:
+                                value = r
+                            attrs = {}
+                            if value != value.strip():
+                                attrs["{%s}space" % XML_NS] = "preserve"
+                            el = Element("t", attrs) # lxml can't handle xml-ns
+                            el.text = value
+                            xf.write(el)
+
         else:
             with xf.element("v"):
                 if value is not None:

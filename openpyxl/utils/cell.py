@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 """
 Collection of utilities used within the package and also available for client code
@@ -192,7 +192,7 @@ def cols_from_range(range_string):
 
 def coordinate_to_tuple(coordinate):
     """
-    Convert an Excel style coordinate to (row, colum) tuple
+    Convert an Excel style coordinate to (row, column) tuple
     """
     for idx, c in enumerate(coordinate):
         if c in digits:

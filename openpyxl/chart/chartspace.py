@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 """
 Enclosing chart object. The various chart types are actually child objects.
@@ -146,7 +146,7 @@ class ChartSpace(Serialisable):
     protection = Typed(expected_type=Protection, allow_none=True)
     chart = Typed(expected_type=ChartContainer)
     spPr = Typed(expected_type=GraphicalProperties, allow_none=True)
-    graphicalProperties = Alias("spPr")
+    graphical_properties = Alias("spPr")
     txPr = Typed(expected_type=RichText, allow_none=True)
     textProperties = Alias("txPr")
     externalData = Typed(expected_type=ExternalData, allow_none=True)

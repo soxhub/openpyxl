@@ -74,3 +74,22 @@ You can select a part of a worksheet as the only part that you want to print
 >>> ws = wb.active
 >>>
 >>> ws.print_area = 'A1:F10'
+
+Change page layout and size
+---------------------------
+
+You can adjust the size and print orientation per sheet of a workbook.
+
+.. :: doctest
+
+>>>
+>>> wb = Workbook()
+>>> ws = wb.active
+>>>
+>>> ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
+>>> ws.page_setup.paperSize = ws.PAPERSIZE_A5
+
+The table size is stored internally as an integer, a number of alias variables are
+also available for common sizes (refer to PAPERSIZE_* in :mod:`openpyxl.worksheet.worksheet` ).
+If you need a non-standard size, a full list can be found by searching `ECMA-376 pageSetup`
+and setting that value as the paperSize

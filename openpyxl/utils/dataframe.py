@@ -1,8 +1,8 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from itertools import accumulate
 import operator
-
+import numpy
 from openpyxl.compat.product import prod
 
 
@@ -13,23 +13,7 @@ def dataframe_to_rows(df, index=True, header=True):
     If header is True then column headers will be included starting one column to the right.
     Formatting should be done by client code.
     """
-    import numpy
     from pandas import Timestamp
-    blocks = df._data.blocks
-    ncols = sum(b.shape[0] for b in blocks)
-    data = [None] * ncols
-
-    for b in blocks:
-        values = b.values
-
-        if b.dtype.type == numpy.datetime64:
-            values = numpy.array([Timestamp(v) for v in values.ravel()])
-            values = values.reshape(b.shape)
-
-        result = values.tolist()
-
-        for col_loc, col in zip(b.mgr_locs, result):
-            data[col_loc] = col
 
     if header:
         if df.columns.nlevels > 1:
@@ -54,10 +38,11 @@ def dataframe_to_rows(df, index=True, header=True):
     if df.index.nlevels > 1:
         expanded = expand_index(df.index)
 
-    for idx, v in enumerate(expanded):
-        row = [data[j][idx] for j in range(ncols)]
+    # Using the expanded index is preferable to df.itertuples(index=True) so that we have 'None' inserted where applicable
+    for (df_index, row) in zip(expanded, df.itertuples(index=False)):
+        row = list(row)
         if index:
-            row = v + row
+            row = df_index + row
         yield row
 
 
@@ -68,25 +53,35 @@ def expand_index(index, header=False):
     For axes use header = False (default)
     """
 
-    shape = index.levshape
-    depth = prod(shape)
-    row = [None] * index.nlevels
-    lengths = [depth / size for size in accumulate(shape, operator.mul)] # child index lengths
-    columns = [ [] for l in index.names] # avoid copied list gotchas
+    # For each element of the index, zip the members with the previous row
+    # If the 2 elements of the zipped list do not match, we can insert the new value into the row
+    # or if an earlier member was different, all later members should be added to the row
+    values = list(index.values)
+    previous_value = [None] * len(values[0])
+    result = []
 
-    for idx, entry in enumerate(index):
-        row = [None] * index.nlevels
-        for level, v in enumerate(entry):
-            length = lengths[level]
-            if idx % length:
-                v = None
-            row[level] = v
-            if header:
-                columns[level].append(v)
+    for value in values:
+        row = [None] * len(value)
 
+        # Once there's a difference in member of an index with the prior index, we need to store all subsequent members in the row
+        prior_change = False
+        for idx, (current_index_member, previous_index_member) in enumerate(zip(value, previous_value)):
+
+            if current_index_member != previous_index_member or prior_change:
+                row[idx] = current_index_member
+                prior_change = True
+
+        previous_value = value
+
+        # If this is for a row index, we're already returning a row so just yield
         if not header:
             yield row
+        else:
+            result.append(row)
 
+    # If it's for a header, we need to transpose to get it in row order
+    # Example: result = [['A', 'A'], [None, 'B']] -> [['A', None], ['A', 'B']]
     if header:
-        for row in columns:
+        result = numpy.array(result).transpose().tolist()
+        for row in result:
             yield row

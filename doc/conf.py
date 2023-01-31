@@ -23,6 +23,7 @@ HERE = os.path.split(__file__)[0]
 sys.path.insert(0, os.path.abspath(os.path.join(up(HERE), '.')))
 
 import openpyxl
+import sphinx_rtd_theme
 
 def AliasProxyGet(self, instance, cls):
     return getattr(cls, self.alias)
@@ -51,7 +52,7 @@ if os.environ.get("APIDOC") == "True":
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.ifconfig',
-              'sphinx.ext.viewcode', 'sphinx.ext.doctest', 'sphinx.ext.coverage']
+              'sphinx.ext.viewcode', 'sphinx.ext.doctest', 'sphinx.ext.coverage', 'sphinx_rtd_theme']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -124,7 +125,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
     html_theme = 'default'
 else:
-    html_theme = 'nature'
+    html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

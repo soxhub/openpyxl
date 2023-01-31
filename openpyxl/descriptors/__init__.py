@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2022 openpyxl
+# Copyright (c) 2010-2023 openpyxl
 
 from .base import *
 from .sequence import Sequence
@@ -11,6 +11,11 @@ class MetaStrict(type):
             if isinstance(v, Descriptor):
                 v.name = k
         return type.__new__(cls, clsname, bases, methods)
+
+
+class Strict(metaclass=MetaStrict):
+
+    pass
 
 
 class MetaSerialisable(type):
@@ -33,6 +38,10 @@ class MetaSerialisable(type):
                 elif isinstance(v, Typed):
                     if hasattr(v.expected_type, 'to_tree'):
                         elements.append(k)
+                    elif isinstance(v.expected_type, tuple):
+                        if any((hasattr(el, "to_tree") for el in v.expected_type)):
+                            # don't bind elements as attrs
+                            continue
                     else:
                         attrs.append(k)
                 else:
@@ -47,11 +56,3 @@ class MetaSerialisable(type):
         if methods.get('__elements__') is None:
             methods['__elements__'] = tuple(sorted(elements))
         return MetaStrict.__new__(cls, clsname, bases, methods)
-
-
-Strict = MetaStrict('Strict', (object,), {})
-
-_Serialiasable = MetaSerialisable('_Serialisable', (object,), {})
-
-#del MetaStrict
-#del MetaSerialisable
