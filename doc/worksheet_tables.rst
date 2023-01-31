@@ -98,3 +98,21 @@ Filters
 
 Filters will be added automatically to tables that contain header rows. It is **not**
 possible to create tables with header rows without filters.
+
+
+Table as a Print Area
+---------------------
+
+Excel can produce documents with the print area set to the table name. Openpyxl cannot,
+however, resolve such dynamic defintions and will raise a warning when trying to do so.
+
+If you need to handle this you can extract the range of the table and define the print area as the
+appropriate cell range.
+
+.. code::
+
+  >>> from openpyxl import load_workbook
+  >>> wb = load_workbook("QueryTable.xlsx")
+  >>> ws = wb.active
+  >>> table_range = ws.tables["InvoiceData"]
+  >>> ws.print_area = table_range.ref        # Ref is the cell range the table currently covers

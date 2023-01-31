@@ -79,3 +79,23 @@ that worksheet::
     ws.defined_names.add(defn)
     print(ws.defined_names["private_range"].attr_text)
 
+
+Dynamic Named Ranges
+-------------------------
+
+Wherever relevant and possible, openpyxl will try and convert names that contain cell ranges
+into relevant object. For example, print areas and print titles, which are special cases of defined
+names, are mapped to print title and print area objects within a worksheet.
+
+It is, however, possible to define ranges dynamically using other defined names, or objects such as tables.
+As openpyxl is unable to resolve such definitions, it will skip the definition and raise a warning.
+If you need to handle this you can extract the range of the defined name and set the print area
+as the appropriate cell range.
+
+.. code::
+
+  >>> from openpyxl import load_workbook
+  >>> wb = load_workbook("Example.xlsx")
+  >>> ws = wb.active
+  >>> area = ws.defined_names["TestArea"] # Globally defined named ranges can be used too
+  >>> ws.print_area = area.value          # value is the cell range the defined name currently covers

@@ -114,7 +114,11 @@ class WorkbookParser:
                     sheet._print_rows = titles.rows
                     sheet._print_cols = titles.cols
                 elif reserved == "Print_Area":
-                    sheet._print_area = PrintArea.from_string(defn.value)
+                    try:
+                        sheet._print_area = PrintArea.from_string(defn.value)
+                    except TypeError:
+                        warn(f"Print area cannot be set to Defined name: {defn.value}.")
+                        continue
 
     @property
     def pivot_caches(self):

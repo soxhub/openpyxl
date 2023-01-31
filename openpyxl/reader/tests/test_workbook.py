@@ -155,3 +155,13 @@ class TestWorkbookParser:
         parser.parse()
 
         assert parser.wb.security == expected_protection
+
+    def test_defined_names_print_area(self, datadir, WorkbookParser, recwarn):
+        datadir.chdir()
+        archive = ZipFile("print_area_table_defined_name.xlsx")
+
+        parser = WorkbookParser(archive, ARC_WORKBOOK)
+        parser.parse()
+        parser.assign_names()
+
+        assert recwarn.pop().category == UserWarning
