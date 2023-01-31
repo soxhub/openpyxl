@@ -1,4 +1,4 @@
-3.1.0 (unreleased)
+3.1.0 (2023-01-31)
 ==================
 
 
@@ -21,6 +21,7 @@ Bugfixes
 * `#1858 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1858>`_ ConditionalFormatting lost when pivot table updated
 * `#1864 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1864>`_ Better handling of defined names
 * `#1912 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1912>`_ Excel doesn't like xmlns:space on nodes with only whitespace, which it treats as empty.
+* `#1942 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1942>`_ Exception when print areas use table references.
 
 
 Pull Requests
