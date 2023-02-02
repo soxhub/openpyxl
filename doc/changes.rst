@@ -2,6 +2,12 @@
 ==================
 
 
+Bugfixes
+--------
+
+* `#1947 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1947>`_ Worksheet-specific definitions are missing
+
+
 3.1.0 (2023-01-31)
 ==================
 
