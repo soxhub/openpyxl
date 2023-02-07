@@ -8,7 +8,6 @@ from openpyxl.xml.functions import (
     fromstring,
     tostring,
     register_namespace,
-    NS_REGEX,
 )
 
 
@@ -85,6 +84,15 @@ def test_qualified_datetime():
 
     diff = compare_xml(xml, expected)
     assert diff is None, diff
+
+
+def test_settable_times():
+    from ..core import DocumentProperties
+    created = datetime.datetime(1066, 8, 25, 12, 3, 36)
+    modified = datetime.datetime(1666, 11, 17, 23, 45, 2)
+    props = DocumentProperties(created=created, modified=modified)
+    assert props.created == created
+    assert props.modified == modified
 
 
 @pytest.fixture(params=['abc', 'dct', 'dcterms', 'xyz'])
