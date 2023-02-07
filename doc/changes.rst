@@ -5,6 +5,7 @@
 Bugfixes
 --------
 
+* `#1881 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1881>`_ DocumentProperties times set by module import only
 * `#1947 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1947>`_ Worksheet-specific definitions are missing
 
 
