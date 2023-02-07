@@ -4,11 +4,11 @@
 from io import BytesIO
 import os
 from string import ascii_letters
+import datetime
 from zipfile import ZipFile
 
 import pytest
 
-from openpyxl import load_workbook
 from openpyxl.chart import BarChart
 from openpyxl.comments import Comment
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
@@ -181,3 +181,16 @@ def test_write_empty_workbook(tmpdir):
     dest_filename = 'empty_book.xlsx'
     save_workbook(wb, dest_filename)
     assert os.path.isfile(dest_filename)
+
+
+def test_modified(tmpdir):
+    from ..excel import save_workbook
+    tmpdir.chdir()
+
+    wb = Workbook()
+    modified = datetime.datetime(2011, 5, 19, 10, 23, 15)
+    wb.properties.modified = modified
+
+    dest_filename = 'empty_book.xlsx'
+    save_workbook(wb, dest_filename)
+    assert wb.properties.modified > modified

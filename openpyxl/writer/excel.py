@@ -1,34 +1,26 @@
 # Copyright (c) 2010-2023 openpyxl
 
-"""Write a .xlsx file."""
 
 # Python stdlib imports
+import datetime
 import re
-from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 
 # package imports
-from openpyxl.compat import deprecated
 from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.xml.constants import (
-    ARC_SHARED_STRINGS,
-    ARC_CONTENT_TYPES,
     ARC_ROOT_RELS,
     ARC_WORKBOOK_RELS,
-    ARC_APP, ARC_CORE,
-    ARC_CUSTOM, CPROPS_TYPE,
+    ARC_APP,
+    ARC_CORE,
+    ARC_CUSTOM,
+    CPROPS_TYPE,
     ARC_THEME,
     ARC_STYLE,
     ARC_WORKBOOK,
-    PACKAGE_WORKSHEETS,
-    PACKAGE_CHARTSHEETS,
-    PACKAGE_DRAWINGS,
-    PACKAGE_CHARTS,
-    PACKAGE_IMAGES,
-    PACKAGE_XL
     )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.xml.functions import tostring, fromstring, Element
+from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.relationship import (
     get_rels_path,
@@ -80,7 +72,6 @@ class ExcelWriter(object):
                 mime_type = CPROPS_TYPE #ContentType
 
             custom_override = CustomOverride()
-            # custom_override = Override(PartName="/docProps/custom.xml", ContentType="application/vnd.openxmlformats-officedocument.custom-properties+xml")
             self.manifest.append(custom_override)
 
         self._write_worksheets()
@@ -88,8 +79,6 @@ class ExcelWriter(object):
         self._write_images()
         self._write_charts()
 
-        #self._archive.writestr(ARC_SHARED_STRINGS,
-                              #write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
         stylesheet = write_stylesheet(self.workbook)
@@ -300,6 +289,7 @@ def save_workbook(workbook, filename):
 
     """
     archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
+    workbook.properties.modified = datetime.datetime.utcnow()
     writer = ExcelWriter(workbook, archive)
     writer.save()
     return True
