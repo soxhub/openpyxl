@@ -25,7 +25,7 @@ class ChartsheetView(Serialisable):
                  tabSelected=None,
                  zoomScale=None,
                  workbookViewId=0,
-                 zoomToFit=None,
+                 zoomToFit=True,
                  extLst=None,
                  ):
         self.tabSelected = tabSelected
