@@ -55,7 +55,7 @@ test-python310:
 
 test-python311:
   <<: *unit
-  image: python:3.11-rc
+  image: python:3.11
   variables:
     TOXENV: py311
 

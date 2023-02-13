@@ -103,11 +103,10 @@ class WorkbookParser:
                 warn(f"Defined names for sheet index {idx} cannot be located")
                 continue
 
-            new_names = {}
             for name, defn in names.items():
                 reserved = defn.is_reserved
                 if reserved is None:
-                    new_names[name] = defn
+                    sheet.defined_names[name] = defn
 
                 elif reserved == "Print_Titles":
                     titles = PrintTitles.from_string(defn.value)

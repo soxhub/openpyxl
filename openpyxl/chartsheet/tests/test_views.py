@@ -54,7 +54,7 @@ class TestChartsheetViewList:
 
         expected = """
         <sheetViews>
-          <sheetView workbookViewId="0"/>
+          <sheetView workbookViewId="0" zoomToFit="1"/>
         </sheetViews>
         """
         xml = tostring(views.to_tree())

@@ -1,3 +1,14 @@
+3.1.1 (2023-02-13)
+==================
+
+
+Bugfixes
+--------
+
+* `#1881 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1881>`_ DocumentProperties times set by module import only
+* `#1947 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1947>`_ Worksheet-specific definitions are missing
+
+
 3.1.0 (2023-01-31)
 ==================
 
@@ -13,13 +24,17 @@ Bugfixes
 --------
 
 * `#1156 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1156>`_ Table filters are always overriden
-* `#1360 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1360>`_ Can't read some ScatterCharts if the x-axis is not numerical
+* `#1360 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1360>`_ Can't read some ScatterCharts if n
+* `#1724 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1724>`_ Problem with multilevel indices in dataframes
+* `#1772 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1772>`_ Problem with category indices in dataframes
 * `#1786 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1786>`_ NamedStyles share attributes - mutables gotcha
 * `#1851 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1851>`_ Allow print area to be set to None
 * `#1852 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1852>`_ Worksheet for print title and print areas can't be found
 * `#1853 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1853>`_ Custom document properties that are strings can be empty
 * `#1858 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1858>`_ ConditionalFormatting lost when pivot table updated
 * `#1864 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1864>`_ Better handling of defined names
+* `#1904 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1904>`_ dataframe_to_rows() misalignment on multiindex
+* `#1908 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1908>`_ Ditto
 * `#1912 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1912>`_ Excel doesn't like xmlns:space on nodes with only whitespace, which it treats as empty.
 * `#1942 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1942>`_ Exception when print areas use table references.
 

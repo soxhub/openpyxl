@@ -1,6 +1,5 @@
 # Copyright (c) 2010-2023 openpyxl
 
-from weakref import ref
 
 from openpyxl.descriptors import Typed, Set, Alias
 from openpyxl.descriptors.excel import ExtensionList
@@ -13,7 +12,6 @@ from openpyxl.worksheet.page import (
     PageMargins,
     PrintPageSetup
 )
-from openpyxl.packaging.relationship import Relationship, RelationshipList
 from openpyxl.worksheet.drawing import Drawing
 from openpyxl.worksheet.header_footer import HeaderFooter
 from openpyxl.workbook.child import _WorkbookChild
