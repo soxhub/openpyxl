@@ -1,6 +1,8 @@
 3.1.2 (unreleased)
 ==================
 
+* `#1963 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1963>`_ Cannot read worksheets in read-only mode with locally scoped definitions
+
 
 3.1.1 (2023-02-13)
 ==================
