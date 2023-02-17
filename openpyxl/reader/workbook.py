@@ -65,7 +65,6 @@ class WorkbookParser:
             )
 
         if package.definedNames:
-            #package.definedNames._cleanup()
             self.defined_names = package.definedNames
 
         self.wb.security = package.workbookProtection

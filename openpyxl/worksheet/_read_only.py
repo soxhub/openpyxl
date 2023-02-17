@@ -8,6 +8,7 @@ from openpyxl.cell.read_only import ReadOnlyCell, EMPTY_CELL
 from openpyxl.utils import get_column_letter
 
 from ._reader import WorkSheetParser
+from openpyxl.workbook.defined_name import DefinedNameDict
 
 
 def read_dimension(source):
@@ -39,6 +40,7 @@ class ReadOnlyWorksheet(object):
         self._worksheet_path = worksheet_path
         self._shared_strings = shared_strings
         self._get_size()
+        self.defined_names = DefinedNameDict()
 
 
     def _get_size(self):

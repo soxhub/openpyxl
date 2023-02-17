@@ -214,3 +214,57 @@ class TestReadOnlyWorksheet:
             break
 
         assert src.closed
+
+
+def test_implementation_compatbility(ReadOnlyWorksheet, DummyWorkbook):
+    from ..worksheet import Worksheet
+    std = Worksheet(DummyWorkbook)
+    std_attrs = set(std.__dict__)
+    std_only = set(['HeaderFooter',
+                    '_WorkbookChild__title',
+                    '_cells',
+                    '_charts',
+                    '_comments',
+                    '_current_row',
+                    '_drawing',
+                    '_hyperlinks',
+                    '_images',
+                    '_parent',
+                    '_pivots',
+                    '_print_area',
+                    '_print_cols',
+                    '_print_rows',
+                    '_rels',
+                    '_tables',
+                    'auto_filter',
+                    'col_breaks',
+                    'column_dimensions',
+                    'conditional_formatting',
+                    'data_validations',
+                    'legacy_drawing',
+                    'merged_cells',
+                    'page_margins',
+                    'page_setup',
+                    'print_options',
+                    'protection',
+                    'row_breaks',
+                    'row_dimensions',
+                    'scenarios',
+                    'sheet_format',
+                    'sheet_properties',
+                    'sheet_state',
+                    'views']
+                   )
+
+    ro = ReadOnlyWorksheet
+    ro_attrs = set(ro.__dict__)
+    ro_only = set(['_worksheet_path',
+                   'parent',
+                   'title',
+                   '_shared_strings']
+                  )
+    assert std_attrs > std_only
+    assert ro_attrs > ro_only
+    assert not ro_attrs - ro_only - std_attrs
+    extra =  std_attrs - std_only - ro_attrs
+    assert not extra, f"Missing attributes {extra}"
