@@ -42,6 +42,7 @@ class _CustomDocumentProperty(Serialisable):
     """
     Low-level representation of a Custom Document Property.
     Not used directly
+    Must always contain a child element, even if this is empty
     """
 
     tagname = "property"
@@ -86,6 +87,14 @@ class _CustomDocumentProperty(Serialisable):
                 return a
         if self.linkTarget is not None:
             return "linkTarget"
+
+
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        child = getattr(self, self._typ, None)
+        if child is None:
+            setattr(self, self._typ, "")
+
+        return super().to_tree(tagname=None, idx=None, namespace=None)
 
 
 class _CustomDocumentPropertyList(Serialisable):
@@ -228,10 +237,10 @@ class CustomPropertyList(Strict):
             attr = CLASS_MAPPING.get(p.__class__, None)
             if not attr:
                 raise TypeError("Unknown adapter for {p}")
-            np = _CustomDocumentProperty(name=p.name)
-            setattr(np, attr, p.value)
+            np = _CustomDocumentProperty(name=p.name, **{attr:p.value})
             if isinstance(p, LinkProperty):
-                np.lpwstr = ""
+                np._typ = "lpwstr"
+                #np.lpwstr = ""
             props.append(np)
 
         prop_list = _CustomDocumentPropertyList(property=props)

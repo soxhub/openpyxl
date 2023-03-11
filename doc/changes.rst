@@ -1,3 +1,10 @@
+3.1.2 (2023-03-11)
+==================
+
+* `#1963 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1963>`_ Cannot read worksheets in read-only mode with locally scoped definitions
+* `#1974 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1974>`_ Empty custom properties cause invalid files
+
+
 3.1.1 (2023-02-13)
 ==================
 

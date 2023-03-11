@@ -48,7 +48,7 @@ class TestCustomDocumentProperty:
         assert prop.linkTarget == "ExampleName" and prop.name == "PropName4"
 
 
-    def test_empty(self, CustomDocumentProperty):
+    def test_read_empty(self, CustomDocumentProperty):
         src = """
         <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="7" name="TemplateUrl">
           <vt:lpwstr xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
@@ -57,6 +57,20 @@ class TestCustomDocumentProperty:
         node = fromstring(src)
         prop = CustomDocumentProperty.from_tree(node)
         assert prop.type == "lpwstr"
+
+
+    def test_write_empty(self, CustomDocumentProperty):
+        from openpyxl.xml.constants import VTYPES_NS
+        prop = CustomDocumentProperty(name="A name", lpwstr=None)
+        node = prop.to_tree()
+        expected = """
+        <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="0" name="A name">
+          <vt:lpwstr xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>
+        </property>
+        """
+        xml = tostring(node)
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
 
 
 @pytest.fixture
