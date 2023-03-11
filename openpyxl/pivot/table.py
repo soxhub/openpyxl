@@ -1250,3 +1250,12 @@ class TableDefinition(Serialisable):
             name = self.dataFields[idx].name
             fields[name].append(prio)
         return fields
+
+
+    @property
+    def summary(self):
+        """
+        Provide a simplified summary of the table
+        """
+
+        return f"{self.name} {dict(self.location)}"
