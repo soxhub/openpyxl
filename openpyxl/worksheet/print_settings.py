@@ -128,7 +128,6 @@ class PrintTitles(Strict):
             rows = RowRange(kw["rows"])
 
         title = kw.get("quoted") or kw.get("notquoted")
-        print(title)
 
         return cls(cols=cols, rows=rows, title=title)
 
