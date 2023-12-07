@@ -39,7 +39,7 @@ class Font(Serialisable):
 
     name = NestedString(allow_none=True)
     charset = NestedInteger(allow_none=True)
-    family = NestedMinMax(min=0, max=14, allow_none=True)
+    family = NestedInteger(allow_none=True)
     sz = NestedFloat(allow_none=True)
     size = Alias("sz")
     b = NestedBool(to_tree=_no_value)
