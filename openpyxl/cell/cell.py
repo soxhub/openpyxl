@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """Manage individual cells in a spreadsheet.
 
@@ -106,7 +106,7 @@ class Cell(StyleableObject):
                  )
 
     def __init__(self, worksheet, row=None, column=None, value=None, style_array=None):
-        super(Cell, self).__init__(worksheet, style_array)
+        super().__init__(worksheet, style_array)
         self.row = row
         """Row number of this cell (1-based)"""
         self.column = column
@@ -315,7 +315,7 @@ class MergedCell(StyleableObject):
 
 
     def __init__(self, worksheet, row=None, column=None):
-        super(MergedCell, self).__init__(worksheet)
+        super().__init__(worksheet)
         self.row = row
         self.column = column
 

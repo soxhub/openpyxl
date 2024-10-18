@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -432,4 +432,4 @@ class ColorChoiceDescriptor(Typed):
         else:
             if hasattr(self, "namespace") and value is not None:
                 value.namespace = self.namespace
-        super(ColorChoiceDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)

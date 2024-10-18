@@ -64,4 +64,4 @@ class BubbleChart(ChartBase):
         self.sizeRepresents = sizeRepresents
         self.x_axis = NumericAxis(axId=10, crossAx=20)
         self.y_axis = NumericAxis(axId=20, crossAx=10)
-        super(BubbleChart, self).__init__(**kw)
+        super().__init__(**kw)

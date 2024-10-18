@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -95,7 +95,7 @@ class DataLabel(_DataLabelBase):
 
     def __init__(self, idx=0, **kw ):
         self.idx = idx
-        super(DataLabel, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class DataLabelList(_DataLabelBase):
@@ -124,4 +124,4 @@ class DataLabelList(_DataLabelBase):
     def __init__(self, dLbl=(), delete=None,  **kw):
         self.dLbl = dLbl
         self.delete = delete
-        super(DataLabelList, self).__init__(**kw)
+        super().__init__(**kw)

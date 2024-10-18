@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 Excel specific descriptors
@@ -52,7 +52,7 @@ class Percentage(MinMax):
         if isinstance(value, str) and "%" in value:
             value = value.replace("%", "")
             value = int(float(value) * 1000)
-        super(Percentage, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class Extension(Serialisable):
@@ -100,7 +100,7 @@ class CellRange(MatchPattern):
 
         if value is not None:
             value = value.upper()
-        super(CellRange, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 def _explicit_none(tagname, value, namespace=None):

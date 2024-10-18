@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import pytest
 
@@ -248,3 +248,46 @@ class TestHyphenatedAttribute:
         dummy = HyphenatedAttribute.from_tree(el)
         assert dummy.z_order is True
         assert dummy.a_order is True
+
+
+@pytest.fixture
+def ExpectedTypes(Serialisable):
+    from ..base import Typed, String, Integer
+
+
+    class Dummy(Serialisable):
+
+        tagname = "dummy"
+
+        value = Typed(expected_type=(str, int))
+
+        __attrs__ = ("value", )
+
+        def __init__(self, value):
+            self.value = value
+
+    return Dummy
+
+
+class TestExpectedTypes:
+
+
+    @pytest.mark.parametrize("value", ["a", 2])
+    def test_valid(self, ExpectedTypes, value):
+        obj = ExpectedTypes(value)
+        assert obj.value is value
+
+
+    def test_to_tree(self, ExpectedTypes):
+        obj = ExpectedTypes(value=2)
+        assert dict(obj) == {"value":"2"}
+        xml = tostring(obj.to_tree())
+        diff = compare_xml(xml, """<dummy value="2"/>""")
+        assert diff is None, diff
+
+
+    def test_from_tree(self, ExpectedTypes):
+        xml = """<dummy><value>1</value></dummy>"""
+        node = fromstring(xml)
+        obj = ExpectedTypes.from_tree(node)
+        assert obj.value == "1"

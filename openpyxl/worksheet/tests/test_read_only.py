@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -7,6 +7,8 @@ import pytest
 
 from openpyxl.cell.read_only import EMPTY_CELL, ReadOnlyCell
 from openpyxl.styles.styleable import StyleArray
+from openpyxl.reader.excel import load_workbook
+import datetime
 
 
 @pytest.fixture
@@ -20,6 +22,7 @@ def DummyWorkbook():
             self.sheetnames = []
             self._archive = ZipFile(BytesIO(), "w")
             self._date_formats = set()
+            self._timedelta_formats = set()
 
     return Workbook()
 
@@ -268,3 +271,11 @@ def test_implementation_compatbility(ReadOnlyWorksheet, DummyWorkbook):
     assert not ro_attrs - ro_only - std_attrs
     extra =  std_attrs - std_only - ro_attrs
     assert not extra, f"Missing attributes {extra}"
+
+def test_read_datetime(datadir):
+    # Check read only sheets correctly parse datetime and timedelta cells where appropriate
+    datadir.chdir()
+    wb = load_workbook('test_datetime.xlsx', read_only=True)
+    ws = wb.active
+    assert type(ws["A1"].value) == datetime.timedelta
+    assert type(ws["A2"].value) == datetime.datetime

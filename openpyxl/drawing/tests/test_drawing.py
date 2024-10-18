@@ -1,20 +1,20 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import pytest
-
 from openpyxl.xml.functions import tostring
-
 from openpyxl.tests.helper import compare_xml
 
+@pytest.fixture
+def Drawing():
+    from ..drawing import Drawing
+    return Drawing
 
-class TestDrawing(object):
 
-    def setup(self):
-        from ..drawing import Drawing
-        self.drawing = Drawing()
+class TestDrawing:
 
-    def test_ctor(self):
-        d = self.drawing
+
+    def test_ctor(self, Drawing):
+        d = Drawing()
         assert d.coordinates == ((1, 2), (16, 8))
         assert d.width == 21
         assert d.height == 192
@@ -26,34 +26,34 @@ class TestDrawing(object):
         assert d.description == ""
         assert d.name == ""
 
-    def test_width(self):
-        d = self.drawing
+    def test_width(self, Drawing):
+        d = Drawing()
         d.width = 100
         d.height = 50
         assert d.width == 100
 
-    def test_proportional_width(self):
-        d = self.drawing
+    def test_proportional_width(self, Drawing):
+        d = Drawing()
         d.resize_proportional = True
         d.width = 100
         d.height = 50
         assert (d.width, d.height) == (5, 50)
 
-    def test_height(self):
-        d = self.drawing
+    def test_height(self, Drawing):
+        d = Drawing()
         d.height = 50
         d.width = 100
         assert d.height == 50
 
-    def test_proportional_height(self):
-        d = self.drawing
+    def test_proportional_height(self, Drawing):
+        d = Drawing()
         d.resize_proportional = True
         d.height = 50
         d.width = 100
         assert (d.width, d.height) == (100, 1000)
 
-    def test_set_dimension(self):
-        d = self.drawing
+    def test_set_dimension(self, Drawing):
+        d = Drawing()
         d.resize_proportional = True
         d.set_dimension(100, 50)
         assert d.width == 6
@@ -65,8 +65,9 @@ class TestDrawing(object):
 
 
     @pytest.mark.pil_required
-    def test_absolute_anchor(self):
-        node = self.drawing.anchor
+    def test_absolute_anchor(self, Drawing):
+        drawing = Drawing()
+        node = drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
         <absoluteAnchor>
@@ -80,9 +81,10 @@ class TestDrawing(object):
 
 
     @pytest.mark.pil_required
-    def test_onecell_anchor(self):
-        self.drawing.anchortype =  "oneCell"
-        node = self.drawing.anchor
+    def test_onecell_anchor(self, Drawing):
+        drawing = Drawing()
+        drawing.anchortype =  "oneCell"
+        node = drawing.anchor
         xml = tostring(node.to_tree())
         expected = """
         <oneCellAnchor>

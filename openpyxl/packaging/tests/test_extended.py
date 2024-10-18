@@ -1,9 +1,9 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
-
+from openpyxl import __version__
 
 @pytest.fixture
 def ExtendedProperties():
@@ -14,15 +14,15 @@ def ExtendedProperties():
 class TestExtendedProperties:
 
     def test_ctor(self, ExtendedProperties):
-        from ..extended import get_version
         props = ExtendedProperties()
         xml = tostring(props.to_tree())
-        expected = """
+        major, minor, patch = __version__.split(".")
+        expected = f"""
         <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
-        <Application>Microsoft Excel</Application>
-        <AppVersion>{0}</AppVersion>
+        <Application>Microsoft Excel Compatible / Openpyxl {__version__}</Application>
+        <AppVersion>{major}.{minor}</AppVersion>
         </Properties>
-        """.format(get_version())
+        """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 

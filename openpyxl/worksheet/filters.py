@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import re
 
@@ -15,7 +15,6 @@ from openpyxl.descriptors import (
     String,
     Sequence,
     MinMax,
-    Convertible,
 )
 from openpyxl.descriptors.excel import ExtensionList, CellRange
 from openpyxl.descriptors.sequence import ValueSequence
@@ -150,38 +149,138 @@ class DynamicFilter(Serialisable):
         self.maxValIso = maxValIso
 
 
-class CustomFilterValueDescriptor(Convertible):
-    """
-    Excel uses wildcards for string matching
-    """
-
-    pattern = re.compile(r"\d+|^\*.+|^.+\*$")
-    expected_type = float
-
-    def __set__(self, instance, value):
-        if isinstance(value, str):
-            m = self.pattern.match(value)
-            if not m:
-                raise ValueError("Value must be either numerical or a string containing a wildcard")
-            if "*" in value:
-                self.expected_type = str
-        super().__set__(instance, value)
-
-
 class CustomFilter(Serialisable):
 
     tagname = "customFilter"
 
-    operator = NoneSet(values=(['equal', 'lessThan', 'lessThanOrEqual',
-                            'notEqual', 'greaterThanOrEqual', 'greaterThan']))
-    val = CustomFilterValueDescriptor()
+    val = String()
+    operator = Set(values=['equal', 'lessThan', 'lessThanOrEqual',
+                           'notEqual', 'greaterThanOrEqual', 'greaterThan'])
 
-    def __init__(self,
-                 operator=None,
-                 val=None,
-                ):
+    def __init__(self, operator="equal", val=None):
         self.operator = operator
         self.val = val
+
+
+    def _get_subtype(self):
+        if self.val == " ":
+            subtype = BlankFilter
+        else:
+            try:
+                float(self.val)
+                subtype = NumberFilter
+            except ValueError:
+                subtype = StringFilter
+        return subtype
+
+
+    def convert(self):
+        """Convert to more specific filter"""
+        typ = self._get_subtype()
+        if typ in (BlankFilter, NumberFilter):
+            return typ(**dict(self))
+
+        operator, term = StringFilter._guess_operator(self.val)
+        flt = StringFilter(operator, term)
+        if self.operator == "notEqual":
+            flt.exclude = True
+        return flt
+
+
+class BlankFilter(CustomFilter):
+    """
+    Exclude blanks
+    """
+
+    __attrs__ = ("operator", "val")
+
+    def __init__(self, **kw):
+        pass
+
+
+    @property
+    def operator(self):
+        return "notEqual"
+
+
+    @property
+    def val(self):
+        return " "
+
+
+class NumberFilter(CustomFilter):
+
+
+    operator = Set(values=
+                   ['equal', 'lessThan', 'lessThanOrEqual',
+                    'notEqual', 'greaterThanOrEqual', 'greaterThan'])
+    val = Float()
+
+    def __init__(self, operator="equal", val=None):
+        self.operator = operator
+        self.val = val
+
+
+string_format_mapping = {
+    "contains": "*{}*",
+    "startswith": "{}*",
+    "endswith": "*{}",
+    "wildcard":  "{}",
+}
+
+
+class StringFilter(CustomFilter):
+
+    operator = Set(values=['contains', 'startswith', 'endswith', 'wildcard']
+                   )
+    val = String()
+    exclude = Bool()
+
+
+    def __init__(self, operator="contains", val=None, exclude=False):
+        self.operator = operator
+        self.val = val
+        self.exclude = exclude
+
+
+    def _escape(self):
+        """Escape wildcards ~, * ? when serialising"""
+        if self.operator == "wildcard":
+            return self.val
+        return re.sub(r"~|\*|\?", r"~\g<0>", self.val)
+
+
+    @staticmethod
+    def _unescape(value):
+        """
+        Unescape value
+        """
+        return re.sub(r"~(?P<op>[~*?])", r"\g<op>", value)
+
+
+    @staticmethod
+    def _guess_operator(value):
+        value = StringFilter._unescape(value)
+        endswith = r"^(?P<endswith>\*)(?P<term>[^\*\?]*$)"
+        startswith = r"^(?P<term>[^\*\?]*)(?P<startswith>\*)$"
+        contains = r"^(?P<contains>\*)(?P<term>[^\*\?]*)\*$"
+        d = {"wildcard": True, "term": value}
+        for pat in [contains, startswith, endswith]:
+            m = re.match(pat, value)
+            if m:
+                d = m.groupdict()
+
+        term = d.pop("term")
+        op = list(d)[0]
+        return op, term
+
+
+    def to_tree(self, tagname=None, idx=None, namespace=None):
+        fmt = string_format_mapping[self.operator]
+        op = self.exclude and "notEqual" or "equal"
+        value = fmt.format(self._escape())
+        flt = CustomFilter(op, value)
+        return flt.to_tree(tagname, idx, namespace)
 
 
 class CustomFilters(Serialisable):
@@ -194,7 +293,7 @@ class CustomFilters(Serialisable):
     __elements__ = ('customFilter',)
 
     def __init__(self,
-                 _and=False,
+                 _and=None,
                  customFilter=(),
                 ):
         self._and = _and

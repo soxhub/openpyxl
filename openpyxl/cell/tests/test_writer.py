@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import datetime
 import decimal
@@ -6,12 +6,9 @@ from io import BytesIO
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring, xmlfile
-from openpyxl.reader.excel import load_workbook
-from openpyxl import Workbook
+from openpyxl.xml.functions import xmlfile
 
 from openpyxl.tests.helper import compare_xml
-from openpyxl.xml.constants import SHEET_MAIN_NS, REL_NS
 from openpyxl.utils.datetime import CALENDAR_MAC_1904, CALENDAR_WINDOWS_1900
 
 from openpyxl import LXML
@@ -236,6 +233,51 @@ def test_array_formula(worksheet, write_cell_implementation):
     <c r="E2">
       <f t="array" ref="E2:E11">C2:C11*D2:D11</f>
       <v/>
+    </c>"""
+    xml = out.getvalue()
+    diff = compare_xml(xml, expected)
+    assert diff is None, diff
+
+
+def test_rich_text(worksheet, write_cell_implementation):
+    write_cell = write_cell_implementation
+    ws = worksheet
+
+    from ..rich_text import CellRichText, TextBlock, InlineFont
+
+    red = InlineFont(color='FF0000')
+    rich_string = CellRichText(
+        [TextBlock(red, 'red'),
+         ' is used, you can expect ',
+         TextBlock(red, 'danger')]
+    )
+    cell = ws["A2"]
+    cell.value = rich_string
+
+
+    out = BytesIO()
+    with xmlfile(out) as xf:
+        write_cell(xf, ws, cell)
+
+    expected = """
+    <c r="A2" t="inlineStr">
+      <is>
+        <r>
+        <rPr>
+          <color rgb="00FF0000" />
+        </rPr>
+        <t>red</t>
+        </r>
+        <r>
+          <t xml:space="preserve"> is used, you can expect </t>
+        </r>
+        <r>
+          <rPr>
+            <color rgb="00FF0000" />
+          </rPr>
+          <t>danger</t>
+        </r>
+      </is>
     </c>"""
     xml = out.getvalue()
     diff = compare_xml(xml, expected)

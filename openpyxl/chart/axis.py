@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -235,7 +235,7 @@ class NumericAxis(_BaseAxis):
         kw.setdefault('majorGridlines', ChartLines())
         kw.setdefault('axId', 100)
         kw.setdefault('crossAx', 10)
-        super(NumericAxis, self).__init__(**kw)
+        super().__init__(**kw)
 
 
     @classmethod
@@ -243,7 +243,7 @@ class NumericAxis(_BaseAxis):
         """
         Special case value axes with no gridlines
         """
-        self = super(NumericAxis, cls).from_tree(node)
+        self = super().from_tree(node)
         gridlines = node.find("{%s}majorGridlines" % CHART_NS)
         if gridlines is None:
             self.majorGridlines = None
@@ -301,7 +301,7 @@ class TextAxis(_BaseAxis):
         self.noMultiLvlLbl = noMultiLvlLbl
         kw.setdefault('axId', 10)
         kw.setdefault('crossAx', 100)
-        super(TextAxis, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class DateAxis(TextAxis):
@@ -358,7 +358,7 @@ class DateAxis(TextAxis):
         self.minorTimeUnit = minorTimeUnit
         kw.setdefault('axId', 500)
         kw.setdefault('lblOffset', lblOffset)
-        super(DateAxis, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class SeriesAxis(_BaseAxis):
@@ -398,4 +398,4 @@ class SeriesAxis(_BaseAxis):
         self.tickMarkSkip = tickMarkSkip
         kw.setdefault('axId', 1000)
         kw.setdefault('crossAx', 10)
-        super(SeriesAxis, self).__init__(**kw)
+        super().__init__(**kw)

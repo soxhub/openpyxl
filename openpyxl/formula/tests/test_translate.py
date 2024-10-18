@@ -15,7 +15,7 @@ def TranslatorError():
     from .. import translate
     return translate.TranslatorError
 
-class TestTranslator(object):
+class TestTranslator:
 
     @pytest.mark.parametrize("origin, row, col", [
         ("A1", 1, 1),

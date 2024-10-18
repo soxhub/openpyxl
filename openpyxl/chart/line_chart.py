@@ -44,7 +44,7 @@ class _LineChartBase(ChartBase):
         self.ser = ser
         self.dLbls = dLbls
         self.dropLines = dropLines
-        super(_LineChartBase, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class LineChart(_LineChartBase):
@@ -83,7 +83,7 @@ class LineChart(_LineChartBase):
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
 
-        super(LineChart, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class LineChart3D(_LineChartBase):

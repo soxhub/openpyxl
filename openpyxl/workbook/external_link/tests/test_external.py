@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from zipfile import ZipFile
 
@@ -138,7 +138,7 @@ def test_read_external_link(datadir):
     datadir.chdir()
     archive = ZipFile("book1.xlsx")
     rels = get_dependents(archive, ARC_WORKBOOK_RELS)
-    rel = rels["rId4"]
+    rel = rels.get("rId4")
     book = read_external_link(archive, rel.Target)
     assert book.file_link.Target == "book2.xlsx"
 

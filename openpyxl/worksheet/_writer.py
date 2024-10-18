@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import atexit
 from collections import defaultdict
@@ -197,17 +197,17 @@ class WorksheetWriter:
 
 
     def write_hyperlinks(self):
-        links = HyperlinkList()
 
-        for link in self.ws._hyperlinks:
+        links = self.ws._hyperlinks
+
+        for link in links:
             if link.target:
                 rel = Relationship(type="hyperlink", TargetMode="External", Target=link.target)
                 self._rels.append(rel)
                 link.id = rel.id
-            links.hyperlink.append(link)
 
         if links:
-            self.xf.send(links.to_tree())
+            self.xf.send(HyperlinkList(links).to_tree())
 
 
     def write_print(self):

@@ -1,9 +1,10 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from copy import copy
 
 from openpyxl.compat import safe_string
 from openpyxl.utils import (
+    get_column_letter,
     get_column_interval,
     column_index_from_string,
     range_boundaries,
@@ -39,7 +40,7 @@ class Dimension(Strict, StyleableObject):
 
     def __init__(self, index, hidden, outlineLevel,
                  collapsed, worksheet, visible=True, style=None):
-        super(Dimension, self).__init__(sheet=worksheet, style_array=style)
+        super().__init__(sheet=worksheet, style_array=style)
         self.index = index
         self.hidden = hidden
         self.outlineLevel = outlineLevel
@@ -60,6 +61,10 @@ class Dimension(Strict, StyleableObject):
         cp.__init__(**attrib)
         cp._style = copy(self._style)
         return cp
+
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} Instance, Attributes={dict(self)}>"
 
 
 class RowDimension(Dimension):
@@ -104,7 +109,7 @@ class RowDimension(Dimension):
             outlineLevel = outline_level
         self.thickBot = thickBot
         self.thickTop = thickTop
-        super(RowDimension, self).__init__(index, hidden, outlineLevel,
+        super().__init__(index, hidden, outlineLevel,
                                            collapsed, worksheet, style=s)
 
     @property
@@ -158,7 +163,7 @@ class ColumnDimension(Dimension):
         if outline_level is not None:
             outlineLevel = outline_level
         self.collapsed = collapsed
-        super(ColumnDimension, self).__init__(index, hidden, outlineLevel,
+        super().__init__(index, hidden, outlineLevel,
                                               collapsed, worksheet, style=style)
 
 
@@ -174,6 +179,11 @@ class ColumnDimension(Dimension):
         """
         if not all([self.min, self.max]):
             self.min = self.max = column_index_from_string(self.index)
+
+    @property
+    def range(self):
+        """Return the range of cells actually covered"""
+        return f"{get_column_letter(self.min)}:{get_column_letter(self.max)}"
 
 
     def to_tree(self):
@@ -191,7 +201,7 @@ class DimensionHolder(BoundDictionary):
         self.worksheet = worksheet
         self.max_outline = None
         self.default_factory = default_factory
-        super(DimensionHolder, self).__init__(reference, default_factory)
+        super().__init__(reference, default_factory)
 
 
     def group(self, start, end=None, outline_level=1, hidden=False):

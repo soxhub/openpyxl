@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 import pytest
 
 from io import BytesIO
@@ -160,6 +160,17 @@ class TestPivotCacheDefinition:
         cache = CacheDefinition.from_tree(xml)
         assert cache.recordCount == 17
         assert len(cache.cacheFields) == 6
+
+
+    def test_read_tuple_cache(self, CacheDefinition, datadir):
+        # Different sample with use of tupleCache
+        datadir.chdir()
+        with open("pivotCacheDefinitionTupleCache.xml", "rb") as src:
+            xml = fromstring(src.read())
+
+        cache = CacheDefinition.from_tree(xml)
+        assert cache.recordCount == 0
+        assert cache.tupleCache.entries.count == 1
 
 
     def test_to_tree(self, DummyCache):
@@ -359,12 +370,44 @@ class TestCalculatedMember:
 
     def test_from_xml(self, CalculatedMember):
         src = """
-        <calculatedMember hierarchy="yes" mdx="mdx" memberName="member" name="name" parent="parent" set="1" solveOrder="1" />
+        <calculatedMember mdx="mdx" name="name" set="1" solveOrder="1" />
         """
         node = fromstring(src)
         cm = CalculatedMember.from_tree(node)
-        assert cm == CalculatedMember(name="name", mdx="mdx", memberName="member",
-                              hierarchy="yes", parent="parent", solveOrder=1, set=True)
+        assert cm == CalculatedMember(name="name", mdx="mdx", solveOrder=1, set=True)
+
+
+@pytest.fixture
+def CalculatedItem():
+    from ..cache import CalculatedItem
+    return CalculatedItem
+
+
+class TestCalculatedItem:
+
+    def test_ctor(self, CalculatedItem):
+        from openpyxl.pivot.cache import PivotArea
+        item = CalculatedItem(formula="SUM(15)", pivotArea=PivotArea(cacheIndex=1))
+        xml = tostring(item.to_tree())
+
+        expected = """
+        <calculatedItem formula="SUM(15)">
+            <pivotArea type="normal" dataOnly="1" cacheIndex="1" outline="1"/>
+        </calculatedItem>
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, CalculatedItem, datadir):
+        datadir.chdir()
+        with open("calculatedItem.xml", "rb") as src:
+            xml = fromstring(src.read())
+
+        item = CalculatedItem.from_tree(xml)
+        assert item.formula == "SUM(15)"
+        assert item.pivotArea.cacheIndex == 1
 
 
 @pytest.fixture
@@ -395,32 +438,388 @@ class TestServerFormat:
 
 
 @pytest.fixture
-def ServerFormatList():
-    from ..cache import ServerFormatList
-    return ServerFormatList
+def OLAPSet():
+    from ..cache import OLAPSet
+    return OLAPSet
 
 
-class TestServerFormatList:
+class TestOLAPSet:
 
-    def test_ctor(self, ServerFormatList, ServerFormat):
-        sf = ServerFormat(culture="x", format="y")
-        l = ServerFormatList(serverFormat=[sf])
-        xml = tostring(l.to_tree())
+    def test_ctor(self, OLAPSet):
+        olap_set = OLAPSet(count=1, maxRank=2, setDefinition="TestSet", queryFailed=False)
+        xml = tostring(olap_set.to_tree())
         expected = """
-        <serverFormats count="1">
-          <serverFormat culture="x" format="y" />
-        </serverFormats>
+        <set count="1" maxRank="2" setDefinition="TestSet" queryFailed="0" />
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
 
-    def test_from_xml(self, ServerFormatList, ServerFormat):
+    def test_from_xml(self, OLAPSet):
         src = """
-        <serverFormats count="1">
-          <serverFormat culture="x" format="y" />
-        </serverFormats>
+        <set count="3" maxRank="5" setDefinition="Other" queryFailed="1" />
         """
         node = fromstring(src)
-        l = ServerFormatList.from_tree(node)
-        assert l.serverFormat[0] == ServerFormat(culture="x", format="y")
+        olap_set = OLAPSet.from_tree(node)
+        assert olap_set == OLAPSet(count=3, maxRank=5, setDefinition="Other", queryFailed=True)
+
+
+@pytest.fixture
+def OLAPKPI():
+    from ..cache import OLAPKPI
+    return OLAPKPI
+
+
+class TestOLAPKPI:
+
+    def test_ctor(self, OLAPKPI):
+        kpi = OLAPKPI(uniqueName="TestKPI",
+                      caption="TestCaption",
+                      displayFolder="Folder\\Display",
+                      measureGroup="TestMeasure",
+                      parent="TestParent",
+                      value="TestValue",
+                      goal="[Measures].[Goals]",
+                      status="TestStatus",
+                      trend="TestTrend",
+                      weight="",
+                      time="TestTime")
+        xml = tostring(kpi.to_tree())
+        expected = """
+        <kpi uniqueName="TestKPI" caption="TestCaption"
+        displayFolder="Folder\\Display" measureGroup="TestMeasure"
+        parent="TestParent" value="TestValue" goal="[Measures].[Goals]"
+        status="TestStatus" trend="TestTrend" weight="" time="TestTime"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def from_xml(self, OLAPKPI):
+        xml = """
+            <kpi uniqueName="Growth in Customer Base" caption="Growth in Customer Base"
+            displayFolder="Customer Perspective\\Expand Customer Base"
+            measureGroup="Internet Sales" value="[Measures].[Growth in Customer Base]"
+            goal="[Measures].[Growth in Customer Base Goal]"
+            status="[Measures].[Growth in Customer Base Status]"
+            trend="[Measures].[Growth in Customer Base Trend]"/>
+        """
+        node = fromstring(xml)
+        kpi = OLAPKPI.from_tree(node)
+        assert kpi.trend == "[Measures].[Growth in Customer Base Trend]"
+
+
+@pytest.fixture
+def GroupMember():
+    from ..cache import GroupMember
+    return GroupMember
+
+
+class TestGroupMember:
+
+    def test_ctor(self, GroupMember):
+        member = GroupMember(uniqueName="[Product].[Product Categories].[Category]")
+        xml = tostring(member.to_tree())
+        expected = """
+        <groupMember group="0" uniqueName="[Product].[Product Categories].[Category]"/>
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, GroupMember):
+        xml = """
+        <groupMember uniqueName="[Product].[Product Categories]" group="1"/>
+        """
+        node = fromstring(xml)
+        member = GroupMember.from_tree(node)
+        assert member.group is True
+        assert member.uniqueName == "[Product].[Product Categories]"
+
+
+@pytest.fixture
+def LevelGroup():
+    from ..cache import LevelGroup
+    return LevelGroup
+
+
+class TestLevelGroup:
+
+    def test_ctor(self, LevelGroup):
+        level = LevelGroup(name="CategoryXl_Grp_1",
+                           uniqueName="[Product].[Product Categories]",
+                           caption="Group1",
+                           uniqueParent="[Product].[Product Categories].[All Products]",
+                           id=1)
+        xml = tostring(level.to_tree())
+
+        expected = """
+            <group name="CategoryXl_Grp_1" uniqueName="[Product].[Product Categories]"
+            caption="Group1" uniqueParent="[Product].[Product Categories].[All Products]"
+            id="1" />
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, LevelGroup):
+        xml = """
+            <group name="Cat1" uniqueName="[Product]"
+            caption="CatGroup1" uniqueParent="[Product].[Product Categories].[All Products]"
+            id="4" />
+        """
+        node = fromstring(xml)
+        level = LevelGroup.from_tree(node)
+        assert level.name == "Cat1"
+        assert level.id == 4
+
+
+@pytest.fixture
+def GroupLevel():
+    from ..cache import GroupLevel
+    return GroupLevel
+
+
+class TestGroupLevel:
+
+    def test_ctor(self, GroupLevel):
+        group = GroupLevel(uniqueName="TestGroup",
+                           caption="TestCaption",
+                           user=True,
+                           customRollUp=True)
+        xml = tostring(group.to_tree())
+
+        expected = """
+        <groupLevel uniqueName="TestGroup" caption="TestCaption"
+        user="1" customRollUp="1" />
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, GroupLevel):
+        xml = """
+        <groupLevel uniqueName="[Product].[Product Categories].[Category]"
+            caption="Category">
+            <groups count="1">
+                <group name="CategoryXl_Grp_1" uniqueName="[Product].[Product
+                Categories].[Product Categories1].
+                [GROUPMEMBER.[CategoryXl_Grp_1]].[Product]].[Product Categories]].
+                [All Products]]]" caption="Group1" uniqueParent="[Product].
+                [Product Categories].[All Products]" id="1">
+                </group>
+            </groups>
+        </groupLevel>
+        """
+        node = fromstring(xml)
+        group = GroupLevel.from_tree(node)
+        assert group.caption == "Category"
+        assert len(group.groups) == 1
+
+
+@pytest.fixture
+def FieldUsage():
+    from ..cache import FieldUsage
+    return FieldUsage
+
+
+class TestFieldUsage:
+
+    def test_ctor(self, FieldUsage):
+        field = FieldUsage(x=5)
+        xml = tostring(field.to_tree())
+
+        expected = """<fieldUsage x="5" />"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, FieldUsage):
+        xml = """<fieldUsage x="-1"/>"""
+        node = fromstring(xml)
+        field = FieldUsage.from_tree(node)
+        assert field.x == -1
+
+
+@pytest.fixture
+def GroupItems():
+    from ..cache import GroupItems
+    return GroupItems
+
+
+class TestGroupItems:
+
+    def test_ctor(self, GroupItems):
+        from ..record import Text
+        group = GroupItems(s=[Text(v="1-2"), Text(v="3-4")])
+        xml = tostring(group.to_tree())
+
+        expected = """
+            <groupItems count="2">
+                <s v="1-2" />
+                <s v="3-4" />
+            </groupItems>
+        """
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, GroupItems):
+        xml = """
+            <groupItems count="4">
+                <s v="&lt;1"/>
+                <s v="1-2"/>
+                <s v="3-4"/>
+                <s v="&gt;5"/>
+            </groupItems>
+        """
+        node = fromstring(xml)
+        group = GroupItems.from_tree(node)
+        assert group.s[0].v == "<1"
+        assert group.count == 4
+
+
+@pytest.fixture
+def RangePr():
+    from ..cache import RangePr
+    return RangePr
+
+
+class TestRangePr:
+
+    def test_ctor(self, RangePr):
+        rangepr = RangePr(startNum=1, endNum=4, groupInterval=2)
+        xml = tostring(rangepr.to_tree())
+        expected = """<rangePr autoStart="1" autoEnd="1" groupBy="range" startNum="1" endNum="4" groupInterval="2"/>"""
+
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, RangePr):
+        from datetime import datetime
+        xml = """<rangePr groupBy="months" startDate="2002-01-01T00:00:00"  endDate="2006-05-06T00:00:00"/>"""
+        node = fromstring(xml)
+        rangepr = RangePr.from_tree(node)
+        assert rangepr.groupBy == "months"
+        assert rangepr.startDate == datetime(year=2002, month=1, day=1)
+
+
+@pytest.fixture
+def FieldGroup():
+    from ..cache import FieldGroup
+    return FieldGroup
+
+
+class TestFieldGroup:
+
+    def test_ctor(self, FieldGroup):
+        field = FieldGroup(par=4, base=3)
+        xml = tostring(field.to_tree())
+
+        expected = """
+        <fieldGroup par="4" base="3" />
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, FieldGroup):
+        xml = """
+            <fieldGroup base="0">
+                <rangePr startNum="1" endNum="4" groupInterval="2"/>
+                <groupItems count="4">
+                    <s v="1-2"/>
+                    <s v="3-4"/>
+                </groupItems>
+            </fieldGroup>
+        """
+        node = fromstring(xml)
+        field = FieldGroup.from_tree(node)
+        assert field.base == 0
+        assert len(field.groupItems.s) == 2
+
+
+@pytest.fixture
+def RangeSet():
+    from ..cache import RangeSet
+    return RangeSet
+
+
+class TestRangeSet:
+
+    def test_ctor(self, RangeSet):
+        rangeset = RangeSet(i1=1, i2=1, ref="A1:B3", sheet="Sheet2")
+        xml = tostring(rangeset.to_tree())
+        expected = """
+        <rangeSet i1="1" i2="1" ref="A1:B3" sheet="Sheet2"/>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, RangeSet):
+        xml = """<rangeSet i1="4" i2="4" ref="A1:B3" sheet="Sheet5" />"""
+        node = fromstring(xml)
+        rangeset = RangeSet.from_tree(node)
+        assert rangeset.i1 == 4
+        assert rangeset.ref == "A1:B3"
+
+
+@pytest.fixture
+def PageItem():
+    from ..cache import PageItem
+    return PageItem
+
+class TestPageItem:
+
+    def test_ctor(self, PageItem):
+        page = PageItem(name="TestPage")
+        xml = tostring(page.to_tree())
+        expected = """<pageItem name="TestPage" />"""
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, PageItem):
+        xml = """<pageItem name="NewPage" />"""
+        node = fromstring(xml)
+        pageitem = PageItem.from_tree(node)
+        assert pageitem.name == "NewPage"
+
+
+@pytest.fixture
+def Consolidation():
+    from ..cache import Consolidation
+    return Consolidation
+
+
+class TestConsolidation:
+
+    def test_ctor(self, Consolidation):
+        from ..cache import RangeSet
+        cons = Consolidation(autoPage=True, rangeSets=[RangeSet(i1=1, ref="A1:B3")])
+        xml = tostring(cons.to_tree())
+        expected = """
+        <consolidation autoPage="1">
+            <rangeSets count="1">
+                <rangeSet i1="1" ref="A1:B3"/>
+            </rangeSets>
+        </consolidation>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+    def test_from_xml(self, Consolidation):
+        xml = """
+        <consolidation>
+            <pages count="1">
+                <pageItem name="TestName" />
+            </pages>
+            <rangeSets count="1">
+                <rangeSet i1="1" ref="A1:B3"/>
+            </rangeSets>
+        </consolidation>
+        """
+        node = fromstring(xml)
+        cons = Consolidation.from_tree(node)
+        assert cons.autoPage is None
+        assert len(cons.pages) == 1
+        assert len(cons.rangeSets) == 1

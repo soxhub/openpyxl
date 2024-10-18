@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 from openpyxl.descriptors import (
@@ -106,7 +106,7 @@ class Font(Serialisable):
         underline = node.find("{%s}u" % SHEET_MAIN_NS)
         if underline is not None and underline.get('val') is None:
             underline.set("val", "single")
-        return super(Font, cls).from_tree(node)
+        return super().from_tree(node)
 
 
 DEFAULT_FONT = Font(name="Calibri", sz=11, family=2, b=False, i=False,

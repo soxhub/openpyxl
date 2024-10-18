@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.compat import safe_string
 
@@ -18,16 +18,6 @@ class Alignment(Serialisable):
 
     tagname = "alignment"
 
-    __fields__ = ('horizontal',
-                  'vertical',
-                  'textRotation',
-                  'wrapText',
-                  'shrinkToFit',
-                  'indent',
-                  'relativeIndent',
-                  'justifyLastLine',
-                  'readingOrder',
-                  )
     horizontal = NoneSet(values=horizontal_alignments)
     vertical = NoneSet(values=vertical_aligments)
     textRotation = NoneSet(values=range(181))

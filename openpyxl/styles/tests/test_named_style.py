@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import pytest
 
@@ -39,11 +39,11 @@ class TestNamedStyle:
 
     def test_dict(self, NamedStyle):
         style = NamedStyle()
-        assert dict(style) == {'name':'Normal', 'hidden':'0', 'xfId':'0'}
+        assert dict(style) == {'name':'Normal', 'hidden':'0', }
 
 
     def test_bind(self, NamedStyle):
-        style = NamedStyle(xfId=0)
+        style = NamedStyle()
 
         wb = Workbook()
         style.bind(wb)
@@ -57,7 +57,7 @@ class TestNamedStyle:
 
 
     def test_as_xf(self, NamedStyle):
-        style = NamedStyle(xfId=0)
+        style = NamedStyle()
         style.alignment = Alignment(horizontal="left")
 
         xf = style.as_xf()
@@ -74,7 +74,7 @@ class TestNamedStyle:
 
 
     def test_as_name(self, NamedStyle, _NamedCellStyle):
-        style = NamedStyle(xfId=0)
+        style = NamedStyle()
 
         name = style.as_name()
         assert name == _NamedCellStyle(name='Normal', xfId=0, hidden=False)
@@ -91,7 +91,7 @@ class TestNamedStyle:
                              ]
                              )
     def test_recalculate(self, NamedStyle, attr, key, collection, expected):
-        style = NamedStyle(xfId=0)
+        style = NamedStyle()
         wb = Workbook()
         wb._number_formats.append("###")
         style.bind(wb)
@@ -168,7 +168,7 @@ class TestNamedCellStyleList:
         assert styles == _NamedCellStyleList()
 
 
-    def test_styles(self, _NamedCellStyleList):
+    def test_duplicate_names(self, _NamedCellStyleList):
         src = """
         <cellStyles count="11">
           <cellStyle name="Followed Hyperlink" xfId="2" builtinId="9" hidden="1"/>
@@ -186,7 +186,42 @@ class TestNamedCellStyleList:
         """
         node = fromstring(src)
         styles = _NamedCellStyleList.from_tree(node)
-        assert [s.name for s in styles.names] == ['Normal', 'Hyperlink', 'Followed Hyperlink']
+        cleaned = styles.remove_duplicates()
+
+        assert [s.name for s in cleaned] == ['Normal', 'Hyperlink', 'Followed Hyperlink']
+
+
+    def test_duplicate_ids(self, _NamedCellStyleList):
+        src = """
+        <cellStyles count="18">
+          <cellStyle name="Column0Style" xfId="1" />
+          <cellStyle name="Column10Style" xfId="1"/>
+          <cellStyle name="Column11Style" xfId="1"/>
+          <cellStyle name="Column12Style" xfId="4"/>
+          <cellStyle name="Column13Style" xfId="4"/>
+          <cellStyle name="Column1Style" xfId="1"/>
+          <cellStyle name="Column2Style" xfId="3"/>
+          <cellStyle name="Column3Style" xfId="4"/>
+          <cellStyle name="Column4Style" xfId="1"/>
+          <cellStyle name="Column5Style" xfId="1"/>
+          <cellStyle name="Column6Style" xfId="1"/>
+          <cellStyle name="Column7Style" xfId="1"/>
+          <cellStyle name="Column8Style" xfId="1"/>
+          <cellStyle name="Column9Style" xfId="1"/>
+          <cellStyle name="Heading" xfId="2"/>
+          <cellStyle name="Hyperlink 2" xfId="6"/>
+          <cellStyle name="Normal" xfId="0" builtinId="0"/>
+          <cellStyle name="Normal 2" xfId="5"/>
+        </cellStyles>
+        """
+        node = fromstring(src)
+        styles = _NamedCellStyleList.from_tree(node)
+        cleaned = styles.remove_duplicates()
+
+        assert [s.name for s in cleaned] == ["Normal", "Column0Style", "Heading",
+                                             "Column2Style", "Column12Style", "Normal 2",
+                                             "Hyperlink 2"
+                                             ]
 
 
 @pytest.fixture

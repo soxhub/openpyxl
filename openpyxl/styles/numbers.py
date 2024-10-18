@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import re
 
@@ -106,7 +106,7 @@ def is_date_format(fmt):
         return False
     fmt = fmt.split(";")[0] # only look at the first format
     fmt = STRIP_RE.sub("", fmt) # ignore some formats
-    return re.search(r"(?<!\\)[dmhysDMHYS]", fmt) is not None
+    return re.search(r"(?<![_\\])[dmhysDMHYS]", fmt) is not None
 
 
 def is_timedelta_format(fmt):
@@ -160,7 +160,7 @@ class NumberFormatDescriptor(String):
     def __set__(self, instance, value):
         if value is None:
             value = FORMAT_GENERAL
-        super(NumberFormatDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class NumberFormat(Serialisable):

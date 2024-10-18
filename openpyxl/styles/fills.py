@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors import (
     Float,
@@ -165,7 +165,7 @@ class StopList(Sequence):
 
     def __set__(self, obj, values):
         values = _assign_position(values)
-        super(StopList, self).__set__(obj, values)
+        super().__set__(obj, values)
 
 
 class GradientFill(Fill):
@@ -219,6 +219,6 @@ class GradientFill(Fill):
 
     def to_tree(self, tagname=None, namespace=None, idx=None):
         parent = Element("fill")
-        el = super(GradientFill, self).to_tree()
+        el = super().to_tree()
         parent.append(el)
         return parent

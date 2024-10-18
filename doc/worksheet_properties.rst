@@ -59,7 +59,9 @@ Search `ECMA-376 pageSetup` for more details.
 Worksheet Views
 ---------------
 
-There are also several convenient properties defined as worksheet views. You can use :class:`ws.sheet_view<openpyxl.worksheet.views.SheetView>` to set sheet attributes such as zoom, show formulas or if the tab is selected.
+There are also several convenient properties defined as worksheet views.
+
+You can use :class:`ws.sheet_view<openpyxl.worksheet.views.SheetView>` to set sheet attributes such as zoom, show formulas or if the tab is selected. `ws.sheet_view` returns the first view.
 
 .. :: doctest
 
@@ -68,9 +70,14 @@ There are also several convenient properties defined as worksheet views. You can
 >>> wb = Workbook()
 >>> ws = wb.active
 >>>
->>> ws.sheet_view.zoom = 85 # Sets 85% zoom
+>>> ws.sheet_view.zoomScale = 85 # Sets 85% zoom
 >>> ws.sheet_view.showFormulas = True
 >>> ws.sheet_view.tabSelected = True
+
+Worksheets can have multiple views which are rendered in Excel as "views.xlsx:1", "views.xlsx:2".
+These correspond to `ws.views.sheetView[0]` and `ws.views.sheetView[1]`, because they are zero-indexed.
+
+Custom Sheetviews can also be defined.
 
 Fold (outline)
 ----------------------

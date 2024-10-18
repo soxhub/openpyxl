@@ -59,6 +59,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Koert van der Veer
 * Laurent Laporte
 * Laurent Vasseur
+* Liam Sanders
 * Maarten De Paepe
 * Magnus Schieder
 * Mark Gemmill
@@ -70,6 +71,7 @@ Thanks to all those who participate in the project (in alphabetical order):
 * Paul Joyce
 * Paul Van Der Linden
 * Philip Roche
+* Primoz Godec
 * ramn_se
 * René Neumann
 * Rick Rankin

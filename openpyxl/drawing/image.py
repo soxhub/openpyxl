@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from io import BytesIO
 
@@ -18,7 +18,7 @@ def _import_image(img):
     return img
 
 
-class Image(object):
+class Image:
     """Image in a spreadsheet"""
 
     _id = 1

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pivotCacheDefinition xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="xr"
+    xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" saveData="0" refreshedBy="Admin" refreshedDate="45363.779292476851" backgroundQuery="1" createdVersion="3" refreshedVersion="8" minRefreshableVersion="3" recordCount="0" tupleCache="1" supportSubquery="1" supportAdvancedDrill="1" xr:uid="{7F9F0825-03A9-446D-BEB4-997869B752FC}">
+    <cacheSource type="external" connectionId="2"/>
+    <cacheFields count="0"/>
+    <cacheHierarchies count="5">
+        <cacheHierarchy uniqueName="[Data].[ID]" caption="ID" attribute="1" defaultMemberUniqueName="[Data].[ID].[All]" allUniqueName="[Data].[ID].[All]" allCaption="All" dimensionUniqueName="[Data]" displayFolder="" count="2" memberValueDatatype="5" unbalanced="0"/>
+        <cacheHierarchy uniqueName="[Data].[Amount]" caption="Amount" attribute="1" defaultMemberUniqueName="[Data].[Amount].[All]" allUniqueName="[Data].[Amount].[All]" allCaption="All" dimensionUniqueName="[Data]" displayFolder="" count="2" memberValueDatatype="5" unbalanced="0"/>
+        <cacheHierarchy uniqueName="[Measures]" caption="Measures" attribute="1" keyAttribute="1" defaultMemberUniqueName="[Measures].[__No measures defined]" dimensionUniqueName="[Measures]" displayFolder="" measures="1" count="1" memberValueDatatype="130" unbalanced="0"/>
+        <cacheHierarchy uniqueName="[Measures].[__XL_Count Data]" caption="__XL_Count Data" measure="1" displayFolder="" measureGroup="Data" count="0" hidden="1"/>
+        <cacheHierarchy uniqueName="[Measures].[__No measures defined]" caption="__No measures defined" measure="1" displayFolder="" count="0" hidden="1"/>
+    </cacheHierarchies>
+    <kpis count="0"/>
+    <tupleCache>
+        <entries count="1">
+            <n v="1">
+                <tpls c="1">
+                    <tpl hier="1" item="4294967295"/>
+                </tpls>
+            </n>
+        </entries>
+        <queryCache count="6">
+            <query mdx="[Description].[Amount]"/>
+            <query mdx="[Description].[ID]"/>
+            <query mdx="[Data].[Amount]">
+                <tpls c="1">
+                    <tpl hier="1" item="4294967295"/>
+                </tpls>
+            </query>
+            <query mdx="[Data]].[Amount]"/>
+            <query mdx="[Data]].[ID]"/>
+            <query mdx="[Data].[ID]">
+                <tpls c="1">
+                    <tpl hier="0" item="4294967295"/>
+                </tpls>
+            </query>
+        </queryCache>
+    </tupleCache>
+    <extLst>
+        <ext uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}"
+            xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main">
+            <x14:pivotCacheDefinition supportSubqueryNonVisual="1" supportSubqueryCalcMem="1" supportAddCalcMems="1"/>
+        </ext>
+    </extLst>
+</pivotCacheDefinition>

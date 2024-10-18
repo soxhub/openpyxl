@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from collections import OrderedDict
 from operator import attrgetter
@@ -83,7 +83,7 @@ class ChartBase(Serialisable):
         self.visible_cells_only = True
         self.idx_base = 0
         self.graphical_properties = None
-        super(ChartBase, self).__init__()
+        super().__init__()
 
 
     def __hash__(self):
@@ -107,7 +107,7 @@ class ChartBase(Serialisable):
         if self.ser is not None:
             for s in self.ser:
                 s.__elements__ = attribute_mapping[self._series_type]
-        return super(ChartBase, self).to_tree(tagname, idx)
+        return super().to_tree(tagname, idx)
 
 
     def _reindex(self):

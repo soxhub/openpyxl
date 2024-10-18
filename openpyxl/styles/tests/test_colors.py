@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.styles.colors import Color
 from openpyxl.xml.functions import fromstring, tostring
@@ -77,7 +77,7 @@ class TestColor:
 def test_color_descriptor():
     from ..colors import ColorDescriptor
 
-    class DummyStyle(object):
+    class DummyStyle:
 
         value = ColorDescriptor('value')
 

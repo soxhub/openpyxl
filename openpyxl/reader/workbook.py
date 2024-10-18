@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from warnings import warn
 
@@ -36,7 +36,7 @@ class WorkbookParser:
     @property
     def rels(self):
         if self._rels is None:
-            self._rels = get_dependents(self.archive, get_rels_path(self.workbook_part_name))
+            self._rels = get_dependents(self.archive, get_rels_path(self.workbook_part_name)).to_dict()
         return self._rels
 
 
@@ -59,7 +59,7 @@ class WorkbookParser:
             package.externalReferences = []
 
         for ext_ref in package.externalReferences:
-            rel = self.rels[ext_ref.id]
+            rel = self.rels.get(ext_ref.id)
             self.wb._external_links.append(
                 read_external_link(self.archive, rel.Target)
             )

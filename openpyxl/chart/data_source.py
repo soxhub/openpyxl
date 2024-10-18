@@ -44,7 +44,7 @@ class NumberValueDescriptor(NestedText):
             self.expected_type = str
         else:
             self.expected_type = float
-        super(NumberValueDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class NumVal(Serialisable):

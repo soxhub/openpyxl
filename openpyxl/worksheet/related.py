@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors.excel import Relation
@@ -14,4 +14,4 @@ class Related(Serialisable):
 
 
     def to_tree(self, tagname, idx=None):
-        return super(Related, self).to_tree(tagname)
+        return super().to_tree(tagname)

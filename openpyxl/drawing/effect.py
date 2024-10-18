@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -208,7 +208,7 @@ class GlowEffect(ColorChoice):
                  **kw
                 ):
         self.rad = rad
-        super(GlowEffect, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class InnerShadowEffect(ColorChoice):
@@ -235,7 +235,7 @@ class InnerShadowEffect(ColorChoice):
         self.blurRad = blurRad
         self.dist = dist
         self.dir = dir
-        super(InnerShadowEffect, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class OuterShadow(ColorChoice):
@@ -282,7 +282,7 @@ class OuterShadow(ColorChoice):
         self.ky = ky
         self.algn = algn
         self.rotWithShape = rotWithShape
-        super(OuterShadow, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class PresetShadowEffect(ColorChoice):
@@ -311,7 +311,7 @@ class PresetShadowEffect(ColorChoice):
         self.prst = prst
         self.dist = dist
         self.dir = dir
-        super(PresetShadowEffect, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class ReflectionEffect(Serialisable):

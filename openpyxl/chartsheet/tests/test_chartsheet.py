@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.worksheet.drawing import Drawing
 from openpyxl.worksheet.page import PageMargins

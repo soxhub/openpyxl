@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import datetime
 import pytest
@@ -11,7 +11,7 @@ from openpyxl.styles.styleable import StyleArray
 
 @pytest.fixture(scope='module')
 def dummy_sheet():
-    class DummyWorkbook(object):
+    class DummyWorkbook:
         shared_styles = IndexedList()
         style = StyleArray()
         shared_styles.add(style) # Workbooks always have a default style
@@ -22,7 +22,7 @@ def dummy_sheet():
         _fonts.add(None)
 
 
-    class DummySheet(object):
+    class DummySheet:
         base_date = 2415018.5
         style_table = {}
         shared_strings = ['Hello world']
