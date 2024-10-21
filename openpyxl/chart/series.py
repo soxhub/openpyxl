@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -169,7 +169,7 @@ class Series(Serialisable):
             if self.order == self.idx:
                 self.order = idx # rebase the order if the index has been rebased
             self.idx = idx
-        return super(Series, self).to_tree(tagname)
+        return super().to_tree(tagname)
 
 
 class XYSeries(Series):

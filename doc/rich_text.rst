@@ -4,10 +4,16 @@ Working with Rich Text
 Introduction
 ------------
 
-Normally styles apply to everything in an individual cell. However, Rich Text allows formatting of parts of the text in a string.
+Normally styles apply to everything in an individual cell. However, rich text
+allows formatting of parts of the text in a string. This section covers
+adding rich-text formatting to worksheet cells. Rich-text formatting in
+existing workbooks has to be enabled when loading them with the
+`rich_text=True` parameter.
 
-Rich Text objects can contain a mix of unformatted text and :class:`TextBlock` objects that contains an :class:`InlineFont` style and a the text which is to be formatted like this.
-The result is a :class:`CellRichText` object.
+Rich Text objects can contain a mix of unformatted text and
+:class:`TextBlock` objects that contains an :class:`InlineFont` style and a
+the text which is to be formatted like this. The result is a
+:class:`CellRichText` object.
 
 .. :: doctest
 
@@ -20,7 +26,9 @@ The result is a :class:`CellRichText` object.
 ... )
 
 
-:class:`InlineFont` objects are virtually identical to the :class:`Font` objects, but use a different attribute name, `rFont`, for the name of the font. Unfortunately, this is required by OOXML and cannot be avoided.
+:class:`InlineFont` objects are virtually identical to the :class:`Font`
+objects, but use a different attribute name, `rFont`, for the name of the
+font. Unfortunately, this is required by OOXML and cannot be avoided.
 
 .. :: doctest
 
@@ -41,7 +49,9 @@ The result is a :class:`CellRichText` object.
 ...                          scheme=None,
 ...                          )
 
-Fortunately, if you already have a :class:`Font` object, you can simply initialize an :class:`InlineFont` object with an existing :class:`Font` object:
+Fortunately, if you already have a :class:`Font` object, you can simply
+initialize an :class:`InlineFont` object with an existing :class:`Font`
+object:
 
 .. ::
 
@@ -57,7 +67,8 @@ Fortunately, if you already have a :class:`Font` object, you can simply initiali
 >>> inline_font = InlineFont(font)
 
 
-You can create :class:`InlineFont` objects on their own, and use them later. This makes working with Rich Text cleaner and easier:
+You can create :class:`InlineFont` objects on their own, and use them later.
+This makes working with Rich Text cleaner and easier:
 
 .. ::
 
@@ -78,7 +89,7 @@ For example:
 
 .. :: doctest
 
->>> red = InlineFont(color='FF000000')
+>>> red = InlineFont(color='00FF0000')
 >>> rich_string1 = CellRichText(['When the color ', TextBlock(red, 'red'), ' is used, you can expect ', TextBlock(red, 'danger')])
 
 The :class:`CellRichText` object is derived from `list`, and can be used as such.
@@ -86,7 +97,8 @@ The :class:`CellRichText` object is derived from `list`, and can be used as such
 Whitespace
 ++++++++++
 
-CellRichText objects do not add whitespace between elements when rendering them as strings or saving files.
+CellRichText objects do not add whitespace between elements when rendering
+them as strings or saving files.
 
 .. :: doctest
 
@@ -105,7 +117,8 @@ You can also cast it to a `str` to get only the text, without formatting.
 Editing Rich Text
 -----------------
 
-As editing large blocks of text with formatting can be tricky, the `as_list()` method returns a list of strings to make indexing easy.
+As editing large blocks of text with formatting can be tricky, the
+`as_list()` method returns a list of strings to make indexing easy.
 
 .. :: doctest
 

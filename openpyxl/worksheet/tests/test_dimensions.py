@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import pytest
 
@@ -27,17 +27,31 @@ class DummyWorksheet:
         self.parent = DummyWorkbook()
 
 
-def test_dimension_interface():
-    from .. dimensions import Dimension
-    d = Dimension(1, True, 1, False, DummyWorksheet())
-    assert isinstance(d.parent, DummyWorksheet)
-    assert dict(d) == {'hidden': '1', 'outlineLevel': '1'}
+@pytest.fixture
+def Dimension():
+    from ..dimensions import Dimension
+    return Dimension
 
 
-def test_invalid_dimension_ctor():
-    from .. dimensions import Dimension
-    with pytest.raises(TypeError):
-        Dimension()
+class TestDimension:
+
+
+    def test_dimension_interface(self, Dimension):
+        d = Dimension(1, True, 1, False, DummyWorksheet())
+        assert isinstance(d.parent, DummyWorksheet)
+        assert dict(d) == {'hidden': '1', 'outlineLevel': '1'}
+
+
+    def test_invalid_dimension_ctor(self, Dimension):
+        with pytest.raises(TypeError):
+            Dimension()
+
+
+    def test_repr(self, Dimension):
+        dim = Dimension(worksheet="Sheet1", index=1, hidden=False, outlineLevel=None,
+                        collapsed=True)
+        assert repr(dim) == "<Dimension Instance, Attributes={'collapsed': '1'}>"
+
 
 
 @pytest.fixture
@@ -167,6 +181,13 @@ class TestColDimension:
         assert cd.to_tree() is None
 
 
+    def test_range(self, ColumnDimension):
+        ws = DummyWorksheet()
+        cd = ColumnDimension(ws, index="C")
+        cd.reindex()
+        assert cd.range == "C:C"
+
+
 class TestGrouping:
 
     def test_group_columns_simple(self):
@@ -177,8 +198,7 @@ class TestGrouping:
         assert len(dims) == 1
         group = list(dims.values())[0]
         assert group.outline_level == 1
-        assert group.min == 1
-        assert group.max == 3
+        assert group.range == "A:C"
 
 
     def test_group_columns_collapse(self):

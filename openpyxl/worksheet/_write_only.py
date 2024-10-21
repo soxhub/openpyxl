@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 """Write worksheets to xml representations in an optimized way"""
@@ -44,7 +44,7 @@ class WriteOnlyWorksheet(_WorkbookChild):
     _setup = Worksheet._setup
 
     def __init__(self, parent, title):
-        super(WriteOnlyWorksheet, self).__init__(parent, title)
+        super().__init__(parent, title)
         self._max_col = 0
         self._max_row = 0
         self._setup()

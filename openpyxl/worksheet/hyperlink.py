@@ -39,23 +39,8 @@ class HyperlinkList(Serialisable):
 
     tagname = "hyperlinks"
 
-    hyperlink = Sequence(expected_type=Hyperlink)
+    __expected_type = Hyperlink
+    hyperlink = Sequence(expected_type=__expected_type)
 
     def __init__(self, hyperlink=()):
         self.hyperlink = hyperlink
-
-
-    def __bool__(self):
-        return bool(self.hyperlink)
-
-
-    def __len__(self):
-        return len(self.hyperlink)
-
-
-    def append(self, value):
-        values = self.hyperlink[:]
-        values.append(value)
-        if not value.id:
-            value.id = "rId{0}".format(len(values))
-        self.hyperlink = values

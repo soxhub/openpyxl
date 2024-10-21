@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors import (
     Bool,
@@ -13,7 +13,7 @@ from openpyxl.descriptors.excel import (
 from openpyxl.utils.protection import hash_password
 
 
-class _Protected(object):
+class _Protected:
     _password = None
 
     def set_password(self, value='', already_hashed=False):
@@ -103,7 +103,7 @@ class SheetProtection(Serialisable, _Protected):
 
 
     def set_password(self, value='', already_hashed=False):
-        super(SheetProtection, self).set_password(value, already_hashed)
+        super().set_password(value, already_hashed)
         self.enable()
 
 

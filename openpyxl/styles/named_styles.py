@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.compat import safe_string
 
@@ -42,7 +42,6 @@ class NamedStyle(Serialisable):
     protection = Typed(expected_type=Protection)
     builtinId = Integer(allow_none=True)
     hidden = Bool(allow_none=True)
-    xfId = Integer(allow_none=True)
     name = String()
     _wb = None
     _style = StyleArray()
@@ -58,7 +57,6 @@ class NamedStyle(Serialisable):
                  protection=None,
                  builtinId=None,
                  hidden=False,
-                 xfId=None,
                  ):
         self.name = name
         self.font = font or Font()
@@ -74,7 +72,7 @@ class NamedStyle(Serialisable):
 
 
     def __setattr__(self, attr, value):
-        super(NamedStyle, self).__setattr__(attr, value)
+        super().__setattr__(attr, value)
         if getattr(self, '_wb', None) and attr in (
            'font', 'fill', 'border', 'alignment', 'number_format', 'protection',
             ):
@@ -86,21 +84,6 @@ class NamedStyle(Serialisable):
             value = getattr(self, key, None)
             if value is not None:
                 yield key, safe_string(value)
-
-
-    @property
-    def xfId(self):
-        """
-        Index of the style in the list of named styles
-        """
-        return self._style.xfId
-
-
-    def _set_index(self, idx):
-        """
-        Allow the containing list to set the index
-        """
-        self._style.xfId = idx
 
 
     def bind(self, wb):
@@ -155,7 +138,7 @@ class NamedStyle(Serialisable):
             name=self.name,
             builtinId=self.builtinId,
             hidden=self.hidden,
-            xfId=self.xfId
+            xfId=self._style.xfId
         )
         return named
 
@@ -166,7 +149,19 @@ class NamedStyleList(list):
 
     As only the index is stored in referencing objects the order mus
     be preserved.
+
+    Returns a list of NamedStyles
     """
+
+    def __init__(self, iterable=()):
+        """
+        Allow a list of named styles to be passed in and index them.
+        """
+
+        for idx, s in enumerate(iterable, len(self)):
+            s._style.xfId = idx
+        super().__init__(iterable)
+
 
     @property
     def names(self):
@@ -175,24 +170,22 @@ class NamedStyleList(list):
 
     def __getitem__(self, key):
         if isinstance(key, int):
-            return super(NamedStyleList, self).__getitem__(key)
+            return super().__getitem__(key)
 
-        names = self.names
-        if key not in names:
-            raise KeyError("No named style with the name{0} exists".format(key))
 
-        for idx, name in enumerate(names):
+        for idx, name in enumerate(self.names):
             if name == key:
                 return self[idx]
 
+        raise KeyError("No named style with the name{0} exists".format(key))
 
     def append(self, style):
         if not isinstance(style, NamedStyle):
             raise TypeError("""Only NamedStyle instances can be added""")
-        elif style.name in self.names:
+        elif style.name in self.names: # hotspot
             raise ValueError("""Style {0} exists already""".format(style.name))
-        style._set_index(len(self))
-        super(NamedStyleList, self).append(style)
+        style._style.xfId = (len(self))
+        super().append(style)
 
 
 class _NamedCellStyle(Serialisable):
@@ -260,13 +253,15 @@ class _NamedCellStyleList(Serialisable):
         return len(self.cellStyle)
 
 
-    @property
-    def names(self):
+    def remove_duplicates(self):
         """
-        Convert to NamedStyle objects and remove duplicates.
+        Some applications contain duplicate definitions either by name or
+        referenced style.
 
-        In theory the highest xfId wins but in practice they are duplicates
-        so it doesn't matter.
+        As the references are 0-based indices, styles are sorted by
+        index.
+
+        Returns a list of style references with duplicates removed
         """
 
         def sort_fn(v):
@@ -274,18 +269,14 @@ class _NamedCellStyleList(Serialisable):
 
         styles = []
         names = set()
+        ids = set()
 
         for ns in sorted(self.cellStyle, key=sort_fn):
-            if ns.name in names:
+            if ns.xfId in ids or ns.name in names: # skip duplicates
                 continue
-
-            style = NamedStyle(
-                name=ns.name,
-                hidden=ns.hidden,
-                builtinId = ns.builtinId
-            )
+            ids.add(ns.xfId)
             names.add(ns.name)
-            style._set_index(len(styles)) # assign xfId
-            styles.append(style)
 
-        return NamedStyleList(styles)
+            styles.append(ns)
+
+        return styles

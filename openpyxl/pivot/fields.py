@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -26,8 +26,10 @@ class Index(Serialisable):
 
 class Tuple(Serialisable):
 
-    fld = Integer()
-    hier = Integer()
+    tagname = "tpl"
+
+    fld = Integer(allow_none=True)
+    hier = Integer(allow_none=True)
     item = Integer()
 
     def __init__(self,
@@ -41,6 +43,8 @@ class Tuple(Serialisable):
 
 
 class TupleList(Serialisable):
+
+    tagname = "tpls"
 
     c = Integer(allow_none=True)
     tpl = Typed(expected_type=Tuple, )

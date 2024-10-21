@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import pytest
 
@@ -41,10 +41,10 @@ def Trendline():
 class TestTrendline:
 
     def test_ctor(self, Trendline):
-        trendline = Trendline()
+        trendline = Trendline(name="Bob")
         xml = tostring(trendline.to_tree())
         expected = """
-        <trendline>
+        <trendline name="Bob">
           <trendlineType val="linear" />
         </trendline>
         """
@@ -54,10 +54,10 @@ class TestTrendline:
 
     def test_from_xml(self, Trendline):
         src = """
-        <trendline>
+        <trendline name="Bob">
           <trendlineType val="log" />
         </trendline>
         """
         node = fromstring(src)
         trendline = Trendline.from_tree(node)
-        assert trendline == Trendline(trendlineType="log")
+        assert trendline == Trendline(trendlineType="log", name="Bob")

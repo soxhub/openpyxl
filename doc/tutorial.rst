@@ -354,23 +354,32 @@ You can use the :func:`openpyxl.load_workbook` to open an existing workbook::
     >>> print(sheet_ranges['D18'].value)
     3
 
-
 .. note ::
 
     There are several flags that can be used in load_workbook.
 
     - `data_only` controls whether cells with formulae have either the
-      formula (default) or the value stored the last time Excel read the sheet.
+       formula (default) or the value stored the last time Excel read the sheet.
 
     - `keep_vba` controls whether any Visual Basic elements are preserved or
-      not (default). If they are preserved they are still not editable.
+       not (default). If they are preserved they are still not editable.
 
+    - `read-only` opens workbooks in a read-only mode. This uses much less
+       memory and is faster but not all features are available (charts, images,
+       etc.)
+
+    - `rich_text` controls whether any rich-text formatting in cells is
+       preserved. The default is `False`.
+
+    - `keep_links` controls whether data cached from external workbooks is
+       preserved.
 
 .. warning ::
 
     openpyxl does currently not read all possible items in an Excel file so
     shapes will be lost from existing files if they are opened and saved with
     the same name.
+
 
 Errors loading workbooks
 ------------------------

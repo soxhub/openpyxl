@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
     Typed,
@@ -75,4 +75,4 @@ class Text(Serialisable):
     def to_tree(self, tagname=None, idx=None, namespace=None):
         if self.strRef and self.rich:
             self.rich = None # can only have one
-        return super(Text, self).to_tree(tagname, idx, namespace)
+        return super().to_tree(tagname, idx, namespace)

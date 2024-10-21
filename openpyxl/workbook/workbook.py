@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """Workbook is the top-level container for all document information."""
 from copy import copy
@@ -48,7 +48,7 @@ from openpyxl.xml.constants import (
 
 INTEGER_TYPES = (int,)
 
-class Workbook(object):
+class Workbook:
     """Workbook is the container for all other parts of the document."""
 
     _read_only = False

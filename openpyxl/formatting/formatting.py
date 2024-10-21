@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from collections import OrderedDict
 
@@ -52,7 +52,7 @@ class ConditionalFormatting(Serialisable):
         return coord in self.sqref
 
 
-class ConditionalFormattingList(object):
+class ConditionalFormattingList:
     """Conditional formatting rules."""
 
 

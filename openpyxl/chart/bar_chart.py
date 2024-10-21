@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -58,7 +58,7 @@ class _BarChartBase(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
-        super(_BarChartBase, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class BarChart(_BarChartBase):
@@ -95,7 +95,7 @@ class BarChart(_BarChartBase):
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
         self.legend = Legend()
-        super(BarChart, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class BarChart3D(_BarChartBase, _3DBase):

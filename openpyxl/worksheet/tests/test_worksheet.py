@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 # test imports
 import pytest
@@ -452,6 +452,15 @@ class TestWorksheet:
         table1 = Table(displayName="Table1", ref="A1:D10")
         tbl_ws.add_table(table1)
         assert len(tbl_ws._tables) == 1
+
+
+    def test_column_groups(self, Worksheet):
+        ws = Worksheet(Workbook())
+        ws.column_dimensions["A"]
+        ws.column_dimensions["F"]
+        ws.column_dimensions.group("F", "K")
+
+        assert ws.column_groups == ["F:K"]
 
 
 def test_freeze_panes_horiz(Worksheet):

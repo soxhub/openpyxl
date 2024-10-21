@@ -1,8 +1,62 @@
+3.1.5 (2024-06-28)
+==================
+
+
+* `#2187 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2187>`_ Test fails due to change in Numpy API
+* `#2198 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2198>`_ Excel is very fussy about the version number
+* `#2200 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2200>`_ Poor perfomance when reading workbooks with lots of named styles
+
+
+3.1.4 (2024-06-12)
+==================
+
+* `#2189 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2189>`_ Assigning named styles doesn't work
+* `#2190 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2190>`_ Problems caused when saving workbooks created by LibreOffice
+
+
+Changes
+-------
+
+* Python 3.6 and 3.7 are no longer supported.
+
+
+3.1.3 (2024-05-29)
+==================
+
+
+Bugfixes
+--------
+
+* `#1401 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1401>`_ Column name caches are slow and use a lot of memory
+* `#1457 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1457>`_ Improved handling of duplicate named styles
+* `#1842 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1842>`_ Rich-text can be saved if lxml is not installed
+* `#1954 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1954>`_ Documentation for sheet views is incorrect
+* `#1973 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1973>`_ Timedeltas not read properly in read-only mode
+* `#1987 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1987>`_ List of formulae names contains mistakes
+* `#1967 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1967>`_ Filters does not handle non-numerical filters
+* `#2054 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2054>`_ Type checking increases exponentially
+* `#2057 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2057>`_ Loading pivot tables can be unnecessarily slow
+* `#2102 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2102>`_ Improve performance when reading files with lots of custom properties
+* `#2106 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2106>`_ Setting Trendline.name attribute raises exception when saving
+* `#2120 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2120>`_ Timezone and Zombie formatting cannot be combined.
+* `#2107 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2107>`_ Column name generation is inefficient and slow
+* `#2122 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2122>`_ File handlers not always released in read-only mode
+* `#2149 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2149>`_ Workbook files not properly closed on Python ≥ 3.11.8 and Windows
+* `#2161 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2161>`_ Pivot cache definitions using tupleCache had serialisation issues
+
+Changes
+-------
+
+* Add a `__repr__` method for Row and Column dimension objects so you don't need to check every time.
+
+
 3.1.2 (2023-03-11)
 ==================
 
 * `#1963 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1963>`_ Cannot read worksheets in read-only mode with locally scoped definitions
 * `#1974 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1974>`_ Empty custom properties cause invalid files
+
+
 
 
 3.1.1 (2023-02-13)
@@ -33,6 +87,7 @@ Bugfixes
 * `#1156 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1156>`_ Table filters are always overriden
 * `#1360 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1360>`_ Can't read some ScatterCharts if n
 * `#1724 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1724>`_ Problem with multilevel indices in dataframes
+* `#1763 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1763>`_ Make calculating worksheet sizes slightly faster
 * `#1772 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1772>`_ Problem with category indices in dataframes
 * `#1786 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1786>`_ NamedStyles share attributes - mutables gotcha
 * `#1851 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1851>`_ Allow print area to be set to None
@@ -76,6 +131,7 @@ Bugfixes
 * `#1684 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1684>`_ Image files not closed when workbooks are saved
 * `#1778 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1778>`_ Problem with missing scope attribute in Pivot Table formats
 * `#1821 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/1821>`_ Excel unhappy when multiple sorts are defined
+* `#2014 <https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2014>`_ Accounting format interpreted as datetime
 
 
 3.0.9 (2021-09-22)

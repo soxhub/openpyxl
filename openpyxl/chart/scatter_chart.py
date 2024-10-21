@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -50,4 +50,4 @@ class ScatterChart(ChartBase):
         self.dLbls = dLbls
         self.x_axis = NumericAxis(axId=10, crossAx=20)
         self.y_axis = NumericAxis(axId=20, crossAx=10)
-        super(ScatterChart, self).__init__(**kw)
+        super().__init__(**kw)

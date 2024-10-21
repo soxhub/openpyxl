@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 Generic serialisable classes
@@ -13,9 +13,7 @@ from .base import (
     Float,
     Integer,
     String,
-    Text,
     )
-from .sequence import Sequence
 from openpyxl.compat import safe_string
 from openpyxl.xml.functions import Element, localname, whitespace
 
@@ -32,7 +30,7 @@ class Nested(Descriptor):
                 raise ValueError("Tag does not match attribute")
 
             value = self.from_tree(value)
-        super(Nested, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
     def from_tree(self, node):

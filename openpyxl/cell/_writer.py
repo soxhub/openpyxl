@@ -1,13 +1,13 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS, REL_NS
+from openpyxl.xml.functions import Element, SubElement, whitespace, XML_NS
 from openpyxl import LXML
 from openpyxl.utils.datetime import to_excel, to_ISO8601
 from datetime import timedelta
 
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
-from openpyxl.cell.rich_text import TextBlock
+from openpyxl.cell.rich_text import CellRichText
 
 def _set_attributes(cell, styled=None):
     """
@@ -68,25 +68,15 @@ def etree_write_cell(xf, worksheet, cell, styled=None):
             value = None
 
     if cell.data_type == 's':
-        inline_string = SubElement(el, 'is')
-        if isinstance(value, str):
-            text = SubElement(inline_string, 't')
+        if isinstance(value, CellRichText):
+            el.append(value.to_tree())
+        else:
+            inline_string = Element("is")
+            text = Element('t')
             text.text = value
             whitespace(text)
-        else:
-            for r in value:
-                se = SubElement(inline_string, 'r')
-                if isinstance(r, TextBlock):
-                    se2 = SubElement(se, 'rPr')
-                    se2.append(r.font.to_tree())
-                    text = r.name
-                else:
-                    text = r
-                text = SubElement(se, 't')
-                text.text = text
-                whitespace(text)
-
-
+            inline_string.append(text)
+            el.append(inline_string)
 
     else:
         cell_content = SubElement(el, 'v')
@@ -121,30 +111,18 @@ def lxml_write_cell(xf, worksheet, cell, styled=False):
                     value = None
 
         if cell.data_type == 's':
-            with xf.element("is"):
-                if isinstance(value, str):
-                    attrs = {}
-                    if value != value.strip():
-                        attrs["{%s}space" % XML_NS] = "preserve"
-                    el = Element("t", attrs) # lxml can't handle xml-ns
-                    el.text = value
-                    xf.write(el)
-                    #with xf.element("t", attrs):
-                        #xf.write(value)
-                else:
-                    for r in value:
-                        with xf.element("r"):
-                            if isinstance(r, TextBlock):
-                                xf.write(r.font.to_tree(tagname='rPr'))
-                                value = r.text
-                            else:
-                                value = r
-                            attrs = {}
-                            if value != value.strip():
-                                attrs["{%s}space" % XML_NS] = "preserve"
-                            el = Element("t", attrs) # lxml can't handle xml-ns
-                            el.text = value
-                            xf.write(el)
+            if isinstance(value, CellRichText):
+                el = value.to_tree()
+                xf.write(el)
+            else:
+                with xf.element("is"):
+                    if isinstance(value, str):
+                        attrs = {}
+                        if value != value.strip():
+                            attrs["{%s}space" % XML_NS] = "preserve"
+                        el = Element("t", attrs) # lxml can't handle xml-ns
+                        el.text = value
+                        xf.write(el)
 
         else:
             with xf.element("v"):

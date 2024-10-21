@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 # Python stdlib imports
@@ -28,14 +28,13 @@ from openpyxl.packaging.relationship import (
     Relationship,
 )
 from openpyxl.comments.comment_sheet import CommentSheet
-from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.styles.stylesheet import write_stylesheet
 from openpyxl.worksheet._writer import WorksheetWriter
 from openpyxl.workbook._writer import WorkbookWriter
 from .theme import theme_xml
 
 
-class ExcelWriter(object):
+class ExcelWriter:
     """Write a workbook object to an Excel file."""
 
     def __init__(self, workbook, archive):
@@ -52,6 +51,7 @@ class ExcelWriter(object):
 
 
     def write_data(self):
+        from openpyxl.packaging.extended import ExtendedProperties
         """Write the various xml files into the zip archive."""
         # cleanup all worksheets
         archive = self._archive
@@ -217,7 +217,7 @@ class ExcelWriter(object):
             if ws._drawing:
                 self._write_drawing(ws._drawing)
 
-                for r in ws._rels.Relationship:
+                for r in ws._rels:
                     if "drawing" in r.Type:
                         r.Target = ws._drawing.path
 
@@ -234,7 +234,7 @@ class ExcelWriter(object):
                 t.id = len(self._tables)
                 t._write(self._archive)
                 self.manifest.append(t)
-                ws._rels[t._rel_id].Target = t.path
+                ws._rels.get(t._rel_id).Target = t.path
 
             for p in ws._pivots:
                 if p.cache not in pivot_caches:
@@ -289,7 +289,7 @@ def save_workbook(workbook, filename):
 
     """
     archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
-    workbook.properties.modified = datetime.datetime.utcnow()
+    workbook.properties.modified = datetime.datetime.now(tz=datetime.timezone.utc).replace(tzinfo=None)
     writer = ExcelWriter(workbook, archive)
     writer.save()
     return True

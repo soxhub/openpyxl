@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import copy
 
@@ -25,7 +25,7 @@ class MergeCell(CellRange):
     def __init__(self,
                  ref=None,
                 ):
-        super(MergeCell, self).__init__(ref)
+        super().__init__(ref)
 
 
     def __copy__(self):

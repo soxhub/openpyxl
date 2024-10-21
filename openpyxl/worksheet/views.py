@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors import (
     Bool,
@@ -80,31 +80,29 @@ class SheetView(Serialisable):
     selection = Sequence(expected_type=Selection)
     pane = Typed(expected_type=Pane, allow_none=True)
 
-    def __init__(
-        self,
-        windowProtection=None,
-        showFormulas=None,
-        showGridLines=None,
-        showRowColHeaders=None,
-        showZeros=None,
-        rightToLeft=None,
-        tabSelected=None,
-        showRuler=None,
-        showOutlineSymbols=None,
-        defaultGridColor=None,
-        showWhiteSpace=None,
-        view=None,
-        topLeftCell=None,
-        colorId=None,
-        zoomScale=None,
-        zoomScaleNormal=None,
-        zoomScaleSheetLayoutView=None,
-        zoomScalePageLayoutView=None,
-        zoomToFit=None,
-        workbookViewId=0,
-        selection=None,
-        pane=None,
-        ):
+    def __init__(self,
+                 windowProtection=None,
+                 showFormulas=None,
+                 showGridLines=None,
+                 showRowColHeaders=None,
+                 showZeros=None,
+                 rightToLeft=None,
+                 tabSelected=None,
+                 showRuler=None,
+                 showOutlineSymbols=None,
+                 defaultGridColor=None,
+                 showWhiteSpace=None,
+                 view=None,
+                 topLeftCell=None,
+                 colorId=None,
+                 zoomScale=None,
+                 zoomScaleNormal=None,
+                 zoomScaleSheetLayoutView=None,
+                 zoomScalePageLayoutView=None,
+                 zoomToFit=None,
+                 workbookViewId=0,
+                 selection=None,
+                 pane=None,):
         self.windowProtection = windowProtection
         self.showFormulas = showFormulas
         self.showGridLines = showGridLines
@@ -147,3 +145,11 @@ class SheetViewList(Serialisable):
         if sheetView is None:
             sheetView = [SheetView()]
         self.sheetView = sheetView
+
+
+    @property
+    def active(self):
+        """
+        Returns the first sheet view which is assumed to be active
+        """
+        return self.sheetView[0]

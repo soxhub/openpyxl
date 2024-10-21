@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 import pytest
 
 from openpyxl.xml.functions import fromstring, tostring
@@ -59,9 +59,3 @@ class TestHyperlinkList:
         fut = HyperlinkList.from_tree(node)
         assert fut == HyperlinkList()
 
-
-    def test_append(self, HyperlinkList, Hyperlink):
-        link = Hyperlink(ref="I'm a link")
-        links = HyperlinkList()
-        links.append(link)
-        assert link.id == "rId1"

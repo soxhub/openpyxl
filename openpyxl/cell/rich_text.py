@@ -1,15 +1,19 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 RichText definition
 """
 from copy import copy
+from openpyxl.compat import NUMERIC_TYPES
 from openpyxl.cell.text import InlineFont, Text
 from openpyxl.descriptors import (
     Strict,
     String,
     Typed
 )
+
+from openpyxl.xml.functions import Element, whitespace
+
 class TextBlock(Strict):
     """ Represents text string in a specific format
 
@@ -36,6 +40,15 @@ class TextBlock(Strict):
         font = self.font != InlineFont() and self.font or "default"
         return f"{self.__class__.__name__} text={self.text}, font={font}"
 
+
+    def to_tree(self):
+        el = Element("r")
+        el.append(self.font.to_tree(tagname="rPr"))
+        t = Element("t")
+        t.text = self.text
+        whitespace(t)
+        el.append(t)
+        return el
 
 #
 # Rich Text class.
@@ -69,11 +82,12 @@ class CellRichText(list):
             CellRichText._check_rich_text(args)
         super().__init__(args)
 
+
     @classmethod
     def _check_element(cls, value):
-        if hasattr(value, "__str__"):
-            return
-        raise TypeError(f"Illegal CellRichText element {value}")
+        if not isinstance(value, (str, TextBlock, NUMERIC_TYPES)):
+            raise TypeError(f"Illegal CellRichText element {value}")
+
 
     @classmethod
     def _check_rich_text(cls, rich_text):
@@ -165,3 +179,24 @@ class CellRichText(list):
         The main reason for this is to make editing easier.
         """
         return [str(s) for s in self]
+
+
+    def to_tree(self):
+        """
+        Return the full XML representation
+        """
+        container = Element("is")
+        for obj in self:
+            if isinstance(obj, TextBlock):
+                container.append(obj.to_tree())
+
+            else:
+                el = Element("r")
+                t = Element("t")
+                t.text = obj
+                whitespace(t)
+                el.append(t)
+                container.append(el)
+
+        return container
+

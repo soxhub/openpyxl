@@ -1,3 +1,3 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from .chartsheet import Chartsheet

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml

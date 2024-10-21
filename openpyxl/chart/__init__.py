@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from .area_chart import AreaChart, AreaChart3D
 from .bar_chart import BarChart, BarChart3D

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.xml.functions import (
     Element,
@@ -13,7 +13,7 @@ officens = "urn:schemas-microsoft-com:office:office"
 excelns = "urn:schemas-microsoft-com:office:excel"
 
 
-class ShapeWriter(object):
+class ShapeWriter:
     """
     Create VML for comments
     """

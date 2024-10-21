@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 from openpyxl.descriptors.serialisable import Serialisable
@@ -10,7 +10,7 @@ from openpyxl.descriptors import (
     NoneSet,
     Sequence,
 )
-from openpyxl.descriptors.excel import Relation, ExtensionList
+from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.nested import NestedText
 from openpyxl.descriptors.sequence import NestedSequence, ValueSequence
 
@@ -168,7 +168,7 @@ class ExternalLink(Serialisable):
 
 
     def to_tree(self):
-        node = super(ExternalLink, self).to_tree()
+        node = super().to_tree()
         node.set("xmlns", SHEET_MAIN_NS)
         return node
 
@@ -185,6 +185,6 @@ def read_external_link(archive, book_path):
 
     link_path = get_rels_path(book_path)
     deps = get_dependents(archive, link_path)
-    book.file_link = deps.Relationship[0]
+    book.file_link = deps[0]
 
     return book

@@ -1,10 +1,12 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 Collection of utilities used within the package and also available for client code
 """
+from functools import lru_cache
+from itertools import chain, product
+from string import ascii_uppercase, digits
 import re
-from string import digits
 
 from .exceptions import CellCoordinatesException
 
@@ -71,56 +73,67 @@ def absolute_coordinate(coord_string):
     return fmt.format(**d)
 
 
-def _get_column_letter(col_idx):
-    """Convert a column number into a column letter (3 -> 'C')
+__decimal_to_alpha = [""] + list(ascii_uppercase)
 
-    Right shift the column col_idx by 26 to find column letters in reverse
-    order.  These numbers are 1-based, and can be converted to ASCII
-    ordinals by adding 64.
-
+@lru_cache(maxsize=None)
+def get_column_letter(col_idx):
     """
-    # these indicies corrospond to A -> ZZZ and include all allowed
-    # columns
+    Convert decimal column position to its ASCII (base 26) form.
+
+    Because column indices are 1-based, strides are actually pow(26, n) + 26
+    Hence, a correction is applied between pow(26, n) and pow(26, 2) + 26 to
+    prevent and additional column letter being prepended
+
+    "A" == 1 == pow(26, 0)
+    "Z" == 26 == pow(26, 0) + 26 // decimal equivalent 10
+    "AA" == 27 == pow(26, 1) + 1
+    "ZZ" == 702 == pow(26, 2) + 26 // decimal equivalent 100
+    """
+
     if not 1 <= col_idx <= 18278:
         raise ValueError("Invalid column index {0}".format(col_idx))
-    letters = []
-    while col_idx > 0:
+
+    result = []
+
+    if col_idx < 26:
+        return __decimal_to_alpha[col_idx]
+
+    while col_idx:
         col_idx, remainder = divmod(col_idx, 26)
-        # check for exact division and borrow if needed
-        if remainder == 0:
-            remainder = 26
+        result.insert(0, __decimal_to_alpha[remainder])
+        if not remainder:
             col_idx -= 1
-        letters.append(chr(remainder+64))
-    return ''.join(reversed(letters))
+            result.insert(0, "Z")
+
+    return "".join(result)
 
 
-_COL_STRING_CACHE = {}
-_STRING_COL_CACHE = {}
-for i in range(1, 18279):
-    col = _get_column_letter(i)
-    _STRING_COL_CACHE[i] = col
-    _COL_STRING_CACHE[col] = i
+__alpha_to_decimal = {letter:pos for pos, letter in enumerate(ascii_uppercase, 1)}
+__powers = (1, 26, 676)
 
-
-def get_column_letter(idx,):
-    """Convert a column index into a column letter
-    (3 -> 'C')
+@lru_cache(maxsize=None)
+def column_index_from_string(col):
     """
-    try:
-        return _STRING_COL_CACHE[idx]
-    except KeyError:
-        raise ValueError("Invalid column index {0}".format(idx))
+    Convert ASCII column name (base 26) to decimal with 1-based index
 
+    Characters represent descending multiples of powers of 26
 
-def column_index_from_string(str_col):
-    """Convert a column name into a numerical index
-    ('A' -> 1)
+    "AFZ" == 26 * pow(26, 0) + 6 * pow(26, 1) + 1 * pow(26, 2)
     """
-    # we use a function argument to get indexed name lookup
-    try:
-        return _COL_STRING_CACHE[str_col.upper()]
-    except KeyError:
-        raise ValueError("{0} is not a valid column name".format(str_col))
+    error_msg = f"'{col}' is not a valid column name. Column names are from A to ZZZ"
+    if len(col) > 3:
+        raise ValueError(error_msg)
+    idx = 0
+    col = reversed(col.upper())
+    for letter, power in zip(col, __powers):
+        try:
+            pos = __alpha_to_decimal[letter]
+        except KeyError:
+            raise ValueError(error_msg)
+        idx += pos * power
+    if not 0 < idx < 18279:
+        raise ValueError(error_msg)
+    return idx
 
 
 def range_boundaries(range_string):
@@ -197,9 +210,9 @@ def coordinate_to_tuple(coordinate):
     for idx, c in enumerate(coordinate):
         if c in digits:
             break
-    col = coordinate[:idx].upper()
+    col = coordinate[:idx]
     row = coordinate[idx:]
-    return int(row), _COL_STRING_CACHE[col]
+    return int(row), column_index_from_string(col)
 
 
 def range_to_tuple(range_string):

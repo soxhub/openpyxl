@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import datetime
 import gc
@@ -25,6 +25,7 @@ def DummyWorkbook():
             self.sheetnames = []
             self._archive = ZipFile(BytesIO(), "w")
             self._date_formats = set()
+            self._timedelta_formats = set()
 
     return Workbook()
 
@@ -105,7 +106,10 @@ def test_file_descriptor_leak(datadir):
         num_fds_before = count_open_fds()
 
         wb = load_workbook(filename="sample.xlsx", read_only=True)
+        ws = wb.active
+        ws.cell(1, 1)
         wb.close()
+        assert wb._archive.fp is None
 
         num_fds_after = count_open_fds()
     finally:

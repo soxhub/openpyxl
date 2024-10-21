@@ -1,6 +1,7 @@
-# Copyright (c) 2010-2023 openpyxl
-
+# Copyright (c) 2010-2024 openpyxl
+import os
 from io import BytesIO
+from shutil import copyfile
 from tempfile import NamedTemporaryFile
 from zipfile import BadZipfile, ZipFile
 
@@ -149,6 +150,18 @@ def test_no_external_links(datadir, load_workbook):
 
     wb = load_workbook("bug137.xlsx", keep_links=False)
     assert wb._external_links == []
+
+
+def test_file_closes(datadir, load_workbook):
+    """Test whether workbook file is closed correctly after loading"""
+    datadir.chdir()
+    filename = "empty_with_no_properties-copy.xlsx"
+    # create a copy that can be deleted later
+    copyfile("empty_with_no_properties.xlsx", filename)
+
+    load_workbook(filename)
+    # remove would fail if the file is not closed correctly after loading
+    os.remove(filename)
 
 
 from ..excel import ExcelReader

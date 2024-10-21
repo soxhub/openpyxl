@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -73,4 +73,4 @@ class TitleDescriptor(Typed):
     def __set__(self, instance, value):
         if isinstance(value, str):
             value = title_maker(value)
-        super(TitleDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)

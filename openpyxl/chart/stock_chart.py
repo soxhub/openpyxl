@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -51,4 +51,4 @@ class StockChart(ChartBase):
         self.upDownBars = upDownBars
         self.x_axis = TextAxis()
         self.y_axis = NumericAxis()
-        super(StockChart, self).__init__(**kw)
+        super().__init__(**kw)

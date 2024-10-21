@@ -1,12 +1,12 @@
 
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import math
 
 from openpyxl.utils.units import pixels_to_EMU
 
 
-class Drawing(object):
+class Drawing:
     """ a drawing object - eg container for shapes or charts
         we assume user specifies dimensions in pixels; units are
         converted to EMU in the drawing part

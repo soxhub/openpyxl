@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """Reader for a single worksheet."""
 from copy import copy
@@ -94,7 +94,7 @@ def parse_richtext_string(element):
     return value
 
 
-class WorkSheetParser(object):
+class WorkSheetParser:
 
     def __init__(self, src, shared_strings, data_only=False,
                  epoch=WINDOWS_EPOCH, date_formats=set(),
@@ -351,7 +351,7 @@ class WorkSheetParser(object):
         self.col_breaks = ColBreak()
 
 
-class WorksheetReader(object):
+class WorksheetReader:
     """
     Create a parser and apply it to a workbook
     """
@@ -387,7 +387,7 @@ class WorksheetReader(object):
 
     def bind_tables(self):
         for t in self.parser.tables.tablePart:
-            rel = self.ws._rels[t.id]
+            rel = self.ws._rels.get(t.id)
             self.tables.append(rel.Target)
 
 
@@ -408,7 +408,7 @@ class WorksheetReader(object):
     def bind_hyperlinks(self):
         for link in self.parser.hyperlinks.hyperlink:
             if link.id:
-                rel = self.ws._rels[link.id]
+                rel = self.ws._rels.get(link.id)
                 link.target = rel.Target
             if ":" in link.ref:
                 # range of cells

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -172,7 +172,7 @@ class WorkbookPackage(Serialisable):
 
 
     def to_tree(self):
-        tree = super(WorkbookPackage, self).to_tree()
+        tree = super().to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
 

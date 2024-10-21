@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 File manifest
@@ -114,7 +114,7 @@ class Manifest(Serialisable):
             if ext not in defaults:
                 mime = FileExtension(ext, mime)
                 self.Default.append(mime)
-        tree = super(Manifest, self).to_tree()
+        tree = super().to_tree()
         tree.set("xmlns", CONTYPES_NS)
         return tree
 

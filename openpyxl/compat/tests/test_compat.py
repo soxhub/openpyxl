@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 import pytest
 
 
@@ -58,9 +58,9 @@ def test_numeric_types():
 
 @pytest.mark.numpy_required
 def test_numpy_tostring():
-    from numpy import float_, bool_
+    from numpy import float64, bool_
     from .. import safe_string
-    assert safe_string(float_(5.1)) == "5.1"
+    assert safe_string(float64(5.1)) == "5.1"
     assert safe_string(int(5)) == "5"
     assert safe_string(bool_(True)) == "1"
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -33,7 +33,7 @@ class ValueDescriptor(Float):
             self.expected_type = str
         else:
             self.expected_type = float
-        super(ValueDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class FormatObject(Serialisable):

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
@@ -72,7 +72,7 @@ class _SurfaceChartBase(ChartBase):
         self.wireframe = wireframe
         self.ser = ser
         self.bandFmts = bandFmts
-        super(_SurfaceChartBase, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class SurfaceChart3D(_SurfaceChartBase, _3DBase):
@@ -111,7 +111,7 @@ class SurfaceChart(SurfaceChart3D):
     __elements__ = SurfaceChart3D.__elements__
 
     def __init__(self, **kw):
-        super(SurfaceChart, self).__init__(**kw)
+        super().__init__(**kw)
         self.y_axis.delete = True
         self.view3D.x_rotation = 90
         self.view3D.y_rotation = 0

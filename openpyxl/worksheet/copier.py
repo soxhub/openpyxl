@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 #standard lib imports
 from copy import copy
@@ -6,7 +6,7 @@ from copy import copy
 from .worksheet import Worksheet
 
 
-class WorksheetCopy(object):
+class WorksheetCopy:
     """
     Copy the values, styles, dimensions, merged cells, margins, and
     print/page setup from one worksheet to another within the same

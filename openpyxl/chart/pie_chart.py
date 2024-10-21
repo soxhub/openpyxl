@@ -47,7 +47,7 @@ class _PieChartBase(ChartBase):
         self.varyColors = varyColors
         self.ser = ser
         self.dLbls = dLbls
-        super(_PieChartBase, self).__init__()
+        super().__init__()
 
 
 
@@ -70,7 +70,7 @@ class PieChart(_PieChartBase):
                  **kw
                 ):
         self.firstSliceAng = firstSliceAng
-        super(PieChart, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class PieChart3D(_PieChartBase):
@@ -108,7 +108,7 @@ class DoughnutChart(_PieChartBase):
                 ):
         self.firstSliceAng = firstSliceAng
         self.holeSize = holeSize
-        super(DoughnutChart, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class CustomSplit(Serialisable):
@@ -174,4 +174,4 @@ class ProjectedPieChart(_PieChartBase):
         self.secondPieSize = secondPieSize
         if serLines is None:
             self.serLines = ChartLines()
-        super(ProjectedPieChart, self).__init__(**kw)
+        super().__init__(**kw)

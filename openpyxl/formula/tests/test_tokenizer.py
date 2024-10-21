@@ -27,7 +27,7 @@ ARG = "ARG"
 ROW = "ROW"
 
 
-class TestTokenizerRegexes(object):
+class TestTokenizerRegexes:
 
     @pytest.mark.parametrize("string, success", [
         ('1.0E', True),
@@ -95,7 +95,7 @@ class TestTokenizerRegexes(object):
             assert regex.match(string).group(0) == expected
 
 
-class TestTokenizer(object):
+class TestTokenizer:
 
     def test_init(self, tokenizer):
         tok = tokenizer.Tokenizer("abcdefg")
@@ -580,7 +580,7 @@ class TestTokenizer(object):
         assert tok.render() == formula
 
 
-class TestToken(object):
+class TestToken:
 
     def test_init(self, tokenizer):
         tokenizer.Token('val', 'type', 'subtype')

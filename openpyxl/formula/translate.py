@@ -30,7 +30,7 @@ class TranslatorError(Exception):
     """
 
 
-class Translator(object):
+class Translator:
 
     """
     Modifies a formula so that it can be translated from one cell to another.

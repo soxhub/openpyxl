@@ -1,5 +1,5 @@
 pip>=18.0
-lxml>=4.2.0
+lxml==5.0.1
 pytest
 pillow
 tox

@@ -1,5 +1,5 @@
 
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 """
 Enclosing chart object. The various chart types are actually child objects.
@@ -190,6 +190,6 @@ class ChartSpace(Serialisable):
 
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
-        tree = super(ChartSpace, self).to_tree()
+        tree = super().to_tree()
         tree.set("xmlns", CHART_NS)
         return tree

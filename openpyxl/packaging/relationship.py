@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import posixpath
 from warnings import warn
@@ -9,6 +9,7 @@ from openpyxl.descriptors import (
     Sequence,
 )
 from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors.container import ElementList
 
 from openpyxl.xml.constants import REL_NS, PKG_REL_NS
 from openpyxl.xml.functions import (
@@ -49,31 +50,16 @@ class Relationship(Serialisable):
         self.Id = Id
 
 
-class RelationshipList(Serialisable):
+class RelationshipList(ElementList):
 
     tagname = "Relationships"
-
-    Relationship = Sequence(expected_type=Relationship)
-
-
-    def __init__(self, Relationship=()):
-        self.Relationship = Relationship
+    expected_type = Relationship
 
 
     def append(self, value):
-        values = self.Relationship[:]
-        values.append(value)
+        super().append(value)
         if not value.Id:
-            value.Id = "rId{0}".format((len(values)))
-        self.Relationship = values
-
-
-    def __len__(self):
-        return len(self.Relationship)
-
-
-    def __bool__(self):
-        return bool(self.Relationship)
+            value.Id = f"rId{len(self)}"
 
 
     def find(self, content_type):
@@ -82,25 +68,26 @@ class RelationshipList(Serialisable):
         NB. these content-types namespaced objects and different to the MIME-types
         in the package manifest :-(
         """
-        for r in self.Relationship:
+        for r in self:
             if r.Type == content_type:
                 yield r
 
 
-    def __getitem__(self, key):
-        for r in self.Relationship:
+    def get(self, key):
+        for r in self:
             if r.Id == key:
                 return r
         raise KeyError("Unknown relationship: {0}".format(key))
 
 
-    def to_tree(self):
-        tree = Element("Relationships", xmlns=PKG_REL_NS)
-        for idx, rel in enumerate(self.Relationship, 1):
-            if not rel.Id:
-                rel.Id = "rId{0}".format(idx)
-            tree.append(rel.to_tree())
+    def to_dict(self):
+        """Return a dictionary of relations keyed by id"""
+        return {r.id:r for r in self}
 
+
+    def to_tree(self):
+        tree = super().to_tree()
+        tree.set("xmlns", PKG_REL_NS)
         return tree
 
 
@@ -132,7 +119,7 @@ def get_dependents(archive, filename):
         rels = RelationshipList()
     folder = posixpath.dirname(filename)
     parent = posixpath.split(folder)[0]
-    for r in rels.Relationship:
+    for r in rels:
         if r.TargetMode == "External":
             continue
         elif r.target.startswith("/"):
@@ -150,7 +137,7 @@ def get_rel(archive, deps, id=None, cls=None):
     if not any([id, cls]):
         raise ValueError("Either the id or the content type are required")
     if id is not None:
-        rel = deps[id]
+        rel = deps.get(id)
     else:
         try:
             rel = next(deps.find(cls.rel_type))

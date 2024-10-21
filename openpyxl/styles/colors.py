@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 import re
 from openpyxl.compat import safe_string
@@ -61,7 +61,7 @@ class RGB(Typed):
                 raise ValueError("Colors must be aRGB hex values")
             if len(value) == 6:
                 value = "00" + value
-        super(RGB, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class Color(Serialisable):
@@ -120,7 +120,7 @@ class Color(Serialisable):
         Adding colours is undefined behaviour best do nothing
         """
         if not isinstance(other, Color):
-            return super(Color, self).__add__(other)
+            return super().__add__(other)
         return self
 
 
@@ -131,7 +131,7 @@ class ColorDescriptor(Typed):
     def __set__(self, instance, value):
         if isinstance(value, str):
             value = Color(rgb=value)
-        super(ColorDescriptor, self).__set__(instance, value)
+        super().__set__(instance, value)
 
 
 class RgbColor(Serialisable):

@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 
 
 from openpyxl.descriptors import Typed, Set, Alias
@@ -72,7 +72,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
                  title="",
                  sheet_state='visible',
                  ):
-        super(Chartsheet, self).__init__(parent, title)
+        super().__init__(parent, title)
         self._charts = []
         self.sheetPr = sheetPr
         if sheetViews is None:
@@ -99,7 +99,7 @@ class Chartsheet(_WorkbookChild, Serialisable):
     def to_tree(self):
         self._drawing = SpreadsheetDrawing()
         self._drawing.charts = self._charts
-        tree = super(Chartsheet, self).to_tree()
+        tree = super().to_tree()
         if not self.headerFooter:
             el = tree.find('headerFooter')
             tree.remove(el)

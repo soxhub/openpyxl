@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2023 openpyxl
+# Copyright (c) 2010-2024 openpyxl
 import pytest
 
 from datetime import datetime
@@ -192,3 +192,36 @@ class TestDateTimeField:
         node = fromstring(src)
         record = DateTimeField.from_tree(node)
         assert record == DateTimeField(v=datetime(2016, 3, 24))
+
+
+@pytest.fixture
+def TupleList():
+    from ..record import TupleList
+    return TupleList
+
+
+class TestTupleList:
+
+    def test_ctor(self, TupleList):
+        from ..fields import Tuple
+        record = TupleList(tpl=Tuple(item=1))
+        xml = tostring(record.to_tree())
+        expected = """
+        <tpls>
+            <tpl item="1"/>
+        </tpls>
+        """
+        diff = compare_xml(xml, expected)
+        assert diff is None, diff
+
+
+    def test_from_xml(self, TupleList):
+        from ..fields import Tuple
+        src = """
+        <tpls c="1">
+            <tpl hier="1" item="4294967295"/>
+        </tpls>
+        """
+        node = fromstring(src)
+        record = TupleList.from_tree(node)
+        assert record == TupleList(c=1, tpl=Tuple(hier=1, item=4294967295))
