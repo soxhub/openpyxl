@@ -95,15 +95,12 @@ def get_column_letter(col_idx):
 
     result = []
 
-    if col_idx < 26:
-        return __decimal_to_alpha[col_idx]
+    if col_idx <= 26:
+        return chr(64 + col_idx)
 
     while col_idx:
-        col_idx, remainder = divmod(col_idx, 26)
-        result.insert(0, __decimal_to_alpha[remainder])
-        if not remainder:
-            col_idx -= 1
-            result.insert(0, "Z")
+        col_idx, rem = divmod(col_idx-1, 26)
+        result.insert(0, chr((65 + rem)))
 
     return "".join(result)
 
